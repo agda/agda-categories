@@ -4,10 +4,10 @@ module Categories.NaturalTransformation.Core where
 
 open import Level
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
-open import Function using (_$_)
 
 open import Categories.Category
 open import Categories.Functor.Core renaming (id to idF; _∘_ to _∘F_)
+open import Categories.Functor.Properties
 
 record NaturalTransformation {o ℓ e o′ ℓ′ e′}
                              {C : Category o ℓ e}
@@ -95,17 +95,13 @@ _∘ₕ_ {C = C} {D} {E} {F} {G} {H} {I} Y X = record
   module X = NaturalTransformation X
   module Y = NaturalTransformation Y
   open F
-  open G renaming (F₀ to G₀; F₁ to G₁; F-resp-≈ to G-resp-≈)
-  open H renaming (F₀ to H₀; F₁ to H₁; F-resp-≈ to H-resp-≈)
-  open I renaming (F₀ to I₀; F₁ to I₁; F-resp-≈ to I-resp-≈)
+  open G renaming (F₀ to G₀; F₁ to G₁)
+  open H renaming (F₀ to H₀; F₁ to H₁)
+  open I renaming (F₀ to I₀; F₁ to I₁)
 
   commute′ : ∀ {A B} (f : C [ A , B ]) → E [ E [ E [ I₁ (X.η B) ∘ Y.η (F₀ B) ] ∘ H₁ (F₁ f) ] ≈ E [ I₁ (G₁ f) ∘ E [ I₁ (X.η A) ∘ Y.η (F₀ A) ] ] ]
-  commute′ {A} {B} f = square-compose E (Y.commute (F₁ f)) $ begin
-    E [ I₁ (X.η B) ∘ I₁ (F₁ f) ] ≈⟨ E.Equiv.sym I.homomorphism ⟩
-    I₁ (D [ X.η B ∘ F₁ f ])      ≈⟨ I-resp-≈ (X.commute f) ⟩
-    I₁ (D [ G₁ f ∘ X.η A ])      ≈⟨ I.homomorphism ⟩
-    E [ I₁ (G₁ f) ∘ I₁ (X.η A) ] ∎
-    where open E.HomReasoning
+  commute′ {A} {B} f = square-compose E (Y.commute (F₁ f))
+                                        (square-functorial I (X.commute f))
 
 infix 4 _≃_
 
