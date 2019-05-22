@@ -2,29 +2,25 @@
 module Categories.Functor.Properties where
 
 open import Categories.Category
-open import Categories.Functor.Core hiding (_∘_) 
+open import Categories.Functor.Core
 
-private 
-  square-functorial-prop : ∀ {o ℓ e o′ ℓ′ e′}
-                             {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
-                             (F : Functor C D) →
-                             Set _
-  square-functorial-prop {C = Cc} {Dc} F =
-    ∀ {A B C D : Obj} {f : A ⇒ B} {g : A ⇒ C} {h : B ⇒ D} {i : C ⇒ D} →
-      Category.CommutativeSquare Cc f g h i →
-      Category.CommutativeSquare Dc (F₁ f) (F₁ g) (F₁ h) (F₁ i)
-    where open Category Cc hiding (CommutativeSquare)
-          open Functor F using (F₁)
+module _ {o ℓ e o′ ℓ′ e′}
+         {Cc : Category o ℓ e} {Dc : Category o′ ℓ′ e′}
+         (F : Functor Cc Dc) where
+  module Cc = Category Cc
+  module Dc = Category Dc
+  open Cc hiding (_∘_)
+  open Functor F using (F₁ ; homomorphism ; F-resp-≈)
 
-square-functorial : ∀ {o ℓ e o′ ℓ′ e′}
-                      {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
-                      (F : Functor C D) →
-                      square-functorial-prop F
-square-functorial {C = C} {D} F {f = f} {g} {h} {i} sq = begin
-  F₁ h ∘ F₁ f      ≈⟨ Equiv.sym homomorphism ⟩
-  F₁ (C [ h ∘ f ]) ≈⟨ F-resp-≈ sq ⟩
-  F₁ (C [ i ∘ g ]) ≈⟨ homomorphism ⟩
-  F₁ i ∘ F₁ g      ∎
-  where open Category D
-        open Functor F using (F₁ ; homomorphism ; F-resp-≈)
-        open HomReasoning
+  module _ {A B C D : Obj}
+           {f : A ⇒ B} {g : A ⇒ C} {h : B ⇒ D} {i : C ⇒ D} where
+
+    [_]-resp-square : Cc.CommutativeSquare f g h i →
+                      Dc.CommutativeSquare (F₁ f) (F₁ g) (F₁ h) (F₁ i)
+    [_]-resp-square sq = begin
+      F₁ h ∘ F₁ f       ≈⟨ Dc.Equiv.sym homomorphism ⟩
+      F₁ (Cc [ h ∘ f ]) ≈⟨ F-resp-≈ sq ⟩
+      F₁ (Cc [ i ∘ g ]) ≈⟨ homomorphism ⟩
+      F₁ i ∘ F₁ g       ∎
+      where open Dc
+            open Dc.HomReasoning

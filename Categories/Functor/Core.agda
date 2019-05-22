@@ -16,12 +16,12 @@ record Functor {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (D : Category o
 
   field
     F₀ : C.Obj → D.Obj
-    {F₁} : ∀ {A B} → C [ A , B ] → D [ F₀ A , F₀ B ]
+    F₁ : ∀ {A B} → C [ A , B ] → D [ F₀ A , F₀ B ]
 
-    {identity}     : ∀ {A} → D [ F₁ (C.id {A}) ≈ D.id ]
-    {homomorphism} : ∀ {X Y Z} {f : C [ X , Y ]} {g : C [ Y , Z ]} →
-                       D [ F₁ (C [ g ∘ f ]) ≈ D [ F₁ g ∘ F₁ f ] ]
-    {F-resp-≈}     : ∀ {A B} {f g : C [ A , B ]} → C [ f ≈ g ] → D [ F₁ f ≈ F₁ g ]
+    identity     : ∀ {A} → D [ F₁ (C.id {A}) ≈ D.id ]
+    homomorphism : ∀ {X Y Z} {f : C [ X , Y ]} {g : C [ Y , Z ]} →
+                     D [ F₁ (C [ g ∘ f ]) ≈ D [ F₁ g ∘ F₁ f ] ]
+    F-resp-≈     : ∀ {A B} {f g : C [ A , B ]} → C [ f ≈ g ] → D [ F₁ f ≈ F₁ g ]
 
   op : Functor C.op D.op
   op = record 
@@ -50,11 +50,11 @@ id {C = C} = record
   }
   where open Category.Equiv C
 
-infixr 9 _∘_
+infixr 9 _∘F_
 
-_∘_ : ∀ {o ℓ e} {o′ ℓ′ e′} {o′′ ℓ′′ e′′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {E : Category o′′ ℓ′′ e′′} 
+_∘F_ : ∀ {o ℓ e} {o′ ℓ′ e′} {o′′ ℓ′′ e′′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {E : Category o′′ ℓ′′ e′′} 
     → Functor D E → Functor C D → Functor C E
-_∘_ {C = C} {D = D} {E = E} F G = record 
+_∘F_ {C = C} {D = D} {E = E} F G = record 
   { F₀ = λ x → F₀ (G₀ x)
   ; F₁ = λ f → F₁ (G₁ f)
   ; identity = identity′

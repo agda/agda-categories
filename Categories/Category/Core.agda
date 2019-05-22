@@ -16,17 +16,17 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   field
     Obj : Set o
     _⇒_ : Rel Obj ℓ
-    {_≈_} : ∀ {A B} → Rel (A ⇒ B) e
+    _≈_ : ∀ {A B} → Rel (A ⇒ B) e
 
-    {id}  : ∀ {A} → (A ⇒ A)
-    {_∘_} : ∀ {A B C} → (B ⇒ C) → (A ⇒ B) → (A ⇒ C)
+    id  : ∀ {A} → (A ⇒ A)
+    _∘_ : ∀ {A B C} → (B ⇒ C) → (A ⇒ B) → (A ⇒ C)
 
   field
-    {assoc}     : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → (h ∘ g) ∘ f ≈ h ∘ (g ∘ f)
-    {identityˡ} : ∀ {A B} {f : A ⇒ B} → id ∘ f ≈ f
-    {identityʳ} : ∀ {A B} {f : A ⇒ B} → f ∘ id ≈ f
-    {equiv}     : ∀ {A B} → IsEquivalence (_≈_ {A} {B})
-    {∘-resp-≈}  : ∀ {A B C} {f h : B ⇒ C} {g i : A ⇒ B} → f ≈ h → g ≈ i → f ∘ g ≈ h ∘ i
+    assoc     : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → (h ∘ g) ∘ f ≈ h ∘ (g ∘ f)
+    identityˡ : ∀ {A B} {f : A ⇒ B} → id ∘ f ≈ f
+    identityʳ : ∀ {A B} {f : A ⇒ B} → f ∘ id ≈ f
+    equiv     : ∀ {A B} → IsEquivalence (_≈_ {A} {B})
+    ∘-resp-≈  : ∀ {A B C} {f h : B ⇒ C} {g i : A ⇒ B} → f ≈ h → g ≈ i → f ∘ g ≈ h ∘ i
 
   module Equiv {A B : Obj} = IsEquivalence (equiv {A} {B})
 

@@ -6,7 +6,7 @@ open import Level
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
 open import Categories.Category
-open import Categories.Functor.Core renaming (id to idF; _∘_ to _∘F_)
+open import Categories.Functor.Core renaming (id to idF)
 open import Categories.Functor.Properties
 
 record NaturalTransformation {o ℓ e o′ ℓ′ e′}
@@ -101,7 +101,7 @@ _∘ₕ_ {C = C} {D} {E} {F} {G} {H} {I} Y X = record
 
   commute′ : ∀ {A B} (f : C [ A , B ]) → E [ E [ E [ I₁ (X.η B) ∘ Y.η (F₀ B) ] ∘ H₁ (F₁ f) ] ≈ E [ I₁ (G₁ f) ∘ E [ I₁ (X.η A) ∘ Y.η (F₀ A) ] ] ]
   commute′ {A} {B} f = square-compose E (Y.commute (F₁ f))
-                                        (square-functorial I (X.commute f))
+                                        ([ I ]-resp-square (X.commute f))
 
 infix 4 _≃_
 
