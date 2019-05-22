@@ -10,13 +10,17 @@ open import Relation.Binary hiding (_⇒_)
 
 open Category C
 
-Mono : ∀ {A B} → (f : A ⇒ B) → Set _
+private
+  variable
+    A B : Obj
+
+Mono : ∀ (f : A ⇒ B) → Set _
 Mono {A} f = ∀ {C} → (g₁ g₂ : C ⇒ A) → f ∘ g₁ ≈ f ∘ g₂ → g₁ ≈ g₂
 
-Epi : ∀ {B A} → (f : A ⇒ B) → Set _
-Epi {B} f = ∀ {C} → (g₁ g₂ : B ⇒ C) → g₁ ∘ f ≈ g₂ ∘ f → g₁ ≈ g₂
+Epi : ∀ (f : A ⇒ B) → Set _
+Epi {B = B} f = ∀ {C} → (g₁ g₂ : B ⇒ C) → g₁ ∘ f ≈ g₂ ∘ f → g₁ ≈ g₂
 
-record Iso {A B} (f : A ⇒ B) (g : B ⇒ A) : Set (o ⊔ ℓ ⊔ e) where
+record Iso (f : A ⇒ B) (g : B ⇒ A) : Set (o ⊔ ℓ ⊔ e) where
   field
     isoˡ : g ∘ f ≈ id
     isoʳ : f ∘ g ≈ id
@@ -91,13 +95,13 @@ record _≅_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   }
 
 infix 4 _≃_
-record _≃_ {A B : Obj} (i j : A ≅ B) : Set (o ⊔ ℓ ⊔ e) where
+record _≃_ (i j : A ≅ B) : Set (o ⊔ ℓ ⊔ e) where
   open _≅_
   field
     f-≈ : f i ≈ f j
     g-≈ : g i ≈ g j
 
-≃-isEquivalence : ∀ {A B} → IsEquivalence (_≃_ {A} {B})
+≃-isEquivalence : IsEquivalence (_≃_ {A} {B})
 ≃-isEquivalence = record
   { refl  = record
     { f-≈ = refl

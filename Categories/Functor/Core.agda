@@ -9,7 +9,11 @@ open import Level
 
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
-record Functor {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
+private
+  variable
+    o ℓ e o′ ℓ′ e′ o′′ ℓ′′ e′′ : Level
+
+record Functor (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   private module C = Category C
   private module D = Category D
 
@@ -33,14 +37,14 @@ record Functor {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (D : Category o
     }
 
 
-Endofunctor : ∀ {o ℓ e} → Category o ℓ e → Set _
+Endofunctor : Category o ℓ e → Set _
 Endofunctor C = Functor C C
 
-Contravariant : ∀ {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Set _
+Contravariant : ∀ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Set _
 Contravariant C D = Functor C.op D
   where module C = Category C
 
-id : ∀ {o ℓ e} {C : Category o ℓ e} → Endofunctor C
+id : ∀ {C : Category o ℓ e} → Endofunctor C
 id {C = C} = record
   { F₀           = idfun
   ; F₁           = idfun
@@ -52,7 +56,7 @@ id {C = C} = record
 
 infixr 9 _∘F_
 
-_∘F_ : ∀ {o ℓ e} {o′ ℓ′ e′} {o′′ ℓ′′ e′′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {E : Category o′′ ℓ′′ e′′} 
+_∘F_ : ∀ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {E : Category o′′ ℓ′′ e′′} 
     → Functor D E → Functor C D → Functor C E
 _∘F_ {C = C} {D = D} {E = E} F G = record 
   { F₀ = λ x → F₀ (G₀ x)
