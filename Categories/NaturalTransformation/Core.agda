@@ -8,6 +8,7 @@ open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 open import Categories.Category
 open import Categories.Functor.Core renaming (id to idF)
 open import Categories.Functor.Properties
+import Categories.Square as Square
 
 private
   variable
@@ -75,10 +76,10 @@ _∘ᵥ_ {C = C} {D = D} {F} {G} {H} X Y = record
   open F
   open G renaming (F₀ to G₀; F₁ to G₁)
   open H renaming (F₀ to H₀; F₁ to H₁)
+  open Square D
 
   commute′ : ∀ {A B} (f : C [ A , B ]) → D [ D [ D [ X.η B ∘ Y.η B ] ∘ F₁ f ] ≈ D [ H₁ f ∘ D [ X.η A ∘  Y.η A ] ] ]
-  commute′ {A} {B} f = square-compose D (Y.commute f) (X.commute f)
-
+  commute′ {A} {B} f = glue (X.commute f) (Y.commute f)
 
 -- "Horizontal composition"
 _∘ₕ_ : ∀ {F G : Functor C D} {H I : Functor D E} →
@@ -101,10 +102,10 @@ _∘ₕ_ {C = C} {D = D} {E = E} {F} {G} {H} {I} Y X = record
   open G renaming (F₀ to G₀; F₁ to G₁)
   open H renaming (F₀ to H₀; F₁ to H₁)
   open I renaming (F₀ to I₀; F₁ to I₁)
+  open Square E
 
   commute′ : ∀ {A B} (f : C [ A , B ]) → E [ E [ E [ I₁ (X.η B) ∘ Y.η (F₀ B) ] ∘ H₁ (F₁ f) ] ≈ E [ I₁ (G₁ f) ∘ E [ I₁ (X.η A) ∘ Y.η (F₀ A) ] ] ]
-  commute′ {A} {B} f = square-compose E (Y.commute (F₁ f))
-                                        ([ I ]-resp-square (X.commute f))
+  commute′ {A} {B} f = glue ([ I ]-resp-square (X.commute f)) (Y.commute (F₁ f))
 
 infix 4 _≃_
 

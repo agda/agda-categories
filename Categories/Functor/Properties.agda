@@ -3,6 +3,9 @@ module Categories.Functor.Properties where
 
 open import Categories.Category
 open import Categories.Functor.Core
+open import Categories.Morphisms
+
+open import Relation.Binary using (_Preserves_⟶_)
 
 module _ {o ℓ e o′ ℓ′ e′}
          {Cc : Category o ℓ e} {Dc : Category o′ ℓ′ e′}
@@ -10,7 +13,7 @@ module _ {o ℓ e o′ ℓ′ e′}
   module Cc = Category Cc
   module Dc = Category Dc
   open Cc hiding (_∘_)
-  open Functor F using (F₁ ; homomorphism ; F-resp-≈)
+  open Functor F
 
   module _ {A B C D : Obj}
            {f : A ⇒ B} {g : A ⇒ C} {h : B ⇒ D} {i : C ⇒ D} where
@@ -24,3 +27,29 @@ module _ {o ℓ e o′ ℓ′ e′}
       F₁ i ∘ F₁ g       ∎
       where open Dc
             open Dc.HomReasoning
+
+  [_]-resp-Iso : ∀ {A B} {f : A ⇒ B} {g : B ⇒ A} → Iso Cc f g → Iso Dc (F₁ f) (F₁ g)
+  [_]-resp-Iso {f = f} {g} iso = record
+    { isoˡ = begin
+      F₁ g ∘ F₁ f       ≈⟨ sym homomorphism ⟩
+      F₁ (Cc [ g ∘ f ]) ≈⟨ F-resp-≈ isoˡ ⟩
+      F₁ Cc.id          ≈⟨ identity ⟩
+      Dc.id             ∎
+    ; isoʳ = begin
+      F₁ f ∘ F₁ g       ≈⟨ sym homomorphism ⟩
+      F₁ (Cc [ f ∘ g ]) ≈⟨ F-resp-≈ isoʳ ⟩
+      F₁ Cc.id          ≈⟨ identity ⟩
+      Dc.id             ∎
+    }
+    where open Iso iso
+          open Dc
+          open Dc.HomReasoning
+          open Dc.Equiv
+          
+  [_]-resp-≅ : F₀ Preserves _≅_ Cc ⟶ _≅_ Dc
+  [_]-resp-≅ i≅j = record
+    { f   = F₁ f
+    ; g   = F₁ g
+    ; iso = [_]-resp-Iso iso
+    }
+    where open _≅_ i≅j
