@@ -7,11 +7,13 @@ open import Function using () renaming (_∘_ to _∙_)
 open import Categories.Category
 open import Categories.Bifunctor hiding (id)
 open import Categories.Sets
+import Categories.Square as Square
 
 open import Relation.Binary using (Setoid)
 
 module Hom {o ℓ e} (C : Category o ℓ e) where
   open Category C
+  open Square C
 
   Hom[-,-] : Bifunctor (Category.op C) C (Setoids ℓ e)
   Hom[-,-] = record
@@ -50,11 +52,9 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
                             (proj₂ g ∘ proj₂ f) ∘ x ∘ proj₁ f ∘ proj₁ g ≈
                             proj₂ g ∘ (proj₂ f ∘ y ∘ proj₁ f) ∘ proj₁ g
           homomorphism′ {f = f₁ , f₂} {g₁ , g₂} {x} {y} x≈y = begin
-            (g₂ ∘ f₂) ∘ x ∘ f₁ ∘ g₁   ≈⟨ refl ⟩∘⟨ x≈y ⟩∘⟨ refl ⟩
-            (g₂ ∘ f₂) ∘ y ∘ f₁ ∘ g₁   ≈⟨ assoc ⟩
-            g₂ ∘ (f₂ ∘ y ∘ f₁ ∘ g₁)   ≈⟨ refl ⟩∘⟨ refl ⟩∘⟨ sym assoc ⟩
-            g₂ ∘ (f₂ ∘ (y ∘ f₁) ∘ g₁) ≈⟨ refl ⟩∘⟨ sym assoc ⟩
-            g₂ ∘ (f₂ ∘ y ∘ f₁) ∘ g₁   ∎
+            (g₂ ∘ f₂) ∘ x ∘ f₁ ∘ g₁ ≈⟨ refl ⟩∘⟨ sym assoc ⟩
+            (g₂ ∘ f₂) ∘ (x ∘ f₁) ∘ g₁ ≈⟨ pullʳ (pullˡ (∘-resp-≈ʳ (∘-resp-≈ˡ x≈y))) ⟩
+            g₂ ∘ (f₂ ∘ y ∘ f₁) ∘ g₁ ∎
 
           F-resp-≈′ : ∀ {A B : Σ Obj (λ x → Obj)}
                         {f g : Σ (proj₁ B ⇒ proj₁ A) (λ x → proj₂ A ⇒ proj₂ B)} →

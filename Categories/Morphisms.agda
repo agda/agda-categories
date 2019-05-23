@@ -8,6 +8,8 @@ open import Level
 open import Function using (flip)
 open import Relation.Binary hiding (_⇒_)
 
+open import Categories.Square.Core C
+
 open Category C
 
 private
@@ -61,17 +63,11 @@ record _≅_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   ; g   = g A≅B ∘ g B≅C
   ; iso = record
     { isoˡ = begin
-      (g A≅B ∘ g B≅C) ∘ f B≅C ∘ f A≅B   ≈⟨ sym assoc ⟩
-      ((g A≅B ∘ g B≅C) ∘ f B≅C) ∘ f A≅B ≈⟨ assoc ⟩∘⟨ refl ⟩
-      (g A≅B ∘ g B≅C ∘ f B≅C) ∘ f A≅B   ≈⟨ (refl ⟩∘⟨ isoˡ B≅C) ⟩∘⟨ refl ⟩
-      (g A≅B ∘ id) ∘ f A≅B              ≈⟨ identityʳ ⟩∘⟨ refl ⟩
+      (g A≅B ∘ g B≅C) ∘ f B≅C ∘ f A≅B   ≈⟨ cancelInner (isoˡ B≅C) ⟩
       g A≅B ∘ f A≅B                     ≈⟨ isoʳ (≅-sym A≅B) ⟩
       id                                ∎
     ; isoʳ = begin
-      (f B≅C ∘ f A≅B) ∘ g A≅B ∘ g B≅C   ≈⟨ sym assoc ⟩
-      ((f B≅C ∘ f A≅B) ∘ g A≅B) ∘ g B≅C ≈⟨ assoc ⟩∘⟨ refl ⟩
-      (f B≅C ∘ f A≅B ∘ g A≅B) ∘ g B≅C   ≈⟨ (refl ⟩∘⟨ isoˡ (≅-sym A≅B)) ⟩∘⟨ refl ⟩
-      (f B≅C ∘ id) ∘ g B≅C              ≈⟨ identityʳ ⟩∘⟨ refl ⟩
+      (f B≅C ∘ f A≅B) ∘ g A≅B ∘ g B≅C   ≈⟨ cancelInner (isoʳ A≅B) ⟩
       f B≅C ∘ g B≅C                     ≈⟨ isoˡ (≅-sym B≅C) ⟩
       id                                ∎
     }
@@ -79,6 +75,7 @@ record _≅_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   where open _≅_
         open HomReasoning
         open Equiv
+        
 
 ≅-isEquivalence : IsEquivalence _≅_
 ≅-isEquivalence = record

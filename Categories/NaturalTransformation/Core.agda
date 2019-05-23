@@ -13,9 +13,7 @@ import Categories.Square as Square
 private
   variable
     o ℓ e o′ ℓ′ e′ o″ ℓ″ e″ : Level
-    C : Category o ℓ e
-    D : Category o′ ℓ′ e′
-    E : Category o″ ℓ″ e″
+    C D E : Category o ℓ e
 
 record NaturalTransformation {C : Category o ℓ e}
                              {D : Category o′ ℓ′ e′}
@@ -63,49 +61,26 @@ _∘ᵥ_ : ∀ {F G H : Functor C D} →
          NaturalTransformation G H → NaturalTransformation F G → NaturalTransformation F H
 _∘ᵥ_ {C = C} {D = D} {F} {G} {H} X Y = record
   { η       = λ q → D [ X.η q ∘ Y.η q ]
-  ; commute = commute′
+  ; commute = λ f → glue (X.commute f) (Y.commute f)
   }
-  where
-  module C = Category C
-  module D = Category D
-  module F = Functor F
-  module G = Functor G
-  module H = Functor H
-  module X = NaturalTransformation X
-  module Y = NaturalTransformation Y
-  open F
-  open G renaming (F₀ to G₀; F₁ to G₁)
-  open H renaming (F₀ to H₀; F₁ to H₁)
-  open Square D
-
-  commute′ : ∀ {A B} (f : C [ A , B ]) → D [ D [ D [ X.η B ∘ Y.η B ] ∘ F₁ f ] ≈ D [ H₁ f ∘ D [ X.η A ∘  Y.η A ] ] ]
-  commute′ {A} {B} f = glue (X.commute f) (Y.commute f)
+  where module X = NaturalTransformation X
+        module Y = NaturalTransformation Y
+        open Square D
 
 -- "Horizontal composition"
 _∘ₕ_ : ∀ {F G : Functor C D} {H I : Functor D E} →
          NaturalTransformation H I → NaturalTransformation F G → NaturalTransformation (H ∘F F) (I ∘F G)
 _∘ₕ_ {C = C} {D = D} {E = E} {F} {G} {H} {I} Y X = record
   { η = λ q → E [ I₁ (X.η q) ∘ Y.η (F₀ q) ]
-  ; commute = commute′
+  ; commute = λ f → glue ([ I ]-resp-square (X.commute f)) (Y.commute (F₁ f))
   }
-  where
-  module C = Category C
-  module D = Category D
-  module E = Category E
-  module F = Functor F
-  module G = Functor G
-  module H = Functor H
-  module I = Functor I
-  module X = NaturalTransformation X
-  module Y = NaturalTransformation Y
-  open F
-  open G renaming (F₀ to G₀; F₁ to G₁)
-  open H renaming (F₀ to H₀; F₁ to H₁)
-  open I renaming (F₀ to I₀; F₁ to I₁)
-  open Square E
-
-  commute′ : ∀ {A B} (f : C [ A , B ]) → E [ E [ E [ I₁ (X.η B) ∘ Y.η (F₀ B) ] ∘ H₁ (F₁ f) ] ≈ E [ I₁ (G₁ f) ∘ E [ I₁ (X.η A) ∘ Y.η (F₀ A) ] ] ]
-  commute′ {A} {B} f = glue ([ I ]-resp-square (X.commute f)) (Y.commute (F₁ f))
+  where module F = Functor F
+        module I = Functor I
+        module X = NaturalTransformation X
+        module Y = NaturalTransformation Y
+        open F
+        open I renaming (F₀ to I₀; F₁ to I₁)
+        open Square E
 
 infix 4 _≃_
 
