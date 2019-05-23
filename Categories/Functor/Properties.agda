@@ -8,45 +8,45 @@ open import Categories.Morphisms
 open import Relation.Binary using (_Preserves_⟶_)
 
 module _ {o ℓ e o′ ℓ′ e′}
-         {Cc : Category o ℓ e} {Dc : Category o′ ℓ′ e′}
-         (F : Functor Cc Dc) where
-  module Cc = Category Cc
-  module Dc = Category Dc
-  open Cc hiding (_∘_)
+         {𝒞 : Category o ℓ e} {𝒟 : Category o′ ℓ′ e′}
+         (F : Functor 𝒞 𝒟) where
+  module 𝒞 = Category 𝒞
+  module 𝒟 = Category 𝒟
+  open 𝒞 hiding (_∘_)
   open Functor F
 
   module _ {A B C D : Obj}
            {f : A ⇒ B} {g : A ⇒ C} {h : B ⇒ D} {i : C ⇒ D} where
 
-    [_]-resp-square : Cc.CommutativeSquare f g h i →
-                      Dc.CommutativeSquare (F₁ f) (F₁ g) (F₁ h) (F₁ i)
+    [_]-resp-square : 𝒞.CommutativeSquare f g h i →
+                      𝒟.CommutativeSquare (F₁ f) (F₁ g) (F₁ h) (F₁ i)
     [_]-resp-square sq = begin
-      F₁ h ∘ F₁ f       ≈⟨ Dc.Equiv.sym homomorphism ⟩
-      F₁ (Cc [ h ∘ f ]) ≈⟨ F-resp-≈ sq ⟩
-      F₁ (Cc [ i ∘ g ]) ≈⟨ homomorphism ⟩
+      F₁ h ∘ F₁ f       ≈⟨ 𝒟.Equiv.sym homomorphism ⟩
+      F₁ (𝒞 [ h ∘ f ]) ≈⟨ F-resp-≈ sq ⟩
+      F₁ (𝒞 [ i ∘ g ]) ≈⟨ homomorphism ⟩
       F₁ i ∘ F₁ g       ∎
-      where open Dc
-            open Dc.HomReasoning
+      where open 𝒟
+            open 𝒟.HomReasoning
 
-  [_]-resp-Iso : ∀ {A B} {f : A ⇒ B} {g : B ⇒ A} → Iso Cc f g → Iso Dc (F₁ f) (F₁ g)
+  [_]-resp-Iso : ∀ {A B} {f : A ⇒ B} {g : B ⇒ A} → Iso 𝒞 f g → Iso 𝒟 (F₁ f) (F₁ g)
   [_]-resp-Iso {f = f} {g} iso = record
     { isoˡ = begin
       F₁ g ∘ F₁ f       ≈⟨ sym homomorphism ⟩
-      F₁ (Cc [ g ∘ f ]) ≈⟨ F-resp-≈ isoˡ ⟩
-      F₁ Cc.id          ≈⟨ identity ⟩
-      Dc.id             ∎
+      F₁ (𝒞 [ g ∘ f ]) ≈⟨ F-resp-≈ isoˡ ⟩
+      F₁ 𝒞.id          ≈⟨ identity ⟩
+      𝒟.id             ∎
     ; isoʳ = begin
       F₁ f ∘ F₁ g       ≈⟨ sym homomorphism ⟩
-      F₁ (Cc [ f ∘ g ]) ≈⟨ F-resp-≈ isoʳ ⟩
-      F₁ Cc.id          ≈⟨ identity ⟩
-      Dc.id             ∎
+      F₁ (𝒞 [ f ∘ g ]) ≈⟨ F-resp-≈ isoʳ ⟩
+      F₁ 𝒞.id          ≈⟨ identity ⟩
+      𝒟.id             ∎
     }
     where open Iso iso
-          open Dc
-          open Dc.HomReasoning
-          open Dc.Equiv
+          open 𝒟
+          open 𝒟.HomReasoning
+          open 𝒟.Equiv
           
-  [_]-resp-≅ : F₀ Preserves _≅_ Cc ⟶ _≅_ Dc
+  [_]-resp-≅ : F₀ Preserves _≅_ 𝒞 ⟶ _≅_ 𝒟
   [_]-resp-≅ i≅j = record
     { f   = F₁ f
     ; g   = F₁ g
