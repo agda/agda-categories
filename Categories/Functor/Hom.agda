@@ -35,7 +35,6 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
             }
 
           open HomReasoning
-          open Equiv
           
           identity′ : {A : Obj × Obj} {x y : uncurry _⇒_ A} → x ≈ y → id ∘ x ∘ id ≈ y
           identity′ {A} {x} {y} x≈y = begin

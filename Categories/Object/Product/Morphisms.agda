@@ -10,7 +10,6 @@ open import Level
 open import Categories.Object.Product.Core 𝒞
 
 open Category 𝒞
-open Equiv
 open HomReasoning
 
 private
@@ -48,7 +47,6 @@ id×id p = begin
 
 repack≡id×id : ∀ (p₁ p₂ : Product A B) → repack p₁ p₂ ≈ [ p₁ ⇒ p₂ ] id × id
 repack≡id×id p₁ p₂ = sym (Product.⟨⟩-cong₂ p₂ identityˡ identityˡ)
-  where open Equiv
 
 [_⇒_]π₁∘× : ∀ (p₁ : Product A C)(p₂ : Product B D) →
               Product.π₁ p₂ ∘ [ p₁ ⇒ p₂ ] f × g ≈ f ∘ Product.π₁ p₁

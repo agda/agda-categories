@@ -6,6 +6,7 @@ module Categories.Object.Exponential {o ℓ e} (𝒞 : Category o ℓ e) where
 open Category 𝒞
 
 open import Level
+open import Function using (_$_)
 
 open import Categories.Square 𝒞
 open import Categories.Object.Product 𝒞
@@ -13,7 +14,6 @@ open import Categories.Object.Product 𝒞
 open import Categories.Morphisms 𝒞
 
 open HomReasoning
-open Equiv
 
 private
   variable
@@ -40,12 +40,10 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
 
   η : ∀ (X×A : Product X A) {f : X ⇒ B^A } → λg X×A (eval ∘ [ X×A ⇒ product ] f ×id) ≈ f
   η X×A {f} = sym (λ-unique X×A refl)
-    where open Equiv
   
   λ-cong : ∀ {X : Obj} (X×A : Product X A) {f g} →
              f ≈ g → λg X×A f ≈ λg X×A g
   λ-cong X×A {f = f} {g = g} f≡g = λ-unique X×A (trans (β X×A) f≡g)
-    where open Equiv
   
   subst : ∀ (p₂ : Product C A) (p₃ : Product D A) {f g} →
             λg p₃ f ∘ g ≈ λg p₂ (f ∘ [ p₂ ⇒ p₃ ] g ×id)
@@ -71,51 +69,30 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   → {X : Obj} → (X×A : Product X A) → (Product.A×B X×A ⇒ B) → (X ⇒ Exponential.B^A e₁)
 [ e₁ ]λ = Exponential.λg e₁
 
--- .λ-distrib : ∀ {A B C D}
---   → (e₁ : Exponential C B)
---   → (e₂ : Exponential A B)
---   → (p₃ : Product D C)
---   → (p₄ : Product D A)
---   → (p₅ : Product (Exponential.B^A e₂) C)
---   → {f : C ⇒ A}{g : Product.A×B p₄ ⇒ B}
---   → [ e₁ ]λ p₃ (g ∘ [ p₃ ⇒ p₄ ]second f)
---     ≈ [ e₁ ]λ p₅ ([ e₂ ]eval ∘ [ p₅ ⇒ Exponential.product e₂ ]second f)
---     ∘ [ e₂ ]λ p₄ g
--- λ-distrib {A}{B}{C}{D} e₁ e₂ p₃ p₄ p₅ {f}{g} =
---   begin
---     [ e₁ ]λ p₃ (g ∘ [ p₃ ⇒ p₄ ]second f)
---   ≈⟨ e₁.λ-cong p₃ eval∘second∘first ⟩
---     [ e₁ ]λ p₃ (([ e₂ ]eval ∘ [ p₅ ⇒ Exponential.product e₂ ]second f) ∘ [ p₃ ⇒ p₅ ]first ([ e₂ ]λ p₄ g))
---   ≈⟨ e₁.subst p₃ p₅ ⟩
---       [ e₁ ]λ p₅ ([ e₂ ]eval ∘ [ p₅ ⇒ Exponential.product e₂ ]second f)
---     ∘ [ e₂ ]λ p₄ g
---   ∎
-
---   where
---   open HomReasoning
---   open Equiv
---   module e₁ = Exponential e₁
---   module e₂ = Exponential e₂
-  
---   eval∘second∘first =
---     let p₁ = e₁.product in
---     let p₂ = e₂.product in
---     begin
---       ([ e₂ ]eval ∘ [ p₅ ⇒ Exponential.product e₂ ]second f) ∘ [ p₃ ⇒ p₅ ]first ([ e₂ ]λ p₄ g)
---     ≈⟨ assoc ⟩
---       [ e₂ ]eval
---           ∘ [ p₅ ⇒ p₂ ]second f
---           ∘ [ p₃ ⇒ p₅ ]first ([ e₂ ]λ p₄ g)
---     ≈⟨ refl ⟩∘⟨ [ p₄ ⇒ p₂ , p₃ ⇒ p₅ ]first↔second ⟩
---       [ e₂ ]eval
---           ∘ [ p₄ ⇒ p₂ ]first ([ e₂ ]λ p₄ g)
---           ∘ [ p₃ ⇒ p₄ ]second f
---     ≈⟨ assoc ⟩
---       ([ e₂ ]eval ∘ [ p₄ ⇒ p₂ ]first ([ e₂ ]λ p₄ g))
---                   ∘ [ p₃ ⇒ p₄ ]second f
---     ≈⟨ e₂.β p₄ ⟩∘⟨ refl ⟩
---       g ∘ [ p₃ ⇒ p₄ ]second f
---     ∎
+λ-distrib : ∀ (e₁ : Exponential C B) (e₂ : Exponential A B)
+              (p₃ : Product D C) (p₄ : Product D A) (p₅ : Product (Exponential.B^A e₂) C)
+              {g : Product.A×B p₄ ⇒ B} →
+              [ e₁ ]λ p₃ (g ∘ [ p₃ ⇒ p₄ ]id× f)
+              ≈ [ e₁ ]λ p₅ ([ e₂ ]eval ∘ [ p₅ ⇒ Exponential.product e₂ ]id× f) ∘ [ e₂ ]λ p₄ g
+λ-distrib {f = f} e₁ e₂ p₃ p₄ p₅ {g} = sym $ e₁.λ-unique p₃ $ begin
+  [ e₁ ]eval ∘ ([ p₃ ⇒ p₁ ] [ e₁ ]λ p₅ ([ e₂ ]eval ∘ [ p₅ ⇒ p₂ ]id× f) ∘ [ e₂ ]λ p₄ g ×id)
+                       ≈⟨ refl⟩∘⟨ sym [ p₃ ⇒ p₅ ⇒ p₁ ]×id∘×id ⟩
+  [ e₁ ]eval ∘ [ p₅ ⇒ p₁ ] [ e₁ ]λ p₅ ([ e₂ ]eval ∘ [ p₅ ⇒ p₂ ]id× f) ×id
+             ∘ [ p₃ ⇒ p₅ ] [ e₂ ]λ p₄ g ×id
+                       ≈⟨ pullˡ (e₁.β p₅) ⟩
+  ([ e₂ ]eval ∘ [ p₅ ⇒ p₂ ]id× f)
+              ∘ [ p₃ ⇒ p₅ ] [ e₂ ]λ p₄ g ×id
+                       ≈⟨ assoc ⟩
+  [ e₂ ]eval ∘ [ p₅ ⇒ p₂ ]id× f
+             ∘ [ p₃ ⇒ p₅ ] [ e₂ ]λ p₄ g ×id
+                       ≈⟨ refl⟩∘⟨ sym [ p₄ ⇒ p₂ , p₃ ⇒ p₅ ]first↔second ⟩
+  [ e₂ ]eval ∘ [ p₄ ⇒ p₂ ] [ e₂ ]λ p₄ g ×id ∘ [ p₃ ⇒ p₄ ]id× f
+                       ≈⟨ pullˡ (e₂.β p₄) ⟩
+  g ∘ [ p₃ ⇒ p₄ ]id× f ∎
+  where module e₁ = Exponential e₁
+        module e₂ = Exponential e₂
+        p₁        = e₁.product
+        p₂        = e₂.product
 
 -- repack : ∀{A B} (e₁ e₂ : Exponential A B) → Exponential.B^A e₁ ⇒ Exponential.B^A e₂
 -- repack e₁ e₂ = e₂.λg e₁.product e₁.eval
@@ -134,10 +111,10 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
 --       [ e₃ ]λ p₂ [ e₂ ]eval
 --     ∘ [ e₂ ]λ p₁ [ e₁ ]eval
 --   ≈⟨ λ-cong e₃ p₂ (introʳ (second-id p₂)) ⟩∘⟨ refl ⟩
---       [ e₃ ]λ p₂ ([ e₂ ]eval ∘ [ p₂ ⇒ p₂ ]second id)
+--       [ e₃ ]λ p₂ ([ e₂ ]eval ∘ [ p₂ ⇒ p₂ ]id× id)
 --     ∘ [ e₂ ]λ p₁ [ e₁ ]eval
 --   ≈⟨ λ-distrib e₃ e₂ p₁ p₁ p₂ ⟩
---     [ e₃ ]λ p₁ ([ e₁ ]eval ∘ [ p₁ ⇒ p₁ ]second id)
+--     [ e₃ ]λ p₁ ([ e₁ ]eval ∘ [ p₁ ⇒ p₁ ]id× id)
 --   ≈⟨ λ-cong e₃ p₁ (introʳ (second-id p₁)) ⟩
 --     [ e₃ ]λ p₁ [ e₁ ]eval
 --   ∎

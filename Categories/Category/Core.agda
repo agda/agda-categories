@@ -53,10 +53,17 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   module HomReasoning {A B : Obj} where
     open SetoidR (hom-setoid {A} {B}) public
+    open Equiv public
 
-    infixr 4 _⟩∘⟨_
+    infixr 4 _⟩∘⟨_ refl⟩∘⟨_ _⟩∘⟨refl
     _⟩∘⟨_ : ∀ {M} {f h : M ⇒ B} {g i : A ⇒ M} → f ≈ h → g ≈ i → f ∘ g ≈ h ∘ i
     _⟩∘⟨_ = ∘-resp-≈
+
+    refl⟩∘⟨_ : ∀ {M} {f : M ⇒ B} {g i : A ⇒ M} → g ≈ i → f ∘ g ≈ f ∘ i
+    refl⟩∘⟨_ = refl ⟩∘⟨_
+    
+    _⟩∘⟨refl : ∀ {M} {f h : M ⇒ B} {g : A ⇒ M} → f ≈ h → f ∘ g ≈ h ∘ g
+    _⟩∘⟨refl = _⟩∘⟨ refl
 
   op : Category o ℓ e
   op = record 

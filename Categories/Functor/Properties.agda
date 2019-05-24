@@ -44,7 +44,6 @@ module _ {o ℓ e o′ ℓ′ e′}
     where open Iso iso
           open 𝒟
           open 𝒟.HomReasoning
-          open 𝒟.Equiv
           
   [_]-resp-≅ : F₀ Preserves _≅_ 𝒞 ⟶ _≅_ 𝒟
   [_]-resp-≅ i≅j = record

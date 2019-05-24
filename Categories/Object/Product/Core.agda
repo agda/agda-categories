@@ -11,7 +11,6 @@ open import Categories.Morphisms C
 
 open Category C
 open HomReasoning
-open Equiv
 
 private
   variable

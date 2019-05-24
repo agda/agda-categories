@@ -12,7 +12,6 @@ open import Categories.Morphisms C
 open import Categories.Square C
 
 open Category C
-open Equiv
 open HomReasoning
 
 record Terminal : Set (o ⊔ ℓ ⊔ e) where

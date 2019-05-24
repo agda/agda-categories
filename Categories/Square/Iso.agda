@@ -16,7 +16,6 @@ private
   variable
     X Y Z W : Obj
     
-open Equiv
 open HomReasoning
 
 module Switch (i : X ≅ Y) where

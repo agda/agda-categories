@@ -15,7 +15,6 @@ private
     A B X X′ X″ Y Y′ Y″ Z Z′ Z″ W W′ : Obj
     a a′ a″ b b′ b″ c c′ c″ : X ⇒ Y
     
-open Equiv
 open HomReasoning
 
 module Pulls {a : Y ⇒ Z} {b : X ⇒ Y} {c : X ⇒ Z} (ab≡c : a ∘ b ≈ c) where
