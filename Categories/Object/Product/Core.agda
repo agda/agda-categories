@@ -1,20 +1,21 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
 
-module Categories.Object.Product.Core {o ℓ e} (C : Category o ℓ e) where
+module Categories.Object.Product.Core {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
 open import Function using (flip)
 
-open import Categories.Square C
-open import Categories.Morphisms C
+open import Categories.Square 𝒞
+open import Categories.Morphisms 𝒞
 
-open Category C
+open Category 𝒞
 open HomReasoning
 
 private
   variable
-    A B X Y Z : Obj
+    A B C D X Y Z : Obj
+    h i j : A ⇒ B
 
 -- Borrowed from Dan Doel's definition of products
 record Product (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
@@ -25,24 +26,23 @@ record Product (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
     A×B   : Obj
     π₁    : A×B ⇒ A
     π₂    : A×B ⇒ B
-    ⟨_,_⟩ : ∀ {C} → (C ⇒ A) → (C ⇒ B) → (C ⇒ A×B)
+    ⟨_,_⟩ : C ⇒ A → C ⇒ B → C ⇒ A×B
 
-    commute₁  : ∀ {C} {f : C ⇒ A} {g : C ⇒ B} → π₁ ∘ ⟨ f , g ⟩ ≈ f
-    commute₂  : ∀ {C} {f : C ⇒ A} {g : C ⇒ B} → π₂ ∘ ⟨ f , g ⟩ ≈ g
-    universal : ∀ {C} {f : C ⇒ A} {g : C ⇒ B} {i : C ⇒ A×B} →
-                  π₁ ∘ i ≈ f → π₂ ∘ i ≈ g → ⟨ f , g ⟩ ≈ i
+    commute₁  : π₁ ∘ ⟨ h , i ⟩ ≈ h
+    commute₂  : π₂ ∘ ⟨ h , i ⟩ ≈ i
+    universal : π₁ ∘ h ≈ i → π₂ ∘ h ≈ j → ⟨ i , j ⟩ ≈ h
 
-  g-η : ∀ {C} {f : C ⇒ A×B} → ⟨ π₁ ∘ f , π₂ ∘ f ⟩ ≈ f
+  g-η : ⟨ π₁ ∘ h , π₂ ∘ h ⟩ ≈ h
   g-η = universal refl refl
 
   η : ⟨ π₁ , π₂ ⟩ ≈ id
   η = universal identityʳ identityʳ
 
-  ⟨⟩-cong₂ : ∀ {C} → {f f′ : C ⇒ A} {g g′ : C ⇒ B} → f ≈ f′ → g ≈ g′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g′ ⟩
+  ⟨⟩-cong₂ : ∀ {f f′ : C ⇒ A} {g g′ : C ⇒ B} → f ≈ f′ → g ≈ g′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g′ ⟩
   ⟨⟩-cong₂ f≡f′ g≡g′ = 
     universal (trans commute₁ (sym f≡f′)) (trans commute₂ (sym g≡g′))
 
-  ∘-distribʳ-⟨⟩ : ∀ {C D} {f : C ⇒ A} {g : C ⇒ B} {q : D ⇒ C} → ⟨ f , g ⟩ ∘ q ≈ ⟨ f ∘ q , g ∘ q ⟩
+  ∘-distribʳ-⟨⟩ : ∀ {f : C ⇒ A} {g : C ⇒ B} {q : D ⇒ C} → ⟨ f , g ⟩ ∘ q ≈ ⟨ f ∘ q , g ∘ q ⟩
   ∘-distribʳ-⟨⟩ = sym (universal (pullˡ commute₁) (pullˡ commute₂))
 
 module _ {A B : Obj} where
@@ -80,7 +80,7 @@ transport-by-iso p {X} p≅X = record
   ; ⟨_,_⟩ = λ h₁ h₂ → f ∘ ⟨ h₁ , h₂ ⟩
   ; commute₁ = trans (cancelInner isoˡ) commute₁
   ; commute₂ = trans (cancelInner isoˡ) commute₂
-  ; universal = λ {_ l r i} pf₁ pf₂ → begin
+  ; universal = λ {_ i l r} pf₁ pf₂ → begin
     f ∘ ⟨ l , r ⟩                       ≈⟨ refl ⟩∘⟨ ⟨⟩-cong₂ (sym pf₁) (sym pf₂) ⟩
     f ∘ ⟨ (π₁ ∘ g) ∘ i , (π₂ ∘ g) ∘ i ⟩ ≈⟨ refl ⟩∘⟨ universal (sym assoc) (sym assoc) ⟩
     f ∘ g ∘ i                           ≈⟨ cancelLeft isoʳ ⟩
@@ -117,7 +117,7 @@ Associable p₁ p₂ p₃ = record
     p₁ ⟨ π₁ p₁ ∘ f , π₂ p₁ ∘ f ⟩                                           ≈⟨ g-η p₁ ⟩
     f                                                                      ∎
   ; commute₂  = λ {_ f g} → glueTrianglesˡ (commute₂ p₂) (commute₂ p₃)
-  ; universal = λ {_ f g i} pf₁ pf₂ → begin
+  ; universal = λ {_ i f g} pf₁ pf₂ → begin
     p₃ ⟨ π₁ p₁ ∘ f , p₂ ⟨ π₂ p₁ ∘ f , g ⟩ ⟩             ≈⟨ ⟨⟩-cong₂ p₃ (∘-resp-≈ʳ (sym pf₁))
                                                           (⟨⟩-cong₂ p₂ (∘-resp-≈ʳ (sym pf₁)) (sym pf₂)) ⟩
     p₃ ⟨ π₁ p₁ ∘ p₁ ⟨ π₁ p₃ , π₁ p₂ ∘ π₂ p₃ ⟩ ∘ i
