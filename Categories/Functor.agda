@@ -11,8 +11,7 @@ open import Relation.Nullary
 private
   variable
     o ℓ e o′ ℓ′ e′ : Level
-    C : Category o ℓ e
-    D : Category o′ ℓ′ e′
+    C D : Category o ℓ e
 
 Faithful : Functor C D → Set _
 Faithful {C = C} {D = D} F = ∀ {X Y} → (f g : C [ X , Y ]) → D [ F₁ f ≈ F₁ g ] → C [ f ≈ g ]

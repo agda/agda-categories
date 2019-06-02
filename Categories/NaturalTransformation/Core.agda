@@ -54,7 +54,7 @@ id {C = C} {D = D} {F} = record
     D [ F₁ f ∘ D.id ] ∎
     where open D.HomReasoning
 
-infixr 9 _∘ᵥ_ _∘ₕ_
+infixr 9 _∘ᵥ_ _∘ₕ_ _∘ˡ_ _∘ʳ_
 
 -- "Vertical composition"
 _∘ᵥ_ : ∀ {F G H : Functor C D} →
@@ -81,6 +81,44 @@ _∘ₕ_ {C = C} {D = D} {E = E} {F} {G} {H} {I} Y X = record
         open F
         open I renaming (F₀ to I₀; F₁ to I₁)
         open Square E
+
+_∘ˡ_ : ∀ {G H : Functor C D} (F : Functor D E) → NaturalTransformation G H → NaturalTransformation (F ∘F G) (F ∘F H)
+_∘ˡ_ {E = E} {G = G} {H = H} F α = record
+  { η       = λ X → F₁ (η.η α X)
+  ; commute = λ {X Y} f → begin
+    F₁ (η.η α Y) ∘ F₁ (G₁ f)          ≈⟨ sym identityʳ ⟩∘⟨refl ⟩
+    (F₁ (η.η α Y) ∘ E.id) ∘ F₁ (G₁ f) ≈⟨ η.commute comp f ⟩
+    F₁ (H₁ f) ∘ F₁ (η.η α X) ∘ E.id   ≈⟨ refl⟩∘⟨ identityʳ ⟩
+    F₁ (H₁ f) ∘ F₁ (η.η α X)          ∎
+  }
+  where module E = Category E
+        open E hiding (id)
+        open HomReasoning
+        open Square E
+        open Functor F
+        open Functor G using () renaming (F₁ to G₁)
+        open Functor H using () renaming (F₁ to H₁)
+        module η = NaturalTransformation
+        comp = id {F = F} ∘ₕ α
+
+_∘ʳ_ : ∀ {G H : Functor D E} → NaturalTransformation G H → (F : Functor C D) → NaturalTransformation (G ∘F F) (H ∘F F)
+_∘ʳ_ {D = D} {E = E} {G = G} {H = H} α F = record
+  { η       = λ X → η.η α (F₀ X)
+  ; commute = λ {X Y} f → begin
+    η.η α (F₀ Y) ∘ G₁ (F₁ f) ≈⟨ introˡ (Functor.identity H) ⟩∘⟨refl ⟩
+    (H₁ (Category.id D) ∘ η.η α (F₀ Y)) ∘ G₁ (F₁ f) ≈⟨ η.commute comp f ⟩
+    H₁ (F₁ f) ∘ H₁ (Category.id D) ∘ η.η α (F₀ X) ≈⟨ refl⟩∘⟨ elimˡ (Functor.identity H) ⟩
+    H₁ (F₁ f) ∘ η.η α (F₀ X) ∎
+  }
+  where module E = Category E
+        open E hiding (id)
+        open HomReasoning
+        open Square E
+        open Functor F
+        open Functor G using () renaming (F₁ to G₁)
+        open Functor H using () renaming (F₁ to H₁)
+        module η = NaturalTransformation
+        comp = α ∘ₕ id {F = F}
 
 infix 4 _≃_
 

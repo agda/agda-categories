@@ -7,18 +7,12 @@ open import Data.Product using (_,_; swap)
 open import Categories.Category
 
 open import Categories.Functor public
-open import Categories.Product
+open import Categories.Category.Product
 
 private
   variable
     o ℓ e o′ ℓ′ e′ o″ ℓ″ e″ : Level
-    C  : Category o ℓ e
-    D  : Category o′ ℓ′ e′
-    D₁ : Category o′ ℓ′ e′
-    D₂ : Category o′ ℓ′ e′
-    E  : Category o″ ℓ″ e″
-    E₁ : Category o″ ℓ″ e″
-    E₂ : Category o″ ℓ″ e″
+    C D D₁ D₂ E E₁ E₂ : Category o ℓ e
 
 Bifunctor : Category o ℓ e → Category o′ ℓ′ e′ → Category o″ ℓ″ e″ → Set _
 Bifunctor C D E = Functor (Product C D) E

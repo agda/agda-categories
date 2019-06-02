@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Product where
+module Categories.Category.Product where
 
 open import Level
 open import Function using () renaming (_∘_ to _∙_)
