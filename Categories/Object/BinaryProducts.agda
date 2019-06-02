@@ -59,10 +59,10 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
   universal = Product.universal product
 
   assocˡ : (A × B) × C ⇒ A × B × C
-  assocˡ = _≅_.g ×-assoc
+  assocˡ = _≅_.to ×-assoc
 
   assocʳ : A × B × C ⇒ (A × B) × C
-  assocʳ = _≅_.f ×-assoc
+  assocʳ = _≅_.from ×-assoc
 
   assocʳ∘assocˡ : assocʳ {A}{B}{C} ∘ assocˡ {A}{B}{C} ≈ id
   assocʳ∘assocˡ = Iso.isoʳ (_≅_.iso ×-assoc)

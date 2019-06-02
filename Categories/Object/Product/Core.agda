@@ -64,9 +64,9 @@ module _ {A B : Obj} where
 
 up-to-iso : ∀ (p₁ p₂ : Product A B) → Product.A×B p₁ ≅ Product.A×B p₂
 up-to-iso p₁ p₂ = record
-  { f = repack p₁ p₂
-  ; g = repack p₂ p₁
-  ; iso = record
+  { from = repack p₁ p₂
+  ; to   = repack p₂ p₁
+  ; iso  = record
     { isoˡ = repack-cancel p₂ p₁
     ; isoʳ = repack-cancel p₁ p₂
     }
@@ -75,16 +75,16 @@ up-to-iso p₁ p₂ = record
 transport-by-iso : ∀ (p : Product A B) → ∀ {X} → Product.A×B p ≅ X → Product A B
 transport-by-iso p {X} p≅X = record
   { A×B = X
-  ; π₁ = π₁ ∘ g
-  ; π₂ = π₂ ∘ g
-  ; ⟨_,_⟩ = λ h₁ h₂ → f ∘ ⟨ h₁ , h₂ ⟩
+  ; π₁ = π₁ ∘ to
+  ; π₂ = π₂ ∘ to
+  ; ⟨_,_⟩ = λ h₁ h₂ → from ∘ ⟨ h₁ , h₂ ⟩
   ; commute₁ = trans (cancelInner isoˡ) commute₁
   ; commute₂ = trans (cancelInner isoˡ) commute₂
   ; universal = λ {_ i l r} pf₁ pf₂ → begin
-    f ∘ ⟨ l , r ⟩                       ≈⟨ refl ⟩∘⟨ ⟨⟩-cong₂ (sym pf₁) (sym pf₂) ⟩
-    f ∘ ⟨ (π₁ ∘ g) ∘ i , (π₂ ∘ g) ∘ i ⟩ ≈⟨ refl ⟩∘⟨ universal (sym assoc) (sym assoc) ⟩
-    f ∘ g ∘ i                           ≈⟨ cancelLeft isoʳ ⟩
-    i                                   ∎
+    from ∘ ⟨ l , r ⟩                         ≈⟨ refl⟩∘⟨ ⟨⟩-cong₂ (sym pf₁) (sym pf₂) ⟩
+    from ∘ ⟨ (π₁ ∘ to) ∘ i , (π₂ ∘ to) ∘ i ⟩ ≈⟨ refl⟩∘⟨ universal (sym assoc) (sym assoc) ⟩
+    from ∘ to ∘ i                            ≈⟨ cancelLeft isoʳ ⟩
+    i                                        ∎
   }
   where open Product p
         open _≅_ p≅X
@@ -140,19 +140,19 @@ Associative p₁ p₂ p₃ p₄ = up-to-iso (Associable p₁ p₂ p₃) p₄
 Mobile : ∀ {A₁ B₁ A₂ B₂} (p : Product A₁ B₁) → A₁ ≅ A₂ → B₁ ≅ B₂ → Product A₂ B₂
 Mobile p A₁≅A₂ B₁≅B₂ = record
   { A×B              = A×B
-  ; π₁               = f A₁≅A₂ ∘ π₁
-  ; π₂               = f B₁≅B₂ ∘ π₂
-  ; ⟨_,_⟩            = λ h k → ⟨ g A₁≅A₂ ∘ h , g B₁≅B₂ ∘ k ⟩
+  ; π₁               = from A₁≅A₂ ∘ π₁
+  ; π₂               = from B₁≅B₂ ∘ π₂
+  ; ⟨_,_⟩            = λ h k → ⟨ to A₁≅A₂ ∘ h , to B₁≅B₂ ∘ k ⟩
   ; commute₁         = begin
-    (f A₁≅A₂ ∘ π₁) ∘ ⟨ g A₁≅A₂ ∘ _ , g B₁≅B₂ ∘ _ ⟩ ≈⟨ pullʳ commute₁ ⟩
-    f A₁≅A₂ ∘ (g A₁≅A₂ ∘ _)                        ≈⟨ cancelLeft (isoʳ A₁≅A₂) ⟩
-    _                                              ∎
+    (from A₁≅A₂ ∘ π₁) ∘ ⟨ to A₁≅A₂ ∘ _ , to B₁≅B₂ ∘ _ ⟩ ≈⟨ pullʳ commute₁ ⟩
+    from A₁≅A₂ ∘ (to A₁≅A₂ ∘ _)                         ≈⟨ cancelLeft (isoʳ A₁≅A₂) ⟩
+    _                                                   ∎
   ; commute₂         = begin
-    (f B₁≅B₂ ∘ π₂) ∘ ⟨ g A₁≅A₂ ∘ _ , g B₁≅B₂ ∘ _ ⟩ ≈⟨ pullʳ commute₂ ⟩
-    f B₁≅B₂ ∘ (g B₁≅B₂ ∘ _)                        ≈⟨ cancelLeft (isoʳ B₁≅B₂) ⟩
-    _                                              ∎
-  ; universal        = λ pfˡ pfʳ → universal (switch-fgˡ A₁≅A₂ (trans (sym assoc) pfˡ))
-                                             (switch-fgˡ B₁≅B₂ (trans (sym assoc) pfʳ))
+    (from B₁≅B₂ ∘ π₂) ∘ ⟨ to A₁≅A₂ ∘ _ , to B₁≅B₂ ∘ _ ⟩ ≈⟨ pullʳ commute₂ ⟩
+    from B₁≅B₂ ∘ (to B₁≅B₂ ∘ _)                         ≈⟨ cancelLeft (isoʳ B₁≅B₂) ⟩
+    _                                                   ∎
+  ; universal        = λ pfˡ pfʳ → universal (switch-fromtoˡ A₁≅A₂ (trans (sym assoc) pfˡ))
+                                             (switch-fromtoˡ B₁≅B₂ (trans (sym assoc) pfʳ))
   }
   where open Product p
         open _≅_

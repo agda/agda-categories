@@ -124,9 +124,9 @@ repack-cancel e₁ e₂ = trans (repack∘ e₂ e₁ e₂) (repack≡id e₂)
 
 up-to-iso : ∀{A B} (e₁ e₂ : Exponential A B) → Exponential.B^A e₁ ≅ Exponential.B^A e₂
 up-to-iso e₁ e₂ = record
-  { f = repack e₁ e₂
-  ; g = repack e₂ e₁
-  ; iso = record
+  { from = repack e₁ e₂
+  ; to   = repack e₂ e₁
+  ; iso  = record
     { isoˡ = repack-cancel e₂ e₁
     ; isoʳ = repack-cancel e₁ e₂
     }
@@ -137,17 +137,17 @@ transport-by-iso {X = X} e e≅X = record
   { B^A             = X
   ; product         = X×A
   ; eval            = e.eval
-  ; λg              = λ Y×A Y×A⇒B → f ∘ (e.λg Y×A Y×A⇒B)
+  ; λg              = λ Y×A Y×A⇒B → from ∘ (e.λg Y×A Y×A⇒B)
   ; β               = λ Y×A {h} → begin
-    e.eval ∘ [ Y×A ⇒ X×A ] f ∘ e.λg Y×A h ×id   ≈⟨ refl⟩∘⟨ e.product.⟨⟩-cong₂ (pullˡ (cancelLeft isoˡ))
-                                                                              (elimˡ refl) ⟩
-    e.eval ∘ [ Y×A ⇒ e.product ] e.λg Y×A h ×id ≈⟨ e.β Y×A ⟩
-    h                                           ∎
+    e.eval ∘ [ Y×A ⇒ X×A ] from ∘ e.λg Y×A h ×id ≈⟨ refl⟩∘⟨ e.product.⟨⟩-cong₂ (pullˡ (cancelLeft isoˡ))
+                                                                               (elimˡ refl) ⟩
+    e.eval ∘ [ Y×A ⇒ e.product ] e.λg Y×A h ×id  ≈⟨ e.β Y×A ⟩
+    h                                            ∎
   ; λ-unique        = λ Y×A {h} {i} eq →
-    switch-gfˡ e≅X $ e.λ-unique Y×A $ begin
-      e.eval ∘ [ Y×A ⇒ e.product ] g ∘ i ×id ≈⟨ refl⟩∘⟨ e.product.⟨⟩-cong₂ assoc (introˡ refl) ⟩
-      e.eval ∘ [ Y×A ⇒ X×A ] i ×id           ≈⟨ eq ⟩
-      h                                      ∎
+    switch-tofromˡ e≅X $ e.λ-unique Y×A $ begin
+      e.eval ∘ [ Y×A ⇒ e.product ] to ∘ i ×id    ≈⟨ refl⟩∘⟨ e.product.⟨⟩-cong₂ assoc (introˡ refl) ⟩
+      e.eval ∘ [ Y×A ⇒ X×A ] i ×id               ≈⟨ eq ⟩
+      h                                          ∎
   }
   where module e = Exponential e
         X×A      = Mobile e.product e≅X ≅-refl
