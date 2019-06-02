@@ -47,8 +47,8 @@ module _ {o ℓ e o′ ℓ′ e′}
           
   [_]-resp-≅ : F₀ Preserves _≅_ 𝒞 ⟶ _≅_ 𝒟
   [_]-resp-≅ i≅j = record
-    { f   = F₁ f
-    ; g   = F₁ g
-    ; iso = [_]-resp-Iso iso
+    { from       = F₁ from
+    ; to         = F₁ to
+    ; iso        = [_]-resp-Iso iso
     }
     where open _≅_ i≅j

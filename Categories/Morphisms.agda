@@ -2,45 +2,45 @@
 
 open import Categories.Category
 
-module Categories.Morphisms  {o ℓ e} (C : Category o ℓ e) where
+module Categories.Morphisms  {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
 open import Function using (flip)
 open import Relation.Binary hiding (_⇒_)
 
-open import Categories.Square.Core C
+open import Categories.Square.Core 𝒞
 
-open Category C
+open Category 𝒞
 
 private
   variable
-    A B : Obj
+    A B C : Obj
 
 Mono : ∀ (f : A ⇒ B) → Set _
-Mono {A} f = ∀ {C} → (g₁ g₂ : C ⇒ A) → f ∘ g₁ ≈ f ∘ g₂ → g₁ ≈ g₂
+Mono {A = A} f = ∀ {C} → (g₁ g₂ : C ⇒ A) → f ∘ g₁ ≈ f ∘ g₂ → g₁ ≈ g₂
 
 Epi : ∀ (f : A ⇒ B) → Set _
 Epi {B = B} f = ∀ {C} → (g₁ g₂ : B ⇒ C) → g₁ ∘ f ≈ g₂ ∘ f → g₁ ≈ g₂
 
-record Iso (f : A ⇒ B) (g : B ⇒ A) : Set (o ⊔ ℓ ⊔ e) where
+record Iso (from : A ⇒ B) (to : B ⇒ A) : Set (o ⊔ ℓ ⊔ e) where
   field
-    isoˡ : g ∘ f ≈ id
-    isoʳ : f ∘ g ≈ id
+    isoˡ : to ∘ from ≈ id
+    isoʳ : from ∘ to ≈ id
 
 infix 4 _≅_
 record _≅_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
-    f   : A ⇒ B
-    g   : B ⇒ A
-    iso : Iso f g
+    from : A ⇒ B
+    to   : B ⇒ A
+    iso  : Iso from to
 
   open Iso iso public
 
 ≅-refl : Reflexive _≅_
 ≅-refl = record
-  { f   = id
-  ; g   = id
-  ; iso = record
+  { from = id
+  ; to   = id
+  ; iso  = record
     { isoˡ = identityˡ
     ; isoʳ = identityʳ
     }
@@ -48,9 +48,9 @@ record _≅_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
 
 ≅-sym : Symmetric _≅_
 ≅-sym A≅B = record
-  { f   = g
-  ; g   = f
-  ; iso = record
+  { from = to
+  ; to   = from
+  ; iso  = record
     { isoˡ = isoʳ
     ; isoʳ = isoˡ
     }
@@ -59,23 +59,22 @@ record _≅_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
 
 ≅-trans : Transitive _≅_
 ≅-trans A≅B B≅C = record
-  { f   = f B≅C ∘ f A≅B
-  ; g   = g A≅B ∘ g B≅C
-  ; iso = record
+  { from = from B≅C ∘ from A≅B
+  ; to   = to A≅B ∘ to B≅C
+  ; iso  = record
     { isoˡ = begin
-      (g A≅B ∘ g B≅C) ∘ f B≅C ∘ f A≅B   ≈⟨ cancelInner (isoˡ B≅C) ⟩
-      g A≅B ∘ f A≅B                     ≈⟨ isoʳ (≅-sym A≅B) ⟩
-      id                                ∎
+      (to A≅B ∘ to B≅C) ∘ from B≅C ∘ from A≅B ≈⟨ cancelInner (isoˡ B≅C) ⟩
+      to A≅B ∘ from A≅B                       ≈⟨ isoʳ (≅-sym A≅B) ⟩
+      id                                      ∎
     ; isoʳ = begin
-      (f B≅C ∘ f A≅B) ∘ g A≅B ∘ g B≅C   ≈⟨ cancelInner (isoʳ A≅B) ⟩
-      f B≅C ∘ g B≅C                     ≈⟨ isoˡ (≅-sym B≅C) ⟩
-      id                                ∎
+      (from B≅C ∘ from A≅B) ∘ to A≅B ∘ to B≅C ≈⟨ cancelInner (isoʳ A≅B) ⟩
+      from B≅C ∘ to B≅C                       ≈⟨ isoˡ (≅-sym B≅C) ⟩
+      id                                      ∎
     }
   }
   where open _≅_
         open HomReasoning
         open Equiv
-        
 
 ≅-isEquivalence : IsEquivalence _≅_
 ≅-isEquivalence = record
@@ -95,24 +94,24 @@ infix 4 _≃_
 record _≃_ (i j : A ≅ B) : Set (o ⊔ ℓ ⊔ e) where
   open _≅_
   field
-    f-≈ : f i ≈ f j
-    g-≈ : g i ≈ g j
+    from-≈ : from i ≈ from j
+    to-≈   : to i ≈ to j
 
 ≃-isEquivalence : IsEquivalence (_≃_ {A} {B})
 ≃-isEquivalence = record
   { refl  = record
-    { f-≈ = refl
-    ; g-≈ = refl
+    { from-≈ = refl
+    ; to-≈   = refl
     }
   ; sym   = λ where
-    record { f-≈ = f-≈ ; g-≈ = g-≈ } → record
-      { f-≈ = sym f-≈
-      ; g-≈ = sym g-≈
+    record { from-≈ = from-≈ ; to-≈ = to-≈ } → record
+      { from-≈ = sym from-≈
+      ; to-≈   = sym to-≈
       }
   ; trans = λ where
-    record { f-≈ = f-≈ ; g-≈ = g-≈ } record { f-≈ = f-≈′ ; g-≈ = g-≈′ } → record
-      { f-≈ = trans f-≈ f-≈′
-      ; g-≈ = trans g-≈ g-≈′
+    record { from-≈ = from-≈ ; to-≈ = to-≈ } record { from-≈ = from-≈′ ; to-≈ = to-≈′ } → record
+      { from-≈ = trans from-≈ from-≈′
+      ; to-≈   = trans to-≈ to-≈′
       }
   }
   where open _≅_
@@ -132,14 +131,14 @@ Isos = record
   ; _≈_       = _≃_
   ; id        = ≅-refl
   ; _∘_       = flip ≅-trans
-  ; assoc     = record { f-≈ = assoc ; g-≈ = sym assoc }
-  ; identityˡ = record { f-≈ = identityˡ ; g-≈ = identityʳ }
-  ; identityʳ = record { f-≈ = identityʳ ; g-≈ = identityˡ }
+  ; assoc     = record { from-≈ = assoc ; to-≈ = sym assoc }
+  ; identityˡ = record { from-≈ = identityˡ ; to-≈ = identityʳ }
+  ; identityʳ = record { from-≈ = identityʳ ; to-≈ = identityˡ }
   ; equiv     = ≃-isEquivalence
   ; ∘-resp-≈  = λ where
-    record { f-≈ = f-≈ ; g-≈ = g-≈ } record { f-≈ = f-≈′ ; g-≈ = g-≈′ } → record
-      { f-≈ = ∘-resp-≈ f-≈ f-≈′
-      ; g-≈ = ∘-resp-≈ g-≈′ g-≈
+    record { from-≈ = from-≈ ; to-≈ = to-≈ } record { from-≈ = from-≈′ ; to-≈ = to-≈′ } → record
+      { from-≈ = ∘-resp-≈ from-≈ from-≈′
+      ; to-≈   = ∘-resp-≈ to-≈′ to-≈
       }
   }
   where open Equiv

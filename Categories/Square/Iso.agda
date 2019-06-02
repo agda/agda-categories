@@ -15,34 +15,35 @@ open Category C
 private
   variable
     X Y Z W : Obj
+    h k : X ⇒ Y
     
 open HomReasoning
 
 module Switch (i : X ≅ Y) where
   open _≅_ i
 
-  switch-fgˡ : ∀ {h : W ⇒ X} {k : W ⇒ Y} → (f ∘ h ≈ k) → (h ≈ g ∘ k)
-  switch-fgˡ {h = h} {k} pf = begin
-    h           ≈⟨ sym (cancelLeft isoˡ) ⟩
-    g ∘ (f ∘ h) ≈⟨ ∘-resp-≈ʳ pf ⟩
-    g ∘ k       ∎
+  switch-fromtoˡ : from ∘ h ≈ k → h ≈ to ∘ k
+  switch-fromtoˡ {h = h} {k = k} pf = begin
+    h               ≈⟨ sym (cancelLeft isoˡ) ⟩
+    to ∘ (from ∘ h) ≈⟨ ∘-resp-≈ʳ pf ⟩
+    to ∘ k          ∎
 
-  switch-gfˡ : ∀ {h : W ⇒ Y} {k : W ⇒ X} → (g ∘ h ≈ k) → (h ≈ f ∘ k)
-  switch-gfˡ {h = h} {k} pf = begin
-    h           ≈⟨ sym (cancelLeft isoʳ) ⟩
-    f ∘ (g ∘ h) ≈⟨ ∘-resp-≈ʳ pf ⟩
-    f ∘ k       ∎
+  switch-tofromˡ : to ∘ h ≈ k → h ≈ from ∘ k
+  switch-tofromˡ {h = h} {k = k} pf = begin
+    h               ≈⟨ sym (cancelLeft isoʳ) ⟩
+    from ∘ (to ∘ h) ≈⟨ ∘-resp-≈ʳ pf ⟩
+    from ∘ k        ∎
 
-  switch-fgʳ : ∀ {h : Y ⇒ W} {k : X ⇒ W} → (h ∘ f ≈ k) → (h ≈ k ∘ g)
-  switch-fgʳ {h = h} {k} pf = begin
-    h           ≈⟨ sym (cancelRight isoʳ) ⟩
-    (h ∘ f) ∘ g ≈⟨ ∘-resp-≈ˡ pf ⟩
-    k ∘ g       ∎
+  switch-fromtoʳ : h ∘ from ≈ k → h ≈ k ∘ to
+  switch-fromtoʳ {h = h} {k = k} pf = begin
+    h               ≈⟨ sym (cancelRight isoʳ) ⟩
+    (h ∘ from) ∘ to ≈⟨ ∘-resp-≈ˡ pf ⟩
+    k ∘ to          ∎
 
-  switch-gfʳ : ∀ {h : X ⇒ W} {k : Y ⇒ W} → (h ∘ g ≈ k) → (h ≈ k ∘ f)
-  switch-gfʳ {h = h} {k} pf = begin
-    h           ≈⟨ sym (cancelRight isoˡ) ⟩
-    (h ∘ g) ∘ f ≈⟨ ∘-resp-≈ˡ pf ⟩
-    k ∘ f       ∎
+  switch-tofromʳ : h ∘ to ≈ k → h ≈ k ∘ from
+  switch-tofromʳ {h = h} {k = k} pf = begin
+    h               ≈⟨ sym (cancelRight isoˡ) ⟩
+    (h ∘ to) ∘ from ≈⟨ ∘-resp-≈ˡ pf ⟩
+    k ∘ from        ∎
 
 open Switch public

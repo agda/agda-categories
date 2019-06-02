@@ -40,26 +40,26 @@ from-⊤-is-Mono {_} {t} f = helper
 
 up-to-iso : (t₁ t₂ : Terminal) → ⊤ t₁ ≅ ⊤ t₂
 up-to-iso t₁ t₂ = record
-  { f   = ! t₂
-  ; g   = ! t₁
-  ; iso = record { isoˡ = ⊤-id t₁ _; isoʳ = ⊤-id t₂ _ }
+  { from = ! t₂
+  ; to   = ! t₁
+  ; iso  = record { isoˡ = ⊤-id t₁ _; isoʳ = ⊤-id t₂ _ }
   }
 
 transport-by-iso : (t : Terminal) → ∀ {X} → ⊤ t ≅ X → Terminal
 transport-by-iso t {X} t≅X = record
   { ⊤        = X
-  ; !        = f ∘ ! t
+  ; !        = from ∘ ! t
   ; !-unique = λ h → begin
-    f ∘ ! t   ≈⟨ refl ⟩∘⟨ !-unique t (g ∘ h)  ⟩
-    f ∘ g ∘ h ≈⟨ cancelLeft isoʳ ⟩
-    h         ∎
+    from ∘ ! t    ≈⟨ refl⟩∘⟨ !-unique t (to ∘ h)  ⟩
+    from ∘ to ∘ h ≈⟨ cancelLeft isoʳ ⟩
+    h             ∎
   }
   where open _≅_ t≅X
 
 up-to-iso-unique : ∀ t t′ → (i : ⊤ t ≅ ⊤ t′) → up-to-iso t t′ ≃ i
 up-to-iso-unique t t′ i = record
-  { f-≈ = !-unique t′ _
-  ; g-≈ = !-unique t _
+  { from-≈ = !-unique t′ _
+  ; to-≈   = !-unique t _
   }
 
 up-to-iso-invˡ : ∀ {t X} {i : ⊤ t ≅ X} → up-to-iso t (transport-by-iso t i) ≃ i
