@@ -50,8 +50,8 @@ module _ (iso : Iso f g) where
     (i ∘ f) ∘ g ≈⟨ cancelʳ isoʳ ⟩
     i           ∎
 
-Iso-resp-∘ : Iso f g → Iso h i → Iso (h ∘ f) (g ∘ i)
-Iso-resp-∘ {f = f} {g = g} {h = h} {i = i} iso iso′ = record
+Iso-∘ : Iso f g → Iso h i → Iso (h ∘ f) (g ∘ i)
+Iso-∘ {f = f} {g = g} {h = h} {i = i} iso iso′ = record
   { isoˡ = begin
     (g ∘ i) ∘ h ∘ f ≈⟨ cancelInner (isoˡ iso′) ⟩
     g ∘ f           ≈⟨ isoˡ iso ⟩
