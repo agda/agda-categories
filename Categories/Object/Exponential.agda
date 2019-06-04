@@ -11,7 +11,7 @@ open import Function using (_$_)
 open import Categories.Square 𝒞
 open import Categories.Object.Product 𝒞
   hiding (repack; repack≡id; repack∘; repack-cancel; up-to-iso; transport-by-iso)
-open import Categories.Morphisms 𝒞
+open import Categories.Morphism 𝒞
 
 open HomReasoning
 
@@ -139,7 +139,7 @@ transport-by-iso {X = X} e e≅X = record
   ; eval            = e.eval
   ; λg              = λ Y×A Y×A⇒B → from ∘ (e.λg Y×A Y×A⇒B)
   ; β               = λ Y×A {h} → begin
-    e.eval ∘ [ Y×A ⇒ X×A ] from ∘ e.λg Y×A h ×id ≈⟨ refl⟩∘⟨ e.product.⟨⟩-cong₂ (pullˡ (cancelLeft isoˡ))
+    e.eval ∘ [ Y×A ⇒ X×A ] from ∘ e.λg Y×A h ×id ≈⟨ refl⟩∘⟨ e.product.⟨⟩-cong₂ (pullˡ (cancelˡ isoˡ))
                                                                                (elimˡ refl) ⟩
     e.eval ∘ [ Y×A ⇒ e.product ] e.λg Y×A h ×id  ≈⟨ e.β Y×A ⟩
     h                                            ∎

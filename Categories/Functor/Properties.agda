@@ -3,7 +3,7 @@ module Categories.Functor.Properties where
 
 open import Categories.Category
 open import Categories.Functor.Core
-open import Categories.Morphisms
+open import Categories.Morphism
 
 open import Relation.Binary using (_Preserves_⟶_)
 

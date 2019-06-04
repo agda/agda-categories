@@ -8,7 +8,7 @@ open import Level
 open Category 𝒞
 
 open import Categories.Square 𝒞
-open import Categories.Morphisms 𝒞
+open import Categories.Morphism 𝒞
 import Categories.Object.Product op as Op×
 
 open HomReasoning

@@ -7,7 +7,7 @@ open Category C
 
 open import Level
 
-open import Categories.Morphisms C
+open import Categories.Morphism C
 open import Categories.Object.Terminal op
 
 record Initial : Set (o ⊔ ℓ ⊔ e) where

@@ -138,21 +138,21 @@ glueTrianglesˡ {a′ = a′} {b′ = b′} {b″ = b″} {a = a} {b = b} a′�
 
 module Cancellers (inv : h ∘ i ≈ id) where
 
-  cancelRight : (f ∘ h) ∘ i ≈ f
-  cancelRight {f = f} = begin
+  cancelʳ : (f ∘ h) ∘ i ≈ f
+  cancelʳ {f = f} = begin
     (f ∘ h) ∘ i ≈⟨ pullʳ inv ⟩
     f ∘ id      ≈⟨ identityʳ ⟩
     f           ∎
 
-  cancelLeft : h ∘ (i ∘ f) ≈ f
-  cancelLeft {f = f} = begin
+  cancelˡ : h ∘ (i ∘ f) ≈ f
+  cancelˡ {f = f} = begin
     h ∘ (i ∘ f) ≈⟨ pullˡ inv ⟩
     id ∘ f      ≈⟨ identityˡ ⟩
     f           ∎
 
   cancelInner : (f ∘ h) ∘ (i ∘ g) ≈ f ∘ g
   cancelInner {f = f} {g = g} = begin
-    (f ∘ h) ∘ (i ∘ g) ≈⟨ pullˡ cancelRight ⟩
+    (f ∘ h) ∘ (i ∘ g) ≈⟨ pullˡ cancelʳ ⟩
     f ∘ g             ∎
 
 open Cancellers public

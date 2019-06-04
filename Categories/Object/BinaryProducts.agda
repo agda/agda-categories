@@ -10,7 +10,7 @@ open Category 𝒞
 open HomReasoning
 
 open import Categories.Object.Product 𝒞
-open import Categories.Morphisms 𝒞
+open import Categories.Morphism 𝒞
 open import Categories.Square 𝒞
 
 private
@@ -163,7 +163,7 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
   assocˡ∘⟨⟩ : assocˡ ∘ ⟨ ⟨ f , g ⟩ , h ⟩ ≈ ⟨ f , ⟨ g , h ⟩ ⟩
   assocˡ∘⟨⟩ {f = f} {g = g} {h = h} = begin
     assocˡ ∘ ⟨ ⟨ f , g ⟩ , h ⟩          ≈⟨ sym (refl ⟩∘⟨ assocʳ∘⟨⟩) ⟩
-    assocˡ ∘ assocʳ ∘ ⟨ f , ⟨ g , h ⟩ ⟩ ≈⟨ cancelLeft assocˡ∘assocʳ ⟩
+    assocˡ ∘ assocʳ ∘ ⟨ f , ⟨ g , h ⟩ ⟩ ≈⟨ cancelˡ assocˡ∘assocʳ ⟩
     ⟨ f , ⟨ g , h ⟩ ⟩                   ∎
   
   assocʳ∘⁂ : assocʳ ∘ (f ⁂ (g ⁂ h)) ≈ ((f ⁂ g) ⁂ h) ∘ assocʳ

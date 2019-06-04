@@ -7,7 +7,7 @@ open import Level
 open import Function using (flip)
 
 open import Categories.Square 𝒞
-open import Categories.Morphisms 𝒞
+open import Categories.Morphism 𝒞
 
 open Category 𝒞
 open HomReasoning
@@ -83,7 +83,7 @@ transport-by-iso p {X} p≅X = record
   ; universal = λ {_ i l r} pf₁ pf₂ → begin
     from ∘ ⟨ l , r ⟩                         ≈⟨ refl⟩∘⟨ ⟨⟩-cong₂ (sym pf₁) (sym pf₂) ⟩
     from ∘ ⟨ (π₁ ∘ to) ∘ i , (π₂ ∘ to) ∘ i ⟩ ≈⟨ refl⟩∘⟨ universal (sym assoc) (sym assoc) ⟩
-    from ∘ to ∘ i                            ≈⟨ cancelLeft isoʳ ⟩
+    from ∘ to ∘ i                            ≈⟨ cancelˡ isoʳ ⟩
     i                                        ∎
   }
   where open Product p
@@ -145,11 +145,11 @@ Mobile p A₁≅A₂ B₁≅B₂ = record
   ; ⟨_,_⟩            = λ h k → ⟨ to A₁≅A₂ ∘ h , to B₁≅B₂ ∘ k ⟩
   ; commute₁         = begin
     (from A₁≅A₂ ∘ π₁) ∘ ⟨ to A₁≅A₂ ∘ _ , to B₁≅B₂ ∘ _ ⟩ ≈⟨ pullʳ commute₁ ⟩
-    from A₁≅A₂ ∘ (to A₁≅A₂ ∘ _)                         ≈⟨ cancelLeft (isoʳ A₁≅A₂) ⟩
+    from A₁≅A₂ ∘ (to A₁≅A₂ ∘ _)                         ≈⟨ cancelˡ (isoʳ A₁≅A₂) ⟩
     _                                                   ∎
   ; commute₂         = begin
     (from B₁≅B₂ ∘ π₂) ∘ ⟨ to A₁≅A₂ ∘ _ , to B₁≅B₂ ∘ _ ⟩ ≈⟨ pullʳ commute₂ ⟩
-    from B₁≅B₂ ∘ (to B₁≅B₂ ∘ _)                         ≈⟨ cancelLeft (isoʳ B₁≅B₂) ⟩
+    from B₁≅B₂ ∘ (to B₁≅B₂ ∘ _)                         ≈⟨ cancelˡ (isoʳ B₁≅B₂) ⟩
     _                                                   ∎
   ; universal        = λ pfˡ pfʳ → universal (switch-fromtoˡ A₁≅A₂ (trans (sym assoc) pfˡ))
                                              (switch-fromtoˡ B₁≅B₂ (trans (sym assoc) pfʳ))

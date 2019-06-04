@@ -8,7 +8,7 @@ open import Level
 open import Relation.Binary using (IsEquivalence; Setoid)
 open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
-open import Categories.Morphisms C
+open import Categories.Morphism C
 open import Categories.Square C
 
 open Category C
@@ -51,7 +51,7 @@ transport-by-iso t {X} t≅X = record
   ; !        = from ∘ ! t
   ; !-unique = λ h → begin
     from ∘ ! t    ≈⟨ refl⟩∘⟨ !-unique t (to ∘ h)  ⟩
-    from ∘ to ∘ h ≈⟨ cancelLeft isoʳ ⟩
+    from ∘ to ∘ h ≈⟨ cancelˡ isoʳ ⟩
     h             ∎
   }
   where open _≅_ t≅X

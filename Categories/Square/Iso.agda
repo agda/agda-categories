@@ -6,7 +6,7 @@ module Categories.Square.Iso {o ℓ e} (C : Category o ℓ e) where
 open import Level
 open import Function renaming (id to idᶠ; _∘_ to _∙_)
 
-open import Categories.Morphisms C
+open import Categories.Morphism C
 open import Categories.Square.Core C
 
 open import Relation.Binary hiding (_⇒_)
@@ -24,25 +24,25 @@ module Switch (i : X ≅ Y) where
 
   switch-fromtoˡ : from ∘ h ≈ k → h ≈ to ∘ k
   switch-fromtoˡ {h = h} {k = k} pf = begin
-    h               ≈⟨ sym (cancelLeft isoˡ) ⟩
+    h               ≈⟨ sym (cancelˡ isoˡ) ⟩
     to ∘ (from ∘ h) ≈⟨ ∘-resp-≈ʳ pf ⟩
     to ∘ k          ∎
 
   switch-tofromˡ : to ∘ h ≈ k → h ≈ from ∘ k
   switch-tofromˡ {h = h} {k = k} pf = begin
-    h               ≈⟨ sym (cancelLeft isoʳ) ⟩
+    h               ≈⟨ sym (cancelˡ isoʳ) ⟩
     from ∘ (to ∘ h) ≈⟨ ∘-resp-≈ʳ pf ⟩
     from ∘ k        ∎
 
   switch-fromtoʳ : h ∘ from ≈ k → h ≈ k ∘ to
   switch-fromtoʳ {h = h} {k = k} pf = begin
-    h               ≈⟨ sym (cancelRight isoʳ) ⟩
+    h               ≈⟨ sym (cancelʳ isoʳ) ⟩
     (h ∘ from) ∘ to ≈⟨ ∘-resp-≈ˡ pf ⟩
     k ∘ to          ∎
 
   switch-tofromʳ : h ∘ to ≈ k → h ≈ k ∘ from
   switch-tofromʳ {h = h} {k = k} pf = begin
-    h               ≈⟨ sym (cancelRight isoˡ) ⟩
+    h               ≈⟨ sym (cancelʳ isoˡ) ⟩
     (h ∘ to) ∘ from ≈⟨ ∘-resp-≈ˡ pf ⟩
     k ∘ from        ∎
 

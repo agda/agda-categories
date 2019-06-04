@@ -2,7 +2,7 @@
 
 open import Categories.Category
 
-module Categories.Morphisms  {o ℓ e} (𝒞 : Category o ℓ e) where
+module Categories.Morphism {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
 open import Function using (flip)

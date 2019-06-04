@@ -8,8 +8,8 @@ open import Relation.Binary using (IsEquivalence)
 open import Categories.Category
 open import Categories.Functor as ℱ hiding (id)
 open import Categories.NaturalTransformation.Core as α hiding (id)
-import Categories.Morphisms as Morphisms
-import Categories.Morphisms.Properties as Morphismsₚ
+import Categories.Morphism as Morphism
+import Categories.Morphism.Properties as Morphismₚ
 import Categories.Square as Square
 open import Categories.Functor.Properties
 
@@ -37,7 +37,7 @@ record NaturalIsomorphism {C : Category o ℓ e}
   module ⇒ = NaturalTransformation F⇒G
   module ⇐ = NaturalTransformation F⇐G
 
-  open Morphisms D
+  open Morphism D
 
   field
     iso : ∀ X → Iso (⇒.η X) (⇐.η X)
@@ -63,7 +63,7 @@ sym {C = C} {D = D} F≃G = record
     }
   }
   where open NaturalIsomorphism F≃G
-        open Morphisms D
+        open Morphism D
 
 trans : Transitive (NaturalIsomorphism {C = C} {D = D})
 trans {C = C} {D = D} F≃G G≃H = record
@@ -83,7 +83,7 @@ trans {C = C} {D = D} F≃G G≃H = record
   where module D = Category D
         open NaturalIsomorphism
         open NaturalTransformation
-        open Morphisms D
+        open Morphism D
         open Iso
         open Category.HomReasoning D
         open Square D
