@@ -102,7 +102,31 @@ setoid {C = C} {D = D} = record
   ; isEquivalence = isEquivalence {C = C} {D = D}
   }
 
-infixr 9 _ⓘˡ_ _ⓘʳ_
+infixr 9 _ⓘᵥ_ _ⓘₕ_ _ⓘˡ_ _ⓘʳ_
+
+_ⓘᵥ_ : ∀ {F G H : Functor C D} →
+         NaturalIsomorphism G H → NaturalIsomorphism F G → NaturalIsomorphism F H
+_ⓘᵥ_ {D = D} α β = record
+  { F⇒G = F⇒G α ∘ᵥ F⇒G β
+  ; F⇐G = F⇐G β ∘ᵥ F⇐G α
+  ; iso = λ X → Iso-resp-∘ (iso β X) (iso α X)
+  }
+  where open NaturalIsomorphism
+        open Morphismₚ D
+
+_ⓘₕ_ : ∀ {H I : Functor D E} {F G : Functor C D} →
+         NaturalIsomorphism H I → NaturalIsomorphism F G → NaturalIsomorphism (H ∘F F) (I ∘F G)
+_ⓘₕ_ {E = E} {I = I} α β = record
+  { F⇒G = F⇒G α ∘ₕ F⇒G β
+  ; F⇐G = F⇐G α ∘ₕ F⇐G β
+  ; iso = λ X → Iso-resp-≈ (Iso-resp-∘ (iso α _) ([ I ]-resp-Iso (iso β X)))
+                           refl (commute (F⇐G α) (η (F⇐G β) X))
+  }
+  where open NaturalIsomorphism
+        open NaturalTransformation
+        module E = Category E
+        open E.Equiv
+        open Morphismₚ E
 
 _ⓘˡ_ : ∀ {F G : Functor C D} →
          (H : Functor D E) → (η : NaturalIsomorphism F G) → NaturalIsomorphism (H ∘F F) (H ∘F G)

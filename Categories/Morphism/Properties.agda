@@ -29,7 +29,7 @@ module _ (iso : Iso f g) where
       f ∘ g ≈⟨ isoʳ ⟩
       id    ∎
     }
-  
+
   Iso-swap : Iso g f
   Iso-swap = record
     { isoˡ = isoʳ
@@ -49,3 +49,16 @@ module _ (iso : Iso f g) where
     h ∘ f ∘ g   ≈⟨ pullˡ eq ⟩
     (i ∘ f) ∘ g ≈⟨ cancelʳ isoʳ ⟩
     i           ∎
+
+Iso-resp-∘ : Iso f g → Iso h i → Iso (h ∘ f) (g ∘ i)
+Iso-resp-∘ {f = f} {g = g} {h = h} {i = i} iso iso′ = record
+  { isoˡ = begin
+    (g ∘ i) ∘ h ∘ f ≈⟨ cancelInner (isoˡ iso′) ⟩
+    g ∘ f           ≈⟨ isoˡ iso ⟩
+    id              ∎
+  ; isoʳ = begin
+    (h ∘ f) ∘ g ∘ i ≈⟨ cancelInner (isoʳ iso) ⟩
+    h ∘ i           ≈⟨ isoʳ iso′ ⟩
+    id              ∎
+  }
+  where open Iso
