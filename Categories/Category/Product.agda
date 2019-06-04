@@ -5,7 +5,7 @@ open import Level
 open import Function using () renaming (_∘_ to _∙_)
 open import Data.Product as , using (_×_; Σ; _,_; proj₁; proj₂; zip; map; <_,_>; swap)
 
-open import Categories.Category
+open import Categories.Category.Core
 open import Categories.Functor.Core
 open import Categories.NaturalTransformation.Core
 

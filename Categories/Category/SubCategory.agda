@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-open import Categories.Category
+open import Categories.Category.Core
 
 module Categories.Category.SubCategory {o ℓ e} (𝒞 : Category o ℓ e) where
 
