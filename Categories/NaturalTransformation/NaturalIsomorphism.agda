@@ -88,18 +88,18 @@ trans {C = C} {D = D} F≃G G≃H = record
         open Category.HomReasoning D
         open Square D
 
-isEquivalence : IsEquivalence (NaturalIsomorphism {C = C} {D = D})
-isEquivalence {C = C} {D = D} = record
+isEquivalence : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → IsEquivalence (NaturalIsomorphism {C = C} {D = D})
+isEquivalence C D = record
   { refl  = id
   ; sym   = sym
   ; trans = trans
   }
 
-setoid : ∀ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} → Setoid _ _
-setoid {C = C} {D = D} = record 
+setoid : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Setoid _ _
+setoid C D = record 
   { Carrier       = Functor C D
   ; _≈_           = NaturalIsomorphism
-  ; isEquivalence = isEquivalence {C = C} {D = D}
+  ; isEquivalence = isEquivalence C D
   }
 
 infixr 9 _ⓘᵥ_ _ⓘₕ_ _ⓘˡ_ _ⓘʳ_

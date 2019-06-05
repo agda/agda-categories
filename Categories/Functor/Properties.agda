@@ -1,51 +1,59 @@
 {-# OPTIONS --without-K --safe #-}
 module Categories.Functor.Properties where
 
+open import Level
+
 open import Categories.Category
 open import Categories.Functor.Core
 open import Categories.Morphism
 
 open import Relation.Binary using (_Preserves_⟶_)
 
-module _ {o ℓ e o′ ℓ′ e′}
-         {𝒞 : Category o ℓ e} {𝒟 : Category o′ ℓ′ e′}
-         (F : Functor 𝒞 𝒟) where
-  module 𝒞 = Category 𝒞
-  module 𝒟 = Category 𝒟
-  open 𝒞 hiding (_∘_)
+private
+  variable
+    o ℓ e o′ ℓ′ e′ : Level
+    C D : Category o ℓ e
+
+module _ (F : Functor C D) where
+  private
+    module C = Category C
+    module D = Category D
+  open C hiding (_∘_)
   open Functor F
 
-  module _ {A B C D : Obj}
-           {f : A ⇒ B} {g : A ⇒ C} {h : B ⇒ D} {i : C ⇒ D} where
+  private
+    variable
+      A B : Obj
+      f g h i : A ⇒ B
 
-    [_]-resp-square : 𝒞.CommutativeSquare f g h i →
-                      𝒟.CommutativeSquare (F₁ f) (F₁ g) (F₁ h) (F₁ i)
-    [_]-resp-square sq = begin
-      F₁ h ∘ F₁ f       ≈⟨ 𝒟.Equiv.sym homomorphism ⟩
-      F₁ (𝒞 [ h ∘ f ]) ≈⟨ F-resp-≈ sq ⟩
-      F₁ (𝒞 [ i ∘ g ]) ≈⟨ homomorphism ⟩
-      F₁ i ∘ F₁ g       ∎
-      where open 𝒟
-            open 𝒟.HomReasoning
+  [_]-resp-square : C.CommutativeSquare f g h i →
+                    D.CommutativeSquare (F₁ f) (F₁ g) (F₁ h) (F₁ i)
+  [_]-resp-square {f = f} {g = g} {h = h} {i = i} sq = begin
+    F₁ h ∘ F₁ f       ≈⟨ D.Equiv.sym homomorphism ⟩
+    F₁ (C [ h ∘ f ]) ≈⟨ F-resp-≈ sq ⟩
+    F₁ (C [ i ∘ g ]) ≈⟨ homomorphism ⟩
+    F₁ i ∘ F₁ g       ∎
+    where open D
+          open D.HomReasoning
 
-  [_]-resp-Iso : ∀ {A B} {f : A ⇒ B} {g : B ⇒ A} → Iso 𝒞 f g → Iso 𝒟 (F₁ f) (F₁ g)
-  [_]-resp-Iso {f = f} {g} iso = record
+  [_]-resp-Iso : Iso C f g → Iso D (F₁ f) (F₁ g)
+  [_]-resp-Iso {f = f} {g = g} iso = record
     { isoˡ = begin
       F₁ g ∘ F₁ f       ≈⟨ sym homomorphism ⟩
-      F₁ (𝒞 [ g ∘ f ]) ≈⟨ F-resp-≈ isoˡ ⟩
-      F₁ 𝒞.id          ≈⟨ identity ⟩
-      𝒟.id             ∎
+      F₁ (C [ g ∘ f ]) ≈⟨ F-resp-≈ isoˡ ⟩
+      F₁ C.id          ≈⟨ identity ⟩
+      D.id             ∎
     ; isoʳ = begin
       F₁ f ∘ F₁ g       ≈⟨ sym homomorphism ⟩
-      F₁ (𝒞 [ f ∘ g ]) ≈⟨ F-resp-≈ isoʳ ⟩
-      F₁ 𝒞.id          ≈⟨ identity ⟩
-      𝒟.id             ∎
+      F₁ (C [ f ∘ g ]) ≈⟨ F-resp-≈ isoʳ ⟩
+      F₁ C.id          ≈⟨ identity ⟩
+      D.id             ∎
     }
     where open Iso iso
-          open 𝒟
-          open 𝒟.HomReasoning
+          open D
+          open D.HomReasoning
           
-  [_]-resp-≅ : F₀ Preserves _≅_ 𝒞 ⟶ _≅_ 𝒟
+  [_]-resp-≅ : F₀ Preserves _≅_ C ⟶ _≅_ D
   [_]-resp-≅ i≅j = record
     { from       = F₁ from
     ; to         = F₁ to

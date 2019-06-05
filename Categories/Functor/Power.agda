@@ -87,15 +87,16 @@ flattenP {n = n} {m = m} F = record
   where module F = Functor F
         pack = ⟦ inject+ m , raise n ⟧′
 
-unpackFin : ∀ n → Fin (n + m) → Fin n ⊎ Fin m
-unpackFin zero zero       = inj₂ zero
-unpackFin zero (suc f) with unpackFin zero f
-... | inj₂ f′             = inj₂ (suc f′)
-unpackFin (suc n) zero    = inj₁ zero
-unpackFin (suc n) (suc f) with unpackFin n f
-... | inj₁ f′ = inj₁ (suc f′ )
-... | inj₂ f′ = inj₂ f′
-
+private
+  unpackFin : ∀ n → Fin (n + m) → Fin n ⊎ Fin m
+  unpackFin zero zero       = inj₂ zero
+  unpackFin zero (suc f) with unpackFin zero f
+  ... | inj₂ f′             = inj₂ (suc f′)
+  unpackFin (suc n) zero    = inj₁ zero
+  unpackFin (suc n) (suc f) with unpackFin n f
+  ... | inj₁ f′ = inj₁ (suc f′ )
+  ... | inj₂ f′ = inj₂ f′
+  
 unflattenP : Powerfunctor′ D (Fin (n + m)) → Powerfunctor′ D (Fin n ⊎ Fin m)
 unflattenP {n = n} {m = m} F = record
   { F₀           = λ As → F₀ (As ∙ unpackFin _)
