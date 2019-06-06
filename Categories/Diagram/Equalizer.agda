@@ -57,6 +57,12 @@ record Equalizer (f g : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
     (g ∘ arr) ∘ h ≈⟨ assoc ⟩
     g ∘ arr ∘ h   ∎
 
+  unique-diagram : arr ∘ h ≈ arr ∘ i → h ≈ i
+  unique-diagram {h = h} {i = i} eq = begin
+    h                           ≈⟨ unique (sym eq) ⟩
+    equalize (extendʳ equality) ≈˘⟨ unique refl ⟩
+    i                           ∎
+
 Equalizer⇒Mono : (e : Equalizer h i) → Mono (Equalizer.arr e)
 Equalizer⇒Mono e f g eq =
   equalize-resp-≈′ equality-∘ equality-∘ eq (unique refl) (unique refl)
