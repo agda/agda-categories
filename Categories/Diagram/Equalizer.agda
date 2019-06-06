@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
 
-module Categories.Morphism.Equalizer {o ℓ e} (C : Category o ℓ e) where
+module Categories.Diagram.Equalizer {o ℓ e} (C : Category o ℓ e) where
 
 open Category C
 open HomReasoning
