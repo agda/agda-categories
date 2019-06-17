@@ -5,7 +5,7 @@ open import Data.Product
 open import Function using () renaming (_∘_ to _∙_)
 
 open import Categories.Category
-open import Categories.Bifunctor hiding (id)
+open import Categories.Functor.Bifunctor hiding (id)
 open import Categories.Sets
 import Categories.Square as Square
 

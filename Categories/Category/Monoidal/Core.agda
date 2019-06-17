@@ -5,7 +5,7 @@ module Categories.Category.Monoidal.Core {o ℓ e} (𝒞 : Category o ℓ e) whe
 
 open import Level
 
-open import Categories.Bifunctor
+open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation
 open import Categories.NaturalTransformation.NaturalIsomorphism
 

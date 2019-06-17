@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Bifunctor where
+module Categories.Functor.Bifunctor where
 
 open import Level
 open import Data.Product using (_,_; swap)

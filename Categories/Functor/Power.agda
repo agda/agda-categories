@@ -15,7 +15,7 @@ open import Data.Vec.N-ary hiding (curryⁿ)
 open import Function as Fun using (flip) renaming (_∘_ to _∙_; id to idf)
 
 open import Categories.Category.Product
-open import Categories.Bifunctor hiding (id)
+open import Categories.Functor.Bifunctor hiding (id)
 
 private
   variable
