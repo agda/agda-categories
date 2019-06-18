@@ -16,6 +16,6 @@ record Monad {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   open Functor F
 
   field
-    .assoc     : μ ∘ᵥ (F ∘ˡ μ) ∘ᵥ associator F ≃ μ ∘ᵥ (μ ∘ʳ F)
-    .identityˡ : μ ∘ᵥ (F ∘ˡ η) ∘ᵥ unitorˡ F ≃ idN
-    .identityʳ : μ ∘ᵥ (η ∘ʳ F) ∘ᵥ unitorʳ F ≃ idN
+    assoc     : μ ∘ᵥ (F ∘ˡ μ) ∘ᵥ associator F ≃ μ ∘ᵥ (μ ∘ʳ F)
+    identityˡ : μ ∘ᵥ (F ∘ˡ η) ∘ᵥ unitorˡ F ≃ idN
+    identityʳ : μ ∘ᵥ (η ∘ʳ F) ∘ᵥ unitorʳ F ≃ idN
