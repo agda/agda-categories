@@ -3,6 +3,7 @@
 module Categories.NaturalTransformation.NaturalIsomorphism where
 
 open import Level
+open import Data.Product using (_×_; _,_)
 open import Relation.Binary using (IsEquivalence)
 
 open import Categories.Category
@@ -42,8 +43,8 @@ record NaturalIsomorphism {C : Category o ℓ e}
   field
     iso : ∀ X → Iso (⇒.η X) (⇐.η X)
 
-id : Reflexive (NaturalIsomorphism {C = C} {D = D})
-id {C = C} {D = D} {x = F} = record
+refl : Reflexive (NaturalIsomorphism {C = C} {D = D})
+refl {C = C} {D = D} {x = F} = record
   { F⇒G = α.id
   ; F⇐G = α.id
   ; iso = λ A → record
@@ -90,7 +91,7 @@ trans {C = C} {D = D} F≃G G≃H = record
 
 isEquivalence : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → IsEquivalence (NaturalIsomorphism {C = C} {D = D})
 isEquivalence C D = record
-  { refl  = id
+  { refl  = refl
   ; sym   = sym
   ; trans = trans
   }
@@ -120,7 +121,7 @@ _ⓘₕ_ {E = E} {I = I} α β = record
   { F⇒G = F⇒G α ∘ₕ F⇒G β
   ; F⇐G = F⇐G α ∘ₕ F⇐G β
   ; iso = λ X → Iso-resp-≈ (Iso-∘ (iso α _) ([ I ]-resp-Iso (iso β X)))
-                           refl (commute (F⇐G α) (η (F⇐G β) X))
+                           E.Equiv.refl (commute (F⇐G α) (η (F⇐G β) X))
   }
   where open NaturalIsomorphism
         open NaturalTransformation
@@ -147,3 +148,21 @@ _ⓘʳ_ η K = record
   }
   where open NaturalIsomorphism η
         open Functor K
+
+infix 4 _≅_
+_≅_ : ∀ {F G : Functor C D} →
+         (α β : NaturalIsomorphism F G) → Set _
+α ≅ β = F⇒G ≃ β.F⇒G × F⇐G ≃ β.F⇐G
+  where open NaturalIsomorphism α
+        module β = NaturalIsomorphism β
+
+≅-isEquivalence : ∀ {F G : Functor C D} → IsEquivalence (_≅_ {F = F} {G = G})
+≅-isEquivalence {D = D} {F = F} {G = G} = record
+  { refl  = H.refl , H.refl
+  ; sym   = λ where
+    (eq₁ , eq₂) → (H.sym eq₁) , (H.sym eq₂)
+  ; trans = λ where
+    (eq⇒₁ , eq⇐₁) (eq⇒₂ , eq⇐₂) →
+      (H.trans eq⇒₁ eq⇒₂) , (H.trans eq⇐₁ eq⇐₂)
+  }
+  where module H = Category.HomReasoning D
