@@ -6,6 +6,7 @@ module Categories.Square.Iso {o ℓ e} (C : Category o ℓ e) where
 open import Level
 open import Function renaming (id to idᶠ; _∘_ to _∙_)
 
+open import Categories.Category.Groupoid
 open import Categories.Morphism C
 open import Categories.Square.Core C
 
@@ -15,7 +16,7 @@ open Category C
 private
   variable
     X Y Z W : Obj
-    h k : X ⇒ Y
+    f g h k : X ⇒ Y
     
 open HomReasoning
 
@@ -47,3 +48,19 @@ module Switch (i : X ≅ Y) where
     k ∘ from        ∎
 
 open Switch public
+
+
+module _ (G : Groupoid C) where
+  open Groupoid G using (_⁻¹; iso; equiv-obj; equiv-obj′)
+
+  switch-fromtoˡ′ : f ∘ h ≈ k → h ≈ f ⁻¹ ∘ k
+  switch-fromtoˡ′ = switch-fromtoˡ (equiv-obj _)
+
+  switch-tofromˡ′ : f ⁻¹ ∘ h ≈ k → h ≈ f ∘ k
+  switch-tofromˡ′ = switch-tofromˡ (equiv-obj _)
+
+  switch-fromtoʳ′ : h ∘ f ≈ k → h ≈ k ∘ f ⁻¹
+  switch-fromtoʳ′ = switch-fromtoʳ (equiv-obj _)
+  
+  switch-tofromʳ′ : h ∘ f ⁻¹ ≈ k → h ≈ k ∘ f
+  switch-tofromʳ′ = switch-tofromʳ (equiv-obj _)
