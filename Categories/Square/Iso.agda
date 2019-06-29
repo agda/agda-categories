@@ -50,7 +50,7 @@ module Switch (i : X ≅ Y) where
 open Switch public
 
 
-module _ (G : Groupoid C) where
+module GroupoidR (G : Groupoid C) where
   open Groupoid G using (_⁻¹; iso; equiv-obj; equiv-obj′)
 
   switch-fromtoˡ′ : f ∘ h ≈ k → h ≈ f ⁻¹ ∘ k
@@ -64,3 +64,4 @@ module _ (G : Groupoid C) where
   
   switch-tofromʳ′ : h ∘ f ⁻¹ ≈ k → h ≈ k ∘ f
   switch-tofromʳ′ = switch-tofromʳ (equiv-obj _)
+  

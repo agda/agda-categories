@@ -62,3 +62,12 @@ Iso-∘ {f = f} {g = g} {h = h} {i = i} iso iso′ = record
     id              ∎
   }
   where open Iso
+
+Iso-≈ : f ≈ h → Iso f g → Iso h i → g ≈ i
+Iso-≈ {f = f} {h = h} {g = g} {i = i} eq iso iso′ = begin
+  g           ≈⟨ introˡ (isoˡ iso′) ⟩
+  (i ∘ h) ∘ g ≈⟨ (refl ⟩∘⟨ sym eq) ⟩∘⟨refl ⟩
+  (i ∘ f) ∘ g ≈⟨ pullʳ (isoʳ iso) ⟩
+  i ∘ id      ≈⟨ identityʳ ⟩
+  i           ∎
+  where open Iso
