@@ -120,12 +120,12 @@ module Coherence  {X Y : Obj} where
   top-face = elim-triangle′ (sym perimeter′) (glue◽◃ (sym sq) tri)
     where open Square Isos
 
-  bottom-face : [ (unit ⊗₀ X) ⊗₀ Y ⇒ X ⊗₀ Y ]⟨
+  coherence-iso : [ (unit ⊗₀ X) ⊗₀ Y ⇒ X ⊗₀ Y ]⟨
                   associator                ⇒⟨ unit ⊗₀ X ⊗₀ Y ⟩
                   unitorˡ
                 ≈ unitorˡ ⊗ᵢ ≅-refl
                 ⟩
-  bottom-face = triangle-prism top-face square₁ square₂ square₃
+  coherence-iso = triangle-prism top-face square₁ square₂ square₃
     where square₁ : [ unit ⊗₀ X ⊗₀ Y ⇒ unit ⊗₀ X ⊗₀ Y ]⟨
                       ≅-sym unitorˡ ∘ᵢ unitorˡ
                     ≈ ≅-refl ⊗ᵢ unitorˡ ∘ᵢ ≅-sym unitorˡ
@@ -144,7 +144,7 @@ module Coherence  {X Y : Obj} where
                     ⟩
           square₃ = lift-square′ unitorˡ-commute-to
 
-  coherence₁ : unitorˡ.from ∘ associator.from ≈ unitorˡ.from {X} ⊗₁ C.id {Y}
-  coherence₁ = project-triangle bottom-face
+  coherence : unitorˡ.from ∘ associator.from ≈ unitorˡ.from {X} ⊗₁ C.id {Y}
+  coherence = project-triangle coherence-iso
 
-open Coherence using (coherence₁)
+open Coherence using (coherence; coherence-iso)
