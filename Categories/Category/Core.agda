@@ -102,3 +102,6 @@ _[_≈_] = Category._≈_
 
 _[_∘_] : ∀ {o ℓ e} → (C : Category o ℓ e) → ∀ {X Y Z} (f : C [ Y , Z ]) → (g : C [ X , Y ]) → C [ X , Z ]
 _[_∘_] = Category._∘_
+
+levelOf : ∀ {o ℓ e} → Category o ℓ e → Level
+levelOf {o} {ℓ} {e} _ = o ⊔ ℓ ⊔ e

@@ -6,7 +6,7 @@ open import Function using () renaming (_∘_ to _∙_)
 
 open import Categories.Category
 open import Categories.Functor.Bifunctor hiding (id)
-open import Categories.Sets
+open import Categories.Category.Sets
 import Categories.Square as Square
 
 open import Relation.Binary using (Setoid)
