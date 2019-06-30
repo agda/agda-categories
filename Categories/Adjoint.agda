@@ -3,6 +3,10 @@ module Categories.Adjoint where
 
 open import Level using (Level; _⊔_)
 
+open import Data.Product using (_,_; _×_)
+open import Function.Bijection using (Bijection)
+open import Relation.Binary using (Rel; IsEquivalence; Setoid)
+
 open import Categories.Category
 open import Categories.Category.Product
 open import Categories.Category.Sets
@@ -71,6 +75,34 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOf C ⊔ levelOf 
   Hom[-,R-] : Bifunctor C.op D (Setoids _ _)
   Hom[-,R-] = Hom[ C ][-,-] ∘F (idF ⁂ R)
 
+  module Hom[L-,-] = Functor Hom[L-,-]
+  module Hom[-,R-] = Functor Hom[-,R-]
+
+  Hom-bijection : ∀ A B → Bijection (Hom[L-,-].F₀ (A , B)) (Hom[-,R-].F₀ (A , B))
+  Hom-bijection A B = record
+    { to        = record
+      { _⟨$⟩_ = Ladjunct
+      ; cong  = λ eq → C.∘-resp-≈ˡ (R.F-resp-≈ eq)
+      }
+    ; bijective = record
+      { injective  = λ {f g} eq → begin
+        f                     ≈˘⟨ RLadjunct≈id  ⟩
+        Radjunct (Ladjunct f) ≈⟨ refl ⟩∘⟨ L.F-resp-≈ eq ⟩
+        Radjunct (Ladjunct g) ≈⟨ RLadjunct≈id ⟩
+        g                     ∎
+      ; surjective = record
+        { from             = record
+          { _⟨$⟩_ = Radjunct
+          ; cong  = λ eq → D.∘-resp-≈ʳ (L.F-resp-≈ eq)
+          }
+        ; right-inverse-of = λ _ → LRadjunct≈id
+        }
+      }
+    }
+    where open D.HomReasoning
+
+  module Hom-bijection {A B} = Bijection (Hom-bijection A B)
+
   op : Adjoint R.op L.op
   op = record
     { unit   = counit.op
@@ -81,4 +113,45 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOf C ⊔ levelOf 
 
 infix 5 _⊣_
 _⊣_ = Adjoint
-  
+
+⊣-id : idF {C = C} ⊣ idF {C = C}
+⊣-id {C = C} = record
+  { unit   = unitorˡ _
+  ; counit = record
+    { η       = λ _ → id
+    ; commute = λ f → trans identityˡ (sym identityʳ)
+    }
+  ; zig    = identityˡ
+  ; zag    = identityʳ
+  }
+  where open Category C
+        open HomReasoning
+
+infix 4 _≊_
+_≊_ : ∀ {L : Functor C D} {R : Functor D C} → Rel (L ⊣ R) _
+_≊_ A B = A.unit ≃ B.unit × A.counit ≃ B.counit
+  where module A = Adjoint A
+        module B = Adjoint B
+
+module _ {L : Functor C D} {R : Functor D C} where
+
+  private
+    module C = Category C
+    module D = Category D
+
+  ≊-isEquivalence : IsEquivalence (_≊_ {L = L} {R})
+  ≊-isEquivalence = record
+    { refl  = C.Equiv.refl , D.Equiv.refl
+    ; sym   = λ where
+      (eq₁ , eq₂) → C.Equiv.sym eq₁ , D.Equiv.sym eq₂
+    ; trans = λ where
+      (eql₁ , eqr₁) (eql₂ , eqr₂) →
+        C.Equiv.trans eql₁ eql₂ , D.Equiv.trans eqr₁ eqr₂
+    }
+
+  ≊-setoid : Setoid _ _
+  ≊-setoid = record
+    { Carrier       = L ⊣ R
+    ; _≈_           = _
+    ; isEquivalence = ≊-isEquivalence
+    }
