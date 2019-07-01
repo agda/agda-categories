@@ -13,13 +13,18 @@ open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 open import Categories.Category.Groupoid
 import Categories.Morphism as Morphism
+import Categories.Morphism.Properties as Morphismₚ
 open Morphism 𝒞 renaming (TransitiveClosure to ⇒TransitiveClosure)
-open import Categories.Morphism.Properties 𝒞
+open Morphismₚ 𝒞
 import Categories.Square as Square
 
 open Category 𝒞
 
 private
+  module MIsos where
+    open Morphismₚ Isos public
+    open Morphism Isos public
+
   variable
     A B C D : Obj
 
@@ -54,19 +59,21 @@ open Groupoid Isos-groupoid using () renaming (∘-resp-≈ to ∘ᵢ-resp-≃) 
 
 CommutativeIso = Groupoid.CommutativeSquare Isos-groupoid
 
+∘ᵢ-tc : A [ _≅_ ]⁺ B → A ≅ B
+∘ᵢ-tc = MIsos.∘-tc
+
+infix 4 _≃⁺_
+_≃⁺_ : Rel (A [ _≅_ ]⁺ B) _
+_≃⁺_ = MIsos._≈⁺_
+
+TransitiveClosure : Category _ _ _
+TransitiveClosure = MIsos.TransitiveClosure
+
 -- some infrastructure setup in order to say something about morphisms and isomorphisms
 module _ where
   private
     variable
       f g h i j k a b c d l : A ⇒ B
-  
-  ∘ᵢ-tc : A [ _≅_ ]⁺ B → A ≅ B
-  ∘ᵢ-tc [ f ]            = f
-  ∘ᵢ-tc (_ ∼⁺⟨ f⁺ ⟩ f⁺′) = ∘ᵢ-tc f⁺′ ∘ᵢ ∘ᵢ-tc f⁺
-  
-  infix 4 _≃⁺_
-  _≃⁺_ : Rel (A [ _≅_ ]⁺ B) _
-  f⁺ ≃⁺ g⁺ = ∘ᵢ-tc f⁺ ≃ ∘ᵢ-tc g⁺
   
   private
     data IsoPlus : A [ _⇒_ ]⁺ B → Set (o ⊔ ℓ ⊔ e) where
@@ -87,24 +94,6 @@ module _ where
   reverse⇒≅-sym [ f ]                            = ≡.refl
   reverse⇒≅-sym (_ ∼⁺⟨ f⁺ ⟩ f⁺′)
     rewrite reverse⇒≅-sym f⁺ | reverse⇒≅-sym f⁺′ = ≡.refl
-
-  TransitiveClosure : Category _ _ _
-  TransitiveClosure = record
-    { Obj       = Obj
-    ; _⇒_       = λ A B → A [ _≅_ ]⁺ B
-    ; _≈_       = _≃⁺_
-    ; id        = [ ≅-refl ]
-    ; _∘_       = flip (_ ∼⁺⟨_⟩_)
-    ; assoc     = Category.assoc Isos
-    ; identityˡ = Category.identityˡ Isos
-    ; identityʳ = Category.identityʳ Isos
-    ; equiv     = record
-      { refl  = IsEquivalence.refl ≃-isEquivalence
-      ; sym   = IsEquivalence.sym ≃-isEquivalence
-      ; trans = IsEquivalence.trans ≃-isEquivalence
-      }
-    ; ∘-resp-≈  = Category.∘-resp-≈ Isos
-    }
 
   TransitiveClosure-groupoid : Groupoid TransitiveClosure
   TransitiveClosure-groupoid = record
@@ -211,19 +200,18 @@ module _ where
   open Groupoid.HomReasoning Isos-groupoid        
   open Square.GroupoidR _ Isos-groupoid
 
-  squares×≈⇒≈ : CommutativeIso f g h i → CommutativeIso f′ g h i′ → i ≃ i′ → f ≃ f′
-  squares×≈⇒≈ {f = f} {g = g} {h = h} {i = i} {f′ = f′} {i′ = i′} sq₁ sq₂ eq = begin
-    f               ≈⟨ switch-fromtoˡ′ sq₁ ⟩
-    h ⁻¹ ∘ᵢ i ∘ᵢ g  ≈⟨ refl ⟩∘⟨ eq ⟩∘⟨ refl ⟩
-    h ⁻¹ ∘ᵢ i′ ∘ᵢ g ≈˘⟨ switch-fromtoˡ′ sq₂ ⟩
-    f′              ∎
+  squares×≃⇒≃ : CommutativeIso f g h i → CommutativeIso f′ g h i′ → i ≃ i′ → f ≃ f′
+  squares×≃⇒≃ {g = g} sq₁ sq₂ eq =
+    MIsos.isos×≈⇒≈ eq helper₁ (MIsos.≅-sym helper₂) sq₁ sq₂
+    where helper₁ = record { iso = Groupoid.iso Isos-groupoid }
+          helper₂ = record { iso = Groupoid.iso Isos-groupoid }
 
   -- imagine a triangle prism, if all the sides and the top face commute, the bottom face commute.
   triangle-prism : i′ ∘ᵢ f′ ≃ h′ →
                    CommutativeIso i j k i′ → CommutativeIso f g j f′ → CommutativeIso h g k h′ →
                    i ∘ᵢ f ≃ h
   triangle-prism {i′ = i′} {f′ = f′} {i = i} {k = k} {f = f} {g = g} 
-                 eq sq₁ sq₂ sq₃ = squares×≈⇒≈ glued sq₃ eq
+                 eq sq₁ sq₂ sq₃ = squares×≃⇒≃ glued sq₃ eq
     where glued : CommutativeIso (i ∘ᵢ f) g k (i′ ∘ᵢ f′)
           glued = sym (glue (sym sq₁) (sym sq₂))
   

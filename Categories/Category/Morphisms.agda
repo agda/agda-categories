@@ -7,10 +7,16 @@ open import Level
 open import Data.Product using (_,_; _×_; map; zip)
 open import Relation.Binary using (Rel)
 
+import Categories.Morphism as M
+open M C
 open import Categories.Square C
 
 open Category C hiding (dom; cod)
 open HomReasoning
+
+private
+  variable
+    A B D E : Obj
 
 record Morphism : Set (o ⊔ ℓ) where
   field
@@ -56,3 +62,30 @@ Morphisms = record
           }
           where module m₁ = Morphism⇒ m₁
                 module m₂ = Morphism⇒ m₂
+
+private
+  module MM = M Morphisms
+
+module _ where
+  open _≅_
+    
+  lift-iso : ∀ {f h} →
+               (iso₁ : A ≅ D) → (iso₂ : B ≅ E) →
+               CommutativeSquare f (from iso₁) (from iso₂) h →
+               record { arr = f } MM.≅ record { arr = h }
+  lift-iso {f = f} {h = h} iso₁ iso₂ sq = record
+    { from = record { square = sq }
+    ; to   = record { square = begin
+      to iso₂ ∘ h                           ≈⟨ introʳ (isoʳ iso₁) ⟩
+      (to iso₂ ∘ h) ∘ from iso₁ ∘ to iso₁   ≈⟨ assoc ⟩
+      to iso₂ ∘ h ∘ from iso₁ ∘ to iso₁     ≈˘⟨ refl ⟩∘⟨ pushˡ sq ⟩
+      to iso₂ ∘ (from iso₂ ∘ f) ∘ to iso₁   ≈˘⟨ assoc ⟩
+      (to iso₂ ∘ (from iso₂ ∘ f)) ∘ to iso₁ ≈⟨ cancelˡ (isoˡ iso₂) ⟩∘⟨ refl ⟩
+      f ∘ to iso₁                           ∎ }
+    ; iso  = record
+      { isoˡ = isoˡ iso₁ , isoˡ iso₂
+      ; isoʳ = isoʳ iso₁ , isoʳ iso₂
+      }
+    }
+
+  
