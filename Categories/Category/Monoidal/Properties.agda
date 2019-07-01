@@ -46,12 +46,13 @@ X ⊗ᵢ- = appˡ ⊗-iso X
 -⊗ᵢ_ : Obj → Functor Isos Isos
 -⊗ᵢ X = appʳ ⊗-iso X
 
-module Coherence  {X Y : Obj} where
+module Kelly's  {X Y : Obj} where
   open Groupoid.HomReasoning Isos-groupoid
   open Groupoid.Commutation Isos-groupoid
   open Functor
 
   private
+    assoc′ = Groupoid.assoc Isos-groupoid
     variable
           f f′ g h h′ i i′ j k : A ≅ B
 
@@ -84,21 +85,15 @@ module Coherence  {X Y : Obj} where
   [uλ]Y = (≅-refl ⊗ᵢ unitorˡ) ⊗ᵢ ≅-refl
   
   aY : ((unit ⊗₀ unit) ⊗₀ X) ⊗₀ Y ≅ (unit ⊗₀ unit ⊗₀ X) ⊗₀ Y
-  aY    = associator ⊗ᵢ ≅-refl
+  aY = associator ⊗ᵢ ≅-refl
   
   [ρX]Y : ((unit ⊗₀ unit) ⊗₀ X) ⊗₀ Y ≅ (unit ⊗₀ X) ⊗₀ Y
   [ρX]Y = (unitorʳ ⊗ᵢ ≅-refl) ⊗ᵢ ≅-refl
 
-  a₁ : (unit ⊗₀ (unit ⊗₀ X)) ⊗₀ Y ≅ unit ⊗₀ (unit ⊗₀ X) ⊗₀ Y
-  a₁ = associator
-
-  a₂ : (unit ⊗₀ X) ⊗₀ Y ≅ unit ⊗₀ X ⊗₀ Y
-  a₂ = associator
-
   tri : [uλ]Y ∘ᵢ aY ≃ [ρX]Y
   tri = lift-triangle′ ([ appʳ ⊗ Y ]-resp-triangle triangle)
 
-  sq : a₂ ∘ᵢ [uλ]Y ≃ u[λY] ∘ᵢ a₁
+  sq : associator ∘ᵢ [uλ]Y ≃ u[λY] ∘ᵢ associator
   sq = lift-square′ assoc-commute-from
 
   -- proofs
@@ -117,15 +112,15 @@ module Coherence  {X Y : Obj} where
     uλ ∘ᵢ ua ∘ᵢ associator ∘ᵢ aY                             ∎
 
   top-face : uλ ∘ᵢ ua ≃ u[λY]
-  top-face = elim-triangle′ (sym perimeter′) (glue◽◃ (sym sq) tri)
+  top-face = elim-triangleˡ′ (sym perimeter′) (glue◽◃ (sym sq) tri)
     where open Square Isos
 
-  coherence-iso : [ (unit ⊗₀ X) ⊗₀ Y ⇒ X ⊗₀ Y ]⟨
+  coherence-iso₁ : [ (unit ⊗₀ X) ⊗₀ Y ⇒ X ⊗₀ Y ]⟨
                   associator                ⇒⟨ unit ⊗₀ X ⊗₀ Y ⟩
                   unitorˡ
                 ≈ unitorˡ ⊗ᵢ ≅-refl
                 ⟩
-  coherence-iso = triangle-prism top-face square₁ square₂ square₃
+  coherence-iso₁ = triangle-prism top-face square₁ square₂ square₃
     where square₁ : [ unit ⊗₀ X ⊗₀ Y ⇒ unit ⊗₀ X ⊗₀ Y ]⟨
                       ≅-sym unitorˡ ∘ᵢ unitorˡ
                     ≈ ≅-refl ⊗ᵢ unitorˡ ∘ᵢ ≅-sym unitorˡ
@@ -144,7 +139,76 @@ module Coherence  {X Y : Obj} where
                     ⟩
           square₃ = lift-square′ unitorˡ-commute-to
 
-  coherence : unitorˡ.from ∘ associator.from ≈ unitorˡ.from {X} ⊗₁ C.id {Y}
-  coherence = project-triangle coherence-iso
+  coherence₁ : unitorˡ.from ∘ associator.from ≈ unitorˡ.from {X} ⊗₁ C.id {Y}
+  coherence₁ = project-triangle coherence-iso₁
 
-open Coherence using (coherence; coherence-iso)
+  -- another coherence property
+
+  -- TS : the following three commute
+
+  ρu : ((X ⊗₀ Y) ⊗₀ unit) ⊗₀ unit ≅ (X ⊗₀ Y) ⊗₀ unit
+  ρu = unitorʳ ⊗ᵢ ≅-refl
+
+  au : ((X ⊗₀ Y) ⊗₀ unit) ⊗₀ unit ≅ (X ⊗₀ Y ⊗₀ unit) ⊗₀ unit
+  au = associator ⊗ᵢ ≅-refl
+
+  [Xρ]u : (X ⊗₀ Y ⊗₀ unit) ⊗₀ unit ≅ (X ⊗₀ Y) ⊗₀ unit
+  [Xρ]u = (≅-refl ⊗ᵢ unitorʳ) ⊗ᵢ ≅-refl
+
+
+  perimeter″ : [ ((X ⊗₀ Y) ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit ]⟨
+                 associator                                  ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⊗₀ unit ⟩
+                 associator                                  ⇒⟨ X ⊗₀ Y ⊗₀ unit ⊗₀ unit ⟩
+                 ≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ
+               ≈ ρu                                          ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⟩
+                 associator
+               ⟩
+  perimeter″ = glue▹◽ triangle-iso (sym (lift-square′ (Equiv.trans (∘-resp-≈ʳ (F-resp-≈ ⊗ (Equiv.sym (identity ⊗) , Equiv.refl)))
+                                                                   assoc-commute-from)))
+    where open Square Isos
+
+  perimeter‴ : [ ((X ⊗₀ Y) ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit                                    ]⟨
+                 associator ⊗ᵢ ≅-refl                                                           ⇒⟨ (X ⊗₀ (Y ⊗₀ unit)) ⊗₀ unit ⟩
+                 (associator                                                                    ⇒⟨ X ⊗₀ (Y ⊗₀ unit) ⊗₀ unit ⟩
+                 ≅-refl ⊗ᵢ associator                                                           ⇒⟨ X ⊗₀ Y ⊗₀ unit ⊗₀ unit ⟩
+                 ≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ)
+               ≈ ρu                                                                             ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⟩
+                 associator
+               ⟩
+  perimeter‴ = begin
+    (≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ ∘ᵢ ≅-refl ⊗ᵢ associator ∘ᵢ associator) ∘ᵢ associator ⊗ᵢ ≅-refl ≈⟨ assoc′ ⟩
+    ≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ ∘ᵢ (≅-refl ⊗ᵢ associator ∘ᵢ associator) ∘ᵢ associator ⊗ᵢ ≅-refl ≈⟨ refl ⟩∘⟨ assoc′ ⟩
+    ≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ ∘ᵢ ≅-refl ⊗ᵢ associator ∘ᵢ associator ∘ᵢ associator ⊗ᵢ ≅-refl   ≈⟨ refl ⟩∘⟨ pentagon-iso ⟩
+    ≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ ∘ᵢ associator ∘ᵢ associator                                     ≈⟨ perimeter″ ⟩
+    associator ∘ᵢ ρu                                                                            ∎
+  
+  top-face′ : [Xρ]u ∘ᵢ au ≃ ρu
+  top-face′ = cut-squareʳ perimeter‴ (sym (glue◃◽′ tri′ (sym (lift-square′ assoc-commute-from))))
+    where open Square Isos
+          tri′ : [ X ⊗₀ (Y ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit ]⟨
+                 (≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ ∘ᵢ ≅-refl ⊗ᵢ associator)
+               ≈ ≅-refl ⊗ᵢ unitorʳ ⊗ᵢ ≅-refl
+               ⟩
+          tri′ = lift-triangle′ ([ X ⊗- ]-resp-triangle triangle)
+
+  coherence-iso₂ : [ (X ⊗₀ Y) ⊗₀ unit ⇒ X ⊗₀ Y ]⟨
+                     ≅-refl ⊗ᵢ unitorʳ ∘ᵢ associator
+                   ≈ unitorʳ
+                   ⟩
+  coherence-iso₂ = triangle-prism top-face′ square₁ square₂ (lift-square′ unitorʳ-commute-to)
+    where square₁ : [ X ⊗₀ Y ⊗₀ unit ⇒ (X ⊗₀ Y) ⊗₀ unit ]⟨
+                      ≅-sym unitorʳ ∘ᵢ ≅-refl ⊗ᵢ unitorʳ
+                    ≈ (≅-refl ⊗ᵢ unitorʳ) ⊗ᵢ ≅-refl ∘ᵢ ≅-sym unitorʳ
+                    ⟩
+          square₁ = lift-square′ unitorʳ-commute-to
+
+          square₂ : [ (X ⊗₀ Y) ⊗₀ unit ⇒ (X ⊗₀ Y ⊗₀ unit) ⊗₀ unit ]⟨
+                      ≅-sym unitorʳ ∘ᵢ associator
+                    ≈ associator ⊗ᵢ ≅-refl ∘ᵢ ≅-sym unitorʳ
+                    ⟩
+          square₂ = lift-square′ unitorʳ-commute-to
+
+  coherence₂ : C.id {X} ⊗₁ unitorʳ.from {Y} ∘ associator.from ≈ unitorʳ.from
+  coherence₂ = project-triangle coherence-iso₂
+
+open Kelly's using (coherence₁; coherence-iso₁; coherence₂; coherence-iso₂)

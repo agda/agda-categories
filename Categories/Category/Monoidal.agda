@@ -42,8 +42,11 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   _⊗₁_ : X ⇒ Y → Z ⇒ W → X ⊗₀ Z ⇒ Y ⊗₀ W
   f ⊗₁ g = F₁ (f , g)
 
-  u⊗- = appˡ ⊗ unit
-  -⊗u = appʳ ⊗ unit
+  _⊗- : Obj → Functor C C
+  X ⊗- = appˡ ⊗ X
+
+  -⊗_ : Obj → Functor C C
+  -⊗ X = appʳ ⊗ X
   
   field
     unitorˡ    : unit ⊗₀ X ≅ X
@@ -81,7 +84,7 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
     x⊗[y⊗z] : Bifunctor (Product C C) C C
     x⊗[y⊗z] = ⊗ ∘F (idF ⁂ ⊗) ∘F assocˡ _ _ _
 
-  unitorˡ-naturalIsomorphism : NaturalIsomorphism u⊗- idF
+  unitorˡ-naturalIsomorphism : NaturalIsomorphism (unit ⊗-) idF
   unitorˡ-naturalIsomorphism = record
     { F⇒G = record
       { η       = λ X → unitorˡ.from
@@ -94,7 +97,7 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
     ; iso = λ _ → unitorˡ.iso
     }
 
-  unitorʳ-naturalIsomorphism : NaturalIsomorphism -⊗u idF
+  unitorʳ-naturalIsomorphism : NaturalIsomorphism (-⊗ unit) idF
   unitorʳ-naturalIsomorphism = record
     { F⇒G = record
       { η       = λ X → unitorʳ.from

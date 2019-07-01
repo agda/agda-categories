@@ -215,16 +215,23 @@ module _ where
     where glued : CommutativeIso (i ∘ᵢ f) g k (i′ ∘ᵢ f′)
           glued = sym (glue (sym sq₁) (sym sq₂))
   
-  elim-triangle : f ∘ᵢ g ∘ᵢ h ≃ i → f ∘ᵢ j ≃ i → g ∘ᵢ h ≃ j
-  elim-triangle {f = f} {g = g} {h = h} {i = i} {j = j} perim tri = begin
+  elim-triangleˡ : f ∘ᵢ g ∘ᵢ h ≃ i → f ∘ᵢ j ≃ i → g ∘ᵢ h ≃ j
+  elim-triangleˡ {f = f} {g = g} {h = h} {i = i} {j = j} perim tri = begin
     g ∘ᵢ h                ≈⟨ introˡ sym∘ᵢ≃refl ⟩
     (f ⁻¹ ∘ᵢ f) ∘ᵢ g ∘ᵢ h ≈⟨ pullʳ perim ⟩
     f ⁻¹ ∘ᵢ i             ≈˘⟨ switch-fromtoˡ′ tri ⟩
     j                     ∎
     
-  elim-triangle′ : f ∘ᵢ g ∘ᵢ h ≃ i → j ∘ᵢ h ≃ i → f ∘ᵢ g ≃ j
-  elim-triangle′ {f = f} {g = g} {h = h} {i = i} {j = j} perim tri = begin
+  elim-triangleˡ′ : f ∘ᵢ g ∘ᵢ h ≃ i → j ∘ᵢ h ≃ i → f ∘ᵢ g ≃ j
+  elim-triangleˡ′ {f = f} {g = g} {h = h} {i = i} {j = j} perim tri = begin
     f ∘ᵢ g                  ≈⟨ introʳ sym∘ᵢ≃refl ⟩
     (f ∘ᵢ g) ∘ᵢ (h ∘ᵢ h ⁻¹) ≈⟨ pullˡ (trans (Category.assoc Isos) perim) ⟩
     i ∘ᵢ h ⁻¹               ≈˘⟨ switch-fromtoʳ′ tri ⟩
     j                       ∎
+
+  cut-squareʳ : CommutativeIso g f h i → i ∘ᵢ j ≃ h → j ∘ᵢ g ≃ f
+  cut-squareʳ {g = g} {f = f} {h = h} {i = i} {j = j} sq tri = begin
+    j ∘ᵢ g           ≈⟨ switch-fromtoˡ′ tri ⟩∘⟨ refl ⟩
+    (i ⁻¹ ∘ᵢ h) ∘ᵢ g ≈⟨ Category.assoc Isos ⟩
+    i ⁻¹ ∘ᵢ h ∘ᵢ g   ≈˘⟨ switch-fromtoˡ′ (sym sq) ⟩
+    f                ∎
