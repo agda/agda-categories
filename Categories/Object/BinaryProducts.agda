@@ -9,6 +9,7 @@ open import Level
 open Category 𝒞
 open HomReasoning
 
+open import Categories.Object.Terminal 𝒞
 open import Categories.Object.Product 𝒞
 open import Categories.Morphism 𝒞
 open import Categories.Square 𝒞
@@ -55,8 +56,8 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
   commute₂ : π₂ ∘ ⟨ f , g ⟩ ≈ g
   commute₂ = Product.commute₂ product
 
-  universal :  π₁ ∘ h ≈ f → π₂ ∘ h ≈ g → ⟨ f , g ⟩ ≈ h
-  universal = Product.universal product
+  unique :  π₁ ∘ h ≈ f → π₂ ∘ h ≈ g → ⟨ f , g ⟩ ≈ h
+  unique = Product.unique product
 
   assocˡ : (A × B) × C ⇒ A × B × C
   assocˡ = _≅_.to ×-assoc
@@ -119,7 +120,7 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
   ⁂∘⁂ = [ product ⇒ product ⇒ product ]×∘×
   
   ⟨⟩∘ : ⟨ f , g ⟩ ∘ h ≈ ⟨ f ∘ h , g ∘ h ⟩
-  ⟨⟩∘ = sym (universal (trans (sym assoc) (∘-resp-≈ˡ commute₁)) (trans (sym assoc) (∘-resp-≈ˡ commute₂)))
+  ⟨⟩∘ = sym (unique (trans (sym assoc) (∘-resp-≈ˡ commute₁)) (trans (sym assoc) (∘-resp-≈ˡ commute₂)))
 
   first∘first : ∀ {C} → first {C = C} f ∘ first g ≈ first (f ∘ g)
   first∘first = [ product ⇒ product ⇒ product ]×id∘×id
@@ -197,3 +198,26 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
     ≈⟨ sym ⁂∘⟨⟩ ⟩
       (f ⁂ (g ⁂ h)) ∘ assocˡ
     ∎
+
+record FiniteProducts : Set (o ⊔ ℓ ⊔ e) where
+  field
+    terminal : Terminal
+    products : BinaryProducts
+
+  module terminal = Terminal terminal
+  module products = BinaryProducts products
+  open terminal public
+  open products public
+
+  ⊤×A≅A : ⊤ × A ≅ A
+  ⊤×A≅A = record
+    { from = π₂
+    ; to   = ⟨ ! , id ⟩
+    ; iso  = record
+      { isoˡ = begin
+        ⟨ ! , id ⟩ ∘ π₂ ≈˘⟨ unique !-unique₂ (cancelˡ commute₂) ⟩
+        ⟨ π₁ , π₂ ⟩     ≈⟨ η ⟩
+        id              ∎
+      ; isoʳ = commute₂
+      }
+    }
