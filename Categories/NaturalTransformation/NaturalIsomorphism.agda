@@ -18,6 +18,8 @@ open import Categories.Functor.Properties
 
 open import Relation.Binary
 
+open α using (NaturalTransformation; _∘ᵥ_; _∘ₕ_; _∘ˡ_; _∘ʳ_) public
+
 private
   variable
     o ℓ e o′ ℓ′ e′ : Level

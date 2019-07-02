@@ -18,7 +18,9 @@ open import Categories.Object.Terminal 𝒞
 open import Categories.Object.Product 𝒞
 open import Categories.Morphism 𝒞
 open import Categories.Square 𝒞
-open import Categories.Functor.Bifunctor hiding (id)
+
+open import Categories.Functor.Bifunctor renaming (id to idF)
+open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans; _≅_)
 
 private
   variable
@@ -88,10 +90,10 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
 
   ⟨⟩-congʳ : f ≈ f′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g ⟩
   ⟨⟩-congʳ pf = ⟨⟩-cong₂ pf refl
-
+  
   ⟨⟩-congˡ : g ≈ g′ → ⟨ f , g ⟩ ≈ ⟨ f , g′ ⟩
   ⟨⟩-congˡ pf = ⟨⟩-cong₂ refl pf
-
+    
   swap : A × B ⇒ B × A
   swap = ⟨ π₂ , π₁ ⟩
 
@@ -205,8 +207,8 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
       (f ⁂ (g ⁂ h)) ∘ assocˡ
     ∎
 
-  ×-bifunctor : Bifunctor 𝒞 𝒞 𝒞
-  ×-bifunctor = record
+  -×- : Bifunctor 𝒞 𝒞 𝒞
+  -×- = record
     { F₀           = uncurry _×_
     ; F₁           = uncurry _⁂_
     ; identity     = id×id product
@@ -214,6 +216,11 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
     ; F-resp-≈     = uncurry [ product ⇒ product ]×-cong₂
     }
 
+  -×_ : Obj → Functor 𝒞 𝒞
+  -×_ = appʳ -×-
+
+  _×- : Obj → Functor 𝒞 𝒞
+  _×- = appˡ -×-
 
 record FiniteProducts : Set (o ⊔ ℓ ⊔ e) where
   field
@@ -236,4 +243,55 @@ record FiniteProducts : Set (o ⊔ ℓ ⊔ e) where
         id              ∎
       ; isoʳ = commute₂
       }
+    }
+
+  A×⊤≅A : A × ⊤ ≅ A
+  A×⊤≅A = record
+    { from = π₁
+    ; to   = ⟨ id , ! ⟩
+    ; iso  = record
+      { isoˡ = begin
+        ⟨ id , ! ⟩ ∘ π₁ ≈˘⟨ unique (cancelˡ commute₁) !-unique₂ ⟩
+        ⟨ π₁ , π₂ ⟩     ≈⟨ η ⟩
+        id              ∎
+      ; isoʳ = commute₁
+      }
+    }
+
+  ⊤×--id : NaturalIsomorphism (⊤ ×-) idF
+  ⊤×--id = record
+    { F⇒G = record
+      { η       = λ _ → π₂
+      ; commute = λ _ → commute₂
+      }
+    ; F⇐G = record
+      { η       = λ _ → ⟨ ! , id ⟩
+      ; commute = λ f → begin
+        ⟨ ! , id ⟩ ∘ f                                     ≈⟨ ⟨⟩∘ ⟩
+        ⟨ ! ∘ f , id  ∘ f ⟩                                ≈⟨ ⟨⟩-cong₂ (sym (!-unique _)) identityˡ ⟩
+        ⟨ ! , f ⟩                                          ≈˘⟨ ⟨⟩-cong₂ identityˡ identityʳ ⟩
+        ⟨ id ∘ ! , f ∘ id ⟩                                ≈˘⟨ ⟨⟩-cong₂ (pullʳ commute₁) (pullʳ commute₂) ⟩
+        ⟨ (id ∘ π₁) ∘ ⟨ ! , id ⟩ , (f ∘ π₂) ∘ ⟨ ! , id ⟩ ⟩ ≈˘⟨ ⟨⟩∘ ⟩
+        ⟨ id ∘ π₁ , f ∘ π₂ ⟩ ∘ ⟨ ! , id ⟩                  ∎
+      }
+    ; iso = λ _ → _≅_.iso ⊤×A≅A
+    }
+
+  -×⊤-id : NaturalIsomorphism (-× ⊤) idF
+  -×⊤-id = record
+    { F⇒G = record
+      { η       = λ _ → π₁
+      ; commute = λ _ → commute₁
+      }
+    ; F⇐G = record
+      { η       = λ _ → ⟨ id , ! ⟩
+      ; commute = λ f → begin
+        ⟨ id , ! ⟩ ∘ f                                     ≈⟨ ⟨⟩∘ ⟩
+        ⟨ id ∘ f , ! ∘ f ⟩                                 ≈⟨ ⟨⟩-cong₂ identityˡ (sym (!-unique _)) ⟩
+        ⟨ f , ! ⟩                                          ≈˘⟨ ⟨⟩-cong₂ identityʳ identityˡ ⟩
+        ⟨ f ∘ id , id ∘ ! ⟩                                ≈˘⟨ ⟨⟩-cong₂ (pullʳ commute₁) (pullʳ commute₂) ⟩
+        ⟨ (f ∘ π₁) ∘ ⟨ id , ! ⟩ , (id ∘ π₂) ∘ ⟨ id , ! ⟩ ⟩ ≈˘⟨ ⟨⟩∘ ⟩
+        ⟨ f ∘ π₁ , id ∘ π₂ ⟩ ∘ ⟨ id , ! ⟩                  ∎
+      }
+    ; iso = λ _ → _≅_.iso A×⊤≅A
     }

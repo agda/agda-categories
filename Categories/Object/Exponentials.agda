@@ -44,11 +44,11 @@ record Exponentials : Set (o ⊔ ℓ ⊔ e) where
   λ-cong : f ≈ g → λg f ≈ λg g
   λ-cong eq = exp.λ-cong exp.product eq
 
-  β : eval ∘ [ product B A ⇒ product C A ] λg f ×id ≈ f
-  β = exp.β exp.product
-
   _×id : (f : B ^ A ⇒ C ^ A) → [[ product B A ]] ⇒ [[ product C A ]]
   f ×id = [ exp.product ⇒ exp.product ] f ×id
+
+  β : eval ∘ λg f ×id ≈ f
+  β = exp.β exp.product
 
   -^-functor : Obj → Functor 𝒞 𝒞
   -^-functor A = record
