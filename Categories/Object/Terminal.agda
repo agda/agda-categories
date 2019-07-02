@@ -20,23 +20,23 @@ record Terminal : Set (o ⊔ ℓ ⊔ e) where
     ! : ∀ {A} → (A ⇒ ⊤)
     !-unique : ∀ {A} → (f : A ⇒ ⊤) → ! ≈ f
 
-  !-unique₂ : ∀ {A} → (f g : A ⇒ ⊤) → f ≈ g
-  !-unique₂ f g = begin
-    f ≈⟨ Equiv.sym (!-unique f) ⟩
+  !-unique₂ : ∀ {A} {f g : A ⇒ ⊤} → f ≈ g
+  !-unique₂ {f = f} {g} = begin
+    f ≈˘⟨ !-unique f ⟩
     ! ≈⟨ !-unique g ⟩
     g ∎
     where open HomReasoning
 
   ⊤-id : (f : ⊤ ⇒ ⊤) → f ≈ id
-  ⊤-id f = !-unique₂ f id
+  ⊤-id f = !-unique₂
 
 open Terminal
 
 from-⊤-is-Mono : ∀ {A : Obj} {t : Terminal} → (f : ⊤ t ⇒ A) → Mono f
 from-⊤-is-Mono {_} {t} f = helper
   where
-    helper : ∀ {C : Obj} -> (g h : C ⇒ ⊤ t) → f ∘ g ≈ f ∘ h → g ≈ h
-    helper g h _ = !-unique₂ t g h
+    helper : ∀ {C : Obj} → (g h : C ⇒ ⊤ t) → f ∘ g ≈ f ∘ h → g ≈ h
+    helper g h _ = !-unique₂ t
 
 up-to-iso : (t₁ t₂ : Terminal) → ⊤ t₁ ≅ ⊤ t₂
 up-to-iso t₁ t₂ = record

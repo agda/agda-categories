@@ -28,22 +28,22 @@ record Product (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
     π₂    : A×B ⇒ B
     ⟨_,_⟩ : C ⇒ A → C ⇒ B → C ⇒ A×B
 
-    commute₁  : π₁ ∘ ⟨ h , i ⟩ ≈ h
-    commute₂  : π₂ ∘ ⟨ h , i ⟩ ≈ i
-    universal : π₁ ∘ h ≈ i → π₂ ∘ h ≈ j → ⟨ i , j ⟩ ≈ h
+    commute₁ : π₁ ∘ ⟨ h , i ⟩ ≈ h
+    commute₂ : π₂ ∘ ⟨ h , i ⟩ ≈ i
+    unique   : π₁ ∘ h ≈ i → π₂ ∘ h ≈ j → ⟨ i , j ⟩ ≈ h
 
   g-η : ⟨ π₁ ∘ h , π₂ ∘ h ⟩ ≈ h
-  g-η = universal refl refl
+  g-η = unique refl refl
 
   η : ⟨ π₁ , π₂ ⟩ ≈ id
-  η = universal identityʳ identityʳ
+  η = unique identityʳ identityʳ
 
   ⟨⟩-cong₂ : ∀ {f f′ : C ⇒ A} {g g′ : C ⇒ B} → f ≈ f′ → g ≈ g′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g′ ⟩
   ⟨⟩-cong₂ f≡f′ g≡g′ = 
-    universal (trans commute₁ (sym f≡f′)) (trans commute₂ (sym g≡g′))
+    unique (trans commute₁ (sym f≡f′)) (trans commute₂ (sym g≡g′))
 
   ∘-distribʳ-⟨⟩ : ∀ {f : C ⇒ A} {g : C ⇒ B} {q : D ⇒ C} → ⟨ f , g ⟩ ∘ q ≈ ⟨ f ∘ q , g ∘ q ⟩
-  ∘-distribʳ-⟨⟩ = sym (universal (pullˡ commute₁) (pullˡ commute₂))
+  ∘-distribʳ-⟨⟩ = sym (unique (pullˡ commute₁) (pullˡ commute₂))
 
 module _ {A B : Obj} where
   open Product {A} {B} renaming (⟨_,_⟩ to _⟨_,_⟩)
@@ -52,7 +52,7 @@ module _ {A B : Obj} where
   repack p₁ p₂ = p₂ ⟨ π₁ p₁ , π₂ p₁ ⟩
 
   repack∘ : (p₁ p₂ p₃ : Product A B) → repack p₂ p₃ ∘ repack p₁ p₂ ≈ repack p₁ p₃
-  repack∘ p₁ p₂ p₃ = sym (universal p₃ 
+  repack∘ p₁ p₂ p₃ = sym (unique p₃ 
     (glueTrianglesʳ (commute₁ p₃) (commute₁ p₂))
     (glueTrianglesʳ (commute₂ p₃) (commute₂ p₂)))
 
@@ -80,9 +80,9 @@ transport-by-iso p {X} p≅X = record
   ; ⟨_,_⟩ = λ h₁ h₂ → from ∘ ⟨ h₁ , h₂ ⟩
   ; commute₁ = trans (cancelInner isoˡ) commute₁
   ; commute₂ = trans (cancelInner isoˡ) commute₂
-  ; universal = λ {_ i l r} pf₁ pf₂ → begin
+  ; unique = λ {_ i l r} pf₁ pf₂ → begin
     from ∘ ⟨ l , r ⟩                         ≈⟨ refl⟩∘⟨ ⟨⟩-cong₂ (sym pf₁) (sym pf₂) ⟩
-    from ∘ ⟨ (π₁ ∘ to) ∘ i , (π₂ ∘ to) ∘ i ⟩ ≈⟨ refl⟩∘⟨ universal (sym assoc) (sym assoc) ⟩
+    from ∘ ⟨ (π₁ ∘ to) ∘ i , (π₂ ∘ to) ∘ i ⟩ ≈⟨ refl⟩∘⟨ unique (sym assoc) (sym assoc) ⟩
     from ∘ to ∘ i                            ≈⟨ cancelˡ isoʳ ⟩
     i                                        ∎
   }
@@ -97,7 +97,7 @@ Reversible p = record
   ; ⟨_,_⟩     = flip ⟨_,_⟩
   ; commute₁  = commute₂
   ; commute₂  = commute₁
-  ; universal = flip universal
+  ; unique = flip unique
   }
   where open Product p
 
@@ -117,7 +117,7 @@ Associable p₁ p₂ p₃ = record
     p₁ ⟨ π₁ p₁ ∘ f , π₂ p₁ ∘ f ⟩                                           ≈⟨ g-η p₁ ⟩
     f                                                                      ∎
   ; commute₂  = λ {_ f g} → glueTrianglesˡ (commute₂ p₂) (commute₂ p₃)
-  ; universal = λ {_ i f g} pf₁ pf₂ → begin
+  ; unique = λ {_ i f g} pf₁ pf₂ → begin
     p₃ ⟨ π₁ p₁ ∘ f , p₂ ⟨ π₂ p₁ ∘ f , g ⟩ ⟩             ≈⟨ ⟨⟩-cong₂ p₃ (∘-resp-≈ʳ (sym pf₁))
                                                           (⟨⟩-cong₂ p₂ (∘-resp-≈ʳ (sym pf₁)) (sym pf₂)) ⟩
     p₃ ⟨ π₁ p₁ ∘ p₁ ⟨ π₁ p₃ , π₁ p₂ ∘ π₂ p₃ ⟩ ∘ i
@@ -151,7 +151,7 @@ Mobile p A₁≅A₂ B₁≅B₂ = record
     (from B₁≅B₂ ∘ π₂) ∘ ⟨ to A₁≅A₂ ∘ _ , to B₁≅B₂ ∘ _ ⟩ ≈⟨ pullʳ commute₂ ⟩
     from B₁≅B₂ ∘ (to B₁≅B₂ ∘ _)                         ≈⟨ cancelˡ (isoʳ B₁≅B₂) ⟩
     _                                                   ∎
-  ; universal        = λ pfˡ pfʳ → universal (switch-fromtoˡ A₁≅A₂ (trans (sym assoc) pfˡ))
+  ; unique        = λ pfˡ pfʳ → unique (switch-fromtoˡ A₁≅A₂ (trans (sym assoc) pfˡ))
                                              (switch-fromtoˡ B₁≅B₂ (trans (sym assoc) pfʳ))
   }
   where open Product p

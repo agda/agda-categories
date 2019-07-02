@@ -26,18 +26,18 @@ record Coproduct (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
     i₂    : B ⇒ A+B
     [_,_] : A ⇒ C → B ⇒ C → A+B ⇒ C
 
-    commute₁  : [ f , g ] ∘ i₁ ≈ f
-    commute₂  : [ f , g ] ∘ i₂ ≈ g
-    universal : h ∘ i₁ ≈ f → h ∘ i₂ ≈ g → [ f , g ] ≈ h
+    commute₁ : [ f , g ] ∘ i₁ ≈ f
+    commute₂ : [ f , g ] ∘ i₂ ≈ g
+    unique   : h ∘ i₁ ≈ f → h ∘ i₂ ≈ g → [ f , g ] ≈ h
 
   g-η : [ f ∘ i₁ , f ∘ i₂ ] ≈ f
-  g-η = universal Equiv.refl Equiv.refl
+  g-η = unique Equiv.refl Equiv.refl
 
   η : [ i₁ , i₂ ] ≈ id
-  η = universal identityˡ identityˡ
+  η = unique identityˡ identityˡ
 
   []-cong₂ : ∀ {C} → {f f′ : A ⇒ C} {g g′ : B ⇒ C} → f ≈ f′ → g ≈ g′ → [ f , g ] ≈ [ f′ , g′ ]
-  []-cong₂ f≈f′ g≈g′ = universal (trans commute₁ (sym f≈f′)) (trans commute₂ (sym g≈g′))
+  []-cong₂ f≈f′ g≈g′ = unique (trans commute₁ (sym f≈f′)) (trans commute₂ (sym g≈g′))
 
 -- record BinCoproducts : Set (suc o ⊔ ℓ ⊔ e) where
 --   field
@@ -48,7 +48,7 @@ record Coproduct (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
 
 --     commute₁ : ∀ {f : A ⇒ C} {g : B ⇒ C} → [ f , g ] ∘ i₁ ≈ f
 --     commute₂ : ∀ {f : A ⇒ C} {g : B ⇒ C} → [ f , g ] ∘ i₂ ≈ g
---     universal : ∀ {f : A ⇒ C} {g : B ⇒ C} {h : (A + B) ⇒ C} →
+--     unique : ∀ {f : A ⇒ C} {g : B ⇒ C} {h : (A + B) ⇒ C} →
 --                   h ∘ i₁ ≈ f → h ∘ i₂ ≈ g → [ f , g ] ≈ h
 
 coproduct→product : ∀ {A B} → Coproduct A B → Op×.Product A B
@@ -59,7 +59,7 @@ coproduct→product A+B = record
   ; ⟨_,_⟩ = A+B.[_,_]
   ; commute₁ = A+B.commute₁
   ; commute₂ = A+B.commute₂
-  ; universal = A+B.universal
+  ; unique = A+B.unique
   }
   where
   module A+B = Coproduct A+B
@@ -72,7 +72,7 @@ product→coproduct A×B = record
   ; [_,_] = A×B.⟨_,_⟩
   ; commute₁ = A×B.commute₁
   ; commute₂ = A×B.commute₂
-  ; universal = A×B.universal
+  ; unique = A×B.unique
   }
   where
   module A×B = Op×.Product A×B

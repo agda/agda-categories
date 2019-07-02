@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Sets where
+module Categories.Category.Sets where
 
 open import Level
 open import Relation.Binary

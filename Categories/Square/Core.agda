@@ -122,6 +122,24 @@ glue◃◽ {a = a} {c′ = c′} {c″ = c″} {c = c} {b′ = b′} {b = b} tri
   a ∘ (c′ ∘ b′) ≈⟨ pullˡ tri-a ⟩
   c″ ∘ b′       ∎
 
+glue◃◽′ : c ∘ c′ ≈ a′ → CommutativeSquare a b a′ b′ → CommutativeSquare (c′ ∘ a) b c b′
+glue◃◽′ {c = c} {c′ = c′} {a′ = a′} {a = a} {b = b} {b′ = b′} tri sq = begin
+  c ∘ c′ ∘ a ≈⟨ pullˡ tri ⟩
+  a′ ∘ a     ≈⟨ sq ⟩
+  b′ ∘ b     ∎
+
+glue◽◃ : CommutativeSquare a b a′ b′ → b ∘ c ≈ c′ → CommutativeSquare (a ∘ c) c′ a′ b′
+glue◽◃ {a = a} {b = b} {a′ = a′} {b′ = b′} {c = c} {c′ = c′} sq tri = begin
+  a′ ∘ a ∘ c   ≈⟨ pullˡ sq ⟩
+  (b′ ∘ b) ∘ c ≈⟨ pullʳ tri ⟩
+  b′ ∘ c′      ∎
+
+glue▹◽ : b ∘ a″ ≈ c → CommutativeSquare a b a′ b′ → CommutativeSquare (a ∘ a″) c a′ b′
+glue▹◽ {b = b} {a″ = a″} {c = c} {a = a} {a′ = a′} {b′ = b′} tri sq = begin
+  a′ ∘ a ∘ a″   ≈⟨ pullˡ sq ⟩
+  (b′ ∘ b) ∘ a″ ≈⟨ pullʳ tri ⟩
+  b′ ∘ c        ∎
+
 -- essentially composition in the over category
 glueTrianglesʳ : a ∘ b ≈ a′ → a′ ∘ b′ ≈ a″ → a ∘ (b ∘ b′) ≈ a″
 glueTrianglesʳ {a = a} {b = b} {a′ = a′} {b′ = b′} {a″ = a″} a∘b≡a′ a′∘b′≡a″ = begin

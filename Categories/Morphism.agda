@@ -7,6 +7,7 @@ module Categories.Morphism {o ℓ e} (𝒞 : Category o ℓ e) where
 open import Level
 open import Function using (flip)
 open import Relation.Binary hiding (_⇒_)
+open import Relation.Binary.Construct.Closure.Transitive
 
 open import Categories.Square.Core 𝒞
 
@@ -143,3 +144,29 @@ Isos = record
   }
   where open Equiv
 
+∘-tc : A [ _⇒_ ]⁺ B → A ⇒ B
+∘-tc [ f ]            = f
+∘-tc (_ ∼⁺⟨ f⁺ ⟩ f⁺′) = ∘-tc f⁺′ ∘ ∘-tc f⁺
+
+infix 4 _≈⁺_
+_≈⁺_ : Rel (A [ _⇒_ ]⁺ B) _
+f⁺ ≈⁺ g⁺ = ∘-tc f⁺ ≈ ∘-tc g⁺
+
+TransitiveClosure : Category _ _ _
+TransitiveClosure = record
+  { Obj       = Obj
+  ; _⇒_       = λ A B → A [ _⇒_ ]⁺ B
+  ; _≈_       = _≈⁺_
+  ; id        = [ id ]
+  ; _∘_       = flip (_ ∼⁺⟨_⟩_)
+  ; assoc     = assoc
+  ; identityˡ = identityˡ
+  ; identityʳ = identityʳ
+  ; equiv     = record
+    { refl  = refl
+    ; sym   = sym
+    ; trans = trans
+    }
+  ; ∘-resp-≈  = ∘-resp-≈
+  }
+  where open HomReasoning

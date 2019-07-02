@@ -117,8 +117,8 @@ Product×Equalizer⇒Pullback {f = f} {g = g} p e = record
     f ∘ h₁                 ≈⟨ eq ⟩
     g ∘ h₂                 ≈˘⟨ pullʳ commute₂ ⟩
     (g ∘ π₂) ∘ ⟨ h₁ , h₂ ⟩ ∎
-  ; unique          = λ eq eq′ → unique (p.universal (trans (sym assoc) eq)
-                                                     (trans (sym assoc) eq′))
+  ; unique          = λ eq eq′ → e.unique (p.unique (trans (sym assoc) eq)
+                                                    (trans (sym assoc) eq′))
   ; p₁∘universal≈h₁ = trans (pullʳ (sym e.universal)) commute₁
   ; p₂∘universal≈h₂ = trans (pullʳ (sym e.universal)) commute₂
   }
@@ -138,12 +138,12 @@ Product×Pullback⇒Equalizer {f = f} {g = g} p pu = record
     (g ∘ π₂) ∘ ⟨ p₁ , p₂ ⟩ ∎
   ; equalize  = λ eq → pu.universal (trans (sym assoc) (trans eq assoc))
   ; universal = λ {_ h} → begin
-    h                      ≈˘⟨ p.universal (sym p₁∘universal≈h₁) (sym p₂∘universal≈h₂) ⟩
-    ⟨ p₁ ∘ _ , p₂ ∘ _ ⟩    ≈⟨ p.universal (pullˡ commute₁)
+    h                      ≈˘⟨ p.unique (sym p₁∘universal≈h₁) (sym p₂∘universal≈h₂) ⟩
+    ⟨ p₁ ∘ _ , p₂ ∘ _ ⟩    ≈⟨ p.unique (pullˡ commute₁)
                                           (pullˡ commute₂) ⟩
     ⟨ p₁ , p₂ ⟩ ∘ _        ∎
-  ; unique    = λ eq → unique (trans (pushˡ (sym commute₁)) (sym (∘-resp-≈ʳ eq)))
-                              (trans (pushˡ (sym commute₂)) (sym (∘-resp-≈ʳ eq)))
+  ; unique    = λ eq → pu.unique (trans (pushˡ (sym commute₁)) (sym (∘-resp-≈ʳ eq)))
+                                 (trans (pushˡ (sym commute₂)) (sym (∘-resp-≈ʳ eq)))
   }
   where module p = Product p
         module pu = Pullback pu

@@ -65,6 +65,17 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     _⟩∘⟨refl : ∀ {M} {f h : M ⇒ B} {g : A ⇒ M} → f ≈ h → f ∘ g ≈ h ∘ g
     _⟩∘⟨refl = _⟩∘⟨ Equiv.refl
 
+  module Commutation where
+    infix 1 [_⇒_]⟨_≈_⟩
+    [_⇒_]⟨_≈_⟩ : ∀ (A B : Obj) → A ⇒ B → A ⇒ B → Set _
+    [ A ⇒ B ]⟨ f ≈ g ⟩ = f ≈ g
+
+    infixl 2 connect
+    connect : ∀ {A C : Obj} (B : Obj) → A ⇒ B → B ⇒ C → A ⇒ C
+    connect B f g = g ∘ f
+
+    syntax connect B f g = f ⇒⟨ B ⟩ g
+
   op : Category o ℓ e
   op = record 
     { Obj = Obj
@@ -102,3 +113,6 @@ _[_≈_] = Category._≈_
 
 _[_∘_] : ∀ {o ℓ e} → (C : Category o ℓ e) → ∀ {X Y Z} (f : C [ Y , Z ]) → (g : C [ X , Y ]) → C [ X , Z ]
 _[_∘_] = Category._∘_
+
+levelOf : ∀ {o ℓ e} → Category o ℓ e → Level
+levelOf {o} {ℓ} {e} _ = o ⊔ ℓ ⊔ e

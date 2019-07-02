@@ -3,15 +3,20 @@ open import Categories.Category
 
 module Categories.Morphism.Properties {o ℓ e} (𝒞 : Category o ℓ e) where
 
+open import Data.Product using (_,_; _×_)
+
 open Category 𝒞
 open HomReasoning
 
-open import Categories.Morphism 𝒞
+import Categories.Morphism as M
+open M 𝒞
 open import Categories.Square 𝒞
+open import Categories.Category.Morphisms 𝒞
 
 private
+  module MM = M Morphisms
   variable
-    A B C : Obj
+    A B C D : Obj
     f g h i : A ⇒ B
 
 module _ (iso : Iso f g) where
@@ -62,3 +67,25 @@ Iso-∘ {f = f} {g = g} {h = h} {i = i} iso iso′ = record
     id              ∎
   }
   where open Iso
+
+Iso-≈ : f ≈ h → Iso f g → Iso h i → g ≈ i
+Iso-≈ {f = f} {h = h} {g = g} {i = i} eq iso iso′ = begin
+  g           ≈⟨ introˡ (isoˡ iso′) ⟩
+  (i ∘ h) ∘ g ≈⟨ (refl ⟩∘⟨ sym eq) ⟩∘⟨refl ⟩
+  (i ∘ f) ∘ g ≈⟨ pullʳ (isoʳ iso) ⟩
+  i ∘ id      ≈⟨ identityʳ ⟩
+  i           ∎
+  where open Iso
+
+module _ where
+  open _≅_
+  
+  isos×≈⇒≈ : ∀ {f g : A ⇒ B} → h ≈ i → (iso₁ : A ≅ C) → (iso₂ : B ≅ D) →
+               CommutativeSquare f (from iso₁) (from iso₂) h →
+               CommutativeSquare g (from iso₁) (from iso₂) i →
+               f ≈ g
+  isos×≈⇒≈ {h = h} {i = i} {f = f} {g = g} eq iso₁ iso₂ sq₁ sq₂ = begin
+    f ≈⟨ switch-fromtoˡ iso₂ sq₁ ⟩
+    to iso₂ ∘ h ∘ from iso₁ ≈⟨ refl ⟩∘⟨ ∘-resp-≈ˡ eq ⟩
+    to iso₂ ∘ i ∘ from iso₁ ≈˘⟨ switch-fromtoˡ iso₂ sq₂ ⟩
+    g ∎
