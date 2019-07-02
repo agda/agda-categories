@@ -62,6 +62,10 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
     λg product eval ∘ id                             ≈⟨ subst _ _ ⟩
     λg product (eval ∘ [ product ⇒ product ] id ×id) ≈⟨ η product ⟩
     id                                               ∎
+    
+  λ-unique′ : ∀ (X×A : Product X A) {h i : X ⇒ B^A} →
+                eval ∘ [ X×A ⇒ product ] h ×id ≈ eval ∘ [ X×A ⇒ product ] i ×id → h ≈ i
+  λ-unique′ p eq = trans (λ-unique p eq) (sym (λ-unique p refl))
 
 -- some aliases to make proof signatures less ugly
 [_]eval : ∀{A B}(e₁ : Exponential A B) → Exponential.B^A×A e₁ ⇒ B

@@ -9,6 +9,7 @@ open import Categories.Category
 module Categories.Object.BinaryProducts {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
+open import Data.Product using (Σ; _,_; uncurry)
 
 open Category 𝒞
 open HomReasoning
@@ -17,6 +18,7 @@ open import Categories.Object.Terminal 𝒞
 open import Categories.Object.Product 𝒞
 open import Categories.Morphism 𝒞
 open import Categories.Square 𝒞
+open import Categories.Functor.Bifunctor hiding (id)
 
 private
   variable
@@ -202,6 +204,16 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
     ≈˘⟨ ⁂∘⟨⟩ ⟩
       (f ⁂ (g ⁂ h)) ∘ assocˡ
     ∎
+
+  ×-bifunctor : Bifunctor 𝒞 𝒞 𝒞
+  ×-bifunctor = record
+    { F₀           = uncurry _×_
+    ; F₁           = uncurry _⁂_
+    ; identity     = id×id product
+    ; homomorphism = sym ⁂∘⁂
+    ; F-resp-≈     = uncurry [ product ⇒ product ]×-cong₂
+    }
+
 
 record FiniteProducts : Set (o ⊔ ℓ ⊔ e) where
   field
