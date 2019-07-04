@@ -9,11 +9,6 @@ of a previous library, which worked very well up to Agda 2.4.3 or so, but began 
 was completely broken by 2.6 (with various stages of 'functioning' in between). That library
 itself has older origins, which are well documented in that project's own documentation.
 
-## Contributing
-
-We welcome contributions! Please submit PRs, issues, etc. A full-fledged contributor's guide
-will be written, eventually.
-
 ## Design
 
 One of the main reasons that the old library started bit-rotting was that it used
@@ -36,3 +31,20 @@ standard library.
 Another clear design decision, already present in the original, is to internalize to each
 category a version of Hom-equality.  In practice what this means is that the work here is
 closer in flavour to bicategory-theory than to classical category theory.
+
+Some of the lower-level design decisions (naming conventions, organization) are documented
+in the proto-contributor's guide.
+
+## Contributing
+
+We welcome contributions! Please submit PRs, issues, etc. A full-fledged contributor's guide
+will be written, eventually.
+
+### Naming Conventions
+
+(Some conventions are slowly arising, document them)
+
+### Organization
+
+(where to find what)
+
