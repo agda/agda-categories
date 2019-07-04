@@ -1,6 +1,15 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
 
+{-
+  Helper routines most often used in reasoning with commutative squares,
+  at the level of arrows in categories.
+
+  Pulls  : use a ∘ b ≈ c as left-to-right rewrite
+  Pushes : use c ≈ a ∘ b as a left-to-right rewrite
+  IntroElim : introduce/eliminate an equivalent-to-id arrow
+  Extend : 'extends' a commutative square with an equality on left/right/both
+-}
 module Categories.Square.Core {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
@@ -15,7 +24,7 @@ private
     X Y : Obj
     a a′ a″ b b′ b″ c c′ c″ : X ⇒ Y
     f g h i : X ⇒ Y
-    
+
 open HomReasoning
 
 module Pulls (ab≡c : a ∘ b ≈ c) where
@@ -104,7 +113,7 @@ open Extends public
    |           |
    V           V
    A₃ -- c″ -> B₃
- 
+
    then the whole diagram commutes
 -}
 glue : CommutativeSquare c′ a′ a c″ →
@@ -116,8 +125,8 @@ glue {c′ = c′} {a′ = a′} {a = a} {c″ = c″} {c = c} {b′ = b′} {b 
   (c″ ∘ a′) ∘ b′ ≈⟨ assoc ⟩
   c″ ∘ (a′ ∘ b′) ∎
 
-glue◃◽ : a ∘ c′ ≈ c″ → CommutativeSquare c b′ b c′ → CommutativeSquare c b′ (a ∘ b) c″
-glue◃◽ {a = a} {c′ = c′} {c″ = c″} {c = c} {b′ = b′} {b = b} tri-a sq-b = begin
+glue◃◽: a ∘ c′ ≈ c″ → CommutativeSquare c b′ b c′ → CommutativeSquare c b′ (a ∘ b) c″
+glue◃◽{a = a} {c′ = c′} {c″ = c″} {c = c} {b′ = b′} {b = b} tri-a sq-b = begin
   (a ∘ b) ∘ c   ≈⟨ pullʳ sq-b ⟩
   a ∘ (c′ ∘ b′) ≈⟨ pullˡ tri-a ⟩
   c″ ∘ b′       ∎
