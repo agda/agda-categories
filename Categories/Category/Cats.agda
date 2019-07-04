@@ -27,5 +27,5 @@ Cats o ℓ e = record
   ; identityˡ = unitorˡ
   ; identityʳ = unitorʳ
   ; equiv     = λ {A B} → isEquivalence A B
-  ; ∘-resp-≈  = _∘ₕᵢ_
+  ; ∘-resp-≈  = _ⓘₕ_
   }
