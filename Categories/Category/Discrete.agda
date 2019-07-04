@@ -6,6 +6,13 @@ open import Categories.Category
 open import Function
 open import Relation.Binary.PropositionalEquality as ≡
 
+{-
+ Note that there are two obvious ways of defining ≈ for a Discrete
+ Category: either as λ _ _ → ⊤ or as _≡_. The former hand-squashes
+ all the proofs of morphisms being the same, while the latter
+ explicitly witnesses them. Because this library is proof-relevant,
+ the latter choice is more consistent with that philosophy.
+-}
 Discrete : ∀ {a} (A : Set a) → Category _ _ _
 Discrete A = record
   { Obj       = A
