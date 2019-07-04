@@ -35,6 +35,9 @@ closer in flavour to bicategory-theory than to classical category theory.
 Some of the lower-level design decisions (naming conventions, organization) are (will be) 
 documented in the proto-contributor's guide.
 
+### Places to find more design notes
+- [Category.Discrete](Categories/Category/Discrete.agda)
+
 ## Contributing
 
 We welcome contributions! Please submit PRs, issues, etc. A full-fledged contributor's guide
