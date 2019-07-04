@@ -88,11 +88,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ; assoc = sym assoc
     ; identityˡ = identityʳ
     ; identityʳ = identityˡ
-    ; equiv = record
-      { refl = refl
-      ; sym = sym
-      ; trans = trans
-      }
+    ; equiv = equiv
     ; ∘-resp-≈ = flip ∘-resp-≈
     }
 
