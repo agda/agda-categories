@@ -169,19 +169,15 @@ _≅_ : ∀ {F G : Functor C D} →
   where module H = Category.HomReasoning D
 
 module LeftRightId (F : Functor C D) where
-  open Category.HomReasoning D
+  open Category D
+  open HomReasoning
   open Functor F
-  private
-    module D = Category D
 
   -- the component proofs are all the same, factor out
-  comm : {X Y : Category.Obj C} (f : C [ X , Y ]) → D.id D.∘ F₁ f D.≈ F₁ f D.∘ D.id
-  comm = λ f → begin
-    D.id D.∘ F₁ f   ≈⟨ D.identityˡ ⟩
-    F₁ f            ≈˘⟨ D.identityʳ ⟩
-    F₁ f D.∘ D.id ∎
-  iso-id-id : (X : Category.Obj C) → Morphism.Iso D {A = F₀ X} D.id D.id
-  iso-id-id X = record { isoˡ = D.identityˡ {f = D.id} ; isoʳ = D.identityʳ {f = D.id} }
+  comm : {X Y : Category.Obj C} (f : C [ X , Y ]) → id ∘ F₁ f ≈ F₁ f ∘ id
+  comm _ = Equiv.sym id-comm
+  iso-id-id : (X : Category.Obj C) → Morphism.Iso D {A = F₀ X} id id
+  iso-id-id X = record { isoˡ = identityˡ {f = id} ; isoʳ = identityʳ {f = id} }
 
 -- Left and Right Unitors, Natural Isomorphisms.
 module _ {F : Functor C D} where
