@@ -11,8 +11,9 @@ open import Categories.Category.Product
 open import Categories.Category.Groupoid
 open import Categories.Functor.Bifunctor renaming (id to idF)
 open import Categories.Functor.Properties
-open import Categories.NaturalTransformation hiding (unitorˡ; unitorʳ; associator; _≃_) renaming (id to idN)
-open import Categories.NaturalTransformation.NaturalIsomorphism hiding (_≅_) renaming (refl to idNi)
+open import Categories.NaturalTransformation hiding (_≃_) renaming (id to idN)
+open import Categories.NaturalTransformation.NaturalIsomorphism
+  hiding (unitorˡ; unitorʳ; associator; _≅_) renaming (refl to idNi)
 open import Categories.Morphism C
 open import Categories.Morphism.Isomorphism C
 
@@ -29,7 +30,7 @@ private
 
 record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   infixr 10 _⊗₀_ _⊗₁_ _⊗ᵢ_
-  
+
   field
     ⊗  : Bifunctor C C C
     unit : Obj
@@ -47,7 +48,7 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
 
   -⊗_ : Obj → Functor C C
   -⊗ X = appʳ ⊗ X
-  
+
   field
     unitorˡ    : unit ⊗₀ X ≅ X
     unitorʳ    : X ⊗₀ unit ≅ X
@@ -153,5 +154,3 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
     { from-≈ = identity
     ; to-≈   = identity
     }
-
-  

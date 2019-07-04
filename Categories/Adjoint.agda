@@ -13,6 +13,7 @@ open import Categories.Category.Sets
 open import Categories.Functor.Bifunctor renaming (id to idF)
 open import Categories.Functor.Hom
 open import Categories.NaturalTransformation renaming (id to idN)
+open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; trans; sym)
 import Categories.Square as Square
 
 private
@@ -116,16 +117,13 @@ _⊣_ = Adjoint
 
 ⊣-id : idF {C = C} ⊣ idF {C = C}
 ⊣-id {C = C} = record
-  { unit   = unitorˡ _
-  ; counit = record
-    { η       = λ _ → id
-    ; commute = λ f → trans identityˡ (sym identityʳ)
-    }
+  { unit   = F⇐G unitorˡ
+  ; counit = F⇒G unitorʳ
   ; zig    = identityˡ
   ; zag    = identityʳ
   }
   where open Category C
-        open HomReasoning
+        open NaturalIsomorphism
 
 infix 4 _≊_
 _≊_ : ∀ {L : Functor C D} {R : Functor D C} → Rel (L ⊣ R) _

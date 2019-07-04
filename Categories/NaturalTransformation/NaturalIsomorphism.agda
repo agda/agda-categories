@@ -216,12 +216,13 @@ module _ (F : Functor B C) (G : Functor C D) (H : Functor D E) where
   open Functor
   open LeftRightId (H ∘F (G ∘F F))
 
-  -- components of α
-  assocʳ : NaturalTransformation ((H ∘F G) ∘F F) (H ∘F (G ∘F F))
-  assocʳ = record { η = λ _ → id ; commute = comm }
+  private
+    -- components of α
+    assocʳ : NaturalTransformation ((H ∘F G) ∘F F) (H ∘F (G ∘F F))
+    assocʳ = record { η = λ _ → id ; commute = comm }
 
-  assocˡ : NaturalTransformation (H ∘F (G ∘F F)) ((H ∘F G) ∘F F)
-  assocˡ = record { η = λ _ → id ; commute = comm }
+    assocˡ : NaturalTransformation (H ∘F (G ∘F F)) ((H ∘F G) ∘F F)
+    assocˡ = record { η = λ _ → id ; commute = comm }
 
   associator : NaturalIsomorphism ((H ∘F G) ∘F F) (H ∘F (G ∘F F))
   associator = record { F⇒G = assocʳ ; F⇐G = assocˡ ; iso = iso-id-id }
