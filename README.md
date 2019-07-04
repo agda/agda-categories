@@ -32,8 +32,8 @@ Another clear design decision, already present in the original, is to internaliz
 category a version of Hom-equality.  In practice what this means is that the work here is
 closer in flavour to bicategory-theory than to classical category theory.
 
-Some of the lower-level design decisions (naming conventions, organization) are documented
-in the proto-contributor's guide.
+Some of the lower-level design decisions (naming conventions, organization) are (will be) 
+documented in the proto-contributor's guide.
 
 ## Contributing
 
