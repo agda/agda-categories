@@ -43,6 +43,9 @@ will be written, eventually.
 ### Naming Conventions
 
 (Some conventions are slowly arising, document them)
+- Many definitions (like that of Category) are in Category.Core, to avoid various kinds
+  of import loops, and re-exported. .Core modules should only be imported if doing otherwise
+  causes an import cycle.
 
 ### Organization
 
