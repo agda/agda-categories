@@ -125,8 +125,8 @@ glue {c′ = c′} {a′ = a′} {a = a} {c″ = c″} {c = c} {b′ = b′} {b 
   (c″ ∘ a′) ∘ b′ ≈⟨ assoc ⟩
   c″ ∘ (a′ ∘ b′) ∎
 
-glue◃◽: a ∘ c′ ≈ c″ → CommutativeSquare c b′ b c′ → CommutativeSquare c b′ (a ∘ b) c″
-glue◃◽{a = a} {c′ = c′} {c″ = c″} {c = c} {b′ = b′} {b = b} tri-a sq-b = begin
+glue◃◽ : a ∘ c′ ≈ c″ → CommutativeSquare c b′ b c′ → CommutativeSquare c b′ (a ∘ b) c″
+glue◃◽ {a = a} {c′ = c′} {c″ = c″} {c = c} {b′ = b′} {b = b} tri-a sq-b = begin
   (a ∘ b) ∘ c   ≈⟨ pullʳ sq-b ⟩
   a ∘ (c′ ∘ b′) ≈⟨ pullˡ tri-a ⟩
   c″ ∘ b′       ∎
