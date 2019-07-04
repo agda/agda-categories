@@ -3,13 +3,11 @@ module Categories.Category.Core where
 
 open import Level
 open import Function using (flip)
-open import Data.Product
 
 open import Relation.Binary renaming (_⇒_ to _⊆_)
-open import Algebra.FunctionProperties
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
-record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where 
+record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   infix  4 _≈_ _⇒_
   infixr 9 _∘_
 
@@ -45,7 +43,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   ∘-resp-≈ʳ pf = ∘-resp-≈ refl pf
 
   hom-setoid : ∀ {A B} → Setoid _ _
-  hom-setoid {A} {B} = record 
+  hom-setoid {A} {B} = record
     { Carrier       = A ⇒ B
     ; _≈_           = _≈_
     ; isEquivalence = equiv
@@ -61,7 +59,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
     refl⟩∘⟨_ : ∀ {M} {f : M ⇒ B} {g i : A ⇒ M} → g ≈ i → f ∘ g ≈ f ∘ i
     refl⟩∘⟨_ = Equiv.refl ⟩∘⟨_
-    
+
     _⟩∘⟨refl : ∀ {M} {f h : M ⇒ B} {g : A ⇒ M} → f ≈ h → f ∘ g ≈ h ∘ g
     _⟩∘⟨refl = _⟩∘⟨ Equiv.refl
 
@@ -77,7 +75,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     syntax connect B f g = f ⇒⟨ B ⟩ g
 
   op : Category o ℓ e
-  op = record 
+  op = record
     { Obj = Obj
     ; _⇒_ = flip _⇒_
     ; _≈_ = _≈_
@@ -86,7 +84,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ; assoc = sym assoc
     ; identityˡ = identityʳ
     ; identityʳ = identityˡ
-    ; equiv = record 
+    ; equiv = record
       { refl = refl
       ; sym = sym
       ; trans = trans
@@ -102,17 +100,3 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   id-comm : ∀ {a b} {f : a ⇒ b} → f ∘ id ≈ id ∘ f
   id-comm = trans identityʳ (sym identityˡ)
-
-infix 10  _[_,_] _[_≈_] _[_∘_]
-
-_[_,_] : ∀ {o ℓ e} → (C : Category o ℓ e) → (X : Category.Obj C) → (Y : Category.Obj C) → Set ℓ
-_[_,_] = Category._⇒_
-
-_[_≈_] : ∀ {o ℓ e} → (C : Category o ℓ e) → ∀ {X Y} (f g : C [ X , Y ]) → Set e
-_[_≈_] = Category._≈_
-
-_[_∘_] : ∀ {o ℓ e} → (C : Category o ℓ e) → ∀ {X Y Z} (f : C [ Y , Z ]) → (g : C [ X , Y ]) → C [ X , Z ]
-_[_∘_] = Category._∘_
-
-levelOf : ∀ {o ℓ e} → Category o ℓ e → Level
-levelOf {o} {ℓ} {e} _ = o ⊔ ℓ ⊔ e
