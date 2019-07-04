@@ -7,6 +7,8 @@ open import Function using (flip)
 open import Relation.Binary renaming (_⇒_ to _⊆_)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
+-- Basic definition of a |Category| with a Hom setoid.
+-- Also comes with some reasoning combinators (see HomReasoning)
 record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   infix  4 _≈_ _⇒_
   infixr 9 _∘_
@@ -49,6 +51,8 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ; isEquivalence = equiv
     }
 
+  -- Reasoning combinators.  _≈⟨_⟩_ and _≈˘⟨_⟩_ from SetoidR.
+  -- Also some useful combinators for doing reasoning on _∘_ chains
   module HomReasoning {A B : Obj} where
     open SetoidR (hom-setoid {A} {B}) public
     open Equiv {A = A} {B = B} public
@@ -92,6 +96,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ; ∘-resp-≈ = flip ∘-resp-≈
     }
 
+  -- Q: Should the following 3 really be defined here?
   CommutativeSquare : ∀ {A B C D} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
   CommutativeSquare f g h i = h ∘ f ≈ i ∘ g
 
