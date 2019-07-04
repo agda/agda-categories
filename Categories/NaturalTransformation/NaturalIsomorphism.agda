@@ -7,8 +7,9 @@ open import Data.Product using (_×_; _,_)
 open import Relation.Binary using (IsEquivalence)
 
 open import Categories.Category
-open import Categories.Functor as ℱ hiding (id)
+open import Categories.Functor as ℱ renaming (id to idF)
 open import Categories.NaturalTransformation.Core as α hiding (id)
+import Categories.NaturalTransformation as NT
 import Categories.Morphism as Morphism
 import Categories.Morphism.Properties as Morphismₚ
 import Categories.Square as Square
@@ -19,7 +20,7 @@ open import Relation.Binary
 private
   variable
     o ℓ e o′ ℓ′ e′ : Level
-    C D E : Category o ℓ e
+    B C D E : Category o ℓ e
 
 record NaturalIsomorphism {C : Category o ℓ e}
                           {D : Category o′ ℓ′ e′}
@@ -97,7 +98,7 @@ isEquivalence C D = record
   }
 
 setoid : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Setoid _ _
-setoid C D = record 
+setoid C D = record
   { Carrier       = Functor C D
   ; _≈_           = NaturalIsomorphism
   ; isEquivalence = isEquivalence C D
@@ -166,3 +167,118 @@ _≅_ : ∀ {F G : Functor C D} →
       (H.trans eq⇒₁ eq⇒₂) , (H.trans eq⇐₁ eq⇐₂)
   }
   where module H = Category.HomReasoning D
+
+module LeftRightId (F : Functor C D) where
+  open Category.HomReasoning D
+  open Functor F
+  private
+    module D = Category D
+
+  -- the component proofs are all the same, factor out
+  comm : {X Y : Category.Obj C} (f : C [ X , Y ]) → D.id D.∘ F₁ f D.≈ F₁ f D.∘ D.id
+  comm = λ f → begin
+    D.id D.∘ F₁ f   ≈⟨ D.identityˡ ⟩
+    F₁ f            ≈˘⟨ D.identityʳ ⟩
+    F₁ f D.∘ D.id ∎
+  iso-id-id : (X : Category.Obj C) → Morphism.Iso D {A = F₀ X} D.id D.id
+  iso-id-id X = record { isoˡ = D.identityˡ {f = D.id} ; isoʳ = D.identityʳ {f = D.id} }
+
+-- Left and Right Unitors, Natural Isomorphisms.
+module _ {F : Functor C D} where
+  open Category.HomReasoning D
+  open Functor F
+  open LeftRightId F
+  open Category D
+
+  private
+    F⇒F∘id : NaturalTransformation F (F ∘F idF)
+    F⇒F∘id = record { η = λ _ → id ; commute = comm }
+
+    F⇒id∘F : NaturalTransformation F (idF ∘F F)
+    F⇒id∘F = record { η = λ _ → id ; commute = comm }
+
+    F∘id⇒F : NaturalTransformation (F ∘F idF) F
+    F∘id⇒F = record { η = λ _ → id ; commute = comm }
+
+    id∘F⇒F : NaturalTransformation (idF ∘F F) F
+    id∘F⇒F = record { η = λ _ → id ; commute = comm }
+
+  unitorˡ : NaturalIsomorphism (ℱ.id ∘F F) F
+  unitorˡ = record { F⇒G = id∘F⇒F ; F⇐G = F⇒id∘F ; iso = iso-id-id }
+
+  unitorʳ : NaturalIsomorphism (F ∘F ℱ.id) F
+  unitorʳ = record { F⇒G = F∘id⇒F ; F⇐G = F⇒F∘id ; iso = iso-id-id }
+
+-- associator
+module _ (F : Functor B C) (G : Functor C D) (H : Functor D E) where
+  open Category.HomReasoning E
+  open Category E
+  open Functor
+  open LeftRightId (H ∘F (G ∘F F))
+
+  -- components of α
+  assocʳ : NaturalTransformation ((H ∘F G) ∘F F) (H ∘F (G ∘F F))
+  assocʳ = record { η = λ _ → id ; commute = comm }
+
+  assocˡ : NaturalTransformation (H ∘F (G ∘F F)) ((H ∘F G) ∘F F)
+  assocˡ = record { η = λ _ → id ; commute = comm }
+
+  associator : NaturalIsomorphism ((H ∘F G) ∘F F) (H ∘F (G ∘F F))
+  associator = record { F⇒G = assocʳ ; F⇐G = assocˡ ; iso = iso-id-id }
+
+infixr 9 _∘ₕᵢ_
+
+-- "Horizontal composition" of Natural Isomorphisms
+_∘ₕᵢ_ : ∀ {F G : Functor C D} {H I : Functor D E} →
+         NaturalIsomorphism H I → NaturalIsomorphism F G → NaturalIsomorphism (H ∘F F) (I ∘F G)
+_∘ₕᵢ_ {C = C} {D = D} {E = E} {F} {G} {H} {I} Y X = record
+  { F⇒G = F⇒G Y ∘ₕ F⇒G X
+  ; F⇐G = F⇐G Y ∘ₕ F⇐G X
+  ; iso = λ Z → record { isoˡ = isol Z ; isoʳ = isor Z }
+  }
+  where
+    module D = Category D
+    open NaturalIsomorphism
+    open Category E
+    open Morphism.Iso
+    open NaturalTransformation
+    open Functor
+    open HomReasoning
+    isol : (Z : Category.Obj C) → η (F⇐G Y ∘ₕ F⇐G X) Z ∘ η (F⇒G Y ∘ₕ F⇒G X) Z ≈ id
+    isol Z = begin
+       (F₁ H (η (F⇐G X) Z) ∘ η (F⇐G Y) (F₀ G Z)) ∘ (F₁ I (η (F⇒G X) Z) ∘ η (F⇒G Y) (F₀ F Z))
+           ≈˘⟨ commute (F⇐G Y) (η (F⇐G X) Z) ⟩∘⟨refl ⟩
+       (η (F⇐G Y) (F₀ F Z) ∘ F₁ I (η (F⇐G X) Z)) ∘ (F₁ I (η (F⇒G X) Z) ∘ η (F⇒G Y) (F₀ F Z))
+           ≈˘⟨ assoc ⟩
+       ((η (F⇐G Y) (F₀ F Z) ∘ F₁ I (η (F⇐G X) Z)) ∘ F₁ I (η (F⇒G X) Z)) ∘ η (F⇒G Y) (F₀ F Z)
+           ≈⟨ assoc ⟩∘⟨refl ⟩
+       (η (F⇐G Y) (F₀ F Z) ∘ (F₁ I (η (F⇐G X) Z) ∘ F₁ I (η (F⇒G X) Z))) ∘ η (F⇒G Y) (F₀ F Z)
+           ≈˘⟨  ( refl⟩∘⟨ homomorphism I {f = η (F⇒G X) Z} {g = η (F⇐G X) Z} ) ⟩∘⟨refl  ⟩
+       (η (F⇐G Y) (F₀ F Z) ∘ (F₁ I (η (F⇐G X) Z D.∘ η (F⇒G X) Z))) ∘ η (F⇒G Y) (F₀ F Z)
+           ≈⟨  ( refl⟩∘⟨ F-resp-≈ I (isoˡ (iso X Z)) ) ⟩∘⟨refl ⟩
+       (η (F⇐G Y) (F₀ F Z) ∘ (F₁ I D.id)) ∘ η (F⇒G Y) (F₀ F Z)
+           ≈⟨ ( refl⟩∘⟨ identity I ) ⟩∘⟨refl ⟩
+       (η (F⇐G Y) (F₀ F Z) ∘ id) ∘ η (F⇒G Y) (F₀ F Z)
+           ≈⟨ identityʳ ⟩∘⟨refl ⟩
+       η (F⇐G Y) (F₀ F Z) ∘ η (F⇒G Y) (F₀ F Z)
+           ≈⟨ isoˡ (iso Y (F₀ F Z)) ⟩
+       id ∎
+    isor : (Z : Category.Obj C) →  η (F⇒G Y ∘ₕ F⇒G X) Z ∘ η (F⇐G Y ∘ₕ F⇐G X) Z ≈ id
+    isor Z = begin
+       (F₁ I (η (F⇒G X) Z) ∘ η (F⇒G Y) (F₀ F Z)) ∘ (F₁ H (η (F⇐G X) Z) ∘ η (F⇐G Y) (F₀ G Z))
+           ≈˘⟨ commute (F⇒G Y) (η (F⇒G X) Z) ⟩∘⟨refl ⟩
+       (η (F⇒G Y) (F₀ G Z) ∘ F₁ H (η (F⇒G X) Z)) ∘ (F₁ H (η (F⇐G X) Z) ∘ η (F⇐G Y) (F₀ G Z))
+           ≈˘⟨ assoc ⟩
+       ((η (F⇒G Y) (F₀ G Z) ∘ F₁ H (η (F⇒G X) Z)) ∘ F₁ H (η (F⇐G X) Z)) ∘ η (F⇐G Y) (F₀ G Z)
+           ≈⟨ assoc ⟩∘⟨refl ⟩
+       (η (F⇒G Y) (F₀ G Z) ∘ (F₁ H (η (F⇒G X) Z) ∘ F₁ H (η (F⇐G X) Z))) ∘ η (F⇐G Y) (F₀ G Z)
+           ≈˘⟨ ( refl⟩∘⟨ homomorphism H ) ⟩∘⟨refl ⟩
+       (η (F⇒G Y) (F₀ G Z) ∘ (F₁ H (η (F⇒G X) Z D.∘ η (F⇐G X) Z))) ∘ η (F⇐G Y) (F₀ G Z)
+           ≈⟨  ( refl⟩∘⟨ F-resp-≈ H (isoʳ (iso X Z)) ) ⟩∘⟨refl ⟩
+       (η (F⇒G Y) (F₀ G Z) ∘ (F₁ H D.id)) ∘ η (F⇐G Y) (F₀ G Z)
+           ≈⟨ ( refl⟩∘⟨ identity H ) ⟩∘⟨refl ⟩
+       (η (F⇒G Y) (F₀ G Z) ∘ id) ∘ η (F⇐G Y) (F₀ G Z)
+           ≈⟨ identityʳ ⟩∘⟨refl ⟩
+       η (F⇒G Y) (F₀ G Z) ∘ η (F⇐G Y) (F₀ G Z)
+           ≈⟨ isoʳ (iso Y (F₀ G Z)) ⟩
+       id ∎
