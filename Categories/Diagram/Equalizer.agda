@@ -1,6 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
 
+-- Equalizers in a Category C
 module Categories.Diagram.Equalizer {o ℓ e} (C : Category o ℓ e) where
 
 open Category C
@@ -14,7 +15,7 @@ open import Categories.Square C
 
 private
   variable
-    A B X Y Z : Obj
+    A B X : Obj
     h i j k : A ⇒ B
 
 record Equalizer (f g : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
@@ -34,17 +35,14 @@ record Equalizer (f g : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
   id-equalize = unique (sym identityʳ)
 
   equalize-resp-≈ : ∀ {eq : f ∘ h ≈ g ∘ h} {eq′ : f ∘ i ≈ g ∘ i} →
-                      h ≈ i →
-                      equalize eq ≈ equalize eq′
+    h ≈ i → equalize eq ≈ equalize eq′
   equalize-resp-≈ {h = h} {i = i} {eq = eq} {eq′ = eq′} h≈i = unique $ begin
-    i                 ≈⟨ sym h≈i ⟩
+    i                 ≈˘⟨ h≈i ⟩
     h                 ≈⟨ universal ⟩
     arr ∘ equalize eq ∎
 
   equalize-resp-≈′ : (eq : f ∘ h ≈ g ∘ h) → (eq′ : f ∘ i ≈ g ∘ i) →
-                     h ≈ i →
-                     j ≈ equalize eq → k ≈ equalize eq′ →
-                     j ≈ k
+    h ≈ i → j ≈ equalize eq → k ≈ equalize eq′ → j ≈ k
   equalize-resp-≈′ {j = j} {k = k} eq eq′ h≈i eqj eqk = begin
     j            ≈⟨ eqj ⟩
     equalize eq  ≈⟨ equalize-resp-≈ h≈i ⟩
