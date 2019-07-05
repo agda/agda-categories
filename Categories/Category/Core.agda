@@ -67,6 +67,14 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     _⟩∘⟨refl : ∀ {M} {f h : M ⇒ B} {g : A ⇒ M} → f ≈ h → f ∘ g ≈ h ∘ g
     _⟩∘⟨refl = _⟩∘⟨ Equiv.refl
 
+    -- convenient inline versions
+    infix 2 ⟺
+    infixr 3 _○_
+    ⟺ : {f g : A ⇒ B} → f ≈ g → g ≈ f
+    ⟺ = Equiv.sym
+    _○_ : {f g h : A ⇒ B} → f ≈ g → g ≈ h → f ≈ h
+    _○_ = Equiv.trans
+
   module Commutation where
     infix 1 [_⇒_]⟨_≈_⟩
     [_⇒_]⟨_≈_⟩ : ∀ (A B : Obj) → A ⇒ B → A ⇒ B → Set _

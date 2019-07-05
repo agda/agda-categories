@@ -57,8 +57,8 @@ coproduct→product A+B = record
   ; π₁ = A+B.i₁
   ; π₂ = A+B.i₂
   ; ⟨_,_⟩ = A+B.[_,_]
-  ; commute₁ = A+B.commute₁
-  ; commute₂ = A+B.commute₂
+  ; project₁ = A+B.commute₁
+  ; project₂ = A+B.commute₂
   ; unique = A+B.unique
   }
   where
@@ -70,8 +70,8 @@ product→coproduct A×B = record
   ; i₁ = A×B.π₁
   ; i₂ = A×B.π₂
   ; [_,_] = A×B.⟨_,_⟩
-  ; commute₁ = A×B.commute₁
-  ; commute₂ = A×B.commute₂
+  ; commute₁ = A×B.project₁
+  ; commute₂ = A×B.project₂
   ; unique = A×B.unique
   }
   where

@@ -113,14 +113,14 @@ Product×Equalizer⇒Pullback {f = f} {g = g} p e = record
   ; p₂              = π₂ ∘ arr
   ; commutes        = trans (sym assoc) (trans equality assoc)
   ; universal       = λ {_ h₁ h₂} eq → equalize $ begin
-    (f ∘ π₁) ∘ ⟨ h₁ , h₂ ⟩ ≈⟨ pullʳ commute₁ ⟩
+    (f ∘ π₁) ∘ ⟨ h₁ , h₂ ⟩ ≈⟨ pullʳ project₁ ⟩
     f ∘ h₁                 ≈⟨ eq ⟩
-    g ∘ h₂                 ≈˘⟨ pullʳ commute₂ ⟩
+    g ∘ h₂                 ≈˘⟨ pullʳ project₂ ⟩
     (g ∘ π₂) ∘ ⟨ h₁ , h₂ ⟩ ∎
   ; unique          = λ eq eq′ → e.unique (p.unique (trans (sym assoc) eq)
                                                     (trans (sym assoc) eq′))
-  ; p₁∘universal≈h₁ = trans (pullʳ (sym e.universal)) commute₁
-  ; p₂∘universal≈h₂ = trans (pullʳ (sym e.universal)) commute₂
+  ; p₁∘universal≈h₁ = trans (pullʳ (sym e.universal)) project₁
+  ; p₂∘universal≈h₂ = trans (pullʳ (sym e.universal)) project₂
   }
   where module p = Product p
         module e = Equalizer e
@@ -132,18 +132,17 @@ Product×Pullback⇒Equalizer : (p : Product A B) → Pullback f g →
 Product×Pullback⇒Equalizer {f = f} {g = g} p pu = record
   { arr       = ⟨ p₁ , p₂ ⟩
   ; equality  = begin
-    (f ∘ π₁) ∘ ⟨ p₁ , p₂ ⟩ ≈⟨ pullʳ commute₁ ⟩
+    (f ∘ π₁) ∘ ⟨ p₁ , p₂ ⟩ ≈⟨ pullʳ project₁ ⟩
     f ∘ p₁                 ≈⟨ commutes ⟩
-    g ∘ p₂                 ≈˘⟨ pullʳ commute₂ ⟩
+    g ∘ p₂                 ≈˘⟨ pullʳ project₂ ⟩
     (g ∘ π₂) ∘ ⟨ p₁ , p₂ ⟩ ∎
   ; equalize  = λ eq → pu.universal (trans (sym assoc) (trans eq assoc))
   ; universal = λ {_ h} → begin
     h                      ≈˘⟨ p.unique (sym p₁∘universal≈h₁) (sym p₂∘universal≈h₂) ⟩
-    ⟨ p₁ ∘ _ , p₂ ∘ _ ⟩    ≈⟨ p.unique (pullˡ commute₁)
-                                          (pullˡ commute₂) ⟩
+    ⟨ p₁ ∘ _ , p₂ ∘ _ ⟩    ≈⟨ p.unique (pullˡ project₁) (pullˡ project₂) ⟩
     ⟨ p₁ , p₂ ⟩ ∘ _        ∎
-  ; unique    = λ eq → pu.unique (trans (pushˡ (sym commute₁)) (sym (∘-resp-≈ʳ eq)))
-                                 (trans (pushˡ (sym commute₂)) (sym (∘-resp-≈ʳ eq)))
+  ; unique    = λ eq → pu.unique (trans (pushˡ (sym project₁)) (sym (∘-resp-≈ʳ eq)))
+                                 (trans (pushˡ (sym project₂)) (sym (∘-resp-≈ʳ eq)))
   }
   where module p = Product p
         module pu = Pullback pu

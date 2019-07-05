@@ -4,7 +4,7 @@ open import Categories.Category
 module Categories.Object.Product.Core {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
-open import Function using (flip)
+open import Function using (flip; _$_)
 
 open import Categories.Square 𝒞
 open import Categories.Morphism 𝒞
@@ -28,8 +28,8 @@ record Product (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
     π₂    : A×B ⇒ B
     ⟨_,_⟩ : C ⇒ A → C ⇒ B → C ⇒ A×B
 
-    commute₁ : π₁ ∘ ⟨ h , i ⟩ ≈ h
-    commute₂ : π₂ ∘ ⟨ h , i ⟩ ≈ i
+    project₁ : π₁ ∘ ⟨ h , i ⟩ ≈ h
+    project₂ : π₂ ∘ ⟨ h , i ⟩ ≈ i
     unique   : π₁ ∘ h ≈ i → π₂ ∘ h ≈ j → ⟨ i , j ⟩ ≈ h
 
   g-η : ⟨ π₁ ∘ h , π₂ ∘ h ⟩ ≈ h
@@ -39,28 +39,27 @@ record Product (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   η = unique identityʳ identityʳ
 
   ⟨⟩-cong₂ : ∀ {f f′ : C ⇒ A} {g g′ : C ⇒ B} → f ≈ f′ → g ≈ g′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g′ ⟩
-  ⟨⟩-cong₂ f≡f′ g≡g′ = 
-    unique (trans commute₁ (sym f≡f′)) (trans commute₂ (sym g≡g′))
+  ⟨⟩-cong₂ f≡f′ g≡g′ = unique (project₁ ○ ⟺ f≡f′) (project₂ ○ ⟺ g≡g′)
 
   ∘-distribʳ-⟨⟩ : ∀ {f : C ⇒ A} {g : C ⇒ B} {q : D ⇒ C} → ⟨ f , g ⟩ ∘ q ≈ ⟨ f ∘ q , g ∘ q ⟩
-  ∘-distribʳ-⟨⟩ = sym (unique (pullˡ commute₁) (pullˡ commute₂))
+  ∘-distribʳ-⟨⟩ = ⟺ $ unique (pullˡ project₁) (pullˡ project₂)
 
 module _ {A B : Obj} where
   open Product {A} {B} renaming (⟨_,_⟩ to _⟨_,_⟩)
 
-  repack : ∀ (p₁ p₂ : Product A B) → A×B p₁ ⇒ A×B p₂
+  repack : (p₁ p₂ : Product A B) → A×B p₁ ⇒ A×B p₂
   repack p₁ p₂ = p₂ ⟨ π₁ p₁ , π₂ p₁ ⟩
 
   repack∘ : (p₁ p₂ p₃ : Product A B) → repack p₂ p₃ ∘ repack p₁ p₂ ≈ repack p₁ p₃
-  repack∘ p₁ p₂ p₃ = sym (unique p₃ 
-    (glueTrianglesʳ (commute₁ p₃) (commute₁ p₂))
-    (glueTrianglesʳ (commute₂ p₃) (commute₂ p₂)))
+  repack∘ p₁ p₂ p₃ = ⟺ $ unique p₃
+    (glueTrianglesʳ (project₁ p₃) (project₁ p₂))
+    (glueTrianglesʳ (project₂ p₃) (project₂ p₂))
 
   repack≡id : (p : Product A B) → repack p p ≈ id
-  repack≡id p = η p
+  repack≡id = η
 
   repack-cancel : (p₁ p₂ : Product A B) → repack p₁ p₂ ∘ repack p₂ p₁ ≈ id
-  repack-cancel p₁ p₂ = trans (repack∘ p₂ p₁ p₂) (repack≡id p₂)
+  repack-cancel p₁ p₂ = repack∘ p₂ p₁ p₂ ○ repack≡id p₂
 
 up-to-iso : ∀ (p₁ p₂ : Product A B) → Product.A×B p₁ ≅ Product.A×B p₂
 up-to-iso p₁ p₂ = record
@@ -78,30 +77,30 @@ transport-by-iso p {X} p≅X = record
   ; π₁ = π₁ ∘ to
   ; π₂ = π₂ ∘ to
   ; ⟨_,_⟩ = λ h₁ h₂ → from ∘ ⟨ h₁ , h₂ ⟩
-  ; commute₁ = trans (cancelInner isoˡ) commute₁
-  ; commute₂ = trans (cancelInner isoˡ) commute₂
+  ; project₁ = cancelInner isoˡ ○ project₁
+  ; project₂ = cancelInner isoˡ ○ project₂
   ; unique = λ {_ i l r} pf₁ pf₂ → begin
-    from ∘ ⟨ l , r ⟩                         ≈⟨ refl⟩∘⟨ ⟨⟩-cong₂ (sym pf₁) (sym pf₂) ⟩
-    from ∘ ⟨ (π₁ ∘ to) ∘ i , (π₂ ∘ to) ∘ i ⟩ ≈⟨ refl⟩∘⟨ unique (sym assoc) (sym assoc) ⟩
-    from ∘ to ∘ i                            ≈⟨ cancelˡ isoʳ ⟩
+    from ∘ ⟨ l , r ⟩                         ≈˘⟨ refl⟩∘⟨ ⟨⟩-cong₂ pf₁ pf₂ ⟩
+    from ∘ ⟨ (π₁ ∘ to) ∘ i , (π₂ ∘ to) ∘ i ⟩ ≈⟨ refl⟩∘⟨ unique (⟺ assoc) (⟺ assoc) ⟩
+    from ∘ to ∘ i                           ≈⟨ cancelˡ isoʳ ⟩
     i                                        ∎
   }
   where open Product p
         open _≅_ p≅X
 
-Reversible : ∀ (p : Product A B) → Product B A
+Reversible : (p : Product A B) → Product B A
 Reversible p = record
   { A×B       = A×B
   ; π₁        = π₂
   ; π₂        = π₁
   ; ⟨_,_⟩     = flip ⟨_,_⟩
-  ; commute₁  = commute₂
-  ; commute₂  = commute₁
+  ; project₁  = project₂
+  ; project₂  = project₁
   ; unique = flip unique
   }
   where open Product p
 
-Commutative : ∀ (p₁ : Product A B) (p₂ : Product B A) → Product.A×B p₁ ≅ Product.A×B p₂
+Commutative : (p₁ : Product A B) (p₂ : Product B A) → Product.A×B p₁ ≅ Product.A×B p₂
 Commutative p₁ p₂ = up-to-iso p₁ (Reversible p₂)
 
 Associable : ∀ (p₁ : Product X Y) (p₂ : Product Y Z) (p₃ : Product X (Product.A×B p₂)) → Product (Product.A×B p₁) Z
@@ -110,20 +109,20 @@ Associable p₁ p₂ p₃ = record
   ; π₁        = p₁ ⟨ π₁ p₃ , π₁ p₂ ∘ π₂ p₃ ⟩
   ; π₂        = π₂ p₂ ∘ π₂ p₃
   ; ⟨_,_⟩     = λ f g → p₃ ⟨ π₁ p₁ ∘ f , p₂ ⟨ π₂ p₁ ∘ f , g ⟩ ⟩
-  ; commute₁  = λ {_ f g} → begin
+  ; project₁  = λ {_ f g} → begin
     p₁ ⟨ π₁ p₃ , π₁ p₂ ∘ π₂ p₃ ⟩ ∘ p₃ ⟨ π₁ p₁ ∘ f , p₂ ⟨ π₂ p₁ ∘ f , g ⟩ ⟩ ≈⟨ ∘-distribʳ-⟨⟩ p₁ ⟩
     p₁ ⟨ π₁ p₃ ∘ p₃ ⟨ π₁ p₁ ∘ f , p₂ ⟨ π₂ p₁ ∘ f , g ⟩ ⟩
-       , (π₁ p₂ ∘ π₂ p₃) ∘ p₃ ⟨ π₁ p₁ ∘ f , p₂ ⟨ π₂ p₁ ∘ f , g ⟩ ⟩ ⟩       ≈⟨ ⟨⟩-cong₂ p₁ (commute₁ p₃) (glueTrianglesˡ (commute₁ p₂) (commute₂ p₃)) ⟩
+       , (π₁ p₂ ∘ π₂ p₃) ∘ p₃ ⟨ π₁ p₁ ∘ f , p₂ ⟨ π₂ p₁ ∘ f , g ⟩ ⟩ ⟩       ≈⟨ ⟨⟩-cong₂ p₁ (project₁ p₃) (glueTrianglesˡ (project₁ p₂) (project₂ p₃)) ⟩
     p₁ ⟨ π₁ p₁ ∘ f , π₂ p₁ ∘ f ⟩                                           ≈⟨ g-η p₁ ⟩
     f                                                                      ∎
-  ; commute₂  = λ {_ f g} → glueTrianglesˡ (commute₂ p₂) (commute₂ p₃)
+  ; project₂  = λ {_ f g} → glueTrianglesˡ (project₂ p₂) (project₂ p₃)
   ; unique = λ {_ i f g} pf₁ pf₂ → begin
     p₃ ⟨ π₁ p₁ ∘ f , p₂ ⟨ π₂ p₁ ∘ f , g ⟩ ⟩             ≈⟨ ⟨⟩-cong₂ p₃ (∘-resp-≈ʳ (sym pf₁))
                                                           (⟨⟩-cong₂ p₂ (∘-resp-≈ʳ (sym pf₁)) (sym pf₂)) ⟩
     p₃ ⟨ π₁ p₁ ∘ p₁ ⟨ π₁ p₃ , π₁ p₂ ∘ π₂ p₃ ⟩ ∘ i
        , p₂ ⟨ π₂ p₁ ∘ p₁ ⟨ π₁ p₃ , π₁ p₂ ∘ π₂ p₃ ⟩ ∘ i
-            , (π₂ p₂ ∘ π₂ p₃) ∘ i ⟩ ⟩                   ≈⟨ ⟨⟩-cong₂ p₃ (pullˡ (commute₁ p₁))
-                                                          (⟨⟩-cong₂ p₂ (trans (pullˡ (commute₂ p₁)) assoc)
+            , (π₂ p₂ ∘ π₂ p₃) ∘ i ⟩ ⟩                   ≈⟨ ⟨⟩-cong₂ p₃ (pullˡ (project₁ p₁))
+                                                          (⟨⟩-cong₂ p₂ (trans (pullˡ (project₂ p₁)) assoc)
                                                                        assoc) ⟩
     p₃ ⟨ π₁ p₃ ∘ i
        , p₂ ⟨ π₁ p₂ ∘ π₂ p₃ ∘ i , π₂ p₂ ∘ π₂ p₃ ∘ i ⟩ ⟩ ≈⟨ ⟨⟩-cong₂ p₃ refl (g-η p₂) ⟩
@@ -143,16 +142,16 @@ Mobile p A₁≅A₂ B₁≅B₂ = record
   ; π₁               = from A₁≅A₂ ∘ π₁
   ; π₂               = from B₁≅B₂ ∘ π₂
   ; ⟨_,_⟩            = λ h k → ⟨ to A₁≅A₂ ∘ h , to B₁≅B₂ ∘ k ⟩
-  ; commute₁         = begin
-    (from A₁≅A₂ ∘ π₁) ∘ ⟨ to A₁≅A₂ ∘ _ , to B₁≅B₂ ∘ _ ⟩ ≈⟨ pullʳ commute₁ ⟩
+  ; project₁         = begin
+    (from A₁≅A₂ ∘ π₁) ∘ ⟨ to A₁≅A₂ ∘ _ , to B₁≅B₂ ∘ _ ⟩ ≈⟨ pullʳ project₁ ⟩
     from A₁≅A₂ ∘ (to A₁≅A₂ ∘ _)                         ≈⟨ cancelˡ (isoʳ A₁≅A₂) ⟩
     _                                                   ∎
-  ; commute₂         = begin
-    (from B₁≅B₂ ∘ π₂) ∘ ⟨ to A₁≅A₂ ∘ _ , to B₁≅B₂ ∘ _ ⟩ ≈⟨ pullʳ commute₂ ⟩
+  ; project₂         = begin
+    (from B₁≅B₂ ∘ π₂) ∘ ⟨ to A₁≅A₂ ∘ _ , to B₁≅B₂ ∘ _ ⟩ ≈⟨ pullʳ project₂ ⟩
     from B₁≅B₂ ∘ (to B₁≅B₂ ∘ _)                         ≈⟨ cancelˡ (isoʳ B₁≅B₂) ⟩
     _                                                   ∎
-  ; unique        = λ pfˡ pfʳ → unique (switch-fromtoˡ A₁≅A₂ (trans (sym assoc) pfˡ))
-                                             (switch-fromtoˡ B₁≅B₂ (trans (sym assoc) pfʳ))
+  ; unique        = λ pfˡ pfʳ → unique (switch-fromtoˡ A₁≅A₂ (⟺ assoc ○ pfˡ))
+                                       (switch-fromtoˡ B₁≅B₂ (⟺ assoc ○ pfʳ))
   }
   where open Product p
         open _≅_

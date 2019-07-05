@@ -50,11 +50,11 @@ repack≡id×id p₁ p₂ = sym (Product.⟨⟩-cong₂ p₂ identityˡ identity
 
 [_⇒_]π₁∘× : ∀ (p₁ : Product A C)(p₂ : Product B D) →
               Product.π₁ p₂ ∘ [ p₁ ⇒ p₂ ] f × g ≈ f ∘ Product.π₁ p₁
-[_⇒_]π₁∘× p₁ p₂ = Product.commute₁ p₂
+[_⇒_]π₁∘× p₁ p₂ = Product.project₁ p₂
 
 [_⇒_]π₂∘× : ∀ (p₁ : Product A C) (p₂ : Product B D) →
               Product.π₂ p₂ ∘ [ p₁ ⇒ p₂ ] f × g ≈ g ∘ Product.π₂ p₁
-[_⇒_]π₂∘× p₁ p₂ = Product.commute₂ p₂
+[_⇒_]π₂∘× p₁ p₂ = Product.project₂ p₂
 
 [_⇒_]×-cong₂ : ∀ (p₁ : Product A B) (p₂ : Product C D) →
                  f ≈ g → h ≈ i →
@@ -66,10 +66,10 @@ repack≡id×id p₁ p₂ = sym (Product.⟨⟩-cong₂ p₂ identityˡ identity
               ([ p₁ ⇒ p₂ ] f × g) ∘ [ p₁ ]⟨ f′ , g′ ⟩ ≈ [ p₂ ]⟨ f ∘ f′ , g ∘ g′ ⟩
 [_⇒_]×∘⟨⟩ {f = f} {g = g} {f′ = f′} {g′ = g′} p₁ p₂ = begin
   [ p₂ ]⟨ f ∘ p₁.π₁ , g ∘ p₁.π₂ ⟩ ∘ [ p₁ ]⟨ f′ , g′ ⟩ ≈⟨ p₂.∘-distribʳ-⟨⟩ ⟩
-  [ p₂ ]⟨ (f ∘ p₁.π₁) ∘ p₁.⟨_,_⟩ f′ g′ 
+  [ p₂ ]⟨ (f ∘ p₁.π₁) ∘ p₁.⟨_,_⟩ f′ g′
         , (g ∘ p₁.π₂) ∘ p₁.⟨_,_⟩ f′ g′ ⟩              ≈⟨ p₂.⟨⟩-cong₂ assoc assoc ⟩
-  [ p₂ ]⟨ f ∘ p₁.π₁ ∘ p₁.⟨_,_⟩ f′ g′ 
-        , g ∘ p₁.π₂ ∘ p₁.⟨_,_⟩ f′ g′ ⟩                ≈⟨ p₂.⟨⟩-cong₂ (∘-resp-≈ refl p₁.commute₁) (∘-resp-≈ refl p₁.commute₂) ⟩
+  [ p₂ ]⟨ f ∘ p₁.π₁ ∘ p₁.⟨_,_⟩ f′ g′
+        , g ∘ p₁.π₂ ∘ p₁.⟨_,_⟩ f′ g′ ⟩                ≈⟨ p₂.⟨⟩-cong₂ (∘-resp-≈ refl p₁.project₁) (∘-resp-≈ refl p₁.project₂) ⟩
   [ p₂ ]⟨ f ∘ f′ , g ∘ g′ ⟩                           ∎
   where module p₁ = Product p₁
         module p₂ = Product p₂
