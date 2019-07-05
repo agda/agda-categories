@@ -143,13 +143,13 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
     }
     where open _≅_
 
-  triangle-iso : ≅-refl ⊗ᵢ unitorˡ ∘ᵢ associator ≃ unitorʳ {X} ⊗ᵢ ≅-refl {Y}
+  triangle-iso : ≅.refl ⊗ᵢ unitorˡ ∘ᵢ associator ≃ unitorʳ {X} ⊗ᵢ ≅.refl {Y}
   triangle-iso = lift-triangle′ triangle
 
-  pentagon-iso : ≅-refl ⊗ᵢ associator ∘ᵢ associator ∘ᵢ associator {X} {Y} {Z} ⊗ᵢ ≅-refl {W} ≃ associator ∘ᵢ associator
+  pentagon-iso : ≅.refl ⊗ᵢ associator ∘ᵢ associator ∘ᵢ associator {X} {Y} {Z} ⊗ᵢ ≅.refl {W} ≃ associator ∘ᵢ associator
   pentagon-iso = lift-pentagon′ pentagon
 
-  refl⊗refl≃refl : ≅-refl {A} ⊗ᵢ ≅-refl {B} ≃ ≅-refl
+  refl⊗refl≃refl : ≅.refl {A} ⊗ᵢ ≅.refl {B} ≃ ≅.refl
   refl⊗refl≃refl = record
     { from-≈ = identity
     ; to-≈   = identity

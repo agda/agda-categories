@@ -35,7 +35,7 @@ private
       { from-≈ = F-resp-≈ (from-≈ eq₁ , from-≈ eq₂)
       ; to-≈   = F-resp-≈ (to-≈ eq₁ , to-≈ eq₂)
       }
-    
+
   }
   where open Functor ⊗
         open _≃_
@@ -59,18 +59,18 @@ module Kelly's  {X Y : Obj} where
   -- TS: following three isos commute
 
   ua : unit ⊗₀ (unit ⊗₀ X) ⊗₀ Y ≅ unit ⊗₀ unit ⊗₀ X ⊗₀ Y
-  ua = ≅-refl ⊗ᵢ associator
+  ua = ≅.refl ⊗ᵢ associator
 
   u[λY] : unit ⊗₀ (unit ⊗₀ X) ⊗₀ Y ≅ unit ⊗₀ X ⊗₀ Y
-  u[λY] = ≅-refl ⊗ᵢ unitorˡ ⊗ᵢ ≅-refl
+  u[λY] = ≅.refl ⊗ᵢ unitorˡ ⊗ᵢ ≅.refl
 
   uλ : unit ⊗₀ unit ⊗₀ X ⊗₀ Y ≅ unit ⊗₀ X ⊗₀ Y
-  uλ = ≅-refl ⊗ᵢ unitorˡ
+  uλ = ≅.refl ⊗ᵢ unitorˡ
 
   -- setups
 
   perimeter : [ ((unit ⊗₀ unit) ⊗₀ X) ⊗₀ Y ⇒ unit ⊗₀ X ⊗₀ Y ]⟨
-                (unitorʳ ⊗ᵢ ≅-refl) ⊗ᵢ ≅-refl               ⇒⟨ (unit ⊗₀ X) ⊗₀ Y ⟩
+                (unitorʳ ⊗ᵢ ≅.refl) ⊗ᵢ ≅.refl               ⇒⟨ (unit ⊗₀ X) ⊗₀ Y ⟩
                 associator
               ≈ associator                                  ⇒⟨ (unit ⊗₀ unit) ⊗₀ X ⊗₀ Y ⟩
                 associator                                  ⇒⟨ unit ⊗₀ unit ⊗₀ X ⊗₀ Y ⟩
@@ -82,13 +82,13 @@ module Kelly's  {X Y : Obj} where
     where open Square Isos
 
   [uλ]Y : (unit ⊗₀ (unit ⊗₀ X)) ⊗₀ Y ≅ (unit ⊗₀ X) ⊗₀ Y
-  [uλ]Y = (≅-refl ⊗ᵢ unitorˡ) ⊗ᵢ ≅-refl
-  
+  [uλ]Y = (≅.refl ⊗ᵢ unitorˡ) ⊗ᵢ ≅.refl
+
   aY : ((unit ⊗₀ unit) ⊗₀ X) ⊗₀ Y ≅ (unit ⊗₀ unit ⊗₀ X) ⊗₀ Y
-  aY = associator ⊗ᵢ ≅-refl
-  
+  aY = associator ⊗ᵢ ≅.refl
+
   [ρX]Y : ((unit ⊗₀ unit) ⊗₀ X) ⊗₀ Y ≅ (unit ⊗₀ X) ⊗₀ Y
-  [ρX]Y = (unitorʳ ⊗ᵢ ≅-refl) ⊗ᵢ ≅-refl
+  [ρX]Y = (unitorʳ ⊗ᵢ ≅.refl) ⊗ᵢ ≅.refl
 
   tri : [uλ]Y ∘ᵢ aY ≃ [ρX]Y
   tri = lift-triangle′ ([ appʳ ⊗ Y ]-resp-triangle triangle)
@@ -99,7 +99,7 @@ module Kelly's  {X Y : Obj} where
   -- proofs
 
   perimeter′ : [ ((unit ⊗₀ unit) ⊗₀ X) ⊗₀ Y ⇒ unit ⊗₀ X ⊗₀ Y ]⟨
-                 (unitorʳ ⊗ᵢ ≅-refl) ⊗ᵢ ≅-refl               ⇒⟨ (unit ⊗₀ X) ⊗₀ Y ⟩
+                 (unitorʳ ⊗ᵢ ≅.refl) ⊗ᵢ ≅.refl               ⇒⟨ (unit ⊗₀ X) ⊗₀ Y ⟩
                  associator
                ≈ aY                                          ⇒⟨ (unit ⊗₀ (unit ⊗₀ X)) ⊗₀ Y ⟩
                  associator                                  ⇒⟨ unit ⊗₀ (unit ⊗₀ X) ⊗₀ Y ⟩
@@ -107,7 +107,7 @@ module Kelly's  {X Y : Obj} where
                  uλ
                ⟩
   perimeter′ = begin
-    associator ∘ᵢ (unitorʳ ⊗ᵢ ≅-refl) ⊗ᵢ ≅-refl              ≈⟨ perimeter ⟩
+    associator ∘ᵢ (unitorʳ ⊗ᵢ ≅.refl) ⊗ᵢ ≅.refl              ≈⟨ perimeter ⟩
     uλ ∘ᵢ associator ∘ᵢ associator                           ≈˘⟨ refl ⟩∘⟨ pentagon-iso ⟩
     uλ ∘ᵢ ua ∘ᵢ associator ∘ᵢ aY                             ∎
 
@@ -118,24 +118,24 @@ module Kelly's  {X Y : Obj} where
   coherence-iso₁ : [ (unit ⊗₀ X) ⊗₀ Y ⇒ X ⊗₀ Y ]⟨
                   associator                ⇒⟨ unit ⊗₀ X ⊗₀ Y ⟩
                   unitorˡ
-                ≈ unitorˡ ⊗ᵢ ≅-refl
+                ≈ unitorˡ ⊗ᵢ ≅.refl
                 ⟩
   coherence-iso₁ = triangle-prism top-face square₁ square₂ square₃
     where square₁ : [ unit ⊗₀ X ⊗₀ Y ⇒ unit ⊗₀ X ⊗₀ Y ]⟨
-                      ≅-sym unitorˡ ∘ᵢ unitorˡ
-                    ≈ ≅-refl ⊗ᵢ unitorˡ ∘ᵢ ≅-sym unitorˡ
+                      ≅.sym unitorˡ ∘ᵢ unitorˡ
+                    ≈ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ ≅.sym unitorˡ
                     ⟩
           square₁ = lift-square′ unitorˡ-commute-to
-          
+
           square₂ : [ (unit ⊗₀ X) ⊗₀ Y ⇒ unit ⊗₀ unit ⊗₀ X ⊗₀ Y ]⟨
-                      ≅-sym unitorˡ ∘ᵢ associator
-                    ≈ ≅-refl ⊗ᵢ associator ∘ᵢ ≅-sym unitorˡ
+                      ≅.sym unitorˡ ∘ᵢ associator
+                    ≈ ≅.refl ⊗ᵢ associator ∘ᵢ ≅.sym unitorˡ
                     ⟩
           square₂ = lift-square′ unitorˡ-commute-to
-            
+
           square₃ : [ (unit ⊗₀ X) ⊗₀ Y ⇒ unit ⊗₀ X ⊗₀ Y ]⟨
-                      ≅-sym unitorˡ ∘ᵢ unitorˡ ⊗ᵢ ≅-refl
-                    ≈ ≅-refl ⊗ᵢ unitorˡ ⊗ᵢ ≅-refl ∘ᵢ ≅-sym unitorˡ
+                      ≅.sym unitorˡ ∘ᵢ unitorˡ ⊗ᵢ ≅.refl
+                    ≈ ≅.refl ⊗ᵢ unitorˡ ⊗ᵢ ≅.refl ∘ᵢ ≅.sym unitorˡ
                     ⟩
           square₃ = lift-square′ unitorˡ-commute-to
 
@@ -147,19 +147,19 @@ module Kelly's  {X Y : Obj} where
   -- TS : the following three commute
 
   ρu : ((X ⊗₀ Y) ⊗₀ unit) ⊗₀ unit ≅ (X ⊗₀ Y) ⊗₀ unit
-  ρu = unitorʳ ⊗ᵢ ≅-refl
+  ρu = unitorʳ ⊗ᵢ ≅.refl
 
   au : ((X ⊗₀ Y) ⊗₀ unit) ⊗₀ unit ≅ (X ⊗₀ Y ⊗₀ unit) ⊗₀ unit
-  au = associator ⊗ᵢ ≅-refl
+  au = associator ⊗ᵢ ≅.refl
 
   [Xρ]u : (X ⊗₀ Y ⊗₀ unit) ⊗₀ unit ≅ (X ⊗₀ Y) ⊗₀ unit
-  [Xρ]u = (≅-refl ⊗ᵢ unitorʳ) ⊗ᵢ ≅-refl
+  [Xρ]u = (≅.refl ⊗ᵢ unitorʳ) ⊗ᵢ ≅.refl
 
 
   perimeter″ : [ ((X ⊗₀ Y) ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit ]⟨
                  associator                                  ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⊗₀ unit ⟩
                  associator                                  ⇒⟨ X ⊗₀ Y ⊗₀ unit ⊗₀ unit ⟩
-                 ≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ
+                 ≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ
                ≈ ρu                                          ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⟩
                  associator
                ⟩
@@ -168,43 +168,43 @@ module Kelly's  {X Y : Obj} where
     where open Square Isos
 
   perimeter‴ : [ ((X ⊗₀ Y) ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit                                    ]⟨
-                 associator ⊗ᵢ ≅-refl                                                           ⇒⟨ (X ⊗₀ (Y ⊗₀ unit)) ⊗₀ unit ⟩
+                 associator ⊗ᵢ ≅.refl                                                           ⇒⟨ (X ⊗₀ (Y ⊗₀ unit)) ⊗₀ unit ⟩
                  (associator                                                                    ⇒⟨ X ⊗₀ (Y ⊗₀ unit) ⊗₀ unit ⟩
-                 ≅-refl ⊗ᵢ associator                                                           ⇒⟨ X ⊗₀ Y ⊗₀ unit ⊗₀ unit ⟩
-                 ≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ)
+                 ≅.refl ⊗ᵢ associator                                                           ⇒⟨ X ⊗₀ Y ⊗₀ unit ⊗₀ unit ⟩
+                 ≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ)
                ≈ ρu                                                                             ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⟩
                  associator
                ⟩
   perimeter‴ = begin
-    (≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ ∘ᵢ ≅-refl ⊗ᵢ associator ∘ᵢ associator) ∘ᵢ associator ⊗ᵢ ≅-refl ≈⟨ assoc′ ⟩
-    ≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ ∘ᵢ (≅-refl ⊗ᵢ associator ∘ᵢ associator) ∘ᵢ associator ⊗ᵢ ≅-refl ≈⟨ refl ⟩∘⟨ assoc′ ⟩
-    ≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ ∘ᵢ ≅-refl ⊗ᵢ associator ∘ᵢ associator ∘ᵢ associator ⊗ᵢ ≅-refl   ≈⟨ refl ⟩∘⟨ pentagon-iso ⟩
-    ≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ ∘ᵢ associator ∘ᵢ associator                                     ≈⟨ perimeter″ ⟩
+    (≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ ≅.refl ⊗ᵢ associator ∘ᵢ associator) ∘ᵢ associator ⊗ᵢ ≅.refl ≈⟨ assoc′ ⟩
+    ≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ (≅.refl ⊗ᵢ associator ∘ᵢ associator) ∘ᵢ associator ⊗ᵢ ≅.refl ≈⟨ refl ⟩∘⟨ assoc′ ⟩
+    ≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ ≅.refl ⊗ᵢ associator ∘ᵢ associator ∘ᵢ associator ⊗ᵢ ≅.refl   ≈⟨ refl ⟩∘⟨ pentagon-iso ⟩
+    ≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ associator ∘ᵢ associator                                     ≈⟨ perimeter″ ⟩
     associator ∘ᵢ ρu                                                                            ∎
-  
+
   top-face′ : [Xρ]u ∘ᵢ au ≃ ρu
   top-face′ = cut-squareʳ perimeter‴ (sym (glue◃◽′ tri′ (sym (lift-square′ assoc-commute-from))))
     where open Square Isos
           tri′ : [ X ⊗₀ (Y ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit ]⟨
-                 (≅-refl ⊗ᵢ ≅-refl ⊗ᵢ unitorˡ ∘ᵢ ≅-refl ⊗ᵢ associator)
-               ≈ ≅-refl ⊗ᵢ unitorʳ ⊗ᵢ ≅-refl
+                 (≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ ≅.refl ⊗ᵢ associator)
+               ≈ ≅.refl ⊗ᵢ unitorʳ ⊗ᵢ ≅.refl
                ⟩
           tri′ = lift-triangle′ ([ X ⊗- ]-resp-triangle triangle)
 
   coherence-iso₂ : [ (X ⊗₀ Y) ⊗₀ unit ⇒ X ⊗₀ Y ]⟨
-                     ≅-refl ⊗ᵢ unitorʳ ∘ᵢ associator
+                     ≅.refl ⊗ᵢ unitorʳ ∘ᵢ associator
                    ≈ unitorʳ
                    ⟩
   coherence-iso₂ = triangle-prism top-face′ square₁ square₂ (lift-square′ unitorʳ-commute-to)
     where square₁ : [ X ⊗₀ Y ⊗₀ unit ⇒ (X ⊗₀ Y) ⊗₀ unit ]⟨
-                      ≅-sym unitorʳ ∘ᵢ ≅-refl ⊗ᵢ unitorʳ
-                    ≈ (≅-refl ⊗ᵢ unitorʳ) ⊗ᵢ ≅-refl ∘ᵢ ≅-sym unitorʳ
+                      ≅.sym unitorʳ ∘ᵢ ≅.refl ⊗ᵢ unitorʳ
+                    ≈ (≅.refl ⊗ᵢ unitorʳ) ⊗ᵢ ≅.refl ∘ᵢ ≅.sym unitorʳ
                     ⟩
           square₁ = lift-square′ unitorʳ-commute-to
 
           square₂ : [ (X ⊗₀ Y) ⊗₀ unit ⇒ (X ⊗₀ Y ⊗₀ unit) ⊗₀ unit ]⟨
-                      ≅-sym unitorʳ ∘ᵢ associator
-                    ≈ associator ⊗ᵢ ≅-refl ∘ᵢ ≅-sym unitorʳ
+                      ≅.sym unitorʳ ∘ᵢ associator
+                    ≈ associator ⊗ᵢ ≅.refl ∘ᵢ ≅.sym unitorʳ
                     ⟩
           square₂ = lift-square′ unitorʳ-commute-to
 

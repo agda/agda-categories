@@ -33,14 +33,13 @@ record Functor (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o �
     F-resp-≈     : ∀ {A B} {f g : C [ A , B ]} → C [ f ≈ g ] → D [ F₁ f ≈ F₁ g ]
 
   op : Functor C.op D.op
-  op = record 
+  op = record
     { F₀           = F₀
     ; F₁           = F₁
     ; identity     = identity
     ; homomorphism = homomorphism
     ; F-resp-≈     = F-resp-≈
     }
-
 
 Endofunctor : Category o ℓ e → Set _
 Endofunctor C = Functor C C
@@ -61,9 +60,9 @@ id {C = C} = record
 
 infixr 9 _∘F_
 
-_∘F_ : ∀ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {E : Category o′′ ℓ′′ e′′} 
+_∘F_ : ∀ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {E : Category o′′ ℓ′′ e′′}
     → Functor D E → Functor C D → Functor C E
-_∘F_ {C = C} {D = D} {E = E} F G = record 
+_∘F_ {C = C} {D = D} {E = E} F G = record
   { F₀ = λ x → F₀ (G₀ x)
   ; F₁ = λ f → F₁ (G₁ f)
   ; identity = identity′
@@ -94,7 +93,7 @@ _∘F_ {C = C} {D = D} {E = E} F G = record
     E [ F₁ (G₁ g) ∘ F₁ (G₁ f) ] ∎
     where open SetoidR E.hom-setoid
 
-  ∘-resp-≈′ : ∀ {A B} {F G : C [ A , B ]} 
+  ∘-resp-≈′ : ∀ {A B} {F G : C [ A , B ]}
             → C [ F ≈ G ] → E [ F₁ (G₁ F) ≈ F₁ (G₁ G) ]
   ∘-resp-≈′ = λ x → F-resp-≈ (G-resp-≈ x)
 
@@ -117,10 +116,10 @@ record _≋_ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} (F G : Funct
 
 module _ where
   open Functor
-  
+
   ≋-refl : Reflexive (_≋_ {C = C} {D = D})
   ≋-refl {D = D} = record
-    { obj≅  = ≅-refl
+    { obj≅  = ≅.refl
     ; conj≈ = trans identityˡ identityʳ
     }
     where open M D
@@ -129,7 +128,7 @@ module _ where
 
   ≋-sym : Symmetric (_≋_ {C = C} {D = D})
   ≋-sym {D = D} {i = F} {j = G} eq = record
-    { obj≅  = ≅-sym obj≅
+    { obj≅  = ≅.sym obj≅
     ; conj≈ = λ {_ _ f} → begin
       to obj≅ ∘ F₁ G f ∘ from obj≅ ≈˘⟨ refl ⟩∘⟨ trans assoc conj≈ ⟩∘⟨ refl ⟩
       to obj≅ ∘ ((from obj≅ ∘ F₁ F f) ∘ to obj≅) ∘ from obj≅ ≈⟨ refl ⟩∘⟨ cancelʳ (isoˡ obj≅) ⟩
@@ -145,7 +144,7 @@ module _ where
 
   ≋-trans : Transitive (_≋_ {C = C} {D = D})
   ≋-trans {D = D} {i = F} {j = G} {k = H} eq eq′ = record
-    { obj≅  = ≅-trans (obj≅ eq) (obj≅ eq′)
+    { obj≅  = E.trans (obj≅ eq) (obj≅ eq′)
     ; conj≈ = λ {_ _ f} → begin
       (from (obj≅ eq′) ∘ from (obj≅ eq)) ∘
         F₁ F f ∘ to (obj≅ eq) ∘ to (obj≅ eq′)   ≈⟨ assoc ⟩
@@ -162,6 +161,8 @@ module _ where
           open Square D
           open HomReasoning
           open _≅_
+          module E = IsEquivalence (M.≅-isEquivalence D)
+
 
   ≋-isEquivalence : IsEquivalence (_≋_ {C = C} {D = D})
   ≋-isEquivalence = record

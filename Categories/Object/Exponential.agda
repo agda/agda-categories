@@ -28,7 +28,7 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
 
   B^A×A : Obj
   B^A×A = product.A×B
-  
+
   field
     eval     : B^A×A ⇒ B
     λg       : ∀ (X×A : Product X A) → (Product.A×B X×A ⇒ B) → (X ⇒ B^A)
@@ -39,11 +39,11 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
 
   η : ∀ (X×A : Product X A) {f : X ⇒ B^A } → λg X×A (eval ∘ [ X×A ⇒ product ] f ×id) ≈ f
   η X×A {f} = sym (λ-unique X×A refl)
-  
+
   λ-cong : ∀ {X : Obj} (X×A : Product X A) {f g} →
              f ≈ g → λg X×A f ≈ λg X×A g
   λ-cong X×A {f = f} {g = g} f≡g = λ-unique X×A (trans (β X×A) f≡g)
-  
+
   subst : ∀ (p₂ : Product C A) (p₃ : Product D A) {f g} →
             λg p₃ f ∘ g ≈ λg p₂ (f ∘ [ p₂ ⇒ p₃ ] g ×id)
   subst p₂ p₃ {f} {g} = λ-unique p₂ (begin
@@ -52,7 +52,7 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
     eval ∘ [ p₃ ⇒ product ] λg p₃ f ×id ∘ [ p₂ ⇒ p₃ ] g ×id
                            ≈⟨ pullˡ (β p₃) ⟩
     f ∘ [ p₂ ⇒ p₃ ] g ×id ∎)
-  
+
   η-id : λg product eval ≈ id
   η-id = begin
     λg product eval                                  ≈⟨ sym identityʳ ⟩
@@ -103,7 +103,7 @@ repack≡id : ∀{A B} (e : Exponential A B) → repack e e ≈ id
 repack≡id e = Exponential.η-id e
 
 repack∘ : ∀ (e₁ e₂ e₃ : Exponential A B) → repack e₂ e₃ ∘ repack e₁ e₂ ≈ repack e₁ e₃
-repack∘ e₁ e₂ e₃ = 
+repack∘ e₁ e₂ e₃ =
   let p₁ = product e₁ in
   let p₂ = product e₂ in
   begin
@@ -150,5 +150,5 @@ transport-by-iso {X = X} e e≅X = record
       h                                          ∎
   }
   where module e = Exponential e
-        X×A      = Mobile e.product e≅X ≅-refl
+        X×A      = Mobile e.product e≅X ≅.refl
         open _≅_ e≅X
