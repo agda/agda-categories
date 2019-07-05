@@ -1,10 +1,12 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
 
-module Categories.Category.Morphisms {o ℓ e} (C : Category o ℓ e) where
+-- Definition of the Arrow Category of a Category C
+module Categories.Category.Arrow {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
 open import Data.Product using (_,_; _×_; map; zip)
+open import Function using (_$_)
 open import Relation.Binary using (Rel)
 
 import Categories.Morphism as M
@@ -25,6 +27,7 @@ record Morphism : Set (o ⊔ ℓ) where
     arr   : dom ⇒ cod
 
 record Morphism⇒ (f g : Morphism) : Set (ℓ ⊔ e) where
+  constructor mor⇒
   private
     module f = Morphism f
     module g = Morphism g
@@ -34,13 +37,13 @@ record Morphism⇒ (f g : Morphism) : Set (ℓ ⊔ e) where
     {cod⇒} : f.cod ⇒ g.cod
     square : CommutativeSquare f.arr dom⇒ cod⇒ g.arr
 
-Morphisms : Category _ _ _
-Morphisms = record
+Arrow : Category _ _ _
+Arrow = record
   { Obj       = Morphism
   ; _⇒_       = Morphism⇒
-  ; _≈_       = _≈′_
-  ; id        = record { square = trans identityˡ (sym identityʳ) }
-  ; _∘_       = _∘′_
+  ; _≈_       = λ f g → dom⇒ f ≈ dom⇒ g × cod⇒ f ≈ cod⇒ g
+  ; id        = mor⇒ $ identityˡ ○ ⟺ identityʳ
+  ; _∘_       = λ m₁ m₂ → mor⇒ $ glue (square m₁) (square m₂)
   ; assoc     = assoc , assoc
   ; identityˡ = identityˡ , identityˡ
   ; identityʳ = identityʳ , identityʳ
@@ -51,24 +54,14 @@ Morphisms = record
     }
   ; ∘-resp-≈  = zip ∘-resp-≈ ∘-resp-≈
   }
-  where _≈′_ : ∀ {f g} → Rel (Morphism⇒ f g) _
-        f ≈′ g = f.dom⇒ ≈ g.dom⇒ × f.cod⇒ ≈ g.cod⇒
-          where module f = Morphism⇒ f
-                module g = Morphism⇒ g
-                
-        _∘′_ : ∀ {f g h} → Morphism⇒ g h → Morphism⇒ f g → Morphism⇒ f h
-        m₁ ∘′ m₂ = record
-          { square = glue m₁.square m₂.square
-          }
-          where module m₁ = Morphism⇒ m₁
-                module m₂ = Morphism⇒ m₂
+  where open Morphism⇒
 
 private
-  module MM = M Morphisms
+  module MM = M Arrow
 
 module _ where
   open _≅_
-    
+
   lift-iso : ∀ {f h} →
                (iso₁ : A ≅ D) → (iso₂ : B ≅ E) →
                CommutativeSquare f (from iso₁) (from iso₂) h →
@@ -87,5 +80,3 @@ module _ where
       ; isoʳ = isoʳ iso₁ , isoʳ iso₂
       }
     }
-
-  

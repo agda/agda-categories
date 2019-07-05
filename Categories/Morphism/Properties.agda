@@ -11,10 +11,8 @@ open HomReasoning
 import Categories.Morphism as M
 open M 𝒞
 open import Categories.Square 𝒞
-open import Categories.Category.Morphisms 𝒞
 
 private
-  module MM = M Morphisms
   variable
     A B C D : Obj
     f g h i : A ⇒ B
@@ -22,15 +20,15 @@ private
 module _ (iso : Iso f g) where
 
   open Iso iso
-  
+
   Iso-resp-≈ : f ≈ h → g ≈ i → Iso h i
   Iso-resp-≈ {h = h} {i = i} eq₁ eq₂ = record
     { isoˡ = begin
-      i ∘ h ≈⟨ sym eq₂ ⟩∘⟨ sym eq₁ ⟩
+      i ∘ h ≈˘⟨ eq₂ ⟩∘⟨ eq₁ ⟩
       g ∘ f ≈⟨ isoˡ ⟩
       id    ∎
     ; isoʳ = begin
-      h ∘ i ≈⟨ sym eq₁ ⟩∘⟨ sym eq₂ ⟩
+      h ∘ i ≈˘⟨ eq₁ ⟩∘⟨ eq₂ ⟩
       f ∘ g ≈⟨ isoʳ ⟩
       id    ∎
     }
@@ -40,7 +38,7 @@ module _ (iso : Iso f g) where
     { isoˡ = isoʳ
     ; isoʳ = isoˡ
     }
-  
+
   Iso⇒Mono : Mono f
   Iso⇒Mono h i eq = begin
     h           ≈⟨ introˡ isoˡ ⟩
@@ -71,21 +69,20 @@ Iso-∘ {f = f} {g = g} {h = h} {i = i} iso iso′ = record
 Iso-≈ : f ≈ h → Iso f g → Iso h i → g ≈ i
 Iso-≈ {f = f} {h = h} {g = g} {i = i} eq iso iso′ = begin
   g           ≈⟨ introˡ (isoˡ iso′) ⟩
-  (i ∘ h) ∘ g ≈⟨ (refl ⟩∘⟨ sym eq) ⟩∘⟨refl ⟩
-  (i ∘ f) ∘ g ≈⟨ pullʳ (isoʳ iso) ⟩
-  i ∘ id      ≈⟨ identityʳ ⟩
+  (i ∘ h) ∘ g ≈˘⟨ (refl ⟩∘⟨ eq) ⟩∘⟨refl ⟩
+  (i ∘ f) ∘ g ≈⟨ cancelʳ (isoʳ iso) ⟩
   i           ∎
   where open Iso
 
 module _ where
   open _≅_
-  
+
   isos×≈⇒≈ : ∀ {f g : A ⇒ B} → h ≈ i → (iso₁ : A ≅ C) → (iso₂ : B ≅ D) →
                CommutativeSquare f (from iso₁) (from iso₂) h →
                CommutativeSquare g (from iso₁) (from iso₂) i →
                f ≈ g
   isos×≈⇒≈ {h = h} {i = i} {f = f} {g = g} eq iso₁ iso₂ sq₁ sq₂ = begin
     f ≈⟨ switch-fromtoˡ iso₂ sq₁ ⟩
-    to iso₂ ∘ h ∘ from iso₁ ≈⟨ refl ⟩∘⟨ ∘-resp-≈ˡ eq ⟩
+    to iso₂ ∘ h ∘ from iso₁ ≈⟨ refl⟩∘⟨ (eq ⟩∘⟨refl ) ⟩
     to iso₂ ∘ i ∘ from iso₁ ≈˘⟨ switch-fromtoˡ iso₂ sq₂ ⟩
     g ∎
