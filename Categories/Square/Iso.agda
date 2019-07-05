@@ -1,6 +1,12 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
 
+{-
+  Various combinators for working with Isomorphisms in the
+  context of morphism equalities (not always Squares...)
+  both for Category (Switch) and Groupoid (GroupoidR)
+-}
+
 module Categories.Square.Iso {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
@@ -15,8 +21,8 @@ open import Relation.Binary hiding (_⇒_)
 open Category C
 private
   variable
-    X Y Z W : Obj
-    f g h k : X ⇒ Y
+    X Y : Obj
+    f h k : X ⇒ Y
 
 open HomReasoning
 
@@ -25,26 +31,26 @@ module Switch (i : X ≅ Y) where
 
   switch-fromtoˡ : from ∘ h ≈ k → h ≈ to ∘ k
   switch-fromtoˡ {h = h} {k = k} pf = begin
-    h               ≈⟨ sym (cancelˡ isoˡ) ⟩
-    to ∘ (from ∘ h) ≈⟨ ∘-resp-≈ʳ pf ⟩
+    h               ≈˘⟨ cancelˡ isoˡ ⟩
+    to ∘ (from ∘ h) ≈⟨ refl⟩∘⟨ pf ⟩
     to ∘ k          ∎
 
   switch-tofromˡ : to ∘ h ≈ k → h ≈ from ∘ k
   switch-tofromˡ {h = h} {k = k} pf = begin
-    h               ≈⟨ sym (cancelˡ isoʳ) ⟩
-    from ∘ (to ∘ h) ≈⟨ ∘-resp-≈ʳ pf ⟩
+    h               ≈˘⟨ cancelˡ isoʳ ⟩
+    from ∘ (to ∘ h) ≈⟨ refl⟩∘⟨ pf ⟩
     from ∘ k        ∎
 
   switch-fromtoʳ : h ∘ from ≈ k → h ≈ k ∘ to
   switch-fromtoʳ {h = h} {k = k} pf = begin
-    h               ≈⟨ sym (cancelʳ isoʳ) ⟩
-    (h ∘ from) ∘ to ≈⟨ ∘-resp-≈ˡ pf ⟩
+    h               ≈˘⟨ cancelʳ isoʳ ⟩
+    (h ∘ from) ∘ to ≈⟨ pf ⟩∘⟨refl ⟩
     k ∘ to          ∎
 
   switch-tofromʳ : h ∘ to ≈ k → h ≈ k ∘ from
   switch-tofromʳ {h = h} {k = k} pf = begin
-    h               ≈⟨ sym (cancelʳ isoˡ) ⟩
-    (h ∘ to) ∘ from ≈⟨ ∘-resp-≈ˡ pf ⟩
+    h               ≈˘⟨ cancelʳ isoˡ ⟩
+    (h ∘ to) ∘ from ≈⟨ pf ⟩∘⟨refl ⟩
     k ∘ from        ∎
 
 open Switch public
