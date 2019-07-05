@@ -1,5 +1,8 @@
 {-# OPTIONS --without-K --safe #-}
 -- Various operations and proofs on morphisms between products
+
+-- Perhaps a bit of overkill? There is so much here that it's impossible to remember
+-- it all
 open import Categories.Category
 
 module Categories.Object.Product.Morphisms {o ℓ e} (𝒞 : Category o ℓ e) where
@@ -50,11 +53,11 @@ repack≡id×id p₁ p₂ = sym (Product.⟨⟩-cong₂ p₂ identityˡ identity
 
 [_⇒_]π₁∘× : ∀ (p₁ : Product A C)(p₂ : Product B D) →
               Product.π₁ p₂ ∘ [ p₁ ⇒ p₂ ] f × g ≈ f ∘ Product.π₁ p₁
-[_⇒_]π₁∘× p₁ p₂ = Product.project₁ p₂
+[_⇒_]π₁∘× _ p₂ = Product.project₁ p₂
 
 [_⇒_]π₂∘× : ∀ (p₁ : Product A C) (p₂ : Product B D) →
               Product.π₂ p₂ ∘ [ p₁ ⇒ p₂ ] f × g ≈ g ∘ Product.π₂ p₁
-[_⇒_]π₂∘× p₁ p₂ = Product.project₂ p₂
+[_⇒_]π₂∘× _ p₂ = Product.project₂ p₂
 
 [_⇒_]×-cong₂ : ∀ (p₁ : Product A B) (p₂ : Product C D) →
                  f ≈ g → h ≈ i →
@@ -78,7 +81,7 @@ repack≡id×id p₁ p₂ = sym (Product.⟨⟩-cong₂ p₂ identityˡ identity
                ([ p₂ ⇒ p₃ ] g × i) ∘ ([ p₁ ⇒ p₂ ] f × h) ≈ [ p₁ ⇒ p₃ ] (g ∘ f) × (i ∘ h)
 [_⇒_⇒_]×∘× {g = g} {i = i} {f = f} {h = h} p₁ p₂ p₃ = begin
   [ p₃ ]⟨ g ∘ p₂.π₁ , i ∘ p₂.π₂ ⟩ ∘ [ p₂ ]⟨ f ∘ p₁.π₁ , h ∘ p₁.π₂ ⟩ ≈⟨ [ p₂ ⇒ p₃ ]×∘⟨⟩ ⟩
-  [ p₃ ]⟨ g ∘ f ∘ p₁.π₁ , i ∘ h ∘ p₁.π₂ ⟩                           ≈⟨ sym (p₃.⟨⟩-cong₂ assoc assoc) ⟩
+  [ p₃ ]⟨ g ∘ f ∘ p₁.π₁ , i ∘ h ∘ p₁.π₂ ⟩                          ≈˘⟨ p₃.⟨⟩-cong₂ assoc assoc ⟩
   [ p₃ ]⟨ (g ∘ f) ∘ p₁.π₁ , (i ∘ h) ∘ p₁.π₂ ⟩                       ∎
   where module p₁ = Product p₁
         module p₂ = Product p₂
@@ -92,16 +95,13 @@ repack≡id×id p₁ p₂ = sym (Product.⟨⟩-cong₂ p₂ identityˡ identity
   [ p₁ ⇒ p₃ ] (id ∘ f) × (id ∘ g)             ≈⟨ [ p₁ ⇒ p₃ ]×-cong₂ identityˡ identityˡ ⟩
   [ p₁ ⇒ p₃ ] f × g                           ∎
 
-[_⇒_⇒_]repack∘repack : ∀ (p₁ p₂ p₃ : Product A B) →
-                          repack p₂ p₃ ∘ repack p₁ p₂ ≈ repack p₁ p₃
+[_⇒_⇒_]repack∘repack : ∀ (p₁ p₂ p₃ : Product A B) → repack p₂ p₃ ∘ repack p₁ p₂ ≈ repack p₁ p₃
 [_⇒_⇒_]repack∘repack = repack∘
 
-[_⇒_]_×id : ∀ (p₁ : Product A C) (p₂ : Product B C) →
-               A ⇒ B → [[ p₁ ]] ⇒ [[ p₂ ]]
+[_⇒_]_×id : ∀ (p₁ : Product A C) (p₂ : Product B C) → A ⇒ B → [[ p₁ ]] ⇒ [[ p₂ ]]
 [ p₁ ⇒ p₂ ] f ×id = [ p₁ ⇒ p₂ ] f × id
 
-[_⇒_]id× : ∀ (p₁ : Product A B) (p₂ : Product A C) →
-                B ⇒ C → [[ p₁ ]] ⇒ [[ p₂ ]]
+[_⇒_]id× : ∀ (p₁ : Product A B) (p₂ : Product A C) → B ⇒ C → [[ p₁ ]] ⇒ [[ p₂ ]]
 [ p₁ ⇒ p₂ ]id× g = [ p₁ ⇒ p₂ ] id × g
 
 first-id : ∀ (p : Product A B) → [ p ⇒ p ] id ×id ≈ id
