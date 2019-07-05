@@ -103,6 +103,10 @@ module ≅ = IsEquivalence ≅-isEquivalence
   ; isEquivalence = ≅-isEquivalence
   }
 
+-------------
+-- Q: does this belong here?
+
+-- Defining the TransitiveClosure Category -- Path Category?
 ∘-tc : A [ _⇒_ ]⁺ B → A ⇒ B
 ∘-tc [ f ]            = f
 ∘-tc (_ ∼⁺⟨ f⁺ ⟩ f⁺′) = ∘-tc f⁺′ ∘ ∘-tc f⁺
