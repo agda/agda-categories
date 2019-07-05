@@ -1,6 +1,8 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category.Core
 
+-- slice category (https://ncatlab.org/nlab/show/over+category)
+-- TODO: Forgetful Functor from Slice to 𝒞
 module Categories.Category.Slice {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open Category 𝒞
@@ -42,7 +44,7 @@ Slice A       = record
   ; assoc     = assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
-  ; equiv     = record
+  ; equiv     = record -- must be expanded to get levels to work out
     { refl  = refl
     ; sym   = sym
     ; trans = trans
