@@ -17,7 +17,7 @@ private
   variable
     X Y Z W : Obj
     f g h k : X ⇒ Y
-    
+
 open HomReasoning
 
 module Switch (i : X ≅ Y) where
@@ -51,7 +51,7 @@ open Switch public
 
 
 module GroupoidR (G : Groupoid C) where
-  open Groupoid G using (_⁻¹; iso; equiv-obj; equiv-obj′)
+  open Groupoid G using (_⁻¹; iso; equiv-obj)
 
   switch-fromtoˡ′ : f ∘ h ≈ k → h ≈ f ⁻¹ ∘ k
   switch-fromtoˡ′ = switch-fromtoˡ (equiv-obj _)
@@ -61,7 +61,6 @@ module GroupoidR (G : Groupoid C) where
 
   switch-fromtoʳ′ : h ∘ f ≈ k → h ≈ k ∘ f ⁻¹
   switch-fromtoʳ′ = switch-fromtoʳ (equiv-obj _)
-  
+
   switch-tofromʳ′ : h ∘ f ⁻¹ ≈ k → h ≈ k ∘ f
   switch-tofromʳ′ = switch-tofromʳ (equiv-obj _)
-  
