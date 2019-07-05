@@ -32,13 +32,13 @@ module Pulls (ab≡c : a ∘ b ≈ c) where
   pullʳ : (f ∘ a) ∘ b ≈ f ∘ c
   pullʳ {f = f} = begin
     (f ∘ a) ∘ b ≈⟨ assoc ⟩
-    f ∘ (a ∘ b) ≈⟨ ∘-resp-≈ʳ ab≡c ⟩
+    f ∘ (a ∘ b) ≈⟨ refl⟩∘⟨ ab≡c ⟩
     f ∘ c       ∎
 
   pullˡ : a ∘ b ∘ f ≈ c ∘ f
   pullˡ {f = f} = begin
     a ∘ b ∘ f   ≈⟨ sym assoc ⟩
-    (a ∘ b) ∘ f ≈⟨ ab≡c ⟩∘⟨ refl ⟩
+    (a ∘ b) ∘ f ≈⟨ ab≡c ⟩∘⟨refl ⟩
     c ∘ f       ∎
 
 open Pulls public
@@ -46,13 +46,13 @@ open Pulls public
 module Pushes (c≡ab : c ≈ a ∘ b) where
   pushʳ : f ∘ c ≈ (f ∘ a) ∘ b
   pushʳ {f = f} = begin
-    f ∘ c       ≈⟨ ∘-resp-≈ʳ c≡ab ⟩
-    f ∘ (a ∘ b) ≈⟨ sym assoc ⟩
+    f ∘ c       ≈⟨ refl⟩∘⟨ c≡ab ⟩
+    f ∘ (a ∘ b) ≈˘⟨ assoc ⟩
     (f ∘ a) ∘ b ∎
 
   pushˡ : c ∘ f ≈ a ∘ (b ∘ f)
   pushˡ {f = f} = begin
-    c ∘ f       ≈⟨ ∘-resp-≈ˡ c≡ab ⟩
+    c ∘ f       ≈⟨ c≡ab ⟩∘⟨refl ⟩
     (a ∘ b) ∘ f ≈⟨ assoc ⟩
     a ∘ (b ∘ f) ∎
 
@@ -61,7 +61,7 @@ open Pushes public
 module IntroElim (a≡id : a ≈ id) where
   elimʳ : f ∘ a ≈ f
   elimʳ {f = f} = begin
-    f ∘ a  ≈⟨ ∘-resp-≈ʳ a≡id ⟩
+    f ∘ a  ≈⟨ refl⟩∘⟨ a≡id ⟩
     f ∘ id ≈⟨ identityʳ ⟩
     f      ∎
 
@@ -70,7 +70,7 @@ module IntroElim (a≡id : a ≈ id) where
 
   elimˡ : (a ∘ f) ≈ f
   elimˡ {f = f} = begin
-    a ∘ f  ≈⟨ ∘-resp-≈ˡ a≡id ⟩
+    a ∘ f  ≈⟨ a≡id ⟩∘⟨refl ⟩
     id ∘ f ≈⟨ identityˡ ⟩
     f      ∎
 
@@ -83,7 +83,7 @@ module Extends (s : CommutativeSquare f g h i) where
   extendˡ : CommutativeSquare f g (a ∘ h) (a ∘ i)
   extendˡ {a = a} = begin
     (a ∘ h) ∘ f ≈⟨ pullʳ s ⟩
-    a ∘ i ∘ g   ≈⟨ sym assoc ⟩
+    a ∘ i ∘ g   ≈˘⟨ assoc ⟩
     (a ∘ i) ∘ g ∎
 
   extendʳ : CommutativeSquare (f ∘ a) (g ∘ a) h i
@@ -95,7 +95,7 @@ module Extends (s : CommutativeSquare f g h i) where
   extend² : CommutativeSquare (f ∘ b) (g ∘ b) (a ∘ h) (a ∘ i)
   extend² {b = b} {a = a } = begin
     (a ∘ h) ∘ (f ∘ b) ≈⟨ pullʳ extendʳ ⟩
-    a ∘ (i ∘ (g ∘ b)) ≈⟨ sym assoc ⟩
+    a ∘ (i ∘ (g ∘ b)) ≈˘⟨ assoc ⟩
     (a ∘ i) ∘ (g ∘ b) ∎
 
 open Extends public
