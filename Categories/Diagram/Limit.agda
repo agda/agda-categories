@@ -20,7 +20,7 @@ open import Categories.Diagram.Cone F renaming (Cone⇒ to _⇨_)
 open import Categories.Object.Terminal as T hiding (up-to-iso; transport-by-iso)
 open import Categories.Square C
 open import Categories.Morphism C
-open import Categories.Morphism Cones as MC using () renaming (_≅_ to _⇔_ ; _≃_ to _↮_)
+open import Categories.Morphism Cones as MC using () renaming (_≅_ to _⇔_)
 
 private
   variable

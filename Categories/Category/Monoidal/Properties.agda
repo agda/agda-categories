@@ -14,6 +14,7 @@ open import Categories.Functor.Bifunctor
 open import Categories.Functor.Properties
 open import Categories.Category.Groupoid
 open import Categories.Morphism C
+open import Categories.Morphism.IsoEquiv C
 open import Categories.Morphism.Isomorphism C
 import Categories.Square as Square
 

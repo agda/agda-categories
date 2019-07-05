@@ -15,6 +15,7 @@ open import Categories.NaturalTransformation hiding (_≃_) renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   hiding (unitorˡ; unitorʳ; associator; _≅_) renaming (refl to idNi)
 open import Categories.Morphism C
+open import Categories.Morphism.IsoEquiv C
 open import Categories.Morphism.Isomorphism C
 
 private

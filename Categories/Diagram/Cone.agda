@@ -21,6 +21,9 @@ open import Data.Product
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 import Categories.Morphism as Mor
 open Mor C
+import Categories.Morphism.IsoEquiv as IsoEquiv
+open IsoEquiv C
+
 open import Categories.Square C
 
 record Apex (N : Obj) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′) where
@@ -35,7 +38,7 @@ record Cone : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′) where
 
   open Apex apex public
 
-open Apex 
+open Apex
 open Cone
 
 record Cone⇒ (c c′ : Cone) : Set (ℓ ⊔ e ⊔ o′) where
@@ -77,8 +80,10 @@ private
   variable
     K K′ : Cone
   module CM = Mor Cones
+  module CI = IsoEquiv Cones
 
-open CM using () renaming (_≅_ to _⇔_ ; _≃_ to _↮_)
+open CM using () renaming (_≅_ to _⇔_)
+open CI using () renaming (_≃_ to _↮_)
 
 cone-resp-iso : ∀ (κ : Cone) → Cone.N κ ≅ X → Σ[ κ′ ∈ Cone ] κ ⇔ κ′
 cone-resp-iso {X = X} κ κ≅X = record

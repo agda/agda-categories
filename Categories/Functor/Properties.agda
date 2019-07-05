@@ -6,6 +6,7 @@ open import Level
 open import Categories.Category
 open import Categories.Functor.Core
 open import Categories.Morphism
+open import Categories.Morphism.IsoEquiv
 open import Categories.Morphism.Isomorphism
 
 open import Relation.Binary using (_Preserves_⟶_)
@@ -61,7 +62,7 @@ module _ (F : Functor C D) where
     where open Iso iso
           open D
           open D.HomReasoning
-          
+
   [_]-resp-≅ : F₀ Preserves _≅_ C ⟶ _≅_ D
   [_]-resp-≅ i≅j = record
     { from       = F₁ from
@@ -82,4 +83,3 @@ module _ (F : Functor C D) where
     { from-≈ = homomorphism
     ; to-≈   = homomorphism
     }
-

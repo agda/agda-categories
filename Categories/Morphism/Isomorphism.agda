@@ -14,8 +14,12 @@ open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 open import Categories.Category.Groupoid
 import Categories.Morphism as Morphism
 import Categories.Morphism.Properties as Morphismₚ
+import Categories.Morphism.IsoEquiv as IsoEquiv
+
 open Morphism 𝒞 renaming (TransitiveClosure to ⇒TransitiveClosure)
 open Morphismₚ 𝒞
+open IsoEquiv 𝒞
+
 import Categories.Square as Square
 
 open Category 𝒞
