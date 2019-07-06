@@ -1,6 +1,11 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
 
+-- Mainly *properties* of isomorphisms, and a lot of other things too
+
+-- TODO: are the uses of rewrite really necessary?
+-- TODO: split things up more semantically?
+
 module Categories.Morphism.Isomorphism {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level using (_⊔_)
@@ -30,26 +35,26 @@ private
     open Morphism Isos public
 
   variable
-    A B C D : Obj
+    A B C : Obj
 
 infixr 9 _∘ᵢ_
 _∘ᵢ_ : B ≅ C → A ≅ B → A ≅ C
 _∘ᵢ_ = Category._∘_ Isos
 
+private
+  sym∘ᵢ≃refl : ∀ {f : A ≅ B} → ≅.sym f ∘ᵢ f ≃ ≅.refl
+  sym∘ᵢ≃refl {f = f} = record
+    { from-≈ = isoˡ
+    ; to-≈   = isoˡ
+    }
+    where open _≅_ f
 
-sym∘ᵢ≃refl : ∀ {f : A ≅ B} → ≅.sym f ∘ᵢ f ≃ ≅.refl
-sym∘ᵢ≃refl {f = f} = record
-  { from-≈ = isoˡ
-  ; to-≈   = isoˡ
-  }
-  where open _≅_ f
-
-∘ᵢsym≃refl : ∀ {f : A ≅ B} → f ∘ᵢ ≅.sym f ≃ ≅.refl
-∘ᵢsym≃refl {f = f} = record
-  { from-≈ = isoʳ
-  ; to-≈   = isoʳ
-  }
-  where open _≅_ f
+  ∘ᵢsym≃refl : ∀ {f : A ≅ B} → f ∘ᵢ ≅.sym f ≃ ≅.refl
+  ∘ᵢsym≃refl {f = f} = record
+    { from-≈ = isoʳ
+    ; to-≈   = isoʳ
+    }
+    where open _≅_ f
 
 Isos-groupoid : Groupoid Isos
 Isos-groupoid = record
@@ -64,6 +69,9 @@ open Groupoid Isos-groupoid using () renaming (∘-resp-≈ to ∘ᵢ-resp-≃) 
 
 CommutativeIso = Groupoid.CommutativeSquare Isos-groupoid
 
+--------------------
+-- Also stuff about transitive closure
+
 ∘ᵢ-tc : A [ _≅_ ]⁺ B → A ≅ B
 ∘ᵢ-tc = MIsos.∘-tc
 
@@ -74,6 +82,7 @@ _≃⁺_ = MIsos._≈⁺_
 TransitiveClosure : Category _ _ _
 TransitiveClosure = MIsos.TransitiveClosure
 
+--------------------
 -- some infrastructure setup in order to say something about morphisms and isomorphisms
 module _ where
   private
@@ -96,9 +105,8 @@ module _ where
   reverse (_ ∼⁺⟨ f⁺ ⟩ f⁺′) = _ ∼⁺⟨ reverse f⁺′ ⟩ reverse f⁺
 
   reverse⇒≅-sym : (f⁺ : A [ _≅_ ]⁺ B) → ∘ᵢ-tc (reverse f⁺) ≡ ≅.sym (∘ᵢ-tc f⁺)
-  reverse⇒≅-sym [ f ]                            = ≡.refl
-  reverse⇒≅-sym (_ ∼⁺⟨ f⁺ ⟩ f⁺′)
-    rewrite reverse⇒≅-sym f⁺ | reverse⇒≅-sym f⁺′ = ≡.refl
+  reverse⇒≅-sym [ f ]            = ≡.refl
+  reverse⇒≅-sym (_ ∼⁺⟨ f⁺ ⟩ f⁺′)  = ≡.cong₂ (Morphism.≅.trans 𝒞) (reverse⇒≅-sym f⁺′) (reverse⇒≅-sym f⁺)
 
   TransitiveClosure-groupoid : Groupoid TransitiveClosure
   TransitiveClosure-groupoid = record
