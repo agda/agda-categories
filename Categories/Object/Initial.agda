@@ -26,24 +26,7 @@ record Initial : Set (o ⊔ ℓ ⊔ e) where
   ⊥-id : (f : ⊥ ⇒ ⊥) → f ≈ id
   ⊥-id f = !-unique₂ f id
 
-module _ where
-  open Initial
+open Initial
 
-  to-⊥-is-Epi : ∀ {A : Obj} {i : Initial} → (f : A ⇒ ⊥ i) → Epi f
-  to-⊥-is-Epi {_} {i} _ = λ g h _ → !-unique₂ i g h
-
-⊥⇒op⊤ : Initial → Terminal
-⊥⇒op⊤ i = record
-  { ⊤        = ⊥
-  ; !        = !
-  ; !-unique = !-unique
-  }
-  where open Initial i
-
-op⊤⇒⊥ : Terminal → Initial
-op⊤⇒⊥ t = record
-  { ⊥        = ⊤
-  ; !        = !
-  ; !-unique = !-unique
-  }
-  where open Terminal t
+to-⊥-is-Epi : ∀ {A : Obj} {i : Initial} → (f : A ⇒ ⊥ i) → Epi f
+to-⊥-is-Epi {_} {i} _ = λ g h _ → !-unique₂ i g h
