@@ -30,6 +30,8 @@ private
     X Y Z : Obj
     q     : K ⇨ K′
 
+-- A Limit is a Terminal object in the category of Cones
+--   (This could be unpacked...)
 record Limit : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   field
     terminal : Terminal Cones
