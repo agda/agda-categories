@@ -4,7 +4,7 @@ open import Categories.Category
 -- Properties relating Initial and Terminal Objects,
 -- and Product / Coproduct via op
 
-module Categories.Object.OpProperties {o ℓ e} (C : Category o ℓ e) where
+module Categories.Object.Duality {o ℓ e} (C : Category o ℓ e) where
 
 open Category C
 
