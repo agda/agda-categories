@@ -3,6 +3,8 @@ open import Categories.Category
 open import Categories.Functor hiding (id)
 
 -- Cone over a Functor F (from shape category J into category C)
+-- Also defines the category of cones "over F"
+
 module Categories.Diagram.Cone
   {o ℓ e} {o′ ℓ′ e′} {C : Category o ℓ e} {J : Category o′ ℓ′ e′} (F : Functor J C) where
 
@@ -77,6 +79,7 @@ Cones = record
   }
 
 module Cones = Category Cones
+
 private
   variable
     K K′ : Cone
