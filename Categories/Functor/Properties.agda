@@ -6,20 +6,22 @@ open import Level
 open import Categories.Category
 open import Categories.Functor.Core
 open import Categories.Morphism
-open import Categories.Morphism.IsoEquiv
+open import Categories.Morphism.IsoEquiv as IsoEquiv
 open import Categories.Morphism.Isomorphism
 
 open import Relation.Binary using (_Preserves_⟶_)
 
 private
   variable
-    o ℓ e o′ ℓ′ e′ : Level
+    o ℓ e : Level
     C D : Category o ℓ e
 
 module _ (F : Functor C D) where
   private
     module C = Category C
     module D = Category D
+    module IsoC = IsoEquiv C
+    module IsoD = IsoEquiv D
   open C hiding (_∘_)
   open Functor F
 
@@ -49,12 +51,12 @@ module _ (F : Functor C D) where
   [_]-resp-Iso : Iso C f g → Iso D (F₁ f) (F₁ g)
   [_]-resp-Iso {f = f} {g = g} iso = record
     { isoˡ = begin
-      F₁ g ∘ F₁ f       ≈⟨ sym homomorphism ⟩
+      F₁ g ∘ F₁ f      ≈˘⟨ homomorphism ⟩
       F₁ (C [ g ∘ f ]) ≈⟨ F-resp-≈ isoˡ ⟩
       F₁ C.id          ≈⟨ identity ⟩
       D.id             ∎
     ; isoʳ = begin
-      F₁ f ∘ F₁ g       ≈⟨ sym homomorphism ⟩
+      F₁ f ∘ F₁ g      ≈˘⟨ homomorphism ⟩
       F₁ (C [ f ∘ g ]) ≈⟨ F-resp-≈ isoʳ ⟩
       F₁ C.id          ≈⟨ identity ⟩
       D.id             ∎
@@ -71,15 +73,15 @@ module _ (F : Functor C D) where
     }
     where open _≅_ i≅j
 
-  [_]-resp-≃ : ∀ {f g :  _≅_ C A B} → _≃_ C f g → _≃_ D ([_]-resp-≅ f) ([_]-resp-≅ g)
+  [_]-resp-≃ : ∀ {f g :  _≅_ C A B} → f IsoC.≃ g → [ f ]-resp-≅ IsoD.≃ [ g ]-resp-≅
   [_]-resp-≃ eq = record
     { from-≈ = F-resp-≈ from-≈
     ; to-≈   = F-resp-≈ to-≈
     }
     where open _≃_ eq
 
-  homomorphismᵢ : ∀ {f : _≅_ C B E} {g : _≅_ C A B} → _≃_ D ([_]-resp-≅ (_∘ᵢ_ C f g)) (_∘ᵢ_ D ([_]-resp-≅ f) ([_]-resp-≅ g))
-  homomorphismᵢ {f = f} {g = g} = record
+  homomorphismᵢ : ∀ {f : _≅_ C B E} {g : _≅_ C A B} → [ _∘ᵢ_ C f g ]-resp-≅ IsoD.≃ (_∘ᵢ_ D [ f ]-resp-≅ [ g ]-resp-≅ )
+  homomorphismᵢ = record
     { from-≈ = homomorphism
     ; to-≈   = homomorphism
     }
