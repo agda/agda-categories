@@ -17,7 +17,6 @@ private
     A B C : Obj
     f g h : A ⇒ B
 
--- Borrowed from Dan Doel's definition of coproducts
 record Coproduct (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
     A+B   : Obj
