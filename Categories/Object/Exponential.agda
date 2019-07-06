@@ -1,6 +1,9 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
 
+-- Exponential Object
+
+-- TODO: Where is the notation from? It is neither from Wikipedia nor the nLab.
 module Categories.Object.Exponential {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open Category 𝒞
@@ -48,14 +51,14 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
             λg p₃ f ∘ g ≈ λg p₂ (f ∘ [ p₂ ⇒ p₃ ] g ×id)
   subst p₂ p₃ {f} {g} = λ-unique p₂ (begin
     eval ∘ [ p₂ ⇒ product ] λg p₃ f ∘ g ×id
-                           ≈⟨ refl ⟩∘⟨ sym [ p₂ ⇒ p₃ ⇒ product ]×id∘×id ⟩
+                           ≈˘⟨ refl⟩∘⟨ [ p₂ ⇒ p₃ ⇒ product ]×id∘×id ⟩
     eval ∘ [ p₃ ⇒ product ] λg p₃ f ×id ∘ [ p₂ ⇒ p₃ ] g ×id
                            ≈⟨ pullˡ (β p₃) ⟩
     f ∘ [ p₂ ⇒ p₃ ] g ×id ∎)
 
   η-id : λg product eval ≈ id
   η-id = begin
-    λg product eval                                  ≈⟨ sym identityʳ ⟩
+    λg product eval                                  ≈˘⟨ identityʳ ⟩
     λg product eval ∘ id                             ≈⟨ subst _ _ ⟩
     λg product (eval ∘ [ product ⇒ product ] id ×id) ≈⟨ η product ⟩
     id                                               ∎
@@ -75,7 +78,7 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
               ≈ [ e₁ ]λ p₅ ([ e₂ ]eval ∘ [ p₅ ⇒ Exponential.product e₂ ]id× f) ∘ [ e₂ ]λ p₄ g
 λ-distrib e₁ e₂ p₃ p₄ p₅ {f} {g} = sym $ e₁.λ-unique p₃ $ begin
   [ e₁ ]eval ∘ ([ p₃ ⇒ p₁ ] [ e₁ ]λ p₅ ([ e₂ ]eval ∘ [ p₅ ⇒ p₂ ]id× f) ∘ [ e₂ ]λ p₄ g ×id)
-                       ≈⟨ refl⟩∘⟨ sym [ p₃ ⇒ p₅ ⇒ p₁ ]×id∘×id ⟩
+                       ≈˘⟨ refl⟩∘⟨ [ p₃ ⇒ p₅ ⇒ p₁ ]×id∘×id ⟩
   [ e₁ ]eval ∘ [ p₅ ⇒ p₁ ] [ e₁ ]λ p₅ ([ e₂ ]eval ∘ [ p₅ ⇒ p₂ ]id× f) ×id
              ∘ [ p₃ ⇒ p₅ ] [ e₂ ]λ p₄ g ×id
                        ≈⟨ pullˡ (e₁.β p₅) ⟩
@@ -84,7 +87,7 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
                        ≈⟨ assoc ⟩
   [ e₂ ]eval ∘ [ p₅ ⇒ p₂ ]id× f
              ∘ [ p₃ ⇒ p₅ ] [ e₂ ]λ p₄ g ×id
-                       ≈⟨ refl⟩∘⟨ sym [ p₄ ⇒ p₂ , p₃ ⇒ p₅ ]first↔second ⟩
+                       ≈˘⟨ refl⟩∘⟨ [ p₄ ⇒ p₂ , p₃ ⇒ p₅ ]first↔second ⟩
   [ e₂ ]eval ∘ [ p₄ ⇒ p₂ ] [ e₂ ]λ p₄ g ×id ∘ [ p₃ ⇒ p₄ ]id× f
                        ≈⟨ pullˡ (e₂.β p₄) ⟩
   g ∘ [ p₃ ⇒ p₄ ]id× f ∎
@@ -100,7 +103,7 @@ repack e₁ e₂ = e₂.λg e₁.product e₁.eval
     module e₂ = Exponential e₂
 
 repack≡id : ∀{A B} (e : Exponential A B) → repack e e ≈ id
-repack≡id e = Exponential.η-id e
+repack≡id = Exponential.η-id
 
 repack∘ : ∀ (e₁ e₂ e₃ : Exponential A B) → repack e₂ e₃ ∘ repack e₁ e₂ ≈ repack e₁ e₃
 repack∘ e₁ e₂ e₃ =
@@ -112,15 +115,15 @@ repack∘ e₁ e₂ e₃ =
   ≈⟨ λ-cong e₃ p₂ (introʳ (second-id p₂)) ⟩∘⟨refl ⟩
       [ e₃ ]λ p₂ ([ e₂ ]eval ∘ [ p₂ ⇒ p₂ ]id× id)
     ∘ [ e₂ ]λ p₁ [ e₁ ]eval
-  ≈⟨ sym $ λ-distrib e₃ e₂ p₁ p₁ p₂ ⟩
+  ≈˘⟨ λ-distrib e₃ e₂ p₁ p₁ p₂ ⟩
     [ e₃ ]λ p₁ ([ e₁ ]eval ∘ [ p₁ ⇒ p₁ ]id× id)
-  ≈⟨ λ-cong e₃ p₁ (sym (introʳ (second-id (product e₁)))) ⟩
+  ≈⟨ λ-cong e₃ p₁ (⟺ (introʳ (second-id (product e₁)))) ⟩
     [ e₃ ]λ p₁ [ e₁ ]eval
   ∎
   where open Exponential
 
 repack-cancel : ∀{A B} (e₁ e₂ : Exponential A B) → repack e₁ e₂ ∘ repack e₂ e₁ ≈ id
-repack-cancel e₁ e₂ = trans (repack∘ e₂ e₁ e₂) (repack≡id e₂)
+repack-cancel e₁ e₂ = repack∘ e₂ e₁ e₂ ○ repack≡id e₂
 
 up-to-iso : ∀{A B} (e₁ e₂ : Exponential A B) → Exponential.B^A e₁ ≅ Exponential.B^A e₂
 up-to-iso e₁ e₂ = record
