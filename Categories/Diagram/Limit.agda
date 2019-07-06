@@ -3,6 +3,7 @@
 open import Categories.Category
 open import Categories.Functor hiding (id)
 
+-- Limit of a Cone over a Functor F : J → C
 module Categories.Diagram.Limit
   {o ℓ e} {o′ ℓ′ e′} {C : Category o ℓ e} {J : Category o′ ℓ′ e′} (F : Functor J C) where
 
