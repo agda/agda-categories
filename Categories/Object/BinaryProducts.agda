@@ -2,6 +2,9 @@
 
 open import Categories.Category
 
+-- This is currently orphaned, i.e. nothing uses it. And it is, in many ways,
+-- 'just' a UI to Categories.Object.Product. So its utility is unclear ATM.
+
 module Categories.Object.BinaryProducts {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
