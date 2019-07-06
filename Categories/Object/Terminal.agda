@@ -1,6 +1,8 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
 
+-- Definition of Terminal object and some properties
+
 module Categories.Object.Terminal {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
@@ -29,15 +31,12 @@ record Terminal : Set (o ⊔ ℓ ⊔ e) where
     where open HomReasoning
 
   ⊤-id : (f : ⊤ ⇒ ⊤) → f ≈ id
-  ⊤-id f = !-unique₂
+  ⊤-id _ = !-unique₂
 
 open Terminal
 
 from-⊤-is-Mono : ∀ {A : Obj} {t : Terminal} → (f : ⊤ t ⇒ A) → Mono f
-from-⊤-is-Mono {_} {t} f = helper
-  where
-    helper : ∀ {C : Obj} → (g h : C ⇒ ⊤ t) → f ∘ g ≈ f ∘ h → g ≈ h
-    helper g h _ = !-unique₂ t
+from-⊤-is-Mono {_} {t} _ = λ _ _ _ → !-unique₂ t
 
 up-to-iso : (t₁ t₂ : Terminal) → ⊤ t₁ ≅ ⊤ t₂
 up-to-iso t₁ t₂ = record
