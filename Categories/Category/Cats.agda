@@ -1,22 +1,22 @@
 {-# OPTIONS --without-K --safe #-}
 module Categories.Category.Cats where
 
-open import Level
-open import Categories.Category
-open import Categories.Functor
-open import Categories.Functor.Properties
-open import Categories.NaturalTransformation hiding (id)
-open import Categories.NaturalTransformation.NaturalIsomorphism
-import Categories.Morphism as M
-import Categories.Square as Square
+-- The (large) category of (small) categories.
+-- Even though Agda can figure out the levels, it is worth making them explicit,
+-- to see the large level jumps involved.
 
+open import Level
+open import Categories.Category using (Category)
+open import Categories.Functor using (Functor; id; _∘F_)
+open import Categories.NaturalTransformation.NaturalIsomorphism
+  using (NaturalIsomorphism; associator; unitorˡ; unitorʳ; isEquivalence; _ⓘₕ_)
 private
   variable
     o ℓ e : Level
     C D E : Category o ℓ e
     F G H I : Functor C D
 
-Cats : ∀ o ℓ e → Category _ _ _
+Cats : ∀ o ℓ e → Category (suc (o ⊔ ℓ ⊔  e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
 Cats o ℓ e = record
   { Obj       = Category o ℓ e
   ; _⇒_       = Functor
