@@ -1,13 +1,17 @@
 {-# OPTIONS --without-K --safe #-}
 module Categories.Functor.Hom where
 
+-- The Hom Functor from C.op × C to Setoids,
+-- the two 1-argument version fixing one object
+-- and some notation for the version where the category must be made explicit
+
 open import Data.Product
 open import Function using () renaming (_∘_ to _∙_)
 
 open import Categories.Category
 open import Categories.Functor hiding (id)
-open import Categories.Functor.Bifunctor
-open import Categories.Category.Sets
+open import Categories.Functor.Bifunctor using (Bifunctor)
+open import Categories.Category.Sets using (Setoids)
 import Categories.Square as Square
 
 open import Relation.Binary using (Setoid)
@@ -52,9 +56,9 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
                             (proj₂ g ∘ proj₂ f) ∘ x ∘ proj₁ f ∘ proj₁ g ≈
                             proj₂ g ∘ (proj₂ f ∘ y ∘ proj₁ f) ∘ proj₁ g
           homomorphism′ {f = f₁ , f₂} {g₁ , g₂} {x} {y} x≈y = begin
-            (g₂ ∘ f₂) ∘ x ∘ f₁ ∘ g₁ ≈⟨ refl ⟩∘⟨ sym assoc ⟩
+            (g₂ ∘ f₂) ∘ x ∘ f₁ ∘ g₁   ≈˘⟨ refl⟩∘⟨ assoc ⟩
             (g₂ ∘ f₂) ∘ (x ∘ f₁) ∘ g₁ ≈⟨ pullʳ (pullˡ (∘-resp-≈ʳ (∘-resp-≈ˡ x≈y))) ⟩
-            g₂ ∘ (f₂ ∘ y ∘ f₁) ∘ g₁ ∎
+            g₂ ∘ (f₂ ∘ y ∘ f₁) ∘ g₁   ∎
 
           F-resp-≈′ : ∀ {A B : Σ Obj (λ x → Obj)}
                         {f g : Σ (proj₁ B ⇒ proj₁ A) (λ x → proj₂ A ⇒ proj₂ B)} →
@@ -67,13 +71,14 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
 
   open Functor Hom[-,-]
   open Equiv
+  open HomReasoning
 
   Hom[_,-] : Obj → Functor C (Setoids ℓ e)
   Hom[ A ,-] = record
     { F₀           = F₀ ∙ (A ,_)
     ; F₁           = F₁ ∙ (id ,_)
     ; identity     = identity
-    ; homomorphism = λ x≈y → trans (∘-resp-≈ʳ (∘-resp-≈ʳ (sym identityˡ))) (homomorphism x≈y)
+    ; homomorphism = λ x≈y → ∘-resp-≈ʳ (∘-resp-≈ʳ (⟺ identityˡ)) ○ homomorphism x≈y
     ; F-resp-≈     = λ f≈g x≈y → ∘-resp-≈ f≈g (∘-resp-≈ˡ x≈y)
     }
 
@@ -82,20 +87,20 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
     { F₀           = F₀ ∙ (_, B)
     ; F₁           = F₁ ∙ (_, id)
     ; identity     = identity
-    ; homomorphism = λ x≈y → trans (∘-resp-≈ˡ (sym identityˡ)) (homomorphism x≈y)
+    ; homomorphism = λ x≈y → ∘-resp-≈ˡ (⟺ identityˡ) ○ homomorphism x≈y
     ; F-resp-≈     = λ f≈g x≈y → ∘-resp-≈ʳ (∘-resp-≈ x≈y f≈g)
     }
 
-module _ {o ℓ e} where
+-- Notation for when the ambient Category must be specified explicitly.
+module _ {o ℓ e} (C : Category o ℓ e) where
+  open Category C
+  open Hom C
 
-  Hom[_][-,-] : ∀ (C : Category o ℓ e) → Bifunctor (Category.op C) C (Setoids ℓ e)
-  Hom[ C ][-,-] = Hom[-,-]
-    where open Hom C
+  Hom[_][-,-] : Bifunctor (Category.op C) C (Setoids ℓ e)
+  Hom[_][-,-] = Hom[-,-]
 
-  Hom[_][_,-] : ∀ (C : Category o ℓ e) → Category.Obj C → Functor C (Setoids ℓ e)
-  Hom[ C ][ B ,-] = Hom[ B ,-]
-    where open Hom C
+  Hom[_][_,-] : Obj → Functor C (Setoids ℓ e)
+  Hom[_][_,-] B = Hom[ B ,-]
 
-  Hom[_][-,_] : ∀ (C : Category o ℓ e) → Category.Obj C → Contravariant C (Setoids ℓ e)
-  Hom[ C ][-, B ] = Hom[-, B ]
-    where open Hom C
+  Hom[_][-,_] : Obj → Contravariant C (Setoids ℓ e)
+  Hom[_][-,_] B = Hom[-, B ]
