@@ -1,20 +1,22 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
 
+-- Definition of Monoidal Category
+
 module Categories.Category.Monoidal {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
 open import Function using (_$_)
-open import Data.Product using (_×_; _,_)
+open import Data.Product using (_×_; _,_; curry′)
 
 open import Categories.Category.Product
 open import Categories.Category.Groupoid
 open import Categories.Functor renaming (id to idF)
-open import Categories.Functor.Bifunctor
-open import Categories.Functor.Properties
+open import Categories.Functor.Bifunctor using (Bifunctor; appˡ; appʳ)
+open import Categories.Functor.Properties using ([_]-resp-≅)
 open import Categories.NaturalTransformation hiding (_≃_) renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
-  hiding (unitorˡ; unitorʳ; associator; _≅_) renaming (refl to idNi)
+  hiding (unitorˡ; unitorʳ; associator; _≅_; refl)
 open import Categories.Morphism C
 open import Categories.Morphism.IsoEquiv C
 open import Categories.Morphism.Isomorphism C
@@ -40,8 +42,9 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   open Functor ⊗
 
   _⊗₀_ : Obj → Obj → Obj
-  X ⊗₀ Y = F₀ (X , Y)
+  _⊗₀_ = curry′ F₀
 
+  -- this is also 'curry', but a very-dependent version
   _⊗₁_ : X ⇒ Y → Z ⇒ W → X ⊗₀ Z ⇒ Y ⊗₀ W
   f ⊗₁ g = F₁ (f , g)
 
@@ -84,18 +87,19 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
     [x⊗y]⊗z : Bifunctor (Product C C) C C
     [x⊗y]⊗z = ⊗ ∘F (⊗ ⁂ idF)
 
+    -- note how this one needs re-association to typecheck (i.e. be correct)
     x⊗[y⊗z] : Bifunctor (Product C C) C C
     x⊗[y⊗z] = ⊗ ∘F (idF ⁂ ⊗) ∘F assocˡ _ _ _
 
   unitorˡ-naturalIsomorphism : NaturalIsomorphism (unit ⊗-) idF
   unitorˡ-naturalIsomorphism = record
     { F⇒G = record
-      { η       = λ X → unitorˡ.from
-      ; commute = λ f → unitorˡ-commute-from
+      { η       = λ _ → unitorˡ.from
+      ; commute = λ _ → unitorˡ-commute-from
       }
     ; F⇐G = record
-      { η       = λ X → unitorˡ.to
-      ; commute = λ f → unitorˡ-commute-to
+      { η       = λ _ → unitorˡ.to
+      ; commute = λ _ → unitorˡ-commute-to
       }
     ; iso = λ _ → unitorˡ.iso
     }
@@ -103,12 +107,12 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   unitorʳ-naturalIsomorphism : NaturalIsomorphism (-⊗ unit) idF
   unitorʳ-naturalIsomorphism = record
     { F⇒G = record
-      { η       = λ X → unitorʳ.from
-      ; commute = λ f → unitorʳ-commute-from
+      { η       = λ _ → unitorʳ.from
+      ; commute = λ _ → unitorʳ-commute-from
       }
     ; F⇐G = record
-      { η       = λ X → unitorʳ.to
-      ; commute = λ f → unitorʳ-commute-to
+      { η       = λ _ → unitorʳ.to
+      ; commute = λ _ → unitorʳ-commute-to
       }
     ; iso = λ _ → unitorʳ.iso
     }
@@ -116,16 +120,12 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   associator-naturalIsomorphism : NaturalIsomorphism [x⊗y]⊗z x⊗[y⊗z]
   associator-naturalIsomorphism = record
     { F⇒G = record
-      { η       = λ where
-        ((X , Y) , Z) → associator.from
-      ; commute = λ where
-        ((f , g) , h) → assoc-commute-from
+      { η       = λ _ → associator.from
+      ; commute = λ _ → assoc-commute-from
       }
     ; F⇐G = record
-      { η       = λ where
-        ((X , Y) , Z) → associator.to
-      ; commute = λ where
-        ((f , g) , h) → assoc-commute-to
+      { η       = λ _ → associator.to
+      ; commute = λ _ → assoc-commute-to
       }
     ; iso = λ _ → associator.iso
     }
