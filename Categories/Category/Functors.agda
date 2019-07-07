@@ -1,8 +1,10 @@
 {-# OPTIONS --without-K --safe #-}
 module Categories.Category.Functors where
 
+-- the "Functor Category", often denoted [ C , D ]
+
 open import Level
-open import Data.Product using (Σ; _,_; _×_)
+open import Data.Product using (Σ; _,_; _×_; uncurry′)
 
 open import Categories.Category
 open import Categories.Functor
@@ -32,19 +34,19 @@ private
     o ℓ e : Level
     C D : Category o ℓ e
 
+-- Part of the proof that Cats is a CCC:
 eval : Bifunctor (Functors C D) C D
 eval {C = C} {D = D} = record
-  { F₀           = λ where
-    (F , C) → let open Functor F in F₀ C
+  { F₀           = uncurry′ Functor.F₀
   ; F₁           = λ where
-    {(F , A)} {G , B} (α , f) →
+    {F , _} {_ , B} (α , f) →
       let open NaturalTransformation α
           open Functor F
       in η B ∘ F₁ f
   ; identity     = λ where
-    {(F , A)} → elimʳ (Functor.identity F)
+    {F , _} → elimʳ (Functor.identity F)
   ; homomorphism = λ where
-    {(F , A)} {(G , B)} {(H , C)} {(α , f)} {(β , g)} →
+    {F , _} {G , B} {_ , C} {α , f} {β , g} →
       let open NaturalTransformation
           open Functor
       in begin
@@ -55,8 +57,7 @@ eval {C = C} {D = D} = record
         η β C ∘ F₁ G g ∘ η α B ∘ F₁ F f   ≈˘⟨ assoc ⟩
         (η β C ∘ F₁ G g) ∘ η α B ∘ F₁ F f ∎
   ; F-resp-≈     = λ where
-    {(F , A)} (comm , eq) →
-      let open Functor in ∘-resp-≈ comm (F-resp-≈ F eq)
+    {F , _} (comm , eq) → ∘-resp-≈ comm (Functor.F-resp-≈ F eq)
   }
   where module C = Category C
         module D = Category D
