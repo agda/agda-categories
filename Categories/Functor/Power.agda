@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-open import Categories.Category.Core
+open import Categories.Category
 
 module Categories.Functor.Power {o ℓ e} (C : Category o ℓ e) where
 
