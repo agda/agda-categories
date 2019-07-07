@@ -2,8 +2,9 @@
 
 open import Categories.Category
 
--- This is currently orphaned, i.e. nothing uses it. And it is, in many ways,
--- 'just' a UI to Categories.Object.Product. So its utility is unclear ATM.
+-- Defines the following properties of a Category:
+-- 1. BinaryProducts -- for when a Category has all Binary Products
+-- 2. FiniteProducts -- for when a Category has all Products
 
 module Categories.Object.BinaryProducts {o ℓ e} (𝒞 : Category o ℓ e) where
 
