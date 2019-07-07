@@ -6,13 +6,13 @@ open import Level
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
 open import Categories.Category
-open import Categories.Functor.Core renaming (id to idF)
+open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
 import Categories.Square as Square
 
 private
   variable
-    o ℓ e o′ ℓ′ e′ o″ ℓ″ e″ : Level
+    o ℓ e o′ ℓ′ e′ : Level
     C D E : Category o ℓ e
 
 record NaturalTransformation {C : Category o ℓ e}
@@ -37,22 +37,13 @@ record NaturalTransformation {C : Category o ℓ e}
     }
 
 id : ∀ {F : Functor C D} → NaturalTransformation F F
-id {C = C} {D = D} {F} = record
+id {D = D} = record
   { η = λ _ → D.id
-  ; commute = commute′
+  ; commute = λ _ → D.identityˡ ○ ⟺ D.identityʳ
   }
   where
-  module C = Category C
   module D = Category D
-  module F = Functor F
-  open F
-
-  commute′ : ∀ {X Y} (f : C [ X , Y ]) → D [ D [ D.id ∘ F₁ f ] ≈ D [ F₁ f ∘ D.id ] ]
-  commute′ f = begin
-    D [ D.id ∘ F₁ f ] ≈⟨ D.identityˡ ⟩
-    F₁ f              ≈⟨ D.Equiv.sym D.identityʳ ⟩
-    D [ F₁ f ∘ D.id ] ∎
-    where open D.HomReasoning
+  open D.HomReasoning
 
 infixr 9 _∘ᵥ_ _∘ₕ_ _∘ˡ_ _∘ʳ_
 
@@ -70,20 +61,18 @@ _∘ᵥ_ {C = C} {D = D} {F} {G} {H} X Y = record
 -- "Horizontal composition"
 _∘ₕ_ : ∀ {F G : Functor C D} {H I : Functor D E} →
          NaturalTransformation H I → NaturalTransformation F G → NaturalTransformation (H ∘F F) (I ∘F G)
-_∘ₕ_ {C = C} {D = D} {E = E} {F} {G} {H} {I} Y X = record
-  { η = λ q → E [ I₁ (X.η q) ∘ Y.η (F₀ q) ]
-  ; commute = λ f → glue ([ I ]-resp-square (X.commute f)) (Y.commute (F₁ f))
+_∘ₕ_ {E = E} {F} {I = I} Y X = record
+  { η = λ q → E [ I₁ (X.η q) ∘ Y.η (F.F₀ q) ]
+  ; commute = λ f → glue ([ I ]-resp-square (X.commute f)) (Y.commute (F.F₁ f))
   }
   where module F = Functor F
-        module I = Functor I
         module X = NaturalTransformation X
         module Y = NaturalTransformation Y
-        open F
-        open I renaming (F₀ to I₀; F₁ to I₁)
+        open Functor I renaming (F₀ to I₀; F₁ to I₁)
         open Square E
 
 _∘ˡ_ : ∀ {G H : Functor C D} (F : Functor D E) → NaturalTransformation G H → NaturalTransformation (F ∘F G) (F ∘F H)
-_∘ˡ_ {E = E} {G = G} {H = H} F α = record
+_∘ˡ_ F α = record
   { η       = λ X → F₁ (η X)
   ; commute = λ f → [ F ]-resp-square (commute f)
   }
@@ -106,7 +95,7 @@ _≃_ {D = D} X Y = ∀ {x} → D [ NaturalTransformation.η X x ≈ NaturalTran
 ≃-isEquivalence : ∀ {F G : Functor C D} → IsEquivalence (_≃_ {F = F} {G})
 ≃-isEquivalence {D = D} {F} {G} = record
   { refl  = refl
-  ; sym   = λ f → sym f
+  ; sym   = λ f → sym f -- need to eta-expand to get things to line up properly
   ; trans = λ f g → trans f g
   }
   where open Category.Equiv D
