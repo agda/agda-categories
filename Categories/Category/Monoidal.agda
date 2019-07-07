@@ -63,24 +63,37 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   module unitorʳ {X} = _≅_ (unitorʳ {X = X})
   module associator {X} {Y} {Z} = _≅_ (associator {X} {Y} {Z})
 
+  -- for exporting, it makes sense to use the above long names, but for
+  -- internal consumption, the traditional (short!) categorical names are more
+  -- convenient. However, they are not symmetric, even though the concepts are, so
+  -- we'll use ⇒ and ⇐ arrows to indicate that
+
+  private
+    λ⇒ = unitorˡ.from
+    λ⇐ = unitorˡ.to
+    ρ⇒ = unitorʳ.from
+    ρ⇐ = unitorʳ.to
+    α⇒ = associator.from
+    α⇐ = associator.to
+
   field
-    unitorˡ-commute-from : CommutativeSquare (C.id ⊗₁ f) unitorˡ.from unitorˡ.from f
-    unitorˡ-commute-to   : CommutativeSquare f unitorˡ.to unitorˡ.to (C.id ⊗₁ f)
-    unitorʳ-commute-from : CommutativeSquare (f ⊗₁ C.id) unitorʳ.from unitorʳ.from f
-    unitorʳ-commute-to   : CommutativeSquare f unitorʳ.to unitorʳ.to (f ⊗₁ C.id)
-    assoc-commute-from   : CommutativeSquare ((f ⊗₁ g) ⊗₁ h) associator.from associator.from (f ⊗₁ (g ⊗₁ h))
-    assoc-commute-to     : CommutativeSquare (f ⊗₁ (g ⊗₁ h)) associator.to associator.to ((f ⊗₁ g) ⊗₁ h)
+    unitorˡ-commute-from : CommutativeSquare (C.id ⊗₁ f) λ⇒ λ⇒ f
+    unitorˡ-commute-to   : CommutativeSquare f λ⇐ λ⇐ (C.id ⊗₁ f)
+    unitorʳ-commute-from : CommutativeSquare (f ⊗₁ C.id) ρ⇒ ρ⇒ f
+    unitorʳ-commute-to   : CommutativeSquare f ρ⇐ ρ⇐ (f ⊗₁ C.id)
+    assoc-commute-from   : CommutativeSquare ((f ⊗₁ g) ⊗₁ h) α⇒ α⇒ (f ⊗₁ (g ⊗₁ h))
+    assoc-commute-to     : CommutativeSquare (f ⊗₁ (g ⊗₁ h)) α⇐ α⇐ ((f ⊗₁ g) ⊗₁ h)
     triangle             : [ (X ⊗₀ unit) ⊗₀ Y ⇒ X ⊗₀ Y ]⟨
-                             associator.from           ⇒⟨ X ⊗₀ (unit ⊗₀ Y) ⟩
-                             C.id ⊗₁ unitorˡ.from
-                           ≈ unitorʳ.from ⊗₁ C.id
+                             α⇒           ⇒⟨ X ⊗₀ (unit ⊗₀ Y) ⟩
+                             C.id ⊗₁ λ⇒
+                           ≈ ρ⇒ ⊗₁ C.id
                            ⟩
     pentagon             : [ ((X ⊗₀ Y) ⊗₀ Z) ⊗₀ W ⇒ X ⊗₀ Y ⊗₀ Z ⊗₀ W ]⟨
-                             associator.from ⊗₁ C.id                 ⇒⟨ (X ⊗₀ Y ⊗₀ Z) ⊗₀ W ⟩
-                             associator.from                         ⇒⟨ X ⊗₀ (Y ⊗₀ Z) ⊗₀ W ⟩
-                             C.id ⊗₁ associator.from
-                           ≈ associator.from                         ⇒⟨ (X ⊗₀ Y) ⊗₀ Z ⊗₀ W ⟩
-                             associator.from
+                             α⇒ ⊗₁ C.id       ⇒⟨ (X ⊗₀ Y ⊗₀ Z) ⊗₀ W ⟩
+                             α⇒               ⇒⟨ X ⊗₀ (Y ⊗₀ Z) ⊗₀ W ⟩
+                             C.id ⊗₁ α⇒
+                           ≈ α⇒               ⇒⟨ (X ⊗₀ Y) ⊗₀ Z ⊗₀ W ⟩
+                             α⇒
                            ⟩
 
   private
@@ -91,40 +104,42 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
     x⊗[y⊗z] : Bifunctor (Product C C) C C
     x⊗[y⊗z] = ⊗ ∘F (idF ⁂ ⊗) ∘F assocˡ _ _ _
 
+  -- All the implicits below can be inferred, but being explicit is clearer
   unitorˡ-naturalIsomorphism : NaturalIsomorphism (unit ⊗-) idF
   unitorˡ-naturalIsomorphism = record
     { F⇒G = record
-      { η       = λ _ → unitorˡ.from
-      ; commute = λ _ → unitorˡ-commute-from
+      { η       = λ X → λ⇒ {X}
+      ; commute = λ f → unitorˡ-commute-from {f = f}
       }
     ; F⇐G = record
-      { η       = λ _ → unitorˡ.to
-      ; commute = λ _ → unitorˡ-commute-to
+      { η       = λ X → λ⇐ {X}
+      ; commute = λ f → unitorˡ-commute-to {f = f}
       }
-    ; iso = λ _ → unitorˡ.iso
+    ; iso = λ X →  unitorˡ.iso {X}
     }
 
   unitorʳ-naturalIsomorphism : NaturalIsomorphism (-⊗ unit) idF
   unitorʳ-naturalIsomorphism = record
     { F⇒G = record
-      { η       = λ _ → unitorʳ.from
-      ; commute = λ _ → unitorʳ-commute-from
+      { η       = λ X → ρ⇒ {X}
+      ; commute = λ f → unitorʳ-commute-from {f = f}
       }
     ; F⇐G = record
-      { η       = λ _ → unitorʳ.to
-      ; commute = λ _ → unitorʳ-commute-to
+      { η       = λ X → ρ⇐ {X}
+      ; commute = λ f → unitorʳ-commute-to {f = f}
       }
-    ; iso = λ _ → unitorʳ.iso
+    ; iso = λ X → unitorʳ.iso {X}
     }
 
+  -- skippinf the explicit arguments here, it does not increase understandability
   associator-naturalIsomorphism : NaturalIsomorphism [x⊗y]⊗z x⊗[y⊗z]
   associator-naturalIsomorphism = record
     { F⇒G = record
-      { η       = λ _ → associator.from
+      { η       = λ { ((X , Y) , Z) → α⇒ {X} {Y} {Z}}
       ; commute = λ _ → assoc-commute-from
       }
     ; F⇐G = record
-      { η       = λ _ → associator.to
+      { η       = λ _ → α⇐
       ; commute = λ _ → assoc-commute-to
       }
     ; iso = λ _ → associator.iso
@@ -148,7 +163,9 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   triangle-iso : ≅.refl ⊗ᵢ unitorˡ ∘ᵢ associator ≃ unitorʳ {X} ⊗ᵢ ≅.refl {Y}
   triangle-iso = lift-triangle′ triangle
 
-  pentagon-iso : ≅.refl ⊗ᵢ associator ∘ᵢ associator ∘ᵢ associator {X} {Y} {Z} ⊗ᵢ ≅.refl {W} ≃ associator ∘ᵢ associator
+  pentagon-iso :
+      ≅.refl ⊗ᵢ associator ∘ᵢ associator ∘ᵢ associator {X} {Y} {Z} ⊗ᵢ ≅.refl {W}
+    ≃ associator ∘ᵢ associator
   pentagon-iso = lift-pentagon′ pentagon
 
   refl⊗refl≃refl : ≅.refl {A} ⊗ᵢ ≅.refl {B} ≃ ≅.refl

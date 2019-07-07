@@ -2,15 +2,17 @@
 open import Categories.Category
 import Categories.Category.Monoidal as M
 
+-- Propoerties of Monoidal Categories
+
 module Categories.Category.Monoidal.Properties
   {o ℓ e} {C : Category o ℓ e} (MC : M.Monoidal C) where
 
-open import Data.Product as , using (_,_; Σ)
+open import Data.Product using (_,_; Σ; uncurry′)
 
 open Category C
 open M.Monoidal MC
-open import Categories.Category.Product
-open import Categories.Functor
+open import Categories.Category.Product using (Product)
+open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Properties
 open import Categories.Category.Groupoid
@@ -26,10 +28,8 @@ private
 
 ⊗-iso : Bifunctor Isos Isos Isos
 ⊗-iso = record
-  { F₀           = λ where
-    (X , Y) → X ⊗₀ Y
-  ; F₁           = λ where
-    (f , g) → f ⊗ᵢ g
+  { F₀           = uncurry′ _⊗₀_
+  ; F₁           =  λ where (f , g) → f ⊗ᵢ g
   ; identity     = refl⊗refl≃refl
   ; homomorphism = record { from-≈ = homomorphism ; to-≈ = homomorphism }
   ; F-resp-≈     = λ where
@@ -78,7 +78,7 @@ module Kelly's  {X Y : Obj} where
                 associator                                  ⇒⟨ unit ⊗₀ unit ⊗₀ X ⊗₀ Y ⟩
                 uλ
               ⟩
-  perimeter = sym (glue◃◽′ triangle-iso
+  perimeter = ⟺ (glue◃◽′ triangle-iso
                            (sym (lift-square′ (Equiv.trans assoc-commute-from
                                                            (∘-resp-≈ˡ (F-resp-≈ ⊗ (Equiv.refl , identity ⊗)))))))
     where open Square Isos
@@ -101,17 +101,17 @@ module Kelly's  {X Y : Obj} where
   -- proofs
 
   perimeter′ : [ ((unit ⊗₀ unit) ⊗₀ X) ⊗₀ Y ⇒ unit ⊗₀ X ⊗₀ Y ]⟨
-                 (unitorʳ ⊗ᵢ ≅.refl) ⊗ᵢ ≅.refl               ⇒⟨ (unit ⊗₀ X) ⊗₀ Y ⟩
+                 (unitorʳ ⊗ᵢ ≅.refl) ⊗ᵢ ≅.refl     ⇒⟨ (unit ⊗₀ X) ⊗₀ Y ⟩
                  associator
-               ≈ aY                                          ⇒⟨ (unit ⊗₀ (unit ⊗₀ X)) ⊗₀ Y ⟩
-                 associator                                  ⇒⟨ unit ⊗₀ (unit ⊗₀ X) ⊗₀ Y ⟩
-                 ua                                          ⇒⟨ unit ⊗₀ unit ⊗₀ X ⊗₀ Y ⟩
+               ≈ aY                                 ⇒⟨ (unit ⊗₀ (unit ⊗₀ X)) ⊗₀ Y ⟩
+                 associator                         ⇒⟨ unit ⊗₀ (unit ⊗₀ X) ⊗₀ Y ⟩
+                 ua                                 ⇒⟨ unit ⊗₀ unit ⊗₀ X ⊗₀ Y ⟩
                  uλ
                ⟩
   perimeter′ = begin
-    associator ∘ᵢ (unitorʳ ⊗ᵢ ≅.refl) ⊗ᵢ ≅.refl              ≈⟨ perimeter ⟩
-    uλ ∘ᵢ associator ∘ᵢ associator                           ≈˘⟨ refl ⟩∘⟨ pentagon-iso ⟩
-    uλ ∘ᵢ ua ∘ᵢ associator ∘ᵢ aY                             ∎
+    associator ∘ᵢ (unitorʳ ⊗ᵢ ≅.refl) ⊗ᵢ ≅.refl    ≈⟨ perimeter ⟩
+    uλ ∘ᵢ associator ∘ᵢ associator                  ≈˘⟨ refl⟩∘⟨ pentagon-iso ⟩
+    uλ ∘ᵢ ua ∘ᵢ associator ∘ᵢ aY                    ∎
 
   top-face : uλ ∘ᵢ ua ≃ u[λY]
   top-face = elim-triangleˡ′ (sym perimeter′) (glue◽◃ (sym sq) tri)
@@ -159,30 +159,31 @@ module Kelly's  {X Y : Obj} where
 
 
   perimeter″ : [ ((X ⊗₀ Y) ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit ]⟨
-                 associator                                  ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⊗₀ unit ⟩
-                 associator                                  ⇒⟨ X ⊗₀ Y ⊗₀ unit ⊗₀ unit ⟩
+                 associator                        ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⊗₀ unit ⟩
+                 associator                        ⇒⟨ X ⊗₀ Y ⊗₀ unit ⊗₀ unit ⟩
                  ≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ
-               ≈ ρu                                          ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⟩
+               ≈ ρu                                ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⟩
                  associator
                ⟩
-  perimeter″ = glue▹◽ triangle-iso (sym (lift-square′ (Equiv.trans (∘-resp-≈ʳ (F-resp-≈ ⊗ (Equiv.sym (identity ⊗) , Equiv.refl)))
-                                                                   assoc-commute-from)))
+  perimeter″ = glue▹◽ triangle-iso (sym (lift-square′
+      (Equiv.trans (∘-resp-≈ʳ (F-resp-≈ ⊗ (Equiv.sym (identity ⊗) , Equiv.refl)))
+                    assoc-commute-from)))
     where open Square Isos
 
-  perimeter‴ : [ ((X ⊗₀ Y) ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit                                    ]⟨
-                 associator ⊗ᵢ ≅.refl                                                           ⇒⟨ (X ⊗₀ (Y ⊗₀ unit)) ⊗₀ unit ⟩
-                 (associator                                                                    ⇒⟨ X ⊗₀ (Y ⊗₀ unit) ⊗₀ unit ⟩
-                 ≅.refl ⊗ᵢ associator                                                           ⇒⟨ X ⊗₀ Y ⊗₀ unit ⊗₀ unit ⟩
+  perimeter‴ : [ ((X ⊗₀ Y) ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit  ]⟨
+                 associator ⊗ᵢ ≅.refl                           ⇒⟨ (X ⊗₀ (Y ⊗₀ unit)) ⊗₀ unit ⟩
+                 (associator                                    ⇒⟨ X ⊗₀ (Y ⊗₀ unit) ⊗₀ unit ⟩
+                 ≅.refl ⊗ᵢ associator                           ⇒⟨ X ⊗₀ Y ⊗₀ unit ⊗₀ unit ⟩
                  ≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ)
-               ≈ ρu                                                                             ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⟩
+               ≈ ρu                                             ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⟩
                  associator
                ⟩
-  perimeter‴ = begin
-    (≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ ≅.refl ⊗ᵢ associator ∘ᵢ associator) ∘ᵢ associator ⊗ᵢ ≅.refl ≈⟨ assoc′ ⟩
-    ≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ (≅.refl ⊗ᵢ associator ∘ᵢ associator) ∘ᵢ associator ⊗ᵢ ≅.refl ≈⟨ refl ⟩∘⟨ assoc′ ⟩
-    ≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ ≅.refl ⊗ᵢ associator ∘ᵢ associator ∘ᵢ associator ⊗ᵢ ≅.refl   ≈⟨ refl ⟩∘⟨ pentagon-iso ⟩
-    ≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ associator ∘ᵢ associator                                     ≈⟨ perimeter″ ⟩
-    associator ∘ᵢ ρu                                                                            ∎
+  perimeter‴ = let α = associator in let λλ = unitorˡ in begin
+    (≅.refl ⊗ᵢ ≅.refl ⊗ᵢ λλ ∘ᵢ ≅.refl ⊗ᵢ α ∘ᵢ α) ∘ᵢ α ⊗ᵢ ≅.refl  ≈⟨ assoc′ ⟩
+     ≅.refl ⊗ᵢ ≅.refl ⊗ᵢ λλ ∘ᵢ (≅.refl ⊗ᵢ α ∘ᵢ α) ∘ᵢ α ⊗ᵢ ≅.refl ≈⟨ refl⟩∘⟨ assoc′ ⟩
+     ≅.refl ⊗ᵢ ≅.refl ⊗ᵢ λλ ∘ᵢ ≅.refl ⊗ᵢ α ∘ᵢ α ∘ᵢ α ⊗ᵢ ≅.refl   ≈⟨ refl⟩∘⟨ pentagon-iso ⟩
+     ≅.refl ⊗ᵢ ≅.refl ⊗ᵢ λλ ∘ᵢ α ∘ᵢ α                             ≈⟨ perimeter″ ⟩
+     α ∘ᵢ ρu                                                       ∎
 
   top-face′ : [Xρ]u ∘ᵢ au ≃ ρu
   top-face′ = cut-squareʳ perimeter‴ (sym (glue◃◽′ tri′ (sym (lift-square′ assoc-commute-from))))
