@@ -1,12 +1,11 @@
 {-# OPTIONS --without-K --safe #-}
 module Categories.Functor.Bifunctor where
 
+-- Bifunctor, aka a Functor from C × D to E
 open import Level
-open import Data.Product using (_,_; swap)
 
 open import Categories.Category
-
-open import Categories.Functor public
+open import Categories.Functor
 open import Categories.Category.Product
 
 private

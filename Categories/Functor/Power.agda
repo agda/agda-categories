@@ -15,7 +15,8 @@ open import Data.Vec.N-ary hiding (curryⁿ)
 open import Function as Fun using (flip) renaming (_∘_ to _∙_; id to idf)
 
 open import Categories.Category.Product
-open import Categories.Functor.Bifunctor hiding (id)
+open import Categories.Functor hiding (id)
+open import Categories.Functor.Bifunctor
 
 private
   variable
@@ -96,7 +97,7 @@ private
   unpackFin (suc n) (suc f) with unpackFin n f
   ... | inj₁ f′ = inj₁ (suc f′ )
   ... | inj₂ f′ = inj₂ f′
-  
+
 unflattenP : Powerfunctor′ D (Fin (n + m)) → Powerfunctor′ D (Fin n ⊎ Fin m)
 unflattenP {n = n} {m = m} F = record
   { F₀           = λ As → F₀ (As ∙ unpackFin _)

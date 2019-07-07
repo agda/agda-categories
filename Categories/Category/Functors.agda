@@ -5,6 +5,7 @@ open import Level
 open import Data.Product using (Σ; _,_; _×_)
 
 open import Categories.Category
+open import Categories.Functor
 open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation renaming (id to idN)
 import Categories.Square as Square
@@ -39,7 +40,7 @@ eval {C = C} {D = D} = record
     {(F , A)} {G , B} (α , f) →
       let open NaturalTransformation α
           open Functor F
-      in η B ∘ F₁ f 
+      in η B ∘ F₁ f
   ; identity     = λ where
     {(F , A)} → elimʳ (Functor.identity F)
   ; homomorphism = λ where

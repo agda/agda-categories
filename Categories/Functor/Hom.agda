@@ -5,7 +5,8 @@ open import Data.Product
 open import Function using () renaming (_∘_ to _∙_)
 
 open import Categories.Category
-open import Categories.Functor.Bifunctor hiding (id)
+open import Categories.Functor hiding (id)
+open import Categories.Functor.Bifunctor
 open import Categories.Category.Sets
 import Categories.Square as Square
 
@@ -35,7 +36,7 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
             }
 
           open HomReasoning
-          
+
           identity′ : {A : Obj × Obj} {x y : uncurry _⇒_ A} → x ≈ y → id ∘ x ∘ id ≈ y
           identity′ {A} {x} {y} x≈y = begin
             id ∘ x ∘ id ≈⟨ identityˡ ⟩
@@ -90,12 +91,11 @@ module _ {o ℓ e} where
   Hom[_][-,-] : ∀ (C : Category o ℓ e) → Bifunctor (Category.op C) C (Setoids ℓ e)
   Hom[ C ][-,-] = Hom[-,-]
     where open Hom C
-  
+
   Hom[_][_,-] : ∀ (C : Category o ℓ e) → Category.Obj C → Functor C (Setoids ℓ e)
   Hom[ C ][ B ,-] = Hom[ B ,-]
     where open Hom C
-  
+
   Hom[_][-,_] : ∀ (C : Category o ℓ e) → Category.Obj C → Contravariant C (Setoids ℓ e)
   Hom[ C ][-, B ] = Hom[-, B ]
     where open Hom C
-  

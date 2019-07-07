@@ -10,7 +10,8 @@ open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 open import Categories.Category
 open import Categories.Category.Product
 open import Categories.Category.Sets
-open import Categories.Functor.Bifunctor renaming (id to idF)
+open import Categories.Functor renaming (id to idF)
+open import Categories.Functor.Bifunctor
 open import Categories.Functor.Hom
 open import Categories.NaturalTransformation renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; trans; sym)

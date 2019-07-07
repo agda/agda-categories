@@ -10,6 +10,7 @@ open import Data.Product as , using (_,_; Σ)
 open Category C
 open M.Monoidal MC
 open import Categories.Category.Product
+open import Categories.Functor
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Properties
 open import Categories.Category.Groupoid

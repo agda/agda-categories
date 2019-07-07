@@ -9,7 +9,8 @@ open import Data.Product using (_×_; _,_)
 
 open import Categories.Category.Product
 open import Categories.Category.Groupoid
-open import Categories.Functor.Bifunctor renaming (id to idF)
+open import Categories.Functor renaming (id to idF)
+open import Categories.Functor.Bifunctor
 open import Categories.Functor.Properties
 open import Categories.NaturalTransformation hiding (_≃_) renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
