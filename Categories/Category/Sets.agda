@@ -1,25 +1,25 @@
 {-# OPTIONS --without-K --safe #-}
 module Categories.Category.Sets where
 
+-- Category of (Agda) Sets, aka (types, functions, pointwise equality with implicit value)
+-- Category of Setoids, aka (Setoid, _⟶_, Setoid ≈)
+-- Note the (explicit) levels in each
+
 open import Level
 open import Relation.Binary
 open import Function.Equality as SΠ renaming (id to ⟶-id)
-open import Function using (_∘′_) renaming (id to identity)
+open import Function using (_∘′_) renaming (id to idf)
 
 open import Categories.Category
 
 open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
-private
-  variable
-    o ℓ e : Level
-
-Sets : ∀ o → Category _ _ _
+Sets : ∀ o → Category (suc o) o o
 Sets o = record
   { Obj       = Set o
-  ; _⇒_       = λ d c → d → c
+  ; _⇒_       = λ c d → c → d
   ; _≈_       = λ f g → ∀ {x} → f x ≡ g x
-  ; id        = identity
+  ; id        = idf
   ; _∘_       = _∘′_
   ; assoc     = ≡.refl
   ; identityˡ = ≡.refl
@@ -34,10 +34,9 @@ Sets o = record
   where resp : ∀ {A B C : Set o} {f h : B → C} {g i : A → B} →
                  ({x : B} → f x ≡ h x) →
                  ({x : A} → g x ≡ i x) → {x : A} → f (g x) ≡ h (i x)
-        resp {i = i} eq₁ eq₂ {x}
-          rewrite eq₂ {x} | eq₁ {i x} = ≡.refl
+        resp {h = h} eq₁ eq₂ = ≡.trans eq₁ (≡.cong h eq₂)
 
-Setoids : ∀ c ℓ → Category _ _ _
+Setoids : ∀ c ℓ → Category (suc (c ⊔ ℓ)) (c ⊔ ℓ) (c ⊔ ℓ)
 Setoids c ℓ = record
   { Obj       = Setoid c ℓ
   ; _⇒_       = _⟶_
