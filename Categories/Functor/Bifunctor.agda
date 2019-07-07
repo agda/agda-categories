@@ -24,7 +24,7 @@ reduce-× : ∀ (H : Bifunctor D₁ D₂ C) (F : Functor E₁ D₁) (G : Functor
 reduce-× H F G = H ∘F (F ⁂ G)
 
 flip-bifunctor : Bifunctor C D E → Bifunctor D C E
-flip-bifunctor {C = C} {D = D} {E = E} b = _∘F_ b (Swap {C = C} {D = D})
+flip-bifunctor b = b ∘F Swap
 
 appˡ : Bifunctor C D E → Category.Obj C → Functor D E
 appˡ F c = F ∘F constˡ c

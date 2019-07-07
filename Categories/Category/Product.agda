@@ -3,7 +3,7 @@ module Categories.Category.Product where
 
 open import Level
 open import Function using () renaming (_∘_ to _∙_)
-open import Data.Product as , using (_×_; Σ; _,_; proj₁; proj₂; zip; map; <_,_>; swap)
+open import Data.Product using (_×_; Σ; _,_; proj₁; proj₂; zip; map; <_,_>; swap)
 
 open import Categories.Category.Core
 open import Categories.Functor.Core renaming (id to idF)
@@ -11,8 +11,10 @@ open import Categories.NaturalTransformation.Core
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans)
 import Categories.Morphism as Morphism
 
+-- "very dependent" versions of map and zipWith
 private
-  map⁎ : ∀ {a b p q} {A : Set a} {B : A → Set b} {P : A → Set p} {Q : {x : A} → P x → B x → Set q} → (f : (x : A) → B x) → (∀ {x} → (y : P x) → Q y (f x)) → (v : Σ A P) → Σ (B (proj₁ v)) (Q (proj₂ v))
+  map⁎ : ∀ {a b p q} {A : Set a} {B : A → Set b} {P : A → Set p} {Q : {x : A} → P x → B x → Set q} →
+        (f : (x : A) → B x) → (∀ {x} → (y : P x) → Q y (f x)) → (v : Σ A P) → Σ (B (proj₁ v)) (Q (proj₂ v))
   map⁎ f g (x , y) = (f x , g y)
 
   map⁎′ : ∀ {a b p q} {A : Set a} {B : A → Set b} {P : Set p} {Q : P → Set q} → (f : (x : A) → B x) → ((x : P) → Q x) → (v : A × P) → B (proj₁ v) × Q (proj₂ v)
@@ -28,9 +30,9 @@ private
     o₁ ℓ₁ e₁ o′₁ ℓ′₁ e′₁ o₂ ℓ₂ e₂ o′₂ ℓ′₂ e′₂ : Level
 
     C C₁ C₂ D D₁ D₂ : Category o ℓ e
- 
+
 Product : ∀ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Category (o ⊔ o′) (ℓ ⊔ ℓ′) (e ⊔ e′)
-Product C D = record 
+Product C D = record
   { Obj       = C.Obj × D.Obj
   ; _⇒_       = C._⇒_ -< _×_ >- D._⇒_
   ; _≈_       = C._≈_ -< _×_ >- D._≈_
@@ -39,16 +41,17 @@ Product C D = record
   ; assoc     = C.assoc , D.assoc
   ; identityˡ = C.identityˡ , D.identityˡ
   ; identityʳ = C.identityʳ , D.identityʳ
-  ; equiv     = record 
+  ; equiv     = record
     { refl  = C.Equiv.refl , D.Equiv.refl
     ; sym   = map C.Equiv.sym D.Equiv.sym
     ; trans = zip C.Equiv.trans D.Equiv.trans
-    }          
+    }
   ; ∘-resp-≈  = zip C.∘-resp-≈ D.∘-resp-≈
   }
   where module C = Category C
         module D = Category D
 
+-- product of functors sharing the same domain
 infixr 2 _※_
 _※_ : ∀ (F : Functor C D₁) → (G : Functor C D₂) → Functor C (Product D₁ D₂)
 F ※ G = record
@@ -61,6 +64,7 @@ F ※ G = record
   where module F = Functor F
         module G = Functor G
 
+-- general product of functors
 infixr 2 _⁂_
 _⁂_ : ∀ (F₁ : Functor C₁ D₁) (F₂ : Functor C₂ D₂) → Functor (Product C₁ C₂) (Product D₁ D₂)
 F ⁂ G = record
@@ -68,13 +72,15 @@ F ⁂ G = record
   ; F₁           = map F.F₁ G.F₁
   ; identity     = F.identity , G.identity
   ; homomorphism = F.homomorphism , G.homomorphism
-  ; F-resp-≈     = map F.F-resp-≈ G.F-resp-≈ 
+  ; F-resp-≈     = map F.F-resp-≈ G.F-resp-≈
   }
   where module F = Functor F
         module G = Functor G
 
+-- Natural Transformations respect the ⁂ product
 infixr 5 _⁂ⁿ_
-_⁂ⁿ_ : ∀ {C₁ : Category o₁ ℓ₁ e₁} {D₁ : Category o′₁ ℓ′₁ e′₁} {C₂ : Category o₂ ℓ₂ e₂} {D₂ : Category o′₂ ℓ′₂ e′₂}
+_⁂ⁿ_ : ∀ {C₁ : Category o₁ ℓ₁ e₁} {D₁ : Category o′₁ ℓ′₁ e′₁}
+         {C₂ : Category o₂ ℓ₂ e₂} {D₂ : Category o′₂ ℓ′₂ e′₂}
          {F₁ G₁ : Functor C₁ D₁} {F₂ G₂ : Functor C₂ D₂}
          (α : NaturalTransformation F₁ G₁) (β : NaturalTransformation F₂ G₂) →
          NaturalTransformation (F₁ ⁂ F₂) (G₁ ⁂ G₂)
@@ -85,14 +91,13 @@ _⁂ⁿ_ : ∀ {C₁ : Category o₁ ℓ₁ e₁} {D₁ : Category o′₁ ℓ�
   where module α = NaturalTransformation α
         module β = NaturalTransformation β
 
+-- Natural Transformations respect the ※ product as well
 infixr 5 _※ⁿ_
-_※ⁿ_ : ∀ {D₁ : Category o ℓ e}
-         {F₁ G₁ : Functor C D₁}
+_※ⁿ_ : ∀ {D₁ : Category o ℓ e} {D₂ : Category o′ ℓ′ e′}
+         {F₁ G₁ : Functor C D₁} {F₂ G₂ : Functor C D₂}
          (α : NaturalTransformation F₁ G₁) →
-         ∀ {D₂ : Category o′ ℓ′ e′}
-           {F₂ G₂ : Functor C D₂}
-           (β : NaturalTransformation F₂ G₂) →
-           NaturalTransformation (F₁ ※ F₂) (G₁ ※ G₂)
+         (β : NaturalTransformation F₂ G₂) →
+         NaturalTransformation (F₁ ※ F₂) (G₁ ※ G₂)
 α ※ⁿ β = record
   { η       = < α.η , β.η >
   ; commute = < α.commute , β.commute >
@@ -100,8 +105,10 @@ _※ⁿ_ : ∀ {D₁ : Category o ℓ e}
   where module α = NaturalTransformation α
         module β = NaturalTransformation β
 
+-- Natural Isomorphisms too
 infixr 5 _⁂ⁿⁱ_
-_⁂ⁿⁱ_ : ∀ {C₁ : Category o₁ ℓ₁ e₁} {D₁ : Category o′₁ ℓ′₁ e′₁} {C₂ : Category o₂ ℓ₂ e₂} {D₂ : Category o′₂ ℓ′₂ e′₂}
+_⁂ⁿⁱ_ : ∀ {C₁ : Category o₁ ℓ₁ e₁} {D₁ : Category o′₁ ℓ′₁ e′₁}
+          {C₂ : Category o₂ ℓ₂ e₂} {D₂ : Category o′₂ ℓ′₂ e′₂}
           {F₁ G₁ : Functor C₁ D₁} {F₂ G₂ : Functor C₂ D₂}
           (α : NaturalIsomorphism F₁ G₁) (β : NaturalIsomorphism F₂ G₂) →
           NaturalIsomorphism (F₁ ⁂ F₂) (G₁ ⁂ G₂)
@@ -118,14 +125,13 @@ _⁂ⁿⁱ_ : ∀ {C₁ : Category o₁ ℓ₁ e₁} {D₁ : Category o′₁ �
         module β = NaturalIsomorphism β
         open Morphism.Iso
 
+-- Natural Isomorphisms too
 infixr 5 _※ⁿⁱ_
-_※ⁿⁱ_ : ∀ {D₁ : Category o ℓ e}
-          {F₁ G₁ : Functor C D₁}
+_※ⁿⁱ_ : ∀ {D₁ : Category o ℓ e} {D₂ : Category o′ ℓ′ e′}
+          {F₁ G₁ : Functor C D₁} {F₂ G₂ : Functor C D₂}
           (α : NaturalIsomorphism F₁ G₁) →
-          ∀ {D₂ : Category o′ ℓ′ e′}
-            {F₂ G₂ : Functor C D₂}
-            (β : NaturalIsomorphism F₂ G₂) →
-            NaturalIsomorphism (F₁ ※ F₂) (G₁ ※ G₂)
+          (β : NaturalIsomorphism F₂ G₂) →
+          NaturalIsomorphism (F₁ ※ F₂) (G₁ ※ G₂)
 α ※ⁿⁱ β = record
   { F⇒G = α.F⇒G ※ⁿ β.F⇒G
   ; F⇐G = α.F⇐G ※ⁿ β.F⇐G
@@ -138,6 +144,7 @@ _※ⁿⁱ_ : ∀ {D₁ : Category o ℓ e}
         module β = NaturalIsomorphism β
         open Morphism.Iso
 
+-- constant object Functor -- move?
 const : Category.Obj C → Functor D C
 const {C = C} c = record
   { F₀           = λ _ → c
@@ -169,7 +176,7 @@ module _ (C₁ : Category o ℓ e) (C₂ : Category o′ ℓ′ e′) (C₃ : Ca
     ; homomorphism = C₁.Equiv.refl , C₂.Equiv.refl , C₃.Equiv.refl
     ; F-resp-≈     = < proj₁ ∙ proj₁ , < proj₂ ∙ proj₁ , proj₂ > >
     }
-  
+
   assocʳ : Functor (Product C₁ (Product C₂ C₃)) (Product (Product C₁ C₂) C₃)
   assocʳ = record
     { F₀           = < < proj₁ , proj₁ ∙ proj₂ > , proj₂ ∙ proj₂ >
@@ -194,7 +201,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} where
     ; F-resp-≈     = proj₁
     }
     where open C.Equiv using (refl)
-  
+
   πʳ : Functor (Product C D) D
   πʳ = record
     { F₀           = proj₂
@@ -204,13 +211,12 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} where
     ; F-resp-≈     = proj₂
     }
     where open D.Equiv using (refl)
-  
-  Swap : Functor (Product D C) (Product C D)
+
+  Swap : Functor (Product C D) (Product D C)
   Swap = record
     { F₀           = swap
     ; F₁           = swap
-    ; identity     = C.Equiv.refl , D.Equiv.refl
-    ; homomorphism = C.Equiv.refl , D.Equiv.refl
+    ; identity     = D.Equiv.refl , C.Equiv.refl
+    ; homomorphism = D.Equiv.refl , C.Equiv.refl
     ; F-resp-≈     = swap
     }
-  
