@@ -87,6 +87,8 @@ _∘ʳ_ {D = D} {E = E} {G = G} {H = H} α F = record
   where open Functor F
         open NaturalTransformation α
 
+-- This ad hoc equivalence for NaturalTransformation should really be 'modification'
+--  (yep, tricategories!). What is below is only part of the definition of a 'modification'.  TODO
 infix 4 _≃_
 
 _≃_ : ∀ {F G : Functor C D} → Rel (NaturalTransformation F G) _
