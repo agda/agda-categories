@@ -1,22 +1,27 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
 
+-- Power Functors, Exponentials over a Category C
+
+-- Mainly categories where the objects are functions (Fin n -> Obj) considered pointwise
+--   and then upgraded to Functors.
+
 module Categories.Functor.Power {o ℓ e} (C : Category o ℓ e) where
 
 open Category C
 open HomReasoning
 
 open import Level using (Level; _⊔_)
-open import Data.Nat as ℕ using (ℕ; _+_; zero; suc; _<_)
-open import Data.Product as Σ using (_,_)
-open import Data.Fin as Fin using (Fin; inject+; raise; zero; suc; fromℕ≤)
-open import Data.Sum as + using (_⊎_; inj₁; inj₂; map) renaming ([_,_] to ⟦_,_⟧; [_,_]′ to ⟦_,_⟧′)
+open import Data.Nat using (ℕ; _+_; zero; suc; _<_)
+open import Data.Product using (_,_)
+open import Data.Fin using (Fin; inject+; raise; zero; suc; fromℕ≤)
+open import Data.Sum using (_⊎_; inj₁; inj₂; map) renaming ([_,_] to ⟦_,_⟧; [_,_]′ to ⟦_,_⟧′)
 open import Data.Vec.N-ary hiding (curryⁿ)
-open import Function as Fun using (flip) renaming (_∘_ to _∙_; id to idf)
+open import Function as Fun using (flip; _$_) renaming (_∘_ to _∙_; id to idf)
 
-open import Categories.Category.Product
+open import Categories.Category.Product using (Product; _⁂_)
 open import Categories.Functor hiding (id)
-open import Categories.Functor.Bifunctor
+open import Categories.Functor.Bifunctor using (Bifunctor; overlap-×)
 
 private
   variable
@@ -30,14 +35,14 @@ Exp I = record
   { Obj       = I → Obj
   ; _⇒_       = λ x y → ∀ i → x i ⇒ y i
   ; _≈_       = λ f g → ∀ i → f i ≈ g i
-  ; id        = λ i → id
+  ; id        = λ _ → id
   ; _∘_       = λ f g i → f i ∘ g i
   ; assoc     = λ _ → assoc
   ; identityˡ = λ _ → identityˡ
   ; identityʳ = λ _ → identityʳ
   ; equiv     = record
     { refl  = λ _ → refl
-    ; sym   = λ eq i → sym (eq i)
+    ; sym   = λ eq i → sym $ eq i
     ; trans = λ eq₁ eq₂ i → trans (eq₁ i) (eq₂ i)
     }
   ; ∘-resp-≈  = λ eq₁ eq₂ i → ∘-resp-≈ (eq₁ i) (eq₂ i)
@@ -46,29 +51,36 @@ Exp I = record
 Power : (n : ℕ) → Category o ℓ e
 Power n = Exp (Fin n)
 
+-- Convention: the ′ version is for a general index set, unprimed for a ℕ
+-- representing Fin n.  So Powerfunctor D n is Exp C (Fin n) ⇒ D, i.e.
+-- essentially C ^ n ⇒ D.
 Powerfunctor′ : (D : Category o ℓ e) (I : Set i) → Set (i ⊔ e ⊔ ℓ ⊔ o)
 Powerfunctor′ D I = Functor (Exp I) D
 
 Powerfunctor : (D : Category o ℓ e) (n : ℕ) → Set (e ⊔ ℓ ⊔ o)
 Powerfunctor D n = Powerfunctor′ D (Fin n)
 
+-- With C = D, so Powerendo n is C ^ n => C
 Powerendo′ : (I : Set i) → Set (i ⊔ e ⊔ ℓ ⊔ o)
 Powerendo′ I = Powerfunctor′ C I
 
 Powerendo : (n : ℕ) → Set (e ⊔ ℓ ⊔ o)
 Powerendo n = Powerfunctor C n
 
+-- Hyperendo n m is C ^ n ⇒ C ^ m
 Hyperendo : (n m : ℕ) → Set (e ⊔ ℓ ⊔ o)
 Hyperendo n m = Functor (Power n) (Power m)
 
+-- Hyperendo′ I J is C ^ I → C ^ J
 Hyperendo′ : (I : Set i) (J : Set j) → Set (i ⊔ j ⊔ e ⊔ ℓ ⊔ o)
 Hyperendo′ I J = Functor (Exp I) (Exp J)
 
+-- Parallel composition of Hyperendo′ (via disjoint union of index sets)
 infixr 9 _par_
 
 _par_ : (F : Hyperendo′ I I′) (G : Hyperendo′ J J′) → Hyperendo′ (I ⊎ J) (I′ ⊎ J′)
 F par G = record
-  { F₀           = λ xs → ⟦ F.F₀ (xs ∙ inj₁) , G.F₀ (xs ∙ inj₂) ⟧′
+  { F₀           = λ xs →  ⟦ F.F₀ (xs ∙ inj₁) , G.F₀ (xs ∙ inj₂) ⟧′
   ; F₁           = λ fs → ⟦ F.F₁ (fs ∙ inj₁) , G.F₁ (fs ∙ inj₂) ⟧
   ; identity     = ⟦ F.identity , G.identity ⟧
   ; homomorphism = ⟦ F.homomorphism , G.homomorphism ⟧
@@ -77,28 +89,28 @@ F par G = record
   where module F = Functor F
         module G = Functor G
 
-flattenP : (F : Powerfunctor′ D (Fin n ⊎ Fin m)) → Powerfunctor′ D (Fin (n + m))
+-- "flattening" means going from a general disjoint union of Fin to a single Fin,
+-- which has the effect of doing from Powerfunctor′ to Powerfunctor
+flattenP : (F : Powerfunctor′ D (Fin n ⊎ Fin m)) → Powerfunctor D (n + m)
 flattenP {n = n} {m = m} F = record
-  { F₀           = λ As → F.F₀ (As ∙ pack)
-  ; F₁           = λ fs → F.F₁ (fs ∙ pack)
-  ; identity     = F.identity
-  ; homomorphism = F.homomorphism
-  ; F-resp-≈     = λ fs≈gs → F.F-resp-≈ (fs≈gs ∙ pack)
+  { F₀           = λ As → F₀ (As ∙ pack)
+  ; F₁           = λ fs → F₁ (fs ∙ pack)
+  ; identity     = identity
+  ; homomorphism = homomorphism
+  ; F-resp-≈     = λ fs≈gs → F-resp-≈ (fs≈gs ∙ pack)
   }
-  where module F = Functor F
+  where open Functor F
         pack = ⟦ inject+ m , raise n ⟧′
 
+-- TODO unpackFun (and pack above) should be in stdlib
 private
   unpackFin : ∀ n → Fin (n + m) → Fin n ⊎ Fin m
-  unpackFin zero zero       = inj₂ zero
-  unpackFin zero (suc f) with unpackFin zero f
-  ... | inj₂ f′             = inj₂ (suc f′)
+  unpackFin zero f          = inj₂ f
   unpackFin (suc n) zero    = inj₁ zero
-  unpackFin (suc n) (suc f) with unpackFin n f
-  ... | inj₁ f′ = inj₁ (suc f′ )
-  ... | inj₂ f′ = inj₂ f′
+  unpackFin (suc n) (suc f) = map suc idf (unpackFin n f)
 
-unflattenP : Powerfunctor′ D (Fin (n + m)) → Powerfunctor′ D (Fin n ⊎ Fin m)
+-- needs a better name?
+unflattenP : Powerfunctor D (n + m) → Powerfunctor′ D (Fin n ⊎ Fin m)
 unflattenP {n = n} {m = m} F = record
   { F₀           = λ As → F₀ (As ∙ unpackFin _)
   ; F₁           = λ fs → F₁ (fs ∙ unpackFin _)
@@ -108,29 +120,28 @@ unflattenP {n = n} {m = m} F = record
   }
   where open Functor F
 
+-- flatten a Hyperendo′ "on the right" when over a union of Fin
 flattenHʳ : (F : Hyperendo′ I (Fin n ⊎ Fin m)) → Hyperendo′ I (Fin (n + m))
 flattenHʳ {n = n} {m = m} F = record
-  { F₀           = λ As → F.F₀ As ∙ chops n
-  ; F₁           = λ fs → F.F₁ fs ∙ chops n
-  ; identity     = F.identity ∙ chops n
-  ; homomorphism = F.homomorphism ∙ chops n
-  ; F-resp-≈     = λ fs≈gs → F.F-resp-≈ fs≈gs ∙ chops n
+  { F₀           = λ As → F₀ As ∙ unpackFin n
+  ; F₁           = λ fs → F₁ fs ∙ unpackFin n
+  ; identity     = identity ∙ unpackFin n
+  ; homomorphism = homomorphism ∙ unpackFin n
+  ; F-resp-≈     = λ fs≈gs → F-resp-≈ fs≈gs ∙ unpackFin n
   }
-  where module F = Functor F
-        chops : (n : ℕ) → (k : Fin (n + m)) → Fin n ⊎ Fin m
-        chops 0 k             = inj₂ k
-        chops (suc n) zero    = inj₁ zero
-        chops (suc n) (suc k) = map suc idf (chops n k)
+  where open Functor F
 
-
+-- flatten on both sides.
 flattenH : (F : Hyperendo′ (Fin n ⊎ Fin m) (Fin n′ ⊎ Fin m′)) → Hyperendo (n + m) (n′ + m′)
 flattenH = flattenHʳ ∙ flattenP
 
+-- Pretty syntax for flattening of parallel composition of Hyperendo
 infixr 9 _∥_
 
 _∥_ : (F : Hyperendo n n′) (G : Hyperendo m m′) → Hyperendo (n + m) (n′ + m′)
 F ∥ G = flattenH (F par G)
 
+-- split is C ^ (I ⊎ J) to C ^ I × C ^ J, as a Functor
 split : Functor (Exp (I ⊎ J)) (Product (Exp I) (Exp J))
 split = record
   { F₀           = λ As → As ∙ inj₁ , As ∙ inj₂
@@ -144,7 +155,7 @@ reduce′ : (H : Bifunctor C C C) (F : Powerendo′ I) (G : Powerendo′ J) → 
 reduce′ H F G = H ∘F (F ⁂ G) ∘F split
 
 reduce : ∀ (H : Bifunctor C C C) {n m} (F : Powerendo n) (G : Powerendo m) → Powerendo (n + m)
-reduce H F G = flattenP (reduce′ H F G)
+reduce H F G = flattenP $ reduce′ H F G
 
 flattenP-assocʳ : ∀ {n₁ n₂ n₃} (F : Powerendo′ (Fin n₁ ⊎ Fin n₂ ⊎ Fin n₃)) → Powerendo (n₁ + n₂ + n₃)
 flattenP-assocʳ {n₁} {n₂} {n₃} F = record
@@ -158,7 +169,7 @@ flattenP-assocʳ {n₁} {n₂} {n₃} F = record
         pack = ⟦ inject+ n₃ ∙ inject+ n₂ , ⟦ inject+ n₃ ∙ raise n₁ , raise (n₁ + n₂) ⟧′ ⟧′
 
 reduce2ʳ : ∀ (G : Bifunctor C C C) {n₁ n₂ n₃} (F₁ : Powerendo n₁) (F₂ : Powerendo n₂) (F₃ : Powerendo n₃) → Powerendo ((n₁ + n₂) + n₃)
-reduce2ʳ G F₁ F₂ F₃ = flattenP-assocʳ (reduce′ G F₁ (reduce′ G F₂ F₃))
+reduce2ʳ G F₁ F₂ F₃ = flattenP-assocʳ $ reduce′ G F₁ $ reduce′ G F₂ F₃
 
 overlaps : (H : Bifunctor D D E) (F G : Powerfunctor′ D I) → Powerfunctor′ E I
 overlaps = overlap-×
@@ -166,17 +177,19 @@ overlaps = overlap-×
 overlap2ʳ : (G : Bifunctor C C C) (F₁ F₂ F₃ : Powerendo n) → Powerendo n
 overlap2ʳ G F₁ F₂ F₃ = overlaps G F₁ (overlaps G F₂ F₃)
 
+-- select′ i always evaluates at i
 select′ : (i : I) → Powerendo′ I
 select′ i = record
-  { F₀           = λ xs → xs i
-  ; F₁           = λ fs → fs i
+  { F₀           = _$ i
+  ; F₁           = _$ i
   ; identity     = refl
   ; homomorphism = refl
-  ; F-resp-≈     = λ eqs → eqs i
+  ; F-resp-≈     = _$ i
   }
 
+-- select (m < n) is really select′ (Fin n), but only for m < n
 select : m < n → Powerendo n
-select {m = m} m<n = select′ (fromℕ≤ m<n)
+select m<n = select′ (fromℕ≤ m<n)
 
 triv : (n : ℕ) → Hyperendo n n
 triv n = record
@@ -187,6 +200,7 @@ triv n = record
   ; F-resp-≈     = idf
   }
 
+-- pad a Hyperendo on the left and right by trivial (i.e. identity) endofunctors
 pad : ∀ (l r : ℕ) (F : Hyperendo n m) → Hyperendo ((l + n) + r) ((l + m) + r)
 pad l r F = (triv l ∥ F) ∥ triv r
 
@@ -216,6 +230,7 @@ unaryH F = record
   }
   where module F = Functor F
 
+-- "constant"
 nullary : Obj → Powerendo 0
 nullary X = record
   { F₀           = λ _ → X
@@ -284,6 +299,7 @@ plex′ Fs = record
 plex : N-ary n (Powerendo′ I) (Hyperendo′ I (Fin n))
 plex {n = n} = curryⁿ n plex′
 
+-- like pad, but for Powerendo -- on left or right.
 widenˡ : ∀ (l : ℕ) (F : Powerendo n) → Powerendo (l + n)
 widenˡ l F = record
   { F₀           = λ As → F.F₀ (As ∙ pack)
