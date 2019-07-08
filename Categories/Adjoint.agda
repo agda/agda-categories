@@ -1,20 +1,25 @@
 {-# OPTIONS --without-K --safe #-}
 module Categories.Adjoint where
 
+-- Adjoints
+
 open import Level using (Level; _⊔_)
 
 open import Data.Product using (_,_; _×_)
-open import Function.Bijection using (Bijection)
+open import Function using () renaming (_∘_ to _∙_)
+open import Function.Inverse using (Inverse)
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
-open import Categories.Category
-open import Categories.Category.Product
-open import Categories.Category.Sets
-open import Categories.Functor renaming (id to idF)
-open import Categories.Functor.Bifunctor
-open import Categories.Functor.Hom
-open import Categories.NaturalTransformation renaming (id to idN)
-open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; trans; sym)
+-- be explicit in imports to 'see' where the information comes from
+open import Categories.Category using (Category; levelOf)
+open import Categories.Category.Product using (Product; _⁂_)
+open import Categories.Category.Sets using (Setoids)
+open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
+open import Categories.Functor.Bifunctor using (Bifunctor)
+open import Categories.Functor.Hom using (Hom[_][-,-])
+open import Categories.NaturalTransformation using (NaturalTransformation; _≃_) renaming (id to idN)
+open import Categories.NaturalTransformation.NaturalIsomorphism
+  using (NaturalIsomorphism; unitorˡ; unitorʳ)
 import Categories.Square as Square
 
 private
@@ -63,7 +68,7 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOf C ⊔ levelOf 
 
   LRadjunct≈id : ∀ {f : A C.⇒ R.F₀ B} → Ladjunct (Radjunct f) C.≈ f
   LRadjunct≈id {f = f} = begin
-    Ladjunct (Radjunct f)                              ≈⟨ R.homomorphism ⟩∘⟨ refl ⟩
+    Ladjunct (Radjunct f)                              ≈⟨ R.homomorphism ⟩∘⟨refl ⟩
     (R.F₁ (counit.η _) C.∘ R.F₁ (L.F₁ f)) C.∘ unit.η _ ≈˘⟨ pushʳ (unit.commute f) ⟩
     R.F₁ (counit.η _) C.∘ unit.η _ C.∘ f               ≈⟨ pullˡ zag ⟩
     C.id C.∘ f                                         ≈⟨ C.identityˡ ⟩
@@ -80,30 +85,24 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOf C ⊔ levelOf 
   module Hom[L-,-] = Functor Hom[L-,-]
   module Hom[-,R-] = Functor Hom[-,R-]
 
-  Hom-bijection : ∀ A B → Bijection (Hom[L-,-].F₀ (A , B)) (Hom[-,R-].F₀ (A , B))
-  Hom-bijection A B = record
-    { to        = record
-      { _⟨$⟩_ = Ladjunct
-      ; cong  = λ eq → C.∘-resp-≈ˡ (R.F-resp-≈ eq)
+  -- Inverse is more 'categorical' than bijection defined via injection/surjection
+  Hom-inverse : ∀ A B → Inverse (Hom[L-,-].F₀ (A , B)) (Hom[-,R-].F₀ (A , B))
+  Hom-inverse A B = record
+    { to = record
+      { _⟨$⟩_ = Ladjunct {A} {B}
+      ; cong = C.∘-resp-≈ˡ ∙ R.F-resp-≈
       }
-    ; bijective = record
-      { injective  = λ {f g} eq → begin
-        f                     ≈˘⟨ RLadjunct≈id  ⟩
-        Radjunct (Ladjunct f) ≈⟨ refl ⟩∘⟨ L.F-resp-≈ eq ⟩
-        Radjunct (Ladjunct g) ≈⟨ RLadjunct≈id ⟩
-        g                     ∎
-      ; surjective = record
-        { from             = record
-          { _⟨$⟩_ = Radjunct
-          ; cong  = λ eq → D.∘-resp-≈ʳ (L.F-resp-≈ eq)
-          }
-        ; right-inverse-of = λ _ → LRadjunct≈id
-        }
+    ; from = record
+      { _⟨$⟩_ = Radjunct {A} {B}
+      ; cong = D.∘-resp-≈ʳ ∙ L.F-resp-≈
+      }
+    ; inverse-of = record
+      { left-inverse-of = λ _ → RLadjunct≈id
+      ; right-inverse-of = λ _ → LRadjunct≈id
       }
     }
-    where open D.HomReasoning
 
-  module Hom-bijection {A B} = Bijection (Hom-bijection A B)
+  module Hom-inverse {A} {B} = Inverse (Hom-inverse A B)
 
   op : Adjoint R.op L.op
   op = record
@@ -126,6 +125,7 @@ _⊣_ = Adjoint
   where open Category C
         open NaturalIsomorphism
 
+-- Do we really need a specific equivalence relation on Adjoints?
 infix 4 _≊_
 _≊_ : ∀ {L : Functor C D} {R : Functor D C} → Rel (L ⊣ R) _
 _≊_ A B = A.unit ≃ B.unit × A.counit ≃ B.counit
