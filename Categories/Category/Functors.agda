@@ -12,6 +12,8 @@ open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation renaming (id to idN)
 import Categories.Square as Square
 
+-- The reason the proofs below are so easy is that _∘ᵥ_ 'computes' all the way down into
+-- expressions in D, from which the properties follow.
 Functors : ∀ {o ℓ e o′ ℓ′ e′} → Category o ℓ e → Category o′ ℓ′ e′ → Category _ _ _
 Functors C D = record
   { Obj       = Functor C D

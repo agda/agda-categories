@@ -1,6 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 module Categories.Functor.Properties where
 
+-- Properties valid of all Functors
 open import Level
 
 open import Categories.Category
@@ -15,6 +16,8 @@ private
   variable
     o ℓ e : Level
     C D : Category o ℓ e
+
+-- a series of [ Functor ]-respects-Thing combinators (with respects -> resp)
 
 module _ (F : Functor C D) where
   private
@@ -83,3 +86,6 @@ module _ (F : Functor C D) where
     { from-≈ = homomorphism
     ; to-≈   = homomorphism
     }
+
+-- Functor Composition is Associative and the unit laws are found in
+-- NaturalTransformation.NaturalIsomorphism, reified as associator, unitorˡ and unitorʳ.

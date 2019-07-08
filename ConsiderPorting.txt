@@ -1,7 +1,7 @@
 Below is a list of all of the .agda files in the copumpkin library. They should be classified
 into 'done', 'consider' and 'drop'; 'part' may be worth considering, for those files where
 only part has been done. Only put in 'done' when everything that will eventually be ported has
-been.
+actually been.
 
 Note that the names in the new are not always going to be the same!
 
@@ -13,22 +13,22 @@ of potential contributors.
 Done:
 =====
 Category.agda
-
-Consider:
-=========
 Functor/Core.agda
 Functor/Properties.agda
 Functor/Hom.agda
-Pullback.agda
+
+Consider:
+=========
 Functor.agda
 NaturalTransformation/Core.agda
 Slice.agda
 Morphisms.agda
+Discrete.agda
 Cones.agda
 Product.agda
+Pullback.agda
 Monad.agda
 Bifunctor.agda
-Discrete.agda
 
 Comonad.agda
 Functor/Algebra.agda
