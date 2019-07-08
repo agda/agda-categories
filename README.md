@@ -38,6 +38,11 @@ documented in the proto-contributor's guide.
 ### Places to find more design notes
 - [Category.Discrete](Categories/Category/Discrete.agda)
 
+### Smaller Design decisions
+- Do not make implicit fields that can rarely be inferred (like what had been done in
+  Category and Functor)
+- Do not use Heterogeneous equality at all
+
 ## Contributing
 
 We welcome contributions! Please submit PRs, issues, etc. A full-fledged contributor's guide

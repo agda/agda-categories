@@ -30,8 +30,8 @@ module _ (F : Functor C D) where
       A B E : Obj
       f g h i : A ⇒ B
 
-  [_]-resp-triangle : C [ C [ f ∘ g ] ≈ h ] → D [ D [ F₁ f ∘ F₁ g ] ≈ F₁ h ]
-  [_]-resp-triangle {f = f} {g = g} {h = h} eq = begin
+  [_]-resp-∘ : C [ C [ f ∘ g ] ≈ h ] → D [ D [ F₁ f ∘ F₁ g ] ≈ F₁ h ]
+  [_]-resp-∘ {f = f} {g = g} {h = h} eq = begin
     F₁ f ∘ F₁ g      ≈˘⟨ homomorphism ⟩
     F₁ (C [ f ∘ g ]) ≈⟨ F-resp-≈ eq ⟩
     F₁ h             ∎
@@ -41,7 +41,7 @@ module _ (F : Functor C D) where
   [_]-resp-square : C.CommutativeSquare f g h i →
                     D.CommutativeSquare (F₁ f) (F₁ g) (F₁ h) (F₁ i)
   [_]-resp-square {f = f} {g = g} {h = h} {i = i} sq = begin
-    F₁ h ∘ F₁ f       ≈⟨ D.Equiv.sym homomorphism ⟩
+    F₁ h ∘ F₁ f      ≈˘⟨ homomorphism ⟩
     F₁ (C [ h ∘ f ]) ≈⟨ F-resp-≈ sq ⟩
     F₁ (C [ i ∘ g ]) ≈⟨ homomorphism ⟩
     F₁ i ∘ F₁ g       ∎
@@ -51,13 +51,11 @@ module _ (F : Functor C D) where
   [_]-resp-Iso : Iso C f g → Iso D (F₁ f) (F₁ g)
   [_]-resp-Iso {f = f} {g = g} iso = record
     { isoˡ = begin
-      F₁ g ∘ F₁ f      ≈˘⟨ homomorphism ⟩
-      F₁ (C [ g ∘ f ]) ≈⟨ F-resp-≈ isoˡ ⟩
+      F₁ g ∘ F₁ f      ≈⟨ [ isoˡ ]-resp-∘ ⟩
       F₁ C.id          ≈⟨ identity ⟩
       D.id             ∎
     ; isoʳ = begin
-      F₁ f ∘ F₁ g      ≈˘⟨ homomorphism ⟩
-      F₁ (C [ f ∘ g ]) ≈⟨ F-resp-≈ isoʳ ⟩
+      F₁ f ∘ F₁ g      ≈⟨ [ isoʳ ]-resp-∘ ⟩
       F₁ C.id          ≈⟨ identity ⟩
       D.id             ∎
     }
@@ -69,7 +67,7 @@ module _ (F : Functor C D) where
   [_]-resp-≅ i≅j = record
     { from       = F₁ from
     ; to         = F₁ to
-    ; iso        = [_]-resp-Iso iso
+    ; iso        = [ iso ]-resp-Iso
     }
     where open _≅_ i≅j
 

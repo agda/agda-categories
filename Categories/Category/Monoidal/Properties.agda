@@ -93,7 +93,7 @@ module Kelly's  {X Y : Obj} where
   [ρX]Y = (unitorʳ ⊗ᵢ ≅.refl) ⊗ᵢ ≅.refl
 
   tri : [uλ]Y ∘ᵢ aY ≃ [ρX]Y
-  tri = lift-triangle′ ([ appʳ ⊗ Y ]-resp-triangle triangle)
+  tri = lift-triangle′ ([ appʳ ⊗ Y ]-resp-∘ triangle)
 
   sq : associator ∘ᵢ [uλ]Y ≃ u[λY] ∘ᵢ associator
   sq = lift-square′ assoc-commute-from
@@ -192,7 +192,7 @@ module Kelly's  {X Y : Obj} where
                  (≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ ≅.refl ⊗ᵢ associator)
                ≈ ≅.refl ⊗ᵢ unitorʳ ⊗ᵢ ≅.refl
                ⟩
-          tri′ = lift-triangle′ ([ X ⊗- ]-resp-triangle triangle)
+          tri′ = lift-triangle′ ([ X ⊗- ]-resp-∘ triangle)
 
   coherence-iso₂ : [ (X ⊗₀ Y) ⊗₀ unit ⇒ X ⊗₀ Y ]⟨
                      ≅.refl ⊗ᵢ unitorʳ ∘ᵢ associator
