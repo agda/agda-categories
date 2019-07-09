@@ -17,5 +17,6 @@ record F-Algebra {o ℓ e} {C : Category o ℓ e} (F : Endofunctor C) : Set (o �
 
 open F-Algebra
 
+-- Given an F-Algebra F, one can apply F to it to obtain an new 'iterated' F-Algebra
 iterate : ∀ {o ℓ e} {C : Category o ℓ e} {F : Endofunctor C} → F-Algebra F → F-Algebra F
 iterate {F = F} F-alg = record { A = Functor.F₀ F $ A F-alg ; α = Functor.F₁ F $ α F-alg }
