@@ -1,4 +1,4 @@
-{-# OPTIONS --universe-polymorphism #-}
+{-# OPTIONS --without-K --safe #-}
 module Categories.Monad where
 
 open import Level
