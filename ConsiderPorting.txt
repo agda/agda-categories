@@ -16,22 +16,34 @@ Category.agda
 Functor/Core.agda
 Functor/Properties.agda
 Functor/Hom.agda
-
-Consider:
-=========
 Functor.agda
+  - The original contained a number of proofs that a custom-built 'equality' relation
+    on Functor showed that functor composition was associative and unital. This is
+    redundant as the correct notion is NaturalIsomorphism.
 NaturalTransformation/Core.agda
 Slice.agda
 Morphisms.agda
 Discrete.agda
 Cones.agda
 Product.agda
+Functor/Algebra.agda
+Functor/Coalgebra.agda
+  - Was empty, had to fill-in
+Groupoid.agda
+  - renamed Category/Groupoid and augmented with some properties
 Pullback.agda
+  - renamed Diagram/Pullback
 Monad.agda
 Bifunctor.agda
+Lan.agda and Ran.agda
+  - named/grouped inside Kan.agda
 
+Consider:
+=========
 Comonad.agda
-Functor/Algebra.agda
+Cone.agda
+Product/Properties.agda
+
 Functor/Coalgebras.agda
 Functor/Representable.agda
 Functor/Equivalence/Strong.agda
@@ -39,16 +51,13 @@ Functor/Monoidal.agda
 Functor/Discrete.agda
 Functor/Diagonal.agda
 Functor/Constant.agda
-Functor/Coalgebra.agda
 Functor/Product.agda
 Functor/Algebras.agda
 Power/Functorial.agda
 Power/NaturalTransformation.agda
 Fibration.agda
-Bifunctor/NaturalTransformation.agda
 RigCategory.agda
 Power.agda
-Lan.agda
 Categories.agda
 End.agda
 2-Category/Categories.agda
@@ -73,9 +82,7 @@ Comma/Functors.agda
 Lift.agda
 Coend.agda
 Closed.agda
-Ran.agda
 Profunctor.agda
-Product/Properties.agda
 Product/Projections.agda
 Coequalizer.agda
 Equalizer.agda
@@ -122,18 +129,6 @@ Object/Terminal.agda
 Object/Product.agda
 Object/Initial.agda
 Object/BinaryCoproducts.agda
-Support.agda
-Support/IProduct.agda
-Support/Experimental.agda
-Support/Equivalence.agda
-Support/SetoidFunctions.agda
-Support/PropositionalEquality.agda
-Support/SetoidPi.agda
-Support/FinSet.agda
-Support/EqReasoning.agda
-Support/StarEquality.agda
-Support/ZigZag.agda
-Support/Nat.agda
 Graphs.agda
 Colimit.agda
 Yoneda.agda
@@ -148,7 +143,6 @@ Agda/ISetoids/Cocomplete.agda
 Agda/ISetoids/Cocomplete/Helpers.agda
 Agda/ISetoids/Complete.agda
 Enriched.agda
-Cone.agda
 Graphs/Underlying.agda
 Bicategory/Helpers.agda
 Monad/Coproduct.agda
@@ -157,7 +151,6 @@ Monad/Kleisli.agda
 Monad/Algebra.agda
 Monad/Algebras.agda
 Monad/Strong.agda
-Groupoid.agda
 Adjunction/Composition.agda
 Adjunction/CompositionLaws.agda
 Categories/Products.agda
@@ -171,3 +164,23 @@ DinaturalTransformation.agda
 Cocones.agda
 Cocone.agda
 GlobularSet.agda
+
+probably not (but some small gems may remain)
+============
+Support.agda
+Support/IProduct.agda
+Support/Experimental.agda
+Support/Equivalence.agda
+Support/SetoidFunctions.agda
+Support/PropositionalEquality.agda
+Support/SetoidPi.agda
+Support/FinSet.agda
+Support/EqReasoning.agda
+Support/StarEquality.agda
+Support/ZigZag.agda
+Support/Nat.agda
+
+drop
+====
+Bifunctor/NaturalTransformation.agda
+  -- just a repeat of a definition of NT, and weird specialized version of reduce and overlap
