@@ -11,7 +11,7 @@ open import Function using () renaming (_∘_ to _∙_)
 open import Categories.Category
 open import Categories.Functor hiding (id)
 open import Categories.Functor.Bifunctor using (Bifunctor)
-open import Categories.Category.Sets using (Setoids)
+open import Categories.Category.Instance.Setoids
 import Categories.Square as Square
 
 open import Relation.Binary using (Setoid)
