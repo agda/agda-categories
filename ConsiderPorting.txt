@@ -38,10 +38,11 @@ Bifunctor.agda
 Lan.agda and Ran.agda
   - named/grouped inside Kan.agda
 Comonad.agda
+Cone.agda
+  - name Diagram/Cone
 
 Consider:
 =========
-Cone.agda
 Product/Properties.agda
 
 Functor/Coalgebras.agda
