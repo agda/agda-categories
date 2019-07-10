@@ -84,11 +84,11 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
   ⟨⟩-cong₂ : f ≈ f′ → g ≈ g′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g′ ⟩
   ⟨⟩-cong₂ = Product.⟨⟩-cong₂ product
 
-  ⟨⟩-congˡ : f ≈ f′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g ⟩
-  ⟨⟩-congˡ pf = ⟨⟩-cong₂ pf refl
+  ⟨⟩-congʳ : f ≈ f′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g ⟩
+  ⟨⟩-congʳ pf = ⟨⟩-cong₂ pf refl
 
-  ⟨⟩-congʳ : g ≈ g′ → ⟨ f , g ⟩ ≈ ⟨ f , g′ ⟩
-  ⟨⟩-congʳ pf = ⟨⟩-cong₂ refl pf
+  ⟨⟩-congˡ : g ≈ g′ → ⟨ f , g ⟩ ≈ ⟨ f , g′ ⟩
+  ⟨⟩-congˡ pf = ⟨⟩-cong₂ refl pf
 
   swap : A × B ⇒ B × A
   swap = ⟨ π₂ , π₁ ⟩
@@ -175,15 +175,15 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
   assocʳ∘⁂ {f = f} {g = g} {h = h} =
     begin
       assocʳ ∘ (f ⁂ (g ⁂ h))
-    ≈⟨ refl ⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘ ⟩
+    ≈⟨ refl⟩∘⟨ ⟨⟩-congˡ ⟨⟩∘ ⟩
       assocʳ ∘ ⟨ f ∘ π₁ , ⟨ (g ∘ π₁) ∘ π₂ , (h ∘ π₂) ∘ π₂ ⟩ ⟩
     ≈⟨ assocʳ∘⟨⟩ ⟩
       ⟨ ⟨ f ∘ π₁ , (g ∘ π₁) ∘ π₂ ⟩ , (h ∘ π₂) ∘ π₂ ⟩
-    ≈⟨ ⟨⟩-cong₂ (⟨⟩-congʳ assoc) assoc ⟩
+    ≈⟨ ⟨⟩-cong₂ (⟨⟩-congˡ assoc) assoc ⟩
       ⟨ ⟨ f ∘ π₁ , g ∘ π₁ ∘ π₂ ⟩ , h ∘ π₂ ∘ π₂ ⟩
-    ≈⟨ sym (⟨⟩-congˡ ⁂∘⟨⟩) ⟩
+    ≈˘⟨ ⟨⟩-congʳ ⁂∘⟨⟩ ⟩
       ⟨ (f ⁂ g) ∘ ⟨ π₁ , π₁ ∘ π₂ ⟩ , h ∘ π₂ ∘ π₂ ⟩
-    ≈⟨ sym ⁂∘⟨⟩ ⟩
+    ≈˘⟨ ⁂∘⟨⟩ ⟩
       ((f ⁂ g) ⁂ h) ∘ assocʳ
     ∎
 
@@ -191,15 +191,15 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
   assocˡ∘⁂ {f = f} {g = g} {h = h} =
     begin
       assocˡ ∘ ((f ⁂ g) ⁂ h)
-    ≈⟨ refl ⟩∘⟨ ⟨⟩-congˡ ⟨⟩∘ ⟩
+    ≈⟨ refl⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘ ⟩
       assocˡ ∘ ⟨ ⟨ (f ∘ π₁) ∘ π₁ , (g ∘ π₂) ∘ π₁ ⟩ , h ∘ π₂ ⟩
     ≈⟨ assocˡ∘⟨⟩ ⟩
       ⟨ (f ∘ π₁) ∘ π₁ , ⟨ (g ∘ π₂) ∘ π₁ , h ∘ π₂ ⟩ ⟩
-    ≈⟨ ⟨⟩-cong₂ assoc (⟨⟩-congˡ assoc) ⟩
+    ≈⟨ ⟨⟩-cong₂ assoc (⟨⟩-congʳ assoc) ⟩
       ⟨ f ∘ π₁ ∘ π₁ , ⟨ g ∘ π₂ ∘ π₁ , h ∘ π₂ ⟩ ⟩
-    ≈⟨ sym (⟨⟩-congʳ ⁂∘⟨⟩) ⟩
+    ≈˘⟨ ⟨⟩-congˡ ⁂∘⟨⟩ ⟩
       ⟨ f ∘ π₁ ∘ π₁ , (g ⁂ h) ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩
-    ≈⟨ sym ⁂∘⟨⟩ ⟩
+    ≈˘⟨ ⁂∘⟨⟩ ⟩
       (f ⁂ (g ⁂ h)) ∘ assocˡ
     ∎
 
