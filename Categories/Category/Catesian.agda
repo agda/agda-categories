@@ -4,9 +4,9 @@ open import Categories.Category
 
 -- Defines the following properties of a Category:
 -- 1. BinaryProducts -- for when a Category has all Binary Products
--- 2. FiniteProducts -- for when a Category has all Products
+-- 2. Catesian -- a Catesian category is a category with all products
 
-module Categories.Object.BinaryProducts {o ℓ e} (𝒞 : Category o ℓ e) where
+module Categories.Category.Catesian {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
 open import Data.Product using (Σ; _,_; uncurry)
@@ -18,8 +18,10 @@ open import Categories.Object.Terminal 𝒞
 open import Categories.Object.Product 𝒞
 open import Categories.Morphism 𝒞
 open import Categories.Square 𝒞
+open import Categories.Category.Monoidal 𝒞
 
-open import Categories.Functor.Bifunctor renaming (id to idF)
+open import Categories.Functor renaming (id to idF)
+open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans; _≅_)
 
 private
@@ -58,11 +60,11 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
   _⁂_ : A ⇒ B → C ⇒ D → A × C ⇒ B × D
   f ⁂ g = [ product ⇒ product ] f × g
 
-  commute₁ : π₁ ∘ ⟨ f , g ⟩ ≈ f
-  commute₁ = Product.project₁ product
+  project₁ : π₁ ∘ ⟨ f , g ⟩ ≈ f
+  project₁ = Product.project₁ product
 
-  commute₂ : π₂ ∘ ⟨ f , g ⟩ ≈ g
-  commute₂ = Product.project₂ product
+  project₂ : π₂ ∘ ⟨ f , g ⟩ ≈ g
+  project₂ = Product.project₂ product
 
   unique :  π₁ ∘ h ≈ f → π₂ ∘ h ≈ g → ⟨ f , g ⟩ ≈ h
   unique = Product.unique product
@@ -107,10 +109,10 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
 
   -- Just to make this more obvious
   π₁∘⁂ : π₁ ∘ (f ⁂ g) ≈ f ∘ π₁
-  π₁∘⁂ {f = f} {g} = commute₁
+  π₁∘⁂ {f = f} {g} = project₁
 
   π₂∘⁂ : π₂ ∘ (f ⁂ g) ≈ g ∘ π₂
-  π₂∘⁂ {f = f} {g} = commute₂
+  π₂∘⁂ {f = f} {g} = project₂
 
   ⁂-cong₂ : f ≈ g → h ≈ i → f ⁂ h ≈ g ⁂ i
   ⁂-cong₂ = [ product ⇒ product ]×-cong₂
@@ -128,7 +130,7 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
   ⁂∘⁂ = [ product ⇒ product ⇒ product ]×∘×
 
   ⟨⟩∘ : ⟨ f , g ⟩ ∘ h ≈ ⟨ f ∘ h , g ∘ h ⟩
-  ⟨⟩∘ = sym (unique (trans (sym assoc) (∘-resp-≈ˡ commute₁)) (trans (sym assoc) (∘-resp-≈ˡ commute₂)))
+  ⟨⟩∘ = sym (unique (trans (sym assoc) (∘-resp-≈ˡ project₁)) (trans (sym assoc) (∘-resp-≈ˡ project₂)))
 
   first∘first : ∀ {C} → first {C = C} f ∘ first g ≈ first (f ∘ g)
   first∘first = [ product ⇒ product ⇒ product ]×id∘×id
@@ -142,7 +144,7 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
   swap∘⟨⟩ : swap ∘ ⟨ f , g ⟩ ≈ ⟨ g , f ⟩
   swap∘⟨⟩ {f = f} {g = g} = begin
     ⟨ π₂ , π₁ ⟩ ∘ ⟨ f , g ⟩             ≈⟨ ⟨⟩∘ ⟩
-    ⟨ π₂ ∘ ⟨ f , g ⟩ , π₁ ∘ ⟨ f , g ⟩ ⟩ ≈⟨ ⟨⟩-cong₂ commute₂ commute₁ ⟩
+    ⟨ π₂ ∘ ⟨ f , g ⟩ , π₁ ∘ ⟨ f , g ⟩ ⟩ ≈⟨ ⟨⟩-cong₂ project₂ project₁ ⟩
     ⟨ g , f ⟩                           ∎
 
   swap∘⁂ : swap ∘ (f ⁂ g) ≈ (g ⁂ f) ∘ swap
@@ -159,14 +161,14 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
     assocʳ ∘ ⟨ f , ⟨ g , h ⟩ ⟩ ≈⟨ ⟨⟩∘ ⟩
     ⟨ ⟨ π₁ , π₁ ∘ π₂ ⟩ ∘ ⟨ f , ⟨ g , h ⟩ ⟩
     , (π₂ ∘ π₂) ∘ ⟨ f , ⟨ g , h ⟩ ⟩
-    ⟩                          ≈⟨ ⟨⟩-cong₂ ⟨⟩∘ (pullʳ commute₂) ⟩
+    ⟩                          ≈⟨ ⟨⟩-cong₂ ⟨⟩∘ (pullʳ project₂) ⟩
     ⟨ ⟨ π₁        ∘ ⟨ f , ⟨ g , h ⟩ ⟩
       , (π₁ ∘ π₂) ∘ ⟨ f , ⟨ g , h ⟩ ⟩
       ⟩
     , π₂ ∘ ⟨ g , h ⟩
-    ⟩                          ≈⟨ ⟨⟩-cong₂ (⟨⟩-cong₂ commute₁
-                                                     (trans (pullʳ commute₂) commute₁))
-                                           commute₂ ⟩
+    ⟩                          ≈⟨ ⟨⟩-cong₂ (⟨⟩-cong₂ project₁
+                                                     (trans (pullʳ project₂) project₁))
+                                           project₂ ⟩
     ⟨ ⟨ f , g ⟩ , h ⟩          ∎
 
   assocˡ∘⟨⟩ : assocˡ ∘ ⟨ ⟨ f , g ⟩ , h ⟩ ≈ ⟨ f , ⟨ g , h ⟩ ⟩
@@ -222,7 +224,8 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
   _×- : Obj → Functor 𝒞 𝒞
   _×- = appˡ -×-
 
-record FiniteProducts : Set (o ⊔ ℓ ⊔ e) where
+-- Catesian monoidal category
+record Catesian : Set (o ⊔ ℓ ⊔ e) where
   field
     terminal : Terminal
     products : BinaryProducts
@@ -238,10 +241,10 @@ record FiniteProducts : Set (o ⊔ ℓ ⊔ e) where
     ; to   = ⟨ ! , id ⟩
     ; iso  = record
       { isoˡ = begin
-        ⟨ ! , id ⟩ ∘ π₂ ≈˘⟨ unique !-unique₂ (cancelˡ commute₂) ⟩
+        ⟨ ! , id ⟩ ∘ π₂ ≈˘⟨ unique !-unique₂ (cancelˡ project₂) ⟩
         ⟨ π₁ , π₂ ⟩     ≈⟨ η ⟩
         id              ∎
-      ; isoʳ = commute₂
+      ; isoʳ = project₂
       }
     }
 
@@ -251,10 +254,10 @@ record FiniteProducts : Set (o ⊔ ℓ ⊔ e) where
     ; to   = ⟨ id , ! ⟩
     ; iso  = record
       { isoˡ = begin
-        ⟨ id , ! ⟩ ∘ π₁ ≈˘⟨ unique (cancelˡ commute₁) !-unique₂ ⟩
+        ⟨ id , ! ⟩ ∘ π₁ ≈˘⟨ unique (cancelˡ project₁) !-unique₂ ⟩
         ⟨ π₁ , π₂ ⟩     ≈⟨ η ⟩
         id              ∎
-      ; isoʳ = commute₁
+      ; isoʳ = project₁
       }
     }
 
@@ -262,7 +265,7 @@ record FiniteProducts : Set (o ⊔ ℓ ⊔ e) where
   ⊤×--id = record
     { F⇒G = record
       { η       = λ _ → π₂
-      ; commute = λ _ → commute₂
+      ; commute = λ _ → project₂
       }
     ; F⇐G = record
       { η       = λ _ → ⟨ ! , id ⟩
@@ -270,7 +273,7 @@ record FiniteProducts : Set (o ⊔ ℓ ⊔ e) where
         ⟨ ! , id ⟩ ∘ f                                     ≈⟨ ⟨⟩∘ ⟩
         ⟨ ! ∘ f , id  ∘ f ⟩                                ≈⟨ ⟨⟩-cong₂ (sym (!-unique _)) identityˡ ⟩
         ⟨ ! , f ⟩                                          ≈˘⟨ ⟨⟩-cong₂ identityˡ identityʳ ⟩
-        ⟨ id ∘ ! , f ∘ id ⟩                                ≈˘⟨ ⟨⟩-cong₂ (pullʳ commute₁) (pullʳ commute₂) ⟩
+        ⟨ id ∘ ! , f ∘ id ⟩                                ≈˘⟨ ⟨⟩-cong₂ (pullʳ project₁) (pullʳ project₂) ⟩
         ⟨ (id ∘ π₁) ∘ ⟨ ! , id ⟩ , (f ∘ π₂) ∘ ⟨ ! , id ⟩ ⟩ ≈˘⟨ ⟨⟩∘ ⟩
         ⟨ id ∘ π₁ , f ∘ π₂ ⟩ ∘ ⟨ ! , id ⟩                  ∎
       }
@@ -281,7 +284,7 @@ record FiniteProducts : Set (o ⊔ ℓ ⊔ e) where
   -×⊤-id = record
     { F⇒G = record
       { η       = λ _ → π₁
-      ; commute = λ _ → commute₁
+      ; commute = λ _ → project₁
       }
     ; F⇐G = record
       { η       = λ _ → ⟨ id , ! ⟩
@@ -289,9 +292,56 @@ record FiniteProducts : Set (o ⊔ ℓ ⊔ e) where
         ⟨ id , ! ⟩ ∘ f                                     ≈⟨ ⟨⟩∘ ⟩
         ⟨ id ∘ f , ! ∘ f ⟩                                 ≈⟨ ⟨⟩-cong₂ identityˡ (sym (!-unique _)) ⟩
         ⟨ f , ! ⟩                                          ≈˘⟨ ⟨⟩-cong₂ identityʳ identityˡ ⟩
-        ⟨ f ∘ id , id ∘ ! ⟩                                ≈˘⟨ ⟨⟩-cong₂ (pullʳ commute₁) (pullʳ commute₂) ⟩
+        ⟨ f ∘ id , id ∘ ! ⟩                                ≈˘⟨ ⟨⟩-cong₂ (pullʳ project₁) (pullʳ project₂) ⟩
         ⟨ (f ∘ π₁) ∘ ⟨ id , ! ⟩ , (id ∘ π₂) ∘ ⟨ id , ! ⟩ ⟩ ≈˘⟨ ⟨⟩∘ ⟩
         ⟨ f ∘ π₁ , id ∘ π₂ ⟩ ∘ ⟨ id , ! ⟩                  ∎
       }
     ; iso = λ _ → _≅_.iso A×⊤≅A
     }
+
+  monoidal : Monoidal
+  monoidal = record
+    { ⊗                    = -×-
+    ; unit                 = ⊤
+    ; unitorˡ              = ⊤×A≅A
+    ; unitorʳ              = A×⊤≅A
+    ; associator           = ≅.sym ×-assoc
+    ; unitorˡ-commute-from = project₂
+    ; unitorˡ-commute-to   = let open NaturalIsomorphism ⊤×--id in ⇐.commute _
+    ; unitorʳ-commute-from = project₁
+    ; unitorʳ-commute-to   = let open NaturalIsomorphism -×⊤-id in ⇐.commute _
+    ; assoc-commute-from   = assocˡ∘⁂
+    ; assoc-commute-to     = assocʳ∘⁂
+    ; triangle             = begin
+      (id ⁂ π₂) ∘ assocˡ                       ≈⟨ ⁂∘⟨⟩ ⟩
+      ⟨ id ∘ π₁ ∘ π₁ , π₂ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ≈⟨ ⟨⟩-cong₂ (pullˡ identityˡ) (project₂ ○ (⟺ identityˡ)) ⟩
+      π₁ ⁂ id                                  ∎
+    ; pentagon             = begin
+      (id ⁂ assocˡ) ∘ assocˡ ∘ (assocˡ ⁂ id)
+        ≈⟨ pullˡ [ product ⇒ product ]id×∘⟨⟩ ⟩
+      ⟨ π₁ ∘ π₁ , assocˡ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ∘ (assocˡ ⁂ id)
+        ≈⟨ ⟨⟩∘ ⟩
+      ⟨ (π₁ ∘ π₁) ∘ (assocˡ ⁂ id) , (assocˡ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩) ∘ (assocˡ ⁂ id) ⟩
+        ≈⟨ ⟨⟩-cong₂ (pullʳ project₁) (pullʳ ⟨⟩∘) ⟩
+      ⟨ π₁ ∘ assocˡ ∘ π₁ , assocˡ ∘ ⟨ (π₂ ∘ π₁) ∘ (assocˡ ⁂ id) , π₂ ∘ (assocˡ ⁂ id) ⟩ ⟩
+        ≈⟨ ⟨⟩-cong₂ (pullˡ project₁) (∘-resp-≈ʳ (⟨⟩-cong₂ (pullʳ project₁) project₂)) ⟩
+      ⟨ (π₁ ∘ π₁) ∘ π₁ , assocˡ ∘ ⟨ π₂ ∘ assocˡ ∘ π₁ , id ∘ π₂ ⟩ ⟩
+        ≈⟨ ⟨⟩-cong₂ assoc (∘-resp-≈ʳ (⟨⟩-cong₂ (pullˡ project₂) identityˡ)) ⟩
+      ⟨ π₁ ∘ π₁ ∘ π₁ , assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ ⟩
+        ≈⟨ ⟨⟩-congˡ ⟨⟩∘ ⟩
+      ⟨ π₁ ∘ π₁ ∘ π₁ , ⟨ (π₁ ∘ π₁) ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ , ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ ⟩ ⟩
+        ≈⟨ ⟨⟩-congˡ (⟨⟩-cong₂ (pullʳ project₁) ⟨⟩∘) ⟩
+      ⟨ π₁ ∘ π₁ ∘ π₁ , ⟨ π₁ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , ⟨ (π₂ ∘ π₁) ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ , π₂ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ ⟩ ⟩ ⟩
+        ≈⟨ ⟨⟩-congˡ (⟨⟩-cong₂ (pullˡ project₁) (⟨⟩-cong₂ (pullʳ project₁) project₂)) ⟩
+      ⟨ π₁ ∘ π₁ ∘ π₁ , ⟨ (π₂ ∘ π₁) ∘ π₁ , ⟨ π₂ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ ⟩ ⟩
+        ≈⟨ ⟨⟩-congˡ (⟨⟩-cong₂ assoc (⟨⟩-congʳ (pullˡ project₂))) ⟩
+      ⟨ π₁ ∘ π₁ ∘ π₁ , ⟨ π₂ ∘ π₁ ∘ π₁ , ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ⟩
+        ≈˘⟨ ⟨⟩-congˡ (⟨⟩-cong₂ (pullʳ project₁) project₂) ⟩
+      ⟨ π₁ ∘ π₁ ∘ π₁ , ⟨ (π₂ ∘ π₁) ∘ assocˡ , π₂ ∘ assocˡ ⟩ ⟩
+        ≈˘⟨ ⟨⟩-cong₂ (pullʳ project₁) ⟨⟩∘ ⟩
+      ⟨ (π₁ ∘ π₁) ∘ assocˡ , ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ assocˡ ⟩
+        ≈˘⟨ ⟨⟩∘ ⟩
+      assocˡ ∘ assocˡ ∎
+    }
+
+  module monoidal = Monoidal monoidal
