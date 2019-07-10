@@ -13,7 +13,7 @@ open import Relation.Binary.PropositionalEquality as ≡
  explicitly witnesses them. Because this library is proof-relevant,
  the latter choice is more consistent with that philosophy.
 -}
-Discrete : ∀ {a} (A : Set a) → Category _ _ _
+Discrete : ∀ {a} (A : Set a) → Category a a a
 Discrete A = record
   { Obj       = A
   ; _⇒_       = _≡_
