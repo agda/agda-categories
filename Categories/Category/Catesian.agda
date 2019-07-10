@@ -130,7 +130,7 @@ record BinaryProducts : Set (levelOf 𝒞) where
   ⁂∘⁂ = [ product ⇒ product ⇒ product ]×∘×
 
   ⟨⟩∘ : ⟨ f , g ⟩ ∘ h ≈ ⟨ f ∘ h , g ∘ h ⟩
-  ⟨⟩∘ = sym (unique (trans (sym assoc) (∘-resp-≈ˡ project₁)) (trans (sym assoc) (∘-resp-≈ˡ project₂)))
+  ⟨⟩∘ = [ product ]⟨⟩∘
 
   first∘first : ∀ {C} → first {C = C} f ∘ first g ≈ first (f ∘ g)
   first∘first = [ product ⇒ product ⇒ product ]×id∘×id
@@ -141,6 +141,18 @@ record BinaryProducts : Set (levelOf 𝒞) where
   first↔second : first f ∘ second g ≈ second g ∘ first f
   first↔second = [ product ⇒ product , product ⇒ product ]first↔second
 
+  firstid : ∀ {f : A ⇒ A} (g : A ⇒ C) → first {C = C} f ≈ id → f ≈ id
+  firstid {f = f} g eq = begin
+    f                    ≈˘⟨ elimʳ project₁ ⟩
+    f ∘ π₁ ∘ ⟨ id , g ⟩  ≈⟨ pullˡ fπ₁≈π₁ ⟩
+    π₁ ∘ ⟨ id , g ⟩      ≈⟨ project₁ ⟩
+    id                   ∎
+    where fπ₁≈π₁ = begin
+            f ∘ π₁       ≈˘⟨ project₁ ⟩
+            π₁ ∘ first f ≈⟨ refl⟩∘⟨ eq ⟩
+            π₁ ∘ id      ≈⟨ identityʳ ⟩
+            π₁           ∎
+  
   swap∘⟨⟩ : swap ∘ ⟨ f , g ⟩ ≈ ⟨ g , f ⟩
   swap∘⟨⟩ {f = f} {g = g} = begin
     ⟨ π₂ , π₁ ⟩ ∘ ⟨ f , g ⟩             ≈⟨ ⟨⟩∘ ⟩

@@ -1,6 +1,7 @@
 import Categories.Adjoint
 import Categories.Category
 import Categories.Category.Catesian
+import Categories.Category.CatesianClosed
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Functors
 import Categories.Category.Core
