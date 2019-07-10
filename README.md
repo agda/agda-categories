@@ -55,6 +55,13 @@ will be written, eventually.
 - Many definitions (like that of Category) are in Category.Core, to avoid various kinds
   of import loops, and re-exported. .Core modules should only be imported if doing otherwise
   causes an import cycle.
+- Various 'examples' of categories used to be scattered about; these are now gathered
+  together in Category.Instance. More generally, Function.Instance, etc.
+- Various *constructions* of categories (like the Arrow category of a category) are in
+  Category.Construction. And more generally, Functor.Construction, etc.
+- The basic rule of thumb is that constructions are parametrized over some input in a
+  non-trivial way, whereas instances are not parametrics (like the (large) Category of
+  (small) Categories, the Category of Types and functions, the Category of Setoids, etc.
 
 ### Organization
 
