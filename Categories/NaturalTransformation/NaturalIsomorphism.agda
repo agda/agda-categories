@@ -105,28 +105,7 @@ sym {D = D} F≃G = record
   where open Morphism D
 
 trans : Transitive (NaturalIsomorphism {C = C} {D = D})
-trans {D = D} = flip _ⓘᵥ_ {- _F≃G G≃H = record
-  { F⇒G = F⇒G G≃H ∘ᵥ F⇒G F≃G
-  ; F⇐G = F⇐G F≃G ∘ᵥ F⇐G G≃H
-  ; iso = λ X → record
-    { isoˡ = begin
-      D [ η (F⇐G F≃G ∘ᵥ F⇐G G≃H) X ∘ η (F⇒G G≃H ∘ᵥ F⇒G F≃G) X ] ≈⟨ cancelInner (isoˡ (iso G≃H X)) ⟩
-      η (F⇐G F≃G ∘ᵥ F⇒G F≃G) X                                  ≈⟨ isoˡ (iso F≃G X) ⟩
-      D.id                                                      ∎
-    ; isoʳ = begin
-      D [ η (F⇒G G≃H ∘ᵥ F⇒G F≃G) X ∘ η (F⇐G F≃G ∘ᵥ F⇐G G≃H) X ] ≈⟨ cancelInner (isoʳ (iso F≃G X)) ⟩
-      η (F⇒G G≃H ∘ᵥ F⇐G G≃H) X                                  ≈⟨ isoʳ (iso G≃H X) ⟩
-      D.id                                                      ∎
-    }
-  }
-  where module D = Category D
-        open NaturalIsomorphism
-        open NaturalTransformation
-        open Morphism D
-        open Iso
-        open Category.HomReasoning D
-        open Square D
--}
+trans {D = D} = flip _ⓘᵥ_
 
 isEquivalence : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → IsEquivalence (NaturalIsomorphism {C = C} {D = D})
 isEquivalence C D = record
