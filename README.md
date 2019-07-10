@@ -37,6 +37,7 @@ documented in the proto-contributor's guide.
 
 ### Places to find more design notes
 - [Category.Discrete](Categories/Category/Discrete.agda)
+- [Category.Monoidal](Categories/Category/Monoidal.agda)
 
 ### Smaller Design decisions
 - Do not make implicit fields that can rarely be inferred (like what had been done in

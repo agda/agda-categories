@@ -3,6 +3,14 @@ open import Categories.Category
 
 -- Definition of Monoidal Category
 
+-- Big design decision that differs from the previous version:
+-- Do not go through "Functor.Power" to encode variables and work
+-- at the level of NaturalIsomorphisms, instead work at the object/morphism
+-- level, via the more direct _⊗₀_ _⊗₁_ _⊗- -⊗_.
+-- Smaller design decision: export some items with long names
+-- (unitorˡ, unitorʳ and associator), but internally work with the more classical
+-- short greek names (λ, ρ and α respectively).
+
 module Categories.Category.Monoidal {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
