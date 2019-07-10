@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Category.Functors where
+module Categories.Category.Construction.Functors where
 
 -- the "Functor Category", often denoted [ C , D ]
 
