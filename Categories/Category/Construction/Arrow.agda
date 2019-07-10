@@ -2,7 +2,7 @@
 open import Categories.Category
 
 -- Definition of the Arrow Category of a Category C
-module Categories.Category.Arrow {o ℓ e} (C : Category o ℓ e) where
+module Categories.Category.Construction.Arrow {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
 open import Data.Product using (_,_; _×_; map; zip)
