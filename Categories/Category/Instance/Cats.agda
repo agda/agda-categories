@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Category.Cats where
+module Categories.Category.Instance.Cats where
 
 -- The (large) category of (small) categories.
 -- Even though Agda can figure out the levels, it is worth making them explicit,
