@@ -5,6 +5,7 @@ module Categories.NaturalTransformation.NaturalIsomorphism where
 open import Level
 open import Data.Product using (_×_; _,_; map; zip)
 open import Relation.Binary using (IsEquivalence)
+open import Function using (flip)
 
 open import Categories.Category
 open import Categories.Functor as ℱ renaming (id to idF)
@@ -36,65 +37,6 @@ record NaturalIsomorphism {C : Category o ℓ e}
     iso : ∀ X → Morphism.Iso D (⇒.η X) (⇐.η X)
 
 open NaturalIsomorphism
-
-refl : Reflexive (NaturalIsomorphism {C = C} {D = D})
-refl {D = D} = record
-  { F⇒G = NT.id
-  ; F⇐G = NT.id
-  ; iso = λ _ → record
-    { isoˡ = Category.identityˡ D
-    ; isoʳ = Category.identityʳ D
-    }
-  }
-
-sym : Symmetric (NaturalIsomorphism {C = C} {D = D})
-sym {D = D} F≃G = record
-  { F⇒G = F⇐G F≃G
-  ; F⇐G = F⇒G F≃G
-  ; iso = λ X →
-    let open Iso (iso F≃G X) in record
-    { isoˡ = isoʳ
-    ; isoʳ = isoˡ
-    }
-  }
-  where open Morphism D
-
-trans : Transitive (NaturalIsomorphism {C = C} {D = D})
-trans {D = D} F≃G G≃H = record
-  { F⇒G = F⇒G G≃H ∘ᵥ F⇒G F≃G
-  ; F⇐G = F⇐G F≃G ∘ᵥ F⇐G G≃H
-  ; iso = λ X → record
-    { isoˡ = begin
-      D [ η (F⇐G F≃G ∘ᵥ F⇐G G≃H) X ∘ η (F⇒G G≃H ∘ᵥ F⇒G F≃G) X ] ≈⟨ cancelInner (isoˡ (iso G≃H X)) ⟩
-      η (F⇐G F≃G ∘ᵥ F⇒G F≃G) X                                  ≈⟨ isoˡ (iso F≃G X) ⟩
-      D.id                                                      ∎
-    ; isoʳ = begin
-      D [ η (F⇒G G≃H ∘ᵥ F⇒G F≃G) X ∘ η (F⇐G F≃G ∘ᵥ F⇐G G≃H) X ] ≈⟨ cancelInner (isoʳ (iso F≃G X)) ⟩
-      η (F⇒G G≃H ∘ᵥ F⇐G G≃H) X                                  ≈⟨ isoʳ (iso G≃H X) ⟩
-      D.id                                                      ∎
-    }
-  }
-  where module D = Category D
-        open NaturalIsomorphism
-        open NaturalTransformation
-        open Morphism D
-        open Iso
-        open Category.HomReasoning D
-        open Square D
-
-isEquivalence : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → IsEquivalence (NaturalIsomorphism {C = C} {D = D})
-isEquivalence C D = record
-  { refl  = refl
-  ; sym   = sym
-  ; trans = trans
-  }
-
-setoid : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Setoid _ _
-setoid C D = record
-  { Carrier       = Functor C D
-  ; _≈_           = NaturalIsomorphism
-  ; isEquivalence = isEquivalence C D
-  }
 
 infixr 9 _ⓘᵥ_ _ⓘₕ_ _ⓘˡ_ _ⓘʳ_
 
@@ -139,6 +81,66 @@ _ⓘʳ_ η K = record
   ; iso = λ X → iso η (F₀ X)
   }
   where open Functor K
+
+refl : Reflexive (NaturalIsomorphism {C = C} {D = D})
+refl {D = D} = record
+  { F⇒G = NT.id
+  ; F⇐G = NT.id
+  ; iso = λ _ → record
+    { isoˡ = Category.identityˡ D
+    ; isoʳ = Category.identityʳ D
+    }
+  }
+
+sym : Symmetric (NaturalIsomorphism {C = C} {D = D})
+sym {D = D} F≃G = record
+  { F⇒G = F⇐G F≃G
+  ; F⇐G = F⇒G F≃G
+  ; iso = λ X →
+    let open Iso (iso F≃G X) in record
+    { isoˡ = isoʳ
+    ; isoʳ = isoˡ
+    }
+  }
+  where open Morphism D
+
+trans : Transitive (NaturalIsomorphism {C = C} {D = D})
+trans {D = D} = flip _ⓘᵥ_ {- _F≃G G≃H = record
+  { F⇒G = F⇒G G≃H ∘ᵥ F⇒G F≃G
+  ; F⇐G = F⇐G F≃G ∘ᵥ F⇐G G≃H
+  ; iso = λ X → record
+    { isoˡ = begin
+      D [ η (F⇐G F≃G ∘ᵥ F⇐G G≃H) X ∘ η (F⇒G G≃H ∘ᵥ F⇒G F≃G) X ] ≈⟨ cancelInner (isoˡ (iso G≃H X)) ⟩
+      η (F⇐G F≃G ∘ᵥ F⇒G F≃G) X                                  ≈⟨ isoˡ (iso F≃G X) ⟩
+      D.id                                                      ∎
+    ; isoʳ = begin
+      D [ η (F⇒G G≃H ∘ᵥ F⇒G F≃G) X ∘ η (F⇐G F≃G ∘ᵥ F⇐G G≃H) X ] ≈⟨ cancelInner (isoʳ (iso F≃G X)) ⟩
+      η (F⇒G G≃H ∘ᵥ F⇐G G≃H) X                                  ≈⟨ isoʳ (iso G≃H X) ⟩
+      D.id                                                      ∎
+    }
+  }
+  where module D = Category D
+        open NaturalIsomorphism
+        open NaturalTransformation
+        open Morphism D
+        open Iso
+        open Category.HomReasoning D
+        open Square D
+-}
+
+isEquivalence : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → IsEquivalence (NaturalIsomorphism {C = C} {D = D})
+isEquivalence C D = record
+  { refl  = refl
+  ; sym   = sym
+  ; trans = trans
+  }
+
+setoid : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Setoid _ _
+setoid C D = record
+  { Carrier       = Functor C D
+  ; _≈_           = NaturalIsomorphism
+  ; isEquivalence = isEquivalence C D
+  }
 
 infix 4 _≅_
 _≅_ : ∀ {F G : Functor C D} → (α β : NaturalIsomorphism F G) → Set _
