@@ -1,6 +1,6 @@
 import Categories.Adjoint
 import Categories.Category
-import Categories.Category.CCC
+import Categories.Category.Catesian
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Functors
 import Categories.Category.Core
@@ -36,11 +36,9 @@ import Categories.Morphism.Properties
 import Categories.NaturalTransformation
 import Categories.NaturalTransformation.Core
 import Categories.NaturalTransformation.NaturalIsomorphism
-import Categories.Object.BinaryProducts
 import Categories.Object.Coproduct
 import Categories.Object.Duality
 import Categories.Object.Exponential
-import Categories.Object.Exponentials
 import Categories.Object.Initial
 import Categories.Object.Product
 import Categories.Object.Product.Core

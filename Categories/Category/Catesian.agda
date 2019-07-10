@@ -29,7 +29,7 @@ private
     A B C D X Y Z : Obj
     f f′ g g′ h i : A ⇒ B
 
-record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
+record BinaryProducts : Set (levelOf 𝒞) where
 
   infixr 5 _×_
   infix 8 _⁂_
@@ -225,7 +225,7 @@ record BinaryProducts : Set (o ⊔ ℓ ⊔ e) where
   _×- = appˡ -×-
 
 -- Catesian monoidal category
-record Catesian : Set (o ⊔ ℓ ⊔ e) where
+record Catesian : Set (levelOf 𝒞) where
   field
     terminal : Terminal
     products : BinaryProducts
@@ -341,7 +341,9 @@ record Catesian : Set (o ⊔ ℓ ⊔ e) where
         ≈˘⟨ ⟨⟩-cong₂ (pullʳ project₁) ⟨⟩∘ ⟩
       ⟨ (π₁ ∘ π₁) ∘ assocˡ , ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ assocˡ ⟩
         ≈˘⟨ ⟨⟩∘ ⟩
-      assocˡ ∘ assocˡ ∎
+      assocˡ ∘ assocˡ
+        ∎
     }
 
   module monoidal = Monoidal monoidal
+  open monoidal public
