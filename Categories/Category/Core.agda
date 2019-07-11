@@ -75,6 +75,10 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     _○_ : {f g h : A ⇒ B} → f ≈ g → g ≈ h → f ≈ h
     _○_ = Equiv.trans
 
+  -- Combinators for commutative diagram
+  -- The idea is to use the combinators to write commutations in a more readable way.
+  -- It starts with [_⇒_]⟨_≈_⟩, and within the third and forth places, use _⇒⟨_⟩_ to
+  -- connect morphisms with the intermediate object specified.
   module Commutation where
     infix 1 [_⇒_]⟨_≈_⟩
     [_⇒_]⟨_≈_⟩ : ∀ (A B : Obj) → A ⇒ B → A ⇒ B → Set _
