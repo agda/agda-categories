@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
 
-module Categories.Category.CatesianClosed {o ℓ e} (𝒞 : Category o ℓ e) where
+module Categories.Category.CartesianClosed {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open Category 𝒞
 
@@ -11,7 +11,7 @@ open import Data.Product using (Σ; _,_; uncurry)
 
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Bifunctor
-open import Categories.Category.Catesian 𝒞
+open import Categories.Category.Cartesian 𝒞
 open import Categories.Object.Product 𝒞
   hiding (repack≡id; repack∘; repack-cancel; up-to-iso; transport-by-iso)
 open import Categories.Object.Exponential 𝒞 hiding (repack)
@@ -26,13 +26,13 @@ private
     A B C   : Obj
     f g h i : A ⇒ B
 
--- Catesian closed category
+-- Cartesian closed category
 --   is a category with all products and exponentials
-record CatesianClosed : Set (levelOf 𝒞) where
+record CartesianClosed : Set (levelOf 𝒞) where
   infixl 7 _^_
   
   field
-    catesian : Catesian
+    cartesian : Cartesian
     exp      : Exponential A B
 
   module exp {A B} = Exponential (exp {A} {B})
@@ -40,9 +40,9 @@ record CatesianClosed : Set (levelOf 𝒞) where
   _^_ : Obj → Obj → Obj
   B ^ A = exp.B^A {A} {B}
 
-  module catesian = Catesian catesian
+  module cartesian = Cartesian cartesian
 
-  open catesian public
+  open cartesian public
 
   B^A×A : ∀ B A → Product (B ^ A) A
   B^A×A B A = exp.product {A} {B}

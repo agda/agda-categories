@@ -6,7 +6,7 @@ open import Categories.Category
 -- 1. BinaryProducts -- for when a Category has all Binary Products
 -- 2. Catesian -- a Catesian category is a category with all products
 
-module Categories.Category.Catesian {o ℓ e} (𝒞 : Category o ℓ e) where
+module Categories.Category.Cartesian {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
 open import Data.Product using (Σ; _,_; uncurry)
@@ -237,8 +237,8 @@ record BinaryProducts : Set (levelOf 𝒞) where
   _×- : Obj → Functor 𝒞 𝒞
   _×- = appˡ -×-
 
--- Catesian monoidal category
-record Catesian : Set (levelOf 𝒞) where
+-- Cartesian monoidal category
+record Cartesian : Set (levelOf 𝒞) where
   field
     terminal : Terminal
     products : BinaryProducts
