@@ -11,7 +11,9 @@ import Categories.Category.Instance.Cats
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
 import Categories.Category.Monoidal
+import Categories.Category.Monoidal.Braided
 import Categories.Category.Monoidal.Properties
+import Categories.Category.Monoidal.Symmetric
 import Categories.Category.Product
 import Categories.Category.Slice
 import Categories.Category.SubCategory
@@ -26,6 +28,7 @@ import Categories.Functor.Bifunctor
 import Categories.Functor.Coalgebra
 import Categories.Functor.Core
 import Categories.Functor.Hom
+import Categories.Functor.Instance.Discrete
 import Categories.Functor.Power
 import Categories.Functor.Properties
 import Categories.Kan
