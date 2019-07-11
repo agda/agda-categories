@@ -1,4 +1,4 @@
-{-# OPTIONS --universe-polymorphism #-}
+{-# OPTIONS --without-K --safe #-}
 module Categories.Kan where
 
 -- Left and Right Kan extensions (known as Lan and Ran)
