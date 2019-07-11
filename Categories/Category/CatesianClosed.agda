@@ -21,56 +21,13 @@ open import Categories.Square 𝒞
 open HomReasoning
 
 private
+  module 𝒞 = Category 𝒞
   variable
-    A B C : Obj
-    f g   : A ⇒ B
-
--- record Exponentials : Set (levelOf 𝒞) where
---   infixl 7 _^_
-  
---   field
---     exp : Exponential A B
-
---   module exp {A B} = Exponential (exp {A} {B})
-
---   _^_ : Obj → Obj → Obj
---   B ^ A = exp.B^A {A} {B}
-
---   product : ∀ B A → Product (B ^ A) A
---   product B A = exp.product {A} {B}
-
---   eval : Product.A×B (product B A) ⇒ B
---   eval = exp.eval
-
---   λg : Product.A×B (product C A) ⇒ B → C ^ A ⇒ B ^ A
---   λg f = exp.λg exp.product f
-
---   λ-cong : f ≈ g → λg f ≈ λg g
---   λ-cong eq = exp.λ-cong exp.product eq
-
---   _×id : (f : B ^ A ⇒ C ^ A) → [[ product B A ]] ⇒ [[ product C A ]]
---   f ×id = [ exp.product ⇒ exp.product ] f ×id
-
---   β : eval ∘ λg f ×id ≈ f
---   β = exp.β exp.product
-
---   -^-functor : Obj → Functor 𝒞 𝒞
---   -^-functor A = record
---     { F₀           = _^ A
---     ; F₁           = λ f → λg (f ∘ eval)
---     ; identity     = trans (λ-cong identityˡ) exp.η-id
---     ; homomorphism = exp.λ-unique₂ exp.product homoeq
---     ; F-resp-≈     = λ eq → λ-cong (∘-resp-≈ˡ eq)
---     }
---     where homoeq : eval {A = A} ∘ (λg ((g ∘ f) ∘ eval) ×id) ≈ eval ∘ ((λg (g ∘ eval) ∘ λg (f ∘ eval)) ×id)
---           homoeq {g = g} {f = f} = begin
---             eval ∘ (λg ((g ∘ f) ∘ eval) ×id)               ≈⟨ β ⟩
---             (g ∘ f) ∘ eval                                 ≈⟨ pullʳ (sym β) ⟩
---             g ∘ eval ∘ λg (f ∘ eval) ×id                   ≈⟨ pullˡ (sym β) ⟩
---             (eval ∘ λg (g ∘ eval) ×id) ∘ λg (f ∘ eval) ×id ≈⟨ pullʳ [ exp.product ⇒ exp.product ⇒ exp.product ]×id∘×id ⟩
---             eval ∘ ((λg (g ∘ eval) ∘ λg (f ∘ eval)) ×id)   ∎
+    A B C   : Obj
+    f g h i : A ⇒ B
 
 -- Catesian closed category
+--   is a category with all products and exponentials
 record CatesianClosed : Set (levelOf 𝒞) where
   infixl 7 _^_
   
@@ -104,6 +61,9 @@ record CatesianClosed : Set (levelOf 𝒞) where
 
   β : eval ∘ λg f ×id ≈ f
   β = exp.β product
+
+  η-exp : λg (eval ∘ f ×id) ≈ f
+  η-exp = exp.η product
 
   λ-unique : eval ∘ f ×id ≈ g → f ≈ λg g
   λ-unique = exp.λ-unique product
@@ -156,6 +116,12 @@ record CatesianClosed : Set (levelOf 𝒞) where
     eval ∘ λg f ×id     ≈⟨ β ⟩
     f                   ∎
 
+  η-exp′ : λg (eval′ ∘ (f ⁂ id)) ≈ f
+  η-exp′ = sym (λ-unique′ refl)
+
+  η-id′ : λg (eval′ {B = B} {A = A}) ≈ id
+  η-id′ = sym (λ-unique′ (elimʳ (id×id product)))
+
   ⊤^A≅⊤ : ⊤ ^ A ≅ ⊤
   ⊤^A≅⊤ = record
     { from = !
@@ -197,12 +163,33 @@ record CatesianClosed : Set (levelOf 𝒞) where
             ⟨ id , ! ⟩ ∘ (eval′ ∘ (id ⁂ id))                 ≈⟨ refl⟩∘⟨ elimʳ (id×id product) ⟩
             ⟨ id , ! ⟩ ∘ eval′                               ∎
 
-  -- -^- : Bifunctor op 𝒞 𝒞
-  -- -^- = record
-  --   { F₀           = uncurry _^_
-  --   ; F₁           = λ where
-  --     (f , g) → {!!}
-  --   ; identity     = {!!}
-  --   ; homomorphism = {!!}
-  --   ; F-resp-≈     = {!!}
-  --   }
+  -^- : Bifunctor 𝒞.op 𝒞 𝒞
+  -^- = record
+    { F₀           = λ where
+      (A , B) → B ^ A
+    ; F₁           = λ where
+      (f , g) → λg (g ∘ eval′ ∘ second f)
+    ; identity     = λ-cong (identityˡ ○ (elimʳ (id×id product))) ○ η-id′ 
+    ; homomorphism = λ-unique₂′ helper
+    ; F-resp-≈     = λ where
+      (eq₁ , eq₂) → λ-cong (∘-resp-≈ eq₂ (∘-resp-≈ʳ (⁂-cong₂ refl eq₁)))
+    }
+    where helper : eval′ ∘ first (λg ((g ∘ f) ∘ eval′ ∘ second (h ∘ i)))
+                 ≈ eval′ ∘ first (λg (g ∘ eval′ ∘ second i) ∘ λg (f ∘ eval′ ∘ second h))
+          helper {g = g} {f = f} {h = h} {i = i} = begin
+            eval′ ∘ first (λg ((g ∘ f) ∘ eval′ ∘ second (h ∘ i)))                         ≈⟨ β′ ⟩
+            (g ∘ f) ∘ eval′ ∘ second (h ∘ i)                                              ≈˘⟨ refl⟩∘⟨ pullʳ second∘second ⟩
+            (g ∘ f) ∘ (eval′ ∘ second h) ∘ second i                                       ≈˘⟨ pullˡ refl ⟩
+            g ∘ f ∘ (eval′ ∘ second h) ∘ second i                                         ≈˘⟨ refl⟩∘⟨ assoc ⟩
+            g ∘ (f ∘ eval′ ∘ second h) ∘ second i                                         ≈˘⟨ refl⟩∘⟨ pullˡ β′ ⟩
+            g ∘ eval′ ∘ first (λg (f ∘ eval′ ∘ second h)) ∘ second i                      ≈⟨ refl⟩∘⟨ pushʳ first↔second ⟩
+            g ∘ (eval′ ∘ second i) ∘ first (λg (f ∘ eval′ ∘ second h))                    ≈˘⟨ assoc ⟩
+            (g ∘ eval′ ∘ second i) ∘ first (λg (f ∘ eval′ ∘ second h))                    ≈˘⟨ pullˡ β′ ⟩
+            eval′ ∘ first (λg (g ∘ eval′ ∘ second i)) ∘ first (λg (f ∘ eval′ ∘ second h)) ≈⟨ refl⟩∘⟨ first∘first ⟩
+            eval′ ∘ first (λg (g ∘ eval′ ∘ second i) ∘ λg (f ∘ eval′ ∘ second h))         ∎
+
+  _^- : Obj → Endofunctor 𝒞
+  _^- = appˡ -^-
+
+  -^_ : Obj → Functor 𝒞.op 𝒞
+  -^_ = appʳ -^-
