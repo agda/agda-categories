@@ -40,10 +40,18 @@ Lan.agda and Ran.agda
 Comonad.agda
 Cone.agda
   - name Diagram/Cone
+FunctorCategory.agda
+  - name Category/Construction/Functors
+Categories.agda
+  - sort-of ported to Category/Instance/Cats but the original was
+    Strict while the latter uses NaturalIsomorphism for Hom equivalence
+Arrow.agda
+  - move to Category/Construction/Arrow
 
 Consider:
 =========
 Product/Properties.agda
+Power.agda
 
 Functor/Coalgebras.agda
 Functor/Representable.agda
@@ -58,19 +66,15 @@ Power/Functorial.agda
 Power/NaturalTransformation.agda
 Fibration.agda
 RigCategory.agda
-Power.agda
-Categories.agda
 End.agda
 2-Category/Categories.agda
 2-Category.agda
 Groupoid/Coproduct.agda
 Groupoid/Product.agda
 Square.agda
-FunctorCategory.agda
 Free.agda
 Preorder.agda
 Coproduct.agda
-Arrow.agda
 Comonad/Cofree.agda
 Grothendieck.agda
 CategorySolver.agda
@@ -80,11 +84,8 @@ Adjunction.agda
 Comma/Functors.agda
 Lift.agda
 Coend.agda
-Closed.agda
 Profunctor.agda
 Product/Projections.agda
-Coequalizer.agda
-Equalizer.agda
 Congruence.agda
 Presheaves.agda
 Agda.agda
@@ -141,7 +142,6 @@ Bicategory.agda
 Agda/ISetoids/Cocomplete.agda
 Agda/ISetoids/Cocomplete/Helpers.agda
 Agda/ISetoids/Complete.agda
-Enriched.agda
 Graphs/Underlying.agda
 Bicategory/Helpers.agda
 Monad/Coproduct.agda
@@ -187,3 +187,11 @@ drop
 ====
 Bifunctor/NaturalTransformation.agda
   -- just a repeat of a definition of NT, and weird specialized version of reduce and overlap
+Equalizer.agda
+  -- was empty anyways
+Coequalizer.agda
+  -- was empty anyways
+Enriched.agda
+  -- was empty anyways
+Closed.agda
+  -- was empty anyways

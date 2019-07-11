@@ -19,6 +19,7 @@ open import Categories.Object.Product 𝒞
 open import Categories.Morphism 𝒞
 open import Categories.Square 𝒞
 open import Categories.Category.Monoidal 𝒞
+import Categories.Category.Monoidal.Symmetric as Sym
 
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Bifunctor
@@ -358,4 +359,51 @@ record Catesian : Set (levelOf 𝒞) where
     }
 
   module monoidal = Monoidal monoidal
-  open monoidal public
+  open monoidal using (_⊗₁_)
+
+  open Sym monoidal
+
+  symmetric : Symmetric
+  symmetric = record
+    { braided = record
+      { braiding = record
+        { F⇒G = record
+          { η       = λ _ → swap
+          ; commute = λ _ → swap∘⁂
+          }
+        ; F⇐G = record
+          { η       = λ _ → swap
+          ; commute = λ _ → swap∘⁂
+          }
+        ; iso = λ _ → record
+          { isoˡ = swap∘swap
+          ; isoʳ = swap∘swap
+          }
+        }
+      ; hexagon₁ = begin
+        id ⊗₁ swap ∘ assocˡ ∘ swap ⊗₁ id                          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘ ⟩
+        id ⊗₁ swap ∘ assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₁ ∘ π₁ ⟩ , id ∘ π₂ ⟩ ≈⟨ refl⟩∘⟨ assocˡ∘⟨⟩ ⟩
+        id ⊗₁ swap ∘ ⟨ π₂ ∘ π₁ , ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩          ≈⟨ ⁂∘⟨⟩ ⟩
+        ⟨ id ∘ π₂ ∘ π₁ , swap ∘ ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩           ≈⟨ ⟨⟩-cong₂ identityˡ swap∘⟨⟩ ⟩
+        ⟨ π₂ ∘ π₁ , ⟨ id ∘ π₂ , π₁ ∘ π₁ ⟩ ⟩                       ≈⟨ ⟨⟩-congˡ (⟨⟩-congʳ identityˡ) ⟩
+        ⟨ π₂ ∘ π₁ , ⟨ π₂ , π₁ ∘ π₁ ⟩ ⟩                            ≈˘⟨ assocˡ∘⟨⟩ ⟩
+        assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ , π₁ ∘ π₁ ⟩                   ≈˘⟨ refl ⟩∘⟨ swap∘⟨⟩ ⟩
+        assocˡ ∘ swap ∘ assocˡ                                    ∎
+      ; hexagon₂ = begin
+        swap ⊗₁ id ∘ assocʳ ∘ id ⊗₁ swap                          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩-congˡ ⟨⟩∘ ⟩
+        swap ⊗₁ id ∘ assocʳ ∘ ⟨ id ∘ π₁ , ⟨ π₂ ∘ π₂ , π₁ ∘ π₂ ⟩ ⟩ ≈⟨ refl⟩∘⟨ assocʳ∘⟨⟩ ⟩
+        swap ⊗₁ id ∘ ⟨ ⟨ id ∘ π₁ , π₂ ∘ π₂ ⟩ , π₁ ∘ π₂ ⟩          ≈⟨ ⁂∘⟨⟩ ⟩
+        ⟨ swap ∘ ⟨ id ∘ π₁ , π₂ ∘ π₂ ⟩ , id ∘ π₁ ∘ π₂ ⟩           ≈⟨ ⟨⟩-cong₂ swap∘⟨⟩ identityˡ ⟩
+        ⟨ ⟨ π₂ ∘ π₂ , id ∘ π₁ ⟩ , π₁ ∘ π₂ ⟩                       ≈⟨ ⟨⟩-congʳ (⟨⟩-congˡ identityˡ) ⟩
+        ⟨ ⟨ π₂ ∘ π₂ , π₁ ⟩ , π₁ ∘ π₂ ⟩                            ≈˘⟨ assocʳ∘⟨⟩ ⟩
+        assocʳ ∘ ⟨ π₂ ∘ π₂ , ⟨ π₁ , π₁ ∘ π₂ ⟩ ⟩                   ≈˘⟨ refl ⟩∘⟨ swap∘⟨⟩ ⟩
+        assocʳ ∘ swap ∘ assocʳ                                    ∎
+      }
+    ; commutative = begin
+      swap ∘ swap ≈⟨ swap∘⟨⟩ ⟩
+      ⟨ π₁ , π₂ ⟩ ≈⟨ η ⟩
+      id          ∎
+    }
+    
+  module symmetric = Symmetric symmetric
+  open symmetric public
