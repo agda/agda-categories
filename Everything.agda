@@ -1,7 +1,7 @@
 import Categories.Adjoint
 import Categories.Category
-import Categories.Category.Catesian
-import Categories.Category.CatesianClosed
+import Categories.Category.Cartesian
+import Categories.Category.CartesianClosed
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Functors
 import Categories.Category.Core
@@ -14,6 +14,7 @@ import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
 import Categories.Category.Monoidal.Properties
 import Categories.Category.Monoidal.Symmetric
+import Categories.Category.Monoidal.Traced
 import Categories.Category.Product
 import Categories.Category.Slice
 import Categories.Category.SubCategory
