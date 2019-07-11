@@ -28,6 +28,7 @@ import Categories.Functor.Bifunctor
 import Categories.Functor.Coalgebra
 import Categories.Functor.Core
 import Categories.Functor.Hom
+import Categories.Functor.Instance.Constant
 import Categories.Functor.Instance.Discrete
 import Categories.Functor.Power
 import Categories.Functor.Properties
