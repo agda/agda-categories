@@ -30,7 +30,7 @@ private
     A B C D X Y Z : Obj
     f f′ g g′ h i : A ⇒ B
 
-record BinaryProducts : Set (levelOf 𝒞) where
+record BinaryProducts : Set (levelOfTerm 𝒞) where
 
   infixr 5 _×_
   infix 8 _⁂_
@@ -238,7 +238,7 @@ record BinaryProducts : Set (levelOf 𝒞) where
   _×- = appˡ -×-
 
 -- Cartesian monoidal category
-record Cartesian : Set (levelOf 𝒞) where
+record Cartesian : Set (levelOfTerm 𝒞) where
   field
     terminal : Terminal
     products : BinaryProducts

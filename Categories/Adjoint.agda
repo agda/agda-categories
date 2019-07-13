@@ -3,7 +3,7 @@ module Categories.Adjoint where
 
 -- Adjoints
 
-open import Level using (Level; _⊔_)
+open import Level using (Level; _⊔_; levelOfTerm)
 
 open import Data.Product using (_,_; _×_)
 open import Function using () renaming (_∘_ to _∙_)
@@ -11,7 +11,7 @@ open import Function.Inverse using (Inverse)
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
 -- be explicit in imports to 'see' where the information comes from
-open import Categories.Category using (Category; levelOf)
+open import Categories.Category using (Category)
 open import Categories.Category.Product using (Product; _⁂_)
 open import Categories.Category.Instance.Setoids
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
@@ -27,7 +27,7 @@ private
     o ℓ e : Level
     C D : Category o ℓ e
 
-record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOf C ⊔ levelOf D) where
+record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm C ⊔ levelOfTerm D) where
   private
     module C = Category C
     module D = Category D

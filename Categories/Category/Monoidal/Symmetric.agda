@@ -5,6 +5,8 @@ open import Categories.Category.Monoidal
 
 module Categories.Category.Monoidal.Symmetric {o ℓ e} {C : Category o ℓ e} (M : Monoidal C) where
 
+open import Level
+
 open import Data.Product using (Σ; _,_)
 
 open import Categories.Functor.Bifunctor
@@ -21,7 +23,7 @@ private
 
 -- symmetric monoidal category
 -- commutative braided monoidal category
-record Symmetric : Set (levelOf C) where
+record Symmetric : Set (levelOfTerm C) where
   field
     braided : Braided
 

@@ -7,6 +7,8 @@ module Categories.Category.Monoidal.Traced {o ℓ e} {C : Category o ℓ e} (M :
 
 open Category C
 
+open import Level
+
 open import Data.Product using (_,_)
 
 open import Categories.Category.Monoidal.Symmetric M
@@ -37,7 +39,7 @@ private
 -- 
 -- note that the definition in this library is significantly easier than the previous one because
 -- we adopt a simpler definition of monoidal category to begin with.
-record Traced : Set (levelOf C) where
+record Traced : Set (levelOfTerm C) where
   field
     symmetric : Symmetric
 
