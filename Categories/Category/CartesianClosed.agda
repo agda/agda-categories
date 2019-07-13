@@ -29,7 +29,7 @@ private
 -- Cartesian closed category
 --   is a category with all products and exponentials
 record CartesianClosed : Set (levelOfTerm 𝒞) where
-  infixl 7 _^_
+  infixr 9 _^_
   
   field
     cartesian : Cartesian

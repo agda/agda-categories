@@ -32,9 +32,9 @@ private
 
 record BinaryProducts : Set (levelOfTerm 𝒞) where
 
-  infixr 5 _×_
-  infix 8 _⁂_
-  infix 10 ⟨_,_⟩
+  infixl 7 _×_
+  infixl 8 _⁂_
+  infix 11 ⟨_,_⟩
 
   field
     product : ∀ {A B} → Product A B
@@ -45,7 +45,7 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   ×-comm : A × B ≅ B × A
   ×-comm = Commutative product product
 
-  ×-assoc : X × Y × Z ≅ (X × Y) × Z
+  ×-assoc : X × (Y × Z) ≅ X × Y × Z
   ×-assoc = Associative product product product product
 
   -- Convenience!
@@ -70,10 +70,10 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   unique :  π₁ ∘ h ≈ f → π₂ ∘ h ≈ g → ⟨ f , g ⟩ ≈ h
   unique = Product.unique product
 
-  assocˡ : (A × B) × C ⇒ A × B × C
+  assocˡ : A × B × C ⇒ A × (B × C)
   assocˡ = _≅_.to ×-assoc
 
-  assocʳ : A × B × C ⇒ (A × B) × C
+  assocʳ : A × (B × C) ⇒ A × B × C
   assocʳ = _≅_.from ×-assoc
 
   assocʳ∘assocˡ : assocʳ {A}{B}{C} ∘ assocˡ {A}{B}{C} ≈ id
