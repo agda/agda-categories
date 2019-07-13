@@ -1,5 +1,6 @@
 import Categories.Adjoint
 import Categories.Category
+import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
 import Categories.Category.CartesianClosed
 import Categories.Category.Cocartesian
@@ -37,6 +38,7 @@ import Categories.Functor.Properties
 import Categories.Kan
 import Categories.Monad
 import Categories.Morphism
+import Categories.Morphism.Duality
 import Categories.Morphism.IsoEquiv
 import Categories.Morphism.Isomorphism
 import Categories.Morphism.Properties
