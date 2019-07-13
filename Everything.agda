@@ -2,6 +2,7 @@ import Categories.Adjoint
 import Categories.Category
 import Categories.Category.Cartesian
 import Categories.Category.CartesianClosed
+import Categories.Category.Cocartesian
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Functors
 import Categories.Category.Core

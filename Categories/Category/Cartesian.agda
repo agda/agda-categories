@@ -39,6 +39,8 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   field
     product : ∀ {A B} → Product A B
 
+  module product {A} {B} = Product (product {A} {B})
+
   _×_ : Obj → Obj → Obj
   A × B = Product.A×B (product {A} {B})
 
@@ -48,27 +50,14 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   ×-assoc : X × (Y × Z) ≅ X × Y × Z
   ×-assoc = Associative product product product product
 
-  -- Convenience!
-  π₁ : A × B ⇒ A
-  π₁ = Product.π₁ product
+  open product hiding (⟨_,_⟩; ∘-distribʳ-⟨⟩) public
 
-  π₂ : A × B ⇒ B
-  π₂ = Product.π₂ product
-
+  -- define it like this instead of reexporting to redefine fixity
   ⟨_,_⟩ : X ⇒ A → X ⇒ B → X ⇒ A × B
   ⟨_,_⟩ = Product.⟨_,_⟩ product
 
   _⁂_ : A ⇒ B → C ⇒ D → A × C ⇒ B × D
   f ⁂ g = [ product ⇒ product ] f × g
-
-  project₁ : π₁ ∘ ⟨ f , g ⟩ ≈ f
-  project₁ = Product.project₁ product
-
-  project₂ : π₂ ∘ ⟨ f , g ⟩ ≈ g
-  project₂ = Product.project₂ product
-
-  unique :  π₁ ∘ h ≈ f → π₂ ∘ h ≈ g → ⟨ f , g ⟩ ≈ h
-  unique = Product.unique product
 
   assocˡ : A × B × C ⇒ A × (B × C)
   assocˡ = _≅_.to ×-assoc
@@ -81,16 +70,7 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
 
   assocˡ∘assocʳ : assocˡ {A}{B}{C} ∘ assocʳ {A}{B}{C} ≈ id
   assocˡ∘assocʳ = Iso.isoˡ (_≅_.iso ×-assoc)
-
-  g-η : ⟨ π₁ ∘ f , π₂ ∘ f ⟩ ≈ f
-  g-η = Product.g-η product
-
-  η : ⟨ π₁ , π₂ ⟩ ≈ id {A × B}
-  η = Product.η product
-
-  ⟨⟩-cong₂ : f ≈ f′ → g ≈ g′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g′ ⟩
-  ⟨⟩-cong₂ = Product.⟨⟩-cong₂ product
-
+  
   ⟨⟩-congʳ : f ≈ f′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g ⟩
   ⟨⟩-congʳ pf = ⟨⟩-cong₂ pf refl
   
@@ -399,10 +379,7 @@ record Cartesian : Set (levelOfTerm 𝒞) where
         assocʳ ∘ ⟨ π₂ ∘ π₂ , ⟨ π₁ , π₁ ∘ π₂ ⟩ ⟩                   ≈˘⟨ refl ⟩∘⟨ swap∘⟨⟩ ⟩
         assocʳ ∘ swap ∘ assocʳ                                    ∎
       }
-    ; commutative = begin
-      swap ∘ swap ≈⟨ swap∘⟨⟩ ⟩
-      ⟨ π₁ , π₂ ⟩ ≈⟨ η ⟩
-      id          ∎
+    ; commutative = swap∘swap
     }
     
   module symmetric = Symmetric symmetric
