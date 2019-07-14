@@ -32,8 +32,8 @@ private
 
 record BinaryProducts : Set (levelOfTerm 𝒞) where
 
-  infixl 7 _×_
-  infixl 8 _⁂_
+  infixr 7 _×_
+  infixr 8 _⁂_
   infix 11 ⟨_,_⟩
 
   field
@@ -47,7 +47,7 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   ×-comm : A × B ≅ B × A
   ×-comm = Commutative product product
 
-  ×-assoc : X × (Y × Z) ≅ X × Y × Z
+  ×-assoc : X × Y × Z ≅ (X × Y) × Z
   ×-assoc = Associative product product product product
 
   open product hiding (⟨_,_⟩; ∘-distribʳ-⟨⟩) public
@@ -59,10 +59,10 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   _⁂_ : A ⇒ B → C ⇒ D → A × C ⇒ B × D
   f ⁂ g = [ product ⇒ product ] f × g
 
-  assocˡ : A × B × C ⇒ A × (B × C)
+  assocˡ : (A × B) × C ⇒ A × B × C
   assocˡ = _≅_.to ×-assoc
 
-  assocʳ : A × (B × C) ⇒ A × B × C
+  assocʳ : A × B × C ⇒ (A × B) × C
   assocʳ = _≅_.from ×-assoc
 
   assocʳ∘assocˡ : assocʳ {A}{B}{C} ∘ assocˡ {A}{B}{C} ≈ id

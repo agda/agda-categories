@@ -36,8 +36,8 @@ open import Categories.Functor.Bifunctor
 
 record BinaryCoproducts : Set (levelOfTerm 𝒞) where
 
-  infixl 5 _+_
-  infixl 7 _+₁_
+  infixr 6 _+_
+  infixr 7 _+₁_
 
   field
     coproduct : ∀ {A B} → Coproduct A B
@@ -63,7 +63,7 @@ record BinaryCoproducts : Set (levelOfTerm 𝒞) where
   +-comm : A + B ≅ B + A
   +-comm = op-≅⇒≅ (op-binaryProducts.×-comm)
 
-  +-assoc : A + (B + C) ≅ A + B + C
+  +-assoc : A + B + C ≅ (A + B) + C
   +-assoc = op-≅⇒≅ (op-binaryProducts.×-assoc)
 
   _+₁_ : A ⇒ B → C ⇒ D → A + C ⇒ B + D
