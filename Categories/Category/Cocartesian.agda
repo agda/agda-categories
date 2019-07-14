@@ -193,27 +193,10 @@ record Cocartesian : Set (levelOfTerm 𝒞) where
           { η       = λ _ → +-swap
           ; commute = λ _ → ⟺ +₁∘+-swap
           }
-        ; iso = λ _ → record -- I don't understand why I can't use op-Iso⇒Iso here
-          { isoˡ = +-swap∘swap
-          ; isoʳ = +-swap∘swap
-          }
+        ; iso = λ _ → iso +-comm
         }
-      ; hexagon₁ = λ {X Y Z} →
-                     Iso-≈ braided.hexagon₁
-                           (Iso-∘ ([ Y +- ]-resp-Iso (iso +-comm))
-                           (Iso-∘ (iso +-assoc)
-                                  ([ -+ Z ]-resp-Iso (iso +-comm))))
-                           (Iso-∘ (iso +-assoc)
-                           (Iso-∘ (iso +-comm)
-                                  (iso +-assoc)))
-      ; hexagon₂ = λ {X Y Z} →
-                     Iso-≈ braided.hexagon₂
-                           (Iso-∘ ([ -+ Y ]-resp-Iso (iso +-comm))
-                           (Iso-∘ (Iso-swap (iso +-assoc))
-                                  ([ X +- ]-resp-Iso (iso +-comm))))
-                           (Iso-∘ (Iso-swap (iso +-assoc))
-                           (Iso-∘ (iso +-comm)
-                                  (Iso-swap (iso +-assoc))))
+      ; hexagon₁ = ⟺ assoc ○ braided.hexagon₂ ○ assoc
+      ; hexagon₂ = ⟺ assoc ○ braided.hexagon₁ ○ assoc
       }
     ; commutative = commutative
     }
