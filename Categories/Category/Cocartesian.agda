@@ -28,7 +28,7 @@ open import Categories.Category.Cartesian 𝒞.op
 open import Categories.Morphism 𝒞
 open import Categories.Morphism.Properties 𝒞
 open import Categories.Morphism.Duality 𝒞
-open import Categories.Square 𝒞
+open import Categories.Morphism.Reasoning 𝒞
 
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties

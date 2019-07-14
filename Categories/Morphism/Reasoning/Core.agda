@@ -10,7 +10,7 @@ open import Categories.Category
   IntroElim : introduce/eliminate an equivalent-to-id arrow
   Extend : 'extends' a commutative square with an equality on left/right/both
 -}
-module Categories.Square.Core {o ℓ e} (C : Category o ℓ e) where
+module Categories.Morphism.Reasoning.Core {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
 open import Function renaming (id to idᶠ; _∘_ to _∙_)

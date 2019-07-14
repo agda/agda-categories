@@ -16,7 +16,7 @@ open import Categories.Object.Product 𝒞
   hiding (repack≡id; repack∘; repack-cancel; up-to-iso; transport-by-iso)
 open import Categories.Object.Exponential 𝒞 hiding (repack)
 open import Categories.Morphism 𝒞
-open import Categories.Square 𝒞
+open import Categories.Morphism.Reasoning 𝒞
 
 open HomReasoning
 

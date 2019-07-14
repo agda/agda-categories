@@ -17,7 +17,7 @@ open HomReasoning
 open import Categories.Object.Terminal 𝒞
 open import Categories.Object.Product 𝒞
 open import Categories.Morphism 𝒞
-open import Categories.Square 𝒞
+open import Categories.Morphism.Reasoning 𝒞
 open import Categories.Category.Monoidal 𝒞
 import Categories.Category.Monoidal.Symmetric as Sym
 

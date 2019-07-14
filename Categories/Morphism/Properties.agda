@@ -10,7 +10,7 @@ open HomReasoning
 
 import Categories.Morphism as M
 open M 𝒞
-open import Categories.Square 𝒞
+open import Categories.Morphism.Reasoning 𝒞
 
 private
   variable

@@ -11,7 +11,7 @@ open Category 𝒞
 open import Level
 open import Function using (_$_)
 
-open import Categories.Square 𝒞
+open import Categories.Morphism.Reasoning 𝒞
 open import Categories.Object.Product 𝒞
   hiding (repack; repack≡id; repack∘; repack-cancel; up-to-iso; transport-by-iso)
 open import Categories.Morphism 𝒞

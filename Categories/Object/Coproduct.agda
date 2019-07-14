@@ -7,7 +7,7 @@ open import Level
 
 open Category 𝒞
 
-open import Categories.Square 𝒞
+open import Categories.Morphism.Reasoning 𝒞
 open import Categories.Morphism 𝒞
 
 open HomReasoning

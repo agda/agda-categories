@@ -16,7 +16,7 @@ open import Function using (flip)
 open import Relation.Binary hiding (_⇒_)
 open import Relation.Binary.Construct.Closure.Transitive
 
-open import Categories.Square.Core 𝒞
+open import Categories.Morphism.Reasoning.Core 𝒞
 
 open Category 𝒞
 

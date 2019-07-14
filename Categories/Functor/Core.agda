@@ -11,7 +11,6 @@ open import Relation.Binary hiding (_⇒_)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
 import Categories.Morphism as M
-import Categories.Square as Square
 
 private
   variable

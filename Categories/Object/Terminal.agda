@@ -12,7 +12,7 @@ open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 open import Categories.Morphism C
 open import Categories.Morphism.IsoEquiv C using (_≃_)
-open import Categories.Square C
+open import Categories.Morphism.Reasoning C
 
 open Category C
 open HomReasoning

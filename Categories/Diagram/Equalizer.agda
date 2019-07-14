@@ -11,7 +11,7 @@ open import Level
 open import Data.Product as Σ
 open import Function using (_$_)
 open import Categories.Morphism C
-open import Categories.Square C
+open import Categories.Morphism.Reasoning C
 
 private
   variable

@@ -42,6 +42,9 @@ import Categories.Morphism.Duality
 import Categories.Morphism.IsoEquiv
 import Categories.Morphism.Isomorphism
 import Categories.Morphism.Properties
+import Categories.Morphism.Reasoning
+import Categories.Morphism.Reasoning.Core
+import Categories.Morphism.Reasoning.Iso
 import Categories.NaturalTransformation
 import Categories.NaturalTransformation.Core
 import Categories.NaturalTransformation.NaturalIsomorphism
@@ -53,7 +56,4 @@ import Categories.Object.Product
 import Categories.Object.Product.Core
 import Categories.Object.Product.Morphisms
 import Categories.Object.Terminal
-import Categories.Square
-import Categories.Square.Core
-import Categories.Square.Iso
 import Categories.Utils.Product

@@ -11,7 +11,7 @@ open import Relation.Binary using (Rel)
 
 import Categories.Morphism as M
 open M C
-open import Categories.Square C
+open import Categories.Morphism.Reasoning C
 
 open Category C hiding (dom; cod)
 open HomReasoning

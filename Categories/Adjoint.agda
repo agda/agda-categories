@@ -20,7 +20,7 @@ open import Categories.Functor.Hom using (Hom[_][-,-])
 open import Categories.NaturalTransformation using (NaturalTransformation; _≃_) renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (NaturalIsomorphism; unitorˡ; unitorʳ)
-import Categories.Square as Square
+import Categories.Morphism.Reasoning as Mr
 
 private
   variable
@@ -64,7 +64,7 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm C ⊔ leve
     f D.∘ D.id                                       ≈⟨ D.identityʳ ⟩
     f                                                ∎
     where open D.HomReasoning
-          open Square D
+          open Mr D
 
   LRadjunct≈id : ∀ {f : A C.⇒ R.F₀ B} → Ladjunct (Radjunct f) C.≈ f
   LRadjunct≈id {f = f} = begin
@@ -74,7 +74,7 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm C ⊔ leve
     C.id C.∘ f                                         ≈⟨ C.identityˡ ⟩
     f                                                  ∎
     where open C.HomReasoning
-          open Square C
+          open Mr C
 
   Hom[L-,-] : Bifunctor C.op D (Setoids _ _)
   Hom[L-,-] = Hom[ D ][-,-] ∘F (L.op ⁂ idF)
