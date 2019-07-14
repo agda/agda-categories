@@ -36,6 +36,7 @@ import Categories.Functor.Instance.Constant
 import Categories.Functor.Instance.Discrete
 import Categories.Functor.Power
 import Categories.Functor.Presheaf
+import Categories.Functor.Profunctor
 import Categories.Functor.Properties
 import Categories.Kan
 import Categories.Monad
