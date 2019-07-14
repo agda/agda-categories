@@ -6,7 +6,7 @@ module Categories.Category.CartesianClosed {o ℓ e} (𝒞 : Category o ℓ e) w
 open Category 𝒞
 
 open import Level
-open import Function using (_$_)
+open import Function using (_$_; flip)
 open import Data.Product using (Σ; _,_; uncurry)
 
 open import Categories.Functor renaming (id to idF)
@@ -30,6 +30,8 @@ private
 --   is a category with all products and exponentials
 record CartesianClosed : Set (levelOfTerm 𝒞) where
   infixr 9 _^_
+  -- an alternative notation for exponential, which emphasizes its internal hom natural
+  infixr 5 _⇨_
   
   field
     cartesian : Cartesian
@@ -39,6 +41,9 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
 
   _^_ : Obj → Obj → Obj
   B ^ A = exp.B^A {A} {B}
+
+  _⇨_ : Obj → Obj → Obj
+  _⇨_ = flip _^_
 
   module cartesian = Cartesian cartesian
 
@@ -163,12 +168,13 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
             ⟨ id , ! ⟩ ∘ (eval′ ∘ (id ⁂ id))                 ≈⟨ refl⟩∘⟨ elimʳ (id×id product) ⟩
             ⟨ id , ! ⟩ ∘ eval′                               ∎
 
-  -^- : Bifunctor 𝒞.op 𝒞 𝒞
-  -^- = record
-    { F₀           = λ where
-      (A , B) → B ^ A
+  -- we use -⇨- to represent the bifunctor.
+  -- -^- would generate a bifunctor of type Bifunctor 𝒞 𝒞.op 𝒞 which is not very typical.
+  -⇨- : Bifunctor 𝒞.op 𝒞 𝒞
+  -⇨- = record
+    { F₀           = uncurry _⇨_
     ; F₁           = λ where
-      (f , g) → λg (g ∘ eval′ ∘ second f)
+      (f , g) → λg (g ∘ eval′ ∘ second f) 
     ; identity     = λ-cong (identityˡ ○ (elimʳ (id×id product))) ○ η-id′ 
     ; homomorphism = λ-unique₂′ helper
     ; F-resp-≈     = λ where
@@ -188,8 +194,8 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
             eval′ ∘ first (λg (g ∘ eval′ ∘ second i)) ∘ first (λg (f ∘ eval′ ∘ second h)) ≈⟨ refl⟩∘⟨ first∘first ⟩
             eval′ ∘ first (λg (g ∘ eval′ ∘ second i) ∘ λg (f ∘ eval′ ∘ second h))         ∎
 
-  _^- : Obj → Endofunctor 𝒞
-  _^- = appˡ -^-
+  _⇨- : Obj → Endofunctor 𝒞
+  _⇨- = appˡ -⇨-
 
-  -^_ : Obj → Functor 𝒞.op 𝒞
-  -^_ = appʳ -^-
+  -⇨_ : Obj → Functor 𝒞.op 𝒞
+  -⇨_ = appʳ -⇨-
