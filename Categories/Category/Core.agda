@@ -4,7 +4,7 @@ module Categories.Category.Core where
 open import Level
 open import Function using (flip)
 
-open import Relation.Binary renaming (_⇒_ to _⊆_)
+open import Relation.Binary hiding (_⇒_)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
 -- Basic definition of a |Category| with a Hom setoid.
