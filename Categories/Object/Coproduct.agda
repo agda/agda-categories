@@ -7,7 +7,7 @@ open import Level
 
 open Category 𝒞
 
-open import Categories.Square 𝒞
+open import Categories.Morphism.Reasoning 𝒞
 open import Categories.Morphism 𝒞
 
 open HomReasoning
@@ -18,6 +18,8 @@ private
     f g h : A ⇒ B
 
 record Coproduct (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
+  infix 10 [_,_]
+  
   field
     A+B   : Obj
     i₁    : A ⇒ A+B

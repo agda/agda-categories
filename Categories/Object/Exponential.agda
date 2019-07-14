@@ -11,7 +11,7 @@ open Category 𝒞
 open import Level
 open import Function using (_$_)
 
-open import Categories.Square 𝒞
+open import Categories.Morphism.Reasoning 𝒞
 open import Categories.Object.Product 𝒞
   hiding (repack; repack≡id; repack∘; repack-cancel; up-to-iso; transport-by-iso)
 open import Categories.Morphism 𝒞
@@ -75,6 +75,17 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   → {X : Obj} → (X×A : Product X A) → (Product.A×B X×A ⇒ B) → (X ⇒ Exponential.B^A e₁)
 [ e₁ ]λ = Exponential.λg e₁
 
+{-
+   D×C --id × f--> D×A --g--> B
+
+   D --λ (g ∘ id × f)--> B^C
+    \                   ^
+     \                 /
+     λ g       λ (e ∘ id × f)
+       \        /
+        v      /
+          B^A
+-}
 λ-distrib : ∀ (e₁ : Exponential C B) (e₂ : Exponential A B)
               (p₃ : Product D C) (p₄ : Product D A) (p₅ : Product (Exponential.B^A e₂) C)
               {f} {g : Product.A×B p₄ ⇒ B} →

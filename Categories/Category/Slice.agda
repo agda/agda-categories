@@ -12,7 +12,7 @@ open import Level
 open import Function using (_$_)
 open import Relation.Binary using (Rel)
 
-open import Categories.Square 𝒞
+open import Categories.Morphism.Reasoning 𝒞
 
 record SliceObj (X : Obj) : Set (o ⊔ ℓ) where
   constructor sliceobj

@@ -3,18 +3,18 @@ open import Categories.Category
 
 {-
   Various combinators for working with Isomorphisms in the
-  context of morphism equalities (not always Squares...)
+  context of morphism equalities
   both for Category (Switch) and Groupoid (GroupoidR)
 -}
 
-module Categories.Square.Iso {o ℓ e} (C : Category o ℓ e) where
+module Categories.Morphism.Reasoning.Iso {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
 open import Function renaming (id to idᶠ; _∘_ to _∙_)
 
 open import Categories.Category.Groupoid
 open import Categories.Morphism C
-open import Categories.Square.Core C
+open import Categories.Morphism.Reasoning.Core C
 
 open import Relation.Binary hiding (_⇒_)
 

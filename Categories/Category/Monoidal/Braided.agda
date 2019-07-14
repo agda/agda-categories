@@ -5,6 +5,8 @@ open import Categories.Category.Monoidal
 
 module Categories.Category.Monoidal.Braided {o ℓ e} {C : Category o ℓ e} (M : Monoidal C) where
 
+open import Level
+
 open import Data.Product using (Σ; _,_)
 
 open import Categories.Functor.Bifunctor
@@ -20,7 +22,7 @@ private
 -- braided monoidal category
 -- it has a braiding natural isomorphism has two hexagon identities.
 -- these two identities are directly expressed in the morphism level.
-record Braided : Set (levelOf C) where
+record Braided : Set (levelOfTerm C) where
   open Monoidal M public
 
   field

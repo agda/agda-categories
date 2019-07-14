@@ -6,7 +6,7 @@ open import Categories.Category
 -- 1. BinaryProducts -- for when a Category has all Binary Products
 -- 2. Catesian -- a Catesian category is a category with all products
 
-module Categories.Category.Catesian {o ℓ e} (𝒞 : Category o ℓ e) where
+module Categories.Category.Cartesian {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
 open import Data.Product using (Σ; _,_; uncurry)
@@ -17,7 +17,7 @@ open HomReasoning
 open import Categories.Object.Terminal 𝒞
 open import Categories.Object.Product 𝒞
 open import Categories.Morphism 𝒞
-open import Categories.Square 𝒞
+open import Categories.Morphism.Reasoning 𝒞
 open import Categories.Category.Monoidal 𝒞
 import Categories.Category.Monoidal.Symmetric as Sym
 
@@ -30,14 +30,16 @@ private
     A B C D X Y Z : Obj
     f f′ g g′ h i : A ⇒ B
 
-record BinaryProducts : Set (levelOf 𝒞) where
+record BinaryProducts : Set (levelOfTerm 𝒞) where
 
-  infixr 5 _×_
-  infix 8 _⁂_
-  infix 10 ⟨_,_⟩
+  infixl 7 _×_
+  infixl 8 _⁂_
+  infix 11 ⟨_,_⟩
 
   field
     product : ∀ {A B} → Product A B
+
+  module product {A} {B} = Product (product {A} {B})
 
   _×_ : Obj → Obj → Obj
   A × B = Product.A×B (product {A} {B})
@@ -45,35 +47,22 @@ record BinaryProducts : Set (levelOf 𝒞) where
   ×-comm : A × B ≅ B × A
   ×-comm = Commutative product product
 
-  ×-assoc : X × Y × Z ≅ (X × Y) × Z
+  ×-assoc : X × (Y × Z) ≅ X × Y × Z
   ×-assoc = Associative product product product product
 
-  -- Convenience!
-  π₁ : A × B ⇒ A
-  π₁ = Product.π₁ product
+  open product hiding (⟨_,_⟩; ∘-distribʳ-⟨⟩) public
 
-  π₂ : A × B ⇒ B
-  π₂ = Product.π₂ product
-
+  -- define it like this instead of reexporting to redefine fixity
   ⟨_,_⟩ : X ⇒ A → X ⇒ B → X ⇒ A × B
   ⟨_,_⟩ = Product.⟨_,_⟩ product
 
   _⁂_ : A ⇒ B → C ⇒ D → A × C ⇒ B × D
   f ⁂ g = [ product ⇒ product ] f × g
 
-  project₁ : π₁ ∘ ⟨ f , g ⟩ ≈ f
-  project₁ = Product.project₁ product
-
-  project₂ : π₂ ∘ ⟨ f , g ⟩ ≈ g
-  project₂ = Product.project₂ product
-
-  unique :  π₁ ∘ h ≈ f → π₂ ∘ h ≈ g → ⟨ f , g ⟩ ≈ h
-  unique = Product.unique product
-
-  assocˡ : (A × B) × C ⇒ A × B × C
+  assocˡ : A × B × C ⇒ A × (B × C)
   assocˡ = _≅_.to ×-assoc
 
-  assocʳ : A × B × C ⇒ (A × B) × C
+  assocʳ : A × (B × C) ⇒ A × B × C
   assocʳ = _≅_.from ×-assoc
 
   assocʳ∘assocˡ : assocʳ {A}{B}{C} ∘ assocˡ {A}{B}{C} ≈ id
@@ -81,16 +70,7 @@ record BinaryProducts : Set (levelOf 𝒞) where
 
   assocˡ∘assocʳ : assocˡ {A}{B}{C} ∘ assocʳ {A}{B}{C} ≈ id
   assocˡ∘assocʳ = Iso.isoˡ (_≅_.iso ×-assoc)
-
-  g-η : ⟨ π₁ ∘ f , π₂ ∘ f ⟩ ≈ f
-  g-η = Product.g-η product
-
-  η : ⟨ π₁ , π₂ ⟩ ≈ id {A × B}
-  η = Product.η product
-
-  ⟨⟩-cong₂ : f ≈ f′ → g ≈ g′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g′ ⟩
-  ⟨⟩-cong₂ = Product.⟨⟩-cong₂ product
-
+  
   ⟨⟩-congʳ : f ≈ f′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g ⟩
   ⟨⟩-congʳ pf = ⟨⟩-cong₂ pf refl
   
@@ -131,7 +111,7 @@ record BinaryProducts : Set (levelOf 𝒞) where
   ⁂∘⁂ = [ product ⇒ product ⇒ product ]×∘×
 
   ⟨⟩∘ : ⟨ f , g ⟩ ∘ h ≈ ⟨ f ∘ h , g ∘ h ⟩
-  ⟨⟩∘ = sym (unique (trans (sym assoc) (∘-resp-≈ˡ project₁)) (trans (sym assoc) (∘-resp-≈ˡ project₂)))
+  ⟨⟩∘ = [ product ]⟨⟩∘
 
   first∘first : ∀ {C} → first {C = C} f ∘ first g ≈ first (f ∘ g)
   first∘first = [ product ⇒ product ⇒ product ]×id∘×id
@@ -142,6 +122,18 @@ record BinaryProducts : Set (levelOf 𝒞) where
   first↔second : first f ∘ second g ≈ second g ∘ first f
   first↔second = [ product ⇒ product , product ⇒ product ]first↔second
 
+  firstid : ∀ {f : A ⇒ A} (g : A ⇒ C) → first {C = C} f ≈ id → f ≈ id
+  firstid {f = f} g eq = begin
+    f                    ≈˘⟨ elimʳ project₁ ⟩
+    f ∘ π₁ ∘ ⟨ id , g ⟩  ≈⟨ pullˡ fπ₁≈π₁ ⟩
+    π₁ ∘ ⟨ id , g ⟩      ≈⟨ project₁ ⟩
+    id                   ∎
+    where fπ₁≈π₁ = begin
+            f ∘ π₁       ≈˘⟨ project₁ ⟩
+            π₁ ∘ first f ≈⟨ refl⟩∘⟨ eq ⟩
+            π₁ ∘ id      ≈⟨ identityʳ ⟩
+            π₁           ∎
+  
   swap∘⟨⟩ : swap ∘ ⟨ f , g ⟩ ≈ ⟨ g , f ⟩
   swap∘⟨⟩ {f = f} {g = g} = begin
     ⟨ π₂ , π₁ ⟩ ∘ ⟨ f , g ⟩             ≈⟨ ⟨⟩∘ ⟩
@@ -225,8 +217,8 @@ record BinaryProducts : Set (levelOf 𝒞) where
   _×- : Obj → Functor 𝒞 𝒞
   _×- = appˡ -×-
 
--- Catesian monoidal category
-record Catesian : Set (levelOf 𝒞) where
+-- Cartesian monoidal category
+record Cartesian : Set (levelOfTerm 𝒞) where
   field
     terminal : Terminal
     products : BinaryProducts
@@ -387,10 +379,7 @@ record Catesian : Set (levelOf 𝒞) where
         assocʳ ∘ ⟨ π₂ ∘ π₂ , ⟨ π₁ , π₁ ∘ π₂ ⟩ ⟩                   ≈˘⟨ refl ⟩∘⟨ swap∘⟨⟩ ⟩
         assocʳ ∘ swap ∘ assocʳ                                    ∎
       }
-    ; commutative = begin
-      swap ∘ swap ≈⟨ swap∘⟨⟩ ⟩
-      ⟨ π₁ , π₂ ⟩ ≈⟨ η ⟩
-      id          ∎
+    ; commutative = swap∘swap
     }
     
   module symmetric = Symmetric symmetric

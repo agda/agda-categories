@@ -27,7 +27,7 @@ open Mor C
 import Categories.Morphism.IsoEquiv as IsoEquiv
 open IsoEquiv C
 
-open import Categories.Square C
+open import Categories.Morphism.Reasoning C
 
 record Apex (N : Obj) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′) where
   field

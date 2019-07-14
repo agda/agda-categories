@@ -6,8 +6,8 @@ module Categories.Object.Product.Core {o ℓ e} (𝒞 : Category o ℓ e) where
 open import Level
 open import Function using (flip; _$_)
 
-open import Categories.Square 𝒞
 open import Categories.Morphism 𝒞
+open import Categories.Morphism.Reasoning 𝒞
 
 open Category 𝒞
 open HomReasoning
