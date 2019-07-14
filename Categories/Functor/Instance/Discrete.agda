@@ -1,6 +1,9 @@
 {-# OPTIONS --without-K --safe #-}
 module Categories.Functor.Instance.Discrete where
 
+-- Proof relevant Discrete Functor from Sets to Cats
+-- The "proof relevant" really matters here: ≈ for D.Discrete is _≡_
+-- and not just ⊤.
 open import Function renaming (id to idf)
 
 open import Categories.Category using (Category; _[_,_]; _[_≈_])
