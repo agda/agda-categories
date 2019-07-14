@@ -12,13 +12,13 @@ open import Categories.Category
 open import Categories.Functor hiding (id)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Category.Instance.Setoids
-import Categories.Morphism.Reasoning as Mr
+import Categories.Morphism.Reasoning as MR
 
 open import Relation.Binary using (Setoid)
 
 module Hom {o ℓ e} (C : Category o ℓ e) where
   open Category C
-  open Mr C
+  open MR C
 
   Hom[-,-] : Bifunctor (Category.op C) C (Setoids ℓ e)
   Hom[-,-] = record

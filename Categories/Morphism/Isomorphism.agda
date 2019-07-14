@@ -25,7 +25,7 @@ open Morphism 𝒞 renaming (TransitiveClosure to ⇒TransitiveClosure)
 open Morphismₚ 𝒞
 open IsoEquiv 𝒞
 
-import Categories.Morphism.Reasoning as Mr
+import Categories.Morphism.Reasoning as MR
 
 open Category 𝒞
 
@@ -141,7 +141,7 @@ module _ where
     ∘ᵢ-tc g⁺ ∘ᵢ (∘ᵢ-tc f⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺)) ≈⟨ pullˡ eq ⟩
     ∘ᵢ-tc h⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺)               ∎
     where open Groupoid.HomReasoning Isos-groupoid
-          open Mr Isos
+          open MR Isos
           module I {A B} (f⁺ : A [ _≅_ ]⁺ B) = Morphism.Iso (Groupoid.iso TransitiveClosure-groupoid {f = f⁺})
 
   lift : ∀ {f⁺ : A [ _⇒_ ]⁺ B} → IsoPlus f⁺ → A [ _≅_ ]⁺ B
@@ -208,10 +208,10 @@ module _ where
   lift-pentagon′ : from f ∘ from g ∘ from h ≈ from i ∘ from j → f ∘ᵢ g ∘ᵢ h ≃ i ∘ᵢ j
   lift-pentagon′ eq = lift-pentagon eq _ _ _ _ _
 
-  open Mr Isos
+  open MR Isos
   open Groupoid Isos-groupoid
   open Groupoid.HomReasoning Isos-groupoid
-  open Mr.GroupoidR _ Isos-groupoid
+  open MR.GroupoidR _ Isos-groupoid
 
   squares×≃⇒≃ : CommutativeIso f g h i → CommutativeIso f′ g h i′ → i ≃ i′ → f ≃ f′
   squares×≃⇒≃ {g = g} sq₁ sq₂ eq =

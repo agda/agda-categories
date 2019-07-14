@@ -10,7 +10,7 @@ open import Categories.Category
 open import Categories.Functor
 open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation renaming (id to idN)
-import Categories.Morphism.Reasoning as Mr
+import Categories.Morphism.Reasoning as MR
 
 -- The reason the proofs below are so easy is that _∘ᵥ_ 'computes' all the way down into
 -- expressions in D, from which the properties follow.
@@ -64,5 +64,5 @@ eval {C = C} {D = D} = record
   where module C = Category C
         module D = Category D
         open D
-        open Mr D
+        open MR D
         open HomReasoning

@@ -6,6 +6,7 @@ import Categories.Category.CartesianClosed
 import Categories.Category.Cocartesian
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Functors
+import Categories.Category.Construction.Presheaves
 import Categories.Category.Core
 import Categories.Category.Discrete
 import Categories.Category.Groupoid

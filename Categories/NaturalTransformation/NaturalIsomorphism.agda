@@ -13,7 +13,7 @@ import Categories.NaturalTransformation as NT
 open NT hiding (id)
 import Categories.Morphism as Morphism
 import Categories.Morphism.Properties as Morphismₚ
-import Categories.Morphism.Reasoning as Mr
+import Categories.Morphism.Reasoning as MR
 open import Categories.Functor.Properties
 
 open import Relation.Binary

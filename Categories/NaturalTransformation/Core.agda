@@ -8,7 +8,7 @@ open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 open import Categories.Category
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
-import Categories.Morphism.Reasoning as Mr
+import Categories.Morphism.Reasoning as MR
 
 private
   variable
@@ -56,7 +56,7 @@ _∘ᵥ_ {C = C} {D = D} {F} {G} {H} X Y = record
   }
   where module X = NaturalTransformation X
         module Y = NaturalTransformation Y
-        open Mr D
+        open MR D
 
 -- "Horizontal composition"
 _∘ₕ_ : ∀ {F G : Functor C D} {H I : Functor D E} →
@@ -69,7 +69,7 @@ _∘ₕ_ {E = E} {F} {I = I} Y X = record
         module X = NaturalTransformation X
         module Y = NaturalTransformation Y
         open Functor I renaming (F₀ to I₀; F₁ to I₁)
-        open Mr E
+        open MR E
 
 _∘ˡ_ : ∀ {G H : Functor C D} (F : Functor D E) → NaturalTransformation G H → NaturalTransformation (F ∘F G) (F ∘F H)
 _∘ˡ_ F α = record

@@ -19,7 +19,7 @@ open import Categories.Category.Groupoid
 open import Categories.Morphism C
 open import Categories.Morphism.IsoEquiv C
 open import Categories.Morphism.Isomorphism C
-import Categories.Morphism.Reasoning as Mr
+import Categories.Morphism.Reasoning as MR
 
 private
   module C = Category C
@@ -81,7 +81,7 @@ module Kelly's  {X Y : Obj} where
   perimeter = ⟺ (glue◃◽′ triangle-iso
                            (sym (lift-square′ (Equiv.trans assoc-commute-from
                                                            (∘-resp-≈ˡ (F-resp-≈ ⊗ (Equiv.refl , identity ⊗)))))))
-    where open Mr Isos
+    where open MR Isos
 
   [uλ]Y : (unit ⊗₀ (unit ⊗₀ X)) ⊗₀ Y ≅ (unit ⊗₀ X) ⊗₀ Y
   [uλ]Y = (≅.refl ⊗ᵢ unitorˡ) ⊗ᵢ ≅.refl
@@ -115,7 +115,7 @@ module Kelly's  {X Y : Obj} where
 
   top-face : uλ ∘ᵢ ua ≃ u[λY]
   top-face = elim-triangleˡ′ (sym perimeter′) (glue◽◃ (sym sq) tri)
-    where open Mr Isos
+    where open MR Isos
 
   coherence-iso₁ : [ (unit ⊗₀ X) ⊗₀ Y ⇒ X ⊗₀ Y ]⟨
                   associator                ⇒⟨ unit ⊗₀ X ⊗₀ Y ⟩
@@ -168,7 +168,7 @@ module Kelly's  {X Y : Obj} where
   perimeter″ = glue▹◽ triangle-iso (sym (lift-square′
       (Equiv.trans (∘-resp-≈ʳ (F-resp-≈ ⊗ (Equiv.sym (identity ⊗) , Equiv.refl)))
                     assoc-commute-from)))
-    where open Mr Isos
+    where open MR Isos
 
   perimeter‴ : [ ((X ⊗₀ Y) ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit  ]⟨
                  associator ⊗ᵢ ≅.refl                           ⇒⟨ (X ⊗₀ (Y ⊗₀ unit)) ⊗₀ unit ⟩
@@ -187,7 +187,7 @@ module Kelly's  {X Y : Obj} where
 
   top-face′ : [Xρ]u ∘ᵢ au ≃ ρu
   top-face′ = cut-squareʳ perimeter‴ (sym (glue◃◽′ tri′ (sym (lift-square′ assoc-commute-from))))
-    where open Mr Isos
+    where open MR Isos
           tri′ : [ X ⊗₀ (Y ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit ]⟨
                  (≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ ≅.refl ⊗ᵢ associator)
                ≈ ≅.refl ⊗ᵢ unitorʳ ⊗ᵢ ≅.refl
