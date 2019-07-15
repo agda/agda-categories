@@ -44,6 +44,7 @@ import Categories.Functor.Power
 import Categories.Functor.Presheaf
 import Categories.Functor.Profunctor
 import Categories.Functor.Properties
+import Categories.Functor.Representable
 import Categories.Kan
 import Categories.Monad
 import Categories.Morphism
