@@ -10,6 +10,6 @@ open import Categories.Category
 open import Categories.Category.Construction.Functors
 open import Categories.Category.Instance.Setoids using (Setoids)
 
-Presheaves : ∀ {o ℓ ℓ′ e e′ : Level} → Category o ℓ e →
-  Category (o ⊔ ℓ ⊔ e ⊔ suc (ℓ′ ⊔ e′)) (o ⊔ ℓ ⊔ e ⊔ suc (ℓ′ ⊔ e′)) (o ⊔ ℓ′ ⊔ e′)
-Presheaves {o} {ℓ} {ℓ′} {e} {e′} C = Functors (Category.op C) (Setoids ℓ′ e′)
+Presheaves : ∀ {o ℓ e o′ ℓ′ : Level} → Category o ℓ e →
+  Category (o ⊔ ℓ ⊔ e ⊔ suc (o′ ⊔ ℓ′)) (o ⊔ ℓ ⊔ e ⊔ suc (o′ ⊔ ℓ′)) (o ⊔ o′ ⊔ ℓ′)
+Presheaves {o} {ℓ} {e} {o′} {ℓ′} C = Functors (Category.op C) (Setoids o′ ℓ′)
