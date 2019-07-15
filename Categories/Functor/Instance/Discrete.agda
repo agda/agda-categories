@@ -1,61 +1,55 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Functor.Instance.Discrete where
+module Categories.Functor.Discrete where
 
--- Proof relevant Discrete Functor from Sets to Cats
--- The "proof relevant" really matters here: ≈ for D.Discrete is _≡_
--- and not just ⊤.
-open import Function renaming (id to idf)
+-- Discrete Functor
+--   from Sets to Cats. This works, unlike in the previous version of the library,
+--   because the equality in Cats is properly NaturalIsomorphism instead of something stricter,
+--   no need for that pesky Heterogeneous anything.
 
-open import Categories.Category using (Category; _[_,_]; _[_≈_])
-open import Categories.Functor using (Functor) renaming (id to idF)
-open import Categories.NaturalTransformation.NaturalIsomorphism
-open import Categories.Category.Instance.Cats
+open import Categories.Category
+open import Categories.Functor
 open import Categories.Category.Instance.Sets
-
-import Relation.Binary.PropositionalEquality as ≡
-
+open import Categories.Category.Instance.Cats
+open import Categories.NaturalTransformation.NaturalIsomorphism
 import Categories.Category.Discrete as D
 
-Discrete : ∀ {s} -> Functor (Sets s) (Cats s s s)
-Discrete {s} = record {
-             F₀ = D.Discrete;
-             F₁ = F₁;
-             identity = λ {A} → idN {A};
-             homomorphism = hom;
-             F-resp-≈ = F-resp-≡}
-  where
-    -- missing rearrangement lemma
-    cong-trans-comm : ∀ {ℓ ℓ′} {B : Set ℓ} {C : Set ℓ′} {X Y Z : B} {h : B → C} {eq₁ : X ≡.≡ Y} {eq₂ : Y ≡.≡ Z}
-      → ≡.cong h (≡.trans eq₁ eq₂) ≡.≡ ≡.trans (≡.cong h eq₁) (≡.cong h eq₂)
-    cong-trans-comm {eq₁ = ≡.refl} = ≡.refl
+import Relation.Binary.PropositionalEquality as ≡
+open import Function renaming (id to idf; _∘_ to _●_)
 
-    F₁ : {A B : Category.Obj (Sets s)} → Sets s [ A , B ] →
-                        Cats s s s [ D.Discrete A , D.Discrete B ]
-    F₁ f = record {
-             F₀ = f;
-             F₁ = ≡.cong f;
-             identity = ≡.refl;
-             homomorphism =  λ {_} {_} {_} {eq₁} {eq₂} → cong-trans-comm {h = f} {eq₁ = eq₁} {eq₂ = eq₂} ;
-             F-resp-≈ = λ f≡g → ≡.cong (≡.cong f) f≡g }
-
-    idN : {A : Set s} → NaturalIsomorphism (F₁ idf) idF
-    idN {A} = record
-      { F⇒G = record { η = λ X → ≡.refl ; commute = λ { ≡.refl → ≡.refl} }
-      ; F⇐G = record { η = λ _ → ≡.refl ; commute = λ { ≡.refl → ≡.refl } }
-      ; iso = λ X → record { isoˡ = ≡.refl ; isoʳ = ≡.refl }
-      }
-
-    F-resp-≡ : {A B : Set s} {F G : Sets s [ A , B ]} →
-                  Sets s [ F ≈ G ] → Cats s s s [ F₁ F ≈ F₁ G ]
-    F-resp-≡ F≡G = record
-      { F⇒G = record { η = λ X → F≡G {X} ; commute = λ { ≡.refl → ≡.sym (≡.trans-reflʳ F≡G) } }
-      ; F⇐G = record { η = λ X → ≡.sym (F≡G {X}) ; commute = λ { ≡.refl → ≡.sym (≡.trans-reflʳ _)} }
-      ; iso = λ X → record { isoˡ = ≡.trans-symʳ F≡G ; isoʳ = ≡.trans-symˡ F≡G }
-      }
-    hom : {X Y Z : Set s} {f : X → Y} {g : Y → Z} →
-          NaturalIsomorphism (F₁ (λ x → g (f x))) (F₁ g Categories.Functor.∘F F₁ f)
-    hom {f = f} {g} = record
-      { F⇒G = record { η = λ _ → ≡.refl ; commute = λ { ≡.refl → ≡.refl} }
-      ; F⇐G = record { η = λ _ → ≡.refl ; commute = λ { ≡.refl → ≡.refl} }
-      ; iso = λ X → record { isoˡ = ≡.refl ; isoʳ = ≡.refl }
-      }
+Discrete : ∀ {o} → Functor (Sets o) (Cats o o o)
+Discrete {o} = record
+   { F₀ = D.Discrete
+   ; F₁ = DiscreteFunctor
+   ; identity = DiscreteId
+   ; homomorphism = PointwiseHom
+   ; F-resp-≈ = ExtensionalityNI
+   }
+   where
+     DiscreteFunctor : {A B : Set o} → (A → B) → Cats o o o [ D.Discrete A , D.Discrete B ]
+     DiscreteFunctor f = record
+       { F₀ = f
+       ; F₁ = ≡.cong f
+       ; identity = ≡.refl
+       ; homomorphism = λ { {_} {_} {_} {≡.refl} {≡.refl} → ≡.refl}
+       ; F-resp-≈ = λ g≡h → ≡.cong (≡.cong f) g≡h -- marvel at the weirdness involved
+       }
+     DiscreteId : {A : Set o} → NaturalIsomorphism (DiscreteFunctor {A} idf) id
+     DiscreteId = record
+       { F⇒G = record { η = λ X → ≡.refl ; commute = λ { ≡.refl → ≡.refl} }
+       ; F⇐G = record { η = λ _ → ≡.refl ; commute = λ { ≡.refl → ≡.refl } }
+       ; iso = λ X → record { isoˡ = ≡.refl ; isoʳ = ≡.refl }
+       }
+     PointwiseHom : {X Y Z : Set o} {g : X → Y} {h : Y → Z} →
+       NaturalIsomorphism (DiscreteFunctor (h ● g)) (DiscreteFunctor h ∘F DiscreteFunctor g)
+     PointwiseHom = record
+       { F⇒G = record { η = λ _ → ≡.refl ; commute = λ { ≡.refl → ≡.refl} }
+       ; F⇐G = record { η = λ _ → ≡.refl ; commute = λ { ≡.refl → ≡.refl} }
+       ; iso = λ X → record { isoˡ = ≡.refl ; isoʳ = ≡.refl }
+       }
+     ExtensionalityNI : {A B : Set o} {g h : A → B} →
+      ({x : A} → g x ≡.≡ h x) → NaturalIsomorphism (DiscreteFunctor g) (DiscreteFunctor h)
+     ExtensionalityNI g≡h = record
+       { F⇒G = record { η = λ X → g≡h {X} ; commute = λ { ≡.refl → ≡.sym (≡.trans-reflʳ g≡h)} }
+       ; F⇐G = record { η = λ X → ≡.sym (g≡h {X}) ; commute = λ { ≡.refl → ≡.sym (≡.trans-reflʳ _)} }
+       ; iso = λ X → record { isoˡ = ≡.trans-symʳ g≡h ; isoʳ = ≡.trans-symˡ g≡h }
+       }
