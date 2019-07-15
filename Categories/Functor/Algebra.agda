@@ -27,7 +27,7 @@ module _ {C : Category o ℓ e} where
   iterate : {F : Endofunctor C} → F-Algebra F → F-Algebra F
   iterate {F} F-alg = record { A = Functor.F₀ F $ A F-alg ; α = Functor.F₁ F $ α F-alg }
 
-  record F-Algebra-Morphism {F : Endofunctor C} {X Y : F-Algebra F} : Set (ℓ ⊔ e) where
+  record F-Algebra-Morphism {F : Endofunctor C} (X Y : F-Algebra F) : Set (ℓ ⊔ e) where
     open Category C
     module X = F-Algebra X
     module Y = F-Algebra Y
