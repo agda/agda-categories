@@ -7,7 +7,7 @@ open import Level using (Level; _⊔_; levelOfTerm)
 
 open import Data.Product using (_,_; _×_)
 open import Function using () renaming (_∘_ to _∙_)
-open import Function.Inverse using (Inverse)
+import Function.Inverse as FI
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
 -- be explicit in imports to 'see' where the information comes from
@@ -86,7 +86,7 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm C ⊔ leve
   module Hom[-,R-] = Functor Hom[-,R-]
 
   -- Inverse is more 'categorical' than bijection defined via injection/surjection
-  Hom-inverse : ∀ A B → Inverse (Hom[L-,-].F₀ (A , B)) (Hom[-,R-].F₀ (A , B))
+  Hom-inverse : ∀ A B → FI.Inverse (Hom[L-,-].F₀ (A , B)) (Hom[-,R-].F₀ (A , B))
   Hom-inverse A B = record
     { to = record
       { _⟨$⟩_ = Ladjunct {A} {B}
@@ -102,7 +102,7 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm C ⊔ leve
       }
     }
 
-  module Hom-inverse {A} {B} = Inverse (Hom-inverse A B)
+  module Hom-inverse {A} {B} = FI.Inverse (Hom-inverse A B)
 
   op : Adjoint R.op L.op
   op = record
