@@ -30,6 +30,8 @@ import Categories.Diagram.Duality
 import Categories.Diagram.Equalizer
 import Categories.Diagram.Limit
 import Categories.Diagram.Pullback
+import Categories.Diagram.Pushout
+import Categories.Diagram.Pushout.Properties
 import Categories.Functor
 import Categories.Functor.Algebra
 import Categories.Functor.Bifunctor

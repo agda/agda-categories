@@ -27,7 +27,7 @@ record Pullback (f : X ⇒ Z) (g : Y ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
     p₂  : P ⇒ Y
 
   field
-    commutes  : f ∘ p₁ ≈ g ∘ p₂
+    commute   : f ∘ p₁ ≈ g ∘ p₂
     universal : ∀ {h₁ : A ⇒ X} {h₂ : A ⇒ Y} → f ∘ h₁ ≈ g ∘ h₂ → A ⇒ P
     unique    : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} →
                   p₁ ∘ i ≈ h₁ → p₂ ∘ i ≈ h₂ →
@@ -41,7 +41,7 @@ record Pullback (f : X ⇒ Z) (g : Y ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
   unique′ : (eq eq′ : f ∘ h₁ ≈ g ∘ h₂) → universal eq ≈ universal eq′
   unique′ eq eq′ = unique p₁∘universal≈h₁ p₂∘universal≈h₂
 
-  id-unique : id ≈ universal commutes
+  id-unique : id ≈ universal commute
   id-unique = unique identityʳ identityʳ
 
   unique-diagram : p₁ ∘ h ≈ p₁ ∘ i →
@@ -51,13 +51,13 @@ record Pullback (f : X ⇒ Z) (g : Y ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
     h            ≈⟨ unique eq₁ eq₂ ⟩
     universal eq ≈˘⟨ unique refl refl ⟩
     i            ∎
-    where eq = extendʳ commutes
+    where eq = extendʳ commute
 
 swap : Pullback f g → Pullback g f
 swap p = record
   { p₁              = p₂
   ; p₂              = p₁
-  ; commutes        = ⟺ commutes
+  ; commute        = ⟺ commute
   ; universal       = universal ● ⟺
   ; unique          = flip unique
   ; p₁∘universal≈h₁ = p₂∘universal≈h₂
@@ -69,11 +69,11 @@ glue : (p : Pullback f g) → Pullback h (Pullback.p₁ p) → Pullback (f ∘ h
 glue {h = h} p q = record
   { p₁              = q.p₁
   ; p₂              = p.p₂ ∘ q.p₂
-  ; commutes        = glue-square p.commutes q.commutes
+  ; commute        = glue-square p.commute q.commute
   ; universal       = λ eq → q.universal (⟺ (p.p₁∘universal≈h₁ {eq = ⟺ assoc ○ eq}))
   ; unique          = λ {_ h₁ h₂ i} eq eq′ →
     q.unique eq (p.unique (begin
-      p.p₁ ∘ q.p₂ ∘ i ≈˘⟨ extendʳ q.commutes ⟩
+      p.p₁ ∘ q.p₂ ∘ i ≈˘⟨ extendʳ q.commute ⟩
       h ∘ q.p₁ ∘ i    ≈⟨ refl⟩∘⟨ eq ⟩
       h ∘ h₁          ∎)
                           (⟺ assoc ○ eq′))
@@ -87,10 +87,10 @@ unglue : (p : Pullback f g) → Pullback (f ∘ h) g → Pullback h (Pullback.p�
 unglue {f = f} {g = g} {h = h} p q = record
   { p₁              = q.p₁
   ; p₂              = p₂′
-  ; commutes        = ⟺ p.p₁∘universal≈h₁
+  ; commute        = ⟺ p.p₁∘universal≈h₁
   ; universal       = λ {_ h₁ h₂} eq → q.universal $ begin
     (f ∘ h) ∘ h₁      ≈⟨ pullʳ eq ⟩
-    f ∘ p.p₁ ∘ h₂     ≈⟨ extendʳ p.commutes ⟩
+    f ∘ p.p₁ ∘ h₂     ≈⟨ extendʳ p.commute ⟩
     g ∘ p.p₂ ∘ h₂     ∎
   ; unique          = λ {_ h₁ h₂ i} eq eq′ → q.unique eq $ begin
   q.p₂ ∘ i            ≈⟨ pushˡ (⟺ p.p₂∘universal≈h₂) ⟩
@@ -103,7 +103,7 @@ unglue {f = f} {g = g} {h = h} p q = record
   }
   where module p = Pullback p
         module q = Pullback q
-        p₂′ = p.universal (⟺ assoc ○ q.commutes) -- used twice above
+        p₂′ = p.universal (⟺ assoc ○ q.commute) -- used twice above
 
 Product×Equalizer⇒Pullback :
   (p : Product A B) → Equalizer (f ∘ Product.π₁ p) (g ∘ Product.π₂ p) →
@@ -111,7 +111,7 @@ Product×Equalizer⇒Pullback :
 Product×Equalizer⇒Pullback {f = f} {g = g} p e = record
   { p₁              = π₁ ∘ arr
   ; p₂              = π₂ ∘ arr
-  ; commutes        = ⟺ assoc ○ equality ○ assoc
+  ; commute        = ⟺ assoc ○ equality ○ assoc
   ; universal       = λ {_ h₁ h₂} eq → equalize $ begin
     (f ∘ π₁) ∘ ⟨ h₁ , h₂ ⟩ ≈⟨ pullʳ project₁ ⟩
     f ∘ h₁                ≈⟨ eq ⟩
@@ -132,7 +132,7 @@ Product×Pullback⇒Equalizer {f = f} {g = g} p pu = record
   { arr       = ⟨ p₁ , p₂ ⟩
   ; equality  = begin
     (f ∘ π₁) ∘ ⟨ p₁ , p₂ ⟩ ≈⟨ pullʳ project₁ ⟩
-    f ∘ p₁                 ≈⟨ commutes ⟩
+    f ∘ p₁                 ≈⟨ commute ⟩
     g ∘ p₂                 ≈˘⟨ pullʳ project₂ ⟩
     (g ∘ π₂) ∘ ⟨ p₁ , p₂ ⟩ ∎
   ; equalize  = λ eq → pu.universal (⟺ assoc ○ eq ○ assoc)
@@ -155,9 +155,9 @@ module _ (p : Pullback f g) where
   Pullback-resp-Mono mg h i eq = unique-diagram eq (mg _ _ eq′)
     where eq′ : g ∘ p₂ ∘ h ≈ g ∘ p₂ ∘ i
           eq′ = begin
-            g ∘ p₂ ∘ h ≈⟨ extendʳ (sym commutes) ⟩
+            g ∘ p₂ ∘ h ≈⟨ extendʳ (sym commute) ⟩
             f ∘ p₁ ∘ h ≈⟨ refl⟩∘⟨ eq ⟩
-            f ∘ p₁ ∘ i ≈⟨ extendʳ commutes ⟩
+            f ∘ p₁ ∘ i ≈⟨ extendʳ commute ⟩
             g ∘ p₂ ∘ i ∎
 
   Pullback-resp-Iso : Iso g h → ∃ λ i → Iso p₁ i
@@ -178,7 +178,7 @@ module _ (p : Pullback f g) where
           eq₂ = begin
             p₂ ∘ universal eq ∘ p₁ ≈⟨ extendʳ p₂∘universal≈h₂ ⟩
             h ∘ (f ∘ id) ∘ p₁      ≈⟨ refl ⟩∘⟨ identityʳ ⟩∘⟨ refl ⟩
-            h ∘ f ∘ p₁             ≈⟨ refl ⟩∘⟨ commutes ⟩
+            h ∘ f ∘ p₁             ≈⟨ refl ⟩∘⟨ commute ⟩
             h ∘ g ∘ p₂             ≈⟨ cancelˡ isoˡ ⟩
             p₂                     ≈˘⟨ identityʳ ⟩
             p₂ ∘ id                ∎
