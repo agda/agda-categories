@@ -67,3 +67,4 @@ import Categories.Object.Product.Core
 import Categories.Object.Product.Morphisms
 import Categories.Object.Terminal
 import Categories.Utils.Product
+import Categories.Yoneda
