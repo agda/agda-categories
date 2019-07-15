@@ -114,8 +114,8 @@ isEquivalence C D = record
   ; trans = trans
   }
 
-setoid : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Setoid _ _
-setoid C D = record
+Functor-setoid : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Setoid _ _
+Functor-setoid C D = record
   { Carrier       = Functor C D
   ; _≈_           = NaturalIsomorphism
   ; isEquivalence = isEquivalence C D
