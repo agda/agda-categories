@@ -11,6 +11,7 @@ import Categories.Category.Core
 import Categories.Category.Discrete
 import Categories.Category.Groupoid
 import Categories.Category.Instance.Cats
+import Categories.Category.Instance.One
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
 import Categories.Category.Monoidal
@@ -22,7 +23,10 @@ import Categories.Category.Product
 import Categories.Category.Slice
 import Categories.Category.SubCategory
 import Categories.Comonad
+import Categories.Diagram.Coequalizer
+import Categories.Diagram.Coequalizer.Properties
 import Categories.Diagram.Cone
+import Categories.Diagram.Duality
 import Categories.Diagram.Equalizer
 import Categories.Diagram.Limit
 import Categories.Diagram.Pullback
