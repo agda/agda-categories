@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Functor.Discrete where
+module Categories.Functor.Instance.Discrete where
 
 -- Discrete Functor
 --   from Sets to Cats. This works, unlike in the previous version of the library,
