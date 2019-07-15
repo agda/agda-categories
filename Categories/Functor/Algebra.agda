@@ -25,7 +25,7 @@ module _ {C : Category o ℓ e} where
 
   -- Given an F-Algebra F, one can apply F to it to obtain an new 'iterated' F-Algebra
   iterate : {F : Endofunctor C} → F-Algebra F → F-Algebra F
-  iterate {F} F-alg = record { A = Functor.F₀ F $ A F-alg ; α = Functor.F₁ F $ α F-alg }
+  iterate {F} c = record { A = Functor.F₀ F $ A c ; α = Functor.F₁ F $ α c }
 
   record F-Algebra-Morphism {F : Endofunctor C} (X Y : F-Algebra F) : Set (ℓ ⊔ e) where
     open Category C
