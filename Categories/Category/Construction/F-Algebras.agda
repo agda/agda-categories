@@ -56,6 +56,11 @@ module Lambek {𝒞 : Category o ℓ e} {F : Endofunctor 𝒞} (I : Initial (F-A
   open MR 𝒞 using (glue)
   open Initial I -- so ⊥ is an F-Algebra, which is initial
 
+  -- While an expect might be able to decipher the proof at the nLab
+  --   (https://ncatlab.org/nlab/show/initial+algebra+of+an+endofunctor)
+  -- I (JC) have found that the notes at
+  --   http://www.cs.ru.nl/~jrot/coalgebra/ak-algebras.pdf
+  -- are easier to follow, and lead to the full proof below.
   private
     module ⊥ = F-Algebra ⊥
     A = ⊥.A
