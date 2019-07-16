@@ -20,13 +20,13 @@ open HomReasoning
 record Terminal : Set (o ⊔ ℓ ⊔ e) where
   field
     ⊤ : Obj
-    ! : (A : Obj) → (A ⇒ ⊤)
-    !-unique : ∀ {A} → (f : A ⇒ ⊤) → ! A ≈ f
+    ! : {A : Obj} → (A ⇒ ⊤)
+    !-unique : ∀ {A} → (f : A ⇒ ⊤) → ! ≈ f
 
   !-unique₂ : ∀ {A} {f g : A ⇒ ⊤} → f ≈ g
   !-unique₂ {A} {f} {g} = begin
     f ≈˘⟨ !-unique f ⟩
-    ! A ≈⟨ !-unique g ⟩
+    ! ≈⟨ !-unique g ⟩
     g ∎
     where open HomReasoning
 
@@ -40,17 +40,17 @@ from-⊤-is-Mono {_} {t} _ = λ _ _ _ → !-unique₂ t
 
 up-to-iso : (t₁ t₂ : Terminal) → ⊤ t₁ ≅ ⊤ t₂
 up-to-iso t₁ t₂ = record
-  { from = ! t₂ (⊤ t₁)
-  ; to   = ! t₁ (⊤ t₂)
+  { from = ! t₂
+  ; to   = ! t₁
   ; iso  = record { isoˡ = ⊤-id t₁ _; isoʳ = ⊤-id t₂ _ }
   }
 
 transport-by-iso : (t : Terminal) → ∀ {X} → ⊤ t ≅ X → Terminal
 transport-by-iso t {X} t≅X = record
   { ⊤        = X
-  ; !        = λ A → from ∘ (! t A)
-  ; !-unique = λ {A} h → begin
-    from ∘ ! t A   ≈⟨ refl⟩∘⟨ !-unique t (to ∘ h)  ⟩
+  ; !        = from ∘ ! t
+  ; !-unique = λ h → begin
+    from ∘ ! t     ≈⟨ refl⟩∘⟨ !-unique t (to ∘ h)  ⟩
     from ∘ to ∘ h  ≈⟨ cancelˡ isoʳ ⟩
     h              ∎
   }

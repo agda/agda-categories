@@ -13,13 +13,13 @@ open import Categories.Object.Terminal op
 record Initial : Set (o ⊔ ℓ ⊔ e) where
   field
     ⊥ : Obj
-    ! : (A : Obj) → (⊥ ⇒ A)
-    !-unique : ∀ {A} → (f : ⊥ ⇒ A) → ! A ≈ f
+    ! : {A : Obj} → (⊥ ⇒ A)
+    !-unique : ∀ {A} → (f : ⊥ ⇒ A) → ! ≈ f
 
   !-unique₂ : ∀ {A} → (f g : ⊥ ⇒ A) → f ≈ g
-  !-unique₂ {A} f g = begin
+  !-unique₂ f g = begin
     f ≈˘⟨ !-unique f ⟩
-    ! A ≈⟨ !-unique g ⟩
+    ! ≈⟨ !-unique g ⟩
     g ∎
     where open HomReasoning
 
