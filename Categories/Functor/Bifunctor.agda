@@ -6,7 +6,7 @@ open import Level
 
 open import Categories.Category
 open import Categories.Functor
-open import Categories.Functor.Instance.Constant
+open import Categories.Functor.Construction.Constant
 open import Categories.Category.Product
 
 private

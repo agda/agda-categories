@@ -20,11 +20,11 @@ private
 
 Δ : (C : Category o ℓ e) → Functor C (Product C C)
 Δ C = record
-  { F₀ = λ x → x , x
-  ; F₁ = λ f → f , f
-  ; identity = refl , refl
+  { F₀           = λ x → x , x
+  ; F₁           = λ f → f , f
+  ; identity     = refl , refl
   ; homomorphism = refl , refl
-  ; F-resp-≈ = λ x → x , x
+  ; F-resp-≈     = λ x → x , x
   }
   where
     open Category C
@@ -32,21 +32,21 @@ private
 
 Δ′ : (I : Set) → (C : Category o ℓ e) → Functor C (Power.Exp C I)
 Δ′ I C = record
-  { F₀ = λ x _ → x
-  ; F₁ = λ f _ → f
-  ; identity = λ _ → refl
+  { F₀           = λ x _ → x
+  ; F₁           = λ f _ → f
+  ; identity     = λ _ → refl
   ; homomorphism = λ _ → refl
-  ; F-resp-≈ = λ x _ → x
+  ; F-resp-≈     = λ x _ → x
   }
   where open Category.Equiv C
 
 ΔF : {C : Category o ℓ e} (I : Category o′ ℓ′ e′) → Functor C (Functors I C)
 ΔF {C = C} I = record
-  { F₀ = Constant
-  ; F₁ = λ f → record { η = λ _ → f; commute = λ _ → C.identityʳ ○ ⟺ C.identityˡ }
-  ; identity = refl
+  { F₀           = const
+  ; F₁           = λ f → record { η = λ _ → f; commute = λ _ → C.identityʳ ○ ⟺ C.identityˡ }
+  ; identity     = refl
   ; homomorphism = refl
-  ; F-resp-≈ = λ x → x
+  ; F-resp-≈     = λ x → x
   }
  where
    module C = Category C

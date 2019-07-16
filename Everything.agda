@@ -41,7 +41,6 @@ import Categories.Functor.Construction.Constant
 import Categories.Functor.Construction.Diagonal
 import Categories.Functor.Core
 import Categories.Functor.Hom
-import Categories.Functor.Instance.Constant
 import Categories.Functor.Instance.Discrete
 import Categories.Functor.Power
 import Categories.Functor.Presheaf
