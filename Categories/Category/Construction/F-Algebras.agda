@@ -8,6 +8,8 @@ open import Categories.Category
 open import Categories.Functor hiding (id)
 open import Categories.Functor.Algebra
 open import Categories.Object.Initial
+import Categories.Morphism.Reasoning as MR
+import Categories.Morphism as Mor using (_≅_)
 
 private
   variable
@@ -51,12 +53,12 @@ module Lambek {𝒞 : Category o ℓ e} {F : Endofunctor 𝒞} (I : Initial (F-A
   open Category 𝒞
   open Functor F
   open F-Algebra using (α)
-  open import Categories.Morphism 𝒞 using (_≅_)
-  import Categories.Morphism.Reasoning as MR
+
   open MR 𝒞 using (glue)
+  open Mor 𝒞
   open Initial I -- so ⊥ is an F-Algebra, which is initial
 
-  -- While an expect might be able to decipher the proof at the nLab
+  -- While an expert might be able to decipher the proof at the nLab
   --   (https://ncatlab.org/nlab/show/initial+algebra+of+an+endofunctor)
   -- I (JC) have found that the notes at
   --   http://www.cs.ru.nl/~jrot/coalgebra/ak-algebras.pdf
