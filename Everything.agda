@@ -24,6 +24,7 @@ import Categories.Category.Product
 import Categories.Category.Slice
 import Categories.Category.SubCategory
 import Categories.Comonad
+import Categories.Diagram.Cocone
 import Categories.Diagram.Coequalizer
 import Categories.Diagram.Coequalizer.Properties
 import Categories.Diagram.Cone

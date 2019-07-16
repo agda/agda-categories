@@ -6,13 +6,21 @@ module Categories.Diagram.Duality {o ℓ e} (C : Category o ℓ e) where
 
 open Category C
 
+open import Level
+
+open import Categories.Functor
+
 open import Categories.Diagram.Equalizer op
 open import Categories.Diagram.Coequalizer C
 open import Categories.Diagram.Pullback op
 open import Categories.Diagram.Pushout C
+open import Categories.Diagram.Cone as Cone
+open import Categories.Diagram.Cocone as Cocone
 
 private
   variable
+    o′ ℓ′ e′ : Level
+    J : Category o′ ℓ′ e′
     A B : Obj
     f g : A ⇒ B
 
@@ -59,3 +67,24 @@ Pushout⇒coPullback p = record
   ; p₂∘universal≈h₂ = universal∘i₂≈h₂
   }
   where open Pushout p
+
+module _ {F : Functor J C} where
+  open Functor F renaming (op to Fop)
+
+  coCone⇒Cocone : Cone Fop → Cocone F
+  coCone⇒Cocone c = record
+    { coapex = record
+      { ψ       = ψ
+    ; commute = commute
+      }
+    }
+    where open Cone.Cone c
+
+  Cocone⇒coCone : Cocone F → Cone Fop
+  Cocone⇒coCone c = record
+    { apex = record
+      { ψ       = ψ
+      ; commute = commute
+      }
+    }
+    where open Cocone.Cocone c
