@@ -2,56 +2,63 @@
 
 open import Level
 
-module Categories.Category.Instance.One {o ℓ e : Level} where
+module Categories.Category.Instance.One where
+
+open import Data.Unit using (⊤; tt)
 
 open import Categories.Category
 open import Categories.Functor
 open import Categories.Category.Instance.Cats
-open import Categories.Object.Terminal (Cats o ℓ e)
+import Categories.Object.Terminal as Term
 
-record Unit {x : _} : Set x where
-  constructor unit
+module _ {o ℓ e : Level} where
+  open Term (Cats o ℓ e)
+  private
+    u = lift {_} {o} tt
+    v = lift {_} {ℓ} tt
+    w = lift {_} {e} tt
 
-One : Category o ℓ e
-One = record 
-  { Obj       = Unit
-  ; _⇒_       = λ _ _ → Unit
-  ; _≈_       = λ _ _ → Unit
-  ; _∘_       = λ _ _ → unit
-  ; id        = unit
-  ; assoc     = unit
-  ; identityˡ = unit
-  ; identityʳ = unit
-  ; equiv     = record 
-    { refl    = unit
-    ; sym     = λ _ → unit
-    ; trans   = λ _ _ → unit
-    }
-  ; ∘-resp-≈  = λ _ _ → unit
-  }
 
-One-⊤ : Terminal
-One-⊤ = record
-  { ⊤        = One
-  ; !        = record
-    { F₀           = λ _ → unit
-    ; F₁           = λ _ → unit
-    ; identity     = unit
-    ; homomorphism = unit
-    ; F-resp-≈     = λ _ → unit
+  One : Category o ℓ e
+  One = record
+    { Obj       = Lift o ⊤
+    ; _⇒_       = λ _ _ → Lift ℓ ⊤
+    ; _≈_       = λ _ _ → Lift e ⊤
+    ; _∘_       = λ _ _ → v
+    ; id        = v
+    ; assoc     = w
+    ; identityˡ = w
+    ; identityʳ = w
+    ; equiv     = record
+      { refl    = w
+      ; sym     = λ _ → w
+      ; trans   = λ _ _ → w
+      }
+    ; ∘-resp-≈  = λ _ _ → w
     }
-  ; !-unique = λ F → record
-    { F⇒G = record
-      { η       = λ _ → unit
-      ; commute = λ _ → unit
+
+  One-⊤ : Terminal
+  One-⊤ = record
+    { ⊤        = One
+    ; !        = record
+      { F₀           = λ _ → u
+      ; F₁           = λ _ → v
+      ; identity     = w
+      ; homomorphism = w
+      ; F-resp-≈     = λ _ → w
       }
-    ; F⇐G = record
-      { η       = λ _ → unit
-      ; commute = λ _ → unit
-      }
-    ; iso = λ _ → record
-      { isoˡ = unit
-      ; isoʳ = unit
+    ; !-unique = λ F → record
+      { F⇒G = record
+        { η       = λ _ → v
+        ; commute = λ _ → w
+        }
+      ; F⇐G = record
+        { η       = λ _ → v
+        ; commute = λ _ → w
+        }
+      ; iso = λ _ → record
+        { isoˡ = w
+        ; isoʳ = w
+        }
       }
     }
-  }

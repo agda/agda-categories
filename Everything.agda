@@ -20,6 +20,7 @@ import Categories.Category.Instance.Sets
 import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
 import Categories.Category.Monoidal.Closed
+import Categories.Category.Monoidal.Instance.Sets
 import Categories.Category.Monoidal.Properties
 import Categories.Category.Monoidal.Symmetric
 import Categories.Category.Monoidal.Traced
