@@ -34,6 +34,7 @@ import Categories.Diagram.Limit
 import Categories.Diagram.Pullback
 import Categories.Diagram.Pushout
 import Categories.Diagram.Pushout.Properties
+import Categories.Enriched
 import Categories.Functor
 import Categories.Functor.Algebra
 import Categories.Functor.Bifunctor
@@ -60,7 +61,9 @@ import Categories.Morphism.Reasoning.Core
 import Categories.Morphism.Reasoning.Iso
 import Categories.NaturalTransformation
 import Categories.NaturalTransformation.Core
+import Categories.NaturalTransformation.Dinatural
 import Categories.NaturalTransformation.NaturalIsomorphism
+import Categories.NaturalTransformation.Properties
 import Categories.Object.Coproduct
 import Categories.Object.Duality
 import Categories.Object.Exponential
