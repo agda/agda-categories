@@ -108,8 +108,27 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   CommutativeSquare : ∀ {A B C D} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
   CommutativeSquare f g h i = h ∘ f ≈ i ∘ g
 
+  {- Locally open equational reasoning module for clearer proofs. -}
+  module _ {A B : Obj} where
+    open HomReasoning {A} {B} public
+
   id-unique : ∀ {o} {f : o ⇒ o} → (∀ g → g ∘ f ≈ g) → f ≈ id
-  id-unique g∘f≈g = trans (sym identityˡ) (g∘f≈g id)
+  id-unique {o} {f} g∘f≈g = begin
+      f
+    ≈˘⟨ identityˡ ⟩
+      id ∘ f
+    ≈⟨ g∘f≈g id ⟩
+      id
+    ∎
 
   id-comm : ∀ {a b} {f : a ⇒ b} → f ∘ id ≈ id ∘ f
-  id-comm = trans identityʳ (sym identityˡ)
+  id-comm {a} {b} {f} = begin
+      f ∘ id
+    ≈⟨ identityʳ ⟩
+      f
+    ≈˘⟨ identityˡ ⟩
+      id ∘ f
+    ∎
+
+  id-idemp : ∀ {a} → id {a} ∘ id ≈ id
+  id-idemp = identityʳ
