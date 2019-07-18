@@ -3,9 +3,10 @@ module Categories.NaturalTransformation.Dinatural where
 
 open import Level
 open import Data.Product
+open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
 open import Categories.Category
-open import Categories.NaturalTransformation as NT hiding (_∘ʳ_)
+open import Categories.NaturalTransformation as NT hiding (_∘ʳ_; _≃_; ≃-isEquivalence; ≃-setoid)
 open import Categories.Functor
 open import Categories.Functor.Bifunctor
 open import Categories.Category.Product
@@ -16,7 +17,7 @@ private
     o ℓ e : Level
     C D E : Category o ℓ e
 
-record DinaturalTransformation (F G : Bifunctor (Category.op C) C D) : Set (levelOfTerm C ⊔ levelOfTerm D) where
+record DinaturalTransformation (F G : Bifunctor (Category.op C) C D) : Set (levelOfTerm F) where
   private
     module C = Category C
     module D = Category D
@@ -113,3 +114,22 @@ module _ {F G : Bifunctor (Category.op C) C D} where
           module E = Category E
           open β
           
+  infix 4 _≃_
+
+  _≃_ : Rel (DinaturalTransformation F G) _
+  β ≃ δ = ∀ {X} → α β X ≈ α δ X
+    where open DinaturalTransformation
+
+  ≃-isEquivalence : IsEquivalence _≃_
+  ≃-isEquivalence = record
+    { refl  = refl
+    ; sym   = λ eq → sym eq
+    ; trans = λ eq eq′ → trans eq eq′
+    }
+
+  ≃-setoid : Setoid _ _
+  ≃-setoid = record
+    { Carrier       = DinaturalTransformation F G
+    ; _≈_           = _≃_
+    ; isEquivalence = ≃-isEquivalence
+    }

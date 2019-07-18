@@ -10,6 +10,7 @@ import Categories.Category.Construction.Functors
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Core
 import Categories.Category.Discrete
+import Categories.Category.Enriched
 import Categories.Category.Groupoid
 import Categories.Category.Instance.Cats
 import Categories.Category.Instance.One
@@ -29,12 +30,13 @@ import Categories.Diagram.Coequalizer
 import Categories.Diagram.Coequalizer.Properties
 import Categories.Diagram.Cone
 import Categories.Diagram.Duality
+import Categories.Diagram.End
+import Categories.Diagram.End.Properties
 import Categories.Diagram.Equalizer
 import Categories.Diagram.Limit
 import Categories.Diagram.Pullback
 import Categories.Diagram.Pushout
 import Categories.Diagram.Pushout.Properties
-import Categories.Enriched
 import Categories.Functor
 import Categories.Functor.Algebra
 import Categories.Functor.Bifunctor
