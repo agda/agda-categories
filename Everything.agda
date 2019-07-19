@@ -3,6 +3,7 @@ import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
 import Categories.Category.CartesianClosed
+import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.F-Algebras
@@ -44,6 +45,7 @@ import Categories.Functor.Bifunctor
 import Categories.Functor.Coalgebra
 import Categories.Functor.Construction.Constant
 import Categories.Functor.Construction.Diagonal
+import Categories.Functor.Construction.DoubleOp
 import Categories.Functor.Core
 import Categories.Functor.Hom
 import Categories.Functor.Instance.Discrete

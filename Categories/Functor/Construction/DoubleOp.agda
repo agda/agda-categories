@@ -2,7 +2,7 @@
 
 open import Categories.Category
 
-module Categories.Functor.Construction.DoubleOp {o ℓ e} {C : Category o ℓ e} where
+module Categories.Functor.Construction.DoubleOp {o ℓ e} (C : Category o ℓ e) where
 
 open Category C
 open Equiv

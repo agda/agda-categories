@@ -8,6 +8,7 @@ open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 open import Categories.Category
 open import Categories.NaturalTransformation as NT hiding (_∘ʳ_; _≃_; ≃-isEquivalence; ≃-setoid)
 open import Categories.Functor
+open import Categories.Functor.Construction.Constant
 open import Categories.Functor.Bifunctor
 open import Categories.Category.Product
 import Categories.Morphism.Reasoning as MR
@@ -133,3 +134,31 @@ module _ {F G : Bifunctor (Category.op C) C D} where
     ; _≈_           = _≃_
     ; isEquivalence = ≃-isEquivalence
     }
+
+-- for convenience, the following are some helpers for the cases
+-- in which the left functor is a constant functor.
+module _ (F : Bifunctor (Category.op C) C D) where
+  open Category D
+  private
+    module C = Category C
+    variable
+      A : Obj
+      X Y : C.Obj
+      f : X C.⇒ Y
+  open Functor F
+  open HomReasoning
+  open MR D
+
+  extranatural : (a : ∀ X → A ⇒ F₀ (X , X)) →
+                 (∀ {X X′ f} → F₁ (C.id , f) ∘ a X ≈ F₁ (f , C.id) ∘ a X′) →
+                 DinaturalTransformation (const A) F
+  extranatural a comm = record
+    { α       = a
+    ; commute = λ f → ∘-resp-≈ʳ identityʳ ○ comm ○ ∘-resp-≈ʳ (⟺ identityʳ)
+    }
+
+  open DinaturalTransformation
+  
+  extranatural-comm : (β : DinaturalTransformation (const A) F) →
+                      F₁ (C.id , f) ∘ α β X ≈ F₁ (f , C.id) ∘ α β Y
+  extranatural-comm {f = f} β = ∘-resp-≈ʳ (⟺ identityʳ) ○ commute β f ○ ∘-resp-≈ʳ identityʳ 
