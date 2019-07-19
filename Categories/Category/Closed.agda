@@ -16,7 +16,7 @@ private
 open import Level
 open import Data.Product using (Σ; _,_)
 open import Function.Equality using (_⟶_)
-open import Function.Inverse using (_InverseOf_)
+open import Function.Inverse using (_InverseOf_; Inverse)
 
 open import Categories.Category.Product
 open import Categories.Functor renaming (id to idF)
@@ -74,11 +74,11 @@ record Closed : Set (levelOfTerm C) where
                        [ [ C.id , f ]₁ , [ C.id , g ]₁ ]₁
                      ⟩
     L-dinatural-comm : [ [ Y , Z ]₀ ⇒  [ [ X , Y ]₀ , [ X′ , Z ]₀ ]₀ ]⟨
-                       L X′ Y Z                                      ⇒⟨ [ [ X′ , Y ]₀ , [ X′ , Z ]₀ ]₀ ⟩
-                       [ [ f , C.id ]₁ , [ C.id , C.id ]₁ ]₁
-                     ≈ L X Y Z                                       ⇒⟨ [ [ X , Y ]₀ , [ X , Z ]₀ ]₀ ⟩
-                       [ [ C.id , C.id ]₁ , [ f , C.id ]₁ ]₁
-                     ⟩
+                         L X′ Y Z                                      ⇒⟨ [ [ X′ , Y ]₀ , [ X′ , Z ]₀ ]₀ ⟩
+                         [ [ f , C.id ]₁ , [ C.id , C.id ]₁ ]₁
+                       ≈ L X Y Z                                       ⇒⟨ [ [ X , Y ]₀ , [ X , Z ]₀ ]₀ ⟩
+                         [ [ C.id , C.id ]₁ , [ f , C.id ]₁ ]₁
+                       ⟩
 
   L-natural : NaturalTransformation [-,-] ([[X,-],[X,-]] X)
   L-natural {X} = record
@@ -128,5 +128,12 @@ record Closed : Set (levelOfTerm C) where
     }
 
   field
-    γ⁻¹         : hom-setoid {unit} {[ X , Y ]₀} ⟶ hom-setoid {X} {Y}
-    γ-bijection : γ {X} {Y} InverseOf γ⁻¹
+    γ⁻¹             : hom-setoid {unit} {[ X , Y ]₀} ⟶ hom-setoid {X} {Y}
+    γ-inverseOf-γ⁻¹ : γ {X} {Y} InverseOf γ⁻¹
+
+  γ-inverse : Inverse (hom-setoid {unit} {[ X , Y ]₀}) (hom-setoid {X} {Y})
+  γ-inverse = record
+    { to         = γ⁻¹
+    ; from       = γ
+    ; inverse-of = γ-inverseOf-γ⁻¹
+    }
