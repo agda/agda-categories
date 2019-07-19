@@ -16,13 +16,13 @@ private
   variable
     o ℓ e : Level
 
-record Enriched {K : Category o ℓ e} (M : Monoidal K) : Set (suc o ⊔ ℓ ⊔ e) where
+record Enriched {K : Category o ℓ e} (M : Monoidal K) (v : Level) : Set (o ⊔ ℓ ⊔ e ⊔ suc v) where
   open Category K renaming (Obj to ObjK; id to idK)
   open Commutation
   open Monoidal M
   open Functor
   field
-    Obj : Set o
+    Obj : Set v
     hom : (A B : Obj)   → ObjK
     id  : (A : Obj)     → K [ unit , hom A A ]
     ⊚   : {A B C : Obj} → K [ hom B C ⊗₀ hom A B , hom A C ]
