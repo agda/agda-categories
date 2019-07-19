@@ -136,7 +136,7 @@ module _ {F G : Bifunctor (Category.op C) C D} where
     }
 
 -- for convenience, the following are some helpers for the cases
--- in which the left functor is a constant functor.
+-- in which the bifunctor on the right is extranatural.
 module _ {F : Bifunctor (Category.op C) C D} where
   open Category D
   private
@@ -149,16 +149,30 @@ module _ {F : Bifunctor (Category.op C) C D} where
   open HomReasoning
   open MR D
 
-  extranatural : (a : ∀ X → A ⇒ F₀ (X , X)) →
-                 (∀ {X X′ f} → F₁ (C.id , f) ∘ a X ≈ F₁ (f , C.id) ∘ a X′) →
-                 DinaturalTransformation (const A) F
-  extranatural a comm = record
+  extranaturalʳ : (a : ∀ X → A ⇒ F₀ (X , X)) →
+                  (∀ {X X′ f} → F₁ (C.id , f) ∘ a X ≈ F₁ (f , C.id) ∘ a X′) →
+                  DinaturalTransformation (const A) F
+  extranaturalʳ a comm = record
     { α       = a
     ; commute = λ f → ∘-resp-≈ʳ identityʳ ○ comm ○ ∘-resp-≈ʳ (⟺ identityʳ)
     }
 
   open DinaturalTransformation
   
-  extranatural-comm : (β : DinaturalTransformation (const A) F) →
-                      F₁ (C.id , f) ∘ α β X ≈ F₁ (f , C.id) ∘ α β Y
-  extranatural-comm {f = f} β = ∘-resp-≈ʳ (⟺ identityʳ) ○ commute β f ○ ∘-resp-≈ʳ identityʳ 
+  extranatural-commʳ : (β : DinaturalTransformation (const A) F) →
+                       F₁ (C.id , f) ∘ α β X ≈ F₁ (f , C.id) ∘ α β Y
+  extranatural-commʳ {f = f} β = ∘-resp-≈ʳ (⟺ identityʳ) ○ commute β f ○ ∘-resp-≈ʳ identityʳ 
+
+  -- the dual case, the bifunctor on the left is extranatural.
+
+  extranaturalˡ : (a : ∀ X → F₀ (X , X) ⇒ A) →
+                  (∀ {X X′ f} → a X ∘ F₁ (f , C.id) ≈ a X′ ∘ F₁ (C.id , f)) →
+                  DinaturalTransformation F (const A)
+  extranaturalˡ a comm = record
+    { α       = a
+    ; commute = λ f → pullˡ identityˡ ○ comm ○ ⟺ (pullˡ identityˡ)
+    }
+
+  extranatural-commˡ : (β : DinaturalTransformation F (const A)) →
+                       α β X ∘ F₁ (f , C.id) ≈ α β Y ∘ F₁ (C.id , f)
+  extranatural-commˡ {f = f} β = ⟺ (pullˡ identityˡ) ○ commute β f ○ pullˡ identityˡ

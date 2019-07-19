@@ -35,8 +35,8 @@ record Wedge : Set (levelOfTerm F) where
 Wedge-∘ : (W : Wedge) → A ⇒ Wedge.E W → Wedge
 Wedge-∘ {A = A} W f = record
   { E         = A
-  ; dinatural = extranatural (λ X → dinatural.α X ∘ f)
-                             (⟺ assoc ○ ∘-resp-≈ˡ (extranatural-comm dinatural) ○ assoc )
+  ; dinatural = extranaturalʳ (λ X → dinatural.α X ∘ f)
+                              (⟺ assoc ○ ∘-resp-≈ˡ (extranatural-commʳ dinatural) ○ assoc )
   }
   where open Wedge W
 

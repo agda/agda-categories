@@ -35,14 +35,8 @@ record Cowedge : Set (levelOfTerm F) where
 Cowedge-∘ : (W : Cowedge) → Cowedge.E W ⇒ A → Cowedge
 Cowedge-∘ {A = A} W f = record
   { E         = A
-  ; dinatural = record
-    { α       = λ X → f ∘ dinatural.α X
-    ; commute = λ {X Y} g → begin
-      D.id ∘ (f ∘ dinatural.α X) ∘ F₁ (g , C.id) ≈⟨ ⟺ assoc ○ ∘-resp-≈ˡ (pullˡ (⟺ id-comm)) ○ assoc ○ assoc ⟩
-      f ∘ D.id ∘ dinatural.α X ∘ F₁ (g , C.id)   ≈⟨ refl⟩∘⟨ dinatural.commute g ⟩
-      f ∘ D.id ∘ dinatural.α Y ∘ F₁ (C.id , g)   ≈⟨ ⟺ assoc ○ ∘-resp-≈ˡ id-comm ○ assoc ○ ∘-resp-≈ʳ (⟺ assoc) ⟩
-      D.id ∘ (f ∘ dinatural.α Y) ∘ F₁ (C.id , g) ∎
-    }
+  ; dinatural = extranaturalˡ (λ X → f ∘ dinatural.α X)
+                              (assoc ○ ∘-resp-≈ʳ (extranatural-commˡ dinatural) ○ ⟺ assoc)
   }
   where open Cowedge W
 
