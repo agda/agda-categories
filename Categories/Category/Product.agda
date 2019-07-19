@@ -6,8 +6,8 @@ open import Function using () renaming (_∘_ to _∙_)
 open import Data.Product using (_×_; Σ; _,_; proj₁; proj₂; zip; map; <_,_>; swap)
 
 open import Categories.Utils.Product
-open import Categories.Category.Core
-open import Categories.Functor.Core renaming (id to idF)
+open import Categories.Category using (Category)
+open import Categories.Functor renaming (id to idF)
 open import Categories.NaturalTransformation.Core
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans)
 import Categories.Morphism as Morphism
