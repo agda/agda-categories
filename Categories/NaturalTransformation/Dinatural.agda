@@ -137,7 +137,7 @@ module _ {F G : Bifunctor (Category.op C) C D} where
 
 -- for convenience, the following are some helpers for the cases
 -- in which the left functor is a constant functor.
-module _ (F : Bifunctor (Category.op C) C D) where
+module _ {F : Bifunctor (Category.op C) C D} where
   open Category D
   private
     module C = Category C

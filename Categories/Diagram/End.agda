@@ -35,15 +35,8 @@ record Wedge : Set (levelOfTerm F) where
 Wedge-∘ : (W : Wedge) → A ⇒ Wedge.E W → Wedge
 Wedge-∘ {A = A} W f = record
   { E         = A
-  ; dinatural = record
-    { α       = λ X → dinatural.α X ∘ f
-    ; commute = λ {X Y} g → begin
-      F₁ (C.id , g) ∘ (dinatural.α X ∘ f) ∘ D.id ≈⟨ refl⟩∘⟨ pullʳ id-comm ⟩
-      F₁ (C.id , g) ∘ dinatural.α X ∘ D.id ∘ f   ≈˘⟨ assoc ○ ∘-resp-≈ʳ assoc ⟩
-      (F₁ (C.id , g) ∘ dinatural.α X ∘ D.id) ∘ f ≈⟨ dinatural.commute g ⟩∘⟨refl ⟩
-      (F₁ (g , C.id) ∘ dinatural.α Y ∘ D.id) ∘ f ≈˘⟨ pushʳ ((pullʳ id-comm) ○ (⟺ assoc)) ⟩
-      F₁ (g , C.id) ∘ (dinatural.α Y ∘ f) ∘ D.id ∎
-    }
+  ; dinatural = extranatural (λ X → dinatural.α X ∘ f)
+                             (⟺ assoc ○ ∘-resp-≈ˡ (extranatural-comm dinatural) ○ assoc )
   }
   where open Wedge W
 

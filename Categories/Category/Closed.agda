@@ -87,9 +87,8 @@ record Closed : Set (levelOfTerm C) where
     ; commute = λ _ → L-natural-comm
     }
 
-  
   L-dinatural : DinaturalTransformation (const [ Y , Z ]₀) (flip-bifunctor ([[-,Y],[-,Z]] Y Z))
-  L-dinatural {Y} {Z} = extranatural _ (λ X → L X Y Z) L-dinatural-comm
+  L-dinatural {Y} {Z} = extranatural (λ X → L X Y Z) L-dinatural-comm
 
   module L-natural {X}     = NaturalTransformation (L-natural {X})
   module L-dinatural {Y Z} = DinaturalTransformation (L-dinatural {Y} {Z})
