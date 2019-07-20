@@ -22,7 +22,7 @@ private
 -- braided monoidal category
 -- it has a braiding natural isomorphism has two hexagon identities.
 -- these two identities are directly expressed in the morphism level.
-record Braided : Set (levelOfTerm C) where
+record Braided : Set (levelOfTerm M) where
   open Monoidal M public
 
   field

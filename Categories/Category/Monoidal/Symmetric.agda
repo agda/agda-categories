@@ -23,7 +23,7 @@ private
 
 -- symmetric monoidal category
 -- commutative braided monoidal category
-record Symmetric : Set (levelOfTerm C) where
+record Symmetric : Set (levelOfTerm M) where
   field
     braided : Braided
 

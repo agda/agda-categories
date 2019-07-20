@@ -39,7 +39,7 @@ private
 -- 
 -- note that the definition in this library is significantly easier than the previous one because
 -- we adopt a simpler definition of monoidal category to begin with.
-record Traced : Set (levelOfTerm C) where
+record Traced : Set (levelOfTerm M) where
   field
     symmetric : Symmetric
 

@@ -133,36 +133,12 @@ _≅_ : ∀ {F G : Functor C D} → (α β : NaturalIsomorphism F G) → Set _
   }
   where module H = Category.HomReasoning D
 
-module LeftRightId (F : Functor C D) where
-  open Category D
-  open HomReasoning
-  open Functor F
-
-  -- the component proofs are all the same, factor out
-  comm : {X Y : Category.Obj C} (f : C [ X , Y ]) → id ∘ F₁ f ≈ F₁ f ∘ id
-  comm _ = Equiv.sym id-comm
-  iso-id-id : (X : Category.Obj C) → Morphism.Iso D {A = F₀ X} id id
-  iso-id-id X = record { isoˡ = identityˡ {f = id} ; isoʳ = identityʳ {f = id} }
-
 -- Left and Right Unitors, Natural Isomorphisms.
 module _ {F : Functor C D} where
   open Category.HomReasoning D
   open Functor F
   open LeftRightId F
   open Category D
-
-  private
-    F⇒F∘id : NaturalTransformation F (F ∘F idF)
-    F⇒F∘id = record { η = λ _ → id ; commute = comm }
-
-    F⇒id∘F : NaturalTransformation F (idF ∘F F)
-    F⇒id∘F = record { η = λ _ → id ; commute = comm }
-
-    F∘id⇒F : NaturalTransformation (F ∘F idF) F
-    F∘id⇒F = record { η = λ _ → id ; commute = comm }
-
-    id∘F⇒F : NaturalTransformation (idF ∘F F) F
-    id∘F⇒F = record { η = λ _ → id ; commute = comm }
 
   unitorˡ : NaturalIsomorphism (ℱ.id ∘F F) F
   unitorˡ = record { F⇒G = id∘F⇒F ; F⇐G = F⇒id∘F ; iso = iso-id-id }
