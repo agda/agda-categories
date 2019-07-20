@@ -7,6 +7,7 @@ open import Level
 
 open import Data.Product using (_,_; _×_)
 open import Function using (_$_) renaming (_∘_ to _∙_)
+open import Function.Equality using (Π; _⟶_)
 import Function.Inverse as FI
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
@@ -14,6 +15,7 @@ open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 open import Categories.Category using (Category)
 open import Categories.Category.Product using (Product; _⁂_)
 open import Categories.Category.Instance.Setoids
+open import Categories.Morphism
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Functor.Hom using (Hom[_][-,-])
@@ -25,10 +27,10 @@ import Categories.Morphism.Reasoning as MR
 
 private
   variable
-    o ℓ e : Level
+    o o′ ℓ e : Level
     C D : Category o ℓ e
 
-record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm C ⊔ levelOfTerm D) where
+record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ levelOfTerm R) where
   private
     module C = Category C
     module D = Category D
@@ -113,8 +115,43 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm C ⊔ leve
     ; zag    = zig
     }
 
+  -- naturality condition on the two hom functors.
+  -- these conditions are separated out because a complication due to the
+  -- universe level in Agda.
+  module _ where
+    open C
+    open HomReasoning
+    open MR C
+
+    Ladjunct-comm : ∀ {X Y A B} {h i : L.F₀ X D.⇒ Y} {f : A ⇒ X} {g : Y D.⇒ B} →
+                      h D.≈ i →
+                      R.F₁ (g D.∘ h D.∘ L.F₁ f) ∘ unit.η A ≈ R.F₁ g ∘ (R.F₁ i ∘ unit.η X) ∘ f
+    Ladjunct-comm {X} {Y} {A} {B} {h} {i} {f} {g} eq = begin
+      R.F₁ (g D.∘ h D.∘ L.F₁ f) ∘ unit.η A         ≈⟨ R.homomorphism ⟩∘⟨refl ⟩
+      (R.F₁ g ∘ R.F₁ (h D.∘ L.F₁ f)) ∘ unit.η A    ≈⟨ (refl⟩∘⟨ R.homomorphism) ⟩∘⟨refl ⟩
+      (R.F₁ g ∘ R.F₁ h ∘ R.F₁ (L.F₁ f)) ∘ unit.η A ≈⟨ pullʳ assoc ⟩
+      R.F₁ g ∘ R.F₁ h ∘ R.F₁ (L.F₁ f) ∘ unit.η A   ≈˘⟨ refl⟩∘⟨ ⟺ (R.F-resp-≈ eq) ⟩∘⟨ unit.commute f ⟩
+      R.F₁ g ∘ R.F₁ i ∘ unit.η X ∘ f               ≈˘⟨ refl⟩∘⟨ assoc ⟩
+      R.F₁ g ∘ (R.F₁ i ∘ unit.η X) ∘ f             ∎
+
+  module _ where
+    open D
+    open HomReasoning
+    open MR D
+
+    Radjunct-comm : ∀ {X Y A B} {h i : X C.⇒ R.F₀ Y} {f : A C.⇒ X} {g : Y ⇒ B} →
+                      h C.≈ i →
+                      counit.η B ∘ L.F₁ (R.F₁ g C.∘ h C.∘ f) ≈ g ∘ (counit.η Y ∘ L.F₁ i) ∘ L.F₁ f
+    Radjunct-comm {X} {Y} {A} {B} {h} {i} {f} {g} eq = begin
+      counit.η B ∘ L.F₁ (R.F₁ g C.∘ h C.∘ f)       ≈⟨ refl⟩∘⟨ L.homomorphism ⟩
+      counit.η B ∘ L.F₁ (R.F₁ g) ∘ L.F₁ (h C.∘ f)  ≈⟨ pullˡ (counit.commute g) ⟩
+      (g ∘ counit.η Y) ∘ L.F₁ (h C.∘ f)            ≈⟨ refl⟩∘⟨ L.homomorphism ⟩
+      (g ∘ counit.η Y) ∘ L.F₁ h ∘ L.F₁ f           ≈⟨ refl ⟩∘⟨ L.F-resp-≈ eq ⟩∘⟨ refl ⟩
+      (g ∘ counit.η Y) ∘ L.F₁ i ∘ L.F₁ f           ≈⟨ pullʳ (⟺ assoc) ⟩
+      g ∘ (counit.η Y ∘ L.F₁ i) ∘ L.F₁ f           ∎
+
   -- a complication: the two hom functors do not live in the same Setoids,
-  -- so they need to be maped to the same Setoids first before establishing
+  -- so they need to be mapped to the same Setoids first before establishing
   -- natural isomorphism!
   module _ where
     private
@@ -138,36 +175,14 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm C ⊔ leve
           { _⟨$⟩_ = λ f → lift (Ladjunct (lower f))
           ; cong  = λ eq → lift (C.∘-resp-≈ˡ (R.F-resp-≈ (lower eq)))
           }
-        ; commute = λ where
-          {X , Y} {A , B} (f , g) {lift h} {lift i} (lift eq) →
-            let open C
-                open HomReasoning
-                open MR C
-            in lift $ begin
-              R.F₁ (g D.∘ h D.∘ L.F₁ f) ∘ unit.η A         ≈⟨ R.homomorphism ⟩∘⟨refl ⟩
-              (R.F₁ g ∘ R.F₁ (h D.∘ L.F₁ f)) ∘ unit.η A    ≈⟨ (refl⟩∘⟨ R.homomorphism) ⟩∘⟨refl ⟩
-              (R.F₁ g ∘ R.F₁ h ∘ R.F₁ (L.F₁ f)) ∘ unit.η A ≈⟨ pullʳ assoc ⟩
-              R.F₁ g ∘ R.F₁ h ∘ R.F₁ (L.F₁ f) ∘ unit.η A   ≈˘⟨ refl⟩∘⟨ ⟺ (R.F-resp-≈ eq) ⟩∘⟨ unit.commute f ⟩
-              R.F₁ g ∘ R.F₁ i ∘ unit.η X ∘ f               ≈˘⟨ refl⟩∘⟨ assoc ⟩
-              R.F₁ g ∘ (R.F₁ i ∘ unit.η X) ∘ f             ∎
+        ; commute = λ _ eq → lift $ Ladjunct-comm (lower eq)
         }
       ; F⇐G = record
         { η       = λ _ → record
           { _⟨$⟩_ = λ f → lift (Radjunct (lower f))
           ; cong  = λ eq → lift (D.∘-resp-≈ʳ (L.F-resp-≈ (lower eq)))
           }
-        ; commute = λ where
-          {X , Y} {A , B} (f , g) {lift h} {lift i} (lift eq) →
-            let open D
-                open HomReasoning
-                open MR D
-            in lift $ begin
-              counit.η B ∘ L.F₁ (R.F₁ g C.∘ h C.∘ f)       ≈⟨ refl⟩∘⟨ L.homomorphism ⟩
-              counit.η B ∘ L.F₁ (R.F₁ g) ∘ L.F₁ (h C.∘ f)  ≈⟨ pullˡ (counit.commute g) ⟩
-              (g ∘ counit.η Y) ∘ L.F₁ (h C.∘ f)            ≈⟨ refl⟩∘⟨ L.homomorphism ⟩
-              (g ∘ counit.η Y) ∘ L.F₁ h ∘ L.F₁ f           ≈⟨ refl ⟩∘⟨ L.F-resp-≈ eq ⟩∘⟨ refl ⟩
-              (g ∘ counit.η Y) ∘ L.F₁ i ∘ L.F₁ f           ≈⟨ pullʳ (⟺ assoc) ⟩
-              g ∘ (counit.η Y ∘ L.F₁ i) ∘ L.F₁ f           ∎
+        ; commute = λ _ eq → lift $ Radjunct-comm (lower eq)
         }
       ; iso = λ X → record
         { isoˡ = λ eq → let open D.HomReasoning in lift (RLadjunct≈id ○ lower eq)
@@ -178,6 +193,123 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm C ⊔ leve
 infix 5 _⊣_
 _⊣_ = Adjoint
 
+-- a special case of the natural isomorphism in which homsets in C and D have the same
+-- universe level. therefore there is no need to lift Setoids to the saem level.
+-- this is helpful when combining with Yoneda lemma.
+module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R : Functor D C} where
+  private
+    module C = Category C
+    module D = Category D
+    module L = Functor L
+    module R = Functor R
+
+  module _ (adjoint : L ⊣ R) where       
+    open Adjoint adjoint
+
+    -- in this case, the hom functors are naturally isomorphism directly
+    Hom-NI′ : NaturalIsomorphism Hom[L-,-] Hom[-,R-]
+    Hom-NI′ = record
+      { F⇒G = record
+        { η       = λ _ → Hom-inverse.to
+        ; commute = λ _ eq → Ladjunct-comm eq
+        }
+      ; F⇐G = record
+        { η       = λ _ → Hom-inverse.from
+        ; commute = λ _ eq → Radjunct-comm eq
+        }
+      ; iso = λ _ → record
+        { isoˡ = λ eq → let open D.HomReasoning in RLadjunct≈id ○ eq
+        ; isoʳ = λ eq → let open C.HomReasoning in LRadjunct≈id ○ eq
+        }
+      }
+
+  -- now goes from natural isomorphism back to adjoint.
+  -- for simplicity, just construct the case in which homsetoids of C and D
+  -- are compatible.
+
+  private
+    Hom[L-,-] : Bifunctor C.op D (Setoids _ _)
+    Hom[L-,-] = Hom[ D ][-,-] ∘F (L.op ⁂ idF)
+
+    Hom[-,R-] : Bifunctor C.op D (Setoids _ _)
+    Hom[-,R-] = Hom[ C ][-,-] ∘F (idF ⁂ R)
+
+  module _ (Hni : NaturalIsomorphism Hom[L-,-] Hom[-,R-]) where
+    open NaturalIsomorphism Hni
+    open NaturalTransformation
+    open Functor
+    open Π
+
+    private
+      unitη : ∀ X → F₀ Hom[L-,-] (X , L.F₀ X) ⟶ F₀ Hom[-,R-] (X , L.F₀ X)
+      unitη X = ⇒.η (X , L.F₀ X)
+
+      unit : NaturalTransformation idF (R ∘F L)
+      unit = record
+        { η       = λ X → unitη X ⟨$⟩ D.id
+        ; commute = λ {X} {Y} f → begin
+          (unitη Y ⟨$⟩ D.id) ∘ f                             ≈⟨ introˡ R.identity ⟩
+          R.F₁ D.id ∘ (unitη Y  ⟨$⟩ D.id) ∘ f                ≈˘⟨ ⇒.commute (f , D.id) D.Equiv.refl ⟩
+          ⇒.η (X , L.F₀ Y) ⟨$⟩ (D.id D.∘ D.id D.∘ L.F₁ f)    ≈⟨ cong (⇒.η (X , L.F₀ Y)) (D.Equiv.trans D.identityˡ D.identityˡ) ⟩
+          ⇒.η (X , L.F₀ Y) ⟨$⟩ L.F₁ f                        ≈⟨ cong (⇒.η (X , L.F₀ Y)) (MR.introʳ D (MR.elimʳ D L.identity)) ⟩
+          ⇒.η (X , L.F₀ Y) ⟨$⟩ (L.F₁ f D.∘ D.id D.∘ L.F₁ id) ≈⟨ ⇒.commute (C.id , L.F₁ f) D.Equiv.refl ⟩
+          R.F₁ (L.F₁ f) ∘ (unitη X ⟨$⟩ D.id) ∘ id            ≈⟨ refl⟩∘⟨ identityʳ ⟩
+          R.F₁ (L.F₁ f) ∘ (unitη X ⟨$⟩ D.id)                 ∎
+        }
+        where open C
+              open HomReasoning
+              open MR C
+
+      counitη : ∀ X → F₀ Hom[-,R-] (R.F₀ X , X) ⟶ F₀ Hom[L-,-] (R.F₀ X , X)
+      counitη X = ⇐.η (R.F₀ X , X)
+
+      counit : NaturalTransformation (L ∘F R) idF
+      counit = record
+        { η       = λ X → counitη X ⟨$⟩ C.id
+        ; commute = λ {X} {Y} f → begin
+          (counitη Y ⟨$⟩ C.id) ∘ L.F₁ (R.F₁ f)               ≈˘⟨ identityˡ ⟩
+          id ∘ (counitη Y ⟨$⟩ C.id) ∘ L.F₁ (R.F₁ f)          ≈˘⟨ ⇐.commute (R.F₁ f , D.id) C.Equiv.refl ⟩
+          ⇐.η (R.F₀ X , Y) ⟨$⟩ (R.F₁ id C.∘ C.id C.∘ R.F₁ f) ≈⟨ cong (⇐.η (R.F₀ X , Y)) (C.Equiv.trans (MR.elimˡ C R.identity) C.identityˡ) ⟩
+          ⇐.η (R.F₀ X , Y) ⟨$⟩ R.F₁ f                        ≈⟨ cong (⇐.η (R.F₀ X , Y)) (MR.introʳ C C.identityˡ) ⟩
+          ⇐.η (R.F₀ X , Y) ⟨$⟩ (R.F₁ f C.∘ C.id C.∘ C.id)    ≈⟨ ⇐.commute (C.id , f) C.Equiv.refl ⟩
+          f ∘ (counitη X ⟨$⟩ C.id) ∘ L.F₁ C.id               ≈⟨ refl⟩∘⟨ elimʳ L.identity ⟩
+          f ∘ (counitη X ⟨$⟩ C.id)                           ∎
+        }
+        where open D
+              open HomReasoning
+              open MR D
+  
+    Hom-NI⇒Adjoint : L ⊣ R
+    Hom-NI⇒Adjoint = record
+      { unit   = unit
+      ; counit = counit
+      ; zig    = λ {A} →
+        let open D
+            open HomReasoning
+            open MR D
+        in begin
+          η counit (L.F₀ A) ∘ L.F₁ (η unit A)      ≈˘⟨ identityˡ ⟩
+          id ∘ η counit (L.F₀ A) ∘ L.F₁ (η unit A) ≈˘⟨ ⇐.commute (η unit A , id) C.Equiv.refl ⟩
+          ⇐.η (A , L.F₀ A) ⟨$⟩ (R.F₁ id C.∘ C.id C.∘ η unit A)
+                                                   ≈⟨ cong (⇐.η (A , L.F₀ A)) (C.Equiv.trans (MR.elimˡ C R.identity) C.identityˡ) ⟩
+          ⇐.η (A , L.F₀ A) ⟨$⟩ η unit A            ≈⟨ isoˡ refl ⟩
+          id
+                                                   ∎
+      ; zag    = λ {B} →
+        let open C
+            open HomReasoning
+            open MR C
+        in begin
+          R.F₁ (η counit B) ∘ η unit (R.F₀ B)      ≈˘⟨ refl⟩∘⟨ identityʳ ⟩
+          R.F₁ (η counit B) ∘ η unit (R.F₀ B) ∘ id ≈˘⟨ ⇒.commute (id , η counit B) D.Equiv.refl ⟩
+          ⇒.η (R.F₀ B , B) ⟨$⟩ (η counit B D.∘ D.id D.∘ L.F₁ id)
+                                                   ≈⟨ cong (⇒.η (R.F₀ B , B)) (MR.elimʳ D (MR.elimʳ D L.identity)) ⟩
+          ⇒.η (R.F₀ B , B) ⟨$⟩ η counit B          ≈⟨ isoʳ refl ⟩
+          id                                       ∎
+      }
+      where module i {X} = Iso (iso X)
+            open i
+  
 ⊣-id : idF {C = C} ⊣ idF {C = C}
 ⊣-id {C = C} = record
   { unit   = F⇐G unitorˡ
