@@ -3,10 +3,10 @@ module Categories.Adjoint where
 
 -- Adjoints
 
-open import Level using (Level; _⊔_; levelOfTerm)
+open import Level
 
 open import Data.Product using (_,_; _×_)
-open import Function using () renaming (_∘_ to _∙_)
+open import Function using (_$_) renaming (_∘_ to _∙_)
 import Function.Inverse as FI
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
@@ -17,6 +17,7 @@ open import Categories.Category.Instance.Setoids
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Functor.Hom using (Hom[_][-,-])
+open import Categories.Functor.Construction.LiftSetoids
 open import Categories.NaturalTransformation using (NaturalTransformation; _≃_) renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (NaturalIsomorphism; unitorˡ; unitorʳ)
@@ -103,7 +104,7 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm C ⊔ leve
     }
 
   module Hom-inverse {A} {B} = FI.Inverse (Hom-inverse A B)
-
+  
   op : Adjoint R.op L.op
   op = record
     { unit   = counit.op
@@ -112,6 +113,68 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm C ⊔ leve
     ; zag    = zig
     }
 
+  -- a complication: the two hom functors do not live in the same Setoids,
+  -- so they need to be maped to the same Setoids first before establishing
+  -- natural isomorphism!
+  module _ where
+    private
+      levelℓ : Category o ℓ e → Level
+      levelℓ {ℓ = ℓ} _ = ℓ
+  
+      levele : Category o ℓ e → Level
+      levele {e = e} _ = e
+  
+  
+    Hom[L-,-]′ : Bifunctor C.op D (Setoids _ _)
+    Hom[L-,-]′ = LiftSetoids (levelℓ C) (levele C) ∘F Hom[ D ][-,-] ∘F (L.op ⁂ idF)
+  
+    Hom[-,R-]′ : Bifunctor C.op D (Setoids _ _)
+    Hom[-,R-]′ = LiftSetoids (levelℓ D) (levele D) ∘F Hom[ C ][-,-] ∘F (idF ⁂ R)
+
+    Hom-NI : NaturalIsomorphism Hom[L-,-]′ Hom[-,R-]′
+    Hom-NI = record
+      { F⇒G = record
+        { η       = λ _ → record
+          { _⟨$⟩_ = λ f → lift (Ladjunct (lower f))
+          ; cong  = λ eq → lift (C.∘-resp-≈ˡ (R.F-resp-≈ (lower eq)))
+          }
+        ; commute = λ where
+          {X , Y} {A , B} (f , g) {lift h} {lift i} (lift eq) →
+            let open C
+                open HomReasoning
+                open MR C
+            in lift $ begin
+              R.F₁ (g D.∘ h D.∘ L.F₁ f) ∘ unit.η A         ≈⟨ R.homomorphism ⟩∘⟨refl ⟩
+              (R.F₁ g ∘ R.F₁ (h D.∘ L.F₁ f)) ∘ unit.η A    ≈⟨ (refl⟩∘⟨ R.homomorphism) ⟩∘⟨refl ⟩
+              (R.F₁ g ∘ R.F₁ h ∘ R.F₁ (L.F₁ f)) ∘ unit.η A ≈⟨ pullʳ assoc ⟩
+              R.F₁ g ∘ R.F₁ h ∘ R.F₁ (L.F₁ f) ∘ unit.η A   ≈˘⟨ refl⟩∘⟨ ⟺ (R.F-resp-≈ eq) ⟩∘⟨ unit.commute f ⟩
+              R.F₁ g ∘ R.F₁ i ∘ unit.η X ∘ f               ≈˘⟨ refl⟩∘⟨ assoc ⟩
+              R.F₁ g ∘ (R.F₁ i ∘ unit.η X) ∘ f             ∎
+        }
+      ; F⇐G = record
+        { η       = λ _ → record
+          { _⟨$⟩_ = λ f → lift (Radjunct (lower f))
+          ; cong  = λ eq → lift (D.∘-resp-≈ʳ (L.F-resp-≈ (lower eq)))
+          }
+        ; commute = λ where
+          {X , Y} {A , B} (f , g) {lift h} {lift i} (lift eq) →
+            let open D
+                open HomReasoning
+                open MR D
+            in lift $ begin
+              counit.η B ∘ L.F₁ (R.F₁ g C.∘ h C.∘ f)       ≈⟨ refl⟩∘⟨ L.homomorphism ⟩
+              counit.η B ∘ L.F₁ (R.F₁ g) ∘ L.F₁ (h C.∘ f)  ≈⟨ pullˡ (counit.commute g) ⟩
+              (g ∘ counit.η Y) ∘ L.F₁ (h C.∘ f)            ≈⟨ refl⟩∘⟨ L.homomorphism ⟩
+              (g ∘ counit.η Y) ∘ L.F₁ h ∘ L.F₁ f           ≈⟨ refl ⟩∘⟨ L.F-resp-≈ eq ⟩∘⟨ refl ⟩
+              (g ∘ counit.η Y) ∘ L.F₁ i ∘ L.F₁ f           ≈⟨ pullʳ (⟺ assoc) ⟩
+              g ∘ (counit.η Y ∘ L.F₁ i) ∘ L.F₁ f           ∎
+        }
+      ; iso = λ X → record
+        { isoˡ = λ eq → let open D.HomReasoning in lift (RLadjunct≈id ○ lower eq)
+        ; isoʳ = λ eq → let open C.HomReasoning in lift (LRadjunct≈id ○ lower eq)
+        }
+      }
+  
 infix 5 _⊣_
 _⊣_ = Adjoint
 
