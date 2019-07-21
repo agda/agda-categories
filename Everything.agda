@@ -20,11 +20,13 @@ import Categories.Category.Instance.Sets
 import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
 import Categories.Category.Monoidal.Closed
+import Categories.Category.Monoidal.Instance.Cats
 import Categories.Category.Monoidal.Instance.Sets
 import Categories.Category.Monoidal.Properties
 import Categories.Category.Monoidal.Symmetric
 import Categories.Category.Monoidal.Traced
 import Categories.Category.Product
+import Categories.Category.Product.Properties
 import Categories.Category.Slice
 import Categories.Category.SubCategory
 import Categories.Comonad

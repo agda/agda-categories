@@ -3,25 +3,25 @@ open import Categories.Category
 
 module Categories.Category.CartesianClosed {o ℓ e} (𝒞 : Category o ℓ e) where
 
-open Category 𝒞
-
 open import Level
 open import Function using (_$_; flip)
 open import Data.Product using (Σ; _,_; uncurry)
 
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Bifunctor
+open import Categories.NaturalTransformation hiding (id)
 open import Categories.Category.Cartesian 𝒞
+open import Categories.Category.Monoidal.Closed
 open import Categories.Object.Product 𝒞
   hiding (repack≡id; repack∘; repack-cancel; up-to-iso; transport-by-iso)
 open import Categories.Object.Exponential 𝒞 hiding (repack)
 open import Categories.Morphism 𝒞
 open import Categories.Morphism.Reasoning 𝒞
 
-open HomReasoning
-
 private
   module 𝒞 = Category 𝒞
+  open Category 𝒞
+  open HomReasoning
   variable
     A B C   : Obj
     f g h i : A ⇒ B
@@ -35,7 +35,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   
   field
     cartesian : Cartesian
-    exp      : Exponential A B
+    exp       : Exponential A B
 
   module exp {A B} = Exponential (exp {A} {B})
 
@@ -199,3 +199,54 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
 
   -⇨_ : Obj → Functor 𝒞.op 𝒞
   -⇨_ = appʳ -⇨-
+
+  module _ where
+    private
+      A⇨[-×A] : Obj → Endofunctor 𝒞
+      A⇨[-×A] A = A ⇨- ∘F -× A
+
+      module A⇨[-×A] {A} = Functor (A⇨[-×A] A)
+
+      [A⇨-]×A : Obj → Endofunctor 𝒞
+      [A⇨-]×A A = -× A ∘F A ⇨-
+
+      module [A⇨-]×A {A} = Functor ([A⇨-]×A A)
+
+    monoidalClosed : Closed monoidal
+    monoidalClosed = record
+      { [-,-]   = -⇨-
+      ; adjoint = λ {A} → record
+        { unit   = record
+          { η       = λ _ → λg id
+          ; commute = λ f → λ-unique₂′ $ begin
+            eval′ ∘ first (λg id ∘ f)                     ≈˘⟨ refl⟩∘⟨ first∘first ⟩
+            eval′ ∘ first (λg id) ∘ first f               ≈⟨ cancelˡ β′ ⟩
+            first f                                       ≈˘⟨ cancelʳ β′ ⟩
+            (first f ∘ eval′)  ∘ first (λg id)            ≈˘⟨ ∘-resp-≈ʳ (elimʳ (id×id product)) ⟩∘⟨refl ⟩
+            (first f ∘ eval′ ∘ first id)  ∘ first (λg id) ≈˘⟨ pullˡ β′ ⟩
+            eval′ ∘ first (A⇨[-×A].F₁ f) ∘ first (λg id)  ≈⟨ refl⟩∘⟨ first∘first ⟩
+            eval′ ∘ first (A⇨[-×A].F₁ f ∘ λg id)          ∎
+          }
+        ; counit = record
+          { η       = λ _ → eval′
+          ; commute = λ f → begin
+            eval′ ∘ [A⇨-]×A.F₁ f ≈⟨ β′ ⟩
+            f ∘ eval′ ∘ first id ≈⟨ refl⟩∘⟨ elimʳ (id×id product) ⟩
+            f ∘ eval′            ∎
+          }
+        ; zig    = β′
+        ; zag    = λ-unique₂′ $ begin
+          eval′ ∘ first (λg (eval′ ∘ eval′ ∘ second id) ∘ λg id)
+                                          ≈˘⟨ refl⟩∘⟨ first∘first ⟩
+          eval′ ∘ first (λg (eval′ ∘ eval′ ∘ second id)) ∘ first (λg id)
+                                          ≈⟨ pullˡ β′ ⟩
+          (eval′ ∘ eval′ ∘ second id) ∘ first (λg id)
+                                          ≈⟨ ∘-resp-≈ʳ (elimʳ (id×id product)) ⟩∘⟨refl ⟩
+          (eval′ ∘ eval′) ∘ first (λg id) ≈⟨ cancelʳ β′ ⟩
+          eval′                           ≈˘⟨ elimʳ (id×id product) ⟩
+          eval′ ∘ first id                ∎
+        }
+      }
+  
+  module monoidalClosed = Closed monoidalClosed
+  open monoidalClosed
