@@ -11,7 +11,7 @@ open import Categories.Category.Construction.Functors
 open import Categories.Functor
 open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation
-open import Categories.NaturalTransformation.NaturalIsomorphism
+open import Categories.NaturalTransformation.NaturalIsomorphism hiding (_≅_)
 open import Categories.NaturalTransformation.Dinatural
 import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
@@ -52,25 +52,28 @@ module _ {F G : Functor C D} where
 
   -- isomorphism in Functors category is the same as natural isomorphism
   module _ where
+    open Mor (Functors C D)
   
-    Functors-iso⇒NI : ∀ {α : NaturalTransformation F G} {β : NaturalTransformation G F} →
-                        Mor.Iso (Functors C D) α β → NaturalIsomorphism F G
-    Functors-iso⇒NI {α} {β} iso = record
-      { F⇒G = α
-      ; F⇐G = β
+    Functors-iso⇒NI : F ≅ G → NaturalIsomorphism F G
+    Functors-iso⇒NI F≅G = record
+      { F⇒G = from
+      ; F⇐G = to
       ; iso = λ X → record
         { isoˡ = isoˡ
         ; isoʳ = isoʳ
         }
       }
-      where open Mor.Iso iso
-  
-    open NaturalIsomorphism
+      where open Mor._≅_ F≅G
     
-    NI⇒Functors-iso : (α : NaturalIsomorphism F G) → Mor.Iso (Functors C D) (F⇒G α) (F⇐G α)
+    NI⇒Functors-iso : NaturalIsomorphism F G → F ≅ G
     NI⇒Functors-iso α = record
-      { isoˡ = isoˡ (iso α _)
-      ; isoʳ = isoʳ (iso α _)
+      { from = F⇒G
+      ; to   = F⇐G
+      ; iso  = record
+        { isoˡ = isoˡ (iso _)
+        ; isoʳ = isoʳ (iso _)
+        }
       }
-      where open Mor.Iso
-  
+      where open NaturalIsomorphism α
+            open Mor.Iso
+
