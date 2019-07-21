@@ -3,6 +3,7 @@
 open import Level
 
 -- This is really a degenerate version of Categories.Category.Instance.One
+-- Here SingletonSet is not given an explicit name, it is an alias for Lift o ⊤
 module Categories.Category.Instance.SingletonSet where
 
 open import Data.Unit using (⊤)
@@ -13,11 +14,6 @@ import Categories.Object.Terminal as Term
 
 module _ {o : Level} where
   open Term (Sets o)
-  private
-    U = Lift o ⊤
-
-  SingletonSet : Set o
-  SingletonSet = U
 
   SingletonSet-⊤ : Terminal
-  SingletonSet-⊤ = record { ⊤ = SingletonSet ; !-unique = λ _ → refl }
+  SingletonSet-⊤ = record { ⊤ = Lift o ⊤ ; !-unique = λ _ → refl }
