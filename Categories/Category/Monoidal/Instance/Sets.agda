@@ -5,7 +5,7 @@
 module Categories.Category.Monoidal.Instance.Sets where
 
 open import Level
-open import Data.Product using (Σ; _×_; _,_; uncurry; map)
+open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂; uncurry; map; <_,_>)
 open import Data.Unit using (⊤)
 open import Relation.Binary.PropositionalEquality
 open import Function.Inverse using (module Inverse; _↔_)
@@ -16,50 +16,34 @@ open import Function using (_$_)
 open import Categories.Category.Instance.Sets
 open import Categories.Category.Monoidal
 open import Categories.Functor.Bifunctor
-open import Categories.Category.Instance.One
+open import Categories.Category.Instance.SingletonSet
 import Categories.Morphism as Morphism
+import Categories.Category.Cartesian as Cartesian
 
 -- Sets is a Monoidal Category with × as Bifunctor
 module Product {o : Level} where
   private
     S = Sets o
-    open Morphism S
+    open Cartesian S
 
-    ⊗ : Bifunctor S S S
-    ⊗ = record
-          { F₀ = uncurry _×_
-          ; F₁ = λ where (f , g) → map f g
-          ; identity = refl
-          ; homomorphism = refl
-          ; F-resp-≈ = λ where (≡₁ , ≡₂) → cong₂ _,_ ≡₁ ≡₂
-          }
+  Sets-has-all : BinaryProducts
+  Sets-has-all = record { product = λ {A} {B} → record
+    { A×B = A × B
+    ; π₁ = proj₁
+    ; π₂ = proj₂
+    ; ⟨_,_⟩ = <_,_>
+    ; project₁ = refl
+    ; project₂ = refl
+    ; unique = λ p₁ p₂ {x} → sym (cong₂ _,_ (p₁ {x}) (p₂ {x}))
+    } }
 
-    -- We don't want to redo all the proofs, convert them from stdlib
-    Inverse→≅ : ∀ {A B} → A ↔ B → A ≅ B
-    Inverse→≅ inv = record
-      { from = fun $ Inverse.to inv
-      ; to = fun $ Inverse.from inv
-      ; iso = record
-        { isoˡ = λ {x} → Inverse.left-inverse-of inv x
-        ; isoʳ = λ {x} → Inverse.right-inverse-of inv x
-        }
-      }
+  Sets-is : Cartesian
+  Sets-is = record { terminal = SingletonSet-⊤ ; products = Sets-has-all }
 
-  Sets-is-Monoidal : Monoidal S
-  Sets-is-Monoidal = record
-    { ⊗ = ⊗
-    ; unit = Lift o ⊤
-    ; unitorˡ = λ {X} → Inverse→≅ (×-identityˡ o X)
-    ; unitorʳ = λ {X} → Inverse→≅ (×-identityʳ o X)
-    ; associator = Inverse→≅ Σ-assoc
-    ; unitorˡ-commute-from = refl
-    ; unitorˡ-commute-to = refl
-    ; unitorʳ-commute-from = refl
-    ; unitorʳ-commute-to = refl
-    ; assoc-commute-from = refl
-    ; assoc-commute-to = refl
-    ; triangle = refl
-    ; pentagon = refl
-    }
+  private
+    module Cart = Cartesian.Cartesian Sets-is
+
+  Sets-Monoidal : Monoidal S
+  Sets-Monoidal = Cart.monoidal
 
 -- TODO: Sets is a Monoidal Category with ⊎ as Bifunctor
