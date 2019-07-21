@@ -26,7 +26,8 @@ open import Categories.Category.Construction.Presheaves
 open import Categories.Category.Instance.Setoids
 open import Categories.Functor.Presheaf
 open import Categories.NaturalTransformation using (NaturalTransformation)
-open import Categories.NaturalTransformation.NaturalIsomorphism
+open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
+import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
 
 private
@@ -43,9 +44,9 @@ module _ (C : Category o ℓ e) where
 
   -- This NaturalTransformation should probably got into NaturalTransformation.Hom,
   -- in analogy with Functor.Hom above.
-  Hom[A,C]⇒Hom[B,C] : {A B : Obj} → (A ⇒ B) → NaturalTransformation (Hom.Hom[-, C ] A) (Hom.Hom[-, C ] B)
+  Hom[A,C]⇒Hom[B,C] : {A B : Obj} → (A ⇒ B) → NaturalTransformation Hom[ C ][-, A ] Hom[ C ][-, B ]
   Hom[A,C]⇒Hom[B,C] {A} A⇒B = record
-    { η = λ X → record { _⟨$⟩_ = λ X⇒A → A⇒B ∘ X⇒A ; cong = ∘-resp-≈ʳ }
+    { η       = λ X → record { _⟨$⟩_ = λ X⇒A → A⇒B ∘ X⇒A ; cong = ∘-resp-≈ʳ }
     ; commute = λ {X} {Y} f {g} {h} g≈h → begin
         A⇒B ∘ id ∘ g ∘ f   ≈˘⟨ assoc ⟩
         (A⇒B ∘ id) ∘ g ∘ f ≈⟨ ∘-resp-≈ id-comm (∘-resp-≈ˡ g≈h) ⟩
@@ -56,26 +57,26 @@ module _ (C : Category o ℓ e) where
   -- The Yoneda embedding functor
   embed : Functor C (Presheaves C)
   embed = record
-    { F₀ = Hom[ C ][-,_]
-    ; F₁ = Hom[A,C]⇒Hom[B,C] -- A⇒B induces a NatTrans on the Homs.
-    ; identity = identityˡ ○_
+    { F₀           = Hom[ C ][-,_]
+    ; F₁           = Hom[A,C]⇒Hom[B,C] -- A⇒B induces a NatTrans on the Homs.
+    ; identity     = identityˡ ○_
     ; homomorphism = λ h₁≈h₂ → ∘-resp-≈ʳ h₁≈h₂ ○ assoc
-    ; F-resp-≈ = λ f≈g h≈i → ∘-resp-≈ f≈g h≈i
+    ; F-resp-≈     = λ f≈g h≈i → ∘-resp-≈ f≈g h≈i
     }
 
   -- Using the adjunction between product and product, we get a kind of contravariant Bifunctor
   yoneda : (a : Obj) (F : Presheaf C (Setoids ℓ e)) →
     Inverse (Category.hom-setoid (Presheaves C) {Functor.F₀ embed a} {F}) (Functor.F₀ F a)
   yoneda a F = record
-    { to = record
+    { to         = record
       { _⟨$⟩_ = λ nat → η nat a ⟨$⟩ id
-      ; cong = λ i≈j → i≈j CE.refl
+      ; cong  = λ i≈j → i≈j CE.refl
       }
-    ; from = record
+    ; from       = record
       { _⟨$⟩_ = λ x → record
-        { η = λ X → record
+        { η       = λ X → record
           { _⟨$⟩_ = λ X⇒a → F₁ F X⇒a ⟨$⟩ x
-          ; cong = λ i≈j → F-resp-≈ F i≈j SE.refl
+          ; cong  = λ i≈j → F-resp-≈ F i≈j SE.refl
           }
         ; commute = λ {X} {Y} Y⇒X {f} {g} f≈g →
           let module SFY = Setoid (F₀ F Y) in
@@ -86,11 +87,11 @@ module _ (C : Category o ℓ e) where
              F₁ F Y⇒X ⟨$⟩ (F₁ F g ⟨$⟩ x)
            SR.∎
         }
-      ; cong = λ i≈j y≈z → F-resp-≈ F y≈z i≈j
+      ; cong  = λ i≈j y≈z → F-resp-≈ F y≈z i≈j
       }
     ; inverse-of = record
-      { left-inverse-of = λ nat {x} {z} z≈y →
-        let module S = Setoid (F₀ F x) in
+      { left-inverse-of  = λ nat {x} {z} z≈y →
+        let module S     = Setoid (F₀ F x) in
         S.trans (S.sym (commute nat z CE.refl))
                 (cong (η nat x) (identityˡ ○ identityˡ ○ z≈y))
       ; right-inverse-of = λ Fa → identity F SE.refl
@@ -100,18 +101,18 @@ module _ (C : Category o ℓ e) where
 
   YoFull : Full embed
   YoFull {X} {Y} = record
-      { to = record
+      { to         = record
         { _⟨$⟩_ = Hom[A,C]⇒Hom[B,C]
-        ; cong = λ i≈j f≈g → ∘-resp-≈ i≈j f≈g
+        ; cong  = λ i≈j f≈g → ∘-resp-≈ i≈j f≈g
         }
       ; surjective = record
-        { from = record { _⟨$⟩_ = λ ε → η ε X ⟨$⟩ id ; cong = λ i≈j → i≈j CE.refl }
+        { from             = record { _⟨$⟩_ = λ ε → η ε X ⟨$⟩ id ; cong = λ i≈j → i≈j CE.refl }
         ; right-inverse-of = λ ε {x} {z} {y} z≈y →
           begin
-            (η ε X ⟨$⟩ id) ∘ z       ≈˘⟨ identityˡ ⟩
-            id ∘ (η ε X ⟨$⟩ id) ∘ z  ≈˘⟨ commute ε z CE.refl ⟩
-            η ε x ⟨$⟩ id ∘ id ∘ z    ≈⟨ cong (η ε x) (identityˡ ○ identityˡ ○ z≈y) ⟩
-            η ε x ⟨$⟩ y ∎
+            (η ε X ⟨$⟩ id) ∘ z      ≈˘⟨ identityˡ ⟩
+            id ∘ (η ε X ⟨$⟩ id) ∘ z ≈˘⟨ commute ε z CE.refl ⟩
+            η ε x ⟨$⟩ id ∘ id ∘ z   ≈⟨ cong (η ε x) (identityˡ ○ identityˡ ○ z≈y) ⟩
+            η ε x ⟨$⟩ y             ∎
         }
       }
 
@@ -120,3 +121,30 @@ module _ (C : Category o ℓ e) where
 
   YoFullyFaithful : FullyFaithful embed
   YoFullyFaithful = YoFull , YoFaithful
+
+  open Mor C
+
+  yoneda-iso : ∀ {A B : Obj} → NaturalIsomorphism Hom[ C ][-, A ] Hom[ C ][-, B ] → A ≅ B
+  yoneda-iso {A} {B} niso = record
+    { from = ⇒.η A ⟨$⟩ id
+    ; to   = ⇐.η B ⟨$⟩ id
+    ; iso  = record
+      { isoˡ = begin
+        (⇐.η B ⟨$⟩ id) ∘ (⇒.η A ⟨$⟩ id)      ≈˘⟨ identityˡ ⟩
+        id ∘ (⇐.η B ⟨$⟩ id) ∘ (⇒.η A ⟨$⟩ id) ≈⟨ B⇒A.left-inverse-of F⇐G refl ⟩
+        ⇐.η A ⟨$⟩ (⇒.η A ⟨$⟩ id)             ≈⟨ iso.isoˡ refl ⟩
+        id                                   ∎  
+      ; isoʳ = begin
+        (⇒.η A ⟨$⟩ id) ∘ (⇐.η B ⟨$⟩ id)      ≈˘⟨ identityˡ ⟩
+        id ∘ (⇒.η A ⟨$⟩ id) ∘ (⇐.η B ⟨$⟩ id) ≈⟨ A⇒B.left-inverse-of F⇒G refl ⟩
+        ⇒.η B ⟨$⟩ (⇐.η B ⟨$⟩ id)             ≈⟨ iso.isoʳ refl ⟩
+        id                                   ∎
+      }
+    }
+    where open NaturalIsomorphism niso
+          A⇒B = yoneda A (Functor.F₀ embed B)
+          B⇒A = yoneda B (Functor.F₀ embed A)
+          module A⇒B = Inverse A⇒B
+          module B⇒A = Inverse B⇒A
+          module iso {X} = Mor.Iso (iso X)
+  

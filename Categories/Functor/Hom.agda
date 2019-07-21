@@ -33,12 +33,7 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
     ; F-resp-≈     = F-resp-≈′
     }
     where F₀′ : Obj × Obj → Setoid ℓ e
-          F₀′ (A , B) = record
-            { Carrier       = A ⇒ B
-            ; _≈_           = _≈_
-            ; isEquivalence = equiv
-            }
-
+          F₀′ (A , B) = hom-setoid {A} {B}
           open HomReasoning
 
           identity′ : {A : Obj × Obj} {x y : uncurry _⇒_ A} → x ≈ y → id ∘ x ∘ id ≈ y
