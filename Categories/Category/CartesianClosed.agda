@@ -212,8 +212,8 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
 
       module [A⇨-]×A {A} = Functor ([A⇨-]×A A)
 
-    monoidalClosed : Closed monoidal
-    monoidalClosed = record
+    closedMonoidal : Closed monoidal
+    closedMonoidal = record
       { [-,-]   = -⇨-
       ; adjoint = λ {A} → record
         { unit   = record
@@ -248,5 +248,5 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
         }
       }
   
-  module monoidalClosed = Closed monoidalClosed
-  open monoidalClosed
+  module closedMonoidal = Closed closedMonoidal
+  open closedMonoidal
