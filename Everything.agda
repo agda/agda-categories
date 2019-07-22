@@ -1,3 +1,5 @@
+import Categories.2-Category
+import Categories.2-Category.Instance.Cats
 import Categories.Adjoint
 import Categories.Category
 import Categories.Category.BicartesianClosed
