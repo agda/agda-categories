@@ -17,6 +17,7 @@ import Categories.Category.Instance.Cats
 import Categories.Category.Instance.One
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
+import Categories.Category.Instance.SingletonSet
 import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
 import Categories.Category.Monoidal.Closed

@@ -10,7 +10,7 @@ open import Function using () renaming (_∘_ to _∙_)
 
 open import Categories.Category
 open import Categories.Functor hiding (id)
-open import Categories.Functor.Bifunctor using (Bifunctor)
+open import Categories.Functor.Bifunctor
 open import Categories.Category.Instance.Setoids
 import Categories.Morphism.Reasoning as MR
 
@@ -69,23 +69,11 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
   open HomReasoning
 
   Hom[_,-] : Obj → Functor C (Setoids ℓ e)
-  Hom[ A ,-] = record
-    { F₀           = F₀ ∙ (A ,_)
-    ; F₁           = F₁ ∙ (id ,_)
-    ; identity     = identity
-    ; homomorphism = λ x≈y → ∘-resp-≈ʳ (∘-resp-≈ʳ (⟺ identityˡ)) ○ homomorphism x≈y
-    ; F-resp-≈     = λ f≈g x≈y → ∘-resp-≈ f≈g (∘-resp-≈ˡ x≈y)
-    }
+  Hom[_,-] = appˡ Hom[-,-]
 
   Hom[-,_] : Obj → Contravariant C (Setoids ℓ e)
-  Hom[-, B ] = record
-    { F₀           = F₀ ∙ (_, B)
-    ; F₁           = F₁ ∙ (_, id)
-    ; identity     = identity
-    ; homomorphism = λ x≈y → ∘-resp-≈ˡ (⟺ identityˡ) ○ homomorphism x≈y
-    ; F-resp-≈     = λ f≈g x≈y → ∘-resp-≈ʳ (∘-resp-≈ x≈y f≈g)
-    }
-
+  Hom[-,_] = appʳ Hom[-,-]
+  
 -- Notation for when the ambient Category must be specified explicitly.
 module _ {o ℓ e} (C : Category o ℓ e) where
   open Category C
