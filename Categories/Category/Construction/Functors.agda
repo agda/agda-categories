@@ -4,7 +4,7 @@ module Categories.Category.Construction.Functors where
 -- the "Functor Category", often denoted [ C , D ]
 
 open import Level
-open import Data.Product using (Σ; _,_; _×_; uncurry′)
+open import Data.Product using (Σ; _,_; _×_; uncurry′; proj₁)
 
 open import Categories.Category
 open import Categories.Functor
@@ -66,3 +66,26 @@ eval {C = C} {D = D} = record
         open D
         open MR D
         open HomReasoning
+
+-- Godement product ?
+product : {A B C : Category o ℓ e} → Bifunctor (Functors B C) (Functors A B) (Functors A C)
+product {A = A} {B = B} {C = C} = record
+  { F₀ = uncurry′ _∘F_
+  ; F₁ = uncurry′ _∘ₕ_
+  ; identity = λ {f} → identityʳ ○ identity {D = C} (proj₁ f)
+  ; homomorphism = λ { {_ , F₂} {G₁ , G₂} {H₁ , _} {f₁ , f₂} {g₁ , g₂} {x} → begin
+      F₁ H₁ (η g₂ x B.∘ η f₂ x) ∘ η g₁ (F₀ F₂ x) ∘ η f₁ (F₀ F₂ x)
+          ≈⟨ ∘-resp-≈ˡ (homomorphism H₁) ○ assoc ○ ∘-resp-≈ʳ (⟺ assoc) ⟩
+      F₁ H₁ (η g₂ x) ∘ (F₁ H₁ (η f₂ x) ∘ η g₁ (F₀ F₂ x)) ∘ η f₁ (F₀ F₂ x)
+          ≈⟨  ⟺ ( refl⟩∘⟨ ( commute g₁ (η f₂ x) ⟩∘⟨refl) ) ⟩
+      F₁ H₁ (η g₂ x) ∘ (η g₁ (F₀ G₂ x) ∘ F₁  G₁ (η f₂ x)) ∘ η f₁ (F₀ F₂ x)
+          ≈⟨ ∘-resp-≈ʳ assoc ○ ⟺ assoc ⟩
+      (F₁ H₁ (η g₂ x) ∘ η g₁ (F₀ G₂ x)) ∘ F₁ G₁ (η f₂ x) ∘ η f₁ (F₀ F₂ x) ∎ }
+  ; F-resp-≈ = λ { {_} {g₁ , _} (≈₁ , ≈₂) → ∘-resp-≈ (F-resp-≈ g₁ ≈₂) ≈₁ }
+  }
+  where
+    open Category C
+    open HomReasoning
+    open Functor
+    module B = Category B
+    open NaturalTransformation
