@@ -27,7 +27,7 @@ open import Categories.Morphism C
 open import Categories.Morphism.Reasoning C
 open import Categories.Morphism.Properties C
 open import Categories.NaturalTransformation hiding (id)
-open import Categories.NaturalTransformation.NaturalIsomorphism as NI hiding (_≅_)
+open import Categories.NaturalTransformation.NaturalIsomorphism as NI hiding (_≅_; refl)
 open import Categories.NaturalTransformation.Dinatural using (extranaturalʳ)
 open import Categories.NaturalTransformation.Properties
 open import Categories.Yoneda
@@ -62,63 +62,39 @@ record Closed : Set (levelOfTerm M) where
       [_,-] : Obj → Endofunctor C
       [_,-] = appˡ [-,-]
 
-      nat′ : ∀ {X} → NaturalIsomorphism (Hom[-,[ unit ,-]] ∘F constʳ X) Hom[ C ][-, [-,-].F₀ (unit , X) ]
-      nat′ = record
-        { F⇒G = record
-          { η       = λ _ → Π.id
-          ; commute = λ f eq → ∘-resp-≈ˡ [-,-].identity ○ ∘-resp-≈ʳ (∘-resp-≈ˡ eq)
-          }
-        ; F⇐G = record
-          { η       = λ _ → Π.id
-          ; commute = λ f eq → ⟺ (∘-resp-≈ˡ [-,-].identity ○ ∘-resp-≈ʳ (∘-resp-≈ˡ (⟺ eq)))
-          }
-        ; iso = λ _ → record
-          { isoˡ = idFun
-          ; isoʳ = idFun
-          }
-        }
-
-      nat : ∀ {X} → NaturalIsomorphism Hom[ C ][-, X ] (appʳ Hom[-⊗ unit ,-] X)
-      nat = record
-        { F⇒G = record
-          { η       = λ _ → record
-            { _⟨$⟩_ = λ f → f ∘ unitorʳ.from
-            ; cong  = ∘-resp-≈ˡ
-            }
-          ; commute = λ {_ _} f {g h} eq → begin
-            (id ∘ g ∘ f) ∘ unitorʳ.from       ≈⟨ identityˡ ⟩∘⟨refl ⟩
-            (g ∘ f) ∘ unitorʳ.from            ≈˘⟨ pushʳ unitorʳ-commute-from ⟩
-            g ∘ unitorʳ.from ∘ f ⊗₁ id        ≈⟨ pullˡ (∘-resp-≈ˡ eq) ⟩
-            (h ∘ unitorʳ.from) ∘ f ⊗₁ id      ≈˘⟨ identityˡ ⟩
-            id ∘ (h ∘ unitorʳ.from) ∘ f ⊗₁ id ∎
-          }
-        ; F⇐G = record
-          { η       = λ _ → record
-            { _⟨$⟩_ = λ f → f ∘ unitorʳ.to
-            ; cong  = ∘-resp-≈ˡ
-            }
-          ; commute = λ {_ _} f {g h} eq → begin
-            (id ∘ g ∘ f ⊗₁ id) ∘ unitorʳ.to   ≈⟨ identityˡ ⟩∘⟨refl ⟩
-            (g ∘ f ⊗₁ id) ∘ unitorʳ.to        ≈˘⟨ pushʳ unitorʳ-commute-to ⟩
-            g ∘ unitorʳ.to ∘ f                ≈⟨ pullˡ (∘-resp-≈ˡ eq) ⟩
-            (h ∘ unitorʳ.to) ∘ f              ≈˘⟨ identityˡ ⟩
-            id ∘ (h ∘ unitorʳ.to) ∘ f         ∎
-          }
-        ; iso = λ _ → record
-          { isoˡ = cancelʳ unitorʳ.isoʳ ○_
-          ; isoʳ = cancelʳ unitorʳ.isoˡ ○_
-          }
-        }
-
       identity-NI : NaturalIsomorphism idF [ unit ,-]
       identity-NI = record
         { F⇒G = F∘id⇒F ∘ᵥ ([ unit ,-] ∘ˡ unitorʳ-natural.F⇒G) ∘ᵥ adjoint.unit
         ; F⇐G = adjoint.counit ∘ᵥ (unitorʳ-natural.F⇐G ∘ʳ [ unit ,-]) ∘ᵥ F⇒id∘F
-        ; iso = λ X → Iso-resp-≈ iso′.iso
-                                 ((∘-resp-≈ˡ (F-resp-≈ [ unit ,-] identityˡ)) ○ ⟺ identityˡ)
-                                 (∘-resp-≈ˡ (elimʳ (identity ⊗)) ○ ∘-resp-≈ʳ (⟺ identityʳ))
+        ; iso = λ X → Iso-resp-≈ (iso X)
+                                 (⟺ identityˡ) (⟺ (∘-resp-≈ʳ identityʳ))
         }
-        where iso′ : ∀ X → X ≅ [-,-].F₀ (unit , X)
-              iso′ X = yoneda-iso C (nat′ ⓘᵥ (Hom-NI {X = unit} ⓘʳ constʳ X) ⓘᵥ nat)
-              module iso′ {X} = _≅_ (iso′ X)
-              open Functor
+        where open Functor
+              iso : ∀ X → Iso (adjoint.Ladjunct unitorʳ.from)
+                              (adjoint.counit.η X ∘ unitorʳ.to)
+              iso X = record
+                { isoˡ = begin
+                  (adjoint.counit.η X ∘ unitorʳ.to) ∘ adjoint.Ladjunct unitorʳ.from
+                    ≈⟨ pullʳ unitorʳ-commute-to ⟩
+                  adjoint.counit.η X ∘ adjoint.Ladjunct unitorʳ.from ⊗₁ id ∘ unitorʳ.to
+                    ≈˘⟨ assoc ⟩
+                  adjoint.Radjunct (adjoint.Ladjunct unitorʳ.from) ∘ unitorʳ.to
+                    ≈⟨ adjoint.RLadjunct≈id ⟩∘⟨refl ⟩
+                  unitorʳ.from ∘ unitorʳ.to
+                    ≈⟨ unitorʳ.isoʳ ⟩
+                  id
+                    ∎
+                ; isoʳ = begin
+                  adjoint.Ladjunct unitorʳ.from ∘ adjoint.counit.η X ∘ unitorʳ.to
+                    ≈⟨ pullʳ (adjoint.unit.commute _) ⟩
+                  [-,-].F₁ (id , unitorʳ.from) ∘ adjoint.Ladjunct ((adjoint.counit.η X ∘ unitorʳ.to) ⊗₁ id)
+                    ≈˘⟨ pushˡ (homomorphism [ unit ,-]) ⟩
+                  adjoint.Ladjunct (unitorʳ.from ∘ (adjoint.counit.η X ∘ unitorʳ.to) ⊗₁ id)
+                    ≈⟨ F-resp-≈ [ unit ,-] unitorʳ-commute-from ⟩∘⟨refl ⟩
+                  adjoint.Ladjunct ((adjoint.counit.η X ∘ unitorʳ.to) ∘ unitorʳ.from)
+                    ≈⟨ F-resp-≈ [ unit ,-] (cancelʳ unitorʳ.isoˡ) ⟩∘⟨refl ⟩
+                  adjoint.Ladjunct (adjoint.counit.η X)
+                    ≈⟨ adjoint.zag ⟩
+                  id
+                    ∎
+                }
