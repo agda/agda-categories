@@ -24,10 +24,11 @@ private
 
 module _ {C : Category o ℓ e}
          (F : Functor E (Functors (Product (Category.op C) C) D)) where
-  module C = Category C
-  module D = Category D
-  module E = Category E
-  module NT = NaturalTransformation
+  private
+    module C = Category C
+    module D = Category D
+    module E = Category E
+    module NT = NaturalTransformation
   open D
   open HomReasoning
 
