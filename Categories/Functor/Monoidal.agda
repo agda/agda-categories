@@ -28,7 +28,7 @@ module _  (MC : Monoidal C) (MD : Monoidal D) where
     field
       F : Functor C D
 
-    open Functor F
+    open Functor F public
 
     field
       ε      : D [ MD.unit , F₀ MC.unit ]
