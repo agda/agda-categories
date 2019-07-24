@@ -106,7 +106,7 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
     }
 
   module Hom-inverse {A} {B} = FI.Inverse (Hom-inverse A B)
-  
+
   op : Adjoint R.op L.op
   op = record
     { unit   = counit.op
@@ -157,14 +157,14 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
     private
       levelℓ : Category o ℓ e → Level
       levelℓ {ℓ = ℓ} _ = ℓ
-  
+
       levele : Category o ℓ e → Level
       levele {e = e} _ = e
-  
-  
+
+
     Hom[L-,-]′ : Bifunctor C.op D (Setoids _ _)
     Hom[L-,-]′ = LiftSetoids (levelℓ C) (levele C) ∘F Hom[ D ][-,-] ∘F (L.op ⁂ idF)
-  
+
     Hom[-,R-]′ : Bifunctor C.op D (Setoids _ _)
     Hom[-,R-]′ = LiftSetoids (levelℓ D) (levele D) ∘F Hom[ C ][-,-] ∘F (idF ⁂ R)
 
@@ -189,7 +189,7 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
         ; isoʳ = λ eq → let open C.HomReasoning in lift (LRadjunct≈id ○ lower eq)
         }
       }
-  
+
 infix 5 _⊣_
 _⊣_ = Adjoint
 
@@ -203,7 +203,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
     module L = Functor L
     module R = Functor R
 
-  module _ (adjoint : L ⊣ R) where       
+  module _ (adjoint : L ⊣ R) where
     open Adjoint adjoint
 
     -- in this case, the hom functors are naturally isomorphism directly
@@ -278,7 +278,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
         where open D
               open HomReasoning
               open MR D
-  
+
     Hom-NI⇒Adjoint : L ⊣ R
     Hom-NI⇒Adjoint = record
       { unit   = unit
@@ -309,7 +309,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
       }
       where module i {X} = Iso (iso X)
             open i
-  
+
 ⊣-id : idF {C = C} ⊣ idF {C = C}
 ⊣-id {C = C} = record
   { unit   = F⇐G unitorˡ
@@ -319,33 +319,3 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
   }
   where open Category C
         open NaturalIsomorphism
-
--- Do we really need a specific equivalence relation on Adjoints?
-infix 4 _≊_
-_≊_ : ∀ {L : Functor C D} {R : Functor D C} → Rel (L ⊣ R) _
-_≊_ A B = A.unit ≃ B.unit × A.counit ≃ B.counit
-  where module A = Adjoint A
-        module B = Adjoint B
-
-module _ {L : Functor C D} {R : Functor D C} where
-
-  private
-    module C = Category C
-    module D = Category D
-
-  ≊-isEquivalence : IsEquivalence (_≊_ {L = L} {R})
-  ≊-isEquivalence = record
-    { refl  = C.Equiv.refl , D.Equiv.refl
-    ; sym   = λ where
-      (eq₁ , eq₂) → C.Equiv.sym eq₁ , D.Equiv.sym eq₂
-    ; trans = λ where
-      (eql₁ , eqr₁) (eql₂ , eqr₂) →
-        C.Equiv.trans eql₁ eql₂ , D.Equiv.trans eqr₁ eqr₂
-    }
-
-  ≊-setoid : Setoid _ _
-  ≊-setoid = record
-    { Carrier       = L ⊣ R
-    ; _≈_           = _
-    ; isEquivalence = ≊-isEquivalence
-    }
