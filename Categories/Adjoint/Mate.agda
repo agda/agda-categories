@@ -30,11 +30,47 @@ record Mate {L : Functor C D}
   private
     module L⊣R   = Adjoint L⊣R
     module L′⊣R′ = Adjoint L′⊣R′
+    module C = Category C
     module D = Category D
   
   field
     commute₁ : (R ∘ˡ α) ∘ᵥ L⊣R.unit ≃ (β ∘ʳ L′) ∘ᵥ L′⊣R′.unit
     commute₂ : L⊣R.counit ∘ᵥ L ∘ˡ β ≃ L′⊣R′.counit ∘ᵥ (α ∘ʳ R′)
+
+  -- there are two equivalent commutative diagram
+  open NaturalTransformation renaming (commute to η-commute)
+  open Functor
+  module _ where
+    open D
+    open HomReasoning
+    open MR D
+
+    commute₃ : ∀ {X} → L⊣R.counit.η (F₀ L′ X) ∘ F₁ L (η β (F₀ L′ X)) ∘ F₁ L (L′⊣R′.unit.η X) ≈ η α X
+    commute₃ {X} = begin
+      L⊣R.counit.η (F₀ L′ X) ∘ F₁ L (η β (F₀ L′ X)) ∘ F₁ L (L′⊣R′.unit.η X)
+        ≈˘⟨ refl⟩∘⟨ homomorphism L ⟩
+      L⊣R.counit.η (F₀ L′ X) ∘ F₁ L (η β (F₀ L′ X) C.∘ L′⊣R′.unit.η X)
+        ≈˘⟨ refl⟩∘⟨ F-resp-≈ L commute₁ ⟩
+      L⊣R.counit.η (F₀ L′ X) ∘ F₁ L (F₁ R (η α X) C.∘ L⊣R.unit.η X)
+        ≈⟨ L⊣R.RLadjunct≈id ⟩
+      η α X
+        ∎
+    
+  module _ where
+    open C
+    open HomReasoning
+    open MR C
+    
+    commute₄ : ∀ {X} → F₁ R (L′⊣R′.counit.η X) ∘ F₁ R (η α (F₀ R′ X)) ∘ L⊣R.unit.η (F₀ R′ X) ≈ η β X
+    commute₄ {X} = begin
+      F₁ R (L′⊣R′.counit.η X) ∘ F₁ R (η α (F₀ R′ X)) ∘ L⊣R.unit.η (F₀ R′ X)
+        ≈˘⟨ pushˡ (homomorphism R) ⟩
+      F₁ R (L′⊣R′.counit.η X D.∘ η α (F₀ R′ X)) ∘ L⊣R.unit.η (F₀ R′ X)
+        ≈˘⟨ F-resp-≈ R commute₂ ⟩∘⟨refl ⟩
+      F₁ R (L⊣R.counit.η X D.∘ F₁ L (η β X)) ∘ L⊣R.unit.η (F₀ R′ X)
+        ≈⟨ L⊣R.LRadjunct≈id ⟩
+      η β X
+         ∎
 
 record HaveMate {L L′ : Functor C D} {R R′ : Functor D C}
                 (L⊣R : L ⊣ R) (L′⊣R′ : L′ ⊣ R′) : Set (levelOfTerm L⊣R ⊔ levelOfTerm L′⊣R′) where
@@ -53,15 +89,15 @@ module _ {L L′ : Functor C D} {R R′ : Functor D C}
          {α : NaturalTransformation L L′}
          {β : NaturalTransformation R′ R}
          (mate : Mate L⊣R L′⊣R′ α β) where
-
-  open Mate mate
-  open Functor
-  module C     = Category C
-  module D     = Category D
-  module α     = NaturalTransformation α
-  module β     = NaturalTransformation β
-  module L⊣R   = Adjoint L⊣R
-  module L′⊣R′ = Adjoint L′⊣R′
+  private
+    open Mate mate
+    open Functor
+    module C     = Category C
+    module D     = Category D
+    module α     = NaturalTransformation α
+    module β     = NaturalTransformation β
+    module L⊣R   = Adjoint L⊣R
+    module L′⊣R′ = Adjoint L′⊣R′
 
   -- there are two squares to show
   module _ {X : C.Obj} {Y : D.Obj} where
@@ -97,3 +133,59 @@ module _ {L L′ : Functor C D} {R R′ : Functor D C}
       (L⊣R.counit.η Y ∘ F₁ L (β.η Y)) ∘ F₁ L f     ≈˘⟨ pushʳ (homomorphism L) ⟩
       L⊣R.counit.η Y ∘ F₁ L (β.η Y C.∘ f)          ≈⟨ refl⟩∘⟨ F-resp-≈ L (C.∘-resp-≈ʳ (f≈g CH.○ CH.⟺ C.identityʳ)) ⟩
       L⊣R.counit.η Y ∘ F₁ L (β.η Y C.∘ g C.∘ C.id) ∎
+
+-- alternatively, if commute₃ and commute₄ are shown, then a Mate can be constructed.
+
+module _ {L L′ : Functor C D} {R R′ : Functor D C}
+         {L⊣R : L ⊣ R} {L′⊣R′ : L′ ⊣ R′}
+         {α : NaturalTransformation L L′}
+         {β : NaturalTransformation R′ R} where
+  private
+    open Functor
+    module C     = Category C
+    module D     = Category D
+    module α     = NaturalTransformation α
+    module β     = NaturalTransformation β
+    module L⊣R   = Adjoint L⊣R
+    module L′⊣R′ = Adjoint L′⊣R′
+
+  module _ (commute₃ : ∀ {X} → L⊣R.counit.η (F₀ L′ X) D.∘ F₁ L (β.η (F₀ L′ X)) D.∘ F₁ L (L′⊣R′.unit.η X) D.≈ α.η X) where
+    open C
+    open HomReasoning
+
+    commute₁ : ∀ {X} → F₁ R (α.η X) ∘ L⊣R.unit.η X ≈ β.η (F₀ L′ X) ∘ L′⊣R′.unit.η X
+    commute₁ {X} = begin
+      F₁ R (α.η X) ∘ L⊣R.unit.η X
+        ≈˘⟨ F-resp-≈ R commute₃ ⟩∘⟨refl ⟩
+      F₁ R (L⊣R.counit.η (F₀ L′ X) D.∘ F₁ L (β.η (F₀ L′ X)) D.∘ F₁ L (L′⊣R′.unit.η X)) ∘ L⊣R.unit.η X
+        ≈˘⟨ F-resp-≈ R (D.∘-resp-≈ʳ (homomorphism L)) ⟩∘⟨refl ⟩
+      F₁ R (L⊣R.counit.η (F₀ L′ X) D.∘ F₁ L (β.η (F₀ L′ X) ∘ L′⊣R′.unit.η X)) ∘ L⊣R.unit.η X
+        ≈⟨ L⊣R.LRadjunct≈id ⟩
+      β.η (F₀ L′ X) ∘ L′⊣R′.unit.η X
+        ∎
+
+  module _ (commute₄ : ∀ {X} → F₁ R (L′⊣R′.counit.η X) C.∘ F₁ R (α.η (F₀ R′ X)) C.∘ L⊣R.unit.η (F₀ R′ X) C.≈ β.η X) where
+    open D
+    open HomReasoning
+    open MR C
+
+    commute₂ : ∀ {X} → L⊣R.counit.η X ∘ F₁ L (β.η X) ≈ L′⊣R′.counit.η X ∘ α.η (F₀ R′ X)
+    commute₂ {X} = begin
+      L⊣R.counit.η X ∘ F₁ L (β.η X)
+        ≈˘⟨ refl⟩∘⟨ F-resp-≈ L commute₄ ⟩
+      L⊣R.counit.η X ∘ F₁ L (F₁ R (L′⊣R′.counit.η X) C.∘ F₁ R (α.η (F₀ R′ X)) C.∘ L⊣R.unit.η (F₀ R′ X))
+        ≈˘⟨ refl⟩∘⟨ F-resp-≈ L (pushˡ (homomorphism R)) ⟩
+      L⊣R.counit.η X ∘ F₁ L (F₁ R (L′⊣R′.counit.η X ∘ α.η (F₀ R′ X)) C.∘ L⊣R.unit.η (F₀ R′ X))
+        ≈⟨ L⊣R.RLadjunct≈id ⟩
+      L′⊣R′.counit.η X ∘ α.η (F₀ R′ X)
+        ∎
+
+
+  mate′ : (∀ {X} → L⊣R.counit.η (F₀ L′ X) D.∘ F₁ L (β.η (F₀ L′ X)) D.∘ F₁ L (L′⊣R′.unit.η X) D.≈ α.η X) →
+          (∀ {X} → F₁ R (L′⊣R′.counit.η X) C.∘ F₁ R (α.η (F₀ R′ X)) C.∘ L⊣R.unit.η (F₀ R′ X) C.≈ β.η X) →
+          Mate L⊣R L′⊣R′ α β
+  mate′ commute₃ commute₄ = record
+    { commute₁ = commute₁ commute₃
+    ; commute₂ = commute₂ commute₄
+    }
+
