@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
--- the usual notion of mate is defined by a square between hom set(oid)s,
+-- the usual notion of mate is defined by two isomorphisms between hom set(oid)s are natural,
 -- but due to explicit universe level, a different definition is used.
 module Categories.Adjoint.Mate where
 
@@ -23,6 +23,9 @@ private
     C D : Category o ℓ e
     L L′ R R′ : Functor C D
 
+
+-- this notion of mate can be seen in MacLane in which this notion is shown equivalent to the
+-- definition via naturally isomorphic hom setoids.
 record Mate {L : Functor C D}
             (L⊣R : L ⊣ R) (L′⊣R′ : L′ ⊣ R′)
             (α : NaturalTransformation L L′)
@@ -83,7 +86,9 @@ record HaveMate {L L′ : Functor C D} {R R′ : Functor D C}
   module β = NaturalTransformation β
   open Mate mate public
 
--- show that the commutative diagram implies natural isomorphism
+-- show that the commutative diagram implies natural isomorphism between homsetoids.
+-- the problem is that two homsetoids live in two universe level, in a situation similar to the definition
+-- of adjoint via naturally isomorphic homsetoids.
 module _ {L L′ : Functor C D} {R R′ : Functor D C}
          {L⊣R : L ⊣ R} {L′⊣R′ : L′ ⊣ R′}
          {α : NaturalTransformation L L′}
