@@ -13,9 +13,9 @@ private
     o ℓ e : Level
     C D : Category o ℓ e
 
-const : Category.Obj D → Functor C D
-const {D = D} A = record
-  { F₀           = λ _ → A
+const : (d : Category.Obj D) → Functor C D
+const {D = D} d = record
+  { F₀           = λ _ → d
   ; F₁           = λ _ → id
   ; identity     = refl
   ; homomorphism = sym identityˡ
@@ -24,11 +24,11 @@ const {D = D} A = record
   where open Category D
         open Equiv
 
-constˡ : Category.Obj C → Functor D (Product C D)
-constˡ A = const A ※ idF
+constˡ : (c : Category.Obj C) → Functor D (Product C D)
+constˡ c = const c ※ idF
 
-constʳ : Category.Obj C → Functor D (Product D C)
-constʳ A = idF ※ (const A)
+constʳ : (c : Category.Obj C) → Functor D (Product D C)
+constʳ c = idF ※ (const c)
 
 constNat : ∀ {A B} → Category._⇒_ D A B → NaturalTransformation (const {D = D} {C = C} A) (const B)
 constNat {D = D} f = record

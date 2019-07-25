@@ -5,26 +5,28 @@ module Categories.Yoneda where
 -- * the Yoneda Embedding (called embed here) from any Category C into Presheaves C
 --   Worth noticing that there is no 'locally small' condition here; however, if one looks at
 --   the levels involved, there is indeed a raise from that of C to that of Presheaves C.
--- * The traditional Yoneda lemma (yoneda) which says that for any object a of C, and
+-- * The traditional Yoneda lemma (yoneda-inverse) which says that for any object a of C, and
 --   any Presheaf F over C (where our presheaves are over Setoids), then
 --   Hom[ Presheaves C] (Functor.F₀ embed a , F) ≅ Functor.F₀ F a
---   as Setoids.
---    Note that the original Categories.Yoneda proves something that looks more general,
---    but is merely are rephrasing: the NaturalIsomorphism is 'over' Setoids, where it
---    specializes to Inverse.
+--   as Setoids. In addition, Yoneda (yoneda) also says that this isomorphism is natural in a and F.
 open import Level
+open import Function using (_$_)
 open import Function.Inverse using (Inverse)
-open import Function.Equality using (_⟨$⟩_)
+open import Function.Equality using (Π; _⟨$⟩_; cong)
 open import Relation.Binary using (module Setoid)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 open import Data.Product using (_,_; Σ)
 
 open import Categories.Category using (Category; _[_,_])
-open import Categories.Functor using (Functor; Full; Faithful; FullyFaithful)
-open import Categories.Functor.Hom using (module Hom; Hom[_][-,_])
+open import Categories.Category.Product
 open import Categories.Category.Construction.Presheaves
+open import Categories.Category.Construction.Functors
 open import Categories.Category.Instance.Setoids
+open import Categories.Functor hiding (id)
+open import Categories.Functor.Hom using (module Hom; Hom[_][-,_]; Hom[_][-,-])
+open import Categories.Functor.Bifunctor
 open import Categories.Functor.Presheaf
+open import Categories.Functor.Construction.LiftSetoids
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
 import Categories.Morphism as Mor
@@ -40,7 +42,6 @@ module _ (C : Category o ℓ e) where
   open Functor
   open NaturalTransformation
   module CE = Category.Equiv C
-  open Function.Equality using (cong)
 
   -- This NaturalTransformation should probably got into NaturalTransformation.Hom,
   -- in analogy with Functor.Hom above.
@@ -65,9 +66,9 @@ module _ (C : Category o ℓ e) where
     }
 
   -- Using the adjunction between product and product, we get a kind of contravariant Bifunctor
-  yoneda : (a : Obj) (F : Presheaf C (Setoids ℓ e)) →
+  yoneda-inverse : (a : Obj) (F : Presheaf C (Setoids ℓ e)) →
     Inverse (Category.hom-setoid (Presheaves C) {Functor.F₀ embed a} {F}) (Functor.F₀ F a)
-  yoneda a F = record
+  yoneda-inverse a F = record
     { to         = record
       { _⟨$⟩_ = λ nat → η nat a ⟨$⟩ id
       ; cong  = λ i≈j → i≈j CE.refl
@@ -98,6 +99,89 @@ module _ (C : Category o ℓ e) where
       }
     }
     where module SE = Setoid (F₀ F a)
+
+  private
+    -- in this bifunctor, a presheaf from Presheaves C goes from C to Setoids ℓ e,
+    -- but the over Setoids has higher level than the hom setoids.
+    Nat[Hom[C][-,c],F] : Bifunctor (Presheaves C) (Category.op C) (Setoids _ _)
+    Nat[Hom[C][-,c],F] = Hom[ Presheaves C ][-,-] ∘F (Functor.op embed ∘F πʳ ※ πˡ)
+
+    -- in this bifunctor, it needs to go from Presheaves which maps C to Setoids ℓ e,
+    -- so the universe level needs to be lifted.
+    FC : Bifunctor (Presheaves C) (Category.op C) (Setoids _ _)
+    FC = LiftSetoids (o ⊔ suc ℓ ⊔ suc e) (o ⊔ ℓ) ∘F eval {C = Category.op C} {D = Setoids ℓ e}
+
+    module yoneda-inverse {a} {F} = Inverse (yoneda-inverse a F)
+  
+  -- the two bifunctors above are naturally isomorphic.
+  -- it is easy to show yoneda-inverse first then to yoneda.
+  yoneda : NaturalIsomorphism Nat[Hom[C][-,c],F] FC
+  yoneda = record
+    { F⇒G = record
+      { η       = λ where
+        (F , A) → record
+          { _⟨$⟩_ = λ α → lift (yoneda-inverse.to ⟨$⟩ α)
+          ; cong  = λ i≈j → lift (i≈j CE.refl)
+          }
+      ; commute = λ where
+        {_} {G , B} (α , f) {β} {γ} β≈γ → lift $ cong (η α B) (helper f β γ β≈γ)
+      }
+    ; F⇐G = record
+      { η       = λ where
+        (F , A) → record
+          { _⟨$⟩_ = λ where
+            (lift x) → yoneda-inverse.from ⟨$⟩ x
+          ; cong  = λ where
+            (lift i≈j) y≈z → F-resp-≈ F y≈z i≈j
+          }
+      ; commute = λ where
+        (α , f) (lift eq) eq′ → helper′ α f eq eq′
+      }
+    ; iso = λ where
+      (F , A) → record
+        { isoˡ = λ {α β} i≈j {X} y≈z →
+          let module S = Setoid (F₀ F X)
+          in S.trans (yoneda-inverse.left-inverse-of α {x = X} y≈z) (i≈j CE.refl)
+        ; isoʳ = λ where
+          (lift eq) →
+            let module S = Setoid (F₀ F A)
+            in lift (S.trans (yoneda-inverse.right-inverse-of {F = F} _) eq)
+        }
+    }
+    where helper : ∀ {F : Functor (Category.op C) (Setoids ℓ e)}
+                     {A B : Obj} (f : B ⇒ A)
+                     (β γ : NaturalTransformation Hom[ C ][-, A ] F) →
+                   Setoid._≈_ (F₀ Nat[Hom[C][-,c],F] (F , A)) β γ →
+                   Setoid._≈_ (F₀ F B) (η β B ⟨$⟩ f ∘ id) (F₁ F f ⟨$⟩ (η γ A ⟨$⟩ id))
+          helper {F} {A} {B} f β γ β≈γ = S.begin
+            η β B ⟨$⟩ f ∘ id          S.≈⟨ cong (η β B) (id-comm ○ (⟺ identityˡ)) ⟩
+            η β B ⟨$⟩ id ∘ id ∘ f     S.≈⟨ commute β f CE.refl ⟩
+            F₁ F f ⟨$⟩ (η β A ⟨$⟩ id) S.≈⟨ cong (F₁ F f) (β≈γ CE.refl) ⟩
+            F₁ F f ⟨$⟩ (η γ A ⟨$⟩ id) S.∎
+            where module S where
+                    open Setoid (F₀ F B) public
+                    open SetoidR (F₀ F B) public
+                    
+          helper′ : ∀ {F G : Functor (Category.op C) (Setoids ℓ e)}
+                      {A B Z : Obj}
+                      {h i : Z ⇒ B}
+                      {X Y : Setoid.Carrier (F₀ F A)}
+                      (α : NaturalTransformation F G)
+                      (f : B ⇒ A) →
+                      Setoid._≈_ (F₀ F A) X Y →
+                      h ≈ i → 
+                      Setoid._≈_ (F₀ G Z) (F₁ G h ⟨$⟩ (η α B ⟨$⟩ (F₁ F f ⟨$⟩ X)))
+                                          (η α Z ⟨$⟩ (F₁ F (f ∘ i) ⟨$⟩ Y))
+          helper′ {F} {G} {A} {B} {Z} {h} {i} {X} {Y} α f eq eq′ = S.begin
+            F₁ G h ⟨$⟩ (η α B ⟨$⟩ (F₁ F f ⟨$⟩ X)) S.≈˘⟨ commute α h (S′.sym (cong (F₁ F f) eq)) ⟩
+            η α Z ⟨$⟩ (F₁ F h ⟨$⟩ (F₁ F f ⟨$⟩ Y)) S.≈⟨ cong (η α Z) (F-resp-≈ F eq′ S′.refl) ⟩
+            η α Z ⟨$⟩ (F₁ F i ⟨$⟩ (F₁ F f ⟨$⟩ Y)) S.≈˘⟨ cong (η α Z) (homomorphism F (Setoid.refl (F₀ F A))) ⟩
+            η α Z ⟨$⟩ (F₁ F (f ∘ i) ⟨$⟩ Y)        S.∎
+            where module S where
+                    open Setoid (F₀ G Z) public
+                    open SetoidR (F₀ G Z) public
+                  module S′ = Setoid (F₀ F B)
+
 
   YoFull : Full embed
   YoFull {X} {Y} = record
@@ -142,8 +226,8 @@ module _ (C : Category o ℓ e) where
       }
     }
     where open NaturalIsomorphism niso
-          A⇒B = yoneda A (Functor.F₀ embed B)
-          B⇒A = yoneda B (Functor.F₀ embed A)
+          A⇒B = yoneda-inverse A (Functor.F₀ embed B)
+          B⇒A = yoneda-inverse B (Functor.F₀ embed A)
           module A⇒B = Inverse A⇒B
           module B⇒A = Inverse B⇒A
           module iso {X} = Mor.Iso (iso X)
