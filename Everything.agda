@@ -1,6 +1,7 @@
 import Categories.2-Category
 import Categories.2-Category.Instance.Cats
 import Categories.Adjoint
+import Categories.Adjoint.Mate
 import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
@@ -23,6 +24,7 @@ import Categories.Category.Instance.SingletonSet
 import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
 import Categories.Category.Monoidal.Closed
+import Categories.Category.Monoidal.Closed.IsClosed
 import Categories.Category.Monoidal.Instance.Cats
 import Categories.Category.Monoidal.Instance.Sets
 import Categories.Category.Monoidal.Properties
@@ -49,6 +51,7 @@ import Categories.Diagram.Pushout.Properties
 import Categories.Functor
 import Categories.Functor.Algebra
 import Categories.Functor.Bifunctor
+import Categories.Functor.Bifunctor.Properties
 import Categories.Functor.Coalgebra
 import Categories.Functor.Construction.Constant
 import Categories.Functor.Construction.Diagonal
