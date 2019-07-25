@@ -69,6 +69,7 @@ import Categories.Functor.Representable
 import Categories.Kan
 import Categories.Monad
 import Categories.Morphism
+import Categories.Morphism.Cartesian
 import Categories.Morphism.Duality
 import Categories.Morphism.IsoEquiv
 import Categories.Morphism.Isomorphism
@@ -89,5 +90,6 @@ import Categories.Object.Product
 import Categories.Object.Product.Core
 import Categories.Object.Product.Morphisms
 import Categories.Object.Terminal
+import Categories.Object.Zero
 import Categories.Utils.Product
 import Categories.Yoneda
