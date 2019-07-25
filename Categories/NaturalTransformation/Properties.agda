@@ -9,8 +9,9 @@ open import Categories.Category
 open import Categories.Category.Product
 open import Categories.Category.Construction.Functors
 open import Categories.Functor
+open import Categories.Functor.Construction.Constant
 open import Categories.Functor.Bifunctor
-open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (_≅_)
 open import Categories.NaturalTransformation.Dinatural
 import Categories.Morphism as Mor
@@ -19,7 +20,7 @@ import Categories.Morphism.Reasoning as MR
 private
   variable
     o ℓ e : Level
-    C D   : Category o ℓ e
+    C D E : Category o ℓ e
 
 module _ {F G : Functor C D} where
   private
@@ -77,3 +78,12 @@ module _ {F G : Functor C D} where
       where open NaturalIsomorphism α
             open Mor.Iso
 
+module _ (F : Bifunctor C D E) where
+
+  -- there is natural transformation between two partially applied bifunctors.
+
+  appˡ-nat : ∀ {X Y} → (f : Category._⇒_ C X Y) → NaturalTransformation (appˡ F X) (appˡ F Y)
+  appˡ-nat f = F ∘ˡ (constNat f ※ⁿ idN)
+
+  appʳ-nat : ∀ {X Y} → (f : Category._⇒_ D X Y) → NaturalTransformation (appʳ F X) (appʳ F Y)
+  appʳ-nat f = F ∘ˡ (idN ※ⁿ constNat f)

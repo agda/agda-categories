@@ -10,6 +10,7 @@ open import Data.Product using (Σ; _,_; uncurry)
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation hiding (id)
+open import Categories.NaturalTransformation.Properties
 open import Categories.Category.Cartesian 𝒞
 open import Categories.Category.Monoidal.Closed
 open import Categories.Object.Product 𝒞
@@ -246,7 +247,25 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
           eval′                           ≈˘⟨ elimʳ (id×id product) ⟩
           eval′ ∘ first id                ∎
         }
+      ; mate    = λ {X Y} f → record
+        { α    = appʳ-nat -×- f
+        ; β    = appˡ-nat {C = 𝒞.op} {D = 𝒞} -⇨- f
+        ; mate = record
+          { commute₁ = λ-unique₂′ $ {!begin ? ≈⟨ ? ⟩ ? ∎!}
+          -- begin
+          --   eval′ ∘ first (λg (second f ∘ eval′ ∘ second id) ∘ λg id)         ≈˘⟨ refl⟩∘⟨ first∘first ⟩
+          --   eval′ ∘ first (λg (second f ∘ eval′ ∘ second id)) ∘ first (λg id) ≈⟨ pullˡ β′ ⟩
+          --   (second f ∘ eval′ ∘ second id) ∘ first (λg id)                    ≈⟨ ∘-resp-≈ʳ (elimʳ (id×id product)) ⟩∘⟨refl ⟩
+          --   (second f ∘ eval′) ∘ first (λg id)                                ≈⟨ cancelʳ β′ ⟩
+          --   second f                                                          ≈˘⟨ identityˡ ⟩
+          --   id ∘ second f                                                     ≈˘⟨ β′ ⟩∘⟨refl ⟩
+          --   (eval′ ∘ first (λg id)) ∘ second f                                ≈˘⟨ identityˡ ⟩∘⟨refl ⟩
+          --   -- (id ∘ eval′ ∘ second f) ∘ first (λg id)                           ≈˘⟨ ? ⟩
+          --   -- eval′ ∘ first (λg (id ∘ eval′ ∘ second f)) ∘ first (λg id)        ≈⟨ ? ⟩
+          --   eval′ ∘ first (λg (id ∘ eval′ ∘ second f) ∘ λg id)                ∎
+          ; commute₂ = {!begin ? ≈⟨ ? ⟩ ? ∎!}
+          }
+        }
       }
   
   module closedMonoidal = Closed closedMonoidal
-  open closedMonoidal
