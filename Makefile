@@ -1,6 +1,6 @@
 .PHONY: test Everything.agda clean
 
-RTSARGS = +RTS -M4G -H4G -A128M -S -RTS
+RTSARGS = +RTS -M5G -H4G -A128M -S -RTS
 
 test: Everything.agda
 	agda ${RTSARGS} Everything.agda
