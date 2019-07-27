@@ -41,6 +41,7 @@ import Categories.Diagram.Cocone
 import Categories.Diagram.Coend
 import Categories.Diagram.Coequalizer
 import Categories.Diagram.Coequalizer.Properties
+import Categories.Diagram.Colimit
 import Categories.Diagram.Cone
 import Categories.Diagram.Duality
 import Categories.Diagram.End
