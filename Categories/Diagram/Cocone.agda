@@ -74,3 +74,49 @@ Cocones = record
     }
   ; ∘-resp-≈  = ∘-resp-≈
   }
+
+module Cocones = Category Cocones
+
+private
+  variable
+    K K′ : Cocone
+  module CM = Mor Cocones
+  module CI = IsoEquiv Cocones
+
+open CM using () renaming (_≅_ to _⇔_)
+open CI using () renaming (_≃_ to _↮_)
+
+cocone-resp-iso : ∀ (κ : Cocone) → Cocone.N κ ≅ X → Σ[ κ′ ∈ Cocone ] κ ⇔ κ′
+cocone-resp-iso {X = X} κ κ≅X = record
+  { coapex = record
+    { ψ       = λ Y → from ∘ Cocone.ψ κ Y
+    ; commute = λ f → pullʳ (Cocone.commute κ f)
+    }
+  } , record
+  { from = record
+    { arr     = from
+    ; commute = refl
+    }
+  ; to   = record
+    { arr     = to
+    ; commute = cancelˡ isoˡ
+    }
+  ; iso  = record
+    { isoˡ    = isoˡ
+    ; isoʳ    = isoʳ
+    }
+  }
+  where open _≅_ κ≅X
+        open Cocone
+        open Coapex
+
+iso-cocone⇒iso-coapex : K ⇔ K′ → N K ≅ N K′
+iso-cocone⇒iso-coapex K⇔K′ = record
+  { from = arr from
+  ; to   = arr to
+  ; iso  = record
+    { isoˡ = isoˡ
+    ; isoʳ = isoʳ
+    }
+  }
+  where open _⇔_ K⇔K′
