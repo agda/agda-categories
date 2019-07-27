@@ -2,6 +2,7 @@ import Categories.2-Category
 import Categories.2-Category.Instance.Cats
 import Categories.Adjoint
 import Categories.Adjoint.Mate
+import Categories.Adjoint.Properties
 import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
@@ -49,6 +50,7 @@ import Categories.Diagram.Limit
 import Categories.Diagram.Pullback
 import Categories.Diagram.Pushout
 import Categories.Diagram.Pushout.Properties
+import Categories.Diagram.SubobjectClassifier
 import Categories.Functor
 import Categories.Functor.Algebra
 import Categories.Functor.Bifunctor

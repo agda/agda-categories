@@ -248,25 +248,21 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
           eval′ ∘ first id                ∎
         }
       ; mate    = λ {X Y} f → record
-        { α    = appʳ-nat -×- f
-        ; β    = appˡ-nat {C = 𝒞.op} {D = 𝒞} -⇨- f
-        ; mate = record
-          { commute₁ = λ-unique₂′ $ begin
-            eval′ ∘ first (λg (second f ∘ eval′ ∘ second id) ∘ λg id)         ≈˘⟨ refl⟩∘⟨ first∘first ⟩
-            eval′ ∘ first (λg (second f ∘ eval′ ∘ second id)) ∘ first (λg id) ≈⟨ pullˡ β′ ⟩
-            (second f ∘ eval′ ∘ second id) ∘ first (λg id)                    ≈⟨ ∘-resp-≈ʳ (elimʳ (id×id product)) ⟩∘⟨refl ⟩
-            (second f ∘ eval′) ∘ first (λg id)                                ≈⟨ cancelʳ β′ ⟩
-            second f                                                          ≈˘⟨ cancelˡ β′ ⟩
-            eval′ ∘ first (λg id) ∘ second f                                  ≈⟨ pushʳ first↔second ⟩
-            (eval′ ∘ second f) ∘ first (λg id)                                ≈˘⟨ identityˡ ⟩∘⟨refl ⟩
-            (id ∘ eval′ ∘ second f) ∘ first (λg id)                           ≈˘⟨ pullˡ β′ ⟩
-            eval′ ∘ first (λg (id ∘ eval′ ∘ second f)) ∘ first (λg id)        ≈⟨ refl⟩∘⟨ first∘first ⟩
-            eval′ ∘ first (λg (id ∘ eval′ ∘ second f) ∘ λg id)                ∎
-          ; commute₂ = begin
-            eval′ ∘ first (λg (id ∘ eval′ ∘ second f)) ≈⟨ β′ ⟩
-            id ∘ eval′ ∘ second f                      ≈⟨ identityˡ ⟩
-            eval′ ∘ second f                           ∎
-          }
+        { commute₁ = λ-unique₂′ $ begin
+          eval′ ∘ first (λg (second f ∘ eval′ ∘ second id) ∘ λg id)         ≈˘⟨ refl⟩∘⟨ first∘first ⟩
+          eval′ ∘ first (λg (second f ∘ eval′ ∘ second id)) ∘ first (λg id) ≈⟨ pullˡ β′ ⟩
+          (second f ∘ eval′ ∘ second id) ∘ first (λg id)                    ≈⟨ ∘-resp-≈ʳ (elimʳ (id×id product)) ⟩∘⟨refl ⟩
+          (second f ∘ eval′) ∘ first (λg id)                                ≈⟨ cancelʳ β′ ⟩
+          second f                                                          ≈˘⟨ cancelˡ β′ ⟩
+          eval′ ∘ first (λg id) ∘ second f                                  ≈⟨ pushʳ first↔second ⟩
+          (eval′ ∘ second f) ∘ first (λg id)                                ≈˘⟨ identityˡ ⟩∘⟨refl ⟩
+          (id ∘ eval′ ∘ second f) ∘ first (λg id)                           ≈˘⟨ pullˡ β′ ⟩
+          eval′ ∘ first (λg (id ∘ eval′ ∘ second f)) ∘ first (λg id)        ≈⟨ refl⟩∘⟨ first∘first ⟩
+          eval′ ∘ first (λg (id ∘ eval′ ∘ second f) ∘ λg id)                ∎
+        ; commute₂ = begin
+          eval′ ∘ first (λg (id ∘ eval′ ∘ second f)) ≈⟨ β′ ⟩
+          id ∘ eval′ ∘ second f                      ≈⟨ identityˡ ⟩
+          eval′ ∘ second f                           ∎
         }
       }
   
