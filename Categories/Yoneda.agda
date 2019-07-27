@@ -10,7 +10,7 @@ module Categories.Yoneda where
 --   Hom[ Presheaves C] (Functor.F₀ embed a , F) ≅ Functor.F₀ F a
 --   as Setoids. In addition, Yoneda (yoneda) also says that this isomorphism is natural in a and F.
 open import Level
-open import Function using (_$_)
+open import Function.Core using (_$_) -- else there's a conflict with the import below
 open import Function.Inverse using (Inverse)
 open import Function.Equality using (Π; _⟨$⟩_; cong)
 open import Relation.Binary using (module Setoid)
@@ -112,7 +112,7 @@ module _ (C : Category o ℓ e) where
     FC = LiftSetoids (o ⊔ suc ℓ ⊔ suc e) (o ⊔ ℓ) ∘F eval {C = Category.op C} {D = Setoids ℓ e}
 
     module yoneda-inverse {a} {F} = Inverse (yoneda-inverse a F)
-  
+
   -- the two bifunctors above are naturally isomorphic.
   -- it is easy to show yoneda-inverse first then to yoneda.
   yoneda : NaturalIsomorphism Nat[Hom[C][-,c],F] FC
@@ -161,7 +161,7 @@ module _ (C : Category o ℓ e) where
             where module S where
                     open Setoid (F₀ F B) public
                     open SetoidR (F₀ F B) public
-                    
+
           helper′ : ∀ {F G : Functor (Category.op C) (Setoids ℓ e)}
                       {A B Z : Obj}
                       {h i : Z ⇒ B}
@@ -169,7 +169,7 @@ module _ (C : Category o ℓ e) where
                       (α : NaturalTransformation F G)
                       (f : B ⇒ A) →
                       Setoid._≈_ (F₀ F A) X Y →
-                      h ≈ i → 
+                      h ≈ i →
                       Setoid._≈_ (F₀ G Z) (F₁ G h ⟨$⟩ (η α B ⟨$⟩ (F₁ F f ⟨$⟩ X)))
                                           (η α Z ⟨$⟩ (F₁ F (f ∘ i) ⟨$⟩ Y))
           helper′ {F} {G} {A} {B} {Z} {h} {i} {X} {Y} α f eq eq′ = S.begin
@@ -217,7 +217,7 @@ module _ (C : Category o ℓ e) where
         (⇐.η B ⟨$⟩ id) ∘ (⇒.η A ⟨$⟩ id)      ≈˘⟨ identityˡ ⟩
         id ∘ (⇐.η B ⟨$⟩ id) ∘ (⇒.η A ⟨$⟩ id) ≈⟨ B⇒A.left-inverse-of F⇐G refl ⟩
         ⇐.η A ⟨$⟩ (⇒.η A ⟨$⟩ id)             ≈⟨ iso.isoˡ refl ⟩
-        id                                   ∎  
+        id                                   ∎
       ; isoʳ = begin
         (⇒.η A ⟨$⟩ id) ∘ (⇐.η B ⟨$⟩ id)      ≈˘⟨ identityˡ ⟩
         id ∘ (⇒.η A ⟨$⟩ id) ∘ (⇐.η B ⟨$⟩ id) ≈⟨ A⇒B.left-inverse-of F⇒G refl ⟩
@@ -231,4 +231,3 @@ module _ (C : Category o ℓ e) where
           module A⇒B = Inverse A⇒B
           module B⇒A = Inverse B⇒A
           module iso {X} = Mor.Iso (iso X)
-  
