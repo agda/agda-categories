@@ -15,6 +15,7 @@ import Categories.Category.Construction.Presheaves
 import Categories.Category.Core
 import Categories.Category.Discrete
 import Categories.Category.Enriched
+import Categories.Category.Equivalence
 import Categories.Category.Groupoid
 import Categories.Category.Instance.Cats
 import Categories.Category.Instance.One

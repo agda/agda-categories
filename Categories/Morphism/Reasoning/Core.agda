@@ -183,3 +183,15 @@ module Cancellers (inv : h ∘ i ≈ id) where
     f ∘ g             ∎
 
 open Cancellers public
+
+center : g ∘ h ≈ a → (f ∘ g) ∘ h ∘ i ≈ f ∘ a ∘ i
+center {g = g} {h = h} {a = a} {f = f} {i = i} eq = begin
+  (f ∘ g) ∘ h ∘ i ≈⟨ assoc ⟩
+  f ∘ g ∘ h ∘ i   ≈⟨ refl⟩∘⟨ pullˡ eq ⟩
+  f ∘ a ∘ i       ∎
+
+center⁻¹ : f ∘ g ≈ a → h ∘ i ≈ b →  f ∘ (g ∘ h) ∘ i ≈ a ∘ b
+center⁻¹ {f = f} {g = g} {a = a} {h = h} {i = i} {b = b} eq eq′ = begin
+  f ∘ (g ∘ h) ∘ i ≈⟨ refl⟩∘⟨ pullʳ eq′ ⟩
+  f ∘ g ∘ b       ≈⟨ pullˡ eq ⟩
+  a ∘ b           ∎
