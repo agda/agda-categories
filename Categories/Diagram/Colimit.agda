@@ -56,8 +56,8 @@ record Colimit : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
       }
     }
 
-  conify : (f : coapex ⇒ X) → colimit ⇨ unrep f
-  conify f = record
+  coconify : (f : coapex ⇒ X) → colimit ⇨ unrep f
+  coconify f = record
     { arr     = f
     ; commute = refl
     }
@@ -69,7 +69,7 @@ record Colimit : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   unrep-cone f = unrep (_⇨_.arr f)
 
   g-η : ∀ {f : coapex ⇒ X} → rep (unrep f) ≈ f
-  g-η {f = f} = initial.!-unique (conify f)
+  g-η {f = f} = initial.!-unique (coconify f)
 
   η-cocone : Cocones [ rep-cocone colimit ≈ Category.id Cocones ]
   η-cocone = initial.⊥-id (rep-cocone colimit)
