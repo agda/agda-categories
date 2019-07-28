@@ -144,21 +144,75 @@ private
           XY-resp-≈ = ℱ.F-resp-≈ [ XY ,-]
           X-resp-≈  = ℱ.F-resp-≈ [ X ,-]
 
---   L-f-swap : L X Y′ Z ∘ [ f , id ]₁ ≈ [ [ id , f ]₁ , [ id , id ]₁ ]₁ ∘ L X Y Z
---   L-f-swap = {!L-f-swap!}
+  L-f-swap : L X Y′ Z ∘ [ f , id ]₁ ≈ [ [ id , f ]₁ , [ id , id ]₁ ]₁ ∘ L X Y Z
+  L-f-swap {X = X} {Y′ = Y′} {Z = Z} {Y = Y} {f = f} = begin
+    L X Y′ Z ∘ [ f , id ]₁
+      ≈⟨ pullʳ (η.commute [ f , id ]₁) ⟩
+    [ id , [ id , ε.η Z ∘ (id ⊗₁ ε.η Y′) ∘ associator.from ]₁ ∘ η.η ([ Y′ , Z ]₀ ⊗₀ [ X , Y′ ]₀) ]₁
+      ∘ [ id , [ f , id ]₁ ⊗₁ id ]₁ ∘ η.η [ Y , Z ]₀
+      ≈˘⟨ pushˡ (ℱ.homomorphism [ XY′ ,-]) ⟩
+    [ id , ([ id , ε.η Z ∘ (id ⊗₁ ε.η Y′) ∘ associator.from ]₁ ∘ η.η ([ Y′ , Z ]₀ ⊗₀ [ X , Y′ ]₀))
+         ∘ [ f , id ]₁ ⊗₁ id ]₁ ∘ η.η [ Y , Z ]₀
+      ≈⟨ (XY′-resp-≈ $ pullʳ (η.commute ([ f , id ]₁ ⊗₁ id))) ⟩∘⟨refl ⟩
+    [ id , [ id , ε.η Z ∘ (id ⊗₁ ε.η Y′) ∘ associator.from ]₁
+         ∘ [ id , ([ f , id ]₁ ⊗₁ id) ⊗₁ id ]₁ ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y′ ]₀) ]₁ ∘ η.η [ Y , Z ]₀
+      ≈˘⟨ (XY′-resp-≈ $ pushˡ (ℱ.homomorphism [ X ,-])) ⟩∘⟨refl ⟩
+    [ id , [ id , (ε.η Z ∘ (id ⊗₁ ε.η Y′) ∘ associator.from) ∘ ([ f , id ]₁ ⊗₁ id) ⊗₁ id ]₁
+         ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y′ ]₀) ]₁ ∘ η.η [ Y , Z ]₀
+      ≈⟨ (XY′-resp-≈ $ ∘-resp-≈ˡ $ X-resp-≈ $ pull-last assoc-commute-from) ⟩∘⟨refl ⟩
+    [ id , [ id , ε.η Z ∘ (id ⊗₁ ε.η Y′) ∘ [ f , id ]₁ ⊗₁ id ⊗₁ id ∘ associator.from ]₁
+         ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y′ ]₀) ]₁ ∘ η.η [ Y , Z ]₀
+      ≈⟨ (XY′-resp-≈ $ ∘-resp-≈ˡ $ X-resp-≈ $ ∘-resp-≈ʳ $ pullˡ
+         (∘-resp-≈ʳ (ℱ.F-resp-≈ ⊗ (refl , ⊗.identity)) ○ [ ⊗ ]-commute)) ⟩∘⟨refl ⟩
+    [ id , [ id , ε.η Z ∘ ([ f , id ]₁ ⊗₁ id ∘ id ⊗₁ ε.η Y′) ∘ associator.from ]₁
+         ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y′ ]₀) ]₁ ∘ η.η [ Y , Z ]₀
+      ≈⟨ (XY′-resp-≈ $ ∘-resp-≈ˡ $ X-resp-≈ $ pull-first (mate.commute₂ f)) ⟩∘⟨refl ⟩
+    [ id , [ id , (ε.η Z ∘ id ⊗₁ f) ∘ id ⊗₁ ε.η Y′ ∘ associator.from ]₁
+         ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y′ ]₀) ]₁ ∘ η.η [ Y , Z ]₀
+      ≈⟨ (XY′-resp-≈ $ ∘-resp-≈ˡ $ X-resp-≈ $ center $ ⟺ (ℱ.homomorphism ([ Y , Z ]₀ ⊗-))) ⟩∘⟨refl ⟩
+    [ id , [ id , ε.η Z ∘ id ⊗₁ (f ∘ ε.η Y′) ∘ associator.from ]₁
+         ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y′ ]₀) ]₁ ∘ η.η [ Y , Z ]₀
+      ≈⟨ (XY′-resp-≈ $ ∘-resp-≈ˡ $ X-resp-≈ $ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ℱ.F-resp-≈ ([ Y , Z ]₀ ⊗-) $
+         ⟺ (ε.commute f)) ⟩∘⟨refl ⟩
+    [ id , [ id , ε.η Z ∘ id ⊗₁ (ε.η Y ∘ [ id , f ]₁ ⊗₁ id) ∘ associator.from ]₁
+         ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y′ ]₀) ]₁ ∘ η.η [ Y , Z ]₀
+      ≈⟨ (XY′-resp-≈ $ ∘-resp-≈ˡ $ X-resp-≈ $ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ℱ.homomorphism ([ Y , Z ]₀ ⊗-)) ⟩∘⟨refl ⟩
+    [ id , [ id , ε.η Z ∘ (id ⊗₁ ε.η Y ∘ id ⊗₁ [ id , f ]₁ ⊗₁ id) ∘ associator.from ]₁
+         ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y′ ]₀) ]₁ ∘ η.η [ Y , Z ]₀
+      ≈⟨ (XY′-resp-≈ $ ∘-resp-≈ˡ $ X-resp-≈ $ (center⁻¹ refl (⟺ assoc-commute-from)) ○ pullˡ assoc) ⟩∘⟨refl ⟩
+    [ id , [ id , (ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from) ∘ (id ⊗₁ [ id , f ]₁) ⊗₁ id ]₁
+         ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y′ ]₀) ]₁ ∘ η.η [ Y , Z ]₀
+      ≈⟨ (XY′-resp-≈ $ ∘-resp-≈ˡ $ ℱ.homomorphism [ X ,-]) ⟩∘⟨refl ⟩
+    [ id , ([ id , ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from ]₁ ∘ [ id , (id ⊗₁ [ id , f ]₁) ⊗₁ id ]₁)
+         ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y′ ]₀) ]₁ ∘ η.η [ Y , Z ]₀
+      ≈⟨ (XY′-resp-≈ $ pullʳ (⟺ (η.commute (id ⊗₁ [ id , f ]₁))) ○ (⟺ assoc)) ⟩∘⟨refl ⟩
+    [ id , ([ id , ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from ]₁ ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y ]₀))
+         ∘ id ⊗₁ [ id , f ]₁ ]₁ ∘ η.η [ Y , Z ]₀
+      ≈⟨ ℱ.homomorphism [ XY′ ,-] ⟩∘⟨refl ⟩
+    ([ id , [ id , ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from ]₁ ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y ]₀) ]₁
+         ∘ [ id , id ⊗₁ [ id , f ]₁ ]₁) ∘ η.η [ Y , Z ]₀
+      ≈⟨ pullʳ (mate.commute₁ [ id , f ]₁) ⟩
+    [ id , [ id , ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from ]₁ ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y ]₀) ]₁
+         ∘ [ [ id , f ]₁ , id ]₁ ∘ η.η [ Y , Z ]₀
+      ≈⟨ pullˡ [ [-,-] ]-commute ○ assoc ○ ∘-resp-≈ˡ ([-,-].F-resp-≈ (refl , ⟺ [-,-].identity)) ⟩
+    [ [ id , f ]₁ , [ id , id ]₁ ]₁ ∘ L X Y Z
+      ∎
+    where XY′        = [ X , Y′ ]₀
+          XY′-resp-≈ = ℱ.F-resp-≈ [ XY′ ,-]
+          X-resp-≈   = ℱ.F-resp-≈ [ X ,-]
 
---   L-natural-comm : L X Y′ Z′ ∘ [ f , g ]₁ ≈ [ [ id , f ]₁ , [ id , g ]₁ ]₁ ∘ L X Y Z
---   L-natural-comm {X = X} {Y′ = Y′} {Z′ = Z′} {Y = Y} {f = f} {Z = Z} {g = g} = begin
---     L X Y′ Z′ ∘ [ f , g ]₁
---       ≈⟨ refl⟩∘⟨ [ [-,-] ]-decompose₂ ⟩
---     L X Y′ Z′ ∘ [ id , g ]₁ ∘ [ f , id ]₁
---       ≈⟨ pullˡ L-g-swap ⟩
---     ([ [ id , id ]₁ , [ id , g ]₁ ]₁ ∘ L X Y′ Z) ∘ [ f , id ]₁
---       ≈⟨ pullʳ L-f-swap ⟩
---     [ [ id , id ]₁ , [ id , g ]₁ ]₁ ∘ [ [ id , f ]₁ , [ id , id ]₁ ]₁ ∘ L X Y Z
---       ≈˘⟨ pushˡ ([-,-].F-resp-≈ (introʳ [-,-].identity , introʳ [-,-].identity) ○ [-,-].homomorphism) ⟩
---     [ [ id , f ]₁ , [ id , g ]₁ ]₁ ∘ L X Y Z
---       ∎
+  L-natural-comm : L X Y′ Z′ ∘ [ f , g ]₁ ≈ [ [ id , f ]₁ , [ id , g ]₁ ]₁ ∘ L X Y Z
+  L-natural-comm {X = X} {Y′ = Y′} {Z′ = Z′} {Y = Y} {f = f} {Z = Z} {g = g} = begin
+    L X Y′ Z′ ∘ [ f , g ]₁
+      ≈⟨ refl⟩∘⟨ [ [-,-] ]-decompose₂ ⟩
+    L X Y′ Z′ ∘ [ id , g ]₁ ∘ [ f , id ]₁
+      ≈⟨ pullˡ L-g-swap ⟩
+    ([ [ id , id ]₁ , [ id , g ]₁ ]₁ ∘ L X Y′ Z) ∘ [ f , id ]₁
+      ≈⟨ pullʳ L-f-swap ⟩
+    [ [ id , id ]₁ , [ id , g ]₁ ]₁ ∘ [ [ id , f ]₁ , [ id , id ]₁ ]₁ ∘ L X Y Z
+      ≈˘⟨ pushˡ ([-,-].F-resp-≈ (introʳ [-,-].identity , introʳ [-,-].identity) ○ [-,-].homomorphism) ⟩
+    [ [ id , f ]₁ , [ id , g ]₁ ]₁ ∘ L X Y Z
+      ∎
 
 -- closed : Cls.Closed C
 -- closed = record

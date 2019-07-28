@@ -36,6 +36,8 @@ record NaturalIsomorphism {C : Category o ℓ e}
   field
     iso : ∀ X → Morphism.Iso D (⇒.η X) (⇐.η X)
 
+  module iso X = Morphism.Iso (iso X)
+
 open NaturalIsomorphism
 
 infixr 9 _ⓘᵥ_ _ⓘₕ_ _ⓘˡ_ _ⓘʳ_
