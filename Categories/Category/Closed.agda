@@ -51,7 +51,7 @@ record Closed : Set (levelOfTerm C) where
     -- i
     identity : NaturalIsomorphism idF [ unit ,-]
     -- j
-    diagonal : DinaturalTransformation (const unit) [-,-]
+    diagonal : Extranaturalʳ unit [-,-]
 
   module identity = NaturalIsomorphism identity
   module diagonal = DinaturalTransformation diagonal
@@ -87,7 +87,7 @@ record Closed : Set (levelOfTerm C) where
     ; commute = λ _ → L-natural-comm
     }
 
-  L-dinatural : DinaturalTransformation (const [ Y , Z ]₀) (flip-bifunctor ([[-,Y],[-,Z]] Y Z))
+  L-dinatural : Extranaturalʳ [ Y , Z ]₀ (flip-bifunctor ([[-,Y],[-,Z]] Y Z))
   L-dinatural {Y} {Z} = extranaturalʳ (λ X → L X Y Z) L-dinatural-comm
 
   module L-natural {X}     = NaturalTransformation (L-natural {X})

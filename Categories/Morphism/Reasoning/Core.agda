@@ -195,3 +195,15 @@ center⁻¹ {f = f} {g = g} {a = a} {h = h} {i = i} {b = b} eq eq′ = begin
   f ∘ (g ∘ h) ∘ i ≈⟨ refl⟩∘⟨ pullʳ eq′ ⟩
   f ∘ g ∘ b       ≈⟨ pullˡ eq ⟩
   a ∘ b           ∎
+
+pull-last : h ∘ i ≈ a → (f ∘ g ∘ h) ∘ i ≈ f ∘ g ∘ a
+pull-last {h = h} {i = i} {a = a} {f = f} {g = g} eq = begin
+  (f ∘ g ∘ h) ∘ i ≈⟨ assoc ⟩
+  f ∘ (g ∘ h) ∘ i ≈⟨ refl⟩∘⟨ pullʳ eq ⟩
+  f ∘ g ∘ a       ∎
+
+pull-first : f ∘ g ≈ a → f ∘ (g ∘ h) ∘ i ≈ a ∘ h ∘ i
+pull-first {f = f} {g = g} {a = a} {h = h} {i = i} eq = begin
+  f ∘ (g ∘ h) ∘ i ≈⟨ refl⟩∘⟨ assoc ⟩
+  f ∘ g ∘ h ∘ i   ≈⟨ pullˡ eq ⟩
+  a ∘ h ∘ i       ∎

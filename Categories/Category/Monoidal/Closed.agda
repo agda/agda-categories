@@ -23,9 +23,10 @@ private
   open Category C
 
   variable
-    X Y : Obj
+    X Y A B : Obj
 
 open import Level
+open import Data.Product using (_,_)
 
 open import Categories.Adjoint
 open import Categories.Adjoint.Mate
@@ -48,6 +49,18 @@ record Closed : Set (levelOfTerm M) where
   module [-,-]        = Functor [-,-]
   module adjoint {X}  = Adjoint (adjoint {X})
   module mate {X Y} f = Mate (mate {X} {Y} f)
+
+  [_,-] : Obj → Functor C C
+  [_,-] = appˡ [-,-]
+
+  [-,_] : Obj → Functor C.op C
+  [-,_] = appʳ [-,-]
+
+  [_,_]₀ : Obj → Obj → Obj
+  [ X , Y ]₀ = [-,-].F₀ (X , Y)
+
+  [_,_]₁ : A ⇒ B → X ⇒ Y → [ B , X ]₀ ⇒ [ A , Y ]₀
+  [ f , g ]₁ = [-,-].F₁ (f , g)
 
   Hom[-⊗_,-] : ∀ X → Bifunctor C.op C (Setoids ℓ e)
   Hom[-⊗ X ,-] = adjoint.Hom[L-,-] {X}

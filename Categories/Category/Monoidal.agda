@@ -50,6 +50,8 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
     ⊗  : Bifunctor C C C
     unit : Obj
 
+  module ⊗ = Functor ⊗
+
   open Functor ⊗
 
   _⊗₀_ : Obj → Obj → Obj

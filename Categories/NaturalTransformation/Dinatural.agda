@@ -135,8 +135,15 @@ module _ {F G : Bifunctor (Category.op C) C D} where
     ; isEquivalence = ≃-isEquivalence
     }
 
+
 -- for convenience, the following are some helpers for the cases
 -- in which the bifunctor on the right is extranatural.
+Extranaturalʳ : ∀ {C : Category o ℓ e} → Category.Obj D → (F : Bifunctor (Category.op C) C D) → Set _
+Extranaturalʳ A F = DinaturalTransformation (const A) F
+
+Extranaturalˡ : ∀ {C : Category o ℓ e} → (F : Bifunctor (Category.op C) C D) → Category.Obj D → Set _
+Extranaturalˡ F A = DinaturalTransformation F (const A)
+
 module _ {F : Bifunctor (Category.op C) C D} where
   open Category D
   private
@@ -151,7 +158,7 @@ module _ {F : Bifunctor (Category.op C) C D} where
 
   extranaturalʳ : (a : ∀ X → A ⇒ F₀ (X , X)) →
                   (∀ {X X′ f} → F₁ (C.id , f) ∘ a X ≈ F₁ (f , C.id) ∘ a X′) →
-                  DinaturalTransformation (const A) F
+                  Extranaturalʳ A F
   extranaturalʳ a comm = record
     { α       = a
     ; commute = λ f → ∘-resp-≈ʳ identityʳ ○ comm ○ ∘-resp-≈ʳ (⟺ identityʳ)
@@ -167,7 +174,7 @@ module _ {F : Bifunctor (Category.op C) C D} where
 
   extranaturalˡ : (a : ∀ X → F₀ (X , X) ⇒ A) →
                   (∀ {X X′ f} → a X ∘ F₁ (f , C.id) ≈ a X′ ∘ F₁ (C.id , f)) →
-                  DinaturalTransformation F (const A)
+                  Extranaturalˡ F A
   extranaturalˡ a comm = record
     { α       = a
     ; commute = λ f → pullˡ identityˡ ○ comm ○ ⟺ (pullˡ identityˡ)
