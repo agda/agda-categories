@@ -139,6 +139,9 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
                       Ladjunct (g D.∘ L.F₁ f) ≈ Ladjunct g ∘ f
     Ladjunct-comm′ = ∘-resp-≈ˡ R.homomorphism ○ (pullʳ (⟺ (unit.commute _))) ○ ⟺ assoc
 
+    Ladjunct-resp-≈ : ∀ {A B} {f g : L.F₀ A D.⇒ B} → f D.≈ g → Ladjunct f ≈ Ladjunct g
+    Ladjunct-resp-≈ eq = ∘-resp-≈ˡ (R.F-resp-≈ eq)
+
   module _ where
     open D
     open HomReasoning
@@ -158,7 +161,10 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
     Radjunct-comm′ : ∀ {Y A B} {f : A C.⇒ R.F₀ Y} {g : Y ⇒ B} →
                       Radjunct (R.F₁ g C.∘ f) ≈ g ∘ Radjunct f
     Radjunct-comm′ = ∘-resp-≈ʳ L.homomorphism ○ pullˡ (counit.commute _) ○ assoc
-    
+
+    Radjunct-resp-≈ : ∀ {A B} {f g : A C.⇒ R.F₀ B} → f C.≈ g → Radjunct f ≈ Radjunct g
+    Radjunct-resp-≈ eq = ∘-resp-≈ʳ (L.F-resp-≈ eq)
+
   -- a complication: the two hom functors do not live in the same Setoids,
   -- so they need to be mapped to the same Setoids first before establishing
   -- natural isomorphism!
@@ -182,14 +188,14 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
       { F⇒G = record
         { η       = λ _ → record
           { _⟨$⟩_ = λ f → lift (Ladjunct (lower f))
-          ; cong  = λ eq → lift (C.∘-resp-≈ˡ (R.F-resp-≈ (lower eq)))
+          ; cong  = λ eq → lift (Ladjunct-resp-≈ (lower eq))
           }
         ; commute = λ _ eq → lift $ Ladjunct-comm (lower eq)
         }
       ; F⇐G = record
         { η       = λ _ → record
           { _⟨$⟩_ = λ f → lift (Radjunct (lower f))
-          ; cong  = λ eq → lift (D.∘-resp-≈ʳ (L.F-resp-≈ (lower eq)))
+          ; cong  = λ eq → lift (Radjunct-resp-≈ (lower eq))
           }
         ; commute = λ _ eq → lift $ Radjunct-comm (lower eq)
         }
@@ -198,6 +204,8 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
         ; isoʳ = λ eq → let open C.HomReasoning in lift (LRadjunct≈id ○ lower eq)
         }
       }
+
+  module Hom-NI = NaturalIsomorphism Hom-NI
 
 infix 5 _⊣_
 _⊣_ = Adjoint
