@@ -214,4 +214,4 @@ module Kelly's  {X Y : Obj} where
   coherence₂ : C.id {X} ⊗₁ unitorʳ.from {Y} ∘ associator.from ≈ unitorʳ.from
   coherence₂ = project-triangle coherence-iso₂
 
-open Kelly's using (coherence₁; coherence-iso₁; coherence₂; coherence-iso₂)
+open Kelly's using (coherence₁; coherence-iso₁; coherence₂; coherence-iso₂) public

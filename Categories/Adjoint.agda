@@ -135,6 +135,10 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
       R.F₁ g ∘ R.F₁ i ∘ unit.η X ∘ f               ≈˘⟨ refl⟩∘⟨ assoc ⟩
       R.F₁ g ∘ (R.F₁ i ∘ unit.η X) ∘ f             ∎
 
+    Ladjunct-comm′ : ∀ {X A B} {f : A ⇒ X} {g : L.F₀ X D.⇒ B} →
+                      Ladjunct (g D.∘ L.F₁ f) ≈ Ladjunct g ∘ f
+    Ladjunct-comm′ = ∘-resp-≈ˡ R.homomorphism ○ (pullʳ (⟺ (unit.commute _))) ○ ⟺ assoc
+
   module _ where
     open D
     open HomReasoning
@@ -151,6 +155,10 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
       (g ∘ counit.η Y) ∘ L.F₁ i ∘ L.F₁ f           ≈⟨ pullʳ (⟺ assoc) ⟩
       g ∘ (counit.η Y ∘ L.F₁ i) ∘ L.F₁ f           ∎
 
+    Radjunct-comm′ : ∀ {Y A B} {f : A C.⇒ R.F₀ Y} {g : Y ⇒ B} →
+                      Radjunct (R.F₁ g C.∘ f) ≈ g ∘ Radjunct f
+    Radjunct-comm′ = ∘-resp-≈ʳ L.homomorphism ○ pullˡ (counit.commute _) ○ assoc
+    
   -- a complication: the two hom functors do not live in the same Setoids,
   -- so they need to be mapped to the same Setoids first before establishing
   -- natural isomorphism!
