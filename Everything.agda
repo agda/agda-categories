@@ -9,6 +9,8 @@ import Categories.Category.Cartesian
 import Categories.Category.CartesianClosed
 import Categories.Category.Closed
 import Categories.Category.Cocartesian
+import Categories.Category.Cocomplete
+import Categories.Category.Complete
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.F-Algebras
 import Categories.Category.Construction.Functors
@@ -20,6 +22,7 @@ import Categories.Category.Equivalence
 import Categories.Category.Groupoid
 import Categories.Category.Instance.Cats
 import Categories.Category.Instance.One
+import Categories.Category.Instance.Properties.Setoids
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
 import Categories.Category.Instance.SingletonSet
@@ -97,3 +100,4 @@ import Categories.Object.Terminal
 import Categories.Object.Zero
 import Categories.Utils.Product
 import Categories.Yoneda
+import Relation.Binary.Construct.Symmetrize
