@@ -29,6 +29,7 @@ open import Categories.Functor.Presheaf
 open import Categories.Functor.Construction.LiftSetoids
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
+
 import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
 
@@ -216,12 +217,12 @@ module _ (C : Category o ℓ e) where
       { isoˡ = begin
         (⇐.η B ⟨$⟩ id) ∘ (⇒.η A ⟨$⟩ id)      ≈˘⟨ identityˡ ⟩
         id ∘ (⇐.η B ⟨$⟩ id) ∘ (⇒.η A ⟨$⟩ id) ≈⟨ B⇒A.left-inverse-of F⇐G refl ⟩
-        ⇐.η A ⟨$⟩ (⇒.η A ⟨$⟩ id)             ≈⟨ iso.isoˡ refl ⟩
+        ⇐.η A ⟨$⟩ (⇒.η A ⟨$⟩ id)             ≈⟨ isoX.isoˡ refl ⟩
         id                                   ∎
       ; isoʳ = begin
         (⇒.η A ⟨$⟩ id) ∘ (⇐.η B ⟨$⟩ id)      ≈˘⟨ identityˡ ⟩
         id ∘ (⇒.η A ⟨$⟩ id) ∘ (⇐.η B ⟨$⟩ id) ≈⟨ A⇒B.left-inverse-of F⇒G refl ⟩
-        ⇒.η B ⟨$⟩ (⇐.η B ⟨$⟩ id)             ≈⟨ iso.isoʳ refl ⟩
+        ⇒.η B ⟨$⟩ (⇐.η B ⟨$⟩ id)             ≈⟨ isoX.isoʳ refl ⟩
         id                                   ∎
       }
     }
@@ -230,4 +231,4 @@ module _ (C : Category o ℓ e) where
           B⇒A = yoneda-inverse B (Functor.F₀ embed A)
           module A⇒B = Inverse A⇒B
           module B⇒A = Inverse B⇒A
-          module iso {X} = Mor.Iso (iso X)
+          module isoX {X} = Mor.Iso (iso X)
