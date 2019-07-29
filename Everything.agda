@@ -12,6 +12,7 @@ import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
 import Categories.Category.Complete
 import Categories.Category.Construction.Arrow
+import Categories.Category.Construction.Comma
 import Categories.Category.Construction.F-Algebras
 import Categories.Category.Construction.Functors
 import Categories.Category.Construction.Presheaves
