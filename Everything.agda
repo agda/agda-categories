@@ -20,11 +20,13 @@ import Categories.Category.Discrete
 import Categories.Category.Equivalence
 import Categories.Category.Groupoid
 import Categories.Category.Instance.Cats
+import Categories.Category.Instance.EmptySet
 import Categories.Category.Instance.One
 import Categories.Category.Instance.Properties.Setoids
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
 import Categories.Category.Instance.SingletonSet
+import Categories.Category.Instance.Zero
 import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
 import Categories.Category.Monoidal.Closed
