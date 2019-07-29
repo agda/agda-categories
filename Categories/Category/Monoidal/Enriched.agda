@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Category.Enriched where
+module Categories.Category.Monoidal.Enriched where
 
 -- Enriched category over a Monoidal category K
 

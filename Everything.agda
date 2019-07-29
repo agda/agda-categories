@@ -17,7 +17,6 @@ import Categories.Category.Construction.Functors
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Core
 import Categories.Category.Discrete
-import Categories.Category.Enriched
 import Categories.Category.Equivalence
 import Categories.Category.Groupoid
 import Categories.Category.Instance.Cats
@@ -30,6 +29,7 @@ import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
 import Categories.Category.Monoidal.Closed
 import Categories.Category.Monoidal.Closed.IsClosed
+import Categories.Category.Monoidal.Enriched
 import Categories.Category.Monoidal.Instance.Cats
 import Categories.Category.Monoidal.Instance.Sets
 import Categories.Category.Monoidal.Properties
