@@ -1,3 +1,4 @@
+{-# OPTIONS --without-K --safe #-}
 module Categories.Category.Instance.FamilyOfSets where
 
 -- The Category of "Families of Sets"
