@@ -112,11 +112,11 @@ private
       ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $
          pull-last assoc-commute-from ○ (∘-resp-≈ʳ $ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ℱ.F-resp-≈ ⊗ (refl , ⊗.identity))) ⟩
     Ladjunct (Ladjunct $ ε.η Z′ ∘ (id ⊗₁ ε.η Y) ∘ [ id , g ]₁ ⊗₁ id ∘ associator.from)
-      ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ pullˡ [ ⊗ ]-commute) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ pullˡ [ ⊗ ]-commute ⟩
     Ladjunct (Ladjunct $ ε.η Z′ ∘ ([ id , g ]₁ ⊗₁ id ∘ (id ⊗₁ ε.η Y)) ∘ associator.from)
-      ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pull-first (ε.commute g)) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pull-first (ε.commute g) ⟩
     Ladjunct (Ladjunct $ (g ∘ ε.η Z) ∘ (id ⊗₁ ε.η Y) ∘ associator.from)
-      ≈⟨ (Ladjunct-resp-≈ $ pushˡ $ X-resp-≈ assoc ○ ℱ.homomorphism [ X ,-]) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ pushˡ $ X-resp-≈ assoc ○ ℱ.homomorphism [ X ,-] ⟩
     Ladjunct ([ id , g ]₁ ∘ Ladjunct (ε.η Z ∘ (id ⊗₁ ε.η Y) ∘ associator.from))
       ≈⟨ pushˡ (ℱ.homomorphism [ XY ,-]) ⟩
     [ id , [ id , g ]₁ ]₁ ∘ L X Y Z
@@ -133,26 +133,26 @@ private
     Ladjunct (Ladjunct (ε.η Z ∘ (id ⊗₁ ε.η Y′) ∘ associator.from) ∘ [ f , id ]₁ ⊗₁ id)
       ≈˘⟨ Ladjunct-resp-≈ Ladjunct-comm′ ⟩
     Ladjunct (Ladjunct ((ε.η Z ∘ (id ⊗₁ ε.η Y′) ∘ associator.from) ∘ ([ f , id ]₁ ⊗₁ id) ⊗₁ id))
-      ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pull-last assoc-commute-from) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pull-last assoc-commute-from ⟩
     Ladjunct (Ladjunct $ ε.η Z ∘ (id ⊗₁ ε.η Y′) ∘ [ f , id ]₁ ⊗₁ id ⊗₁ id ∘ associator.from)
       ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ pullˡ
          (∘-resp-≈ʳ (ℱ.F-resp-≈ ⊗ (refl , ⊗.identity)) ○ [ ⊗ ]-commute)) ⟩
     Ladjunct (Ladjunct $ ε.η Z ∘ ([ f , id ]₁ ⊗₁ id ∘ id ⊗₁ ε.η Y′) ∘ associator.from)
-      ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pull-first (mate.commute₂ f)) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pull-first (mate.commute₂ f) ⟩
     Ladjunct (Ladjunct $ (ε.η Z ∘ id ⊗₁ f) ∘ id ⊗₁ ε.η Y′ ∘ associator.from)
-      ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ center $ ⟺ (ℱ.homomorphism ([ Y , Z ]₀ ⊗-))) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ center $ ⟺ (ℱ.homomorphism ([ Y , Z ]₀ ⊗-)) ⟩
     Ladjunct (Ladjunct $ ε.η Z ∘ id ⊗₁ (f ∘ ε.η Y′) ∘ associator.from)
       ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ℱ.F-resp-≈ ([ Y , Z ]₀ ⊗-) $
          ⟺ (ε.commute f)) ⟩
     Ladjunct (Ladjunct $ ε.η Z ∘ id ⊗₁ (ε.η Y ∘ [ id , f ]₁ ⊗₁ id) ∘ associator.from)
-      ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ℱ.homomorphism ([ Y , Z ]₀ ⊗-)) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ℱ.homomorphism ([ Y , Z ]₀ ⊗-) ⟩
     Ladjunct (Ladjunct $ ε.η Z ∘ (id ⊗₁ ε.η Y ∘ id ⊗₁ [ id , f ]₁ ⊗₁ id) ∘ associator.from)
-      ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ (center⁻¹ refl (⟺ assoc-commute-from)) ○ pullˡ assoc) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ (center⁻¹ refl (⟺ assoc-commute-from)) ○ pullˡ assoc ⟩
     Ladjunct (Ladjunct $ (ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from) ∘ (id ⊗₁ [ id , f ]₁) ⊗₁ id)
-      ≈⟨ (Ladjunct-resp-≈ $ ∘-resp-≈ˡ $ ℱ.homomorphism [ X ,-]) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ ∘-resp-≈ˡ $ ℱ.homomorphism [ X ,-] ⟩
     Ladjunct (([ id , ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from ]₁ ∘ [ id , (id ⊗₁ [ id , f ]₁) ⊗₁ id ]₁)
              ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y′ ]₀))
-      ≈⟨ (Ladjunct-resp-≈ $ pullʳ (⟺ (η.commute (id ⊗₁ [ id , f ]₁))) ○ (⟺ assoc)) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ pullʳ (⟺ (η.commute (id ⊗₁ [ id , f ]₁))) ○ (⟺ assoc) ⟩
     Ladjunct (Ladjunct (ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from) ∘ id ⊗₁ [ id , f ]₁)
       ≈⟨ ℱ.homomorphism [ XY′ ,-] ⟩∘⟨refl ⟩
     ([ id , Ladjunct (ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from) ]₁ ∘ [ id , id ⊗₁ [ id , f ]₁ ]₁) ∘ η.η [ Y , Z ]₀
@@ -189,21 +189,21 @@ private
     Ladjunct (Ladjunct (ε.η Z ∘ (id ⊗₁ ε.η Y) ∘ associator.from) ∘ id ⊗₁ [ f , id ]₁)
       ≈˘⟨ Ladjunct-resp-≈ Ladjunct-comm′ ⟩
     Ladjunct (Ladjunct $ (ε.η Z ∘ (id ⊗₁ ε.η Y) ∘ associator.from) ∘ (id ⊗₁ [ f , id ]₁) ⊗₁ id)
-      ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pull-last assoc-commute-from) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pull-last assoc-commute-from ⟩
     Ladjunct (Ladjunct $ ε.η Z ∘ (id ⊗₁ ε.η Y) ∘ id ⊗₁ [ f , id ]₁ ⊗₁ id ∘ associator.from)
-      ≈˘⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ pushˡ (ℱ.homomorphism (YZ ⊗-))) ⟩
+      ≈˘⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ pushˡ (ℱ.homomorphism (YZ ⊗-)) ⟩
     Ladjunct (Ladjunct $ ε.η Z ∘ id ⊗₁ (ε.η Y ∘ [ f , id ]₁ ⊗₁ id) ∘ associator.from)
-      ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ℱ.F-resp-≈ (YZ ⊗-) (mate.commute₂ f)) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ℱ.F-resp-≈ (YZ ⊗-) (mate.commute₂ f) ⟩
     Ladjunct (Ladjunct $ ε.η Z ∘ id ⊗₁ (ε.η Y ∘ id ⊗₁ f) ∘ associator.from)
-      ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ℱ.homomorphism (YZ ⊗-)) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ℱ.homomorphism (YZ ⊗-) ⟩
     Ladjunct (Ladjunct $ ε.η Z ∘ (id ⊗₁ ε.η Y ∘ id ⊗₁ id ⊗₁ f) ∘ associator.from)
-      ≈⟨ (Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ center⁻¹ refl (⟺ assoc-commute-from) ○ pullˡ assoc) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ center⁻¹ refl (⟺ assoc-commute-from) ○ pullˡ assoc ⟩
     Ladjunct (Ladjunct $ (ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from) ∘ (id ⊗₁ id) ⊗₁ f)
-      ≈⟨ (Ladjunct-resp-≈ $ pushˡ (ℱ.homomorphism [ X′ ,-])) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ pushˡ (ℱ.homomorphism [ X′ ,-]) ⟩
     Ladjunct ([ id , ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from ]₁ ∘ Ladjunct ((id ⊗₁ id) ⊗₁ f))
-      ≈⟨ (Ladjunct-resp-≈ $ ∘-resp-≈ʳ (∘-resp-≈ˡ (X′-resp-≈ (⊗.F-resp-≈ (⊗.identity , refl))) ○ mate.commute₁ f)) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ ∘-resp-≈ʳ (∘-resp-≈ˡ (X′-resp-≈ (⊗.F-resp-≈ (⊗.identity , refl))) ○ mate.commute₁ f) ⟩
     Ladjunct ([ id , ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from ]₁ ∘ [ f , id ]₁ ∘ η.η ([ Y , Z ]₀ ⊗₀ [ X , Y ]₀))
-      ≈⟨ (Ladjunct-resp-≈ $ pullˡ [ [-,-] ]-commute ○ assoc) ⟩
+      ≈⟨ Ladjunct-resp-≈ $ pullˡ [ [-,-] ]-commute ○ assoc ⟩
     Ladjunct ([ f , id ]₁ ∘ Ladjunct (ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from))
       ≈⟨ ∘-resp-≈ˡ (ℱ.homomorphism [ XY ,-]) ○ assoc ⟩
     [ id , [ f , id ]₁ ]₁ ∘ L X Y Z
@@ -214,6 +214,54 @@ private
           YZ        = [ Y , Z ]₀
           X′-resp-≈ = ℱ.F-resp-≈ [ X′ ,-]
 
+  Lj≈j : L X Y Y ∘ diagonal.α Y ≈ diagonal.α [ X , Y ]₀
+  Lj≈j {X = X} {Y = Y} = begin
+    L X Y Y ∘ Ladjunct unitorˡ.from
+      ≈˘⟨ Ladjunct-comm′ ⟩
+    Ladjunct (Ladjunct (ε.η Y ∘ id ⊗₁ ε.η Y ∘ associator.from) ∘ Ladjunct unitorˡ.from ⊗₁ id)
+      ≈˘⟨ Ladjunct-resp-≈ Ladjunct-comm′ ⟩
+    Ladjunct (Ladjunct $ (ε.η Y ∘ id ⊗₁ ε.η Y ∘ associator.from) ∘ (Ladjunct unitorˡ.from ⊗₁ id) ⊗₁ id)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pull-last assoc-commute-from ⟩
+    Ladjunct (Ladjunct $ ε.η Y ∘ id ⊗₁ ε.η Y ∘ Ladjunct unitorˡ.from ⊗₁ id ⊗₁ id ∘ associator.from)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ⟺ assoc ○ (∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ⊗.F-resp-≈ (refl , ⊗.identity)) ⟩
+    Ladjunct (Ladjunct $ (ε.η Y ∘ id ⊗₁ ε.η Y) ∘ Ladjunct unitorˡ.from ⊗₁ id ∘ associator.from)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ center [ ⊗ ]-commute ⟩
+    Ladjunct (Ladjunct $ ε.η Y ∘ (Ladjunct unitorˡ.from ⊗₁ id ∘ id ⊗₁ ε.η Y) ∘ associator.from)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pull-first RLadjunct≈id ⟩
+    Ladjunct (Ladjunct $ unitorˡ.from ∘ id ⊗₁ ε.η Y ∘ associator.from)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pullˡ unitorˡ-commute-from ⟩
+    Ladjunct (Ladjunct $ (ε.η Y ∘ unitorˡ.from) ∘ associator.from)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pullʳ coherence₁ ⟩
+    Ladjunct (Ladjunct (Radjunct unitorˡ.from))
+      ≈⟨ Ladjunct-resp-≈ LRadjunct≈id ⟩
+    diagonal.α [ X , Y ]₀
+      ∎
+
+  jL≈i : [ diagonal.α X , C.id ]₁ ∘ L X X Y ≈ identity.⇒.η [ X , Y ]₀
+  jL≈i {X = X} {Y = Y} = begin
+    [ diagonal.α X , id ]₁ ∘ L X X Y
+      ≈˘⟨ pushˡ [ [-,-] ]-commute ⟩
+    ([ id , Ladjunct (ε.η Y ∘ id ⊗₁ ε.η X ∘ associator.from) ]₁ ∘ [ diagonal.α X , id ]₁) ∘ η.η [ X , Y ]₀
+      ≈˘⟨ pushʳ (mate.commute₁ (diagonal.α X)) ⟩
+    [ id , Ladjunct (ε.η Y ∘ id ⊗₁ ε.η X ∘ associator.from) ]₁ ∘ [ id , id ⊗₁ diagonal.α X ]₁ ∘ η.η [ X , Y ]₀
+      ≈˘⟨ pushˡ (ℱ.homomorphism [ unit ,-]) ⟩
+    Ladjunct (Ladjunct (ε.η Y ∘ id ⊗₁ ε.η X ∘ associator.from) ∘ id ⊗₁ diagonal.α X)
+      ≈˘⟨ Ladjunct-resp-≈ $ Ladjunct-comm′ ⟩
+    Ladjunct (Ladjunct $ (ε.η Y ∘ id ⊗₁ ε.η X ∘ associator.from) ∘ (id ⊗₁ diagonal.α X) ⊗₁ id)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pull-last assoc-commute-from ○ ⟺ assoc ⟩
+    Ladjunct (Ladjunct $ (ε.η Y ∘ id ⊗₁ ε.η X) ∘ id ⊗₁ diagonal.α X ⊗₁ id ∘ associator.from)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ center (⟺ (ℱ.homomorphism ([ X , Y ]₀ ⊗-))) ⟩
+    Ladjunct (Ladjunct $ ε.η Y ∘ id ⊗₁ (ε.η X ∘ Ladjunct unitorˡ.from ⊗₁ id) ∘ associator.from)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ℱ.F-resp-≈ ([ X , Y ]₀ ⊗-) RLadjunct≈id ⟩
+    Ladjunct (Ladjunct $ ε.η Y ∘ id ⊗₁ unitorˡ.from ∘ associator.from)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ triangle ⟩
+    Ladjunct (Ladjunct $ Radjunct unitorʳ.from)
+      ≈⟨ Ladjunct-resp-≈ $ LRadjunct≈id ⟩
+    Ladjunct unitorʳ.from
+      ≈˘⟨ identityˡ ⟩
+    id ∘ Ladjunct unitorʳ.from
+      ∎
+
 -- closed : Cls.Closed C
 -- closed = record
 --   { [-,-]            = [-,-]
@@ -223,9 +271,9 @@ private
 --   ; L                = L
 --   ; L-natural-comm   = L-natural-comm
 --   ; L-dinatural-comm = L-dinatural-comm
---   ; Lj≈j             = {!!}
---   ; jL≈i             = {!!}
 --   ; iL≈i             = {!!}
+--   ; Lj≈j             = Lj≈j
+--   ; jL≈i             = jL≈i
 --   ; pentagon         = {!!}
 --   ; γ⁻¹              = λ {X Y} → record
 --     { _⟨$⟩_ = λ f → Radjunct f ∘ unitorˡ.to
