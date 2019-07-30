@@ -22,6 +22,7 @@ import Categories.Category.Equivalence
 import Categories.Category.Groupoid
 import Categories.Category.Instance.Cats
 import Categories.Category.Instance.EmptySet
+import Categories.Category.Instance.FamilyOfSets
 import Categories.Category.Instance.One
 import Categories.Category.Instance.Properties.Setoids
 import Categories.Category.Instance.Setoids
