@@ -16,7 +16,7 @@ module _ {a b : Level} where
       field
         U : Set a
         T : U → Set b
-  open Fam public
+  open Fam
 
   record Hom (A B : Fam) : Set (a ⊔ b) where
     field
@@ -25,9 +25,9 @@ module _ {a b : Level} where
 
   -- it is more convenient if we have g≡f than f≡g
   record _≡Fam_ {X Y} (f g : (Hom X Y)) : Set (a ⊔ b) where
-      field
-        g≡f : {x : _} → Hom.f g x ≡ Hom.f f x
-        φ≡γ : {x : _} {bx : _} → Hom.φ f x bx ≡ subst (T Y) (g≡f {x}) (Hom.φ g x bx)
+    field
+      g≡f : {x : U X} → Hom.f g x ≡ Hom.f f x
+      φ≡γ : {x : U X} {bx : T X x} → Hom.φ f x bx ≡ subst (T Y) (g≡f {x}) (Hom.φ g x bx)
 
   module Eq = _≡Fam_
 
