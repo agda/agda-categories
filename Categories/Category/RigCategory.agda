@@ -24,7 +24,7 @@ record RigCategory {M⊎ M× : Monoidal C} (S⊎ : Symmetric M⊎)
   private
     module C = Category C
 
-  open C
+  open C hiding (_≈_)
   open Commutation
   module M⊎ = Monoidal M⊎
   module M× = Monoidal M×
@@ -36,6 +36,8 @@ record RigCategory {M⊎ M× : Monoidal C} (S⊎ : Symmetric M⊎)
   private
     0C : C.Obj
     0C = M⊎.unit
+    1C : C.Obj
+    1C = M×.unit
 
   private
     B⊗ : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X
@@ -109,7 +111,18 @@ record RigCategory {M⊎ M× : Monoidal C} (S⊎ : Symmetric M⊎)
         ⊗α⇐                ⇒⟨ (A ⊗₀ B) ⊗₀ (C ⊕₀ D) ⟩
         dl.from
       ⟩
-    -- laplaza IX
+    laplazaIX : ∀ {A B C D} → [ (A ⊕₀ B) ⊗₀ (C ⊕₀ D) ⇒ (((A ⊗₀ C) ⊕₀ (B ⊗₀ C)) ⊕₀ (A ⊗₀ D)) ⊕₀ (B ⊗₀ D) ]⟨
+        dr.from                ⇒⟨ (A ⊗₀ (C ⊕₀ D)) ⊕₀ (B ⊗₀ (C ⊕₀ D)) ⟩
+        dl.from ⊕₁ dl.from     ⇒⟨ ((A ⊗₀ C) ⊕₀ (A ⊗₀ D)) ⊕₀ ((B ⊗₀ C) ⊕₀ (B ⊗₀ D)) ⟩
+        ⊕α⇐                    ⇒⟨ (((A ⊗₀ C) ⊕₀ (A ⊗₀ D)) ⊕₀ (B ⊗₀ C)) ⊕₀ (B ⊗₀ D) ⟩
+        ⊕α⇒ ⊕₁ C.id           ⇒⟨ ((A ⊗₀ C) ⊕₀ ((A ⊗₀ D) ⊕₀ (B ⊗₀ C))) ⊕₀ (B ⊗₀ D) ⟩
+        (C.id ⊕₁ B⊕) ⊕₁ C.id  ⇒⟨ ((A ⊗₀ C) ⊕₀ ((B ⊗₀ C) ⊕₀ (A ⊗₀ D))) ⊕₀ (B ⊗₀ D) ⟩
+        ⊕α⇐ ⊕₁ C.id
+      ≈
+        dl.from                ⇒⟨ ((A ⊕₀ B) ⊗₀ C) ⊕₀ ((A ⊕₀ B) ⊗₀ D) ⟩
+        dr.from ⊕₁ dr.from     ⇒⟨ ((A ⊗₀ C) ⊕₀ (B ⊗₀ C)) ⊕₀ ((A ⊗₀ D) ⊕₀ (B ⊗₀ D))  ⟩
+        ⊕α⇐
+      ⟩
     laplazaX : [ 0C ⊗₀ 0C ⇒ 0C ]⟨ λ* ≈ ρ* ⟩
     laplazaXI : ∀ {A B} →
       [ 0C ⊗₀ (A ⊕₀ B) ⇒ 0C ]⟨
@@ -119,15 +132,39 @@ record RigCategory {M⊎ M× : Monoidal C} (S⊎ : Symmetric M⊎)
       ≈
         λ*
       ⟩
-{-
-  field
-    .laplazaIX : α[AC⊕BC][AD][BD] ∘₁ (dᵣABC⊕dᵣABD ∘₁ dₗ[A⊕B]CD) ≡ⁿ
-        α[AC][BC][AD]⊕1BD ∘₁ ([1AC⊕s[AD][BC]]⊕1BD ∘₁ (α′[AC][AD][BC]⊕1BD ∘₁
-           (α[AC⊕AD][BC][BD] ∘₁ (dₗACD⊕dₗBCD ∘₁ dᵣAB[C⊕D]))))
-    .laplazaXIII : uᵣ⊗-over 0₀ ≡ⁿ aₗ-over 1₀
-    .laplazaXV : aᵣA ≡ⁿ aₗA ∘₁ s⊗A0
-    .laplazaXVI : aₗAB ≡ⁿ aₗB ∘₁ (aₗA⊗1B ∘₁ α0AB)
-    .laplazaXVII : aᵣA₂ ∘₁ 1A⊗aₗB ≡ⁿ aₗB ∘₁ (aᵣA⊗1B ∘₁ αA0B)
-    .laplazaXIX : 1A⊗uₗB ≡ⁿ uₗAB ∘₁ (aᵣA⊕1AB ∘₁ dₗA0B)
-    .laplazaXXIII : uₗA⊕B ≡ⁿ uₗA⊕uₗB ∘₁ dₗ1AB
-  -}
+    laplazaXIII : [ 0C ⊗₀ 1C ⇒ 0C ]⟨ ⊗ρ⇒ ≈ λ* ⟩
+    laplazaXV : ∀ {A : Obj} →
+      [ A ⊗₀ 0C ⇒ 0C ]⟨
+        ρ*
+      ≈
+        B⊗ ⇒⟨ 0C ⊗₀ A ⟩
+        λ*
+      ⟩
+    laplazaXVI : ∀ {A B} → [ 0C ⊗₀ (A ⊗₀ B) ⇒ 0C ]⟨
+        ⊗α⇐        ⇒⟨ (0C ⊗₀ A) ⊗₀ B ⟩
+        λ* ⊗₁ C.id  ⇒⟨ 0C ⊗₀ B ⟩
+        λ*
+      ≈
+        λ*
+      ⟩
+    laplazaXVII : ∀ {A B} → [ A ⊗₀ (0C ⊗₀ B) ⇒ 0C ]⟨
+        ⊗α⇐        ⇒⟨ (A ⊗₀ 0C) ⊗₀ B ⟩
+        ρ* ⊗₁ C.id ⇒⟨ 0C ⊗₀ B ⟩
+        λ*
+      ≈
+        C.id ⊗₁ λ* ⇒⟨ A ⊗₀ 0C ⟩
+        ρ*
+      ⟩
+    laplazaXIX : ∀ {A B} → [ A ⊗₀ (0C ⊕₀ B) ⇒ A ⊗₀ B ]⟨
+        dl.from     ⇒⟨ (A ⊗₀ 0C) ⊕₀ (A ⊗₀ B) ⟩
+        ρ* ⊕₁ C.id  ⇒⟨ 0C ⊕₀ (A ⊗₀ B) ⟩
+        ⊕λ⇒
+      ≈
+        C.id ⊗₁ ⊕λ⇒
+      ⟩
+    laplazaXXIII : ∀ {A B} → [ 1C ⊗₀ (A ⊕₀ B) ⇒ (A ⊕₀ B) ]⟨
+        ⊗λ⇒
+      ≈
+        dl.from ⇒⟨ (1C ⊗₀ A) ⊕₀ (1C ⊗₀ B) ⟩
+        ⊗λ⇒ ⊕₁ ⊗λ⇒
+      ⟩
