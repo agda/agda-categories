@@ -6,7 +6,7 @@ open import Data.Product
 
 open import Categories.Category
 open import Categories.Functor renaming (id to idF)
-open import Categories.NaturalTransformation using (NaturalTransformation)
+open import Categories.NaturalTransformation using (NaturalTransformation) renaming (id to idNI)
 open import Categories.NaturalTransformation.NaturalIsomorphism
 open import Categories.Category.Product
 open import Categories.Morphism
@@ -59,3 +59,38 @@ module _ {A : Category o ℓ e} {B : Category o′ ℓ′ e′} {C : Category o�
       module L⇒ = NaturalTransformation (F⇒G πˡ→i)
       module R⇒ = NaturalTransformation (F⇒G πʳ→j)
       open Iso
+
+-- further properties of products
+module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
+
+  private
+    C×D : Category _ _ _
+    C×D = Product C D
+    module C×D = Category C×D
+    module C = Category C
+    module CE = C.Equiv
+    module D = Category D
+    module DE = D.Equiv
+
+  -- TODO: write an "essentially-equal" combinator for cases such as these?
+  πˡ※πʳ≃id : (πˡ ※ πʳ) ≃ idF {C = C×D}
+  πˡ※πʳ≃id = record
+    { F⇒G = record { η = λ _ → C×D.id ; commute = λ _ → CE.sym C.id-comm , DE.sym D.id-comm }
+    ; F⇐G = record { η = λ _ → C×D.id ; commute = λ _ → CE.sym C.id-comm , DE.sym D.id-comm }
+    ; iso = λ X → record
+      { isoˡ = C.identityˡ , D.identityˡ
+      ; isoʳ = C.identityʳ , D.identityʳ
+      }
+    }
+
+  ※-distrib : {o₁ ℓ₁ e₁ o₂ ℓ₂ e₂ : Level} {A : Category o₁ ℓ₁ e₁} {B : Category o₂ ℓ₂ e₂}
+    → (F : Functor B C) → (G : Functor B D) → (H : Functor A B)
+    → ((F ∘F H) ※ (G ∘F H)) ≃ ((F ※ G) ∘F H)
+  ※-distrib F G H = record
+    { F⇒G = record { η = λ _ → C×D.id ; commute = λ _ → CE.sym C.id-comm , DE.sym D.id-comm }
+    ; F⇐G = record { η = λ _ → C×D.id ; commute = λ _ → CE.sym C.id-comm , DE.sym D.id-comm }
+    ; iso = λ X → record
+      { isoˡ = C.identityˡ , D.identityˡ
+      ; isoʳ = C.identityʳ , D.identityʳ
+      }
+    }
