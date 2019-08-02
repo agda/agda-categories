@@ -6,6 +6,8 @@ module Categories.Kan where
 open import Level
 open import Categories.Category using (Category)
 open import Categories.Functor
+open import Categories.NaturalTransformation using (NaturalTransformation; _∘ʳ_; _∘ᵥ_)
+open import Categories.NaturalTransformation.Equivalence using (_≃_)
 
 private
   variable
@@ -13,7 +15,6 @@ private
 
 module _ {A : Category o₀ ℓ₀ e₀} {B : Category o₁ ℓ₁ e₁} {C : Category o₂ ℓ₂ e₂}
            (F : Functor A B) (X : Functor A C) where
-  open import Categories.NaturalTransformation using (NaturalTransformation; _≃_; _∘ʳ_; _∘ᵥ_)
 
   record Lan : Set (o₀ ⊔ ℓ₀ ⊔ e₀ ⊔ o₁ ⊔ ℓ₁ ⊔ e₁ ⊔ o₂ ⊔ ℓ₂ ⊔ e₂) where
     field

@@ -4,7 +4,6 @@ module Categories.NaturalTransformation.NaturalIsomorphism where
 
 open import Level
 open import Data.Product using (_×_; _,_; map; zip)
-open import Relation.Binary using (IsEquivalence)
 open import Function using (flip)
 
 open import Categories.Category
@@ -109,8 +108,8 @@ sym {D = D} F≃G = record
 trans : Transitive (NaturalIsomorphism {C = C} {D = D})
 trans {D = D} = flip _ⓘᵥ_
 
-isEquivalence : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → IsEquivalence (NaturalIsomorphism {C = C} {D = D})
-isEquivalence C D = record
+isEquivalence : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} → IsEquivalence (NaturalIsomorphism {C = C} {D = D})
+isEquivalence = record
   { refl  = refl
   ; sym   = sym
   ; trans = trans
@@ -120,20 +119,10 @@ Functor-setoid : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Seto
 Functor-setoid C D = record
   { Carrier       = Functor C D
   ; _≈_           = NaturalIsomorphism
-  ; isEquivalence = isEquivalence C D
+  ; isEquivalence = isEquivalence
   }
 
-infix 4 _≅_
-_≅_ : ∀ {F G : Functor C D} → (α β : NaturalIsomorphism F G) → Set _
-α ≅ β = F⇒G α ≃ F⇒G β × F⇐G α ≃ F⇐G β
 
-≅-isEquivalence : ∀ {F G : Functor C D} → IsEquivalence (_≅_ {F = F} {G = G})
-≅-isEquivalence {D = D} {F = F} {G = G} = record
-  { refl  = H.refl , H.refl
-  ; sym   =  map (λ z → H.sym z) (λ z → H.sym z) -- eta expansion needed
-  ; trans = zip (λ a b → H.trans a b) λ a b → H.trans a b -- ditto
-  }
-  where module H = Category.HomReasoning D
 
 -- Left and Right Unitors, Natural Isomorphisms.
 module _ {F : Functor C D} where

@@ -3,7 +3,6 @@
 module Categories.NaturalTransformation.Core where
 
 open import Level
-open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
 open import Categories.Category
 open import Categories.Functor renaming (id to idF)
@@ -88,29 +87,6 @@ _∘ʳ_ {D = D} {E = E} {G = G} {H = H} α F = record
   where open Functor F
         open NaturalTransformation α
 
--- This ad hoc equivalence for NaturalTransformation should really be 'modification'
---  (yep, tricategories!). What is below is only part of the definition of a 'modification'.  TODO
-infix 4 _≃_
-
-_≃_ : ∀ {F G : Functor C D} → Rel (NaturalTransformation F G) _
-_≃_ {D = D} X Y = ∀ {x} → D [ NaturalTransformation.η X x ≈ NaturalTransformation.η Y x ]
-
-≃-isEquivalence : ∀ {F G : Functor C D} → IsEquivalence (_≃_ {F = F} {G})
-≃-isEquivalence {D = D} {F} {G} = record
-  { refl  = refl
-  ; sym   = λ f → sym f -- need to eta-expand to get things to line up properly
-  ; trans = λ f g → trans f g
-  }
-  where open Category.Equiv D
-
-≃-setoid : ∀ (F G : Functor C D) → Setoid _ _
-≃-setoid F G = record
-  { Carrier       = NaturalTransformation F G
-  ; _≈_           = _≃_
-  ; isEquivalence = ≃-isEquivalence
-  }
-
-
 module LeftRightId (F : Functor C D) where
   open Category D
   open HomReasoning
@@ -130,7 +106,7 @@ module _ {F : Functor C D} where
   open Functor F
   open Category D
   open LeftRightId F
-  
+
   F⇒F∘id : NaturalTransformation F (F ∘F idF)
   F⇒F∘id = record { η = λ _ → D.id ; commute = comm }
 

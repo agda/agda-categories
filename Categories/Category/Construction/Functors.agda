@@ -10,6 +10,7 @@ open import Categories.Category
 open import Categories.Functor
 open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation renaming (id to idN)
+open import Categories.NaturalTransformation.Equivalence using (_≃_; ≃-isEquivalence)
 import Categories.Morphism.Reasoning as MR
 
 -- The reason the proofs below are so easy is that _∘ᵥ_ 'computes' all the way down into

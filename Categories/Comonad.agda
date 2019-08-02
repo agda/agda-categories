@@ -7,6 +7,7 @@ open import Categories.Category using (Category)
 open import Categories.Functor using (Functor; Endofunctor; id; _∘F_)
 open import Categories.NaturalTransformation renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
+open import Categories.NaturalTransformation.Equivalence
 open NaturalIsomorphism
 
 record Comonad {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where

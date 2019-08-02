@@ -12,7 +12,7 @@ open import Categories.Functor
 open import Categories.Functor.Construction.Constant
 open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation renaming (id to idN)
-open import Categories.NaturalTransformation.NaturalIsomorphism hiding (_≅_)
+open import Categories.NaturalTransformation.NaturalIsomorphism
 open import Categories.NaturalTransformation.Dinatural
 import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
@@ -54,7 +54,7 @@ module _ {F G : Functor C D} where
   -- isomorphism in Functors category is the same as natural isomorphism
   module _ where
     open Mor (Functors C D)
-  
+
     Functors-iso⇒NI : F ≅ G → NaturalIsomorphism F G
     Functors-iso⇒NI F≅G = record
       { F⇒G = from
@@ -65,7 +65,7 @@ module _ {F G : Functor C D} where
         }
       }
       where open Mor._≅_ F≅G
-    
+
     NI⇒Functors-iso : NaturalIsomorphism F G → F ≅ G
     NI⇒Functors-iso α = record
       { from = F⇒G

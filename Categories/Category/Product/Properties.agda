@@ -7,7 +7,7 @@ open import Data.Product
 open import Categories.Category
 open import Categories.Functor renaming (id to idF)
 open import Categories.NaturalTransformation using (NaturalTransformation)
-open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans)
+open import Categories.NaturalTransformation.NaturalIsomorphism
 open import Categories.Category.Product
 open import Categories.Morphism
 

@@ -13,7 +13,7 @@ open import Categories.Functor renaming (id to idF)
 open import Categories.Category.Monoidal
 open import Categories.Category.Monoidal.Braided
 open import Categories.Category.Monoidal.Symmetric
-open import Categories.NaturalTransformation.NaturalIsomorphism hiding (_≅_)
+open import Categories.NaturalTransformation.NaturalIsomorphism
 open import Categories.NaturalTransformation using (_∘ᵥ_; _∘ₕ_; _∘ˡ_; _∘ʳ_; NaturalTransformation)
 open import Categories.Morphism C
 
