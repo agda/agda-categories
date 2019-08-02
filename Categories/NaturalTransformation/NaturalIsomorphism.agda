@@ -40,9 +40,13 @@ record NaturalIsomorphism {C : Category o ℓ e}
 open NaturalIsomorphism
 
 infixr 9 _ⓘᵥ_ _ⓘₕ_ _ⓘˡ_ _ⓘʳ_
+infix 4 _≃_
 
-_ⓘᵥ_ : ∀ {F G H : Functor C D} →
-         NaturalIsomorphism G H → NaturalIsomorphism F G → NaturalIsomorphism F H
+-- commonly used short-hand in CT for NaturalIsomorphism
+_≃_ : (F G : Functor C D) → Set _
+_≃_ = NaturalIsomorphism
+
+_ⓘᵥ_ : {F G H : Functor C D} → G ≃ H → F ≃ G → F ≃ H
 _ⓘᵥ_ {D = D} α β = record
   { F⇒G = F⇒G α ∘ᵥ F⇒G β
   ; F⇐G = F⇐G β ∘ᵥ F⇐G α
@@ -51,8 +55,7 @@ _ⓘᵥ_ {D = D} α β = record
   where open NaturalIsomorphism
         open Morphismₚ D
 
-_ⓘₕ_ : ∀ {H I : Functor D E} {F G : Functor C D} →
-         NaturalIsomorphism H I → NaturalIsomorphism F G → NaturalIsomorphism (H ∘F F) (I ∘F G)
+_ⓘₕ_ : {H I : Functor D E} {F G : Functor C D} → H ≃ I → F ≃ G → (H ∘F F) ≃ (I ∘F G)
 _ⓘₕ_ {E = E} {I = I} α β = record
   { F⇒G = F⇒G α ∘ₕ F⇒G β
   ; F⇐G = F⇐G α ∘ₕ F⇐G β
@@ -65,18 +68,16 @@ _ⓘₕ_ {E = E} {I = I} α β = record
         open E.Equiv
         open Morphismₚ E
 
-_ⓘˡ_ : ∀ {F G : Functor C D} →
-         (H : Functor D E) → (η : NaturalIsomorphism F G) → NaturalIsomorphism (H ∘F F) (H ∘F G)
-_ⓘˡ_ {C = C} {E = E} H η = record
+_ⓘˡ_ : {F G : Functor C D} → (H : Functor D E) → (η : F ≃ G) → H ∘F F ≃ H ∘F G
+H ⓘˡ η = record
   { F⇒G = H ∘ˡ F⇒G η
   ; F⇐G = H ∘ˡ F⇐G η
   ; iso = λ X → [ H ]-resp-Iso (iso η X)
   }
   where open Functor H
 
-_ⓘʳ_ : ∀ {F G : Functor C D} →
-         (η : NaturalIsomorphism F G) → (K : Functor E C) → NaturalIsomorphism (F ∘F K) (G ∘F K)
-_ⓘʳ_ η K = record
+_ⓘʳ_ : {F G : Functor C D} → (η : F ≃ G) → (K : Functor E C) → F ∘F K ≃ G ∘F K
+η ⓘʳ K = record
   { F⇒G = F⇒G η ∘ʳ K
   ; F⇐G = F⇐G η ∘ʳ K
   ; iso = λ X → iso η (F₀ X)
@@ -106,7 +107,7 @@ sym {D = D} F≃G = record
   where open Morphism D
 
 trans : Transitive (NaturalIsomorphism {C = C} {D = D})
-trans {D = D} = flip _ⓘᵥ_
+trans = flip _ⓘᵥ_
 
 isEquivalence : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} → IsEquivalence (NaturalIsomorphism {C = C} {D = D})
 isEquivalence = record
@@ -122,8 +123,6 @@ Functor-setoid C D = record
   ; isEquivalence = isEquivalence
   }
 
-
-
 -- Left and Right Unitors, Natural Isomorphisms.
 module _ {F : Functor C D} where
   open Category.HomReasoning D
@@ -131,10 +130,10 @@ module _ {F : Functor C D} where
   open LeftRightId F
   open Category D
 
-  unitorˡ : NaturalIsomorphism (ℱ.id ∘F F) F
+  unitorˡ : ℱ.id ∘F F ≃ F
   unitorˡ = record { F⇒G = id∘F⇒F ; F⇐G = F⇒id∘F ; iso = iso-id-id }
 
-  unitorʳ : NaturalIsomorphism (F ∘F ℱ.id) F
+  unitorʳ : F ∘F ℱ.id ≃ F
   unitorʳ = record { F⇒G = F∘id⇒F ; F⇐G = F⇒F∘id ; iso = iso-id-id }
 
 -- associator
@@ -152,5 +151,5 @@ module _ (F : Functor B C) (G : Functor C D) (H : Functor D E) where
     assocˡ : NaturalTransformation (H ∘F (G ∘F F)) ((H ∘F G) ∘F F)
     assocˡ = record { η = λ _ → id ; commute = comm }
 
-  associator : NaturalIsomorphism ((H ∘F G) ∘F F) (H ∘F (G ∘F F))
+  associator : (H ∘F G) ∘F F ≃ H ∘F (G ∘F F)
   associator = record { F⇒G = assocʳ ; F⇐G = assocˡ ; iso = iso-id-id }

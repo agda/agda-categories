@@ -27,7 +27,7 @@ open import Categories.Functor.Bifunctor using (Bifunctor; appˡ; appʳ)
 open import Categories.Functor.Properties using ([_]-resp-≅)
 open import Categories.NaturalTransformation renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
-  hiding (unitorˡ; unitorʳ; associator)
+  hiding (unitorˡ; unitorʳ; associator; _≃_)
 open import Categories.Morphism C
 open import Categories.Morphism.IsoEquiv C
 open import Categories.Morphism.Isomorphism C

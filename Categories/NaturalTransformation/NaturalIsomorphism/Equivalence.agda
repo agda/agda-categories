@@ -9,7 +9,7 @@ open import Relation.Binary using (IsEquivalence)
 
 open import Categories.Category
 open import Categories.Functor using (Functor)
-open import Categories.NaturalTransformation.NaturalIsomorphism
+open import Categories.NaturalTransformation.NaturalIsomorphism hiding (_≃_)
 open import Categories.NaturalTransformation.Equivalence
 open NaturalIsomorphism
 

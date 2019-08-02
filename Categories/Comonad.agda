@@ -6,7 +6,7 @@ open import Level
 open import Categories.Category using (Category)
 open import Categories.Functor using (Functor; Endofunctor; id; _∘F_)
 open import Categories.NaturalTransformation renaming (id to idN)
-open import Categories.NaturalTransformation.NaturalIsomorphism
+open import Categories.NaturalTransformation.NaturalIsomorphism hiding (_≃_)
 open import Categories.NaturalTransformation.Equivalence
 open NaturalIsomorphism
 
