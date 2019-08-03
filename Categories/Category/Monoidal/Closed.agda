@@ -36,16 +36,16 @@ open import Categories.Functor.Hom
 open import Categories.Category.Instance.Setoids
 open import Categories.NaturalTransformation hiding (id)
 open import Categories.NaturalTransformation.Properties
-open import Categories.NaturalTransformation.NaturalIsomorphism as NI hiding (_≅_)
+open import Categories.NaturalTransformation.NaturalIsomorphism as NI
 
 record Closed : Set (levelOfTerm M) where
   open Monoidal M public
-  
+
   field
-    [-,-]   : Bifunctor C.op C C 
+    [-,-]   : Bifunctor C.op C C
     adjoint : (-⊗ X) ⊣ appˡ [-,-] X
     mate    : (f : X ⇒ Y) → Mate (adjoint {X}) (adjoint {Y}) (appʳ-nat ⊗ f) (appˡ-nat [-,-] f)
-    
+
   module [-,-]        = Functor [-,-]
   module adjoint {X}  = Adjoint (adjoint {X})
   module mate {X Y} f = Mate (mate {X} {Y} f)

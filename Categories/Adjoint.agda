@@ -20,7 +20,7 @@ open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Functor.Hom using (Hom[_][-,-])
 open import Categories.Functor.Construction.LiftSetoids
-open import Categories.NaturalTransformation using (NaturalTransformation; _≃_; _∘ₕ_; _∘ᵥ_; _∘ˡ_; _∘ʳ_)
+open import Categories.NaturalTransformation using (NaturalTransformation; _∘ₕ_; _∘ᵥ_; _∘ˡ_; _∘ʳ_)
   renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (NaturalIsomorphism; unitorˡ; unitorʳ; associator)

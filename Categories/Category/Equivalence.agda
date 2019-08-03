@@ -32,7 +32,7 @@ record StrongEquivalence {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (D : 
     F            : Functor C D
     G            : Functor D C
     weak-inverse : WeakInverse F G
-  
+
   open WeakInverse weak-inverse public
 
 refl : StrongEquivalence C C

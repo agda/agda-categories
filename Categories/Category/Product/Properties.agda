@@ -6,8 +6,8 @@ open import Data.Product
 
 open import Categories.Category
 open import Categories.Functor renaming (id to idF)
-open import Categories.NaturalTransformation using (NaturalTransformation)
-open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans)
+open import Categories.NaturalTransformation using (NaturalTransformation) renaming (id to idNI)
+open import Categories.NaturalTransformation.NaturalIsomorphism
 open import Categories.Category.Product
 open import Categories.Morphism
 
@@ -15,47 +15,82 @@ private
   variable
     o ℓ e o′ ℓ′ e′ o″ ℓ″ e″ : Level
 
-project₁ : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} {C : Category o″ ℓ″ e″}
-  {h : Functor C A} {i : Functor C B} → NaturalIsomorphism (πˡ ∘F (h ※ i)) h
-project₁ {A = A} = record
-  { F⇒G = record { η = λ _ → id ; commute = λ _ → ⟺ id-comm }
-  ; F⇐G = record { η = λ _ → id ; commute = λ _ → ⟺ id-comm }
-  ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ }
-  }
-  where open Category A; open HomReasoning
+-- variables don't work quite right, use anonymous module instead
+module _ {A : Category o ℓ e} {B : Category o′ ℓ′ e′} {C : Category o″ ℓ″ e″}
+         {i : Functor C A} {j : Functor C B} where
 
-project₂ : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} {C : Category o″ ℓ″ e″}
-  {h : Functor C A} {i : Functor C B} → NaturalIsomorphism (πʳ ∘F (h ※ i)) i
-project₂ {B = B} = record
-  { F⇒G = record { η = λ _ → id ; commute = λ _ → ⟺ id-comm }
-  ; F⇐G = record { η = λ _ → id ; commute = λ _ → ⟺ id-comm }
-  ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ }
-  }
-  where open Category B; open HomReasoning
+  project₁ : πˡ ∘F (i ※ j) ≃ i
+  project₁ = record
+    { F⇒G = record { η = λ _ → id ; commute = λ _ → ⟺ id-comm }
+    ; F⇐G = record { η = λ _ → id ; commute = λ _ → ⟺ id-comm }
+    ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ }
+    }
+    where open Category A; open HomReasoning
 
-unique : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} {C : Category o″ ℓ″ e″}
-      {h : Functor C (Product A B)} {i : Functor C A} {j : Functor C B} →
-      NaturalIsomorphism (πˡ ∘F h) i →
-      NaturalIsomorphism (πʳ ∘F h) j → NaturalIsomorphism (i ※ j) h
-unique πˡ→i πʳ→j = record
-  { F⇒G = record
-    { η       = < L⇐.η , R⇐.η >
-    ; commute = < L⇐.commute , R⇐.commute >
+  project₂ : πʳ ∘F (i ※ j) ≃ j
+  project₂ = record
+    { F⇒G = record { η = λ _ → id ; commute = λ _ → ⟺ id-comm }
+    ; F⇐G = record { η = λ _ → id ; commute = λ _ → ⟺ id-comm }
+    ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ }
     }
-  ; F⇐G = record
-    { η       = < L⇒.η , R⇒.η >
-    ; commute = < L⇒.commute , R⇒.commute >
+    where open Category B; open HomReasoning
+
+  unique : {h : Functor C (Product A B)} →
+        πˡ ∘F h ≃ i → πʳ ∘F h ≃ j → (i ※ j) ≃ h
+  unique πˡ→i πʳ→j = record
+    { F⇒G = record
+      { η       = < L⇐.η , R⇐.η >
+      ; commute = < L⇐.commute , R⇐.commute >
+      }
+    ; F⇐G = record
+      { η       = < L⇒.η , R⇒.η >
+      ; commute = < L⇒.commute , R⇒.commute >
+      }
+    ; iso = λ X → let L = iso πˡ→i X
+                      R = iso πʳ→j X in record
+      { isoˡ = isoʳ L , isoʳ R
+      ; isoʳ = isoˡ L , isoˡ R
+      }
     }
-  ; iso = λ X → let L = iso πˡ→i X
-                    R = iso πʳ→j X in record
-    { isoˡ = isoʳ L , isoʳ R
-    ; isoʳ = isoˡ L , isoˡ R
+    where
+      open NaturalIsomorphism
+      module L⇐ = NaturalTransformation (F⇐G πˡ→i)
+      module R⇐ = NaturalTransformation (F⇐G πʳ→j)
+      module L⇒ = NaturalTransformation (F⇒G πˡ→i)
+      module R⇒ = NaturalTransformation (F⇒G πʳ→j)
+      open Iso
+
+-- further properties of products
+module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
+
+  private
+    C×D : Category _ _ _
+    C×D = Product C D
+    module C×D = Category C×D
+    module C = Category C
+    module CE = C.Equiv
+    module D = Category D
+    module DE = D.Equiv
+
+  -- TODO: write an "essentially-equal" combinator for cases such as these?
+  πˡ※πʳ≃id : (πˡ ※ πʳ) ≃ idF {C = C×D}
+  πˡ※πʳ≃id = record
+    { F⇒G = record { η = λ _ → C×D.id ; commute = λ _ → CE.sym C.id-comm , DE.sym D.id-comm }
+    ; F⇐G = record { η = λ _ → C×D.id ; commute = λ _ → CE.sym C.id-comm , DE.sym D.id-comm }
+    ; iso = λ X → record
+      { isoˡ = C.identityˡ , D.identityˡ
+      ; isoʳ = C.identityʳ , D.identityʳ
+      }
     }
-  }
-  where
-    open NaturalIsomorphism
-    module L⇐ = NaturalTransformation (F⇐G πˡ→i)
-    module R⇐ = NaturalTransformation (F⇐G πʳ→j)
-    module L⇒ = NaturalTransformation (F⇒G πˡ→i)
-    module R⇒ = NaturalTransformation (F⇒G πʳ→j)
-    open Iso
+
+  ※-distrib : {o₁ ℓ₁ e₁ o₂ ℓ₂ e₂ : Level} {A : Category o₁ ℓ₁ e₁} {B : Category o₂ ℓ₂ e₂}
+    → (F : Functor B C) → (G : Functor B D) → (H : Functor A B)
+    → ((F ∘F H) ※ (G ∘F H)) ≃ ((F ※ G) ∘F H)
+  ※-distrib F G H = record
+    { F⇒G = record { η = λ _ → C×D.id ; commute = λ _ → CE.sym C.id-comm , DE.sym D.id-comm }
+    ; F⇐G = record { η = λ _ → C×D.id ; commute = λ _ → CE.sym C.id-comm , DE.sym D.id-comm }
+    ; iso = λ X → record
+      { isoˡ = C.identityˡ , D.identityˡ
+      ; isoʳ = C.identityʳ , D.identityʳ
+      }
+    }

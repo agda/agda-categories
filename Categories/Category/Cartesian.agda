@@ -23,7 +23,7 @@ import Categories.Category.Monoidal.Symmetric as Sym
 
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Bifunctor
-open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans; _≅_)
+open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans)
 
 private
   variable
@@ -70,13 +70,13 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
 
   assocˡ∘assocʳ : assocˡ {A}{B}{C} ∘ assocʳ {A}{B}{C} ≈ id
   assocˡ∘assocʳ = Iso.isoˡ (_≅_.iso ×-assoc)
-  
+
   ⟨⟩-congʳ : f ≈ f′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g ⟩
   ⟨⟩-congʳ pf = ⟨⟩-cong₂ pf refl
-  
+
   ⟨⟩-congˡ : g ≈ g′ → ⟨ f , g ⟩ ≈ ⟨ f , g′ ⟩
   ⟨⟩-congˡ pf = ⟨⟩-cong₂ refl pf
-    
+
   swap : A × B ⇒ B × A
   swap = ⟨ π₂ , π₁ ⟩
 
@@ -133,7 +133,7 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
             π₁ ∘ first f ≈⟨ refl⟩∘⟨ eq ⟩
             π₁ ∘ id      ≈⟨ identityʳ ⟩
             π₁           ∎
-  
+
   swap∘⟨⟩ : swap ∘ ⟨ f , g ⟩ ≈ ⟨ g , f ⟩
   swap∘⟨⟩ {f = f} {g = g} = begin
     ⟨ π₂ , π₁ ⟩ ∘ ⟨ f , g ⟩             ≈⟨ ⟨⟩∘ ⟩
@@ -381,6 +381,6 @@ record Cartesian : Set (levelOfTerm 𝒞) where
       }
     ; commutative = swap∘swap
     }
-    
+
   module symmetric = Symmetric symmetric
   open symmetric public

@@ -14,6 +14,7 @@ open import Categories.Category.Instance.Setoids
 open import Categories.Functor
 open import Categories.Functor.Hom
 open import Categories.NaturalTransformation renaming (id to idN)
+open import Categories.NaturalTransformation.Equivalence using (_≃_)
 open import Categories.Adjoint
 import Categories.Morphism.Reasoning as MR
 
@@ -35,7 +36,7 @@ record Mate {L : Functor C D}
     module L′⊣R′ = Adjoint L′⊣R′
     module C = Category C
     module D = Category D
-  
+
   field
     commute₁ : (R ∘ˡ α) ∘ᵥ L⊣R.unit ≃ (β ∘ʳ L′) ∘ᵥ L′⊣R′.unit
     commute₂ : L⊣R.counit ∘ᵥ L ∘ˡ β ≃ L′⊣R′.counit ∘ᵥ (α ∘ʳ R′)
@@ -58,12 +59,12 @@ record Mate {L : Functor C D}
         ≈⟨ L⊣R.RLadjunct≈id ⟩
       η α X
         ∎
-    
+
   module _ where
     open C
     open HomReasoning
     open MR C
-    
+
     commute₄ : ∀ {X} → F₁ R (L′⊣R′.counit.η X) ∘ F₁ R (η α (F₀ R′ X)) ∘ L⊣R.unit.η (F₀ R′ X) ≈ η β X
     commute₄ {X} = begin
       F₁ R (L′⊣R′.counit.η X) ∘ F₁ R (η α (F₀ R′ X)) ∘ L⊣R.unit.η (F₀ R′ X)
@@ -193,4 +194,3 @@ module _ {L L′ : Functor C D} {R R′ : Functor D C}
     { commute₁ = commute₁ commute₃
     ; commute₂ = commute₂ commute₄
     }
-

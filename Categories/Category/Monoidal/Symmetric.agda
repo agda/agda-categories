@@ -10,7 +10,7 @@ open import Level
 open import Data.Product using (Σ; _,_)
 
 open import Categories.Functor.Bifunctor
-open import Categories.NaturalTransformation.NaturalIsomorphism hiding (_≅_)
+open import Categories.NaturalTransformation.NaturalIsomorphism
 
 open import Categories.Morphism C
 open import Categories.Category.Monoidal.Braided M
@@ -29,7 +29,7 @@ record Symmetric : Set (levelOfTerm M) where
 
   module braided = Braided braided
   open braided public
-  
+
   private
     B : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X
     B {X} {Y} = braiding.⇒.η (X , Y)

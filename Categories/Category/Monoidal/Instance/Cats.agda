@@ -30,8 +30,8 @@ module Product {o ℓ e : Level} where
     ; π₁ = πˡ
     ; π₂ = πʳ
     ; ⟨_,_⟩ = _※_
-    ; project₁ =  λ {_} {h} {i} → project₁ {h = h} {i = i}
-    ; project₂ = λ {_} {h} {i} → project₂ {h = h} {i = i}
+    ; project₁ = λ {_} {h} {i} → project₁ {i = h} {j = i}
+    ; project₂ = λ {_} {h} {i} → project₂ {i = h} {j = i}
     ; unique = unique
     } }
 
@@ -43,5 +43,3 @@ module Product {o ℓ e : Level} where
 
   Cats-Monoidal : Monoidal C
   Cats-Monoidal = Cart.monoidal
-
--- TODO: Sets is a Monoidal Category with ⊎ as Bifunctor

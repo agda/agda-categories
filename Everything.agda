@@ -23,6 +23,7 @@ import Categories.Category.Groupoid
 import Categories.Category.Instance.Cats
 import Categories.Category.Instance.EmptySet
 import Categories.Category.Instance.FamilyOfSets
+import Categories.Category.Instance.Globe
 import Categories.Category.Instance.One
 import Categories.Category.Instance.Properties.Setoids
 import Categories.Category.Instance.Setoids
@@ -41,8 +42,10 @@ import Categories.Category.Monoidal.Symmetric
 import Categories.Category.Monoidal.Traced
 import Categories.Category.Product
 import Categories.Category.Product.Properties
+import Categories.Category.RigCategory
 import Categories.Category.Slice
 import Categories.Category.SubCategory
+import Categories.Category.WithFamilies
 import Categories.Comonad
 import Categories.Diagram.Cocone
 import Categories.Diagram.Coend
@@ -77,6 +80,7 @@ import Categories.Functor.Presheaf
 import Categories.Functor.Profunctor
 import Categories.Functor.Properties
 import Categories.Functor.Representable
+import Categories.GlobularSet
 import Categories.Kan
 import Categories.Monad
 import Categories.Morphism
@@ -91,7 +95,9 @@ import Categories.Morphism.Reasoning.Iso
 import Categories.NaturalTransformation
 import Categories.NaturalTransformation.Core
 import Categories.NaturalTransformation.Dinatural
+import Categories.NaturalTransformation.Equivalence
 import Categories.NaturalTransformation.NaturalIsomorphism
+import Categories.NaturalTransformation.NaturalIsomorphism.Equivalence
 import Categories.NaturalTransformation.Properties
 import Categories.Object.Coproduct
 import Categories.Object.Duality

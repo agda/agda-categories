@@ -44,47 +44,45 @@ record _≅_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
 
   open Iso iso public
 
--- Do not polute the name space too much
-private
-  ≅-refl : Reflexive _≅_
-  ≅-refl = record
-    { from = id
-    ; to   = id
-    ; iso  = record
-      { isoˡ = identityˡ
-      ; isoʳ = identityʳ
-      }
+≅-refl : Reflexive _≅_
+≅-refl = record
+  { from = id
+  ; to   = id
+  ; iso  = record
+    { isoˡ = identityˡ
+    ; isoʳ = identityʳ
     }
+  }
 
-  ≅-sym : Symmetric _≅_
-  ≅-sym A≅B = record
-    { from = to
-    ; to   = from
-    ; iso  = record
-      { isoˡ = isoʳ
-      ; isoʳ = isoˡ
-      }
+≅-sym : Symmetric _≅_
+≅-sym A≅B = record
+  { from = to
+  ; to   = from
+  ; iso  = record
+    { isoˡ = isoʳ
+    ; isoʳ = isoˡ
     }
-    where open _≅_ A≅B
+  }
+  where open _≅_ A≅B
 
-  ≅-trans : Transitive _≅_
-  ≅-trans A≅B B≅C = record
-    { from = from B≅C ∘ from A≅B
-    ; to   = to A≅B ∘ to B≅C
-    ; iso  = record
-      { isoˡ = begin
-        (to A≅B ∘ to B≅C) ∘ from B≅C ∘ from A≅B ≈⟨ cancelInner (isoˡ B≅C) ⟩
-        to A≅B ∘ from A≅B                       ≈⟨ isoʳ (≅-sym A≅B) ⟩
-        id                                      ∎
-      ; isoʳ = begin
-        (from B≅C ∘ from A≅B) ∘ to A≅B ∘ to B≅C ≈⟨ cancelInner (isoʳ A≅B) ⟩
-        from B≅C ∘ to B≅C                       ≈⟨ isoˡ (≅-sym B≅C) ⟩
-        id                                      ∎
-      }
+≅-trans : Transitive _≅_
+≅-trans A≅B B≅C = record
+  { from = from B≅C ∘ from A≅B
+  ; to   = to A≅B ∘ to B≅C
+  ; iso  = record
+    { isoˡ = begin
+      (to A≅B ∘ to B≅C) ∘ from B≅C ∘ from A≅B ≈⟨ cancelInner (isoˡ B≅C) ⟩
+      to A≅B ∘ from A≅B                       ≈⟨ isoʳ (≅-sym A≅B) ⟩
+      id                                      ∎
+    ; isoʳ = begin
+      (from B≅C ∘ from A≅B) ∘ to A≅B ∘ to B≅C ≈⟨ cancelInner (isoʳ A≅B) ⟩
+      from B≅C ∘ to B≅C                       ≈⟨ isoˡ (≅-sym B≅C) ⟩
+      id                                      ∎
     }
-    where open _≅_
-          open HomReasoning
-          open Equiv
+  }
+  where open _≅_
+        open HomReasoning
+        open Equiv
 
 ≅-isEquivalence : IsEquivalence _≅_
 ≅-isEquivalence = record

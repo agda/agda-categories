@@ -9,7 +9,7 @@ open import Categories.Utils.Product
 open import Categories.Category using (Category)
 open import Categories.Functor renaming (id to idF)
 open import Categories.NaturalTransformation.Core
-open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans)
+open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl)
 import Categories.Morphism as Morphism
 
 private
@@ -19,7 +19,7 @@ private
 
     C C₁ C₂ D D₁ D₂ : Category o ℓ e
 
-Product : ∀ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Category (o ⊔ o′) (ℓ ⊔ ℓ′) (e ⊔ e′)
+Product : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Category (o ⊔ o′) (ℓ ⊔ ℓ′) (e ⊔ e′)
 Product C D = record
   { Obj       = C.Obj × D.Obj
   ; _⇒_       = C._⇒_ -< _×_ >- D._⇒_

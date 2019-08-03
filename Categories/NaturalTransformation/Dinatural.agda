@@ -6,7 +6,7 @@ open import Data.Product
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
 open import Categories.Category
-open import Categories.NaturalTransformation as NT hiding (_∘ʳ_; _≃_; ≃-isEquivalence; ≃-setoid)
+open import Categories.NaturalTransformation as NT hiding (_∘ʳ_)
 open import Categories.Functor
 open import Categories.Functor.Construction.Constant
 open import Categories.Functor.Bifunctor
@@ -114,7 +114,7 @@ module _ {F G : Bifunctor (Category.op C) C D} where
     where module β = DinaturalTransformation β
           module E = Category E
           open β
-          
+
   infix 4 _≃_
 
   _≃_ : Rel (DinaturalTransformation F G) _
@@ -165,10 +165,10 @@ module _ {F : Bifunctor (Category.op C) C D} where
     }
 
   open DinaturalTransformation
-  
+
   extranatural-commʳ : (β : DinaturalTransformation (const A) F) →
                        F₁ (C.id , f) ∘ α β X ≈ F₁ (f , C.id) ∘ α β Y
-  extranatural-commʳ {f = f} β = ∘-resp-≈ʳ (⟺ identityʳ) ○ commute β f ○ ∘-resp-≈ʳ identityʳ 
+  extranatural-commʳ {f = f} β = ∘-resp-≈ʳ (⟺ identityʳ) ○ commute β f ○ ∘-resp-≈ʳ identityʳ
 
   -- the dual case, the bifunctor on the left is extranatural.
 

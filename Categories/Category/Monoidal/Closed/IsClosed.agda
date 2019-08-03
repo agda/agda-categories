@@ -21,7 +21,7 @@ open import Categories.Functor.Bifunctor
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.NaturalTransformation hiding (id)
 open import Categories.NaturalTransformation.Dinatural hiding (_∘ʳ_)
-open import Categories.NaturalTransformation.NaturalIsomorphism as NI hiding (_≅_; refl)
+open import Categories.NaturalTransformation.NaturalIsomorphism as NI hiding (refl)
 import Categories.Category.Closed as Cls
 
 open Closed Cl

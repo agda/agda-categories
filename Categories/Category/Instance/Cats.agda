@@ -26,6 +26,6 @@ Cats o ℓ e = record
   ; assoc     = λ {_ _ _ _ F G H} → associator F G H
   ; identityˡ = unitorˡ
   ; identityʳ = unitorʳ
-  ; equiv     = λ {A B} → isEquivalence A B
+  ; equiv     = isEquivalence
   ; ∘-resp-≈  = _ⓘₕ_
   }
