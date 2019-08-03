@@ -13,9 +13,14 @@ open import Categories.NaturalTransformation renaming (id to idN)
 open import Categories.NaturalTransformation.Equivalence using (_≃_; ≃-isEquivalence)
 import Categories.Morphism.Reasoning as MR
 
+private
+  variable
+    o ℓ e o′ ℓ′ e′ : Level
+    C D : Category o ℓ e
+
 -- The reason the proofs below are so easy is that _∘ᵥ_ 'computes' all the way down into
 -- expressions in D, from which the properties follow.
-Functors : ∀ {o ℓ e o′ ℓ′ e′} → Category o ℓ e → Category o′ ℓ′ e′ → Category (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ e′)
+Functors : Category o ℓ e → Category o′ ℓ′ e′ → Category (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ e′)
 Functors C D = record
   { Obj       = Functor C D
   ; _⇒_       = NaturalTransformation
@@ -31,11 +36,6 @@ Functors C D = record
   where module C = Category C
         module D = Category D
         open D
-
-private
-  variable
-    o ℓ e : Level
-    C D : Category o ℓ e
 
 -- Part of the proof that Cats is a CCC:
 eval : Bifunctor (Functors C D) C D
@@ -90,3 +90,29 @@ product {A = A} {B = B} {C = C} = record
     open Functor
     module B = Category B
     open NaturalTransformation
+
+-- op induces a Functor on the Functors category.
+-- This is an instance where the proof-irrelevant version is simpler because (op op C) is
+-- just C. Here we rather need to be more explicit.
+opF : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
+      Functor (Category.op (Functors (Category.op A) (Category.op B))) (Functors A B)
+opF {A = A} {B} = record
+  { F₀ = λ F → record
+    { F₀ = F₀ F
+    ; F₁ = F₁ F
+    ; identity = identity F
+    ; homomorphism = homomorphism F
+    ; F-resp-≈ = F-resp-≈ F
+    }
+  ; F₁ = λ B⇒A → record
+    { η = η B⇒A
+    ; commute = λ f → Equiv.sym (commute B⇒A f)
+    }
+  ; identity = Equiv.refl
+  ; homomorphism = Equiv.refl
+  ; F-resp-≈ = λ eq → eq
+  }
+  where
+  open Functor
+  open NaturalTransformation
+  open Category B
