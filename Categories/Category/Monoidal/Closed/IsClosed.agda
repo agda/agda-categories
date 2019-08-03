@@ -287,9 +287,7 @@ private
     Ladjunct ([ id , ε.η Z ]₁ ∘ identity.⇒.η ([ Y , Z ]₀ ⊗₀ Y))
       ≈˘⟨ Ladjunct-resp-≈ $ identity.⇒.commute (ε.η Z) ⟩
     Ladjunct (identity.⇒.η Z ∘ ε.η Z)
-      ≈˘⟨ Ladjunct-resp-≈ $ Radjunct-comm′ ○ ∘-resp-≈ʳ (elimʳ ⊗.identity)  ⟩
-    Ladjunct (Radjunct ([ id , identity.⇒.η Z ]₁ ∘ id))
-      ≈⟨ Ladjunct-resp-≈ $ Radjunct-resp-≈ $ identityʳ ⟩
+      ≈˘⟨ Ladjunct-resp-≈ $ ε.commute (identity.⇒.η Z) ⟩
     Ladjunct (Radjunct [ id , identity.⇒.η Z ]₁)
       ≈⟨ LRadjunct≈id ⟩
     [ id , identity.⇒.η Z ]₁
