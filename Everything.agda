@@ -76,6 +76,8 @@ import Categories.Functor.Hom
 import Categories.Functor.Instance.Discrete
 import Categories.Functor.Monoidal
 import Categories.Functor.Power
+import Categories.Functor.Power.Functorial
+import Categories.Functor.Power.NaturalTransformation
 import Categories.Functor.Presheaf
 import Categories.Functor.Profunctor
 import Categories.Functor.Properties
