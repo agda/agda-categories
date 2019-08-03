@@ -237,7 +237,7 @@ private
     diagonal.α [ X , Y ]₀
       ∎
 
-  jL≈i : [ diagonal.α X , C.id ]₁ ∘ L X X Y ≈ identity.⇒.η [ X , Y ]₀
+  jL≈i : [ diagonal.α X , id ]₁ ∘ L X X Y ≈ identity.⇒.η [ X , Y ]₀
   jL≈i {X = X} {Y = Y} = begin
     [ diagonal.α X , id ]₁ ∘ L X X Y
       ≈˘⟨ pushˡ [ [-,-] ]-commute ⟩
@@ -262,6 +262,39 @@ private
     id ∘ Ladjunct unitorʳ.from
       ∎
 
+  iL≈i : [ identity.⇒.η Y , id ]₁ ∘ L unit Y Z ≈ [ id , identity.⇒.η Z ]₁
+  iL≈i {Y = Y} {Z = Z} = begin
+    [ identity.⇒.η Y , id ]₁ ∘ L unit Y Z
+      ≈˘⟨ pushˡ [ [-,-] ]-commute ⟩
+    ([ id , Ladjunct (ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from) ]₁ ∘ [ identity.⇒.η Y , id ]₁) ∘ η.η [ Y , Z ]₀
+      ≈⟨ ∘-resp-≈ʳ (ℱ.F-resp-≈ [-, [ Y , Z ]₀ ⊗₀ [ unit , Y ]₀ ] identityˡ) ⟩∘⟨refl ⟩
+    ([ id , Ladjunct (ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from) ]₁ ∘ [ Ladjunct unitorʳ.from , id ]₁) ∘ η.η [ Y , Z ]₀
+      ≈˘⟨ pushʳ (mate.commute₁ (Ladjunct unitorʳ.from)) ⟩
+    [ id , Ladjunct (ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from) ]₁ ∘ [ id , id ⊗₁ Ladjunct unitorʳ.from ]₁ ∘ η.η [ Y , Z ]₀
+      ≈˘⟨ pushˡ (ℱ.homomorphism [ Y ,-]) ⟩
+    Ladjunct (Ladjunct (ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from) ∘ id ⊗₁ Ladjunct unitorʳ.from)
+      ≈˘⟨ Ladjunct-resp-≈ Ladjunct-comm′ ⟩
+    Ladjunct (Ladjunct $ (ε.η Z ∘ id ⊗₁ ε.η Y ∘ associator.from) ∘ (id ⊗₁ Ladjunct unitorʳ.from) ⊗₁ id)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ pull-last assoc-commute-from ○ ⟺ assoc ⟩
+    Ladjunct (Ladjunct $ (ε.η Z ∘ id ⊗₁ ε.η Y) ∘ id ⊗₁ Ladjunct unitorʳ.from ⊗₁ id ∘ associator.from)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ center (⟺ (ℱ.homomorphism ([ Y , Z ]₀ ⊗-))) ⟩
+    Ladjunct (Ladjunct $ ε.η Z ∘ id ⊗₁ (ε.η Y ∘ Ladjunct unitorʳ.from ⊗₁ id) ∘ associator.from)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ℱ.F-resp-≈ ([ Y , Z ]₀ ⊗-) RLadjunct≈id ⟩
+    Ladjunct (Ladjunct $ ε.η Z ∘ id ⊗₁ unitorʳ.from ∘ associator.from)
+      ≈⟨ Ladjunct-resp-≈ $ Ladjunct-resp-≈ $ ∘-resp-≈ʳ coherence₂ ⟩
+    Ladjunct (Ladjunct $ ε.η Z ∘ unitorʳ.from)
+      ≈⟨ Ladjunct-resp-≈ $ ∘-resp-≈ˡ (ℱ.homomorphism [ unit ,-]) ○ (assoc ○ ∘-resp-≈ʳ (⟺ identityˡ)) ⟩
+    Ladjunct ([ id , ε.η Z ]₁ ∘ identity.⇒.η ([ Y , Z ]₀ ⊗₀ Y))
+      ≈˘⟨ Ladjunct-resp-≈ $ identity.⇒.commute (ε.η Z) ⟩
+    Ladjunct (identity.⇒.η Z ∘ ε.η Z)
+      ≈˘⟨ Ladjunct-resp-≈ $ Radjunct-comm′ ○ ∘-resp-≈ʳ (elimʳ ⊗.identity)  ⟩
+    Ladjunct (Radjunct ([ id , identity.⇒.η Z ]₁ ∘ id))
+      ≈⟨ Ladjunct-resp-≈ $ Radjunct-resp-≈ $ identityʳ ⟩
+    Ladjunct (Radjunct [ id , identity.⇒.η Z ]₁)
+      ≈⟨ LRadjunct≈id ⟩
+    [ id , identity.⇒.η Z ]₁
+      ∎
+
 -- closed : Cls.Closed C
 -- closed = record
 --   { [-,-]            = [-,-]
@@ -271,9 +304,9 @@ private
 --   ; L                = L
 --   ; L-natural-comm   = L-natural-comm
 --   ; L-dinatural-comm = L-dinatural-comm
---   ; iL≈i             = {!!}
 --   ; Lj≈j             = Lj≈j
 --   ; jL≈i             = jL≈i
+--   ; iL≈i             = iL≈i
 --   ; pentagon         = {!!}
 --   ; γ⁻¹              = λ {X Y} → record
 --     { _⟨$⟩_ = λ f → Radjunct f ∘ unitorˡ.to
