@@ -16,6 +16,7 @@ import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Comma
 import Categories.Category.Construction.F-Algebras
 import Categories.Category.Construction.Functors
+import Categories.Category.Construction.Kleisli
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Core
 import Categories.Category.Discrete
