@@ -1,8 +1,8 @@
-import Categories.2-Category
-import Categories.2-Category.Instance.Cats
 import Categories.Adjoint
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Properties
+import Categories.Bicategory
+import Categories.Bicategory.Instance.Cats
 import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
