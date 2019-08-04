@@ -1,12 +1,12 @@
 {-# OPTIONS --without-K --safe #-}
 
-module Categories.2-Category.Instance.Cats where
+module Categories.Bicategory.Instance.Cats where
 
--- The category of categories (Cats) is a 2-Category
+-- The category of categories (Cats) is a Bicategory
 open import Level
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
 
-open import Categories.2-Category using (2-Category)
+open import Categories.Bicategory using (Bicategory)
 open import Categories.Category using (Category)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.NaturalTransformation using (NaturalTransformation) renaming (id to idN)
@@ -20,7 +20,7 @@ private
   variable
     o ℓ e t : Level
 
-Cats : (o ℓ e : Level) → 2-Category (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e) (o ⊔ e) (suc (o ⊔ ℓ ⊔ e))
+Cats : (o ℓ e : Level) → Bicategory (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e) (o ⊔ e) (suc (o ⊔ ℓ ⊔ e))
 Cats o ℓ e = record
   { Obj = Category o ℓ e
   ; hom = Functors
