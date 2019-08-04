@@ -4,7 +4,7 @@ open import Categories.Category
 
 -- Defines the following properties of a Category:
 -- 1. BinaryProducts -- for when a Category has all Binary Products
--- 2. Catesian -- a Catesian category is a category with all products
+-- 2. Cartesian -- a Cartesian category is a category with all products
 
 module Categories.Category.Cartesian {o ℓ e} (𝒞 : Category o ℓ e) where
 
