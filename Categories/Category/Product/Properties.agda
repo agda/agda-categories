@@ -1,6 +1,8 @@
 {-# OPTIONS --without-K --safe #-}
 module Categories.Category.Product.Properties where
 
+-- properties of the product _※_ of Functors (so probably should be renamed?)
+
 open import Level
 open import Data.Product
 
