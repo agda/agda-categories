@@ -72,6 +72,7 @@ import Categories.Functor.Construction.Diagonal
 import Categories.Functor.Construction.DoubleOp
 import Categories.Functor.Construction.LiftSetoids
 import Categories.Functor.Core
+import Categories.Functor.Fibration
 import Categories.Functor.Hom
 import Categories.Functor.Instance.Discrete
 import Categories.Functor.Monoidal
