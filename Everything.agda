@@ -11,6 +11,7 @@ import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
 import Categories.Category.Complete
+import Categories.Category.Complete.Finitely
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Comma
 import Categories.Category.Construction.F-Algebras
@@ -45,6 +46,7 @@ import Categories.Category.Product.Properties
 import Categories.Category.RigCategory
 import Categories.Category.Slice
 import Categories.Category.SubCategory
+import Categories.Category.Topos
 import Categories.Category.WithFamilies
 import Categories.Comonad
 import Categories.Diagram.Cocone
