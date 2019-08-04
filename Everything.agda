@@ -85,6 +85,7 @@ import Categories.Functor.Representable
 import Categories.GlobularSet
 import Categories.Kan
 import Categories.Monad
+import Categories.Monad.Strong
 import Categories.Morphism
 import Categories.Morphism.Cartesian
 import Categories.Morphism.Duality
@@ -106,6 +107,7 @@ import Categories.Object.Duality
 import Categories.Object.Exponential
 import Categories.Object.Initial
 import Categories.Object.Product
+import Categories.Object.Product.Construction
 import Categories.Object.Product.Core
 import Categories.Object.Product.Morphisms
 import Categories.Object.Terminal
