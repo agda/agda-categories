@@ -7,6 +7,8 @@ import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
 import Categories.Category.CartesianClosed
+import Categories.Category.CartesianClosed.Locally
+import Categories.Category.Cartesian.Properties
 import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
@@ -46,6 +48,7 @@ import Categories.Category.Product
 import Categories.Category.Product.Properties
 import Categories.Category.RigCategory
 import Categories.Category.Slice
+import Categories.Category.Slice.Properties
 import Categories.Category.SubCategory
 import Categories.Category.Topos
 import Categories.Category.WithFamilies
@@ -62,6 +65,7 @@ import Categories.Diagram.End.Properties
 import Categories.Diagram.Equalizer
 import Categories.Diagram.Limit
 import Categories.Diagram.Pullback
+import Categories.Diagram.Pullback.Properties
 import Categories.Diagram.Pushout
 import Categories.Diagram.Pushout.Properties
 import Categories.Diagram.SubobjectClassifier
