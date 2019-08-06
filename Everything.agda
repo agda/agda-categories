@@ -12,6 +12,7 @@ import Categories.Category.Cartesian.Properties
 import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
+import Categories.Category.Cocomplete.Finitely
 import Categories.Category.Complete
 import Categories.Category.Complete.Finitely
 import Categories.Category.Construction.Arrow

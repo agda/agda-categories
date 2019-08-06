@@ -7,7 +7,6 @@ module Categories.Category.Complete.Finitely {o ℓ e} (C : Category o ℓ e) wh
 open import Level
 
 open import Categories.Category.Cartesian C
-open import Categories.Object.Terminal C
 open import Categories.Diagram.Equalizer C
 open import Categories.Diagram.Pullback C
 
