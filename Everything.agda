@@ -49,6 +49,7 @@ import Categories.Category.Monoidal.Traced
 import Categories.Category.Product
 import Categories.Category.Product.Properties
 import Categories.Category.RigCategory
+import Categories.Category.Site
 import Categories.Category.Slice
 import Categories.Category.Slice.Properties
 import Categories.Category.SubCategory
