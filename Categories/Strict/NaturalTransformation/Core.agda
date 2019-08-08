@@ -5,7 +5,6 @@ module Categories.Strict.NaturalTransformation.Core where
 open import Level
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; subst₂; subst)
 open import Data.Product using (Σ; _,_)
-open import Axiom.Extensionality.Propositional
 
 open import Categories.Strict.Category
 open import Categories.Strict.Functor renaming (id to idF)
@@ -17,9 +16,6 @@ private
   variable
     o ℓ o′ ℓ′ : Level
     C D E : Category o ℓ
-
-postulate
-  ext-fun : Extensionality o′ o′
 
 record NaturalTransformation {C : Category o ℓ}
                              {D : Category o′ ℓ′}
