@@ -21,16 +21,15 @@ open import Function using (_$_)
 open import Data.Product using (_×_; _,_; curry′)
 
 open import Categories.Category.Product
-open import Categories.Category.Groupoid
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor; appˡ; appʳ)
 open import Categories.Functor.Properties using ([_]-resp-≅)
 open import Categories.NaturalTransformation renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   hiding (unitorˡ; unitorʳ; associator; _≃_)
-open import Categories.Morphism C
-open import Categories.Morphism.IsoEquiv C
-open import Categories.Morphism.Isomorphism C
+open import Categories.Morphism C using (_≅_; module ≅)
+open import Categories.Morphism.IsoEquiv C using (_≃_)
+open import Categories.Morphism.Isomorphism C using (_∘ᵢ_; lift-triangle′; lift-pentagon′)
 
 private
   module C = Category C
