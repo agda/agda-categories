@@ -151,6 +151,17 @@ Product×Pullback⇒Equalizer {f = f} {g = g} p pu = record
 module _ (p : Pullback f g) where
   open Pullback p
 
+  Pullback-resp-≈ : h ≈ f → i ≈ g → Pullback h i
+  Pullback-resp-≈ eq eq′ = record
+    { p₁              = p₁
+    ; p₂              = p₂
+    ; commute         = ∘-resp-≈ˡ eq ○ commute ○ ⟺ (∘-resp-≈ˡ eq′)
+    ; universal       = λ eq″ → universal (∘-resp-≈ˡ (⟺ eq) ○ eq″ ○ ∘-resp-≈ˡ eq′)
+    ; unique          = unique
+    ; p₁∘universal≈h₁ = p₁∘universal≈h₁
+    ; p₂∘universal≈h₂ = p₂∘universal≈h₂
+    }
+
   Pullback-resp-Mono : Mono g → Mono p₁
   Pullback-resp-Mono mg h i eq = unique-diagram eq (mg _ _ eq′)
     where eq′ : g ∘ p₂ ∘ h ≈ g ∘ p₂ ∘ i
