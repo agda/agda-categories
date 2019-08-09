@@ -12,8 +12,6 @@ open import Categories.Category using (Category)
 open import Categories.Functor using (Functor; id; _∘F_)
 open import Categories.Functor.Equivalence
 
-open import Categories.NaturalTransformation.NaturalIsomorphism
-  using (NaturalIsomorphism; associator; unitorˡ; unitorʳ; isEquivalence; _ⓘₕ_)
 private
   variable
     o ℓ e : Level
