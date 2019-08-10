@@ -3,14 +3,14 @@
 open import Categories.Category
 open import Categories.Functor
 
--- Cartesian fibration
+-- Cartesian fibration, also known as Grothendieck Fibration, see
+-- https://ncatlab.org/nlab/show/Grothendieck+fibration
 module Categories.Functor.Fibration {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′} (F : Functor C D) where
 
 open import Level
-open import Data.Product using (∃; Σ; _,_)
 
-open import Categories.Morphism D
-open import Categories.Morphism.Cartesian
+open import Categories.Morphism D using (_≅_)
+open import Categories.Morphism.Cartesian using (Cartesian)
 
 private
   module C = Category C
