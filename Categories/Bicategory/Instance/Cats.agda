@@ -75,10 +75,19 @@ Cats o ℓ e = record
       }
     }
   ; triangle = λ {_ _ C} → Category.identityʳ C
-  ; pentagon = λ {_ _ _ _ E} {f g h i} {X} →
+  ; pentagon = λ {A B C D E} {f g h i} {X} →
       let open Category E in
-      {!let open HomReasoning in
-      ∘-resp-≈ʳ ?!}
+      let open HomReasoning in begin
+        (F₁ i (Category.id D) ∘ id) ∘ id ∘ F₁ i (F₁ h (F₁ g (Category.id B))) ∘ id
+          ≈⟨ identityʳ ⟩∘⟨ (identityˡ ○ identityʳ) ⟩
+        F₁ i (Category.id D) ∘ F₁ i (F₁ h (F₁ g (Category.id B)))
+          ≈⟨ identity i ⟩∘⟨ F-resp-≈ i (F-resp-≈ h (identity g)) ⟩
+        id ∘ F₁ i (F₁ h (Category.id C))
+          ≈⟨ refl⟩∘⟨ F-resp-≈ i (identity h) ⟩
+        id ∘ F₁ i (Category.id D)
+          ≈⟨ refl⟩∘⟨ identity i ⟩
+        id ∘ id
+          ∎
   }
   where
     open NaturalTransformation
