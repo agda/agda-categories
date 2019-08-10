@@ -16,11 +16,13 @@ open import Categories.Functor.Bifunctor.Properties
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
 import Categories.Morphism as Mor
 
+-- https://ncatlab.org/nlab/show/bicategory
+-- notice that some axioms in nLab is inconsistent. they have been fixed in this definition.
 record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   field
     enriched : Enriched (Product.Cats-Monoidal {o} {ℓ} {e}) t
 
-  open Enriched enriched hiding (unitorˡ; unitorʳ; associator; triangle; triangle-iso; pentagon; pentagon-iso) public
+  open Enriched enriched public
   module Cats = Category (Cats o ℓ e)
   module hom {A B} = Category (hom A B)  
 
@@ -103,10 +105,10 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
 
   field
     triangle : ∀ {A B C} {f : A ⇒₁ B} {g : B ⇒₁ C} →
-                 [ g ⊚₀ id₁ ⊚₀ f ⇒ g ⊚₀ f ]⟨
-                   associator.to          ⇒⟨ (g ⊚₀ id₁) ⊚₀ f ⟩
-                   unitorʳ.from ◁ f
-                 ≈ g ▷ unitorˡ.from
+                 [ (g ⊚₀ id₁) ⊚₀ f ⇒ g ⊚₀ f ]⟨
+                   associator.from          ⇒⟨ g ⊚₀ id₁ ⊚₀ f ⟩
+                   g ▷ unitorˡ.from
+                 ≈ unitorʳ.from ◁ f
                  ⟩
     pentagon : ∀ {A B C D E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
                  [ ((i ⊚₀ h) ⊚₀ g) ⊚₀ f ⇒ i ⊚₀ h ⊚₀ g ⊚₀ f ]⟨

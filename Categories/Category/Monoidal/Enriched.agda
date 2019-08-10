@@ -19,7 +19,7 @@ private
 record Enriched {K : Category o ℓ e} (M : Monoidal K) (v : Level) : Set (o ⊔ ℓ ⊔ e ⊔ suc v) where
   open Category K renaming (Obj to ObjK; id to idK)
   open Commutation
-  open Monoidal M public
+  open Monoidal M
   open Functor
   field
     Obj : Set v
