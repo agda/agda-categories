@@ -67,8 +67,8 @@ module _ (pullbacks : ∀ {X Y Z} (f : X ⇒ Z) (g : Y ⇒ Z) → Pullback f g)
          (cartesian : Cartesian) where
   open Cartesian cartesian
 
-  pullback-cartesian⇒equalizer : Equalizer f g
-  pullback-cartesian⇒equalizer {f = f} {g = g} = record
+  pullback×cartesian⇒equalizer : Equalizer f g
+  pullback×cartesian⇒equalizer {f = f} {g = g} = record
     { arr       = p.p₁
     ; equality  = equality
     ; equalize  = λ {_ h} eq → p.universal $ begin
