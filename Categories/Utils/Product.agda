@@ -3,6 +3,7 @@ module Categories.Utils.Product where
 
 open import Level
 open import Data.Product using (_×_; Σ; _,_; proj₁; proj₂)
+open import Relation.Binary.PropositionalEquality
 
 -- "very dependent" versions of map and zipWith
 map⁎ : ∀ {a b p q} {A : Set a} {B : A → Set b} {P : A → Set p} {Q : {x : A} → P x → B x → Set q} →

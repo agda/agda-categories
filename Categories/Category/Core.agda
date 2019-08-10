@@ -5,6 +5,7 @@ open import Level
 open import Function using (flip)
 
 open import Relation.Binary hiding (_⇒_)
+import Relation.Binary.PropositionalEquality as ≡
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
 -- Basic definition of a |Category| with a Hom setoid.
@@ -74,6 +75,14 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ⟺ = Equiv.sym
     _○_ : {f g h : A ⇒ B} → f ≈ g → g ≈ h → f ≈ h
     _○_ = Equiv.trans
+
+    -- for reasoning in the Strict cases
+    ≡⇒≈ : {f g : A ⇒ B} → f ≡.≡ g → f ≈ g
+    ≡⇒≈ ≡.refl = Equiv.refl
+
+    subst₂≈ : {C D : Obj} {f g : A ⇒ B} → f ≈ g → (eq₁ : A ≡.≡ C) (eq₂ : B ≡.≡ D) →
+      ≡.subst₂ (_⇒_) eq₁ eq₂ f ≈ ≡.subst₂ (_⇒_) eq₁ eq₂ g
+    subst₂≈ f≈g ≡.refl ≡.refl = f≈g
 
   -- Combinators for commutative diagram
   -- The idea is to use the combinators to write commutations in a more readable way.

@@ -6,9 +6,9 @@ import Categories.Bicategory.Instance.Cats
 import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
+import Categories.Category.Cartesian.Properties
 import Categories.Category.CartesianClosed
 import Categories.Category.CartesianClosed.Locally
-import Categories.Category.Cartesian.Properties
 import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
@@ -35,6 +35,7 @@ import Categories.Category.Instance.Properties.Setoids
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
 import Categories.Category.Instance.SingletonSet
+import Categories.Category.Instance.StrictCats
 import Categories.Category.Instance.Zero
 import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
@@ -82,7 +83,9 @@ import Categories.Functor.Construction.Diagonal
 import Categories.Functor.Construction.DoubleOp
 import Categories.Functor.Construction.LiftSetoids
 import Categories.Functor.Core
+import Categories.Functor.Equivalence
 import Categories.Functor.Fibration
+import Categories.Functor.Groupoid
 import Categories.Functor.Hom
 import Categories.Functor.Instance.Discrete
 import Categories.Functor.Monoidal
@@ -93,6 +96,7 @@ import Categories.Functor.Presheaf
 import Categories.Functor.Profunctor
 import Categories.Functor.Properties
 import Categories.Functor.Representable
+import Categories.Functor.Slice
 import Categories.GlobularSet
 import Categories.Kan
 import Categories.Monad
@@ -123,6 +127,7 @@ import Categories.Object.Product.Core
 import Categories.Object.Product.Morphisms
 import Categories.Object.Terminal
 import Categories.Object.Zero
+import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda
 import Relation.Binary.Construct.Symmetrize

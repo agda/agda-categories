@@ -4,7 +4,9 @@ module Categories.Utils.EqReasoning where
 
 open import Level
 open import Relation.Binary.PropositionalEquality
-open import Data.Product using (_,_; _×_)
+open import Data.Product using (Σ; _,_; _×_)
+
+open import Categories.Utils.Product
 
 subst₂-sym-subst₂ : {ℓa ℓb ℓp : Level} {A : Set ℓa} {B : Set ℓb} {a₁ a₂ : A} {b₁ b₂ : B}
                     (R : A → B → Set ℓp) {p : R a₁ b₁} (eq₁ : a₁ ≡ a₂) (eq₂ : b₁ ≡ b₂) →
@@ -41,3 +43,17 @@ subst₂-prod : ∀ {ℓa ℓb ℓr ℓs} {A : Set ℓa} {B : Set ℓb}
       ≡
       (subst₂ R eq₁ eq₂ f , subst₂ S eq₃ eq₄ g)
 subst₂-prod R S refl refl refl refl = refl
+
+------------------
+-- For reasoning with things from Categories.Utils.Product
+subst₂-expand : ∀ {a b ℓ ℓ′ p q} {A : Set a} {B : Set b}
+  {P : A → Set p} {Q : B → Set q}
+  (_∙_ : A → B → Set ℓ) → (_∘_ : ∀ {x y} → P x → Q y → Set ℓ′) →
+  {a₁ a₂ : A} {b₁ b₂ : B} {p₁ p₂ : P a₁} {q₁ q₂ : Q b₁}
+  (eq₁ : a₁ ≡ a₂) (eq₂ : p₁ ≡ p₂) (eq₃ : b₁ ≡ b₂) (eq₄ : q₁ ≡ q₂) →
+  (F : a₁ ∙ b₁) → (G : p₁ ∘ q₁) →
+  subst₂ (_∙_ -< _×_ >- _∘_)
+      (cong₂ _,_ eq₁ eq₂)
+      (cong₂ _,_ eq₃ eq₄)
+      (F , G) ≡ (subst₂ _∙_ eq₁ eq₃ F , subst₂ _∘_ eq₂ eq₄ G)
+subst₂-expand T₁ T₂ refl refl refl refl F G = refl
