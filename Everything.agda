@@ -2,6 +2,7 @@ import Categories.Adjoint
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Properties
 import Categories.Bicategory
+import Categories.Bicategory.Bigroupoid
 import Categories.Bicategory.Instance.Cats
 import Categories.Category
 import Categories.Category.BicartesianClosed
@@ -67,6 +68,7 @@ import Categories.Diagram.Duality
 import Categories.Diagram.End
 import Categories.Diagram.End.Properties
 import Categories.Diagram.Equalizer
+import Categories.Diagram.Finite
 import Categories.Diagram.Limit
 import Categories.Diagram.Pullback
 import Categories.Diagram.Pullback.Properties

@@ -19,7 +19,7 @@ private
 record Enriched {K : Category o ℓ e} (M : Monoidal K) (v : Level) : Set (o ⊔ ℓ ⊔ e ⊔ suc v) where
   open Category K renaming (Obj to ObjK; id to idK)
   open Commutation
-  open Monoidal M public
+  open Monoidal M
   open Functor
   field
     Obj : Set v
@@ -28,10 +28,10 @@ record Enriched {K : Category o ℓ e} (M : Monoidal K) (v : Level) : Set (o ⊔
     ⊚   : {A B C : Obj} → K [ hom B C ⊗₀ hom A B , hom A C ]
 
     ⊚-assoc : {A B C D : Obj} → [ (hom C D ⊗₀ hom B C) ⊗₀ hom A B ⇒ hom A D ]⟨
-        associator.from    ⇒⟨ hom C D ⊗₀ (hom B C ⊗₀ hom A B) ⟩
-        idK ⊗₁ ⊚          ⇒⟨ hom C D ⊗₀ hom A C ⟩
+        ⊚ ⊗₁ idK          ⇒⟨ hom B D ⊗₀ hom A B ⟩
         ⊚
-      ≈ ⊚ ⊗₁ idK          ⇒⟨ hom B D ⊗₀ hom A B ⟩
+      ≈ associator.from    ⇒⟨ hom C D ⊗₀ (hom B C ⊗₀ hom A B) ⟩
+        idK ⊗₁ ⊚          ⇒⟨ hom C D ⊗₀ hom A C ⟩
         ⊚ ⟩
     unitˡ : {A B : Obj} → [ unit ⊗₀ hom A B ⇒ hom A B ]⟨
         id B ⊗₁ idK   ⇒⟨ hom B B ⊗₀ hom A B ⟩
