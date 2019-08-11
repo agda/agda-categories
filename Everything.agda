@@ -1,3 +1,4 @@
+import Categories.2-Category
 import Categories.Adjoint
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Properties
@@ -20,6 +21,7 @@ import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Comma
 import Categories.Category.Construction.F-Algebras
 import Categories.Category.Construction.Functors
+import Categories.Category.Construction.Graphs
 import Categories.Category.Construction.Kleisli
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Core
@@ -45,6 +47,7 @@ import Categories.Category.Monoidal.Closed.IsClosed
 import Categories.Category.Monoidal.Enriched
 import Categories.Category.Monoidal.Instance.Cats
 import Categories.Category.Monoidal.Instance.Sets
+import Categories.Category.Monoidal.Instance.StrictCats
 import Categories.Category.Monoidal.Properties
 import Categories.Category.Monoidal.Symmetric
 import Categories.Category.Monoidal.Traced
