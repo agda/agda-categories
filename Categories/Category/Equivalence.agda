@@ -9,13 +9,16 @@ module Categories.Category.Equivalence where
 open import Level
 open import Relation.Binary using (IsEquivalence; Setoid)
 
-open import Categories.Adjoint
+open import Categories.Adjoint.Equivalence
 open import Categories.Category
 import Categories.Morphism.Reasoning as MR
+import Categories.Morphism.Properties as MP
 open import Categories.Functor renaming (id to idF)
+open import Categories.Functor.Properties
 open import Categories.NaturalTransformation using (_∘ᵥ_; _∘ˡ_; _∘ʳ_)
 open import Categories.NaturalTransformation.NaturalIsomorphism as NI
   using (NaturalIsomorphism ; unitorˡ; unitorʳ; associator; _ⓘᵥ_; _ⓘˡ_; _ⓘʳ_)
+  renaming (sym to ≃-sym)
 
 private
   variable
@@ -51,31 +54,54 @@ record WeakInverse (F : Functor C D) (G : Functor D C) : Set (levelOfTerm F ⊔ 
           open MR D
 
   -- adjoint equivalence
-  F⊣G : F ⊣ G
+  F⊣G : ⊣Equivalence F G
   F⊣G = record
-    { unit   = G∘F≈id.F⇐G
+    { unit   = ≃-sym G∘F≈id
     ; counit =
       let open D
           open HomReasoning
           open MR D
+          open MP D
       in record
-      { η       = λ X → F∘G≈id.⇒.η X ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ X)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
-      ; commute = λ {X Y} f → begin
-        (F∘G≈id.⇒.η Y ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ Y)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ Y))) ∘ F.F₁ (G.F₁ f)
-          ≈⟨ pull-last (F∘G≈id.⇐.commute (F.F₁ (G.F₁ f))) ⟩
-        F∘G≈id.⇒.η Y ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ Y)) ∘ (F.F₁ (G.F₁ (F.F₁ (G.F₁ f))) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X)))
-          ≈˘⟨ refl⟩∘⟨ pushˡ F.homomorphism ⟩
-        F∘G≈id.⇒.η Y ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ Y) C.∘ G.F₁ (F.F₁ (G.F₁ f))) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
-          ≈⟨ refl ⟩∘⟨ F.F-resp-≈ (G∘F≈id.⇒.commute (G.F₁ f)) ⟩∘⟨ refl ⟩
-        F∘G≈id.⇒.η Y ∘ F.F₁ (G.F₁ f C.∘ G∘F≈id.⇒.η (G.F₀ X)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
-          ≈⟨ refl ⟩∘⟨ F.homomorphism ⟩∘⟨ refl ⟩
-        F∘G≈id.⇒.η Y ∘ (F.F₁ (G.F₁ f) ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ X))) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
-          ≈⟨ center⁻¹ (F∘G≈id.⇒.commute f) refl ⟩
-        (f ∘ F∘G≈id.⇒.η X) ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ X)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
-          ≈⟨ assoc ⟩
-        f ∘ F∘G≈id.⇒.η X ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ X)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
-          ∎
-      }
+        { F⇒G = record
+          { η       = λ X → F∘G≈id.⇒.η X ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ X)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
+          ; commute = λ {X Y} f → begin
+            (F∘G≈id.⇒.η Y ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ Y)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ Y))) ∘ F.F₁ (G.F₁ f)
+              ≈⟨ pull-last (F∘G≈id.⇐.commute (F.F₁ (G.F₁ f))) ⟩
+            F∘G≈id.⇒.η Y ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ Y)) ∘ (F.F₁ (G.F₁ (F.F₁ (G.F₁ f))) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X)))
+              ≈˘⟨ refl⟩∘⟨ pushˡ F.homomorphism ⟩
+            F∘G≈id.⇒.η Y ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ Y) C.∘ G.F₁ (F.F₁ (G.F₁ f))) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
+              ≈⟨ refl ⟩∘⟨ F.F-resp-≈ (G∘F≈id.⇒.commute (G.F₁ f)) ⟩∘⟨ refl ⟩
+            F∘G≈id.⇒.η Y ∘ F.F₁ (G.F₁ f C.∘ G∘F≈id.⇒.η (G.F₀ X)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
+              ≈⟨ refl ⟩∘⟨ F.homomorphism ⟩∘⟨ refl ⟩
+            F∘G≈id.⇒.η Y ∘ (F.F₁ (G.F₁ f) ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ X))) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
+              ≈⟨ center⁻¹ (F∘G≈id.⇒.commute f) refl ⟩
+            (f ∘ F∘G≈id.⇒.η X) ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ X)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
+              ≈⟨ assoc ⟩
+            f ∘ F∘G≈id.⇒.η X ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ X)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
+              ∎
+          }
+        ; F⇐G = record
+          { η       = λ X → (F∘G≈id.⇒.η (F.F₀ (G.F₀ X)) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ X))) ∘ F∘G≈id.⇐.η X
+          ; commute = λ {X Y} f → begin
+            ((F∘G≈id.⇒.η (F.F₀ (G.F₀ Y)) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ Y))) ∘ F∘G≈id.⇐.η Y) ∘ f
+              ≈⟨ pullʳ (F∘G≈id.⇐.commute f) ⟩
+            (F∘G≈id.⇒.η (F.F₀ (G.F₀ Y)) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ Y))) ∘ F.F₁ (G.F₁ f) ∘ F∘G≈id.⇐.η X
+              ≈⟨ center (⟺ F.homomorphism) ⟩
+            F∘G≈id.⇒.η (F.F₀ (G.F₀ Y)) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ Y) C.∘ G.F₁ f) ∘ F∘G≈id.⇐.η X
+              ≈⟨ refl ⟩∘⟨ F.F-resp-≈ (G∘F≈id.⇐.commute (G.F₁ f)) ⟩∘⟨ refl ⟩
+            F∘G≈id.⇒.η (F.F₀ (G.F₀ Y)) ∘ F.F₁ (G.F₁ (F.F₁ (G.F₁ f)) C.∘ G∘F≈id.⇐.η (G.F₀ X)) ∘ F∘G≈id.⇐.η X
+              ≈⟨ refl ⟩∘⟨ F.homomorphism ⟩∘⟨ refl ⟩
+            F∘G≈id.⇒.η (F.F₀ (G.F₀ Y)) ∘ (F.F₁ (G.F₁ (F.F₁ (G.F₁ f))) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ X))) ∘ F∘G≈id.⇐.η X
+              ≈⟨ center⁻¹ (F∘G≈id.⇒.commute _) refl ⟩
+            (F.F₁ (G.F₁ f) ∘ F∘G≈id.⇒.η (F.F₀ (G.F₀ X))) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ X)) ∘ F∘G≈id.⇐.η X
+              ≈⟨ center refl ⟩
+            F.F₁ (G.F₁ f) ∘ (F∘G≈id.⇒.η (F.F₀ (G.F₀ X)) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ X))) ∘ F∘G≈id.⇐.η X
+              ∎
+          }
+        ; iso = λ X → Iso-∘ (Iso-∘ (Iso-swap (F∘G≈id.iso _)) ([ F ]-resp-Iso (G∘F≈id.iso _)))
+                            (F∘G≈id.iso X)
+        }
     ; zig    = λ {A} →
       let open D
           open HomReasoning
@@ -118,7 +144,7 @@ record WeakInverse (F : Functor C D) (G : Functor D C) : Set (levelOfTerm F ⊔ 
           ∎
     }
 
-  module F⊣G = Adjoint F⊣G
+  module F⊣G = ⊣Equivalence F⊣G
 
 record StrongEquivalence {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   field
