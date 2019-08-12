@@ -27,10 +27,10 @@ record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e 
   open Bicategory C public
 
   field
-    1-groupoid : ∀ A B → Groupoid (hom A B)
-    hom[_,_]⁻¹ : ∀ A B → Functor (hom A B) (hom B A)
-    cancel     : ∀ A B → ⊚ ∘F (hom[ A , B ]⁻¹ ※ idF) ≃ const id₁
-    cancel′    : ∀ A B → ⊚ ∘F (idF ※ hom[ A , B ]⁻¹) ≃ const id₁
+    hom-groupoid : ∀ A B → Groupoid (hom A B)
+    hom[_,_]⁻¹   : ∀ A B → Functor (hom A B) (hom B A)
+    cancel       : ∀ A B → ⊚ ∘F (hom[ A , B ]⁻¹ ※ idF) ≃ const id₁
+    cancel′      : ∀ A B → ⊚ ∘F (idF ※ hom[ A , B ]⁻¹) ≃ const id₁
 
   module hom⁻¹ {A B}   = Functor (hom[ A , B ]⁻¹)
   module cancel {A B}  = NaturalIsomorphism (cancel A B)
