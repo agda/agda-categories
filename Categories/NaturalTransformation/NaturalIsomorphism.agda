@@ -25,6 +25,11 @@ private
 record NaturalIsomorphism {C : Category o ℓ e}
                           {D : Category o′ ℓ′ e′}
                           (F G : Functor C D) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
+
+  private
+    module F = Functor F
+    module G = Functor G
+
   field
     F⇒G : NaturalTransformation F G
     F⇐G : NaturalTransformation G F
@@ -36,6 +41,15 @@ record NaturalIsomorphism {C : Category o ℓ e}
     iso : ∀ X → Morphism.Iso D (⇒.η X) (⇐.η X)
 
   module iso X = Morphism.Iso (iso X)
+
+  open Morphism D
+
+  FX≅GX : ∀ {X} → F.F₀ X ≅ G.F₀ X
+  FX≅GX {X} = record
+    { from = _
+    ; to   = _
+    ; iso  = iso X
+    }
 
 open NaturalIsomorphism
 

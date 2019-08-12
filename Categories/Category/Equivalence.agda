@@ -19,6 +19,7 @@ open import Categories.NaturalTransformation using (_∘ᵥ_; _∘ˡ_; _∘ʳ_)
 open import Categories.NaturalTransformation.NaturalIsomorphism as NI
   using (NaturalIsomorphism ; unitorˡ; unitorʳ; associator; _ⓘᵥ_; _ⓘˡ_; _ⓘʳ_)
   renaming (sym to ≃-sym)
+open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
 
 private
   variable
@@ -38,20 +39,6 @@ record WeakInverse (F : Functor C D) (G : Functor D C) : Set (levelOfTerm F ⊔ 
     module D = Category D
     module F = Functor F
     module G = Functor G
-
-  FG-⇐-comm : ∀ {A} → F∘G≈id.⇐.η (F.F₀ (G.F₀ A)) D.≈ (F.F₁ (G.F₁ (F∘G≈id.⇐.η A)))
-  FG-⇐-comm {A} = begin
-    F∘G≈id.⇐.η (F.F₀ (G.F₀ A))
-      ≈⟨ introˡ (F.F-resp-≈ (G.F-resp-≈ (F∘G≈id.iso.isoˡ _)) ○ (F.F-resp-≈ G.identity) ○ F.identity) ⟩
-    F.F₁ (G.F₁ (F∘G≈id.⇐.η A ∘ F∘G≈id.⇒.η A)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ A))
-      ≈⟨ (F.F-resp-≈ G.homomorphism ○ F.homomorphism) ⟩∘⟨refl ⟩
-    (F.F₁ (G.F₁ (F∘G≈id.⇐.η A)) ∘ F.F₁ (G.F₁ (F∘G≈id.⇒.η A))) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ A))
-      ≈⟨ cancelʳ (⟺ (F∘G≈id.⇐.commute (F∘G≈id.⇒.η A)) ○ F∘G≈id.iso.isoˡ _) ⟩
-    F.F₁ (G.F₁ (F∘G≈id.⇐.η A))
-      ∎
-    where open D
-          open HomReasoning
-          open MR D
 
   -- adjoint equivalence
   F⊣G : ⊣Equivalence F G
@@ -128,7 +115,7 @@ record WeakInverse (F : Functor C D) (G : Functor D C) : Set (levelOfTerm F ⊔ 
       in begin
         G.F₁ (F∘G≈id.⇒.η B D.∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ B)) D.∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ B)))
           ∘ G∘F≈id.⇐.η (G.F₀ B)
-          ≈⟨ G.F-resp-≈ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ FG-⇐-comm)) ⟩∘⟨refl ⟩
+          ≈⟨ G.F-resp-≈ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ (F≃id-comm₂ F∘G≈id))) ⟩∘⟨refl ⟩
         G.F₁ (F∘G≈id.⇒.η B D.∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ B)) D.∘ (F.F₁ (G.F₁ (F∘G≈id.⇐.η B))))
           ∘ G∘F≈id.⇐.η (G.F₀ B)
           ≈⟨ (G.homomorphism ○ (∘-resp-≈ʳ G.homomorphism)) ⟩∘⟨refl ⟩

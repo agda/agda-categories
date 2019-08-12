@@ -1,5 +1,6 @@
 import Categories.2-Category
 import Categories.Adjoint
+import Categories.Adjoint.Equivalence
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Properties
 import Categories.Bicategory
@@ -123,6 +124,7 @@ import Categories.NaturalTransformation.Dinatural
 import Categories.NaturalTransformation.Equivalence
 import Categories.NaturalTransformation.NaturalIsomorphism
 import Categories.NaturalTransformation.NaturalIsomorphism.Equivalence
+import Categories.NaturalTransformation.NaturalIsomorphism.Properties
 import Categories.NaturalTransformation.Properties
 import Categories.Object.Coproduct
 import Categories.Object.Duality
