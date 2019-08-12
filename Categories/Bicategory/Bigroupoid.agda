@@ -100,23 +100,23 @@ record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e 
         (((unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ associator.to) ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇐.η g) ∘ᵥ ((α ⁻¹′ ⁻¹′ ◁ id₁) ∘ᵥ unitorʳ.to)
           ≈⟨ center ◁-▷-exchg ⟩
         ((unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ associator.to) ∘ᵥ (α ⁻¹′ ⁻¹′ ◁ (g ⁻¹ ∘ₕ g) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η g) ∘ᵥ unitorʳ.to
-          ≈⟨ center (⟺ hom.assoc ○ hom.∘-resp-≈ assoc⁻¹-◁-∘ₕ (ℱ.F-resp-≈ ((f ⁻¹ ⁻¹) ⊚-) (⟺ cancel⁻¹-comm))) ⟩
+          ≈⟨ center (⟺ assoc₂ ○ hom.∘-resp-≈ assoc⁻¹-◁-∘ₕ (ℱ.F-resp-≈ ((f ⁻¹ ⁻¹) ⊚-) (⟺ cancel⁻¹-comm))) ⟩
         (unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ ((α ⁻¹′ ⁻¹′ ◁ g ⁻¹ ◁ g ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ ((α ⁻¹′ ⊚₁ α) ∘ᵥ cancel.⇐.η f)) ∘ᵥ unitorʳ.to
           ≈⟨ refl ⟩∘⟨ (hom.∘-resp-≈ʳ (ℱ.homomorphism ((f ⁻¹ ⁻¹) ⊚-)) ○ center (⊚-assoc.⇐.commute _) ○ center⁻¹ ([ ⊚ ]-merge (⟺ [ ⊚ ]-decompose₁) identity₂ˡ) refl) ⟩∘⟨ refl ⟩
         (unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ (((α ⁻¹′ ⁻¹′ ⊚₁ α ⁻¹′) ⊚₁ α) ∘ᵥ associator.to ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
-          ≈˘⟨ hom.assoc ⟩
+          ≈˘⟨ assoc₂ ⟩
         ((unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ (((α ⁻¹′ ⁻¹′ ⊚₁ α ⁻¹′) ⊚₁ α) ∘ᵥ associator.to ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f)) ∘ᵥ unitorʳ.to
           ≈⟨ center ([ ⊚ ]-merge cancel-comm identity₂ˡ) ⟩∘⟨refl ⟩
         (unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ⊚₁ α ∘ᵥ associator.to ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
-          ≈˘⟨ (hom.assoc ○ hom.assoc) ⟩∘⟨refl ⟩
+          ≈˘⟨ (assoc₂ ○ assoc₂) ⟩∘⟨refl ⟩
         (((unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ⊚₁ α) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
           ≈⟨ (hom.∘-resp-≈ʳ [ ⊚ ]-decompose₂) ⟩∘⟨refl ⟩∘⟨refl ⟩∘⟨refl ⟩
         (((unitorˡ.from ∘ᵥ id₁ ▷ α ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
           ≈⟨ pullˡ λ-∘ᵥ-▷ ⟩∘⟨refl ⟩∘⟨refl ⟩∘⟨refl ⟩
         ((((α ∘ᵥ unitorˡ.from) ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
-          ≈⟨ (hom.assoc ○ hom.assoc ○ hom.assoc ○ hom.assoc) ⟩
+          ≈⟨ (assoc₂ ○ assoc₂ ○ assoc₂ ○ assoc₂) ⟩
         α ∘ᵥ unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f ∘ᵥ associator.to ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f ∘ᵥ unitorʳ.to
-          ≈˘⟨ refl⟩∘⟨ (hom.assoc ○ hom.assoc ○ hom.assoc) ⟩
+          ≈˘⟨ refl⟩∘⟨ (assoc₂ ○ assoc₂ ○ assoc₂) ⟩
         α ∘ᵥ (((unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
           ∎
       }
@@ -124,7 +124,7 @@ record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e 
       { η       = λ f → unitorʳ.from ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇒.η f ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
       ; commute = λ {f g} α → begin
         (unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (g ⁻¹) ◁ g ∘ᵥ unitorˡ.to) ∘ᵥ α
-          ≈⟨ hom.assoc ○ hom.∘-resp-≈ʳ (hom.assoc ○ hom.∘-resp-≈ʳ (hom.assoc ○ hom.∘-resp-≈ʳ hom.assoc)) ⟩
+          ≈⟨ assoc₂ ○ hom.∘-resp-≈ʳ (assoc₂ ○ hom.∘-resp-≈ʳ (assoc₂ ○ hom.∘-resp-≈ʳ assoc₂)) ⟩
         unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (g ⁻¹) ◁ g ∘ᵥ unitorˡ.to ∘ᵥ α
           ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ ▷-∘ᵥ-λ⁻¹ ⟩
         unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (g ⁻¹) ◁ g ∘ᵥ id₁ ▷ α ∘ᵥ unitorˡ.to
@@ -134,11 +134,11 @@ record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e 
         unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ ((α ⁻¹′ ⁻¹′ ⊚₁ α ⁻¹′) ⊚₁ α ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f) ∘ᵥ unitorˡ.to
           ≈⟨ refl⟩∘⟨ refl⟩∘⟨ center⁻¹ (⊚-assoc.⇒.commute _) refl ⟩
         unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ (α ⁻¹′ ⁻¹′ ⊚₁ α ⁻¹′ ⊚₁ α ∘ᵥ associator.from) ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
-          ≈⟨ refl⟩∘⟨ (hom.∘-resp-≈ʳ hom.assoc ○ pullˡ ([ ⊚ ]-merge identity₂ˡ cancel-comm)) ⟩
+          ≈⟨ refl⟩∘⟨ (hom.∘-resp-≈ʳ assoc₂ ○ pullˡ ([ ⊚ ]-merge identity₂ˡ cancel-comm)) ⟩
         unitorʳ.from ∘ᵥ (α ⁻¹′ ⁻¹′) ⊚₁ (cancel.⇒.η f) ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
-          ≈⟨ refl⟩∘⟨ (hom.∘-resp-≈ˡ [ ⊚ ]-decompose₁ ○ hom.assoc) ⟩
+          ≈⟨ refl⟩∘⟨ (hom.∘-resp-≈ˡ [ ⊚ ]-decompose₁ ○ assoc₂) ⟩
         unitorʳ.from ∘ᵥ (α ⁻¹′ ⁻¹′) ◁ id₁ ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇒.η f ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
-          ≈⟨ (pullˡ ρ-∘ᵥ-◁) ○ hom.assoc ⟩
+          ≈⟨ (pullˡ ρ-∘ᵥ-◁) ○ assoc₂ ⟩
         α ⁻¹′ ⁻¹′ ∘ᵥ unitorʳ.from ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇒.η f ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
           ∎
       }
