@@ -3,16 +3,24 @@
 module Categories.Bicategory.Bigroupoid where
 
 open import Level
+open import Function using (_$_)
 open import Data.Product using (Σ; _,_)
 
-open import Categories.Adjoint
 open import Categories.Category
+open import Categories.Category.Equivalence using (WeakInverse)
 open import Categories.Category.Product
 open import Categories.Category.Groupoid
 open import Categories.Bicategory
 open import Categories.Functor renaming (id to idF)
+open import Categories.Functor.Properties
+open import Categories.Functor.Bifunctor.Properties
 open import Categories.Functor.Construction.Constant
-open import Categories.NaturalTransformation.NaturalIsomorphism
+open import Categories.NaturalTransformation using (NaturalTransformation)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_; NaturalIsomorphism)
+
+import Categories.Morphism as Mor
+import Categories.Morphism.Properties as MP
+import Categories.Morphism.Reasoning as MR
 
 -- https://link.springer.com/article/10.1023/A:1011270417127
 record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e ⊔ t) where
@@ -28,10 +36,13 @@ record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e 
   module cancel {A B}  = NaturalIsomorphism (cancel A B)
   module cancel′ {A B} = NaturalIsomorphism (cancel′ A B)
 
-  infix 13 _⁻¹
+  infix 13 _⁻¹ _⁻¹′
 
   _⁻¹ : ∀ {A B} → A ⇒₁ B → B ⇒₁ A
   _⁻¹ = hom⁻¹.F₀
+
+  _⁻¹′ : ∀ {A B} {f g : A ⇒₁ B} → f ⇒₂ g → f ⁻¹ ⇒₂ g ⁻¹
+  _⁻¹′ = hom⁻¹.F₁
 
   open hom.Commutation
 
@@ -52,3 +63,95 @@ record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e 
                   ≈ cancel.⇒.η f ◁ f ⁻¹        ⇒⟨ id₁ ∘ₕ f ⁻¹ ⟩
                     unitorˡ.from
                   ⟩
+
+  private
+    variable
+      A B : Obj
+      f g : A ⇒₁ B
+      α β : f ⇒₂ g
+
+    open hom.HomReasoning
+    module MR′ {A B} where
+      open MR (hom A B) public
+      open Mor (hom A B) public
+      open MP (hom A B) public
+    open MR′
+    module ℱ = Functor
+
+  cancel-comm : ∀ {α : f ⇒₂ g} → cancel.⇒.η g ∘ᵥ (α ⁻¹′ ⊚₁ α) ≈ cancel.⇒.η f
+  cancel-comm {α = α} = cancel.⇒.commute α ○ identity₂ˡ
+
+  cancel⁻¹-comm : ∀ {α : f ⇒₂ g} → (α ⁻¹′ ⊚₁ α) ∘ᵥ cancel.⇐.η f ≈ cancel.⇐.η g
+  cancel⁻¹-comm {α = α} = ⟺ (cancel.⇐.commute α) ○ identity₂ʳ
+
+  cancel′-comm : ∀ {α : f ⇒₂ g} → cancel′.⇒.η g ∘ᵥ (α ⊚₁ α ⁻¹′) ≈ cancel′.⇒.η f
+  cancel′-comm {α = α} = cancel′.⇒.commute α ○ identity₂ˡ
+
+  cancel′⁻¹-comm : ∀ {α : f ⇒₂ g} → (α ⊚₁ α ⁻¹′) ∘ᵥ cancel′.⇐.η f ≈ cancel′.⇐.η g
+  cancel′⁻¹-comm {α = α} = ⟺ (cancel′.⇐.commute α) ○ identity₂ʳ
+
+  hom⁻¹⁻¹≃id : ∀ {A B} → hom[ B , A ]⁻¹ ∘F hom[ A , B ]⁻¹ ≃ idF
+  hom⁻¹⁻¹≃id {A} {B} = record
+    { F⇒G = record
+      { η       = λ f → (((unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
+      ; commute = λ {f g} α → begin
+        ((((unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ associator.to) ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇐.η g) ∘ᵥ unitorʳ.to) ∘ᵥ α ⁻¹′ ⁻¹′
+          ≈˘⟨ pushʳ ◁-∘ᵥ-ρ⁻¹ ⟩
+        (((unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ associator.to) ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇐.η g) ∘ᵥ ((α ⁻¹′ ⁻¹′ ◁ id₁) ∘ᵥ unitorʳ.to)
+          ≈⟨ center ◁-▷-exchg ⟩
+        ((unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ associator.to) ∘ᵥ (α ⁻¹′ ⁻¹′ ◁ (g ⁻¹ ∘ₕ g) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η g) ∘ᵥ unitorʳ.to
+          ≈⟨ center (⟺ hom.assoc ○ hom.∘-resp-≈ assoc⁻¹-◁-∘ₕ (ℱ.F-resp-≈ ((f ⁻¹ ⁻¹) ⊚-) (⟺ cancel⁻¹-comm))) ⟩
+        (unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ ((α ⁻¹′ ⁻¹′ ◁ g ⁻¹ ◁ g ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ ((α ⁻¹′ ⊚₁ α) ∘ᵥ cancel.⇐.η f)) ∘ᵥ unitorʳ.to
+          ≈⟨ refl ⟩∘⟨ (hom.∘-resp-≈ʳ (ℱ.homomorphism ((f ⁻¹ ⁻¹) ⊚-)) ○ center (⊚-assoc.⇐.commute _) ○ center⁻¹ ([ ⊚ ]-merge (⟺ [ ⊚ ]-decompose₁) identity₂ˡ) refl) ⟩∘⟨ refl ⟩
+        (unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ (((α ⁻¹′ ⁻¹′ ⊚₁ α ⁻¹′) ⊚₁ α) ∘ᵥ associator.to ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
+          ≈˘⟨ hom.assoc ⟩
+        ((unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ (((α ⁻¹′ ⁻¹′ ⊚₁ α ⁻¹′) ⊚₁ α) ∘ᵥ associator.to ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f)) ∘ᵥ unitorʳ.to
+          ≈⟨ center ([ ⊚ ]-merge cancel-comm identity₂ˡ) ⟩∘⟨refl ⟩
+        (unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ⊚₁ α ∘ᵥ associator.to ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
+          ≈˘⟨ (hom.assoc ○ hom.assoc) ⟩∘⟨refl ⟩
+        (((unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ⊚₁ α) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
+          ≈⟨ (hom.∘-resp-≈ʳ [ ⊚ ]-decompose₂) ⟩∘⟨refl ⟩∘⟨refl ⟩∘⟨refl ⟩
+        (((unitorˡ.from ∘ᵥ id₁ ▷ α ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
+          ≈⟨ pullˡ λ-∘ᵥ-▷ ⟩∘⟨refl ⟩∘⟨refl ⟩∘⟨refl ⟩
+        ((((α ∘ᵥ unitorˡ.from) ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
+          ≈⟨ (hom.assoc ○ hom.assoc ○ hom.assoc ○ hom.assoc) ⟩
+        α ∘ᵥ unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f ∘ᵥ associator.to ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f ∘ᵥ unitorʳ.to
+          ≈˘⟨ refl⟩∘⟨ (hom.assoc ○ hom.assoc ○ hom.assoc) ⟩
+        α ∘ᵥ (((unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
+          ∎
+      }
+    ; F⇐G = record
+      { η       = λ f → unitorʳ.from ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇒.η f ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
+      ; commute = λ {f g} α → begin
+        (unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (g ⁻¹) ◁ g ∘ᵥ unitorˡ.to) ∘ᵥ α
+          ≈⟨ hom.assoc ○ hom.∘-resp-≈ʳ (hom.assoc ○ hom.∘-resp-≈ʳ (hom.assoc ○ hom.∘-resp-≈ʳ hom.assoc)) ⟩
+        unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (g ⁻¹) ◁ g ∘ᵥ unitorˡ.to ∘ᵥ α
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ ▷-∘ᵥ-λ⁻¹ ⟩
+        unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (g ⁻¹) ◁ g ∘ᵥ id₁ ▷ α ∘ᵥ unitorˡ.to
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ pullˡ (⟺ [ ⊚ ]-decompose₁ ○ ⊚.F-resp-≈ (⟺ cancel⁻¹-comm , refl)) ⟩
+        unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ (α ⁻¹′ ⁻¹′ ⊚₁ α ⁻¹′ ∘ᵥ cancel.⇐.η (f ⁻¹)) ⊚₁ α ∘ᵥ unitorˡ.to
+          ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ hom.∘-resp-≈ˡ ([ ⊚ ]-merge refl identity₂ʳ) ⟩
+        unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ ((α ⁻¹′ ⁻¹′ ⊚₁ α ⁻¹′) ⊚₁ α ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f) ∘ᵥ unitorˡ.to
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ center⁻¹ (⊚-assoc.⇒.commute _) refl ⟩
+        unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ (α ⁻¹′ ⁻¹′ ⊚₁ α ⁻¹′ ⊚₁ α ∘ᵥ associator.from) ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
+          ≈⟨ refl⟩∘⟨ (hom.∘-resp-≈ʳ hom.assoc ○ pullˡ ([ ⊚ ]-merge identity₂ˡ cancel-comm)) ⟩
+        unitorʳ.from ∘ᵥ (α ⁻¹′ ⁻¹′) ⊚₁ (cancel.⇒.η f) ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
+          ≈⟨ refl⟩∘⟨ (hom.∘-resp-≈ˡ [ ⊚ ]-decompose₁ ○ hom.assoc) ⟩
+        unitorʳ.from ∘ᵥ (α ⁻¹′ ⁻¹′) ◁ id₁ ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇒.η f ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
+          ≈⟨ (pullˡ ρ-∘ᵥ-◁) ○ hom.assoc ⟩
+        α ⁻¹′ ⁻¹′ ∘ᵥ unitorʳ.from ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇒.η f ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
+          ∎
+      }
+    ; iso = λ f → Iso-∘ (Iso-swap (unitʳ.iso _)) $
+                  Iso-∘ ([ (f ⁻¹ ⁻¹) ⊚- ]-resp-Iso (Iso-swap (cancel.iso f))) $
+                  Iso-∘ (Iso-swap associator.iso) $
+                  Iso-∘ ([ -⊚ f ]-resp-Iso (cancel.iso _))
+                        (unitˡ.iso _)
+    }
+
+  hom⁻¹-weakInverse : ∀ {A B} → WeakInverse hom[ A , B ]⁻¹ hom[ B , A ]⁻¹
+  hom⁻¹-weakInverse = record { F∘G≈id = hom⁻¹⁻¹≃id ; G∘F≈id = hom⁻¹⁻¹≃id }
+
+  module hom⁻¹-weakInverse {A B} = WeakInverse (hom⁻¹-weakInverse {A} {B})
+
+  open hom⁻¹-weakInverse using () renaming (F⊣G to hom⁻¹-⊣Equivalence) public

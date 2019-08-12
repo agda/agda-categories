@@ -21,8 +21,8 @@ open import Relation.Binary hiding (_⇒_)
 open Category C
 private
   variable
-    X Y : Obj
-    f h k : X ⇒ Y
+    A B X Y : Obj
+    f g h k : X ⇒ Y
 
 open HomReasoning
 
@@ -55,6 +55,27 @@ module Switch (i : X ≅ Y) where
 
 open Switch public
 
+-- conjugates
+module _ (i : A ≅ B) (j : X ≅ Y) where
+  private
+    module i = _≅_ i
+    module j = _≅_ j
+
+  conjugate-from : f ∘ i.from ≈ j.from ∘ g → j.to ∘ f ≈ g ∘ i.to
+  conjugate-from {f = f} {g = g} eq = begin
+    j.to ∘ f                   ≈⟨ introʳ i.isoʳ ⟩
+    (j.to ∘ f) ∘ i.from ∘ i.to ≈⟨ center eq ⟩
+    j.to ∘ (j.from ∘ g) ∘ i.to ≈⟨ center⁻¹ j.isoˡ refl ⟩
+    id ∘ g ∘ i.to              ≈⟨ identityˡ ⟩
+    g ∘ i.to                   ∎
+
+  conjugate-to : j.to ∘ f ≈ g ∘ i.to → f ∘ i.from ≈ j.from ∘ g
+  conjugate-to {f = f} {g = g} eq = begin
+    f ∘ i.from                   ≈⟨ introˡ j.isoʳ ⟩
+    (j.from ∘ j.to) ∘ f ∘ i.from ≈⟨ center eq ⟩
+    j.from ∘ (g ∘ i.to) ∘ i.from ≈⟨ center⁻¹ refl i.isoˡ ⟩
+    (j.from ∘ g) ∘ id            ≈⟨ identityʳ ⟩
+    j.from ∘ g                   ∎
 
 module GroupoidR (G : Groupoid C) where
   open Groupoid G using (_⁻¹; iso; equiv-obj)

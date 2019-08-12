@@ -15,6 +15,7 @@ open import Categories.Functor.Bifunctor
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
 import Categories.Morphism as Mor
+import Categories.Morphism.Reasoning as MR
 
 -- https://ncatlab.org/nlab/show/bicategory
 -- notice that some axioms in nLab is inconsistent. they have been fixed in this definition.
@@ -35,8 +36,9 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   module id {A}             = Functor (id A)
 
   infix 4 _⇒₁_ _⇒₂_ _≈_
-  infixr 7 _◁_ _▷_
-  infixr 9 _∘ₕ_ _∘ᵥ_
+  infixr 7 _∘ᵥ_ _∘ₕ_
+  infixr 9 _▷_
+  infixl 9 _◁_
   infixr 11 _⊚₀_ _⊚₁_
 
   _⇒₁_ : Obj → Obj → Set o
@@ -105,17 +107,17 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
 
   field
     triangle : ∀ {A B C} {f : A ⇒₁ B} {g : B ⇒₁ C} →
-                 [ (g ⊚₀ id₁) ⊚₀ f ⇒ g ⊚₀ f ]⟨
-                   associator.from          ⇒⟨ g ⊚₀ id₁ ⊚₀ f ⟩
+                 [ (g ∘ₕ id₁) ∘ₕ f ⇒ g ∘ₕ f ]⟨
+                   associator.from          ⇒⟨ g ∘ₕ id₁ ∘ₕ f ⟩
                    g ▷ unitorˡ.from
                  ≈ unitorʳ.from ◁ f
                  ⟩
     pentagon : ∀ {A B C D E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
-                 [ ((i ⊚₀ h) ⊚₀ g) ⊚₀ f ⇒ i ⊚₀ h ⊚₀ g ⊚₀ f ]⟨
-                   associator.from ◁ f                     ⇒⟨ (i ⊚₀ h ⊚₀ g) ⊚₀ f ⟩
-                   associator.from                         ⇒⟨ i ⊚₀ (h ⊚₀ g) ⊚₀ f ⟩
+                 [ ((i ∘ₕ h) ∘ₕ g) ∘ₕ f ⇒ i ∘ₕ h ∘ₕ g ∘ₕ f ]⟨
+                   associator.from ◁ f                     ⇒⟨ (i ∘ₕ h ∘ₕ g) ∘ₕ f ⟩
+                   associator.from                         ⇒⟨ i ∘ₕ (h ∘ₕ g) ∘ₕ f ⟩
                    i ▷ associator.from
-                 ≈ associator.from                         ⇒⟨ (i ⊚₀ h) ⊚₀ g ⊚₀ f ⟩
+                 ≈ associator.from                         ⇒⟨ (i ∘ₕ h) ∘ₕ g ∘ₕ f ⟩
                    associator.from
                  ⟩
 
@@ -147,6 +149,11 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   ◁id₂ = ⊚.identity
 
   open hom.HomReasoning
+  private
+    module MR′ {A} {B} where
+      open MR (hom A B) public
+      open Mor (hom A B) public
+    open MR′
 
   ∘ᵥ-distr-◁ : (α ◁ f) ∘ᵥ (β ◁ f) ≈ (α ∘ᵥ β) ◁ f
   ∘ᵥ-distr-◁ {f = f} = ⟺ (Functor.homomorphism (-⊚ f))
@@ -160,23 +167,29 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
     unitorˡ.from ∘ᵥ id.F₁ _ ⊚₁ α ≈⟨ unitˡ.⇒.commute (_ , α) ⟩
     α ∘ᵥ unitorˡ.from            ∎
 
+  ▷-∘ᵥ-λ⁻¹ : (id₁ ▷ α) ∘ᵥ unitorˡ.to ≈ unitorˡ.to ∘ᵥ α
+  ▷-∘ᵥ-λ⁻¹ = conjugate-to (≅.sym unitorˡ) (≅.sym unitorˡ) λ-∘ᵥ-▷
+
   ρ-∘ᵥ-◁ : unitorʳ.from ∘ᵥ (α ◁ id₁) ≈ α ∘ᵥ unitorʳ.from
   ρ-∘ᵥ-◁ {α = α} = begin
     unitorʳ.from ∘ᵥ (α ◁ id₁)      ≈˘⟨ hom.∘-resp-≈ʳ (⊚.F-resp-≈ (refl , id.identity)) ⟩
     unitorʳ.from ∘ᵥ (α ⊚₁ id.F₁ _) ≈⟨ unitʳ.⇒.commute (α , _) ⟩
     α ∘ᵥ unitorʳ.from              ∎
 
-  assoc-◁-∘ₕ : associator.to ∘ᵥ (α ◁ (g ∘ₕ f)) ≈ ((α ◁ g) ◁ f) ∘ᵥ associator.to
-  assoc-◁-∘ₕ {α = α} {g = g} {f = f} = begin
+  ◁-∘ᵥ-ρ⁻¹ : (α ◁ id₁) ∘ᵥ unitorʳ.to ≈ unitorʳ.to ∘ᵥ α
+  ◁-∘ᵥ-ρ⁻¹ = conjugate-to (≅.sym unitorʳ) (≅.sym unitorʳ) ρ-∘ᵥ-◁
+
+  assoc⁻¹-◁-∘ₕ : associator.to ∘ᵥ (α ◁ (g ∘ₕ f)) ≈ ((α ◁ g) ◁ f) ∘ᵥ associator.to
+  assoc⁻¹-◁-∘ₕ {α = α} {g = g} {f = f} = begin
     associator.to ∘ᵥ (α ◁ (g ∘ₕ f))    ≈˘⟨ hom.∘-resp-≈ʳ (⊚.F-resp-≈ (refl , ⊚.identity)) ⟩
     associator.to ∘ᵥ (α ⊚₁ id₂ ⊚₁ id₂) ≈⟨ ⊚-assoc.⇐.commute ((α , id₂) , id₂) ⟩
     ((α ◁ g) ◁ f) ∘ᵥ associator.to     ∎
 
-  assoc-▷-◁ : associator.to ∘ᵥ (f ▷ (α ◁ g)) ≈ ((f ▷ α) ◁ g) ∘ᵥ associator.to
-  assoc-▷-◁ {f = f} {α = α} {g = g} = ⊚-assoc.⇐.commute ((id₂ , α) , id₂)
+  assoc⁻¹-▷-◁ : associator.to ∘ᵥ (f ▷ (α ◁ g)) ≈ ((f ▷ α) ◁ g) ∘ᵥ associator.to
+  assoc⁻¹-▷-◁ {f = f} {α = α} {g = g} = ⊚-assoc.⇐.commute ((id₂ , α) , id₂)
 
-  assoc-▷-∘ₕ : associator.to ∘ᵥ (g ▷ (f ▷ α)) ≈ ((g ∘ₕ f) ▷ α) ∘ᵥ associator.to
-  assoc-▷-∘ₕ {g = g} {f = f} {α = α} = begin
+  assoc⁻¹-▷-∘ₕ : associator.to ∘ᵥ (g ▷ (f ▷ α)) ≈ ((g ∘ₕ f) ▷ α) ∘ᵥ associator.to
+  assoc⁻¹-▷-∘ₕ {g = g} {f = f} {α = α} = begin
     associator.to ∘ᵥ (g ▷ (f ▷ α))       ≈⟨ ⊚-assoc.⇐.commute ((id₂ , id₂) , α) ⟩
     ((id₂ ⊚₁ id₂) ⊚₁ α) ∘ᵥ associator.to ≈⟨ hom.∘-resp-≈ˡ (⊚.F-resp-≈ (⊚.identity , refl)) ⟩
     ((g ∘ₕ f) ▷ α) ∘ᵥ associator.to      ∎

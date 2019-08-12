@@ -23,8 +23,8 @@ module _ (F : Bifunctor C D E) where
     variable
       A B : C.Obj
       X Y : D.Obj
-      f : A C.⇒ B
-      g : X D.⇒ Y
+      f h j : A C.⇒ B
+      g i k : X D.⇒ Y
 
   open E
   open HomReasoning
@@ -48,3 +48,9 @@ module _ (F : Bifunctor C D E) where
     F₁ (f , g)                    ≈˘⟨ F-resp-≈ (C.identityˡ , D.identityʳ) ⟩
     F₁ (C.id C.∘ f , g D.∘ D.id)  ≈⟨ homomorphism ⟩
     F₁ (C.id , g) ∘ F₁ (f , D.id) ∎
+
+  [_]-merge : f C.∘ h C.≈ j → g D.∘ i D.≈ k →  F₁ (f , g) ∘ F₁ (h , i) ≈ F₁ (j , k)
+  [_]-merge {f = f} {h = h} {j = j} {g = g} {i = i} {k = k} eq eq′ = begin
+    F₁ (f , g) ∘ F₁ (h , i) ≈˘⟨ homomorphism ⟩
+    F₁ (f C.∘ h , g D.∘ i)  ≈⟨ F-resp-≈ (eq , eq′) ⟩
+    F₁ (j , k)              ∎
