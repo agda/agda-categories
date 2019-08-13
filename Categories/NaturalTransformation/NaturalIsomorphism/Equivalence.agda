@@ -16,7 +16,7 @@ open NaturalIsomorphism
 private
   variable
     o ℓ e o′ ℓ′ e′ : Level
-    B C D E : Category o ℓ e
+    C D : Category o ℓ e
 
 infix 4 _≅_
 _≅_ : ∀ {F G : Functor C D} → (α β : NaturalIsomorphism F G) → Set _
