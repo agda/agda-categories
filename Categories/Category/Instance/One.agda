@@ -22,4 +22,8 @@ module _ {o ℓ e : Level} where
     }
 
   One-⊤ : Terminal
-  One-⊤ = record { ⊤ = One }
+  One-⊤ = record { ⊤ = One ; ! = record { F₀ = λ _ → lift tt } }
+
+-- not only is One terminal, it can be shifted anywhere else. Stronger veersion of !
+shift : {o ℓ e : Level} (o′ ℓ′ e′ : Level) → Functor (One {o} {ℓ} {e}) (One {o′} {ℓ′} {e′})
+shift o′ ℓ′ e′ = _ -- so obvious, Agda can fill it all in automatically!
