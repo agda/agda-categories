@@ -96,3 +96,12 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
       ; isoʳ = C.identityʳ , D.identityʳ
       }
     }
+
+  ※-distrib₂ : {o₁ ℓ₁ e₁ o₂ ℓ₂ e₂ : Level} {A : Category o₁ ℓ₁ e₁} {B : Category o₂ ℓ₂ e₂}
+    → (F : Functor B C) → (G : Functor B D)
+    → ((F ∘F πˡ) ※ (G ∘F πʳ)) ≃ (F ⁂ G)
+  ※-distrib₂ F G = record
+    { F⇒G = record { η = λ X → C.id , D.id ; commute = λ _ → (C.Equiv.sym C.id-comm) , (D.Equiv.sym D.id-comm) }
+    ; F⇐G = record { η = λ X → C.id , D.id ; commute = λ _ → (C.Equiv.sym C.id-comm) , (D.Equiv.sym D.id-comm) }
+    ; iso = λ X → record { isoˡ = C.identityˡ , D.identityʳ  ; isoʳ = C.identityʳ , D.identityʳ }
+    }
