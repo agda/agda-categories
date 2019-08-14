@@ -4,7 +4,7 @@ Welcome to what will hopefully become the standard Category Theory library for A
 
 ## Origins
 
-This library is a rewrite of [copiumpin's version](https://github.com/copumpkin/categories)
+This library is a rewrite of [copumpin's version](https://github.com/copumpkin/categories)
 of a previous library, which worked very well up to Agda 2.4.3 or so, but began bit-rotting and
 was completely broken by 2.6 (with various stages of 'functioning' in between). That library
 itself has older origins, which are well documented in that project's own documentation.
@@ -17,10 +17,11 @@ versions of Agda (it does not seem to be used much in the standard library, so g
 testing). And the desire to see how far one could go in Category Theory while being
 *proof relevant*. This proof relevance does not have a large effect, at least not until some
 definitions that use natural transformation-based identities (like that for Monad); here
-the classical definition is ``sloppy'', omitting some coherence natural isomorphisms that
+the classical definition is "sloppy", omitting some coherence natural isomorphisms that
 are expanded away in the proof-irrelevant case, but must be inserted here. Along with
 proof relevance, it also makes sense to develop under the conditions of *--without-K* and
-*--safe*.
+*--safe*.  And to stay away from strict category theory -- being Setoid-enriched doesn't
+play well with that at all.
 
 A second aim is to make this library 'ready' to be, in whole or in part, incorporated into
 the main standard library. Thus that means removing many custom-made parts written for
@@ -29,8 +30,13 @@ standard library as much as possible. Also, the style should be adapted to use t
 standard library.
 
 Another clear design decision, already present in the original, is to internalize to each
-category a version of Hom-equality.  In practice what this means is that the work here is
-closer in flavour to bicategory-theory than to classical category theory.
+category a version of Hom-equality, i.e. as mentioned above, to be
+Setoid-enriched.  In practice what this means is that here and there, the flavour is that
+of bicategory theory instead of category theory.
+
+All non-trivial proofs are done in equational style. One-liner proofs are not; some very
+short proofs (obvious 2- or 3-steps) are done combinator-style. Very large proofs with
+trivial sequences of steps "in the middle" have those done combinator-style too.
 
 Some of the lower-level design decisions (naming conventions, organization) are (will be) 
 documented in the proto-contributor's guide.
@@ -38,11 +44,16 @@ documented in the proto-contributor's guide.
 ### Places to find more design notes
 - [Category.Discrete](Categories/Category/Discrete.agda)
 - [Category.Monoidal](Categories/Category/Monoidal.agda)
+- (all the stuff about Mates)
+- (bicategory is defined as Enriched over (Monoidal) Cats instead of 'by hand')
+- (definition of Pseudofunctor is in Benabou style rather than 'by hand')
 
 ### Smaller Design decisions
 - Do not make implicit fields that can rarely be inferred (like what had been done in
   Category and Functor)
-- Do not use Heterogeneous equality at all
+- Do not use Heterogeneous equality at all. Really, never ever.
+- Minimize all use of propositional equality. Try to make things Setoid-enriched instead
+  of Set-enriched.
 
 ## Contributing
 
@@ -52,7 +63,7 @@ will be written, eventually.
 ### Naming Conventions
 
 (Some conventions are slowly arising, document them)
-- Many definitions (like that of Category) are in Category.Core, to avoid various kinds
+- Some definitions (like that of Category) are in Category.Core, to avoid various kinds
   of import loops, and re-exported. .Core modules should only be imported if doing otherwise
   causes an import cycle.
 - Various 'examples' of categories used to be scattered about; these are now gathered
@@ -62,6 +73,12 @@ will be written, eventually.
 - The basic rule of thumb is that constructions are parametrized over some input in a
   non-trivial way, whereas instances are not parametrics (like the (large) Category of
   (small) Categories, the Category of Types and functions, the Category of Setoids, etc.
+- Named modules are often used when multiple structures are in concurrent use; for example,
+  if the 'components' of two categories (say A and B) are used in the same context, then
+  (private) modules A and B are defined for easier access.
+- Components of larger structures use long English names instead of the more usual
+  Categorical 1-Greek-letter short-hands.  So unitor<sup>l</sup> rather than
+  &lambda; and associator rather than &alpha;.
 
 ### Organization
 
