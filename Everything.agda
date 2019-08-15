@@ -24,6 +24,7 @@ import Categories.Category.Construction.Elements
 import Categories.Category.Construction.F-Algebras
 import Categories.Category.Construction.Functors
 import Categories.Category.Construction.Graphs
+import Categories.Category.Construction.Grothendieck
 import Categories.Category.Construction.Kleisli
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Core
@@ -136,6 +137,7 @@ import Categories.Object.Product.Core
 import Categories.Object.Product.Morphisms
 import Categories.Object.Terminal
 import Categories.Object.Zero
+import Categories.Pseudofunctor
 import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda

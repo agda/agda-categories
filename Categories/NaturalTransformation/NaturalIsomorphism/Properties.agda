@@ -9,6 +9,7 @@ open import Categories.Functor renaming (id to idF)
 open import Categories.NaturalTransformation.NaturalIsomorphism
 
 import Categories.Morphism as Mor
+import Categories.Morphism.Properties as Morₚ
 import Categories.Morphism.Reasoning as MR
 
 private
@@ -30,6 +31,8 @@ module _ {F : Endofunctor C} where
     open F
     open MC
     open MR C
+    open Mor C
+    open Morₚ C
     open NaturalIsomorphism α
     
     F≃id-comm₁ : ∀ {A} → ⇒.η (F₀ A) ≈ F₁ (⇒.η A)
@@ -45,3 +48,12 @@ module _ {F : Endofunctor C} where
       F₁ (⇐.η A ∘ ⇒.η A) ∘ ⇐.η (F₀ A)        ≈⟨ homomorphism ⟩∘⟨refl ⟩
       (F₁ (⇐.η A) ∘ F₁ (⇒.η A)) ∘ ⇐.η (F₀ A) ≈⟨ cancelʳ (⟺ (⇐.commute _) ○ iso.isoˡ _) ⟩
       F₁ (⇐.η A)                             ∎
+
+    F≃id⇒id : ∀ {A} {f : A ⇒ A} → F₁ f ≈ id → f ≈ id
+    F≃id⇒id {A} {f} eq = Iso⇒Mono (Iso-swap (iso A)) _ _ helper
+      where helper : ⇐.η A ∘ f ≈ ⇐.η A ∘ id
+            helper = begin
+              ⇐.η A ∘ f    ≈⟨ ⇐.commute f ⟩
+              F₁ f ∘ ⇐.η A ≈⟨ eq ⟩∘⟨refl ⟩
+              id ∘ ⇐.η A   ≈˘⟨ id-comm ⟩
+              ⇐.η A ∘ id   ∎

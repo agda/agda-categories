@@ -108,27 +108,6 @@ record WeakInverse (F : Functor C D) (G : Functor D C) : Set (levelOfTerm F ⊔ 
         ≈⟨ F∘G≈id.iso.isoʳ _ ⟩
       id
         ∎
-    ; zag    = λ {B} →
-      let open C
-          open HomReasoning
-          open MR C
-      in begin
-        G.F₁ (F∘G≈id.⇒.η B D.∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ B)) D.∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ B)))
-          ∘ G∘F≈id.⇐.η (G.F₀ B)
-          ≈⟨ G.F-resp-≈ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ (F≃id-comm₂ F∘G≈id))) ⟩∘⟨refl ⟩
-        G.F₁ (F∘G≈id.⇒.η B D.∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ B)) D.∘ (F.F₁ (G.F₁ (F∘G≈id.⇐.η B))))
-          ∘ G∘F≈id.⇐.η (G.F₀ B)
-          ≈⟨ (G.homomorphism ○ (∘-resp-≈ʳ G.homomorphism)) ⟩∘⟨refl ⟩
-        (G.F₁ (F∘G≈id.⇒.η B) ∘ G.F₁ (F.F₁ (G∘F≈id.⇒.η (G.F₀ B))) ∘ G.F₁ (F.F₁ (G.F₁ (F∘G≈id.⇐.η B)))) ∘ G∘F≈id.⇐.η (G.F₀ B)
-          ≈⟨ pull-last (⟺ (G∘F≈id.⇐.commute (G.F₁ (F∘G≈id.⇐.η B)))) ⟩
-        G.F₁ (F∘G≈id.⇒.η B) ∘ G.F₁ (F.F₁ (G∘F≈id.⇒.η (G.F₀ B))) ∘ G∘F≈id.⇐.η (G.F₀ (F.F₀ (G.F₀ B))) ∘ G.F₁ (F∘G≈id.⇐.η B)
-          ≈⟨ refl⟩∘⟨ cancelˡ (⟺ (G∘F≈id.⇐.commute (G∘F≈id.⇒.η (G.F₀ B))) ○ G∘F≈id.iso.isoˡ _) ⟩
-        G.F₁ (F∘G≈id.⇒.η B) ∘ G.F₁ (F∘G≈id.⇐.η B)
-          ≈˘⟨ G.homomorphism ⟩
-        G.F₁ (F∘G≈id.⇒.η B D.∘ F∘G≈id.⇐.η B)
-          ≈⟨ (G.F-resp-≈ (F∘G≈id.iso.isoʳ _)) ○ G.identity ⟩
-        id
-          ∎
     }
 
   module F⊣G = ⊣Equivalence F⊣G
