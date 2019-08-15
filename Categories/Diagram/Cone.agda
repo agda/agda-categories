@@ -29,12 +29,12 @@ open IsoEquiv C
 
 open import Categories.Morphism.Reasoning C
 
-record Apex (N : Obj) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′) where
+record Apex (N : Obj) : Set (ℓ′ ⊔ o′ ⊔ e ⊔ ℓ) where
   field
     ψ       : (X : Category.Obj J) → (N ⇒ F₀ X)
     commute : ∀ {X Y} (f : J [ X , Y ]) → F₁ f ∘ ψ X ≈ ψ Y
 
-record Cone : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′) where
+record Cone : Set (o ⊔ ℓ′ ⊔ o′ ⊔ e ⊔ ℓ) where
   field
     {N}  : Obj
     apex : Apex N
