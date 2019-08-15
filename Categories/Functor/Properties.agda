@@ -3,10 +3,16 @@ module Categories.Functor.Properties where
 
 -- Properties valid of all Functors
 open import Level
+open import Data.Product using (proj₁; proj₂; _,_)
+open import Function.Surjection using (Surjective)
+open import Function.Equivalence using (Equivalence)
+open import Function.Equality hiding (_∘_)
 
 open import Categories.Category
 open import Categories.Functor.Core
-open import Categories.Morphism
+open import Categories.Functor
+open import Categories.Morphism as Morphism
+import Categories.Morphism.Reasoning as Reas
 open import Categories.Morphism.IsoEquiv as IsoEquiv
 open import Categories.Morphism.Isomorphism
 
@@ -86,6 +92,47 @@ module _ (F : Functor C D) where
     { from-≈ = homomorphism
     ; to-≈   = homomorphism
     }
+
+  -- Uses a strong version of Essential Surjectivity.
+  EssSurj×Full×Faithful⇒Invertible : EssentiallySurjective F → Full F → Faithful F → Functor D C
+  EssSurj×Full×Faithful⇒Invertible surj full faith = record
+    { F₀ = λ d → proj₁ (surj d)
+    ; F₁ = λ {A} {B} f →
+      let (a , sa) = surj A in
+      let (b , sb) = surj B in
+      let module S = Surjective (full {a} {b}) in
+      S.from ⟨$⟩ (_≅_.to sb) ∘ f ∘ (_≅_.from sa)
+    ; identity = λ {A} →
+      let (a , sa) = surj A in begin
+      from full ⟨$⟩  _≅_.to sa ∘ D.id ∘ _≅_.from sa ≈⟨ cong (from full) (D.∘-resp-≈ʳ D.identityˡ D.HomReasoning.○ _≅_.isoˡ sa) ⟩
+      from full ⟨$⟩ D.id                            ≈˘⟨ cong (from full) identity ⟩
+      from full ⟨$⟩ F₁ C.id                         ≈⟨ faith _ _ (right-inverse-of full (F₁ C.id)) ⟩
+      C.id ∎
+    ; homomorphism = λ {X} {Y} {Z} {f} {g} →
+      let (x , sx) = surj X in
+      let (y , sy) = surj Y in
+      let (z , sz) = surj Z in
+      let open Morphism._≅_ in faith _ _ (E.begin
+      F₁ (from full ⟨$⟩ to sz ∘ (g ∘ f) ∘ from sx)                                    E.≈⟨ right-inverse-of full _ ⟩
+      (to sz ∘ (g ∘ f) ∘ from sx)                                                    E.≈⟨ D.∘-resp-≈ʳ (D.∘-resp-≈ˡ (D.∘-resp-≈ʳ (introˡ (isoʳ sy)))) ⟩
+      (to sz ∘ (g ∘ (from sy ∘ to sy) ∘ f) ∘ from sx)                                E.≈˘⟨ D.assoc ⟩
+      (to sz ∘ g ∘ ((from sy ∘ to sy) ∘ f)) ∘ from sx                                E.≈⟨ D.∘-resp-≈ˡ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ D.assoc)) ⟩
+      (to sz ∘ g ∘ (from sy ∘ (to sy ∘ f))) ∘ from sx                                E.≈˘⟨ D.∘-resp-≈ˡ D.assoc ⟩
+      ((to sz ∘ g) ∘ (from sy ∘ (to sy ∘ f))) ∘ from sx                              E.≈˘⟨ D.∘-resp-≈ˡ D.assoc ⟩
+      (((to sz ∘ g) ∘ from sy) ∘ (to sy ∘ f)) ∘ from sx                              E.≈⟨ D.assoc ⟩
+      ((to sz ∘ g) ∘ from sy) ∘ ((to sy ∘ f) ∘ from sx)                              E.≈⟨ D.∘-resp-≈ D.assoc D.assoc  ⟩
+      (to sz ∘ g ∘ from sy) ∘ (to sy ∘ f ∘ from sx)                                  E.≈˘⟨ D.∘-resp-≈ (right-inverse-of full _) (right-inverse-of full _) ⟩
+      F₁ (from full ⟨$⟩ to sz ∘ g ∘ from sy) ∘ F₁ (from full ⟨$⟩ to sy ∘ f ∘ from sx)  E.≈˘⟨ homomorphism ⟩
+      F₁ ((from full ⟨$⟩ to sz ∘ g ∘ from sy) C.∘ (from full ⟨$⟩ to sy ∘ f ∘ from sx)) E.∎)
+    ; F-resp-≈ = λ f≈g → cong (from full) (D.∘-resp-≈ʳ (D.∘-resp-≈ˡ f≈g))
+    }
+    where
+    open Morphism D
+    open Reas D
+    open Category D
+    open Surjective
+    open C.HomReasoning
+    module E = D.HomReasoning
 
 -- Functor Composition is Associative and the unit laws are found in
 -- NaturalTransformation.NaturalIsomorphism, reified as associator, unitorˡ and unitorʳ.
