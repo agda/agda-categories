@@ -6,10 +6,11 @@ open import Level
 -- Here SingletonSet is not given an explicit name, it is an alias for Lift o ⊤
 module Categories.Category.Instance.SingletonSet where
 
-open import Data.Unit using (⊤)
+open import Data.Unit using (⊤; tt)
 open import Relation.Binary.PropositionalEquality using (refl)
 
 open import Categories.Category.Instance.Sets
+open import Categories.Category.Instance.Setoids
 import Categories.Object.Terminal as Term
 
 module _ {o : Level} where
@@ -17,3 +18,9 @@ module _ {o : Level} where
 
   SingletonSet-⊤ : Terminal
   SingletonSet-⊤ = record { ⊤ = Lift o ⊤ ; !-unique = λ _ → refl }
+
+module _ {c ℓ : Level} where
+  open Term (Setoids c ℓ)
+
+  SingletonSetoid-⊤ : Terminal
+  SingletonSetoid-⊤ = record { ⊤ = record { Carrier = Lift c ⊤ ; _≈_ = λ _ _ → Lift ℓ ⊤ } }
