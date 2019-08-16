@@ -189,20 +189,14 @@ module _ (C : Category o ℓ e) where
 
   YoFull : Full embed
   YoFull {X} {Y} = record
-      { to         = record
-        { _⟨$⟩_ = Hom[A,C]⇒Hom[B,C]
-        ; cong  = λ i≈j f≈g → ∘-resp-≈ i≈j f≈g
-        }
-      ; surjective = record
-        { from             = record { _⟨$⟩_ = λ ε → η ε X ⟨$⟩ id ; cong = λ i≈j → i≈j CE.refl }
-        ; right-inverse-of = λ ε {x} {z} {y} z≈y →
-          begin
-            (η ε X ⟨$⟩ id) ∘ z      ≈˘⟨ identityˡ ⟩
-            id ∘ (η ε X ⟨$⟩ id) ∘ z ≈˘⟨ commute ε z CE.refl ⟩
-            η ε x ⟨$⟩ id ∘ id ∘ z   ≈⟨ cong (η ε x) (identityˡ ○ identityˡ ○ z≈y) ⟩
-            η ε x ⟨$⟩ y             ∎
-        }
-      }
+    { from             = record { _⟨$⟩_ = λ ε → η ε X ⟨$⟩ id ; cong = λ i≈j → i≈j CE.refl }
+    ; right-inverse-of = λ ε {x} {z} {y} z≈y →
+      begin
+        (η ε X ⟨$⟩ id) ∘ z      ≈˘⟨ identityˡ ⟩
+        id ∘ (η ε X ⟨$⟩ id) ∘ z ≈˘⟨ commute ε z CE.refl ⟩
+        η ε x ⟨$⟩ id ∘ id ∘ z   ≈⟨ cong (η ε x) (identityˡ ○ identityˡ ○ z≈y) ⟩
+        η ε x ⟨$⟩ y             ∎
+    }
 
   YoFaithful : Faithful embed
   YoFaithful _ _ pres-≈ = ⟺ identityʳ ○ pres-≈ {_} {id} CE.refl ○ identityʳ
@@ -239,14 +233,14 @@ module _ (C : Category o ℓ e) where
   module _ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} where
     private
       module D = Category D
-  
+
       module _ {F G : Functor D C} where
         private
           module F = Functor F
           module G = Functor G
           Hom[-,F-] : Bifunctor C.op D (Setoids ℓ e)
           Hom[-,F-] = Hom[ C ][-,-] ∘F (idF ⁂ F)
-  
+
           Hom[-,G-] : Bifunctor C.op D (Setoids ℓ e)
           Hom[-,G-] = Hom[ C ][-,-] ∘F (idF ⁂ G)
 
@@ -255,7 +249,7 @@ module _ (C : Category o ℓ e) where
           { η       = λ Y → η α (Y , X)
           ; commute = λ {_ Y} f eq → cong (η α (Y , X)) (∘-resp-≈ˡ (⟺ F.identity)) ○ commute α (f , D.id) eq ○ ∘-resp-≈ˡ G.identity
           }
-          
+
         transform : NaturalTransformation Hom[-,F-] Hom[-,G-] → NaturalTransformation F G
         transform α = record
           { η       = λ X → η α (F.F₀ X , X) ⟨$⟩ id
@@ -274,10 +268,10 @@ module _ (C : Category o ℓ e) where
         module G = Functor G
         Hom[-,F-] : Bifunctor C.op D (Setoids ℓ e)
         Hom[-,F-] = Hom[ C ][-,-] ∘F (idF ⁂ F)
-  
+
         Hom[-,G-] : Bifunctor C.op D (Setoids ℓ e)
         Hom[-,G-] = Hom[ C ][-,-] ∘F (idF ⁂ G)
-  
+
       yoneda-NI : NaturalIsomorphism Hom[-,F-] Hom[-,G-] → NaturalIsomorphism F G
       yoneda-NI ni = record
         { F⇒G = transform F⇒G
