@@ -7,11 +7,15 @@ module Categories.Diagram.Duality {o ℓ e} (C : Category o ℓ e) where
 open Category C
 
 open import Level
+open import Function using (_$_)
 
 open import Categories.Functor
 open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation.Dinatural
 
+open import Categories.Object.Initial
+open import Categories.Object.Terminal
+open import Categories.Object.Duality
 open import Categories.Diagram.Equalizer op
 open import Categories.Diagram.Coequalizer C
 open import Categories.Diagram.Pullback op
@@ -20,6 +24,8 @@ open import Categories.Diagram.Cone as Cone
 open import Categories.Diagram.Cocone as Cocone
 open import Categories.Diagram.End as End
 open import Categories.Diagram.Coend as Coend
+open import Categories.Diagram.Limit as Limit
+open import Categories.Diagram.Colimit as Colimit
 
 private
   variable
@@ -92,6 +98,42 @@ module _ {F : Functor J C} where
       }
     }
     where open Cocone.Cocone c
+
+  coCone⇒⇒Cocone⇒ : ∀ {K K′} → Cone⇒ Fop K K′ → Cocone⇒ F (coCone⇒Cocone K′) (coCone⇒Cocone K)
+  coCone⇒⇒Cocone⇒ f = record
+    { arr     = arr
+    ; commute = commute
+    }
+    where open Cone⇒ f
+
+  Cocone⇒⇒coCone⇒ : ∀ {K K′} → Cocone⇒ F K K′ → Cone⇒ Fop (Cocone⇒coCone K′) (Cocone⇒coCone K)
+  Cocone⇒⇒coCone⇒ f = record
+    { arr     = arr
+    ; commute = commute
+    }
+    where open Cocone⇒ f
+
+  coLimit⇒Colimit : Limit Fop → Colimit F
+  coLimit⇒Colimit lim = record
+    { initial = op⊤⇒⊥ (Cocones F) $ record
+      { ⊤        = coCone⇒Cocone ⊤
+      ; !        = coCone⇒⇒Cocone⇒ !
+      ; !-unique = λ f → !-unique (Cocone⇒⇒coCone⇒ f)
+      }
+    }
+    where open Limit.Limit lim
+          open Terminal terminal
+
+  Colimit⇒coLimit : Colimit F → Limit Fop
+  Colimit⇒coLimit colim = record
+    { terminal = record
+      { ⊤        = Cocone⇒coCone ⊥
+      ; !        = Cocone⇒⇒coCone⇒ !
+      ; !-unique = λ f → !-unique (coCone⇒⇒Cocone⇒ f)
+      }
+    }
+    where open Colimit.Colimit colim
+          open Initial initial
 
 module _ {F : Bifunctor (Category.op D) D C} where
   open HomReasoning
