@@ -9,19 +9,23 @@ open Category C
 
 open import Data.Product using (∃; _,_)
 
+open import Categories.Category.Cocartesian C
 open import Categories.Morphism C
 open import Categories.Morphism.Properties C
 open import Categories.Morphism.Duality C
+open import Categories.Object.Initial C
+open import Categories.Object.Terminal op
 open import Categories.Object.Coproduct C
 open import Categories.Object.Duality C
 open import Categories.Diagram.Coequalizer C
 open import Categories.Diagram.Pushout C
 open import Categories.Diagram.Duality C
 open import Categories.Diagram.Pullback op as P′ using (Pullback)
+open import Categories.Diagram.Pullback.Properties op
 
 private
   variable
-    A B : Obj
+    A B X Y : Obj
     f g h i : A ⇒ B
 
 module _ (p : Pushout f g) where
@@ -65,5 +69,26 @@ Coproduct×Pushout⇒Coequalizer cp p =
   coEqualizer⇒Coequalizer (P′.Product×Pullback⇒Equalizer (coproduct→product cp)
                                                          (Pushout⇒coPullback p))
 
+module _ (i : Initial) where
+  open Initial i
+  private
+    t : Terminal
+    t = ⊥⇒op⊤ i
 
+  pushout-⊥⇒coproduct : Pushout (! {X}) (! {Y}) → Coproduct X Y
+  pushout-⊥⇒coproduct p = product→coproduct (pullback-⊤⇒product t (Pushout⇒coPullback p))
 
+  coproduct⇒pushout-⊥ : Coproduct X Y → Pushout (! {X}) (! {Y})
+  coproduct⇒pushout-⊥ c = coPullback⇒Pushout (product⇒pullback-⊤ t (coproduct→product c))
+
+pushout-resp-≈ : Pushout f g → f ≈ h → g ≈ i → Pushout h i
+pushout-resp-≈ p eq eq′ = coPullback⇒Pushout (pullback-resp-≈ (Pushout⇒coPullback p) eq eq′)
+
+module _ (pushouts : ∀ {X Y Z} (f : X ⇒ Y) (g : X ⇒ Z) → Pushout f g)
+         (cocartesian : Cocartesian) where
+  open Cocartesian cocartesian
+  open Dual
+
+  pushout×cocartesian⇒coequalizer : Coequalizer f g
+  pushout×cocartesian⇒coequalizer = coEqualizer⇒Coequalizer
+    (pullback×cartesian⇒equalizer (λ f g → Pushout⇒coPullback (pushouts f g)) op-cartesian)
