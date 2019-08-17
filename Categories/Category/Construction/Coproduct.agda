@@ -2,6 +2,7 @@
 module Categories.Category.Construction.Coproduct where
 
 -- Coproduct of categories.  Need to pull out some of the combinators.
+-- Coproduct of Groupoid as well.
 
 open import Level
 open import Data.Sum
@@ -10,6 +11,8 @@ open import Relation.Binary using (Rel)
 open import Function using (_$_)
 
 open import Categories.Category
+open import Categories.Category.Groupoid
+import Categories.Morphism as Morphism
 
 private
   variable
@@ -73,3 +76,23 @@ Coproduct C D = record
   where
   module C = Category C
   module D = Category D
+
+Groupoid-⊎ : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} → Groupoid C → Groupoid D → Groupoid (Coproduct C D)
+Groupoid-⊎ G₁ G₂ = record
+  { _⁻¹ = λ { {inj₁ x} {inj₁ x₁} (lift f) → lift $ Groupoid._⁻¹ G₁ f
+            ; {inj₂ y} {inj₂ y₁} (lift f) → lift $ Groupoid._⁻¹ G₂ f
+            }
+  ; iso = λ { {inj₁ x} {inj₁ x₁} {lift f} → record
+              { isoˡ = lift $ Iso.isoˡ i₁
+              ; isoʳ = lift $ Iso.isoʳ i₁
+              }
+            ; {inj₂ y} {inj₂ y₁} {lift f} → record
+              { isoˡ = lift $ Iso.isoˡ i₂
+              ; isoʳ = lift $ Iso.isoʳ i₂
+              }
+            }
+  }
+  where
+  open Morphism
+  i₁ = Groupoid.iso G₁
+  i₂ = Groupoid.iso G₂
