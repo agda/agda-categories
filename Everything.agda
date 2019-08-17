@@ -9,9 +9,9 @@ import Categories.Bicategory.Instance.Cats
 import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
+import Categories.Category.Cartesian.Properties
 import Categories.Category.CartesianClosed
 import Categories.Category.CartesianClosed.Locally
-import Categories.Category.Cartesian.Properties
 import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
@@ -20,6 +20,7 @@ import Categories.Category.Complete
 import Categories.Category.Complete.Finitely
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Comma
+import Categories.Category.Construction.Coproduct
 import Categories.Category.Construction.Elements
 import Categories.Category.Construction.F-Algebras
 import Categories.Category.Construction.Functors
@@ -27,6 +28,7 @@ import Categories.Category.Construction.Graphs
 import Categories.Category.Construction.Grothendieck
 import Categories.Category.Construction.Kleisli
 import Categories.Category.Construction.Presheaves
+import Categories.Category.Construction.Properties.Comma
 import Categories.Category.Core
 import Categories.Category.Discrete
 import Categories.Category.Equivalence
