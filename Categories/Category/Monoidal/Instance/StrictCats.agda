@@ -37,14 +37,15 @@ module Product {o ℓ e : Level} where
     ; π₁ = πˡ
     ; π₂ = πʳ
     ; ⟨_,_⟩ = _※_
-    ; project₁ = λ _ → (λ _ → ≡.refl) , Equiv.refl A
-    ; project₂ = λ _ → (λ _ → ≡.refl) , Equiv.refl B
-    ; unique = λ {hA} {h} {i} {j} left right {a} {b} f →
-      let p₁ X = cong₂ _,_ (≡.sym $ proj₁ (left f) X) (≡.sym $ proj₁ (right f) X) in
-      let la = proj₁ (left f) a in
-      let ra = proj₁ (right f) a in
-      let lb = proj₁ (left f) b in
-      let rb = proj₁ (right f) b in
+    ; project₁ = (λ _ → ≡.refl) , λ _ → Equiv.refl A
+    ; project₂ = (λ _ → ≡.refl) , λ _ → Equiv.refl B
+    ; unique = λ {hA} {h} {i} {j} left right →
+      let p₁ X = cong₂ _,_ (≡.sym $ proj₁ left X) (≡.sym $ proj₁ right X) in
+      p₁ , λ {a} {b} f →
+      let la = proj₁ left a in
+      let ra = proj₁ right a in
+      let lb = proj₁ left b in
+      let rb = proj₁ right b in
       let Fi = Functor.F₁ i f in
       let Fj = Functor.F₁ j f in
       let Fh = Functor.F₁ h f in
@@ -52,12 +53,11 @@ module Product {o ℓ e : Level} where
       let sR X = subst₂ (_⇒_ B) ra rb X in
       let ssL X = subst₂ (_⇒_ A) (≡.sym la) (≡.sym lb) X in
       let ssR X = subst₂ (_⇒_ B) (≡.sym ra) (≡.sym rb) X in
-      p₁ ,
       (let open HomReasoning A in begin
       proj₁ (subst₂ (zipWith (_⇒_ A) (_⇒_ B) _×_) (p₁ a) (p₁ b) (Fi , Fj))
           ≈⟨ ≡⇒≈ $ cong proj₁ $ subst₂-expand (_⇒_ A) (_⇒_ B) _ _ _ _ Fi Fj ⟩
       ssL Fi
-          ≈˘⟨ subst₂≈ (proj₂ $ left f) _ _ ⟩
+          ≈˘⟨ subst₂≈ (proj₂ left f) _ _ ⟩
       ssL (sL $ proj₁ Fh)
           ≈⟨ ≡⇒≈ $ subst₂-sym-subst₂ (_⇒_ A) la lb ⟩
       proj₁ Fh ∎) ,
@@ -65,11 +65,10 @@ module Product {o ℓ e : Level} where
       proj₂ (subst₂ (zipWith (_⇒_ A) (_⇒_ B) _×_) (p₁ a) (p₁ b) (Fi , Fj))
           ≈⟨ ≡⇒≈ $ cong proj₂ $ subst₂-expand (_⇒_ A) (_⇒_ B) (≡.sym la) _ _ _ Fi Fj ⟩
       ssR Fj
-          ≈˘⟨ subst₂≈ (proj₂ $ right f) _ _ ⟩
+          ≈˘⟨ subst₂≈ (proj₂ right f) _ _ ⟩
       ssR (sR $ proj₂ Fh)
           ≈⟨ ≡⇒≈ $ subst₂-sym-subst₂ (_⇒_ B) ra rb ⟩
       proj₂ Fh ∎
-
     } }
     where
     open Category
@@ -82,7 +81,7 @@ module Product {o ℓ e : Level} where
   One-⊤ = record
     { ⊤ = One
     ; ! = const (lift tt)
-    ; !-unique = λ { record { F₀ = F₀ ; F₁ = F₁} f₁ → (λ X → unique-One (F₀ X)) , lift tt }
+    ; !-unique = λ f → (λ X → unique-One (Functor.F₀ f X)) , λ _ → lift tt
     }
 
   Cats-is : Cartesian

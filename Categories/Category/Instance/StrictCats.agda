@@ -23,9 +23,9 @@ Cats o ℓ e = record
   ; _≈_       = _≡F_
   ; id        = id
   ; _∘_       = _∘F_
-  ; assoc     = λ {_} {_} {_} {D} f → (λ _ → refl) ,, Category.Equiv.refl D
-  ; identityˡ = λ {_} {B} f → (λ _ → refl) ,, Category.Equiv.refl B
-  ; identityʳ = λ {_} {B} f → (λ _ → refl) ,, Category.Equiv.refl B
+  ; assoc     = λ {_} {_} {_} {D} → (λ _ → refl) ,, λ f → Category.Equiv.refl D
+  ; identityˡ = λ {_} {B} → (λ _ → refl) ,, λ _ → Category.Equiv.refl B
+  ; identityʳ = λ {_} {B} → (λ _ → refl) ,, λ _ → Category.Equiv.refl B
   ; equiv     = ≡F-equiv
   ; ∘-resp-≈  = λ {A} {B} {C} {f} {h} {g} {i} f≡h g≡i →  ∘F-perserves-≡F {h = f} {h} {g} {i} f≡h g≡i
   }
