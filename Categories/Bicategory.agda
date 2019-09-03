@@ -161,23 +161,23 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   ∘ᵥ-distr-▷ : (f ▷ α) ∘ᵥ (f ▷ β) ≈ f ▷ (α ∘ᵥ β)
   ∘ᵥ-distr-▷ {f = f} = ⟺ (Functor.homomorphism (f ⊚-))
 
-  λ-∘ᵥ-▷ : unitorˡ.from ∘ᵥ (id₁ ▷ α) ≈ α ∘ᵥ unitorˡ.from
-  λ-∘ᵥ-▷ {α = α} = begin
+  ρ-∘ᵥ-▷ : unitorˡ.from ∘ᵥ (id₁ ▷ α) ≈ α ∘ᵥ unitorˡ.from
+  ρ-∘ᵥ-▷ {α = α} = begin
     unitorˡ.from ∘ᵥ (id₁ ▷ α)    ≈˘⟨ hom.∘-resp-≈ʳ (⊚.F-resp-≈ (id.identity , refl)) ⟩
     unitorˡ.from ∘ᵥ id.F₁ _ ⊚₁ α ≈⟨ unitˡ.⇒.commute (_ , α) ⟩
     α ∘ᵥ unitorˡ.from            ∎
 
-  ▷-∘ᵥ-λ⁻¹ : (id₁ ▷ α) ∘ᵥ unitorˡ.to ≈ unitorˡ.to ∘ᵥ α
-  ▷-∘ᵥ-λ⁻¹ = conjugate-to (≅.sym unitorˡ) (≅.sym unitorˡ) λ-∘ᵥ-▷
+  ▷-∘ᵥ-ρ⁻¹ : (id₁ ▷ α) ∘ᵥ unitorˡ.to ≈ unitorˡ.to ∘ᵥ α
+  ▷-∘ᵥ-ρ⁻¹ = conjugate-to (≅.sym unitorˡ) (≅.sym unitorˡ) ρ-∘ᵥ-▷
 
-  ρ-∘ᵥ-◁ : unitorʳ.from ∘ᵥ (α ◁ id₁) ≈ α ∘ᵥ unitorʳ.from
-  ρ-∘ᵥ-◁ {α = α} = begin
+  λ-∘ᵥ-◁ : unitorʳ.from ∘ᵥ (α ◁ id₁) ≈ α ∘ᵥ unitorʳ.from
+  λ-∘ᵥ-◁ {α = α} = begin
     unitorʳ.from ∘ᵥ (α ◁ id₁)      ≈˘⟨ hom.∘-resp-≈ʳ (⊚.F-resp-≈ (refl , id.identity)) ⟩
     unitorʳ.from ∘ᵥ (α ⊚₁ id.F₁ _) ≈⟨ unitʳ.⇒.commute (α , _) ⟩
     α ∘ᵥ unitorʳ.from              ∎
 
-  ◁-∘ᵥ-ρ⁻¹ : (α ◁ id₁) ∘ᵥ unitorʳ.to ≈ unitorʳ.to ∘ᵥ α
-  ◁-∘ᵥ-ρ⁻¹ = conjugate-to (≅.sym unitorʳ) (≅.sym unitorʳ) ρ-∘ᵥ-◁
+  ◁-∘ᵥ-λ⁻¹ : (α ◁ id₁) ∘ᵥ unitorʳ.to ≈ unitorʳ.to ∘ᵥ α
+  ◁-∘ᵥ-λ⁻¹ = conjugate-to (≅.sym unitorʳ) (≅.sym unitorʳ) λ-∘ᵥ-◁
 
   assoc⁻¹-◁-∘ₕ : associator.to ∘ᵥ (α ◁ (g ∘ₕ f)) ≈ ((α ◁ g) ◁ f) ∘ᵥ associator.to
   assoc⁻¹-◁-∘ₕ {α = α} {g = g} {f = f} = begin
