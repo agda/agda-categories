@@ -4,7 +4,7 @@ open import Categories.Category
 
 module Categories.Category.Topos {o ℓ e} (C : Category o ℓ e) where
 
-open import Level
+open import Categories.Utils.Level
 
 open import Categories.Category.CartesianClosed C
 open import Categories.Category.Complete.Finitely C

@@ -6,6 +6,7 @@
 module Relation.Binary.Construct.Symmetrize where
 
 open import Level
+open import Categories.Utils.Level
 open import Relation.Binary
 open import Relation.Binary.Construct.On using () renaming (isEquivalence to on-preserves-equivalence)
 

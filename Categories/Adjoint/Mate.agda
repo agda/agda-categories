@@ -5,6 +5,8 @@
 module Categories.Adjoint.Mate where
 
 open import Level
+open import Categories.Utils.Level
+
 open import Data.Product using (Σ; _,_)
 open import Function.Equality using (Π; _⟶_; _⇨_) renaming (_∘_ to _∙_)
 open import Relation.Binary using (Setoid; IsEquivalence)

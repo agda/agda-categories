@@ -3,6 +3,7 @@
 module Categories.Morphism.Cartesian where
 
 open import Level
+open import Categories.Utils.Level
 
 open import Categories.Category
 open import Categories.Functor

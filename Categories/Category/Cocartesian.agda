@@ -10,6 +10,7 @@ open import Categories.Category
 module Categories.Category.Cocartesian {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
+open import Categories.Utils.Level
 
 private
   module 𝒞 = Category 𝒞

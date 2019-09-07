@@ -3,6 +3,7 @@
 module Categories.Functor.Monoidal where
 
 open import Level
+open import Categories.Utils.Level
 open import Data.Product using (Σ; _,_)
 
 open import Categories.Category

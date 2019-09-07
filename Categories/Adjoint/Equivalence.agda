@@ -3,6 +3,7 @@
 module Categories.Adjoint.Equivalence where
 
 open import Level
+open import Categories.Utils.Level
 
 open import Categories.Adjoint
 open import Categories.Category

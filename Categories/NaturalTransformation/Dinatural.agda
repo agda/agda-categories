@@ -2,6 +2,8 @@
 module Categories.NaturalTransformation.Dinatural where
 
 open import Level
+open import Categories.Utils.Level
+
 open import Data.Product
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 

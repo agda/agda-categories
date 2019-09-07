@@ -8,7 +8,7 @@ open import Categories.Category
 
 module Categories.Category.Cartesian {o ℓ e} (𝒞 : Category o ℓ e) where
 
-open import Level
+open import Categories.Utils.Level
 open import Data.Product using (Σ; _,_; uncurry)
 
 open Category 𝒞

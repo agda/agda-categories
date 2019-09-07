@@ -13,7 +13,7 @@ private
 
   open Commutation
 
-open import Level
+open import Categories.Utils.Level
 open import Data.Product using (Σ; _,_)
 open import Function.Equality using (_⟶_)
 open import Function.Inverse using (_InverseOf_; Inverse)

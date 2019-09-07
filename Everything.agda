@@ -9,9 +9,9 @@ import Categories.Bicategory.Instance.Cats
 import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
-import Categories.Category.Cartesian.Properties
 import Categories.Category.CartesianClosed
 import Categories.Category.CartesianClosed.Locally
+import Categories.Category.Cartesian.Properties
 import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
@@ -141,6 +141,7 @@ import Categories.Object.Terminal
 import Categories.Object.Zero
 import Categories.Pseudofunctor
 import Categories.Utils.EqReasoning
+import Categories.Utils.Level
 import Categories.Utils.Product
 import Categories.Yoneda
 import Relation.Binary.Construct.Symmetrize

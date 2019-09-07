@@ -4,6 +4,7 @@ module Categories.Adjoint where
 -- Adjoints
 
 open import Level
+open import Categories.Utils.Level
 
 open import Data.Product using (_,_; _×_)
 open import Function using (_$_) renaming (_∘_ to _∙_)

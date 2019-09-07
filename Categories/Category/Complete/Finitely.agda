@@ -5,6 +5,7 @@ open import Categories.Category
 module Categories.Category.Complete.Finitely {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
+open import Categories.Utils.Level
 
 open import Categories.Category.Cartesian C
 open import Categories.Diagram.Equalizer C

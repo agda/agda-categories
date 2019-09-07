@@ -3,6 +3,7 @@
 module Categories.Diagram.Finite where
 
 open import Level
+open import Categories.Utils.Level
 
 open import Categories.Category
 open import Categories.Category.Finite renaming (Finite to FiniteC)

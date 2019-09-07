@@ -26,6 +26,7 @@ private
     X Y A B : Obj
 
 open import Level
+open import Categories.Utils.Level
 open import Data.Product using (_,_)
 
 open import Categories.Adjoint

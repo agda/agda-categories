@@ -7,6 +7,7 @@ module Categories.Category.Equivalence where
 -- the full, faithful functors that are essentially surjective on objects.
 
 open import Level
+open import Categories.Utils.Level
 open import Relation.Binary using (IsEquivalence; Setoid)
 
 open import Categories.Adjoint.Equivalence

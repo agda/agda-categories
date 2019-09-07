@@ -5,7 +5,7 @@ open import Categories.Category.Monoidal
 
 module Categories.Category.Monoidal.Braided {o ℓ e} {C : Category o ℓ e} (M : Monoidal C) where
 
-open import Level
+open import Categories.Utils.Level
 
 open import Data.Product using (Σ; _,_)
 

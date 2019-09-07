@@ -7,7 +7,7 @@ module Categories.Category.Monoidal.Traced {o ℓ e} {C : Category o ℓ e} (M :
 
 open Category C
 
-open import Level
+open import Categories.Utils.Level
 
 open import Data.Product using (_,_)
 
