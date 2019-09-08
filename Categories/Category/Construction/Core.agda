@@ -58,3 +58,28 @@ Core-isGroupoid = record
       ; to-≈   = isoʳ
       }
       where open _≅_ f
+
+-- An alternative (but equivalent) version of the core that uses _≃′_
+-- as the equality.  It's often easier to prove things about this
+-- version because the equality is simpler.
+
+Core′ : Category o (ℓ ⊔ e) e
+Core′ = record
+  { Obj       = Obj
+  ; _⇒_       = _≅_
+  ; _≈_       = _≃′_
+  ; id        = ≅.refl
+  ; _∘_       = flip ≅.trans
+  ; assoc     = assoc
+  ; identityˡ = identityˡ
+  ; identityʳ = identityʳ
+  ; equiv     = ≃′-isEquivalence
+  ; ∘-resp-≈  = ∘-resp-≈
+  }
+
+Core′-isGroupoid : IsGroupoid Core′
+Core′-isGroupoid = record
+  { _⁻¹ = ≅.sym
+  ; iso = λ {_ _ f} → record { isoˡ = isoˡ f ; isoʳ = isoʳ f }
+  }
+  where open _≅_
