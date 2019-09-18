@@ -25,7 +25,8 @@ open import Relation.Binary hiding (_⇒_)
 open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 import Relation.Binary.EqReasoning as EqR
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive
-open import Relation.Binary.Construct.Closure.ReflexiveTransitive.Properties hiding (trans)
+open import Relation.Binary.Construct.Closure.ReflexiveTransitive.Properties hiding (trans; ◅◅-assoc)
+import Relation.Binary.Construct.Closure.ReflexiveTransitive.Equivalence as PathEquiv
 open import Data.Product using (proj₁; proj₂; _,_)
 
 open import Categories.Category
@@ -57,46 +58,10 @@ private
   variable
     o o′ ℓ ℓ′ e e′ : Level
 
--- TODO: move this to stdlib
-module _ {i t} {I : Set i} {T : Rel I t} where
-
-  ◅◅-identityʳ : ∀ {i j} → (xs : Star T i j) → xs ◅◅ ε ≡ xs
-  ◅◅-identityʳ ε        = ≡.refl
-  ◅◅-identityʳ (x ◅ xs) = ≡.cong (x ◅_) (◅◅-identityʳ xs)
-
 module _ (G : Graph o ℓ e) where
   open Graph G
-  private
-    module equiv {A B} = IsEquivalence (equiv {A} {B})
-
-  ≡⇒≈ : {A B : Obj} {f g : A ⇒ B} → f ≡ g → f ≈ g
-  ≡⇒≈ ≡.refl = equiv.refl
-
-  data [_]_≈*_ : {A B : Obj} → Star _⇒_ A B → Star _⇒_ A B → Set (o ⊔ ℓ ⊔ e) where
-    ε : ∀ {A} →  [_]_≈*_ (ε {x = A}) ε
-    _◅_ : ∀ {A B C} {f g : A ⇒ B} {h i : Star _⇒_ B C} → f ≈ g → [_]_≈*_ h i → [_]_≈*_ (f ◅ h) (g ◅ i)
-
-  refl : ∀ {A B} → Reflexive ([_]_≈*_ {A} {B})
-  refl {_} {_} {ε}        = ε
-  refl {A} {B} {eq ◅ eq′} = equiv.refl ◅ refl
-
-  sym : ∀ {A B} → Symmetric ([_]_≈*_ {A} {B})
-  sym ε          = ε
-  sym (eq ◅ eq′) = equiv.sym eq ◅ sym eq′
-
-  trans : ∀ {A B} → Transitive ([_]_≈*_ {A} {B})
-  trans ε ε                    = ε
-  trans (eq₁ ◅ eq₂) (eq ◅ eq′) = (equiv.trans eq₁ eq) ◅ (trans eq₂ eq′)
-
-  isEquivalence : ∀ {A B} → IsEquivalence ([_]_≈*_ {A} {B})
-  isEquivalence = record
-    { refl  = refl
-    ; sym   = sym
-    ; trans = trans
-    }
-
-  private
-    _≈*_ = [_]_≈*_
+  private module P = PathEquiv {o} {ℓ} {e} {Obj} {_⇒_} _≈_ equiv
+  open P
 
   squish-subst₂-ε :  {x z : Obj} (eq₁ : x ≡ z) → ≡.subst₂ (Star _⇒_) eq₁ eq₁ ε ≈* ε
   squish-subst₂-ε ≡.refl = ε
@@ -108,9 +73,8 @@ module _ (G : Graph o ℓ e) where
     ; _≈_       = _≈*_
     ; id        = ε
     ; _∘_       = _▻▻_
-    ; assoc     = λ {_ _ _ _} {f g h} →
-      ≡.subst (λ x → x ≈* ((f ◅◅ g) ◅◅ h)) (◅◅-assoc f g h) refl
-    ; identityˡ = λ {_ _ f} → ≡.subst ((f ◅◅ ε) ≈*_) (◅◅-identityʳ f) refl
+    ; assoc     = λ {_ _ _ _} {f g h} → sym $ ◅◅-assoc f g h
+    ; identityˡ = λ {_ _ f} → ◅◅-identityʳ f
     ; identityʳ = refl
     ; equiv     = isEquivalence
     ; ∘-resp-≈  = resp
@@ -119,6 +83,8 @@ module _ (G : Graph o ℓ e) where
                    f ≈* h → g ≈* i → (f ▻▻ g) ≈* (h ▻▻ i)
           resp eq ε = eq
           resp eq (eq₁ ◅ eq₂) = eq₁ ◅ (resp eq eq₂)
+
+  open P public renaming (_≈*_ to [_]_≈*_)
 
 record GraphMorphism (G : Graph o ℓ e) (G′ : Graph o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   private
