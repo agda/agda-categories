@@ -96,7 +96,7 @@ record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e 
       { η       = λ f → (((unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
       ; commute = λ {f g} α → begin
         ((((unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ associator.to) ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇐.η g) ∘ᵥ unitorʳ.to) ∘ᵥ α ⁻¹′ ⁻¹′
-          ≈˘⟨ pushʳ ◁-∘ᵥ-ρ⁻¹ ⟩
+          ≈˘⟨ pushʳ ◁-∘ᵥ-λ⁻¹ ⟩
         (((unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ associator.to) ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇐.η g) ∘ᵥ ((α ⁻¹′ ⁻¹′ ◁ id₁) ∘ᵥ unitorʳ.to)
           ≈⟨ center ◁-▷-exchg ⟩
         ((unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ associator.to) ∘ᵥ (α ⁻¹′ ⁻¹′ ◁ (g ⁻¹ ∘ₕ g) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η g) ∘ᵥ unitorʳ.to
@@ -112,7 +112,7 @@ record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e 
         (((unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ⊚₁ α) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
           ≈⟨ (hom.∘-resp-≈ʳ [ ⊚ ]-decompose₂) ⟩∘⟨refl ⟩∘⟨refl ⟩∘⟨refl ⟩
         (((unitorˡ.from ∘ᵥ id₁ ▷ α ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
-          ≈⟨ pullˡ λ-∘ᵥ-▷ ⟩∘⟨refl ⟩∘⟨refl ⟩∘⟨refl ⟩
+          ≈⟨ pullˡ ρ-∘ᵥ-▷ ⟩∘⟨refl ⟩∘⟨refl ⟩∘⟨refl ⟩
         ((((α ∘ᵥ unitorˡ.from) ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
           ≈⟨ (assoc₂ ○ assoc₂ ○ assoc₂ ○ assoc₂) ⟩
         α ∘ᵥ unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f ∘ᵥ associator.to ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f ∘ᵥ unitorʳ.to
@@ -126,7 +126,7 @@ record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e 
         (unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (g ⁻¹) ◁ g ∘ᵥ unitorˡ.to) ∘ᵥ α
           ≈⟨ assoc₂ ○ hom.∘-resp-≈ʳ (assoc₂ ○ hom.∘-resp-≈ʳ (assoc₂ ○ hom.∘-resp-≈ʳ assoc₂)) ⟩
         unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (g ⁻¹) ◁ g ∘ᵥ unitorˡ.to ∘ᵥ α
-          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ ▷-∘ᵥ-λ⁻¹ ⟩
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ ▷-∘ᵥ-ρ⁻¹ ⟩
         unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (g ⁻¹) ◁ g ∘ᵥ id₁ ▷ α ∘ᵥ unitorˡ.to
           ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ pullˡ (⟺ [ ⊚ ]-decompose₁ ○ ⊚.F-resp-≈ (⟺ cancel⁻¹-comm , refl)) ⟩
         unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ (α ⁻¹′ ⁻¹′ ⊚₁ α ⁻¹′ ∘ᵥ cancel.⇐.η (f ⁻¹)) ⊚₁ α ∘ᵥ unitorˡ.to
@@ -138,7 +138,7 @@ record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e 
         unitorʳ.from ∘ᵥ (α ⁻¹′ ⁻¹′) ⊚₁ (cancel.⇒.η f) ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
           ≈⟨ refl⟩∘⟨ (hom.∘-resp-≈ˡ [ ⊚ ]-decompose₁ ○ assoc₂) ⟩
         unitorʳ.from ∘ᵥ (α ⁻¹′ ⁻¹′) ◁ id₁ ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇒.η f ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
-          ≈⟨ (pullˡ ρ-∘ᵥ-◁) ○ assoc₂ ⟩
+          ≈⟨ (pullˡ λ-∘ᵥ-◁) ○ assoc₂ ⟩
         α ⁻¹′ ⁻¹′ ∘ᵥ unitorʳ.from ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇒.η f ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
           ∎
       }
