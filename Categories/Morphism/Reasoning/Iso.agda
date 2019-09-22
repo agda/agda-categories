@@ -12,7 +12,7 @@ module Categories.Morphism.Reasoning.Iso {o ℓ e} (C : Category o ℓ e) where
 open import Level
 open import Function renaming (id to idᶠ; _∘_ to _∙_)
 
-open import Categories.Category.IsGroupoid
+open import Categories.Category.Groupoid using (IsGroupoid)
 open import Categories.Morphism C
 open import Categories.Morphism.Reasoning.Core C
 

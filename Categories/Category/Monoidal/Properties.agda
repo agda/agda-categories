@@ -16,7 +16,7 @@ open import Categories.Category.Product using (Product)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Properties
-open import Categories.Category.IsGroupoid
+open import Categories.Category.Groupoid using (IsGroupoid)
 open import Categories.Morphism C
 open import Categories.Morphism.IsoEquiv C using (_≃_)
 open import Categories.Morphism.Isomorphism C

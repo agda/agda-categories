@@ -7,7 +7,7 @@ open import Data.Product using (_×_; Σ; _,_; proj₁; proj₂; zip; map; <_,_>
 
 open import Categories.Utils.Product
 open import Categories.Category using (Category)
-open import Categories.Category.IsGroupoid using (IsGroupoid)
+open import Categories.Category.Groupoid using (IsGroupoid)
 open import Categories.Functor renaming (id to idF)
 open import Categories.NaturalTransformation.Core
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl)

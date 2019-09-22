@@ -17,7 +17,7 @@ open import Relation.Binary.Construct.Closure.Transitive
 open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 import Categories.Category.Construction.Core as Core
-open import Categories.Category.IsGroupoid
+open import Categories.Category.Groupoid using (IsGroupoid)
 import Categories.Morphism as Morphism
 import Categories.Morphism.Properties as Morphismₚ
 import Categories.Morphism.IsoEquiv as IsoEquiv
