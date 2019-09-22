@@ -30,7 +30,7 @@ Mono {A = A} f = ∀ {C} → (g₁ g₂ : C ⇒ A) → f ∘ g₁ ≈ f ∘ g₂
 Epi : ∀ (f : A ⇒ B) → Set _
 Epi {B = B} f = ∀ {C} → (g₁ g₂ : B ⇒ C) → g₁ ∘ f ≈ g₂ ∘ f → g₁ ≈ g₂
 
-record Iso (from : A ⇒ B) (to : B ⇒ A) : Set (ℓ ⊔ e) where
+record Iso (from : A ⇒ B) (to : B ⇒ A) : Set e where
   field
     isoˡ : to ∘ from ≈ id
     isoʳ : from ∘ to ≈ id

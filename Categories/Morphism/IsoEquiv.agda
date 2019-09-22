@@ -17,7 +17,7 @@ private
     A B C : Obj
 
 infix 4 _≃_
-record _≃_ (i j : A ≅ B) : Set (o ⊔ ℓ ⊔ e) where
+record _≃_ (i j : A ≅ B) : Set e where
   open _≅_
   field
     from-≈ : from i ≈ from j
