@@ -17,70 +17,47 @@ open import Relation.Binary.Construct.Closure.Transitive
 open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 open import Categories.Category.Groupoid
+import Categories.Category.Construction.Core as Core
 import Categories.Morphism as Morphism
 import Categories.Morphism.Properties as Morphismₚ
 import Categories.Morphism.IsoEquiv as IsoEquiv
 
+open Core 𝒞
 open Morphism 𝒞 renaming (TransitiveClosure to ⇒TransitiveClosure)
 open Morphismₚ 𝒞
-open IsoEquiv 𝒞
+open IsoEquiv 𝒞 using (_≃_)
 
 import Categories.Morphism.Reasoning as MR
 
 open Category 𝒞
 
 private
-  module MIsos where
-    open Morphismₚ Isos public
-    open Morphism Isos public
+  module MCore where
+    open Morphismₚ Core public
+    open Morphism Core public
 
   variable
     A B C : Obj
 
-infixr 9 _∘ᵢ_
-_∘ᵢ_ : B ≅ C → A ≅ B → A ≅ C
-_∘ᵢ_ = Category._∘_ Isos
+open Category Core using () renaming (_∘_ to _∘ᵢ_) public
+--open Groupoid     Core-isGroupoid using () renaming (∘-resp-≈ to ∘ᵢ-resp-≃) public
+open Groupoid.iso Core-isGroupoid using ()
+  renaming (isoˡ to sym∘ᵢ≃refl; isoʳ to ∘ᵢsym≃refl)
 
-private
-  sym∘ᵢ≃refl : ∀ {f : A ≅ B} → ≅.sym f ∘ᵢ f ≃ ≅.refl
-  sym∘ᵢ≃refl {f = f} = record
-    { from-≈ = isoˡ
-    ; to-≈   = isoˡ
-    }
-    where open _≅_ f
-
-  ∘ᵢsym≃refl : ∀ {f : A ≅ B} → f ∘ᵢ ≅.sym f ≃ ≅.refl
-  ∘ᵢsym≃refl {f = f} = record
-    { from-≈ = isoʳ
-    ; to-≈   = isoʳ
-    }
-    where open _≅_ f
-
-Isos-groupoid : Groupoid Isos
-Isos-groupoid = record
-  { _⁻¹ = ≅.sym
-  ; iso = record
-    { isoˡ = sym∘ᵢ≃refl
-    ; isoʳ = ∘ᵢsym≃refl
-    }
-  }
-
-open Groupoid Isos-groupoid using () renaming (∘-resp-≈ to ∘ᵢ-resp-≃) public
-
-CommutativeIso = Groupoid.CommutativeSquare Isos-groupoid
+CommutativeIso = Groupoid.CommutativeSquare Core-isGroupoid
 
 --------------------
 -- Also stuff about transitive closure
 
 ∘ᵢ-tc : A [ _≅_ ]⁺ B → A ≅ B
-∘ᵢ-tc = MIsos.∘-tc
+∘ᵢ-tc = MCore.∘-tc
 
 infix 4 _≃⁺_
 _≃⁺_ : Rel (A [ _≅_ ]⁺ B) _
-_≃⁺_ = MIsos._≈⁺_
+_≃⁺_ = MCore._≈⁺_
 
 TransitiveClosure : Category _ _ _
-TransitiveClosure = MIsos.TransitiveClosure
+TransitiveClosure = MCore.TransitiveClosure
 
 --------------------
 -- some infrastructure setup in order to say something about morphisms and isomorphisms
@@ -140,8 +117,8 @@ module _ where
     ∘ᵢ-tc g⁺                                     ≈⟨ introʳ (I.isoʳ f⁺) ⟩
     ∘ᵢ-tc g⁺ ∘ᵢ (∘ᵢ-tc f⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺)) ≈⟨ pullˡ eq ⟩
     ∘ᵢ-tc h⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺)               ∎
-    where open Groupoid.HomReasoning Isos-groupoid
-          open MR Isos
+    where open Groupoid.HomReasoning Core-isGroupoid
+          open MR Core
           module I {A B} (f⁺ : A [ _≅_ ]⁺ B) = Morphism.Iso (Groupoid.iso TransitiveClosure-groupoid {f = f⁺})
 
   lift : ∀ {f⁺ : A [ _⇒_ ]⁺ B} → IsoPlus f⁺ → A [ _≅_ ]⁺ B
@@ -208,16 +185,16 @@ module _ where
   lift-pentagon′ : from f ∘ from g ∘ from h ≈ from i ∘ from j → f ∘ᵢ g ∘ᵢ h ≃ i ∘ᵢ j
   lift-pentagon′ eq = lift-pentagon eq _ _ _ _ _
 
-  open MR Isos
-  open Groupoid Isos-groupoid
-  open Groupoid.HomReasoning Isos-groupoid
-  open MR.GroupoidR _ Isos-groupoid
+  open MR Core
+  open Groupoid Core-isGroupoid
+  open Groupoid.HomReasoning Core-isGroupoid
+  open MR.GroupoidR _ Core-isGroupoid
 
   squares×≃⇒≃ : CommutativeIso f g h i → CommutativeIso f′ g h i′ → i ≃ i′ → f ≃ f′
   squares×≃⇒≃ {g = g} sq₁ sq₂ eq =
-    MIsos.isos×≈⇒≈ eq helper₁ (IsEquivalence.sym MIsos.≅-isEquivalence helper₂) sq₁ sq₂
-    where helper₁ = record { iso = Groupoid.iso Isos-groupoid }
-          helper₂ = record { iso = Groupoid.iso Isos-groupoid }
+    MCore.isos×≈⇒≈ eq helper₁ (IsEquivalence.sym MCore.≅-isEquivalence helper₂) sq₁ sq₂
+    where helper₁ = record { iso = Groupoid.iso Core-isGroupoid }
+          helper₂ = record { iso = Groupoid.iso Core-isGroupoid }
 
   -- imagine a triangle prism, if all the sides and the top face commute, the bottom face commute.
   triangle-prism : i′ ∘ᵢ f′ ≃ h′ →
@@ -238,13 +215,13 @@ module _ where
   elim-triangleˡ′ : f ∘ᵢ g ∘ᵢ h ≃ i → j ∘ᵢ h ≃ i → f ∘ᵢ g ≃ j
   elim-triangleˡ′ {f = f} {g = g} {h = h} {i = i} {j = j} perim tri = begin
     f ∘ᵢ g                  ≈⟨ introʳ sym∘ᵢ≃refl ⟩
-    (f ∘ᵢ g) ∘ᵢ (h ∘ᵢ h ⁻¹) ≈⟨ pullˡ (trans (Category.assoc Isos) perim) ⟩
+    (f ∘ᵢ g) ∘ᵢ (h ∘ᵢ h ⁻¹) ≈⟨ pullˡ (trans (Category.assoc Core) perim) ⟩
     i ∘ᵢ h ⁻¹               ≈˘⟨ switch-fromtoʳ′ tri ⟩
     j                       ∎
 
   cut-squareʳ : CommutativeIso g f h i → i ∘ᵢ j ≃ h → j ∘ᵢ g ≃ f
   cut-squareʳ {g = g} {f = f} {h = h} {i = i} {j = j} sq tri = begin
     j ∘ᵢ g           ≈⟨ switch-fromtoˡ′ tri ⟩∘⟨ refl ⟩
-    (i ⁻¹ ∘ᵢ h) ∘ᵢ g ≈⟨ Category.assoc Isos ⟩
+    (i ⁻¹ ∘ᵢ h) ∘ᵢ g ≈⟨ Category.assoc Core ⟩
     i ⁻¹ ∘ᵢ h ∘ᵢ g   ≈˘⟨ switch-fromtoˡ′ (sym sq) ⟩
     f                ∎

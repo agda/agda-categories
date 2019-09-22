@@ -11,13 +11,14 @@ open import Data.Product using (_,_; Σ; uncurry′)
 
 open Category C
 open M.Monoidal MC
+open import Categories.Category.Construction.Core C
 open import Categories.Category.Product using (Product)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Properties
 open import Categories.Category.Groupoid
 open import Categories.Morphism C
-open import Categories.Morphism.IsoEquiv C
+open import Categories.Morphism.IsoEquiv C using (_≃_)
 open import Categories.Morphism.Isomorphism C
 import Categories.Morphism.Reasoning as MR
 
@@ -26,7 +27,7 @@ private
   variable
     A B : Obj
 
-⊗-iso : Bifunctor Isos Isos Isos
+⊗-iso : Bifunctor Core Core Core
 ⊗-iso = record
   { F₀           = uncurry′ _⊗₀_
   ; F₁           =  λ where (f , g) → f ⊗ᵢ g
@@ -42,19 +43,19 @@ private
   where open Functor ⊗
         open _≃_
 
-_⊗ᵢ- : Obj → Functor Isos Isos
+_⊗ᵢ- : Obj → Functor Core Core
 X ⊗ᵢ- = appˡ ⊗-iso X
 
--⊗ᵢ_ : Obj → Functor Isos Isos
+-⊗ᵢ_ : Obj → Functor Core Core
 -⊗ᵢ X = appʳ ⊗-iso X
 
 module Kelly's  {X Y : Obj} where
-  open Groupoid.HomReasoning Isos-groupoid
-  open Groupoid.Commutation Isos-groupoid
+  open Groupoid.HomReasoning Core-isGroupoid
+  open Groupoid.Commutation Core-isGroupoid
   open Functor
 
   private
-    assoc′ = Groupoid.assoc Isos-groupoid
+    assoc′ = Groupoid.assoc Core-isGroupoid
     variable
           f f′ g h h′ i i′ j k : A ≅ B
 
@@ -81,7 +82,7 @@ module Kelly's  {X Y : Obj} where
   perimeter = ⟺ (glue◃◽′ triangle-iso
                            (sym (lift-square′ (Equiv.trans assoc-commute-from
                                                            (∘-resp-≈ˡ (F-resp-≈ ⊗ (Equiv.refl , identity ⊗)))))))
-    where open MR Isos
+    where open MR Core
 
   [uλ]Y : (unit ⊗₀ (unit ⊗₀ X)) ⊗₀ Y ≅ (unit ⊗₀ X) ⊗₀ Y
   [uλ]Y = (≅.refl ⊗ᵢ unitorˡ) ⊗ᵢ ≅.refl
@@ -115,7 +116,7 @@ module Kelly's  {X Y : Obj} where
 
   top-face : uλ ∘ᵢ ua ≃ u[λY]
   top-face = elim-triangleˡ′ (sym perimeter′) (glue◽◃ (sym sq) tri)
-    where open MR Isos
+    where open MR Core
 
   coherence-iso₁ : [ (unit ⊗₀ X) ⊗₀ Y ⇒ X ⊗₀ Y ]⟨
                   associator                ⇒⟨ unit ⊗₀ X ⊗₀ Y ⟩
@@ -168,7 +169,7 @@ module Kelly's  {X Y : Obj} where
   perimeter″ = glue▹◽ triangle-iso (sym (lift-square′
       (Equiv.trans (∘-resp-≈ʳ (F-resp-≈ ⊗ (Equiv.sym (identity ⊗) , Equiv.refl)))
                     assoc-commute-from)))
-    where open MR Isos
+    where open MR Core
 
   perimeter‴ : [ ((X ⊗₀ Y) ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit  ]⟨
                  associator ⊗ᵢ ≅.refl                           ⇒⟨ (X ⊗₀ (Y ⊗₀ unit)) ⊗₀ unit ⟩
@@ -187,7 +188,7 @@ module Kelly's  {X Y : Obj} where
 
   top-face′ : [Xρ]u ∘ᵢ au ≃ ρu
   top-face′ = cut-squareʳ perimeter‴ (sym (glue◃◽′ tri′ (sym (lift-square′ assoc-commute-from))))
-    where open MR Isos
+    where open MR Core
           tri′ : [ X ⊗₀ (Y ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit ]⟨
                  (≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ ≅.refl ⊗ᵢ associator)
                ≈ ≅.refl ⊗ᵢ unitorʳ ⊗ᵢ ≅.refl
