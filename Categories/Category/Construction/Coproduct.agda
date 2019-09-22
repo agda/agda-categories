@@ -11,7 +11,7 @@ open import Relation.Binary using (Rel)
 open import Function using (_$_)
 
 open import Categories.Category
-open import Categories.Category.IsGroupoid
+open import Categories.Category.Groupoid using (IsGroupoid)
 import Categories.Morphism as Morphism
 
 private

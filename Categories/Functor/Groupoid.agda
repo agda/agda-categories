@@ -5,7 +5,7 @@ module Categories.Functor.Groupoid where
 open import Level
 
 open import Categories.Category
-open import Categories.Category.IsGroupoid
+open import Categories.Category.Groupoid using (IsGroupoid)
 open import Categories.Functor
 import Categories.Morphism.Reasoning as MR
 
