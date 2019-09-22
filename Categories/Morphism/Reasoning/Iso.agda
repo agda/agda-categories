@@ -4,7 +4,7 @@ open import Categories.Category
 {-
   Various combinators for working with Isomorphisms in the
   context of morphism equalities
-  both for Category (Switch) and Groupoid (GroupoidR)
+  both for Category (Switch) and IsGroupoid (GroupoidR)
 -}
 
 module Categories.Morphism.Reasoning.Iso {o ℓ e} (C : Category o ℓ e) where
@@ -12,7 +12,7 @@ module Categories.Morphism.Reasoning.Iso {o ℓ e} (C : Category o ℓ e) where
 open import Level
 open import Function renaming (id to idᶠ; _∘_ to _∙_)
 
-open import Categories.Category.Groupoid
+open import Categories.Category.IsGroupoid
 open import Categories.Morphism C
 open import Categories.Morphism.Reasoning.Core C
 
@@ -77,8 +77,8 @@ module _ (i : A ≅ B) (j : X ≅ Y) where
     (j.from ∘ g) ∘ id            ≈⟨ identityʳ ⟩
     j.from ∘ g                   ∎
 
-module GroupoidR (G : Groupoid C) where
-  open Groupoid G using (_⁻¹; iso; equiv-obj)
+module GroupoidR (G : IsGroupoid C) where
+  open IsGroupoid G using (_⁻¹; iso; equiv-obj)
 
   switch-fromtoˡ′ : f ∘ h ≈ k → h ≈ f ⁻¹ ∘ k
   switch-fromtoˡ′ = switch-fromtoˡ (equiv-obj _)

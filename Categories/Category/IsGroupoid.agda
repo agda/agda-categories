@@ -1,12 +1,12 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Category.Groupoid where
+module Categories.Category.IsGroupoid where
 
 open import Level
 
 open import Categories.Category
 import Categories.Morphism
 
-record Groupoid {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
+record IsGroupoid {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   open Category C public
 
   open Categories.Morphism C

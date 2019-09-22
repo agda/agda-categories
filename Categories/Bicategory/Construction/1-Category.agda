@@ -16,7 +16,7 @@ open import Categories.Bicategory
 open import Categories.Category.Instance.Cats using (Cats)
 open import Categories.Category.Monoidal using (Monoidal)
 open import Categories.Category.Monoidal.Instance.Cats using (module Product)
-open import Categories.Category.Groupoid using (Groupoid)
+open import Categories.Category.IsGroupoid using (IsGroupoid)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Construction.Constant using (const)
 open import Categories.Functor.Bifunctor using (Bifunctor)
@@ -119,8 +119,8 @@ open Bicategory 1-Category
 
 -- The hom-categories are hom-groupids
 
-hom-groupoid : ∀ {A B} → Groupoid (hom A B)
-hom-groupoid = record
+hom-isGroupoid : ∀ {A B} → IsGroupoid (hom A B)
+hom-isGroupoid = record
   { _⁻¹ = C.Equiv.sym
   ; iso = record { isoˡ = lift tt ; isoʳ = lift tt }
   }

@@ -11,7 +11,7 @@ open import Relation.Binary using (Rel)
 open import Function using (_$_)
 
 open import Categories.Category
-open import Categories.Category.Groupoid
+open import Categories.Category.IsGroupoid
 import Categories.Morphism as Morphism
 
 private
@@ -77,10 +77,10 @@ Coproduct C D = record
   module C = Category C
   module D = Category D
 
-Groupoid-⊎ : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} → Groupoid C → Groupoid D → Groupoid (Coproduct C D)
-Groupoid-⊎ G₁ G₂ = record
-  { _⁻¹ = λ { {inj₁ x} {inj₁ x₁} (lift f) → lift $ Groupoid._⁻¹ G₁ f
-            ; {inj₂ y} {inj₂ y₁} (lift f) → lift $ Groupoid._⁻¹ G₂ f
+IsGroupoid-⊎ : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} → IsGroupoid C → IsGroupoid D → IsGroupoid (Coproduct C D)
+IsGroupoid-⊎ G₁ G₂ = record
+  { _⁻¹ = λ { {inj₁ x} {inj₁ x₁} (lift f) → lift $ IsGroupoid._⁻¹ G₁ f
+            ; {inj₂ y} {inj₂ y₁} (lift f) → lift $ IsGroupoid._⁻¹ G₂ f
             }
   ; iso = λ { {inj₁ x} {inj₁ x₁} {lift f} → record
               { isoˡ = lift $ Iso.isoˡ i₁
@@ -94,5 +94,5 @@ Groupoid-⊎ G₁ G₂ = record
   }
   where
   open Morphism
-  i₁ = Groupoid.iso G₁
-  i₂ = Groupoid.iso G₂
+  i₁ = IsGroupoid.iso G₁
+  i₂ = IsGroupoid.iso G₂

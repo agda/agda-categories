@@ -16,7 +16,7 @@ open import Categories.Category.Product using (Product)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Properties
-open import Categories.Category.Groupoid
+open import Categories.Category.IsGroupoid
 open import Categories.Morphism C
 open import Categories.Morphism.IsoEquiv C using (_≃_)
 open import Categories.Morphism.Isomorphism C
@@ -50,12 +50,12 @@ X ⊗ᵢ- = appˡ ⊗-iso X
 -⊗ᵢ X = appʳ ⊗-iso X
 
 module Kelly's  {X Y : Obj} where
-  open Groupoid.HomReasoning Core-isGroupoid
-  open Groupoid.Commutation Core-isGroupoid
+  open IsGroupoid.HomReasoning Core-isGroupoid
+  open IsGroupoid.Commutation Core-isGroupoid
   open Functor
 
   private
-    assoc′ = Groupoid.assoc Core-isGroupoid
+    assoc′ = IsGroupoid.assoc Core-isGroupoid
     variable
           f f′ g h h′ i i′ j k : A ≅ B
 
