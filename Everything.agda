@@ -4,9 +4,9 @@ import Categories.Adjoint.Equivalence
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Properties
 import Categories.Bicategory
-import Categories.Bicategory.Bigroupoid
 import Categories.Bicategory.Construction.1-Category
 import Categories.Bicategory.Instance.Cats
+import Categories.Bicategory.IsBigroupoid
 import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
@@ -34,7 +34,6 @@ import Categories.Category.Core
 import Categories.Category.Discrete
 import Categories.Category.Equivalence
 import Categories.Category.Finite
-import Categories.Category.Groupoid
 import Categories.Category.Instance.Cats
 import Categories.Category.Instance.EmptySet
 import Categories.Category.Instance.FamilyOfSets
@@ -47,6 +46,7 @@ import Categories.Category.Instance.Sets
 import Categories.Category.Instance.SingletonSet
 import Categories.Category.Instance.StrictCats
 import Categories.Category.Instance.Zero
+import Categories.Category.IsGroupoid
 import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
 import Categories.Category.Monoidal.Closed

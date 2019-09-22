@@ -5,7 +5,7 @@ module Categories.Functor.Groupoid where
 open import Level
 
 open import Categories.Category
-open import Categories.Category.Groupoid
+open import Categories.Category.IsGroupoid
 open import Categories.Functor
 import Categories.Morphism.Reasoning as MR
 
@@ -15,10 +15,10 @@ private
     C D : Category o ℓ e
 
 -- functor respects groupoid inverse
-module _ (GC : Groupoid C) (GD : Groupoid D) (F : Functor C D) where
+module _ (GC : IsGroupoid C) (GD : IsGroupoid D) (F : Functor C D) where
   private
-    module C = Groupoid GC
-    module D = Groupoid GD
+    module C = IsGroupoid GC
+    module D = IsGroupoid GD
     open Functor F
     open D
     open HomReasoning

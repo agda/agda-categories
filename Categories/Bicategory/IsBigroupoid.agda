@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-module Categories.Bicategory.Bigroupoid where
+module Categories.Bicategory.IsBigroupoid where
 
 open import Level
 open import Function using (_$_)
@@ -9,7 +9,7 @@ open import Data.Product using (Σ; _,_)
 open import Categories.Category
 open import Categories.Category.Equivalence using (WeakInverse)
 open import Categories.Category.Product
-open import Categories.Category.Groupoid
+open import Categories.Category.IsGroupoid
 open import Categories.Bicategory
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
@@ -27,10 +27,10 @@ record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e 
   open Bicategory C public
 
   field
-    hom-groupoid : ∀ A B → Groupoid (hom A B)
-    hom[_,_]⁻¹   : ∀ A B → Functor (hom A B) (hom B A)
-    cancel       : ∀ A B → ⊚ ∘F (hom[ A , B ]⁻¹ ※ idF) ≃ const id₁
-    cancel′      : ∀ A B → ⊚ ∘F (idF ※ hom[ A , B ]⁻¹) ≃ const id₁
+    hom-isGroupoid : ∀ A B → IsGroupoid (hom A B)
+    hom[_,_]⁻¹     : ∀ A B → Functor (hom A B) (hom B A)
+    cancel         : ∀ A B → ⊚ ∘F (hom[ A , B ]⁻¹ ※ idF) ≃ const id₁
+    cancel′        : ∀ A B → ⊚ ∘F (idF ※ hom[ A , B ]⁻¹) ≃ const id₁
 
   module hom⁻¹ {A B}   = Functor (hom[ A , B ]⁻¹)
   module cancel {A B}  = NaturalIsomorphism (cancel A B)

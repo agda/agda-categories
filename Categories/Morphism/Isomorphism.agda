@@ -16,8 +16,8 @@ open import Relation.Binary using (Rel; _Preserves_⟶_; IsEquivalence)
 open import Relation.Binary.Construct.Closure.Transitive
 open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
-open import Categories.Category.Groupoid
 import Categories.Category.Construction.Core as Core
+open import Categories.Category.IsGroupoid
 import Categories.Morphism as Morphism
 import Categories.Morphism.Properties as Morphismₚ
 import Categories.Morphism.IsoEquiv as IsoEquiv
@@ -40,11 +40,10 @@ private
     A B C : Obj
 
 open Category Core using () renaming (_∘_ to _∘ᵢ_) public
---open Groupoid     Core-isGroupoid using () renaming (∘-resp-≈ to ∘ᵢ-resp-≃) public
-open Groupoid.iso Core-isGroupoid using ()
+open IsGroupoid.iso Core-isGroupoid using ()
   renaming (isoˡ to sym∘ᵢ≃refl; isoʳ to ∘ᵢsym≃refl)
 
-CommutativeIso = Groupoid.CommutativeSquare Core-isGroupoid
+CommutativeIso = IsGroupoid.CommutativeSquare Core-isGroupoid
 
 --------------------
 -- Also stuff about transitive closure
@@ -85,7 +84,7 @@ module _ where
   reverse⇒≅-sym [ f ]            = ≡.refl
   reverse⇒≅-sym (_ ∼⁺⟨ f⁺ ⟩ f⁺′)  = ≡.cong₂ (Morphism.≅.trans 𝒞) (reverse⇒≅-sym f⁺′) (reverse⇒≅-sym f⁺)
 
-  TransitiveClosure-groupoid : Groupoid TransitiveClosure
+  TransitiveClosure-groupoid : IsGroupoid TransitiveClosure
   TransitiveClosure-groupoid = record
     { _⁻¹ = reverse
     ; iso = λ {_ _ f⁺} → record
@@ -117,9 +116,9 @@ module _ where
     ∘ᵢ-tc g⁺                                     ≈⟨ introʳ (I.isoʳ f⁺) ⟩
     ∘ᵢ-tc g⁺ ∘ᵢ (∘ᵢ-tc f⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺)) ≈⟨ pullˡ eq ⟩
     ∘ᵢ-tc h⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺)               ∎
-    where open Groupoid.HomReasoning Core-isGroupoid
+    where open IsGroupoid.HomReasoning Core-isGroupoid
           open MR Core
-          module I {A B} (f⁺ : A [ _≅_ ]⁺ B) = Morphism.Iso (Groupoid.iso TransitiveClosure-groupoid {f = f⁺})
+          module I {A B} (f⁺ : A [ _≅_ ]⁺ B) = Morphism.Iso (IsGroupoid.iso TransitiveClosure-groupoid {f = f⁺})
 
   lift : ∀ {f⁺ : A [ _⇒_ ]⁺ B} → IsoPlus f⁺ → A [ _≅_ ]⁺ B
   lift [ iso ]            = [ record
@@ -186,15 +185,15 @@ module _ where
   lift-pentagon′ eq = lift-pentagon eq _ _ _ _ _
 
   open MR Core
-  open Groupoid Core-isGroupoid
-  open Groupoid.HomReasoning Core-isGroupoid
+  open IsGroupoid Core-isGroupoid
+  open IsGroupoid.HomReasoning Core-isGroupoid
   open MR.GroupoidR _ Core-isGroupoid
 
   squares×≃⇒≃ : CommutativeIso f g h i → CommutativeIso f′ g h i′ → i ≃ i′ → f ≃ f′
   squares×≃⇒≃ {g = g} sq₁ sq₂ eq =
     MCore.isos×≈⇒≈ eq helper₁ (IsEquivalence.sym MCore.≅-isEquivalence helper₂) sq₁ sq₂
-    where helper₁ = record { iso = Groupoid.iso Core-isGroupoid }
-          helper₂ = record { iso = Groupoid.iso Core-isGroupoid }
+    where helper₁ = record { iso = IsGroupoid.iso Core-isGroupoid }
+          helper₂ = record { iso = IsGroupoid.iso Core-isGroupoid }
 
   -- imagine a triangle prism, if all the sides and the top face commute, the bottom face commute.
   triangle-prism : i′ ∘ᵢ f′ ≃ h′ →
