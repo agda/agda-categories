@@ -3,6 +3,7 @@ import Categories.Adjoint
 import Categories.Adjoint.Equivalence
 import Categories.Adjoint.Instance.0-Truncation
 import Categories.Adjoint.Instance.Core
+import Categories.Adjoint.Instance.Discrete
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Properties
 import Categories.Adjoint.RAPL
