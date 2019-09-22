@@ -49,22 +49,3 @@ record _≃_ (i j : A ≅ B) : Set e where
   ; _≈_           = _≃_
   ; isEquivalence = ≃-isEquivalence
   }
-
-Isos : Category _ _ _
-Isos = record
-  { Obj       = Obj
-  ; _⇒_       = _≅_
-  ; _≈_       = _≃_
-  ; id        = ≅.refl
-  ; _∘_       = flip ≅.trans
-  ; assoc     = record { from-≈ = assoc ; to-≈ = sym assoc }
-  ; identityˡ = record { from-≈ = identityˡ ; to-≈ = identityʳ }
-  ; identityʳ = record { from-≈ = identityʳ ; to-≈ = identityˡ }
-  ; equiv     = ≃-isEquivalence
-  ; ∘-resp-≈  = λ where
-    record { from-≈ = from-≈ ; to-≈ = to-≈ } record { from-≈ = from-≈′ ; to-≈ = to-≈′ } → record
-      { from-≈ = ∘-resp-≈ from-≈ from-≈′
-      ; to-≈   = ∘-resp-≈ to-≈′ to-≈
-      }
-  }
-  where open Equiv
