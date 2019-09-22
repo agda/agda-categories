@@ -1,6 +1,7 @@
 import Categories.2-Category
 import Categories.Adjoint
 import Categories.Adjoint.Equivalence
+import Categories.Adjoint.Instance.0-Truncation
 import Categories.Adjoint.Instance.Core
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Properties
@@ -20,6 +21,7 @@ import Categories.Category.Cocomplete
 import Categories.Category.Cocomplete.Finitely
 import Categories.Category.Complete
 import Categories.Category.Complete.Finitely
+import Categories.Category.Construction.0-Groupoid
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Comma
 import Categories.Category.Construction.Coproduct
@@ -102,6 +104,7 @@ import Categories.Functor.Equivalence
 import Categories.Functor.Fibration
 import Categories.Functor.Groupoid
 import Categories.Functor.Hom
+import Categories.Functor.Instance.0-Truncation
 import Categories.Functor.Instance.Core
 import Categories.Functor.Instance.Discrete
 import Categories.Functor.Monoidal

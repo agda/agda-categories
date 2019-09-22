@@ -13,10 +13,11 @@ open import Data.Product using (uncurry)
 open import Relation.Binary using (Setoid)
 
 open import Categories.Bicategory
+open import Categories.Category.Construction.0-Groupoid using (0-Groupoid)
 open import Categories.Category.Instance.Cats using (Cats)
 open import Categories.Category.Monoidal using (Monoidal)
 open import Categories.Category.Monoidal.Instance.Cats using (module Product)
-open import Categories.Category.Groupoid using (IsGroupoid)
+open import Categories.Category.Groupoid using (Groupoid; IsGroupoid)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Construction.Constant using (const)
 open import Categories.Functor.Bifunctor using (Bifunctor)
@@ -47,23 +48,7 @@ open C hiding (id)
     -- thin hom-groupoids.
 
     hom : C.Obj → C.Obj → Category ℓ e b
-    hom A B = record
-      { Obj = HomSetoid.Carrier
-      ; _⇒_ = HomSetoid._≈_
-      ; _≈_ = λ _ _ → Lift b ⊤
-      ; id  = HomSetoid.refl
-      ; _∘_ = λ f g → HomSetoid.trans g f
-      ; assoc     = lift tt
-      ; identityˡ = lift tt
-      ; identityʳ = lift tt
-      ; equiv     = record
-        { refl    = lift tt
-        ; sym     = λ _ → lift tt
-        ; trans   = λ _ _ → lift tt
-        }
-      ; ∘-resp-≈  = λ _ _ → lift tt
-      }
-      where module HomSetoid = Setoid (hom-setoid {A} {B})
+    hom A B = Groupoid.category (0-Groupoid b (hom-setoid {A} {B}))
 
     id : ∀ A → Functor unit (hom A A)
     id A = const (C.id {A})
@@ -120,7 +105,4 @@ open Bicategory 1-Category
 -- The hom-categories are hom-groupids
 
 hom-isGroupoid : ∀ {A B} → IsGroupoid (hom A B)
-hom-isGroupoid = record
-  { _⁻¹ = C.Equiv.sym
-  ; iso = record { isoˡ = lift tt ; isoʳ = lift tt }
-  }
+hom-isGroupoid = Groupoid.isGroupoid (0-Groupoid b hom-setoid)
