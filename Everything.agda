@@ -59,6 +59,7 @@ import Categories.Category.Instance.Sets
 import Categories.Category.Instance.SingletonSet
 import Categories.Category.Instance.Span
 import Categories.Category.Instance.StrictCats
+import Categories.Category.Instance.StrictGroupoids
 import Categories.Category.Instance.Zero
 import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
