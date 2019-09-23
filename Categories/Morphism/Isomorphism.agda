@@ -21,11 +21,13 @@ open import Categories.Category.Groupoid using (IsGroupoid)
 import Categories.Morphism as Morphism
 import Categories.Morphism.Properties as Morphismₚ
 import Categories.Morphism.IsoEquiv as IsoEquiv
+import Categories.Category.Construction.Path as Path
 
 open Core 𝒞
-open Morphism 𝒞 renaming (TransitiveClosure to ⇒TransitiveClosure)
+open Morphism 𝒞
 open Morphismₚ 𝒞
 open IsoEquiv 𝒞 using (_≃_)
+open Path 𝒞
 
 import Categories.Morphism.Reasoning as MR
 
@@ -35,6 +37,7 @@ private
   module MCore where
     open Morphismₚ Core public
     open Morphism Core public
+    open Path Core public
 
   variable
     A B C : Obj
@@ -56,7 +59,7 @@ _≃⁺_ : Rel (A [ _≅_ ]⁺ B) _
 _≃⁺_ = MCore._≈⁺_
 
 TransitiveClosure : Category _ _ _
-TransitiveClosure = MCore.TransitiveClosure
+TransitiveClosure = MCore.Path
 
 --------------------
 -- some infrastructure setup in order to say something about morphisms and isomorphisms
