@@ -146,11 +146,11 @@ trans {C = C} {D = D} {E = E} e e′ = record
   { F            = e′.F ∘F e.F
   ; G            = e.G ∘F e′.G
   ; weak-inverse = record
-    { F∘G≈id = let module S = Setoid (NI.Functor-setoid E E)
+    { F∘G≈id = let module S = Setoid (NI.Functor-NI-setoid E E)
                in S.trans (S.trans (associator (e.G ∘F e′.G) e.F e′.F)
                                    (e′.F ⓘˡ (unitorˡ ⓘᵥ (e.F∘G≈id ⓘʳ e′.G) ⓘᵥ NI.sym (associator e′.G e.G e.F))))
                           e′.F∘G≈id
-    ; G∘F≈id = let module S = Setoid (NI.Functor-setoid C C)
+    ; G∘F≈id = let module S = Setoid (NI.Functor-NI-setoid C C)
                in S.trans (S.trans (associator (e′.F ∘F e.F) e′.G e.G)
                                    (e.G ⓘˡ (unitorˡ ⓘᵥ (e′.G∘F≈id ⓘʳ e.F) ⓘᵥ NI.sym (associator e.F e′.F e′.G))))
                           e.G∘F≈id

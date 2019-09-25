@@ -130,8 +130,8 @@ isEquivalence = record
   ; trans = trans
   }
 
-Functor-setoid : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Setoid _ _
-Functor-setoid C D = record
+Functor-NI-setoid : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Setoid _ _
+Functor-NI-setoid C D = record
   { Carrier       = Functor C D
   ; _≈_           = NaturalIsomorphism
   ; isEquivalence = isEquivalence
