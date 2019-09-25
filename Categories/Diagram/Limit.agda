@@ -18,6 +18,7 @@ open import Level
 open import Data.Product using (proj₂)
 
 open import Categories.Diagram.Cone F renaming (Cone⇒ to _⇨_)
+open import Categories.Category.Construction.Cones F
 open import Categories.Object.Terminal as T hiding (up-to-iso; transport-by-iso)
 open import Categories.Morphism.Reasoning C
 open import Categories.Morphism C

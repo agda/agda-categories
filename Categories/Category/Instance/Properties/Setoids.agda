@@ -17,6 +17,7 @@ open import Categories.Category using (Category; _[_,_])
 open import Categories.Functor
 open import Categories.Category.Instance.Setoids
 open import Categories.Diagram.Cocone
+open import Categories.Category.Construction.Cocones
 open import Categories.Diagram.Cone
 open import Categories.Category.Complete
 open import Categories.Category.Cocomplete

@@ -18,6 +18,7 @@ open import Level
 open import Data.Product using (proj₂)
 
 open import Categories.Diagram.Cocone F renaming (Cocone⇒ to _⇨_)
+open import Categories.Category.Construction.Cocones F
 open import Categories.Object.Initial as I hiding (up-to-iso; transport-by-iso)
 open import Categories.Morphism.Reasoning C
 open import Categories.Morphism C

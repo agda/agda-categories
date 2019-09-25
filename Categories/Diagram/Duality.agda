@@ -26,6 +26,7 @@ open import Categories.Diagram.End as End
 open import Categories.Diagram.Coend as Coend
 open import Categories.Diagram.Limit as Limit
 open import Categories.Diagram.Colimit as Colimit
+open import Categories.Category.Construction.Cocones using (Cocones)
 
 private
   variable

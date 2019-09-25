@@ -21,7 +21,9 @@ import Categories.Category.Cocomplete.Finitely
 import Categories.Category.Complete
 import Categories.Category.Complete.Finitely
 import Categories.Category.Construction.Arrow
+import Categories.Category.Construction.Cocones
 import Categories.Category.Construction.Comma
+import Categories.Category.Construction.Cones
 import Categories.Category.Construction.Coproduct
 import Categories.Category.Construction.Core
 import Categories.Category.Construction.Elements
