@@ -7,7 +7,7 @@ open import Data.Product using (_×_; Σ; _,_; proj₁; proj₂; zip; map; <_,_>
 
 open import Categories.Utils.Product
 open import Categories.Category using (Category)
-open import Categories.Category.Groupoid using (Groupoid)
+open import Categories.Category.Groupoid using (IsGroupoid)
 open import Categories.Functor renaming (id to idF)
 open import Categories.NaturalTransformation.Core
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl)
@@ -194,14 +194,14 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} where
 
 -- Groupoid Product
 Groupoid-× : {C : Category o₁ ℓ₁ e₁} {D : Category o₂ ℓ₂ e₂}
-        → Groupoid C → Groupoid D → Groupoid (Product C D)
+        → IsGroupoid C → IsGroupoid D → IsGroupoid (Product C D)
 Groupoid-× c₁ c₂ = record
-    { _⁻¹ = map (Groupoid._⁻¹ c₁) (Groupoid._⁻¹ c₂)
+    { _⁻¹ = map (IsGroupoid._⁻¹ c₁) (IsGroupoid._⁻¹ c₂)
     ; iso = record { isoˡ = Iso.isoˡ i₁ , Iso.isoˡ i₂
                    ; isoʳ = Iso.isoʳ i₁ , Iso.isoʳ i₂
                    }
     }
   where
   open Morphism
-  i₁ = Groupoid.iso c₁
-  i₂ = Groupoid.iso c₂
+  i₁ = IsGroupoid.iso c₁
+  i₂ = IsGroupoid.iso c₂

@@ -57,46 +57,50 @@ private
   variable
     o o′ ℓ ℓ′ e e′ : Level
 
--- TODO: move this to stdlib
-module _ {i t} {I : Set i} {T : Rel I t} where
+-- This doesn't belong here... but will do for now
+module PathEquiv {o ℓ e : Level} {Obj : Set o} {_⇒_ : Obj → Obj → Set ℓ} (_≈_ : {A B : Obj} → Rel (A ⇒ B) e)
+  (equiv : {A B : Obj} → IsEquivalence ( _≈_ {A} {B})) where
 
-  ◅◅-identityʳ : ∀ {i j} → (xs : Star T i j) → xs ◅◅ ε ≡ xs
-  ◅◅-identityʳ ε        = ≡.refl
-  ◅◅-identityʳ (x ◅ xs) = ≡.cong (x ◅_) (◅◅-identityʳ xs)
+  private
+    module E {A} {B} = IsEquivalence (equiv {A} {B})
+
+  open E renaming (refl to ≈refl; sym to ≈sym; trans to ≈trans)
+
+  infix 4 _≈*_
+  data _≈*_ : {A B : Obj} (p q : Star _⇒_ A B) → Set (o ⊔ ℓ ⊔ e) where
+      ε : {A : Obj} → _≈*_ {A} ε ε
+      _◅_ : {A B C : Obj} {x y : A ⇒ B} {p q : Star _⇒_ B C} (x≈y : x ≈ y) (p≈q : p ≈* q) → x ◅ p ≈* y ◅ q
+
+  refl : {A B : Obj} {p : Star _⇒_ A B} → p ≈* p
+  refl {p = ε} = ε
+  refl {p = x ◅ p} = ≈refl ◅ refl
+
+  sym : {A B : Obj} {p q : Star _⇒_ A B} → p ≈* q → q ≈* p
+  sym ε = ε
+  sym (x≈y ◅ eq) = ≈sym x≈y ◅ sym eq
+
+  ≡⇒≈* : {A B : Obj} {p q : Star _⇒_ A B} → p ≡ q → p ≈* q
+  ≡⇒≈* ≡.refl = refl
+
+  ≡⇒≈ : {A B : Obj} → {p q : A ⇒ B} → p ≡ q → p ≈ q
+  ≡⇒≈ ≡.refl = ≈refl
+
+  trans : {A B : Obj} {p q r : Star _⇒_ A B} → p ≈* q → q ≈* r → p ≈* r
+  trans ε ε = ε
+  trans (x≈y ◅ ss) (y≈z ◅ tt) = ≈trans x≈y y≈z ◅ trans ss tt
+
+  isEquivalence : {A B : Obj} → IsEquivalence (λ (p q : Star _⇒_ A B) → p ≈* q)
+  isEquivalence = record { refl = refl ; sym = sym ; trans = trans }
+
+  -- convenient to define here
+  ◅◅-identityʳ : {A B : Obj} → (f : Star _⇒_ A B) → f ◅◅ ε ≈* f
+  ◅◅-identityʳ ε = ε
+  ◅◅-identityʳ (x ◅ f) = ≈refl ◅ ◅◅-identityʳ f
 
 module _ (G : Graph o ℓ e) where
   open Graph G
-  private
-    module equiv {A B} = IsEquivalence (equiv {A} {B})
-
-  ≡⇒≈ : {A B : Obj} {f g : A ⇒ B} → f ≡ g → f ≈ g
-  ≡⇒≈ ≡.refl = equiv.refl
-
-  data [_]_≈*_ : {A B : Obj} → Star _⇒_ A B → Star _⇒_ A B → Set (o ⊔ ℓ ⊔ e) where
-    ε : ∀ {A} →  [_]_≈*_ (ε {x = A}) ε
-    _◅_ : ∀ {A B C} {f g : A ⇒ B} {h i : Star _⇒_ B C} → f ≈ g → [_]_≈*_ h i → [_]_≈*_ (f ◅ h) (g ◅ i)
-
-  refl : ∀ {A B} → Reflexive ([_]_≈*_ {A} {B})
-  refl {_} {_} {ε}        = ε
-  refl {A} {B} {eq ◅ eq′} = equiv.refl ◅ refl
-
-  sym : ∀ {A B} → Symmetric ([_]_≈*_ {A} {B})
-  sym ε          = ε
-  sym (eq ◅ eq′) = equiv.sym eq ◅ sym eq′
-
-  trans : ∀ {A B} → Transitive ([_]_≈*_ {A} {B})
-  trans ε ε                    = ε
-  trans (eq₁ ◅ eq₂) (eq ◅ eq′) = (equiv.trans eq₁ eq) ◅ (trans eq₂ eq′)
-
-  isEquivalence : ∀ {A B} → IsEquivalence ([_]_≈*_ {A} {B})
-  isEquivalence = record
-    { refl  = refl
-    ; sym   = sym
-    ; trans = trans
-    }
-
-  private
-    _≈*_ = [_]_≈*_
+  private module P = PathEquiv {o} {ℓ} {e} {Obj} {_⇒_} _≈_ equiv
+  open P
 
   squish-subst₂-ε :  {x z : Obj} (eq₁ : x ≡ z) → ≡.subst₂ (Star _⇒_) eq₁ eq₁ ε ≈* ε
   squish-subst₂-ε ≡.refl = ε
@@ -108,10 +112,9 @@ module _ (G : Graph o ℓ e) where
     ; _≈_       = _≈*_
     ; id        = ε
     ; _∘_       = _▻▻_
-    ; assoc     = λ {_ _ _ _} {f g h} →
-      ≡.subst (λ x → x ≈* ((f ◅◅ g) ◅◅ h)) (◅◅-assoc f g h) refl
-    ; identityˡ = λ {_ _ f} → ≡.subst ((f ◅◅ ε) ≈*_) (◅◅-identityʳ f) refl
-    ; identityʳ = refl
+    ; assoc     = λ {_ _ _ _} {f g h} → sym $ ≡⇒≈* $ ◅◅-assoc f g h
+    ; identityˡ = λ {_ _ f} → ◅◅-identityʳ f
+    ; identityʳ = refl -- refl
     ; equiv     = isEquivalence
     ; ∘-resp-≈  = resp
     }
@@ -119,6 +122,8 @@ module _ (G : Graph o ℓ e) where
                    f ≈* h → g ≈* i → (f ▻▻ g) ≈* (h ▻▻ i)
           resp eq ε = eq
           resp eq (eq₁ ◅ eq₂) = eq₁ ◅ (resp eq eq₂)
+
+  open P public renaming (_≈*_ to [_]_≈*_)
 
 record GraphMorphism (G : Graph o ℓ e) (G′ : Graph o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   private
@@ -193,7 +198,7 @@ Graphs o ℓ e = record
           ≈˘⟨ ≈cong B (≡.sym (M₀≡ eq)) (≡.sym (M₀≡ eq)) (M₁≡ eq) ⟩
         ≡.subst₂ (Graph._⇒_ B) (≡.sym (M₀≡ eq)) (≡.sym (M₀≡ eq))
           (≡.subst₂ (Graph._⇒_ B) (M₀≡ eq) (M₀≡ eq) (M₁ i f))
-          ≈⟨ ≡⇒≈ B (subst₂-sym-subst₂ (Graph._⇒_ B) {M₁ i f} (M₀≡ eq) (M₀≡ eq)) ⟩
+          ≈⟨  ≡⇒≈ B (subst₂-sym-subst₂ (Graph._⇒_ B) {M₁ i f} (M₀≡ eq) (M₀≡ eq))  ⟩
         M₁ i f
           ∎
       }
@@ -201,7 +206,7 @@ Graphs o ℓ e = record
       { M₀≡ = ≡.trans (M₀≡ eq) (M₀≡ eq′)
       ; M₁≡ = λ {A₁ B₁ f} →  let open EqR′ {B} {M₀ k A₁} {M₀ k B₁} in begin
         ≡.subst₂ (Graph._⇒_ B) (≡.trans (M₀≡ eq) (M₀≡ eq′)) (≡.trans (M₀≡ eq) (M₀≡ eq′)) (M₁ i f)
-          ≈˘⟨  ≡⇒≈ B (subst₂-subst₂ (Graph._⇒_ B) (M₀≡ eq) (M₀≡ eq′) (M₀≡ eq) (M₀≡ eq′))  ⟩
+          ≈˘⟨ ≡⇒≈ B (subst₂-subst₂ (Graph._⇒_ B) (M₀≡ eq) (M₀≡ eq′) (M₀≡ eq) (M₀≡ eq′))  ⟩
         ≡.subst₂ (Graph._⇒_ B) (M₀≡ eq′) (M₀≡ eq′) (≡.subst₂ (Graph._⇒_ B) (M₀≡ eq) (M₀≡ eq) (M₁ i f))
           ≈⟨ ≈cong B (M₀≡ eq′) (M₀≡ eq′) (M₁≡ eq)  ⟩
         ≡.subst₂ (Graph._⇒_ B) (M₀≡ eq′) (M₀≡ eq′) (M₁ j f)
@@ -216,7 +221,7 @@ Graphs o ℓ e = record
       ≡.subst₂ (Graph._⇒_ C)
                (≡.trans (≡.cong (M₀ f) (M₀≡ eq′)) (M₀≡ eq))
                (≡.trans (≡.cong (M₀ f) (M₀≡ eq′)) (M₀≡ eq)) (M₁ f (M₁ h j))
-        ≈˘⟨ ≡⇒≈ C (subst₂-subst₂ (Graph._⇒_ C) (≡.cong (M₀ f) (M₀≡ eq′)) (M₀≡ eq) (≡.cong (M₀ f) (M₀≡ eq′)) (M₀≡ eq)) ⟩
+        ≈˘⟨ ≡⇒≈ C (subst₂-subst₂ (Graph._⇒_ C) (≡.cong (M₀ f) (M₀≡ eq′)) (M₀≡ eq) (≡.cong (M₀ f) (M₀≡ eq′)) (M₀≡ eq))  ⟩
       ≡.subst₂ (Graph._⇒_ C) (M₀≡ eq) (M₀≡ eq)
                (≡.subst₂ (Graph._⇒_ C) (≡.cong (M₀ f) (M₀≡ eq′))
                          (≡.cong (M₀ f) (M₀≡ eq′)) (M₁ f (M₁ h j)))

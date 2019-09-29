@@ -9,7 +9,7 @@ open import Data.Product using (Σ; _,_)
 open import Categories.Category
 open import Categories.Category.Equivalence using (WeakInverse)
 open import Categories.Category.Product
-open import Categories.Category.Groupoid
+open import Categories.Category.Groupoid using (IsGroupoid)
 open import Categories.Bicategory
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
@@ -23,14 +23,14 @@ import Categories.Morphism.Properties as MP
 import Categories.Morphism.Reasoning as MR
 
 -- https://link.springer.com/article/10.1023/A:1011270417127
-record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e ⊔ t) where
+record IsBigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e ⊔ t) where
   open Bicategory C public
 
   field
-    hom-groupoid : ∀ A B → Groupoid (hom A B)
-    hom[_,_]⁻¹   : ∀ A B → Functor (hom A B) (hom B A)
-    cancel       : ∀ A B → ⊚ ∘F (hom[ A , B ]⁻¹ ※ idF) ≃ const id₁
-    cancel′      : ∀ A B → ⊚ ∘F (idF ※ hom[ A , B ]⁻¹) ≃ const id₁
+    hom-isGroupoid : ∀ A B → IsGroupoid (hom A B)
+    hom[_,_]⁻¹     : ∀ A B → Functor (hom A B) (hom B A)
+    cancel         : ∀ A B → ⊚ ∘F (hom[ A , B ]⁻¹ ※ idF) ≃ const id₁
+    cancel′        : ∀ A B → ⊚ ∘F (idF ※ hom[ A , B ]⁻¹) ≃ const id₁
 
   module hom⁻¹ {A B}   = Functor (hom[ A , B ]⁻¹)
   module cancel {A B}  = NaturalIsomorphism (cancel A B)
@@ -155,3 +155,12 @@ record Bigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e 
   module hom⁻¹-weakInverse {A B} = WeakInverse (hom⁻¹-weakInverse {A} {B})
 
   open hom⁻¹-weakInverse using () renaming (F⊣G to hom⁻¹-⊣Equivalence) public
+
+-- A bigroupoid is a bicategory that has a bigroupoid structure
+
+record Bigroupoid (o ℓ e t : Level) : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
+  field
+    bicategory   : Bicategory o ℓ e t
+    isBigroupoid : IsBigroupoid bicategory
+
+  open IsBigroupoid isBigroupoid public
