@@ -16,7 +16,7 @@ import Categories.Morphism.Reasoning as Reas
 open Category C
 open HomReasoning
 open Mor C using (_≅_)
-open IsoEquiv C using (_≃_)
+open IsoEquiv C using (_≃_; ⌞_⌟)
 open Reas C
 
 open Co F
@@ -100,10 +100,7 @@ iso-cone⇒iso-apex K⇔K′ = record
 
 
 ↮⇒-≃ : ∀ {i₁ i₂ : K ⇔ K′} → i₁ ↮ i₂ → iso-cone⇒iso-apex i₁ ≃ iso-cone⇒iso-apex i₂
-↮⇒-≃ i₁↮i₂ = record
-  { from-≈ = from-≈
-  ; to-≈   = to-≈
-  }
+↮⇒-≃ i₁↮i₂ = ⌞ from-≈ ⌟
   where open _↮_ i₁↮i₂
 
 -- -- .up-to-iso-cone-unique : ∀ L L′ → (i : proj-cone L ⇿ proj-cone L′) → up-to-iso-cone L L′ ≜ⁱ i

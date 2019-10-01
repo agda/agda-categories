@@ -15,6 +15,7 @@ open import Categories.Morphism 𝒞
 open import Categories.Morphism.IsoEquiv 𝒞
 
 open Category 𝒞
+open _≃_
 
 Core : Category o (ℓ ⊔ e) e
 Core = record
@@ -23,63 +24,16 @@ Core = record
   ; _≈_       = _≃_
   ; id        = ≅.refl
   ; _∘_       = flip ≅.trans
-  ; assoc     = record { from-≈ = assoc     ; to-≈ = Equiv.sym assoc }
-  ; identityˡ = record { from-≈ = identityˡ ; to-≈ = identityʳ }
-  ; identityʳ = record { from-≈ = identityʳ ; to-≈ = identityˡ }
+  ; assoc     = ⌞ assoc     ⌟
+  ; identityˡ = ⌞ identityˡ ⌟
+  ; identityʳ = ⌞ identityʳ ⌟
   ; equiv     = ≃-isEquivalence
-  ; ∘-resp-≈  = λ eq₁ eq₂ → record
-      { from-≈ = ∘-resp-≈ (from-≈ eq₁) (from-≈ eq₂)
-      ; to-≈   = ∘-resp-≈ (to-≈ eq₂)   (to-≈ eq₁)
-      }
+  ; ∘-resp-≈  = λ where ⌞ eq₁ ⌟ ⌞ eq₂ ⌟ → ⌞ ∘-resp-≈ eq₁ eq₂ ⌟
   }
-  where open _≃_
 
 Core-isGroupoid : IsGroupoid Core
 Core-isGroupoid = record
   { _⁻¹ = ≅.sym
-  ; iso = record
-    { isoˡ = sym∘ᵢ≃refl
-    ; isoʳ = ∘ᵢsym≃refl
-    }
-  }
-  where
-    open Category Core renaming (_∘_ to _∘ᵢ_)
-
-    sym∘ᵢ≃refl : ∀ {A B} {f : A ≅ B} → ≅.sym f ∘ᵢ f ≃ ≅.refl
-    sym∘ᵢ≃refl {f = f} = record
-      { from-≈ = isoˡ
-      ; to-≈   = isoˡ
-      }
-      where open _≅_ f
-
-    ∘ᵢsym≃refl : ∀ {A B} {f : A ≅ B} → f ∘ᵢ ≅.sym f ≃ ≅.refl
-    ∘ᵢsym≃refl {f = f} = record
-      { from-≈ = isoʳ
-      ; to-≈   = isoʳ
-      }
-      where open _≅_ f
-
--- An alternative (but equivalent) version of the core that uses _≃′_
--- as the equality.  It's often easier to prove things about this
--- version because the equality is simpler.
-
-Core′ : Category o (ℓ ⊔ e) e
-Core′ = record
-  { Obj       = Obj
-  ; _⇒_       = _≅_
-  ; _≈_       = _≃′_
-  ; id        = ≅.refl
-  ; _∘_       = flip ≅.trans
-  ; assoc     = assoc
-  ; identityˡ = identityˡ
-  ; identityʳ = identityʳ
-  ; equiv     = ≃′-isEquivalence
-  ; ∘-resp-≈  = ∘-resp-≈
-  }
-
-Core′-isGroupoid : IsGroupoid Core′
-Core′-isGroupoid = record
-  { _⁻¹ = ≅.sym
-  ; iso = λ {_ _ f} → record { isoˡ = isoˡ f ; isoʳ = isoʳ f }
+  ; iso = λ {_ _ f} → record { isoˡ = ⌞ isoˡ f ⌟ ; isoʳ = ⌞ isoʳ f ⌟ }
   }
   where open _≅_

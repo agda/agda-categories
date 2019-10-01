@@ -81,17 +81,10 @@ module _ (F : Functor C D) where
     where open _≅_ i≅j
 
   [_]-resp-≃ : ∀ {f g :  _≅_ C A B} → f IsoC.≃ g → [ f ]-resp-≅ IsoD.≃ [ g ]-resp-≅
-  [_]-resp-≃ eq = record
-    { from-≈ = F-resp-≈ from-≈
-    ; to-≈   = F-resp-≈ to-≈
-    }
-    where open _≃_ eq
+  [_]-resp-≃ ⌞ eq ⌟ = ⌞ F-resp-≈ eq ⌟
 
   homomorphismᵢ : ∀ {f : _≅_ C B E} {g : _≅_ C A B} → [ _∘ᵢ_ C f g ]-resp-≅ IsoD.≃ (_∘ᵢ_ D [ f ]-resp-≅ [ g ]-resp-≅ )
-  homomorphismᵢ = record
-    { from-≈ = homomorphism
-    ; to-≈   = homomorphism
-    }
+  homomorphismᵢ = ⌞ homomorphism ⌟
 
   -- Uses a strong version of Essential Surjectivity.
   EssSurj×Full×Faithful⇒Invertible : EssentiallySurjective F → Full F → Faithful F → Functor D C

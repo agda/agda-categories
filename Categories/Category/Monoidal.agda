@@ -28,7 +28,7 @@ open import Categories.NaturalTransformation renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   hiding (unitorˡ; unitorʳ; associator; _≃_)
 open import Categories.Morphism C using (_≅_; module ≅)
-open import Categories.Morphism.IsoEquiv C using (_≃_)
+open import Categories.Morphism.IsoEquiv C using (_≃_; ⌞_⌟)
 open import Categories.Morphism.Isomorphism C using (_∘ᵢ_; lift-triangle′; lift-pentagon′)
 
 private
@@ -181,7 +181,4 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   pentagon-iso = lift-pentagon′ pentagon
 
   refl⊗refl≃refl : ≅.refl {A} ⊗ᵢ ≅.refl {B} ≃ ≅.refl
-  refl⊗refl≃refl = record
-    { from-≈ = identity
-    ; to-≈   = identity
-    }
+  refl⊗refl≃refl = ⌞ identity ⌟

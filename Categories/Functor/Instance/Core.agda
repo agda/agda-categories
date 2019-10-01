@@ -14,10 +14,11 @@ open import Categories.Category.Groupoid using (Groupoid)
 open import Categories.Category.Instance.Cats using (Cats)
 open import Categories.Category.Instance.Groupoids using (Groupoids)
 open import Categories.Functor using (Functor; _∘F_; id)
-open import Categories.Functor.Properties using ([_]-resp-≅)
+open import Categories.Functor.Properties using ([_]-resp-≅; [_]-resp-≃)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (NaturalIsomorphism)
 import Categories.Morphism as Morphism
+open import Categories.Morphism.IsoEquiv using (⌞_⌟)
 
 Core : ∀ {o ℓ e} → Functor (Cats o ℓ e) (Groupoids o (ℓ ⊔ e) e)
 Core {o} {ℓ} {e} = record
@@ -30,26 +31,26 @@ Core {o} {ℓ} {e} = record
    where
      CoreGrpd : Category o ℓ e → Groupoid o (ℓ ⊔ e) e
      CoreGrpd C = record
-       { category   = C.Core′ C
-       ; isGroupoid = C.Core′-isGroupoid C
+       { category   = C.Core C
+       ; isGroupoid = C.Core-isGroupoid C
        }
 
      CoreFunctor : {A B : Category o ℓ e} →
-                   Functor A B → Functor (C.Core′ A) (C.Core′ B)
+                   Functor A B → Functor (C.Core A) (C.Core B)
      CoreFunctor {A} {B} F = record
        { F₀ = F₀
        ; F₁ = [ F ]-resp-≅
-       ; identity     = identity
-       ; homomorphism = homomorphism
-       ; F-resp-≈     = F-resp-≈
+       ; identity     = ⌞ identity     ⌟
+       ; homomorphism = ⌞ homomorphism ⌟
+       ; F-resp-≈     = [ F ]-resp-≃
        }
        where open Functor F
 
      CoreId : {A : Category o ℓ e} → NaturalIsomorphism (CoreFunctor {A} id) id
      CoreId {A} = record
-       { F⇒G = record { η = λ _ → ≅-refl ; commute = λ _ → Equiv.sym id-comm }
-       ; F⇐G = record { η = λ _ → ≅-refl ; commute = λ _ → Equiv.sym id-comm }
-       ; iso = λ _ → record { isoˡ = identityˡ ; isoʳ = identityˡ }
+       { F⇒G = record { η = λ _ → ≅-refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+       ; F⇐G = record { η = λ _ → ≅-refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+       ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
        }
        where
          open Category A
@@ -60,9 +61,9 @@ Core {o} {ℓ} {e} = record
                NaturalIsomorphism (CoreFunctor (G ∘F F))
                                   (CoreFunctor G ∘F CoreFunctor F)
      CoreHom {A} {B} {C} {F} {G} = record
-       { F⇒G = record { η = λ _ → ≅-refl ; commute = λ _ → Equiv.sym id-comm }
-       ; F⇐G = record { η = λ _ → ≅-refl ; commute = λ _ → Equiv.sym id-comm }
-       ; iso = λ _ → record { isoˡ = identityˡ ; isoʳ = identityˡ }
+       { F⇒G = record { η = λ _ → ≅-refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+       ; F⇐G = record { η = λ _ → ≅-refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+       ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
        }
        where
          open Category C
@@ -72,9 +73,9 @@ Core {o} {ℓ} {e} = record
                   NaturalIsomorphism F G →
                   NaturalIsomorphism (CoreFunctor F) (CoreFunctor G)
      CoreRespNI {A} {B} {F} {G} μ = record
-       { F⇒G = record { η = λ _ →       FX≅GX ; commute = λ _ → ⇒.commute _ }
-       ; F⇐G = record { η = λ _ → ≅-sym FX≅GX ; commute = λ _ → ⇐.commute _ }
-       ; iso = λ X → record { isoˡ = iso.isoˡ X ; isoʳ = iso.isoʳ X }
+       { F⇒G = record { η = λ _ →       FX≅GX ; commute = λ _ → ⌞ ⇒.commute _ ⌟ }
+       ; F⇐G = record { η = λ _ → ≅-sym FX≅GX ; commute = λ _ → ⌞ ⇐.commute _ ⌟ }
+       ; iso = λ X → record { isoˡ = ⌞ iso.isoˡ X ⌟ ; isoʳ = ⌞ iso.isoʳ X ⌟ }
        }
        where
          open NaturalIsomorphism μ
