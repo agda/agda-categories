@@ -3,7 +3,6 @@ open import Categories.Category
 
 -- Mainly *properties* of isomorphisms, and a lot of other things too
 
--- TODO: are the uses of rewrite really necessary?
 -- TODO: split things up more semantically?
 
 module Categories.Morphism.Isomorphism {o ℓ e} (𝒞 : Category o ℓ e) where
@@ -19,13 +18,13 @@ open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 import Categories.Category.Construction.Core as Core
 open import Categories.Category.Groupoid using (IsGroupoid)
 import Categories.Morphism as Morphism
-import Categories.Morphism.Properties as Morphismₚ
+import Categories.Morphism.Properties as MorphismProps
 import Categories.Morphism.IsoEquiv as IsoEquiv
 import Categories.Category.Construction.Path as Path
 
-open Core 𝒞
+open Core 𝒞 using (Core; Core-isGroupoid)
 open Morphism 𝒞
-open Morphismₚ 𝒞
+open MorphismProps 𝒞
 open IsoEquiv 𝒞 using (_≃_)
 open Path 𝒞
 
@@ -35,16 +34,15 @@ open Category 𝒞
 
 private
   module MCore where
-    open Morphismₚ Core public
-    open Morphism Core public
-    open Path Core public
+    open IsGroupoid    Core-isGroupoid public
+    open MorphismProps Core public
+    open Morphism      Core public
+    open Path          Core public
 
   variable
     A B C D E F : Obj
 
-open Category Core using () renaming (_∘_ to _∘ᵢ_) public
-open IsGroupoid.iso Core-isGroupoid using ()
-  renaming (isoˡ to sym∘ᵢ≃refl; isoʳ to ∘ᵢsym≃refl)
+open MCore using () renaming (_∘_ to _∘ᵢ_) public
 
 CommutativeIso = IsGroupoid.CommutativeSquare Core-isGroupoid
 
@@ -86,38 +84,51 @@ module _ where
   TransitiveClosure-groupoid : IsGroupoid TransitiveClosure
   TransitiveClosure-groupoid = record
     { _⁻¹ = reverse
-    ; iso = λ {_ _ f⁺} → record
-      { isoˡ = isoˡ′ f⁺
-      ; isoʳ = isoʳ′ f⁺
-      }
+    ; iso = λ {_ _ f⁺} → record { isoˡ = isoˡ′ f⁺ ; isoʳ = isoʳ′ f⁺ }
     }
-    where isoˡ′ : (f⁺ : A [ _≅_ ]⁺ B) → ∘ᵢ-tc (reverse f⁺) ∘ᵢ ∘ᵢ-tc f⁺ ≃ ≅.refl
-          isoˡ′ f⁺ rewrite reverse⇒≅-sym f⁺ = sym∘ᵢ≃refl
-          isoʳ′ : (f⁺ : A [ _≅_ ]⁺ B) → ∘ᵢ-tc f⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺) ≃ ≅.refl
-          isoʳ′ f⁺ rewrite reverse⇒≅-sym f⁺ = ∘ᵢsym≃refl
+    where
+      open MCore.HomReasoning
+
+      isoˡ′ : (f⁺ : A [ _≅_ ]⁺ B) → ∘ᵢ-tc (reverse f⁺) ∘ᵢ ∘ᵢ-tc f⁺ ≃ ≅.refl
+      isoˡ′ f⁺ = begin
+          ∘ᵢ-tc (reverse f⁺) ∘ᵢ ∘ᵢ-tc f⁺
+        ≡⟨ ≡.cong (_∘ᵢ ∘ᵢ-tc f⁺) (reverse⇒≅-sym f⁺) ⟩
+          ≅.sym (∘ᵢ-tc f⁺) ∘ᵢ ∘ᵢ-tc f⁺
+        ≈⟨ MCore.iso.isoˡ ⟩
+          ≅.refl
+        ∎
+
+      isoʳ′ : (f⁺ : A [ _≅_ ]⁺ B) → ∘ᵢ-tc f⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺) ≃ ≅.refl
+      isoʳ′ f⁺ = begin
+          ∘ᵢ-tc f⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺)
+        ≡⟨ ≡.cong (∘ᵢ-tc f⁺ ∘ᵢ_) (reverse⇒≅-sym f⁺) ⟩
+          ∘ᵢ-tc f⁺ ∘ᵢ ≅.sym (∘ᵢ-tc f⁺)
+        ≈⟨ MCore.iso.isoʳ ⟩
+          ≅.refl
+        ∎
 
   from-∘ᵢ-tc : (f⁺ : A [ _≅_ ]⁺ B) → from (∘ᵢ-tc f⁺) ≡ ∘-tc (≅⁺⇒⇒⁺ f⁺)
-  from-∘ᵢ-tc [ f ]                         = ≡.refl
-  from-∘ᵢ-tc (_ ∼⁺⟨ f⁺ ⟩ f⁺′)
-    rewrite from-∘ᵢ-tc f⁺ | from-∘ᵢ-tc f⁺′ = ≡.refl
+  from-∘ᵢ-tc [ f ]            = ≡.refl
+  from-∘ᵢ-tc (_ ∼⁺⟨ f⁺ ⟩ f⁺′) = ≡.cong₂ _∘_ (from-∘ᵢ-tc f⁺′) (from-∘ᵢ-tc f⁺) 
 
   ≅*⇒⇒*-cong : ≅⁺⇒⇒⁺ {A} {B} Preserves _≃⁺_ ⟶ _≈⁺_
   ≅*⇒⇒*-cong {_} {_} {f⁺} {g⁺} f⁺≃⁺g⁺ = begin
-    ∘-tc (≅⁺⇒⇒⁺ f⁺) ≡˘⟨ from-∘ᵢ-tc f⁺ ⟩
-    from (∘ᵢ-tc f⁺) ≈⟨ _≃_.from-≈ f⁺≃⁺g⁺ ⟩
-    from (∘ᵢ-tc g⁺) ≡⟨ from-∘ᵢ-tc g⁺ ⟩
-    ∘-tc (≅⁺⇒⇒⁺ g⁺) ∎
+    ∘-tc (≅⁺⇒⇒⁺ f⁺)  ≡˘⟨ from-∘ᵢ-tc f⁺ ⟩
+    from (∘ᵢ-tc f⁺)  ≈⟨ _≃_.from-≈ f⁺≃⁺g⁺ ⟩
+    from (∘ᵢ-tc g⁺)  ≡⟨ from-∘ᵢ-tc g⁺ ⟩
+    ∘-tc (≅⁺⇒⇒⁺ g⁺)  ∎
     where open HomReasoning
 
   ≅-shift : ∀ {f⁺ : A [ _≅_ ]⁺ B} {g⁺ : B [ _≅_ ]⁺ C} {h⁺ : A [ _≅_ ]⁺ C} →
               (_ ∼⁺⟨ f⁺ ⟩  g⁺) ≃⁺ h⁺ → g⁺ ≃⁺ (_ ∼⁺⟨ reverse f⁺ ⟩ h⁺)
   ≅-shift {f⁺ = f⁺} {g⁺ = g⁺} {h⁺ = h⁺} eq = begin
-    ∘ᵢ-tc g⁺                                     ≈⟨ introʳ (I.isoʳ f⁺) ⟩
-    ∘ᵢ-tc g⁺ ∘ᵢ (∘ᵢ-tc f⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺)) ≈⟨ pullˡ eq ⟩
-    ∘ᵢ-tc h⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺)               ∎
-    where open IsGroupoid.HomReasoning Core-isGroupoid
-          open MR Core
-          module I {A B} (f⁺ : A [ _≅_ ]⁺ B) = Morphism.Iso (IsGroupoid.iso TransitiveClosure-groupoid {f = f⁺})
+    ∘ᵢ-tc g⁺                                      ≈⟨ introʳ (I.isoʳ f⁺) ⟩
+    ∘ᵢ-tc g⁺ ∘ᵢ (∘ᵢ-tc f⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺))  ≈⟨ pullˡ eq ⟩
+    ∘ᵢ-tc h⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺)                ∎
+    where
+      open MCore.HomReasoning
+      open MR Core
+      module I {A B} (f⁺ : A [ _≅_ ]⁺ B) = Morphism.Iso (IsGroupoid.iso TransitiveClosure-groupoid {f = f⁺})
 
   lift : ∀ {f⁺ : A [ _⇒_ ]⁺ B} → IsoPlus f⁺ → A [ _≅_ ]⁺ B
   lift [ iso ]            = [ record
@@ -128,21 +139,29 @@ module _ where
   lift (_ ∼⁺⟨ iso ⟩ iso′) = _ ∼⁺⟨ lift iso ⟩ lift iso′
 
   reduce-lift : ∀ {f⁺ : A [ _⇒_ ]⁺ B} (f′ : IsoPlus f⁺) → from (∘ᵢ-tc (lift f′)) ≡ ∘-tc f⁺
-  reduce-lift [ f ]                         = ≡.refl
-  reduce-lift (_ ∼⁺⟨ f′ ⟩ f″)
-    rewrite reduce-lift f′ | reduce-lift f″ = ≡.refl
+  reduce-lift [ f ]           = ≡.refl
+  reduce-lift (_ ∼⁺⟨ f′ ⟩ f″) = ≡.cong₂ _∘_ (reduce-lift f″) (reduce-lift f′)
 
   lift-cong : ∀ {f⁺ g⁺ : A [ _⇒_ ]⁺ B} (f′ : IsoPlus f⁺) (g′ : IsoPlus g⁺) →
-                f⁺ ≈⁺ g⁺ → lift f′ ≃⁺ lift g′
-  lift-cong f′ g′ eq = record
+              f⁺ ≈⁺ g⁺ → lift f′ ≃⁺ lift g′
+  lift-cong {_} {_} {f⁺} {g⁺} f′ g′ eq = record
     { from-≈ = from-≈′
     ; to-≈   = Iso-≈ eq (helper f′) (helper g′)
     }
-    where from-≈′ : from (∘ᵢ-tc (lift f′)) ≈ from (∘ᵢ-tc (lift g′))
-          from-≈′ rewrite reduce-lift f′ | reduce-lift g′ = eq
-          helper : ∀ {f⁺ : A [ _⇒_ ]⁺ B} (f′ : IsoPlus f⁺) → Iso (∘-tc f⁺) (to (∘ᵢ-tc (lift f′)))
-          helper [ f ]           = f
-          helper (_ ∼⁺⟨ f′ ⟩ f″) = Iso-∘ (helper f′) (helper f″)
+    where
+      open HomReasoning
+
+      from-≈′ : from (∘ᵢ-tc (lift f′)) ≈ from (∘ᵢ-tc (lift g′))
+      from-≈′ = begin
+        from (∘ᵢ-tc (lift f′))  ≡⟨ reduce-lift f′ ⟩
+        ∘-tc f⁺                 ≈⟨ eq ⟩
+        ∘-tc g⁺                 ≡˘⟨ reduce-lift g′ ⟩
+        from (∘ᵢ-tc (lift g′))  ∎
+
+      helper : ∀ {f⁺ : A [ _⇒_ ]⁺ B} (f′ : IsoPlus f⁺) →
+               Iso (∘-tc f⁺) (to (∘ᵢ-tc (lift f′)))
+      helper [ f ]           = f
+      helper (_ ∼⁺⟨ f′ ⟩ f″) = Iso-∘ (helper f′) (helper f″)
 
   lift-triangle : {f : A ⇒ B} {g : C ⇒ A} {h : C ⇒ B} {k : B ⇒ C} {i : B ⇒ A} {j : A ⇒ C} →
     f ∘ g ≈ h → (f′ : Iso f i) → (g′ : Iso g j) → (h′ : Iso h k) →
@@ -185,16 +204,16 @@ module _ where
   lift-pentagon′ eq = lift-pentagon eq _ _ _ _ _
 
   open MR Core
-  open IsGroupoid Core-isGroupoid
-  open IsGroupoid.HomReasoning Core-isGroupoid
+  open MCore using (_⁻¹)
+  open MCore.HomReasoning
   open MR.GroupoidR _ Core-isGroupoid
 
   squares×≃⇒≃ : {f f′ : A ≅ B} {g : A ≅ C} {h : B ≅ D} {i i′ : C ≅ D} →
-                 CommutativeIso f g h i → CommutativeIso f′ g h i′ → i ≃ i′ → f ≃ f′
-  squares×≃⇒≃ {g = g} sq₁ sq₂ eq =
-    MCore.isos×≈⇒≈ eq helper₁ (IsEquivalence.sym MCore.≅-isEquivalence helper₂) sq₁ sq₂
-    where helper₁ = record { iso = IsGroupoid.iso Core-isGroupoid }
-          helper₂ = record { iso = IsGroupoid.iso Core-isGroupoid }
+                CommutativeIso f g h i → CommutativeIso f′ g h i′ → i ≃ i′ → f ≃ f′
+  squares×≃⇒≃ sq₁ sq₂ eq = MCore.isos×≈⇒≈ eq helper₁ (MCore.≅.sym helper₂) sq₁ sq₂
+    where
+      helper₁ = record { iso = MCore.iso }
+      helper₂ = record { iso = MCore.iso }
 
   -- imagine a triangle prism, if all the sides and the top face commute, the bottom face commute.
   triangle-prism : {i′ : A ≅ B} {f′ : C ≅ A} {h′ : C ≅ B} {i : D ≅ E} {j : D ≅ A}
@@ -202,31 +221,32 @@ module _ where
     i′ ∘ᵢ f′ ≃ h′ →
     CommutativeIso i j k i′ → CommutativeIso f g j f′ → CommutativeIso h g k h′ →
     i ∘ᵢ f ≃ h
-  triangle-prism {i′ = i′} {f′ = f′} {i = i} {k = k} {f = f} {g = g}
-                eq sq₁ sq₂ sq₃ = squares×≃⇒≃ glued sq₃ eq
-    where glued : CommutativeIso (i ∘ᵢ f) g k (i′ ∘ᵢ f′)
-          glued = sym (glue (sym sq₁) (sym sq₂))
+  triangle-prism {i′ = i′} {f′} {_} {i} {_} {k} {f} {g} {_} eq sq₁ sq₂ sq₃ =
+    squares×≃⇒≃ glued sq₃ eq
+    where
+      glued : CommutativeIso (i ∘ᵢ f) g k (i′ ∘ᵢ f′)
+      glued = sym (glue (sym sq₁) (sym sq₂))
 
   elim-triangleˡ : {f : A ≅ B} {g : C ≅ A} {h : D ≅ C} {i : D ≅ B} {j : D ≅ A} →
                    f ∘ᵢ g ∘ᵢ h ≃ i → f ∘ᵢ j ≃ i → g ∘ᵢ h ≃ j
   elim-triangleˡ {f = f} {g} {h} {i} {j} perim tri = begin
-    g ∘ᵢ h                ≈⟨ introˡ sym∘ᵢ≃refl ⟩
-    (f ⁻¹ ∘ᵢ f) ∘ᵢ g ∘ᵢ h ≈⟨ pullʳ perim ⟩
-    f ⁻¹ ∘ᵢ i             ≈˘⟨ switch-fromtoˡ′ tri ⟩
-    j                     ∎
+    g ∘ᵢ h                 ≈⟨ introˡ (MCore.iso.isoˡ {f = f}) ⟩
+    (f ⁻¹ ∘ᵢ f) ∘ᵢ g ∘ᵢ h  ≈⟨ pullʳ perim ⟩
+    f ⁻¹ ∘ᵢ i              ≈˘⟨ switch-fromtoˡ′ {f = f} {h = j} {k = i} tri ⟩
+    j                      ∎
 
   elim-triangleˡ′ : {f : A ≅ B} {g : C ≅ A} {h : D ≅ C} {i : D ≅ B} {j : C ≅ B} →
                     f ∘ᵢ g ∘ᵢ h ≃ i → j ∘ᵢ h ≃ i → f ∘ᵢ g ≃ j
   elim-triangleˡ′ {f = f} {g} {h} {i} {j} perim tri = begin
-    f ∘ᵢ g                  ≈⟨ introʳ sym∘ᵢ≃refl ⟩
-    (f ∘ᵢ g) ∘ᵢ (h ∘ᵢ h ⁻¹) ≈⟨ pullˡ (trans (Category.assoc Core) perim) ⟩
-    i ∘ᵢ h ⁻¹               ≈˘⟨ switch-fromtoʳ′ tri ⟩
-    j                       ∎
+    f ∘ᵢ g                   ≈⟨ introʳ (MCore.iso.isoʳ {f = h}) ⟩
+    (f ∘ᵢ g) ∘ᵢ (h ∘ᵢ h ⁻¹)  ≈⟨ pullˡ (trans MCore.assoc perim) ⟩
+    i ∘ᵢ h ⁻¹                ≈˘⟨ switch-fromtoʳ′ {h = j} {f = h} {k = i} tri ⟩
+    j                        ∎
 
   cut-squareʳ : {g : A ≅ B} {f : A ≅ C} {h : B ≅ D} {i : C ≅ D} {j : B ≅ C} →
-    CommutativeIso g f h i → i ∘ᵢ j ≃ h → j ∘ᵢ g ≃ f
+                CommutativeIso g f h i → i ∘ᵢ j ≃ h → j ∘ᵢ g ≃ f
   cut-squareʳ {g = g} {f = f} {h = h} {i = i} {j = j} sq tri = begin
-    j ∘ᵢ g           ≈⟨ switch-fromtoˡ′ tri ⟩∘⟨ refl ⟩
-    (i ⁻¹ ∘ᵢ h) ∘ᵢ g ≈⟨ Category.assoc Core ⟩
-    i ⁻¹ ∘ᵢ h ∘ᵢ g   ≈˘⟨ switch-fromtoˡ′ (sym sq) ⟩
-    f                ∎
+    j ∘ᵢ g            ≈⟨ switch-fromtoˡ′ {f = i} {h = j} {k = h} tri ⟩∘⟨ refl ⟩
+    (i ⁻¹ ∘ᵢ h) ∘ᵢ g  ≈⟨ MCore.assoc ⟩
+    i ⁻¹ ∘ᵢ h ∘ᵢ g    ≈˘⟨ switch-fromtoˡ′ {f = i} {h = f} {k = h ∘ᵢ g} (sym sq) ⟩
+    f                 ∎
