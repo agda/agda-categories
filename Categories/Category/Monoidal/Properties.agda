@@ -18,7 +18,7 @@ open import Categories.Functor.Bifunctor
 open import Categories.Functor.Properties
 open import Categories.Category.Groupoid using (IsGroupoid)
 open import Categories.Morphism C
-open import Categories.Morphism.IsoEquiv C using (_≃_)
+open import Categories.Morphism.IsoEquiv C using (_≃_; ⌞_⌟)
 open import Categories.Morphism.Isomorphism C
 import Categories.Morphism.Reasoning as MR
 
@@ -32,13 +32,8 @@ private
   { F₀           = uncurry′ _⊗₀_
   ; F₁           =  λ where (f , g) → f ⊗ᵢ g
   ; identity     = refl⊗refl≃refl
-  ; homomorphism = record { from-≈ = homomorphism ; to-≈ = homomorphism }
-  ; F-resp-≈     = λ where
-    (eq₁ , eq₂) → record
-      { from-≈ = F-resp-≈ (from-≈ eq₁ , from-≈ eq₂)
-      ; to-≈   = F-resp-≈ (to-≈ eq₁ , to-≈ eq₂)
-      }
-
+  ; homomorphism = ⌞ homomorphism ⌟
+  ; F-resp-≈     = λ where (⌞ eq₁ ⌟ , ⌞ eq₂ ⌟) → ⌞ F-resp-≈ (eq₁ , eq₂) ⌟
   }
   where open Functor ⊗
         open _≃_

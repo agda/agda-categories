@@ -25,7 +25,7 @@ import Categories.Category.Construction.Path as Path
 open Core 𝒞 using (Core; Core-isGroupoid)
 open Morphism 𝒞
 open MorphismProps 𝒞
-open IsoEquiv 𝒞 using (_≃_)
+open IsoEquiv 𝒞 using (_≃_; ⌞_⌟)
 open Path 𝒞
 
 import Categories.Morphism.Reasoning as MR
@@ -144,10 +144,7 @@ module _ where
 
   lift-cong : ∀ {f⁺ g⁺ : A [ _⇒_ ]⁺ B} (f′ : IsoPlus f⁺) (g′ : IsoPlus g⁺) →
               f⁺ ≈⁺ g⁺ → lift f′ ≃⁺ lift g′
-  lift-cong {_} {_} {f⁺} {g⁺} f′ g′ eq = record
-    { from-≈ = from-≈′
-    ; to-≈   = Iso-≈ eq (helper f′) (helper g′)
-    }
+  lift-cong {_} {_} {f⁺} {g⁺} f′ g′ eq = ⌞ from-≈′ ⌟
     where
       open HomReasoning
 
@@ -157,11 +154,6 @@ module _ where
         ∘-tc f⁺                 ≈⟨ eq ⟩
         ∘-tc g⁺                 ≡˘⟨ reduce-lift g′ ⟩
         from (∘ᵢ-tc (lift g′))  ∎
-
-      helper : ∀ {f⁺ : A [ _⇒_ ]⁺ B} (f′ : IsoPlus f⁺) →
-               Iso (∘-tc f⁺) (to (∘ᵢ-tc (lift f′)))
-      helper [ f ]           = f
-      helper (_ ∼⁺⟨ f′ ⟩ f″) = Iso-∘ (helper f′) (helper f″)
 
   lift-triangle : {f : A ⇒ B} {g : C ⇒ A} {h : C ⇒ B} {k : B ⇒ C} {i : B ⇒ A} {j : A ⇒ C} →
     f ∘ g ≈ h → (f′ : Iso f i) → (g′ : Iso g j) → (h′ : Iso h k) →

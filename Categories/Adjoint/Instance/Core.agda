@@ -17,6 +17,7 @@ open import Categories.Category.Instance.Groupoids using (Groupoids)
 open import Categories.Functor using (Functor; _∘F_; id)
 open import Categories.Functor.Instance.Core using (Core)
 import Categories.Morphism as Morphism
+open import Categories.Morphism.IsoEquiv using (⌞_⌟)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (refl; _≃_)
 
 -- The forgetful functor from Groupoids to Cats
@@ -45,34 +46,34 @@ CoreAdj = record
     open Groupoid using (category)
     module Core = Functor Core
 
-    unit : ∀ G → Functor (category G) (C.Core′ (category G))
+    unit : ∀ G → Functor (category G) (C.Core (category G))
     unit G = record
       { F₀ = Function.id
       ; F₁ = λ f → record { from = f ; to = f ⁻¹ ; iso = iso }
-      ; identity     = Equiv.refl
-      ; homomorphism = Equiv.refl
-      ; F-resp-≈     = Function.id
+      ; identity     = ⌞ Equiv.refl ⌟
+      ; homomorphism = ⌞ Equiv.refl ⌟
+      ; F-resp-≈     = λ eq → ⌞ eq ⌟
       }
       where open Groupoid G
 
     unit-commute : ∀ {G H} (F : Functor (category G) (category H)) →
                    unit H ∘F F ≃ Core.F₁ F ∘F unit G
     unit-commute {G} {H} F = record
-      { F⇒G = record { η = λ _ → ≅-refl  ; commute = λ _ → Equiv.sym id-comm }
-      ; F⇐G = record { η = λ _ → ≅-refl  ; commute = λ _ → Equiv.sym id-comm }
-      ; iso = λ _ → record { isoˡ = identityˡ ; isoʳ = identityˡ }
+      { F⇒G = record { η = λ _ → ≅-refl  ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+      ; F⇐G = record { η = λ _ → ≅-refl  ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+      ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
       }
       where
         open Groupoid H
         open Morphism (category H)
 
-    counit : ∀ C → Functor (C.Core′ C) C
+    counit : ∀ C → Functor (C.Core C) C
     counit C = record
       { F₀ = Function.id
       ; F₁ = _≅_.from
       ; identity     = Equiv.refl
       ; homomorphism = Equiv.refl
-      ; F-resp-≈     = Function.id
+      ; F-resp-≈     = λ where ⌞ eq ⌟ → eq
       }
       where
         open Category C
@@ -101,9 +102,9 @@ CoreAdj = record
 
     zag : ∀ {B} → Core.F₁ (counit B) ∘F unit (Core.F₀ B) ≃ id
     zag {B} = record
-      { F⇒G = record { η = λ _ → ≅-refl ; commute = λ _ → Equiv.sym id-comm }
-      ; F⇐G = record { η = λ _ → ≅-refl ; commute = λ _ → Equiv.sym id-comm }
-      ; iso = λ _ → record { isoˡ = identityˡ ; isoʳ = identityˡ }
+      { F⇒G = record { η = λ _ → ≅-refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+      ; F⇐G = record { η = λ _ → ≅-refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+      ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
       }
       where
         open Category B
