@@ -10,7 +10,7 @@ module Categories.Category.Construction.Core {o ℓ e} (𝒞 : Category o ℓ e)
 open import Level using (_⊔_)
 open import Function using (flip)
 
-open import Categories.Category.Groupoid using (IsGroupoid)
+open import Categories.Category.Groupoid using (Groupoid; IsGroupoid)
 open import Categories.Morphism 𝒞
 open import Categories.Morphism.IsoEquiv 𝒞
 
@@ -37,3 +37,6 @@ Core-isGroupoid = record
   ; iso = λ {_ _ f} → record { isoˡ = ⌞ isoˡ f ⌟ ; isoʳ = ⌞ isoʳ f ⌟ }
   }
   where open _≅_
+
+CoreGroupoid : Groupoid o (ℓ ⊔ e) e
+CoreGroupoid = record { category = Core; isGroupoid = Core-isGroupoid }
