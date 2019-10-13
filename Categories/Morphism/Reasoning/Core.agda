@@ -5,6 +5,7 @@ open import Categories.Category
   Helper routines most often used in reasoning with commutative squares,
   at the level of arrows in categories.
 
+  Basic  : reasoning about identity
   Pulls  : use a ∘ b ≈ c as left-to-right rewrite
   Pushes : use c ≈ a ∘ b as a left-to-right rewrite
   IntroElim : introduce/eliminate an equivalent-to-id arrow
@@ -26,6 +27,12 @@ private
     f g h i : X ⇒ Y
 
 open HomReasoning
+
+module Basic where
+  id-unique : ∀ {o} {f : o ⇒ o} → (∀ g → g ∘ f ≈ g) → f ≈ id
+  id-unique g∘f≈g = trans (sym identityˡ) (g∘f≈g id)
+
+open Basic public
 
 module Pulls (ab≡c : a ∘ b ≈ c) where
 

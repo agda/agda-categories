@@ -114,12 +114,9 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ; ∘-resp-≈ = flip ∘-resp-≈
     }
 
-  -- Q: Should the following 3 really be defined here?
+  -- Q: Should the following 2 really be defined here?
   CommutativeSquare : ∀ {A B C D} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
   CommutativeSquare f g h i = h ∘ f ≈ i ∘ g
-
-  id-unique : ∀ {o} {f : o ⇒ o} → (∀ g → g ∘ f ≈ g) → f ≈ id
-  id-unique g∘f≈g = trans (sym identityˡ) (g∘f≈g id)
 
   id-comm : ∀ {a b} {f : a ⇒ b} → f ∘ id ≈ id ∘ f
   id-comm = trans identityʳ (sym identityˡ)
