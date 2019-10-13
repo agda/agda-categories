@@ -69,6 +69,7 @@ import Categories.Category.Monoidal.Traced
 import Categories.Category.Product
 import Categories.Category.Product.Properties
 import Categories.Category.RigCategory
+import Categories.Category.SetoidDiscrete
 import Categories.Category.Site
 import Categories.Category.Slice
 import Categories.Category.Slice.Properties
@@ -110,6 +111,7 @@ import Categories.Functor.Hom
 import Categories.Functor.Instance.0-Truncation
 import Categories.Functor.Instance.Core
 import Categories.Functor.Instance.Discrete
+import Categories.Functor.Instance.SetoidDiscrete
 import Categories.Functor.Monoidal
 import Categories.Functor.Power
 import Categories.Functor.Power.Functorial
