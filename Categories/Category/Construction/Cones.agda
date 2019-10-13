@@ -19,7 +19,7 @@ open Mor C using (_≅_)
 open IsoEquiv C using (_≃_; ⌞_⌟)
 open Reas C
 
-open Co F
+open Co F public
 open Apex
 open Cone
 open Cone⇒
