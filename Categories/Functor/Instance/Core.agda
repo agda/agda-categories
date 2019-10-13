@@ -48,8 +48,8 @@ Core {o} {ℓ} {e} = record
 
      CoreId : {A : Category o ℓ e} → NaturalIsomorphism (CoreFunctor {A} id) id
      CoreId {A} = record
-       { F⇒G = record { η = λ _ → ≅-refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
-       ; F⇐G = record { η = λ _ → ≅-refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+       { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+       ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
        ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
        }
        where
@@ -61,8 +61,8 @@ Core {o} {ℓ} {e} = record
                NaturalIsomorphism (CoreFunctor (G ∘F F))
                                   (CoreFunctor G ∘F CoreFunctor F)
      CoreHom {A} {B} {C} {F} {G} = record
-       { F⇒G = record { η = λ _ → ≅-refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
-       ; F⇐G = record { η = λ _ → ≅-refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+       { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+       ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
        ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
        }
        where
@@ -74,7 +74,7 @@ Core {o} {ℓ} {e} = record
                   NaturalIsomorphism (CoreFunctor F) (CoreFunctor G)
      CoreRespNI {A} {B} {F} {G} μ = record
        { F⇒G = record { η = λ _ →       FX≅GX ; commute = λ _ → ⌞ ⇒.commute _ ⌟ }
-       ; F⇐G = record { η = λ _ → ≅-sym FX≅GX ; commute = λ _ → ⌞ ⇐.commute _ ⌟ }
+       ; F⇐G = record { η = λ _ → ≅.sym FX≅GX ; commute = λ _ → ⌞ ⇐.commute _ ⌟ }
        ; iso = λ X → record { isoˡ = ⌞ iso.isoˡ X ⌟ ; isoʳ = ⌞ iso.isoʳ X ⌟ }
        }
        where

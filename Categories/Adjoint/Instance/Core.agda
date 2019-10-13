@@ -59,8 +59,8 @@ CoreAdj = record
     unit-commute : ∀ {G H} (F : Functor (category G) (category H)) →
                    unit H ∘F F ≃ Core.F₁ F ∘F unit G
     unit-commute {G} {H} F = record
-      { F⇒G = record { η = λ _ → ≅-refl  ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
-      ; F⇐G = record { η = λ _ → ≅-refl  ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+      { F⇒G = record { η = λ _ → ≅.refl  ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+      ; F⇐G = record { η = λ _ → ≅.refl  ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
       ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
       }
       where
@@ -84,7 +84,7 @@ CoreAdj = record
     counit-commute {C} {D} F = record
       { F⇒G = record { η = λ _ → D.id  ; commute = λ _ → D.Equiv.sym D.id-comm }
       ; F⇐G = record { η = λ _ → D.id  ; commute = λ _ → D.Equiv.sym D.id-comm }
-      ; iso = λ _ → _≅_.iso ≅-refl
+      ; iso = λ _ → _≅_.iso ≅.refl
       }
       where
         module D = Category D
@@ -94,7 +94,7 @@ CoreAdj = record
     zig {G} = record
       { F⇒G = record { η = λ _ → G.id ; commute = λ _ → G.Equiv.sym G.id-comm }
       ; F⇐G = record { η = λ _ → G.id ; commute = λ _ → G.Equiv.sym G.id-comm }
-      ; iso = λ _ → _≅_.iso ≅-refl
+      ; iso = λ _ → _≅_.iso ≅.refl
       }
       where
         module G = Groupoid G
@@ -102,8 +102,8 @@ CoreAdj = record
 
     zag : ∀ {B} → Core.F₁ (counit B) ∘F unit (Core.F₀ B) ≃ id
     zag {B} = record
-      { F⇒G = record { η = λ _ → ≅-refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
-      ; F⇐G = record { η = λ _ → ≅-refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+      { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+      ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
       ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
       }
       where
