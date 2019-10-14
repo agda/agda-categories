@@ -28,6 +28,7 @@ Functors C D = record
   ; id        = idN
   ; _∘_       = _∘ᵥ_
   ; assoc     = assoc
+  ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
   ; equiv     = ≃-isEquivalence

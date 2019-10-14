@@ -28,6 +28,7 @@ Product C D = record
   ; _∘_       = zip C._∘_ D._∘_
   ; id        = C.id , D.id
   ; assoc     = C.assoc , D.assoc
+  ; sym-assoc = C.sym-assoc , D.sym-assoc
   ; identityˡ = C.identityˡ , D.identityˡ
   ; identityʳ = C.identityʳ , D.identityʳ
   ; equiv     = record

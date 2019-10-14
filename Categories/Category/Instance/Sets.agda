@@ -19,6 +19,7 @@ Sets o = record
   ; id        = idf
   ; _∘_       = _∘′_
   ; assoc     = ≡.refl
+  ; sym-assoc = ≡.refl
   ; identityˡ = ≡.refl
   ; identityʳ = ≡.refl
   ; equiv     = record

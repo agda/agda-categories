@@ -55,6 +55,8 @@ Coproduct C D = record
             }
   ; assoc = λ { {inj₁ x} {inj₁ x₁} {inj₁ x₂} {inj₁ x₃} → lift C.assoc
               ; {inj₂ y} {inj₂ y₁} {inj₂ y₂} {inj₂ y₃} → lift D.assoc}
+  ; sym-assoc = λ { {inj₁ x} {inj₁ x₁} {inj₁ x₂} {inj₁ x₃} → lift C.sym-assoc
+                  ; {inj₂ y} {inj₂ y₁} {inj₂ y₂} {inj₂ y₃} → lift D.sym-assoc}
   ; identityˡ = λ { {inj₁ x} {inj₁ x₁} → lift C.identityˡ
                   ; {inj₂ y} {inj₂ y₁} → lift D.identityˡ }
   ; identityʳ = λ { {inj₁ x} {inj₁ x₁} → lift C.identityʳ

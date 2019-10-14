@@ -26,6 +26,7 @@ module _ {o ℓ e : Level} where
     ; id        = λ { { lift () } }
     ; _∘_       = λ a _ → a -- left-biased rather than strict
     ; assoc     = λ { {lift () } }
+    ; sym-assoc = λ { {lift () } }
     ; identityˡ = λ { {()} }
     ; identityʳ = λ { {()} }
     ; ∘-resp-≈  = λ { () }

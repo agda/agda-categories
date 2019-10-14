@@ -43,18 +43,20 @@ x ⊚ τ y = τ (x ⊚ y)
 
 Globe : Category Level.zero Level.zero Level.zero
 Globe = record
-  { Obj = ℕ
-  ; _⇒_ = GlobeHom
-  ; _≈_ = GlobeEq
-  ; id = I
-  ; _∘_ = _⊚_
-  ; assoc = λ {_ _ _ _ f g h} → assoc {f = f} {g} {h}
+  { Obj       = ℕ
+  ; _⇒_       = GlobeHom
+  ; _≈_       = GlobeEq
+  ; id        = I
+  ; _∘_       = _⊚_
+  ; assoc     = λ {_ _ _ _ f g h} → assoc {f = f} {g} {h}
+  ; sym-assoc = λ {_ _ _ _ f g h} → GlobeEquiv.sym (assoc {f = f} {g} {h})
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
-  ; equiv = GlobeEquiv
-  ; ∘-resp-≈ = ∘-resp-≡
+  ; equiv     = GlobeEquiv
+  ; ∘-resp-≈  = ∘-resp-≡
   }
   where
+  module GlobeEquiv {m n} = IsEquivalence (GlobeEquiv {m} {n})
   assoc : ∀ {A B C D} {f : GlobeHom A B} {g : GlobeHom B C} {h : GlobeHom C D} → GlobeEq ((h ⊚ g) ⊚ f) (h ⊚ (g ⊚ f))
   assoc {f = I} = refl
     where open IsEquivalence GlobeEquiv

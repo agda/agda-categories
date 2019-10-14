@@ -43,6 +43,7 @@ SubCategory {I = I} sc = let open SubCat sc in record
   ; id        = id , Rid
   ; _∘_       = zip _∘_ _∘R_
   ; assoc     = assoc
+  ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
   ; equiv     = record -- need to expand this out, else the levels don't work out

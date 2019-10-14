@@ -42,6 +42,7 @@ Slice A       = record
   ; id        = slicearr identityʳ
   ; _∘_       = _∘′_
   ; assoc     = assoc
+  ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
   ; equiv     = record -- must be expanded to get levels to work out

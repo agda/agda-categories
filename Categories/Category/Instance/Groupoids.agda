@@ -19,7 +19,7 @@ open import Categories.Functor as Fctr using (Functor; _∘F_)
 open import Categories.Functor.Properties using ([_]-resp-Iso)
 import Categories.Morphism.IsoEquiv as IsoEquiv
 open import Categories.NaturalTransformation.NaturalIsomorphism
-  using (NaturalIsomorphism; associator; unitorˡ; unitorʳ; isEquivalence; _ⓘₕ_)
+  using (NaturalIsomorphism; associator; unitorˡ; unitorʳ; isEquivalence; _ⓘₕ_; sym)
 private
   variable
     o ℓ e : Level
@@ -36,6 +36,7 @@ Groupoids o ℓ e = record
   ; id        = Fctr.id
   ; _∘_       = _∘F_
   ; assoc     = λ {_ _ _ _ F G H} → associator F G H
+  ; sym-assoc = λ {_ _ _ _ F G H} → sym (associator F G H)
   ; identityˡ = unitorˡ
   ; identityʳ = unitorʳ
   ; equiv     = isEquivalence

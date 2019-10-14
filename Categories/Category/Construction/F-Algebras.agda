@@ -18,20 +18,21 @@ private
 
 F-Algebras : {𝒞 : Category o ℓ e} → Endofunctor 𝒞 → Category (ℓ ⊔ o) (e ⊔ ℓ) e
 F-Algebras {𝒞 = 𝒞} F = record
-  { Obj = F-Algebra F
-  ; _⇒_ = F-Algebra-Morphism
-  ; _≈_ = λ α₁ α₂ → f α₁ ≈ f α₂
-  ; _∘_ = λ α₁ α₂ → record { f = f α₁ ∘ f α₂ ; commutes = commut α₁ α₂ }
-  ; id = record { f = id ; commutes = identityˡ ○ ⟺ identityʳ ○ ⟺ (∘-resp-≈ʳ identity) }
-  ; assoc = assoc
+  { Obj       = F-Algebra F
+  ; _⇒_       = F-Algebra-Morphism
+  ; _≈_       = λ α₁ α₂ → f α₁ ≈ f α₂
+  ; _∘_       = λ α₁ α₂ → record { f = f α₁ ∘ f α₂ ; commutes = commut α₁ α₂ }
+  ; id        = record { f = id ; commutes = identityˡ ○ ⟺ identityʳ ○ ⟺ (∘-resp-≈ʳ identity) }
+  ; assoc     = assoc
+  ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
-  ; equiv = record
-    { refl = refl
-    ; sym = sym
+  ; equiv     = record
+    { refl  = refl
+    ; sym   = sym
     ; trans = trans
     }
-  ; ∘-resp-≈ = ∘-resp-≈
+  ; ∘-resp-≈  = ∘-resp-≈
   }
   where
     open Category 𝒞

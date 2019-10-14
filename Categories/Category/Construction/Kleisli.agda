@@ -14,16 +14,17 @@ private
 
 Kleisli : {𝒞 : Category o ℓ e} → Monad 𝒞 → Category o ℓ e
 Kleisli {𝒞 = 𝒞} M = record
-  { Obj = Obj
-  ; _⇒_ = λ A B → (A ⇒ F₀ B)
-  ; _≈_ = _≈_
-  ; _∘_ = λ f g → (μ.η _ ∘ F₁ f) ∘ g
-  ; id = η.η _
-  ; assoc = assoc′
+  { Obj       = Obj
+  ; _⇒_       = λ A B → (A ⇒ F₀ B)
+  ; _≈_       = _≈_
+  ; _∘_       = λ f g → (μ.η _ ∘ F₁ f) ∘ g
+  ; id        = η.η _
+  ; assoc     = assoc′
+  ; sym-assoc = Equiv.sym assoc′
   ; identityˡ = identityˡ′
   ; identityʳ = identityʳ′
-  ; equiv = equiv
-  ; ∘-resp-≈ = λ f≈h g≈i → ∘-resp-≈ (∘-resp-≈ʳ (F-resp-≈ f≈h)) g≈i
+  ; equiv     = equiv
+  ; ∘-resp-≈  = λ f≈h g≈i → ∘-resp-≈ (∘-resp-≈ʳ (F-resp-≈ f≈h)) g≈i
   }
   where
   module M = Monad M

@@ -21,6 +21,7 @@ Discrete A = record
   ; id        = refl
   ; _∘_       = flip ≡.trans
   ; assoc     = λ {_ _ _ _ g} → sym (trans-assoc g)
+  ; sym-assoc = λ {_ _ _ _ g} → trans-assoc g
   ; identityˡ = λ {_ _ f} → trans-reflʳ f
   ; identityʳ = refl
   ; equiv     = isEquivalence

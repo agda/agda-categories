@@ -28,6 +28,7 @@ Path = record
   ; id        = [ id ]
   ; _∘_       = flip (_ ∼⁺⟨_⟩_)
   ; assoc     = assoc
+  ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
   ; equiv     = record

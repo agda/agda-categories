@@ -22,7 +22,6 @@ open import Categories.Category.Product
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Construction.Constant
-open import Categories.Functor.Construction.DoubleOp
 open import Categories.NaturalTransformation
 open import Categories.NaturalTransformation.NaturalIsomorphism
 open import Categories.NaturalTransformation.Dinatural
@@ -60,7 +59,7 @@ record Closed : Set (levelOfTerm C) where
   [[X,-],[X,-]] X = [-,-] ∘F (Functor.op [ X ,-] ⁂ [ X ,-])
 
   [[-,Y],[-,Z]] : Obj → Obj → Bifunctor C C.op C
-  [[-,Y],[-,Z]] Y Z = [-,-] ∘F ((Functor.op [-, Y ] ∘F C⇒opopC _) ⁂ [-, Z ])
+  [[-,Y],[-,Z]] Y Z = [-,-] ∘F ((Functor.op [-, Y ]) ⁂ [-, Z ])
 
   -- L needs to be natural in Y and Z while extranatural in Z.
   -- it is better to spell out the conditions and then prove that indeed

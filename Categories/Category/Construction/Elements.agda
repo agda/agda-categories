@@ -26,16 +26,17 @@ private
 -- the first, most explicit definition is taken as 'canonical'.
 Elements : {C : Category o ℓ e} → Functor C (Sets o′) → Category (o ⊔ o′) (ℓ ⊔ o′) e
 Elements {C = C} F = record
-  { Obj = Σ Obj F₀
-  ; _⇒_ = λ { (c , x) (c′ , x′) → Σ (c ⇒ c′) (λ f → F₁ f x ≡ x′)  }
-  ; _≈_ = λ p q → proj₁ p ≈ proj₁ q
-  ; id = id , identity
-  ; _∘_ = λ { (f , Ff≡) (g , Fg≡) → f ∘ g ,  trans homomorphism (trans (cong (F₁ f) Fg≡) Ff≡)}
-  ; assoc = assoc
+  { Obj       = Σ Obj F₀
+  ; _⇒_       = λ { (c , x) (c′ , x′) → Σ (c ⇒ c′) (λ f → F₁ f x ≡ x′)  }
+  ; _≈_       = λ p q → proj₁ p ≈ proj₁ q
+  ; id        = id , identity
+  ; _∘_       = λ { (f , Ff≡) (g , Fg≡) → f ∘ g ,  trans homomorphism (trans (cong (F₁ f) Fg≡) Ff≡)}
+  ; assoc     = assoc
+  ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
-  ; equiv = record { refl = Equiv.refl ; sym = Equiv.sym ; trans = Equiv.trans }
-  ; ∘-resp-≈ = ∘-resp-≈
+  ; equiv     = record { refl = Equiv.refl ; sym = Equiv.sym ; trans = Equiv.trans }
+  ; ∘-resp-≈  = ∘-resp-≈
   }
   where
   open Category C

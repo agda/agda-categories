@@ -46,6 +46,7 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
     ; _∘_         = _∘′_
     ; id          = record { g = A.id ; h = B.id ; commutes = id-comm }
     ; assoc       = A.assoc , B.assoc
+    ; sym-assoc   = A.sym-assoc , B.sym-assoc
     ; identityˡ   = A.identityˡ , B.identityˡ
     ; identityʳ   = A.identityʳ , B.identityʳ
     ; equiv = record

@@ -113,6 +113,7 @@ module _ (G : Graph o ℓ e) where
     ; id        = ε
     ; _∘_       = _▻▻_
     ; assoc     = λ {_ _ _ _} {f g h} → sym $ ≡⇒≈* $ ◅◅-assoc f g h
+    ; sym-assoc = λ {_ _ _ _} {f g h} → ≡⇒≈* $ ◅◅-assoc f g h
     ; identityˡ = λ {_ _ f} → ◅◅-identityʳ f
     ; identityʳ = refl -- refl
     ; equiv     = isEquivalence
@@ -175,6 +176,10 @@ Graphs o ℓ e = record
   ; id        = idGHom
   ; _∘_       = _∘GM_
   ; assoc     = λ {_} {_} {_} {D} → record
+    { M₀≡ = ≡.refl
+    ; M₁≡ = IsEquivalence.refl (Graph.equiv D)
+    }
+  ; sym-assoc = λ {_} {_} {_} {D} → record
     { M₀≡ = ≡.refl
     ; M₁≡ = IsEquivalence.refl (Graph.equiv D)
     }

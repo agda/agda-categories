@@ -41,6 +41,7 @@ Cones = record
       ψ A X                 ∎
     }
   ; assoc     = assoc
+  ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
   ; equiv     = record

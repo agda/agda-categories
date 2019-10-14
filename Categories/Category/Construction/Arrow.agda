@@ -45,6 +45,7 @@ Arrow = record
   ; id        = mor⇒ $ identityˡ ○ ⟺ identityʳ
   ; _∘_       = λ m₁ m₂ → mor⇒ $ glue (square m₁) (square m₂)
   ; assoc     = assoc , assoc
+  ; sym-assoc = sym-assoc , sym-assoc
   ; identityˡ = identityˡ , identityˡ
   ; identityʳ = identityʳ , identityʳ
   ; equiv     = record

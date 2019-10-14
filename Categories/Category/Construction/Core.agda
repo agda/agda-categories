@@ -25,6 +25,7 @@ Core = record
   ; id        = ≅.refl
   ; _∘_       = flip ≅.trans
   ; assoc     = ⌞ assoc     ⌟
+  ; sym-assoc = ⌞ sym-assoc ⌟
   ; identityˡ = ⌞ identityˡ ⌟
   ; identityʳ = ⌞ identityʳ ⌟
   ; equiv     = ≃-isEquivalence

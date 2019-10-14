@@ -71,8 +71,8 @@ open C hiding (id)
         ⊚
       ⟩
     ⊚-assoc = record
-      { F⇒G = record { η = λ _ →           assoc ; commute = λ _ → lift tt }
-      ; F⇐G = record { η = λ _ → Equiv.sym assoc ; commute = λ _ → lift tt }
+      { F⇒G = record { η = λ _ →     assoc ; commute = λ _ → lift tt }
+      ; F⇐G = record { η = λ _ → sym-assoc ; commute = λ _ → lift tt }
       ; iso = λ _ → record { isoˡ = lift tt ; isoʳ = lift tt }
       }
 

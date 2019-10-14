@@ -11,6 +11,7 @@ import Relation.Binary.Reasoning.Setoid as SetoidR
 -- Basic definition of a |Category| with a Hom setoid.
 -- Also comes with some reasoning combinators (see HomReasoning)
 record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
+  eta-equality
   infix  4 _≈_ _⇒_
   infixr 9 _∘_
 
@@ -24,6 +25,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   field
     assoc     : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → (h ∘ g) ∘ f ≈ h ∘ (g ∘ f)
+    sym-assoc : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → h ∘ (g ∘ f) ≈ (h ∘ g) ∘ f
     identityˡ : ∀ {A B} {f : A ⇒ B} → id ∘ f ≈ f
     identityʳ : ∀ {A B} {f : A ⇒ B} → f ∘ id ≈ f
     equiv     : ∀ {A B} → IsEquivalence (_≈_ {A} {B})
@@ -102,16 +104,17 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   op : Category o ℓ e
   op = record
-    { Obj = Obj
-    ; _⇒_ = flip _⇒_
-    ; _≈_ = _≈_
-    ; _∘_ = flip _∘_
-    ; id = id
-    ; assoc = sym assoc
+    { Obj       = Obj
+    ; _⇒_       = flip _⇒_
+    ; _≈_       = _≈_
+    ; _∘_       = flip _∘_
+    ; id        = id
+    ; assoc     = sym-assoc
+    ; sym-assoc = assoc
     ; identityˡ = identityʳ
     ; identityʳ = identityˡ
-    ; equiv = equiv
-    ; ∘-resp-≈ = flip ∘-resp-≈
+    ; equiv     = equiv
+    ; ∘-resp-≈  = flip ∘-resp-≈
     }
 
   -- Q: Should this really be defined here?

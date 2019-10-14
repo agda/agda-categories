@@ -38,6 +38,7 @@ Exp I = record
   ; id        = λ _ → id
   ; _∘_       = λ f g i → f i ∘ g i
   ; assoc     = λ _ → assoc
+  ; sym-assoc = λ _ → sym-assoc
   ; identityˡ = λ _ → identityˡ
   ; identityʳ = λ _ → identityʳ
   ; equiv     = record
