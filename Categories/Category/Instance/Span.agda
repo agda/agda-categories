@@ -33,6 +33,7 @@ Span = record
   ; id        = span-id
   ; _∘_       = span-compose
   ; assoc     = assoc
+  ; sym-assoc = sym assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
   ; equiv     = isEquivalence
