@@ -7,6 +7,7 @@ open import Categories.Category
 open import Categories.Category.Product
 open import Categories.Functor renaming (id to idF)
 open import Categories.NaturalTransformation using (NaturalTransformation)
+import Categories.Morphism.Reasoning as MR
 
 private
   variable
@@ -33,6 +34,5 @@ constʳ c = idF ※ (const c)
 constNat : ∀ {A B} → Category._⇒_ D A B → NaturalTransformation (const {D = D} {C = C} A) (const B)
 constNat {D = D} f = record
   { η       = λ _ → f
-  ; commute = λ _ → id-comm
+  ; commute = λ _ → MR.id-comm D
   }
-  where open Category D

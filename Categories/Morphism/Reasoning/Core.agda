@@ -32,6 +32,12 @@ module Basic where
   id-unique : ∀ {o} {f : o ⇒ o} → (∀ g → g ∘ f ≈ g) → f ≈ id
   id-unique g∘f≈g = trans (sym identityˡ) (g∘f≈g id)
 
+  id-comm : ∀ {a b} {f : a ⇒ b} → f ∘ id ≈ id ∘ f
+  id-comm = trans identityʳ (sym identityˡ)
+
+  id-comm-sym : ∀ {a b} {f : a ⇒ b} → id ∘ f ≈ f ∘ id
+  id-comm-sym = sym id-comm
+
 open Basic public
 
 module Pulls (ab≡c : a ∘ b ≈ c) where

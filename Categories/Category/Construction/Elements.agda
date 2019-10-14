@@ -17,6 +17,7 @@ open import Categories.Category.Instance.Cats
 open import Categories.Category.Construction.Functors
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans)
 open import Categories.NaturalTransformation hiding (id)
+import Categories.Morphism.Reasoning as MR
 
 private
   variable
@@ -55,32 +56,32 @@ El {C = C} = record
   ; identity = λ {P} → record
     { F⇒G = record
       { η = λ X → id , identity P
-      ; commute = λ _ → Equiv.sym id-comm
+      ; commute = λ _ → MR.id-comm-sym C
       }
     ; F⇐G = record
       { η = λ X → id , identity P
-      ; commute = λ _ → Equiv.sym id-comm
+      ; commute = λ _ → MR.id-comm-sym C
       }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ } }
   ; homomorphism = λ {X₁} {Y₁} {Z₁} → record
     { F⇒G = record
       { η = λ X → id , identity Z₁
-      ; commute = λ _ → Equiv.sym id-comm
+      ; commute = λ _ → MR.id-comm-sym C
       }
     ; F⇐G = record
       { η = λ X → id , identity Z₁
-      ; commute = λ _ → Equiv.sym id-comm
+      ; commute = λ _ → MR.id-comm-sym C
       }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ }
     }
   ; F-resp-≈ = λ {_} {B₁} f≈g → record
     { F⇒G = record
       { η = λ _ → id , trans (identity B₁) f≈g
-      ; commute = λ _ → Equiv.sym id-comm
+      ; commute = λ _ → MR.id-comm-sym C
       }
     ; F⇐G = record
       { η = λ _ → id , trans (identity B₁) (sym f≈g)
-      ; commute = λ _ → Equiv.sym id-comm
+      ; commute = λ _ → MR.id-comm-sym C
       }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ } }
   }

@@ -137,6 +137,12 @@ Functor-NI-setoid C D = record
   ; isEquivalence = isEquivalence
   }
 
+module LeftRightId (F : Functor C D) where
+  module D = Category D
+
+  iso-id-id : (X : Category.Obj C) → Morphism.Iso D {A = Functor.F₀ F X} D.id D.id
+  iso-id-id X = record { isoˡ = D.identityˡ ; isoʳ = D.identityʳ }
+
 -- Left and Right Unitors, Natural Isomorphisms.
 module _ {F : Functor C D} where
   open Category.HomReasoning D
@@ -160,10 +166,10 @@ module _ (F : Functor B C) (G : Functor C D) (H : Functor D E) where
   private
     -- components of α
     assocʳ : NaturalTransformation ((H ∘F G) ∘F F) (H ∘F (G ∘F F))
-    assocʳ = record { η = λ _ → id ; commute = comm }
+    assocʳ = record { η = λ _ → id ; commute = λ _ → MR.id-comm-sym E  }
 
     assocˡ : NaturalTransformation (H ∘F (G ∘F F)) ((H ∘F G) ∘F F)
-    assocˡ = record { η = λ _ → id ; commute = comm }
+    assocˡ = record { η = λ _ → id ; commute = λ _ → MR.id-comm-sym E }
 
   associator : (H ∘F G) ∘F F ≃ H ∘F (G ∘F F)
   associator = record { F⇒G = assocʳ ; F⇐G = assocˡ ; iso = iso-id-id }

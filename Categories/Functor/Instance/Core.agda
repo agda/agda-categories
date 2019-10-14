@@ -19,6 +19,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism
   using (NaturalIsomorphism)
 import Categories.Morphism as Morphism
 open import Categories.Morphism.IsoEquiv using (⌞_⌟)
+import Categories.Morphism.Reasoning as MR
 
 Core : ∀ {o ℓ e} → Functor (Cats o ℓ e) (Groupoids o (ℓ ⊔ e) e)
 Core {o} {ℓ} {e} = record
@@ -48,8 +49,8 @@ Core {o} {ℓ} {e} = record
 
      CoreId : {A : Category o ℓ e} → NaturalIsomorphism (CoreFunctor {A} id) id
      CoreId {A} = record
-       { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
-       ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+       { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym A ⌟ }
+       ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym A ⌟ }
        ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
        }
        where
@@ -61,8 +62,8 @@ Core {o} {ℓ} {e} = record
                NaturalIsomorphism (CoreFunctor (G ∘F F))
                                   (CoreFunctor G ∘F CoreFunctor F)
      CoreHom {A} {B} {C} {F} {G} = record
-       { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
-       ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+       { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym C ⌟ }
+       ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym C ⌟ }
        ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
        }
        where

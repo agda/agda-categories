@@ -109,7 +109,7 @@ module _ where
 
   from-∘ᵢ-tc : (f⁺ : A [ _≅_ ]⁺ B) → from (∘ᵢ-tc f⁺) ≡ ∘-tc (≅⁺⇒⇒⁺ f⁺)
   from-∘ᵢ-tc [ f ]            = ≡.refl
-  from-∘ᵢ-tc (_ ∼⁺⟨ f⁺ ⟩ f⁺′) = ≡.cong₂ _∘_ (from-∘ᵢ-tc f⁺′) (from-∘ᵢ-tc f⁺) 
+  from-∘ᵢ-tc (_ ∼⁺⟨ f⁺ ⟩ f⁺′) = ≡.cong₂ _∘_ (from-∘ᵢ-tc f⁺′) (from-∘ᵢ-tc f⁺)
 
   ≅*⇒⇒*-cong : ≅⁺⇒⇒⁺ {A} {B} Preserves _≃⁺_ ⟶ _≈⁺_
   ≅*⇒⇒*-cong {_} {_} {f⁺} {g⁺} f⁺≃⁺g⁺ = begin
@@ -178,10 +178,10 @@ module _ where
   -- projecting isomorphism commutations to morphism commutations
 
   project-triangle : {g : A ≅ B} {f : C ≅ A} {h : C ≅ B} → g ∘ᵢ f ≃ h → from g ∘ from f ≈ from h
-  project-triangle {g = g} {f} {h} eq = ≅*⇒⇒*-cong {i = _ ∼⁺⟨ [ f ] ⟩ [ g ]} {j = [ h ]} eq
+  project-triangle {g = g} {f} {h} eq = ≅*⇒⇒*-cong {_} {_} {_ ∼⁺⟨ [ f ] ⟩ [ g ]} {[ h ]} eq
 
   project-square : {g : A ≅ B} {f : C ≅ A} {i : D ≅ B} {h : C ≅ D} → g ∘ᵢ f ≃ i ∘ᵢ h → from g ∘ from f ≈ from i ∘ from h
-  project-square {g = g} {f} {i} {h} eq = ≅*⇒⇒*-cong {i = _ ∼⁺⟨ [ f ] ⟩ [ g ]} {j = _ ∼⁺⟨ [ h ] ⟩ [ i ]} eq
+  project-square {g = g} {f} {i} {h} eq = ≅*⇒⇒*-cong {_} {_} {_ ∼⁺⟨ [ f ] ⟩ [ g ]} {_ ∼⁺⟨ [ h ] ⟩ [ i ]} eq
 
   -- direct lifting from morphism commutations to isomorphism commutations
 

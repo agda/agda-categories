@@ -87,34 +87,21 @@ _∘ʳ_ {D = D} {E = E} {G = G} {H = H} α F = record
   where open Functor F
         open NaturalTransformation α
 
-module LeftRightId (F : Functor C D) where
-  open Category D
-  open HomReasoning
-  open Functor F
-  module D = Category D
-
-  -- the component proofs are all the same, factor out
-  comm : {X Y : Category.Obj C} (f : C [ X , Y ]) → D.id ∘ F₁ f ≈ F₁ f ∘ D.id
-  comm _ = Equiv.sym id-comm
-
-  iso-id-id : (X : Category.Obj C) → Morphism.Iso D {A = F₀ X} D.id D.id
-  iso-id-id X = record { isoˡ = identityˡ ; isoʳ = identityʳ }
-
-
 module _ {F : Functor C D} where
   open Category.HomReasoning D
   open Functor F
   open Category D
-  open LeftRightId F
+  open MR D
+  private module D = Category D
 
   F⇒F∘id : NaturalTransformation F (F ∘F idF)
-  F⇒F∘id = record { η = λ _ → D.id ; commute = comm }
+  F⇒F∘id = record { η = λ _ → D.id ; commute = λ _ → id-comm-sym }
 
   F⇒id∘F : NaturalTransformation F (idF ∘F F)
-  F⇒id∘F = record { η = λ _ → D.id ; commute = comm }
+  F⇒id∘F = record { η = λ _ → D.id ; commute = λ _ → id-comm-sym }
 
   F∘id⇒F : NaturalTransformation (F ∘F idF) F
-  F∘id⇒F = record { η = λ _ → D.id ; commute = comm }
+  F∘id⇒F = record { η = λ _ → D.id ; commute = λ _ → id-comm-sym }
 
   id∘F⇒F : NaturalTransformation (idF ∘F F) F
-  id∘F⇒F = record { η = λ _ → D.id ; commute = comm }
+  id∘F⇒F = record { η = λ _ → D.id ; commute = λ _ → id-comm-sym }

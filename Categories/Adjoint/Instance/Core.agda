@@ -17,6 +17,7 @@ open import Categories.Category.Instance.Groupoids using (Groupoids)
 open import Categories.Functor using (Functor; _∘F_; id)
 open import Categories.Functor.Instance.Core using (Core)
 import Categories.Morphism as Morphism
+import Categories.Morphism.Reasoning as MR
 open import Categories.Morphism.IsoEquiv using (⌞_⌟)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (refl; _≃_)
 
@@ -59,12 +60,12 @@ CoreAdj = record
     unit-commute : ∀ {G H} (F : Functor (category G) (category H)) →
                    unit H ∘F F ≃ Core.F₁ F ∘F unit G
     unit-commute {G} {H} F = record
-      { F⇒G = record { η = λ _ → ≅.refl  ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
-      ; F⇐G = record { η = λ _ → ≅.refl  ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+      { F⇒G = record { η = λ _ → ≅.refl  ; commute = λ _ → ⌞ MR.id-comm-sym (category H) ⌟ }
+      ; F⇐G = record { η = λ _ → ≅.refl  ; commute = λ _ → ⌞ MR.id-comm-sym (category H) ⌟ }
       ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
       }
       where
-        open Groupoid H
+        open Category (category H)
         open Morphism (category H)
 
     counit : ∀ C → Functor (C.Core C) C
@@ -82,8 +83,8 @@ CoreAdj = record
     counit-commute : ∀ {C D} (F : Functor C D) →
                      counit D ∘F Core.F₁ F ≃ F ∘F counit C
     counit-commute {C} {D} F = record
-      { F⇒G = record { η = λ _ → D.id  ; commute = λ _ → D.Equiv.sym D.id-comm }
-      ; F⇐G = record { η = λ _ → D.id  ; commute = λ _ → D.Equiv.sym D.id-comm }
+      { F⇒G = record { η = λ _ → D.id  ; commute = λ _ → MR.id-comm-sym D }
+      ; F⇐G = record { η = λ _ → D.id  ; commute = λ _ → MR.id-comm-sym D }
       ; iso = λ _ → _≅_.iso ≅.refl
       }
       where
@@ -92,8 +93,8 @@ CoreAdj = record
 
     zig : ∀ {G} → counit (category G) ∘F unit G ≃ id
     zig {G} = record
-      { F⇒G = record { η = λ _ → G.id ; commute = λ _ → G.Equiv.sym G.id-comm }
-      ; F⇐G = record { η = λ _ → G.id ; commute = λ _ → G.Equiv.sym G.id-comm }
+      { F⇒G = record { η = λ _ → G.id ; commute = λ _ → MR.id-comm-sym (category G) }
+      ; F⇐G = record { η = λ _ → G.id ; commute = λ _ → MR.id-comm-sym (category G) }
       ; iso = λ _ → _≅_.iso ≅.refl
       }
       where
@@ -102,8 +103,8 @@ CoreAdj = record
 
     zag : ∀ {B} → Core.F₁ (counit B) ∘F unit (Core.F₀ B) ≃ id
     zag {B} = record
-      { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
-      ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ Equiv.sym id-comm ⌟ }
+      { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym B ⌟ }
+      ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym B ⌟ }
       ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
       }
       where

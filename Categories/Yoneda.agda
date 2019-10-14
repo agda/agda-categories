@@ -40,6 +40,7 @@ private
 module _ (C : Category o ℓ e) where
   open Category C
   open HomReasoning
+  open MR C
   open Functor
   open NaturalTransformation
   private

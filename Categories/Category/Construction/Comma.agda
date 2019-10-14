@@ -7,6 +7,7 @@ open import Relation.Binary using (Rel)
 
 open import Categories.Category using (Category; _[_,_]; _[_∘_])
 open import Categories.Functor using (Functor)
+import Categories.Morphism.Reasoning as MR
 
 private
   variable
@@ -69,12 +70,13 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
          (S₁ B.id C.∘ f) C.≈ f C.∘ T₁ A.id
       id-comm {E} = begin
         (S₁ B.id C.∘ f) ≈⟨ S.identity ⟩∘⟨refl ⟩
-        C.id C.∘ f      ≈⟨ ⟺ C.id-comm ⟩
+        C.id C.∘ f      ≈⟨ id-comm-sym ⟩
         f C.∘ C.id      ≈˘⟨ refl⟩∘⟨ T.identity ⟩
         f C.∘ T₁ A.id ∎
         where
           open C.HomReasoning
           open CommaObj E
+          open MR C
 
       _∘′_ : ∀ {X₁ X₂ X₃} → Comma⇒ X₂ X₃ → Comma⇒ X₁ X₂ → Comma⇒ X₁ X₃
       _∘′_ {X₁} {X₂} {X₃} a₁ a₂ = record

@@ -8,6 +8,7 @@ open import Data.Product using (Σ; _,_)
 open import Categories.Category
 open import Categories.Functor
 open import Categories.Functor.Bifunctor
+import Categories.Morphism.Reasoning as MR
 
 private
   variable
@@ -33,7 +34,7 @@ module _ (F : Bifunctor C D E) where
   [_]-commute : F₁ (C.id , g) ∘ F₁ (f , D.id) ≈ F₁ (f , D.id) ∘ F₁ (C.id , g)
   [_]-commute {g = g} {f = f} = begin
     F₁ (C.id , g) ∘ F₁ (f , D.id) ≈˘⟨ homomorphism ⟩
-    F₁ (C.id C.∘ f , g D.∘ D.id)  ≈⟨ F-resp-≈ (C.Equiv.sym C.id-comm , D.id-comm) ⟩
+    F₁ (C.id C.∘ f , g D.∘ D.id)  ≈⟨ F-resp-≈ (MR.id-comm-sym C , MR.id-comm D) ⟩
     F₁ (f C.∘ C.id , D.id D.∘ g)  ≈⟨ homomorphism ⟩
     F₁ (f , D.id) ∘ F₁ (C.id , g) ∎
 

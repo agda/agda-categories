@@ -15,6 +15,7 @@ open import Categories.Category.Instance.One using (One)
 open import Categories.Category.Product using (Product; πˡ; πʳ; _※_)
 open import Categories.Category.Construction.Functors
 open import Categories.Functor.Construction.Constant
+import Categories.Morphism.Reasoning as MR
 
 Cats : (o ℓ e : Level) → Bicategory (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e) (o ⊔ e) (suc (o ⊔ ℓ ⊔ e))
 Cats o ℓ e = record
@@ -61,7 +62,7 @@ Cats o ℓ e = record
       { F⇒G = record
         { η       = λ _ → F⇒G unitorʳ
         ; commute = λ { {_} {Y , _} (f , _) {x} → begin
-          id ∘ F₁ Y (Category.id A) ∘ η f x ≈⟨ identityˡ ○ ∘-resp-≈ˡ (identity Y) ○ ⟺ id-comm ⟩
+          id ∘ F₁ Y (Category.id A) ∘ η f x ≈⟨ identityˡ ○ ∘-resp-≈ˡ (identity Y) ○ MR.id-comm-sym B ⟩
           η f x ∘ id                        ∎ }
         }
       ; F⇐G = record

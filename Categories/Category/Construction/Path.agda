@@ -17,7 +17,7 @@ open Category C
 ∘-tc (_ ∼⁺⟨ f⁺ ⟩ f⁺′) = ∘-tc f⁺′ ∘ ∘-tc f⁺
 
 infix 4 _≈⁺_
-_≈⁺_ : {A B : Obj} → Rel (A [ _⇒_ ]⁺ B) e
+_≈⁺_ : {A B : Obj} → (i j : A [ _⇒_ ]⁺ B) → Set e
 f⁺ ≈⁺ g⁺ = ∘-tc f⁺ ≈ ∘-tc g⁺
 
 Path : Category o (o ⊔ ℓ) e
