@@ -47,6 +47,7 @@ documented in the proto-contributor's guide.
 - (all the stuff about Mates)
 - (bicategory is defined as Enriched over (Monoidal) Cats instead of 'by hand')
 - (definition of Pseudofunctor is in Benabou style rather than 'by hand')
+- (closed) Issue 5 in the github repository contains more discussion.
 
 ### Smaller Design decisions
 - Do not make implicit fields that can rarely be inferred (like what had been done in
