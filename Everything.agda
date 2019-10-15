@@ -5,6 +5,7 @@ import Categories.Adjoint.Instance.0-Truncation
 import Categories.Adjoint.Instance.Core
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Properties
+import Categories.Adjoint.RAPL
 import Categories.Bicategory
 import Categories.Bicategory.Bigroupoid
 import Categories.Bicategory.Construction.1-Category
@@ -30,6 +31,7 @@ import Categories.Category.Construction.Coproduct
 import Categories.Category.Construction.Core
 import Categories.Category.Construction.Elements
 import Categories.Category.Construction.F-Algebras
+import Categories.Category.Construction.Fin
 import Categories.Category.Construction.Functors
 import Categories.Category.Construction.Graphs
 import Categories.Category.Construction.Grothendieck
@@ -37,6 +39,7 @@ import Categories.Category.Construction.Kleisli
 import Categories.Category.Construction.Path
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Construction.Properties.Comma
+import Categories.Category.Construction.Thin
 import Categories.Category.Core
 import Categories.Category.Discrete
 import Categories.Category.Equivalence
@@ -53,6 +56,7 @@ import Categories.Category.Instance.Properties.Setoids
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
 import Categories.Category.Instance.SingletonSet
+import Categories.Category.Instance.Span
 import Categories.Category.Instance.StrictCats
 import Categories.Category.Instance.Zero
 import Categories.Category.Monoidal
@@ -61,6 +65,7 @@ import Categories.Category.Monoidal.Closed
 import Categories.Category.Monoidal.Closed.IsClosed
 import Categories.Category.Monoidal.Enriched
 import Categories.Category.Monoidal.Instance.Cats
+import Categories.Category.Monoidal.Instance.Setoids
 import Categories.Category.Monoidal.Instance.Sets
 import Categories.Category.Monoidal.Instance.StrictCats
 import Categories.Category.Monoidal.Properties
@@ -83,6 +88,7 @@ import Categories.Diagram.Coequalizer
 import Categories.Diagram.Coequalizer.Properties
 import Categories.Diagram.Colimit
 import Categories.Diagram.Cone
+import Categories.Diagram.Cone.Properties
 import Categories.Diagram.Duality
 import Categories.Diagram.End
 import Categories.Diagram.End.Properties
@@ -90,6 +96,7 @@ import Categories.Diagram.Equalizer
 import Categories.Diagram.Finite
 import Categories.Diagram.Limit
 import Categories.Diagram.Pullback
+import Categories.Diagram.Pullback.Limit
 import Categories.Diagram.Pullback.Properties
 import Categories.Diagram.Pushout
 import Categories.Diagram.Pushout.Properties
