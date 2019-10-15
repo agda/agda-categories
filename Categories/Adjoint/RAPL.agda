@@ -89,6 +89,7 @@ module _ {o″ ℓ″ e″} {J : Category o″ ℓ″ e″} {F : Functor J D} wh
                       ∎
                     where open C.HomReasoning
                           open MR C
+
           module ! {K} = CRF.Cone⇒ (! {K})
           
           !-unique : ∀ {K : CRF.Cone} (f : CRF.Cones [ K , ⊤ ]) → CRF.Cones [ ! ≈ f ]
@@ -107,7 +108,8 @@ module _ {o″ ℓ″ e″} {J : Category o″ ℓ″ e″} {F : Functor J D} wh
                     { arr     = Radjunct f.arr
                     ; commute = λ {X} → begin
                       proj X D.∘ Radjunct f.arr                                   ≈˘⟨ pushˡ (counit.commute (proj X)) ⟩
-                      (counit.η (F.F₀ X) D.∘ L.F₁ (R.F₁ (proj X))) D.∘ L.F₁ f.arr ≈⟨ {!K.commute!} ⟩
+                      (counit.η (F.F₀ X) D.∘ L.F₁ (R.F₁ (proj X))) D.∘ L.F₁ f.arr ≈˘⟨ pushʳ L.homomorphism ⟩
+                      Radjunct (R.F₁ (proj X) C.∘ f.arr)                          ≈⟨ Radjunct-resp-≈ f.commute ⟩
                       Radjunct (K.ψ X)                                            ∎
                     }
                     where open D.HomReasoning
