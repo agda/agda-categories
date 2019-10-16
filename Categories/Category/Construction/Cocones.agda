@@ -19,7 +19,7 @@ open import Data.Product
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 import Categories.Morphism as Mor
 import Categories.Morphism.IsoEquiv as IsoEquiv
-open import Categories.Diagram.Cocone F
+open import Categories.Diagram.Cocone F public
 
 open Mor C
 open IsoEquiv C

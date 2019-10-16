@@ -82,21 +82,29 @@ Pushout⇒coPullback p = record
 module _ {F : Functor J C} where
   open Functor F renaming (op to Fop)
 
-  coCone⇒Cocone : Cone Fop → Cocone F
-  coCone⇒Cocone c = record
-    { coapex = record
-      { ψ       = ψ
-    ; commute = commute
-      }
-    }
-    where open Cone.Cone c
-
-  Cocone⇒coCone : Cocone F → Cone Fop
-  Cocone⇒coCone c = record
-    { apex = record
+  coApex⇒Coapex : ∀ X → Apex Fop X → Coapex F X
+  coApex⇒Coapex X apex = record
       { ψ       = ψ
       ; commute = commute
       }
+    where open Cone.Apex apex
+
+  coCone⇒Cocone : Cone Fop → Cocone F
+  coCone⇒Cocone c = record
+    { coapex = coApex⇒Coapex _ apex
+    }
+    where open Cone.Cone c
+
+  Coapex⇒coApex : ∀ X → Coapex F X → Apex Fop X
+  Coapex⇒coApex X coapex = record
+      { ψ       = ψ
+      ; commute = commute
+      }
+    where open Cocone.Coapex coapex
+
+  Cocone⇒coCone : Cocone F → Cone Fop
+  Cocone⇒coCone c = record
+    { apex = Coapex⇒coApex _ coapex
     }
     where open Cocone.Cocone c
 

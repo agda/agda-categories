@@ -3,7 +3,7 @@
 open import Categories.Category
 open import Categories.Functor hiding (id)
 
--- Limit of a Cone over a Functor F : J → C
+-- Coimit of a Cocone over a Functor F : J → C
 module Categories.Diagram.Colimit
   {o ℓ e} {o′ ℓ′ e′} {C : Category o ℓ e} {J : Category o′ ℓ′ e′} (F : Functor J C) where
 
@@ -17,8 +17,7 @@ open Functor F
 open import Level
 open import Data.Product using (proj₂)
 
-open import Categories.Diagram.Cocone F renaming (Cocone⇒ to _⇨_)
-open import Categories.Category.Construction.Cocones F
+open import Categories.Category.Construction.Cocones F renaming (Cocone⇒ to _⇨_)
 open import Categories.Object.Initial as I hiding (up-to-iso; transport-by-iso)
 open import Categories.Morphism.Reasoning C
 open import Categories.Morphism C
