@@ -105,3 +105,28 @@ transport-by-iso-cone L L⇿K = record
 transport-by-iso : (L : Limit) → apex L ≅ X → Limit
 transport-by-iso L L≅X = transport-by-iso-cone L (proj₂ p)
   where p = cone-resp-iso (limit L) L≅X
+
+module _ (X : Obj) (apex₁ : Apex X) (apex₂ : Apex X) (L : Limit) where
+  private
+    module apex₁ = Apex apex₁
+    module apex₂ = Apex apex₂
+    module L = Limit L
+
+    K₁ : Cone
+    K₁ = record { apex = apex₁ }
+    module K₁ = Cone K₁
+
+    K₂ : Cone
+    K₂ = record { apex = apex₂ }
+    module K₂ = Cone K₂
+
+  ψ-≈⇒rep-≈ : (∀ A → apex₁.ψ A ≈ apex₂.ψ A) → L.rep K₁ ≈ L.rep K₂
+  ψ-≈⇒rep-≈ ∀eq = trans (L.terminal.!-unique K₁⇒limit) identityʳ
+    where K₁⇒K₂ : K₁ ⇨ K₂
+          K₁⇒K₂ = record
+            { arr     = id
+            ; commute = λ {X} → trans identityʳ (sym (∀eq X))
+            }
+
+          K₁⇒limit : K₁ ⇨ L.limit
+          K₁⇒limit = Cones [ L.terminal.! ∘ K₁⇒K₂ ]

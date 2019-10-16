@@ -103,7 +103,7 @@ module _ {o″ ℓ″ e″} {J : Category o″ ℓ″ e″} {F : Functor J D} wh
             where module K = CRF.Cone K
                   module f = CRF.Cone⇒ f
                   
-                  f′ : CF.Cones [ (K′ K) , limit ]
+                  f′ : CF.Cones [ K′ K , limit ]
                   f′ = record
                     { arr     = Radjunct f.arr
                     ; commute = λ {X} → begin
