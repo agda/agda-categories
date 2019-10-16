@@ -66,6 +66,30 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   -⊗_ : Obj → Functor C C
   -⊗ X = appʳ ⊗ X
 
+  ⊗-resp-≈ : f ≈ h → g ≈ i → (f ⊗₁ g) ≈ (h ⊗₁ i)
+  ⊗-resp-≈ p q = F-resp-≈ (p , q)
+
+  ⊗-resp-≈ˡ : f ≈ h → (f ⊗₁ g) ≈ (h ⊗₁ g)
+  ⊗-resp-≈ˡ p = ⊗-resp-≈ p Equiv.refl
+
+  ⊗-resp-≈ʳ : g ≈ i → (f ⊗₁ g) ≈ (f ⊗₁ i)
+  ⊗-resp-≈ʳ p = ⊗-resp-≈ Equiv.refl p
+
+  -- removing the {_} makes the whole thing not type check anymore for some reason
+  -- an issue was raised on the main agda GitHub repository about this
+  -- (https://github.com/agda/agda/issues/4140)
+  -- if this is fixed feel free to remove the {_}
+  ⊗-distrib-over-∘ : ((f ∘ h) ⊗₁ (g ∘ i)) ≈ ((f ⊗₁ g) ∘ (h ⊗₁ i))
+  ⊗-distrib-over-∘ {_} = homomorphism
+    -- This also corresponds with the graphical coherence property of diagrams modelling monoidal categories:
+  --   |        |         |   |
+  --  [h]      [i]       [h] [i]
+  --   |        |    ≈    |   |
+  --  [f]      [g]        |   |
+  --   |        |         |   |
+  --                     [f] [g]
+  --                      |   |
+
   field
     unitorˡ    : unit ⊗₀ X ≅ X
     unitorʳ    : X ⊗₀ unit ≅ X
@@ -182,3 +206,18 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
 
   refl⊗refl≃refl : ≅.refl {A} ⊗ᵢ ≅.refl {B} ≃ ≅.refl
   refl⊗refl≃refl = ⌞ identity ⌟
+
+  module MonoidalReasoning where
+    open HomReasoning public
+
+    infixr 6 _⟩⊗⟨_ refl⟩⊗⟨_
+    infixl 7 _⟩⊗⟨refl
+
+    _⟩⊗⟨_ : f ≈ h → g ≈ i → (f ⊗₁ g) ≈ (h ⊗₁ i)
+    _⟩⊗⟨_ = ⊗-resp-≈
+
+    refl⟩⊗⟨_ : g ≈ i → (f ⊗₁ g) ≈ (f ⊗₁ i)
+    refl⟩⊗⟨_ = ⊗-resp-≈ʳ
+
+    _⟩⊗⟨refl : f ≈ h → (f ⊗₁ g) ≈ (h ⊗₁ g)
+    _⟩⊗⟨refl = ⊗-resp-≈ˡ
