@@ -83,10 +83,12 @@ import Categories.Category.Topos
 import Categories.Category.WithFamilies
 import Categories.Comonad
 import Categories.Diagram.Cocone
+import Categories.Diagram.Cocone.Properties
 import Categories.Diagram.Coend
 import Categories.Diagram.Coequalizer
 import Categories.Diagram.Coequalizer.Properties
 import Categories.Diagram.Colimit
+import Categories.Diagram.Colimit.Properties
 import Categories.Diagram.Cone
 import Categories.Diagram.Cone.Properties
 import Categories.Diagram.Duality
@@ -95,6 +97,7 @@ import Categories.Diagram.End.Properties
 import Categories.Diagram.Equalizer
 import Categories.Diagram.Finite
 import Categories.Diagram.Limit
+import Categories.Diagram.Limit.Properties
 import Categories.Diagram.Pullback
 import Categories.Diagram.Pullback.Limit
 import Categories.Diagram.Pullback.Properties
@@ -106,9 +109,11 @@ import Categories.Functor.Algebra
 import Categories.Functor.Bifunctor
 import Categories.Functor.Bifunctor.Properties
 import Categories.Functor.Coalgebra
+import Categories.Functor.Cocontinuous
 import Categories.Functor.Construction.Constant
 import Categories.Functor.Construction.Diagonal
 import Categories.Functor.Construction.LiftSetoids
+import Categories.Functor.Continuous
 import Categories.Functor.Core
 import Categories.Functor.Equivalence
 import Categories.Functor.Fibration
