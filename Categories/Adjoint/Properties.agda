@@ -5,19 +5,22 @@ module Categories.Adjoint.Properties where
 open import Level
 open import Data.Product using (Σ; _,_)
 
+open import Categories.Adjoint
+open import Categories.Adjoint.RAPL public
 open import Categories.Category
 open import Categories.Functor
+open import Categories.Functor.Continuous
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.NaturalTransformation
-open import Categories.Adjoint
 
+import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
 
 private
   variable
     o ℓ e : Level
-    C D E : Category o ℓ e
+    C D E J : Category o ℓ e
 
 -- if the left adjoint functor is a partial application of bifunctor, then it uniquely
 -- determines a bifunctor compatible with the right adjoint functor.
@@ -140,3 +143,8 @@ module _ {C : Category o ℓ e}
       {A , X} {B , Y} (eq , eq′) →
         ∘-resp-≈ˡ (R.F-resp-≈ B (D.∘-resp-≈ʳ (L.F-resp-≈ (R.F-resp-≈ A eq′ , eq))))
     }
+
+module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
+
+  rapl′ : ∀ {o ℓ e} → Continuous o ℓ e R
+  rapl′ lim = rapl L⊣R lim , Mor.≅.refl C
