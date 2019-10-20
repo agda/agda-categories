@@ -13,6 +13,8 @@ open import Categories.Functor.Continuous
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.NaturalTransformation
+import Categories.Diagram.Colimit as Col
+import Categories.Diagram.Duality as Duality
 
 import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
@@ -147,4 +149,13 @@ module _ {C : Category o ℓ e}
 module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
 
   rapl′ : ∀ {o ℓ e} → Continuous o ℓ e R
-  rapl′ lim = rapl L⊣R lim , Mor.≅.refl C
+  rapl′ lim = rapl L⊣R _ lim , Mor.≅.refl C
+
+-- LAPC: left adjoint preserves colimits.
+module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) (F : Functor J C) where
+  private
+    module F = Functor F
+    open Col
+
+  lapc : Colimit F → Colimit (L ∘F F)
+  lapc col = Duality.coLimit⇒Colimit D (rapl (Adjoint.op L⊣R) F.op (Duality.Colimit⇒coLimit C col))
