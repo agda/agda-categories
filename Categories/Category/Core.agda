@@ -61,7 +61,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     open Equiv {A = A} {B = B} public
 
     infixr 4 _⟩∘⟨_ refl⟩∘⟨_
-    infixl 4 _⟩∘⟨refl
+    infixl 5 _⟩∘⟨refl
     _⟩∘⟨_ : ∀ {M} {f h : M ⇒ B} {g i : A ⇒ M} → f ≈ h → g ≈ i → f ∘ g ≈ h ∘ i
     _⟩∘⟨_ = ∘-resp-≈
 
