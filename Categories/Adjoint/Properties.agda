@@ -10,6 +10,7 @@ open import Categories.Adjoint.RAPL public
 open import Categories.Category
 open import Categories.Functor
 open import Categories.Functor.Continuous
+open import Categories.Functor.Cocontinuous
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.NaturalTransformation
@@ -146,11 +147,6 @@ module _ {C : Category o ℓ e}
         ∘-resp-≈ˡ (R.F-resp-≈ B (D.∘-resp-≈ʳ (L.F-resp-≈ (R.F-resp-≈ A eq′ , eq))))
     }
 
-module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
-
-  rapl′ : ∀ {o ℓ e} → Continuous o ℓ e R
-  rapl′ lim = rapl L⊣R _ lim , Mor.≅.refl C
-
 -- LAPC: left adjoint preserves colimits.
 module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) (F : Functor J C) where
   private
@@ -159,3 +155,11 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) (F : Functor J C)
 
   lapc : Colimit F → Colimit (L ∘F F)
   lapc col = Duality.coLimit⇒Colimit D (rapl (Adjoint.op L⊣R) F.op (Duality.Colimit⇒coLimit C col))
+
+module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
+
+  rapl′ : ∀ {o ℓ e} → Continuous o ℓ e R
+  rapl′ lim = rapl L⊣R _ lim , Mor.≅.refl C
+
+  lapc′ : ∀ {o ℓ e} → Cocontinuous o ℓ e L
+  lapc′ col = lapc L⊣R _ col , Mor.≅.refl D

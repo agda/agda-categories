@@ -15,7 +15,7 @@ open Category C
 
 record PullbackObj W : Set (o ⊔ ℓ ⊔ e) where
   field
-    A B      : Obj
+    {A} {B}  : Obj
     arr₁     : A ⇒ W
     arr₂     : B ⇒ W
     pullback : Pullback arr₁ arr₂
@@ -36,8 +36,8 @@ record Pullback⇒ W (X Y : PullbackObj W) : Set (o ⊔ ℓ ⊔ e) where
   pbarr : X.pullback.P ⇒ Y.pullback.P
   pbarr = Y.pullback.universal $ begin
     Y.arr₁ ∘ mor₁ ∘ X.pullback.p₁ ≈⟨ pullˡ commute₁ ⟩
-    X.arr₁ ∘ X.pullback.p₁ ≈⟨ X.pullback.commute ⟩
-    X.arr₂ ∘ X.pullback.p₂ ≈˘⟨ pullˡ commute₂ ⟩
+    X.arr₁ ∘ X.pullback.p₁        ≈⟨ X.pullback.commute ⟩
+    X.arr₂ ∘ X.pullback.p₂        ≈˘⟨ pullˡ commute₂ ⟩
     Y.arr₂ ∘ mor₂ ∘ X.pullback.p₂ ∎
 
 open Pullback⇒
