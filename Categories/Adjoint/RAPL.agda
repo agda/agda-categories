@@ -4,7 +4,7 @@ open import Categories.Category
 open import Categories.Functor
 open import Categories.Adjoint
 
--- Right Adjoint Preserves Limit.
+-- Right Adjoint Preserves Limits.
 module Categories.Adjoint.RAPL {o o′ ℓ ℓ′ e e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
   {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
 
@@ -22,7 +22,7 @@ private
 
 open Adjoint L⊣R
 
-module _ {o″ ℓ″ e″} {J : Category o″ ℓ″ e″} {F : Functor J D} where
+module _ {o″ ℓ″ e″} {J : Category o″ ℓ″ e″} (F : Functor J D) where
   private
     module F = Functor F
     module LF = Lim F
