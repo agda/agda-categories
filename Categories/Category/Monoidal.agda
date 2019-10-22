@@ -214,7 +214,6 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   refl⊗refl≃refl : ≅.refl {A} ⊗ᵢ ≅.refl {B} ≃ ≅.refl
   refl⊗refl≃refl = ⌞ identity ⌟
 
-
   module MonoidalReasoning where
     open HomReasoning public
 
