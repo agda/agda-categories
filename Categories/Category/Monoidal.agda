@@ -30,6 +30,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism
 open import Categories.Morphism C using (_≅_; module ≅)
 open import Categories.Morphism.IsoEquiv C using (_≃_; ⌞_⌟)
 open import Categories.Morphism.Isomorphism C using (_∘ᵢ_; lift-triangle′; lift-pentagon′)
+open import Categories.Morphism.Reasoning C
 
 private
   module C = Category C
@@ -140,6 +141,12 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
     x⊗[y⊗z] : Bifunctor (Product C C) C C
     x⊗[y⊗z] = ⊗ ∘F (idF ⁂ ⊗) ∘F assocˡ _ _ _
 
+  unitor-coherenceʳ : [ (A ⊗₀ unit) ⊗₀ unit ⇒ A ⊗₀ unit ]⟨ ρ⇒ ⊗₁ C.id ≈ ρ⇒ ⟩
+  unitor-coherenceʳ = cancel-fromˡ unitorʳ unitorʳ-commute-from
+
+  unitor-coherenceˡ : [ unit ⊗₀ unit ⊗₀ A ⇒ unit ⊗₀ A ]⟨ C.id ⊗₁ λ⇒ ≈ λ⇒ ⟩
+  unitor-coherenceˡ = cancel-fromˡ unitorˡ unitorˡ-commute-from
+
   -- All the implicits below can be inferred, but being explicit is clearer
   unitorˡ-naturalIsomorphism : NaturalIsomorphism (unit ⊗-) idF
   unitorˡ-naturalIsomorphism = record
@@ -206,6 +213,7 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
 
   refl⊗refl≃refl : ≅.refl {A} ⊗ᵢ ≅.refl {B} ≃ ≅.refl
   refl⊗refl≃refl = ⌞ identity ⌟
+
 
   module MonoidalReasoning where
     open HomReasoning public

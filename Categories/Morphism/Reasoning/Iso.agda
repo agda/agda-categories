@@ -53,6 +53,34 @@ module Switch (i : X ≅ Y) where
     (h ∘ to) ∘ from ≈⟨ pf ⟩∘⟨refl ⟩
     k ∘ from        ∎
 
+  cancel-fromʳ : h ∘ from ≈ k ∘ from → h ≈ k
+  cancel-fromʳ {h = h} {k = k} pf = begin
+    h               ≈˘⟨ cancelʳ isoʳ ⟩
+    (h ∘ from) ∘ to ≈⟨ pf ⟩∘⟨refl ⟩
+    (k ∘ from) ∘ to ≈⟨ cancelʳ isoʳ ⟩
+    k               ∎
+
+  cancel-fromˡ : from ∘ h ≈ from ∘ k → h ≈ k
+  cancel-fromˡ {h = h} {k = k} pf = begin
+    h               ≈˘⟨ cancelˡ isoˡ ⟩
+    to ∘ (from ∘ h) ≈⟨ refl⟩∘⟨ pf ⟩
+    to ∘ (from ∘ k) ≈⟨ cancelˡ isoˡ ⟩
+    k               ∎
+
+  cancel-toʳ : h ∘ to ≈ k ∘ to → h ≈ k
+  cancel-toʳ {h = h} {k = k} pf = begin
+    h               ≈˘⟨ cancelʳ isoˡ ⟩
+    (h ∘ to) ∘ from ≈⟨ pf ⟩∘⟨refl ⟩
+    (k ∘ to) ∘ from ≈⟨ cancelʳ isoˡ ⟩
+    k               ∎
+
+  cancel-toˡ : to ∘ h ≈ to ∘ k → h ≈ k
+  cancel-toˡ {h = h} {k = k} pf = begin
+    h               ≈˘⟨ cancelˡ isoʳ ⟩
+    from ∘ (to ∘ h) ≈⟨ refl⟩∘⟨ pf ⟩
+    from ∘ (to ∘ k) ≈⟨ cancelˡ isoʳ ⟩
+    k               ∎
+
 open Switch public
 
 -- conjugates

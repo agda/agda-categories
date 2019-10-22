@@ -47,6 +47,9 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   ∘-resp-≈ʳ : ∀ {A B C} {f h : A ⇒ B} {g : B ⇒ C} → f ≈ h → g ∘ f ≈ g ∘ h
   ∘-resp-≈ʳ pf = ∘-resp-≈ refl pf
 
+  assoc² : ∀ {A B C D E} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} {i : D ⇒ E} → ((i ∘ h) ∘ g) ∘ f ≈ i ∘ (h ∘ (g ∘ f))
+  assoc² = trans assoc assoc
+
   hom-setoid : ∀ {A B} → Setoid _ _
   hom-setoid {A} {B} = record
     { Carrier       = A ⇒ B
