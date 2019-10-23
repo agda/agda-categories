@@ -40,6 +40,12 @@ module Basic where
 
 open Basic public
 
+module Utils where
+  assoc² : ((i ∘ h) ∘ g) ∘ f ≈ i ∘ (h ∘ (g ∘ f))
+  assoc² = trans assoc assoc
+
+open Utils public
+
 module Pulls (ab≡c : a ∘ b ≈ c) where
 
   pullʳ : (f ∘ a) ∘ b ≈ f ∘ c
