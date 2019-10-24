@@ -145,8 +145,8 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   id₂◁ : id₂ {f = g} ◁ f ≈ id₂
   id₂◁ = ⊚.identity
 
-  ◁id₂ : f ▷ id₂ {f = g} ≈ id₂
-  ◁id₂ = ⊚.identity
+  ▷id₂ : f ▷ id₂ {f = g} ≈ id₂
+  ▷id₂ = ⊚.identity
 
   open hom.HomReasoning
   private
