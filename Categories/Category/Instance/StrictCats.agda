@@ -5,7 +5,6 @@ module Categories.Category.Instance.StrictCats where
 -- The difference here is that _≈_ is not |NaturalIsomorphism| but |_≈F_|
 
 open import Level
-open import Data.Product using (Σ) renaming (_,_ to _,,_)
 open import Relation.Binary.PropositionalEquality using (refl)
 
 open import Categories.Category using (Category)
@@ -23,10 +22,10 @@ Cats o ℓ e = record
   ; _≈_       = _≡F_
   ; id        = id
   ; _∘_       = _∘F_
-  ; assoc     = λ {_ _ _} {D} → (λ _ → refl) ,, λ f → Category.Equiv.refl D
-  ; sym-assoc = λ {_ _ _} {D} → (λ _ → refl) ,, λ f → Category.Equiv.refl D
-  ; identityˡ = λ {_} {B} → (λ _ → refl) ,, λ _ → Category.Equiv.refl B
-  ; identityʳ = λ {_} {B} → (λ _ → refl) ,, λ _ → Category.Equiv.refl B
+  ; assoc     = λ {_ _ _ _ F G H} → ≡F-assoc {F = F} {G} {H}
+  ; sym-assoc = λ {_ _ _ _ F G H} → ≡F-sym-assoc {F = F} {G} {H}
+  ; identityˡ = ≡F-identityˡ
+  ; identityʳ = ≡F-identityʳ
   ; equiv     = ≡F-equiv
-  ; ∘-resp-≈  = λ {A} {B} {C} {f} {h} {g} {i} f≡h g≡i →  ∘F-perserves-≡F {h = f} {h} {g} {i} f≡h g≡i
+  ; ∘-resp-≈  = ∘F-resp-≡F
   }
