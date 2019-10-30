@@ -136,9 +136,10 @@ _※ⁿⁱ_ : ∀ {D₁ : Category o ℓ e} {D₂ : Category o′ ℓ′ e′}
 
 module _ (C₁ : Category o ℓ e) (C₂ : Category o′ ℓ′ e′) (C₃ : Category o″ ℓ″ e″) where
 
-  module C₁ = Category C₁
-  module C₂ = Category C₂
-  module C₃ = Category C₃
+  private
+    module C₁ = Category C₁
+    module C₂ = Category C₂
+    module C₃ = Category C₃
 
   assocˡ : Functor (Product (Product C₁ C₂) C₃) (Product C₁ (Product C₂ C₃))
   assocˡ = record
