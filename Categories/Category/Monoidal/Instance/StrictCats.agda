@@ -18,9 +18,13 @@ open import Categories.Category.Instance.One using (One)
 open import Categories.Category.Monoidal
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Construction.Constant
+open import Categories.Functor.Equivalence
 open import Categories.Category.Product
 open import Categories.Category.Product.Properties
 import Categories.Category.Cartesian as Cartesian
+import Categories.Morphism.HeterogeneousIdentity as HId
+import Categories.Morphism.HeterogeneousIdentity.Properties as HIdProps
+import Categories.Morphism.Reasoning as MR
 open import Categories.Object.Terminal
 open import Categories.Utils.Product using (zipWith)
 open import Categories.Utils.EqReasoning
@@ -30,6 +34,7 @@ module Product {o ℓ e : Level} where
   private
     C = Cats o ℓ e
     open Cartesian C
+    open _≡F_
 
   Cats-has-all : BinaryProducts
   Cats-has-all = record { product = λ {A} {B} → record
@@ -37,41 +42,35 @@ module Product {o ℓ e : Level} where
     ; π₁ = πˡ
     ; π₂ = πʳ
     ; ⟨_,_⟩ = _※_
-    ; project₁ = (λ _ → ≡.refl) , λ _ → Equiv.refl A
-    ; project₂ = (λ _ → ≡.refl) , λ _ → Equiv.refl B
+    ; project₁ = record { eq₀ = λ _ → ≡.refl ; eq₁ = λ _ → MR.id-comm-sym A }
+    ; project₂ = record { eq₀ = λ _ → ≡.refl ; eq₁ = λ _ → MR.id-comm-sym B }
     ; unique = λ {hA} {h} {i} {j} left right →
-      let p₁ X = cong₂ _,_ (≡.sym $ proj₁ left X) (≡.sym $ proj₁ right X) in
-      p₁ , λ {a} {b} f →
-      let la = proj₁ left a in
-      let ra = proj₁ right a in
-      let lb = proj₁ left b in
-      let rb = proj₁ right b in
-      let Fi = Functor.F₁ i f in
-      let Fj = Functor.F₁ j f in
-      let Fh = Functor.F₁ h f in
-      let sL X = subst₂ (_⇒_ A) la lb X in
-      let sR X = subst₂ (_⇒_ B) ra rb X in
-      let ssL X = subst₂ (_⇒_ A) (≡.sym la) (≡.sym lb) X in
-      let ssR X = subst₂ (_⇒_ B) (≡.sym ra) (≡.sym rb) X in
-      (let open HomReasoning A in begin
-      proj₁ (subst₂ (zipWith (_⇒_ A) (_⇒_ B) _×_) (p₁ a) (p₁ b) (Fi , Fj))
-          ≈⟨ ≡⇒≈ $ cong proj₁ $ subst₂-expand (_⇒_ A) (_⇒_ B) _ _ _ _ Fi Fj ⟩
-      ssL Fi
-          ≈˘⟨ subst₂≈ (proj₂ left f) _ _ ⟩
-      ssL (sL $ proj₁ Fh)
-          ≈⟨ ≡⇒≈ $ subst₂-sym-subst₂ (_⇒_ A) la lb ⟩
-      proj₁ Fh ∎) ,
-      let open HomReasoning B in begin
-      proj₂ (subst₂ (zipWith (_⇒_ A) (_⇒_ B) _×_) (p₁ a) (p₁ b) (Fi , Fj))
-          ≈⟨ ≡⇒≈ $ cong proj₂ $ subst₂-expand (_⇒_ A) (_⇒_ B) (≡.sym la) _ _ _ Fi Fj ⟩
-      ssR Fj
-          ≈˘⟨ subst₂≈ (proj₂ right f) _ _ ⟩
-      ssR (sR $ proj₂ Fh)
-          ≈⟨ ≡⇒≈ $ subst₂-sym-subst₂ (_⇒_ B) ra rb ⟩
-      proj₂ Fh ∎
+      let unique-eq₀ X = cong₂ _,_ (≡.sym $ eq₀ left X) (≡.sym $ eq₀ right X)
+      in record
+      { eq₀ = unique-eq₀
+      ; eq₁ = λ {a} {b} f →
+          let module A   = Category A
+              module B   = Category B
+              module C   = Category C
+              module A×B = Category (Product A B)
+              open A×B.HomReasoning
+              open HId
+              open HIdProps
+              open Functor
+              leq a = ≡.sym $ eq₀ left a
+              req a = ≡.sym $ eq₀ right a
+          in begin
+                hid (Product A B) (unique-eq₀ b) A×B.∘ F₁ (i ※ j) f
+              ≈˘⟨ A×B.∘-resp-≈ˡ (×-hid A B (leq b) (req b)) ⟩
+                (hid A (leq b) A.∘ F₁ i f , hid B (req b) B.∘ F₁ j f)
+              ≈⟨ eq₁⁻¹ left f , eq₁⁻¹ right f ⟩
+                F₁ (πˡ C.∘ h) f A.∘ hid A (leq a) ,
+                F₁ (πʳ C.∘ h) f B.∘ hid B (req a)
+              ≈⟨ A×B.∘-resp-≈ʳ (×-hid A B (leq a) (req a)) ⟩
+                (F₁ h f) A×B.∘ (hid (Product A B) (unique-eq₀ a))
+              ∎
+      }
     } }
-    where
-    open Category
 
   private
     unique-One : {l : Level} (x : Lift l ⊤) → lift tt ≡ x
@@ -81,7 +80,7 @@ module Product {o ℓ e : Level} where
   One-⊤ = record
     { ⊤ = One
     ; ! = const (lift tt)
-    ; !-unique = λ f → (λ X → unique-One (Functor.F₀ f X)) , λ _ → lift tt
+    ; !-unique = λ f → record { eq₀ = λ _ → unique-One _ ; eq₁ = λ _ → lift tt }
     }
 
   Cats-is : Cartesian

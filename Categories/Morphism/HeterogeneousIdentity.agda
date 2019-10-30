@@ -67,13 +67,13 @@ hid-cong refl = Equiv.refl
 -- Transporting the domain/codomain is the same as
 -- pre/post-composing with heterogeneous identity.
 
-hid-subst-dom : ∀ {A B C} (p : A ≡ B) (f : A ⇒ C) →
-                subst (_⇒ C) p f ≈ f ∘ hid (sym p)
+hid-subst-dom : ∀ {A B C} (p : A ≡ B) (f : B ⇒ C) →
+                subst (_⇒ C) (sym p) f ≈ f ∘ hid p
 hid-subst-dom refl f = Equiv.sym identityʳ
 
-hid-subst-cod : ∀ {A B C} (p : B ≡ C) (f : A ⇒ B) →
+hid-subst-cod : ∀ {A B C} (f : A ⇒ B) (p : B ≡ C) →
                 subst (A ⇒_) p f ≈ hid p ∘ f
-hid-subst-cod refl f = Equiv.sym identityˡ
+hid-subst-cod f refl = Equiv.sym identityˡ
 
 hid-subst₂ : ∀ {A B C D} (p : A ≡ B) (q : C ≡ D) (f : A ⇒ C) →
              subst₂ (_⇒_) p q f ≈ hid q ∘ f ∘ hid (sym p)
