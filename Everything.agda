@@ -65,6 +65,7 @@ import Categories.Category.Instance.StrictGroupoids
 import Categories.Category.Instance.Zero
 import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
+import Categories.Category.Monoidal.Braided.Properties
 import Categories.Category.Monoidal.Closed
 import Categories.Category.Monoidal.Closed.IsClosed
 import Categories.Category.Monoidal.Enriched
