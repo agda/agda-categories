@@ -175,6 +175,54 @@ module _ where
 module _ where
   open _≅_
 
+  -- We can flip an iso f in a commuting triangle, like so:
+  --
+  --          f                       f⁻¹
+  --    A --------> B            A <-------- B
+  --     \    ≃    /              \    ≃    /
+  --      \       /                \       /
+  --     g \     / h     ===>     g \     / h
+  --        \   /                    \   /
+  --         V V                      V V
+  --          C                        C
+  --
+  flip-iso : (f : A ≅ B) {g : A ⇒ C} {h : B ⇒ C} →
+             g ≈ h ∘ from f → g ∘ to f ≈ h
+  flip-iso f {g} {h} tr₁ = begin
+    g ∘ to f            ≈⟨ pushˡ tr₁ ⟩
+    h ∘ from f ∘ to f   ≈⟨ elimʳ (isoʳ f) ⟩
+    h                   ∎
+    where
+      open HomReasoning
+      open MR 𝒞
+
+  -- Consider two commuting squares
+  --
+  --         f₁                      f₂
+  --    A -------> B            A -------> B
+  --    |          |            |          |
+  --    |          |            |          |
+  --  ≃ | h₁       | h₂       ≃ | h₁       | h₂
+  --    |          |            |          |
+  --    V          V            V          V
+  --    C -------> D            C -------> D
+  --         g₁                      g₂
+  --
+  -- with h₁ an isomorphism.  Then g₁ ≈ g₂ if f₁ ≈ f₂.
+
+  push-eq : (h₁ : A ≅ C) {f₁ f₂ : A ⇒ B} {g₁ g₂ : C ⇒ D} {h₂ : B ⇒ D} →
+            CommutativeSquare f₁ (from h₁) h₂ g₁ →
+            CommutativeSquare f₂ (from h₁) h₂ g₂ →
+            f₁ ≈ f₂ → g₁ ≈ g₂
+  push-eq h₁ {f₁} {f₂} {g₁} {g₂} {h₂} sq₁ sq₂ hyp = begin
+    g₁                  ≈˘⟨ flip-iso h₁ sq₁ ⟩
+    (h₂ ∘ f₁) ∘ to h₁   ≈⟨ ∘-resp-≈ˡ (∘-resp-≈ʳ hyp) ⟩
+    (h₂ ∘ f₂) ∘ to h₁   ≈⟨ flip-iso h₁ sq₂ ⟩
+    g₂                  ∎
+    where
+      open HomReasoning
+      open MR 𝒞
+
   -- projecting isomorphism commutations to morphism commutations
 
   project-triangle : {g : A ≅ B} {f : C ≅ A} {h : C ≅ B} → g ∘ᵢ f ≃ h → from g ∘ from f ≈ from h
