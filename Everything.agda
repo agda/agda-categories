@@ -140,6 +140,8 @@ import Categories.Monad.Strong
 import Categories.Morphism
 import Categories.Morphism.Cartesian
 import Categories.Morphism.Duality
+import Categories.Morphism.HeterogeneousIdentity
+import Categories.Morphism.HeterogeneousIdentity.Properties
 import Categories.Morphism.IsoEquiv
 import Categories.Morphism.Isomorphism
 import Categories.Morphism.Properties
