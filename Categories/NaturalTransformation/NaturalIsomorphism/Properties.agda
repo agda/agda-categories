@@ -9,14 +9,34 @@ open import Categories.Functor renaming (id to idF)
 open import Categories.NaturalTransformation.NaturalIsomorphism
 
 import Categories.Morphism as Mor
+import Categories.Morphism.Isomorphism as IR
 import Categories.Morphism.Properties as Morₚ
 import Categories.Morphism.Reasoning as MR
 
 private
-  variable 
+  variable
     o ℓ e : Level
     C D : Category o ℓ e
 
+
+
+module _ {F G : Functor C D} (α : NaturalIsomorphism F G) where
+  private module C = Category C
+  open Category D
+  open Mor D
+  open Functor F
+  open Functor G renaming (F₀ to G₀; F₁ to G₁)
+  open NaturalIsomorphism α
+
+  -- We can move equations along natural isomorphism.
+
+  module _ {A B} {f g : A C.⇒ B} where
+
+    push-eq : F₁ f ≈ F₁ g → G₁ f ≈ G₁ g
+    push-eq hyp = IR.push-eq D FX≅GX (⇒.commute f) (⇒.commute g) hyp
+
+    pull-eq : G₁ f ≈ G₁ g → F₁ f ≈ F₁ g
+    pull-eq hyp = IR.push-eq D (≅.sym FX≅GX) (⇐.commute f) (⇐.commute g) hyp
 
 -- properties of natural isomorphisms over an endofunctor
 module _ {F : Endofunctor C} where
@@ -34,7 +54,7 @@ module _ {F : Endofunctor C} where
     open Mor C
     open Morₚ C
     open NaturalIsomorphism α
-    
+
     F≃id-comm₁ : ∀ {A} → ⇒.η (F₀ A) ≈ F₁ (⇒.η A)
     F≃id-comm₁ {A} = begin
       ⇒.η (F₀ A)                           ≈⟨ introʳ (F-resp-≈ (iso.isoˡ _) ○ identity) ⟩
