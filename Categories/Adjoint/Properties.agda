@@ -16,6 +16,9 @@ open import Categories.Functor.Bifunctor
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.NaturalTransformation
 open import Categories.Monad
+open import Categories.Monad.Duality
+open import Categories.Comonad
+
 import Categories.Diagram.Colimit as Col
 import Categories.Diagram.Duality as Duality
 
@@ -200,3 +203,8 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
           μ′ = R ∘ˡ counit ∘ʳ L
           module μ′ = NaturalTransformation μ′
           
+module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
+  open Adjoint L⊣R
+
+  adjoint⇒comonad : Comonad D
+  adjoint⇒comonad = coMonad⇒Comonad D (adjoint⇒monad op)

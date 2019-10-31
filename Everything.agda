@@ -15,9 +15,9 @@ import Categories.Bicategory.Instance.Cats
 import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
-import Categories.Category.Cartesian.Properties
 import Categories.Category.CartesianClosed
 import Categories.Category.CartesianClosed.Locally
+import Categories.Category.Cartesian.Properties
 import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
@@ -140,6 +140,7 @@ import Categories.Functor.Slice
 import Categories.GlobularSet
 import Categories.Kan
 import Categories.Monad
+import Categories.Monad.Duality
 import Categories.Monad.Strong
 import Categories.Morphism
 import Categories.Morphism.Cartesian
