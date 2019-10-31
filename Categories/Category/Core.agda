@@ -25,6 +25,8 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   field
     assoc     : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → (h ∘ g) ∘ f ≈ h ∘ (g ∘ f)
+    -- we add a symmetric proof of associativity so that the opposite category of the opposite category
+    -- is definitionally equal to the original category. see how `op` is implemented.
     sym-assoc : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → h ∘ (g ∘ f) ≈ (h ∘ g) ∘ f
     identityˡ : ∀ {A B} {f : A ⇒ B} → id ∘ f ≈ f
     identityʳ : ∀ {A B} {f : A ⇒ B} → f ∘ id ≈ f
