@@ -9,11 +9,13 @@ open import Categories.Adjoint
 open import Categories.Adjoint.RAPL public
 open import Categories.Category
 open import Categories.Functor
+open import Categories.Functor.Properties
 open import Categories.Functor.Continuous
 open import Categories.Functor.Cocontinuous
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.NaturalTransformation
+open import Categories.Monad
 import Categories.Diagram.Colimit as Col
 import Categories.Diagram.Duality as Duality
 
@@ -157,9 +159,44 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) (F : Functor J C)
   lapc col = Duality.coLimit⇒Colimit D (rapl (Adjoint.op L⊣R) F.op (Duality.Colimit⇒coLimit C col))
 
 module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
-
+  private
+    module C = Category C
+    module D = Category D
+    module L = Functor L
+    module R = Functor R
+    open Adjoint L⊣R
+  
   rapl′ : ∀ {o ℓ e} → Continuous o ℓ e R
   rapl′ lim = rapl L⊣R _ lim , Mor.≅.refl C
 
   lapc′ : ∀ {o ℓ e} → Cocontinuous o ℓ e L
   lapc′ col = lapc L⊣R _ col , Mor.≅.refl D
+
+  adjoint⇒monad : Monad C
+  adjoint⇒monad = record
+    { F         = R ∘F L
+    ; η         = unit
+    ; μ         = record
+      { η       = μ′.η
+      ; commute = μ′.commute
+      }
+    ; assoc     = λ {X} → begin
+      μ′.η X ∘ R.F₁ (L.F₁ (μ′.η X)) ∘ C.id   ≈⟨ refl⟩∘⟨ identityʳ ⟩
+      μ′.η X ∘ R.F₁ (L.F₁ (μ′.η X))          ≈⟨ [ R ]-resp-square (counit.commute _) ⟩
+      μ′.η X ∘ μ′.η (R.F₀ (L.F₀ X))          ∎
+    ; identityˡ = λ {X} → begin
+      μ′.η X ∘ R.F₁ (L.F₁ (unit.η X)) ∘ C.id ≈⟨ refl⟩∘⟨ identityʳ ⟩
+      μ′.η X ∘ R.F₁ (L.F₁ (unit.η X))        ≈⟨ [ R ]-resp-∘ zig ⟩
+      R.F₁ D.id                              ≈⟨ R.identity ⟩
+      C.id                                   ∎
+    ; identityʳ = λ {X} → begin
+      μ′.η X ∘ unit.η (R.F₀ (L.F₀ X)) ∘ C.id ≈⟨ refl⟩∘⟨ identityʳ ⟩
+      μ′.η X ∘ unit.η (R.F₀ (L.F₀ X))        ≈⟨ zag ⟩
+      C.id                                   ∎
+    }
+    where open C
+          open HomReasoning
+          μ′ : NaturalTransformation (R ∘F (L ∘F R) ∘F L) (R ∘F Categories.Functor.id ∘F L)
+          μ′ = R ∘ˡ counit ∘ʳ L
+          module μ′ = NaturalTransformation μ′
+          
