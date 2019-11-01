@@ -28,33 +28,37 @@ private
   B : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X
   B {X} {Y} = braiding.⇒.η (X , Y)
 
-  -- sstucki: the structure of this proof is not obvious, and there
-  -- are no references to the literature.  It would be nice to give a
-  -- high-level, informal explanation of the proof.  For example, what
-  -- is the intuition behind the following lemma?  Why is it
-  -- necessary/useful in the final proof?
-
-  hexagon-lemma : [ (X ⊗₀ unit) ⊗₀ unit ⇒ unit ⊗₀ X ]⟨
-                    B  ⊗₁ id                    ⇒⟨ (unit ⊗₀ X) ⊗₀ unit ⟩
-                    associator.from             ⇒⟨ unit ⊗₀ X ⊗₀ unit ⟩
-                    id ⊗₁ B                     ⇒⟨ unit ⊗₀ unit ⊗₀ X ⟩
-                    unitorˡ.from
-                  ≈ unitorʳ.from                ⇒⟨ X ⊗₀ unit ⟩
-                    B
-                  ⟩
-  hexagon-lemma = begin
-                  unitorˡ.from ∘ id ⊗₁ B ∘ associator.from ∘ B ⊗₁ id      ≈⟨ refl⟩∘⟨ hexagon₁ ⟩
-                  unitorˡ.from ∘ associator.from ∘ B ∘ associator.from    ≈⟨ pullˡ coherence₁ ⟩
-                  unitorˡ.from ⊗₁ id ∘ B ∘ associator.from                ≈˘⟨ pushˡ (braiding.⇒.commute _) ⟩
-                  (B ∘ id ⊗₁ unitorˡ.from) ∘ associator.from              ≈⟨ pullʳ triangle ⟩
-                  B ∘ unitorʳ.from ⊗₁ id                                  ≈⟨ refl⟩∘⟨ unitor-coherenceʳ ⟩
-                  B ∘ unitorʳ.from
-                  ∎
 
   -- It's easier to prove the following lemma, which is the desired
   -- coherence theorem moduolo application of the |-⊗ unit| functor.
   -- Because |-⊗ unit| is equivalent to the identity functor, the
   -- lemma and the theorem are equivalent.
+
+  -- The following diagram illustrates the hexagon that we are
+  -- operating on. The main outer hexagon is hexagon₁, the braiding
+  -- coherence, instantiated with X, 1 and 1 (Here we denote the unit
+  -- by 1 for brevity).
+  -- In the middle are X1 and 1X along with morphisms towards them.
+  -- The lower hexagon (given by the double lines) commutes and is
+  -- an intermediary in the final proof. It is there to effectively
+  -- get rid of the top half of the main hexagon.
+  -- The rest of the proof is isolating the bottom left triangle
+  -- which represents our desired identity. It is doing that by
+  -- proving that the pentagon to the right of it commutes.
+  -- The pentagon commuting is, in turn, proved by gluing the
+  -- rightmost "square" onto the middle triangle.
+  --
+  --
+  --       ┌─────>  X(11)  ─────────>  (11)X ──────┐
+  --      ┌┘ α        │        B         │       α └┐
+  --     ┌┘           │id⊗λ              │λ⊗id     └┐
+  --    ┌┘            V                  V           V
+  --  (X1)1 ═══════> X1  ════════════>  1X <══════ 1(1X)
+  --    ╚╗   ρ⊗id     Λ <───┐  B              λ      Λ
+  --     ╚╗           │λ⊗id └────────┐              ╔╝
+  --      ╚╗          │           λ   └┐           ╔╝
+  --       ╚═════>  (1X)1  ═════════>  1(X1)  ═════╝
+  --       B⊗id                α                id⊗B
 
   braiding-coherence⊗unit : [ (X ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ unit ]⟨
                B ⊗₁ id                       ⇒⟨ (unit ⊗₀ X) ⊗₀ unit ⟩
@@ -65,8 +69,10 @@ private
     begin
       B ∘ unitorˡ.from ⊗₁ id ∘ B ⊗₁ id                               ≈⟨ pullˡ (⟺ (glue◽◃ unitorˡ-commute-from coherence₁)) ⟩
       (unitorˡ.from ∘ id ⊗₁ B ∘ associator.from) ∘ B ⊗₁ id           ≈⟨ assoc²' ⟩
-      unitorˡ.from ∘ id ⊗₁ B ∘ associator.from ∘ B ⊗₁ id             ≈⟨ hexagon-lemma ⟩
-      B ∘ unitorʳ.from                                               ≈˘⟨ refl⟩∘⟨ unitor-coherenceʳ ⟩
+      unitorˡ.from ∘ id ⊗₁ B ∘ associator.from ∘ B ⊗₁ id             ≈⟨ refl⟩∘⟨ hexagon₁ ⟩
+      unitorˡ.from ∘ associator.from ∘ B ∘ associator.from            ≈⟨ pullˡ coherence₁ ⟩
+      unitorˡ.from ⊗₁ id ∘ B ∘ associator.from                       ≈˘⟨ pushˡ (braiding.⇒.commute _) ⟩
+      (B ∘ id ⊗₁ unitorˡ.from) ∘ associator.from                     ≈⟨ pullʳ triangle ⟩
       B ∘ unitorʳ.from ⊗₁ id
     ∎)
 
