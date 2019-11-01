@@ -75,8 +75,8 @@ module Kelly's  {X Y : Obj} where
                 uλ
               ⟩
   perimeter = ⟺ (glue◃◽′ triangle-iso
-                           (sym (lift-square′ (Equiv.trans assoc-commute-from
-                                                           (∘-resp-≈ˡ (F-resp-≈ ⊗ (Equiv.refl , identity ⊗)))))))
+                           (sym (lift-square (Equiv.trans assoc-commute-from
+                                                          (∘-resp-≈ˡ (F-resp-≈ ⊗ (Equiv.refl , identity ⊗)))))))
     where open MR Core
 
   [uλ]Y : (unit ⊗₀ (unit ⊗₀ X)) ⊗₀ Y ≅ (unit ⊗₀ X) ⊗₀ Y
@@ -89,10 +89,10 @@ module Kelly's  {X Y : Obj} where
   [ρX]Y = (unitorʳ ⊗ᵢ ≅.refl) ⊗ᵢ ≅.refl
 
   tri : [uλ]Y ∘ᵢ aY ≃ [ρX]Y
-  tri = lift-triangle′ ([ appʳ ⊗ Y ]-resp-∘ triangle)
+  tri = lift-triangle ([ appʳ ⊗ Y ]-resp-∘ triangle)
 
   sq : associator ∘ᵢ [uλ]Y ≃ u[λY] ∘ᵢ associator
-  sq = lift-square′ assoc-commute-from
+  sq = lift-square assoc-commute-from
 
   -- proofs
 
@@ -123,19 +123,19 @@ module Kelly's  {X Y : Obj} where
                       ≅.sym unitorˡ ∘ᵢ unitorˡ
                     ≈ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ ≅.sym unitorˡ
                     ⟩
-          square₁ = lift-square′ unitorˡ-commute-to
+          square₁ = lift-square unitorˡ-commute-to
 
           square₂ : [ (unit ⊗₀ X) ⊗₀ Y ⇒ unit ⊗₀ unit ⊗₀ X ⊗₀ Y ]⟨
                       ≅.sym unitorˡ ∘ᵢ associator
                     ≈ ≅.refl ⊗ᵢ associator ∘ᵢ ≅.sym unitorˡ
                     ⟩
-          square₂ = lift-square′ unitorˡ-commute-to
+          square₂ = lift-square unitorˡ-commute-to
 
           square₃ : [ (unit ⊗₀ X) ⊗₀ Y ⇒ unit ⊗₀ X ⊗₀ Y ]⟨
                       ≅.sym unitorˡ ∘ᵢ unitorˡ ⊗ᵢ ≅.refl
                     ≈ ≅.refl ⊗ᵢ unitorˡ ⊗ᵢ ≅.refl ∘ᵢ ≅.sym unitorˡ
                     ⟩
-          square₃ = lift-square′ unitorˡ-commute-to
+          square₃ = lift-square unitorˡ-commute-to
 
   coherence₁ : unitorˡ.from ∘ associator.from ≈ unitorˡ.from {X} ⊗₁ C.id {Y}
   coherence₁ = project-triangle coherence-iso₁
@@ -161,7 +161,7 @@ module Kelly's  {X Y : Obj} where
                ≈ ρu                                ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⟩
                  associator
                ⟩
-  perimeter″ = glue▹◽ triangle-iso (sym (lift-square′
+  perimeter″ = glue▹◽ triangle-iso (sym (lift-square
       (Equiv.trans (∘-resp-≈ʳ (F-resp-≈ ⊗ (Equiv.sym (identity ⊗) , Equiv.refl)))
                     assoc-commute-from)))
     where open MR Core
@@ -182,30 +182,30 @@ module Kelly's  {X Y : Obj} where
      α ∘ᵢ ρu                                                       ∎
 
   top-face′ : [Xρ]u ∘ᵢ au ≃ ρu
-  top-face′ = cut-squareʳ perimeter‴ (sym (glue◃◽′ tri′ (sym (lift-square′ assoc-commute-from))))
+  top-face′ = cut-squareʳ perimeter‴ (sym (glue◃◽′ tri′ (sym (lift-square assoc-commute-from))))
     where open MR Core
           tri′ : [ X ⊗₀ (Y ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit ]⟨
                  (≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ ≅.refl ⊗ᵢ associator)
                ≈ ≅.refl ⊗ᵢ unitorʳ ⊗ᵢ ≅.refl
                ⟩
-          tri′ = lift-triangle′ ([ X ⊗- ]-resp-∘ triangle)
+          tri′ = lift-triangle ([ X ⊗- ]-resp-∘ triangle)
 
   coherence-iso₂ : [ (X ⊗₀ Y) ⊗₀ unit ⇒ X ⊗₀ Y ]⟨
                      ≅.refl ⊗ᵢ unitorʳ ∘ᵢ associator
                    ≈ unitorʳ
                    ⟩
-  coherence-iso₂ = triangle-prism top-face′ square₁ square₂ (lift-square′ unitorʳ-commute-to)
+  coherence-iso₂ = triangle-prism top-face′ square₁ square₂ (lift-square unitorʳ-commute-to)
     where square₁ : [ X ⊗₀ Y ⊗₀ unit ⇒ (X ⊗₀ Y) ⊗₀ unit ]⟨
                       ≅.sym unitorʳ ∘ᵢ ≅.refl ⊗ᵢ unitorʳ
                     ≈ (≅.refl ⊗ᵢ unitorʳ) ⊗ᵢ ≅.refl ∘ᵢ ≅.sym unitorʳ
                     ⟩
-          square₁ = lift-square′ unitorʳ-commute-to
+          square₁ = lift-square unitorʳ-commute-to
 
           square₂ : [ (X ⊗₀ Y) ⊗₀ unit ⇒ (X ⊗₀ Y ⊗₀ unit) ⊗₀ unit ]⟨
                       ≅.sym unitorʳ ∘ᵢ associator
                     ≈ associator ⊗ᵢ ≅.refl ∘ᵢ ≅.sym unitorʳ
                     ⟩
-          square₂ = lift-square′ unitorʳ-commute-to
+          square₂ = lift-square unitorʳ-commute-to
 
   coherence₂ : C.id {X} ⊗₁ unitorʳ.from {Y} ∘ associator.from ≈ unitorʳ.from
   coherence₂ = project-triangle coherence-iso₂

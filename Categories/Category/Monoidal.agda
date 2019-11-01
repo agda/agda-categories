@@ -29,7 +29,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism
   hiding (unitorˡ; unitorʳ; associator; _≃_)
 open import Categories.Morphism C using (_≅_; module ≅)
 open import Categories.Morphism.IsoEquiv C using (_≃_; ⌞_⌟)
-open import Categories.Morphism.Isomorphism C using (_∘ᵢ_; lift-triangle′; lift-pentagon′)
+open import Categories.Morphism.Isomorphism C using (_∘ᵢ_; lift-triangle; lift-pentagon)
 open import Categories.Morphism.Reasoning C
 
 private
@@ -204,12 +204,12 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
     where open _≅_
 
   triangle-iso : ≅.refl ⊗ᵢ unitorˡ ∘ᵢ associator ≃ unitorʳ {X} ⊗ᵢ ≅.refl {Y}
-  triangle-iso = lift-triangle′ triangle
+  triangle-iso = lift-triangle triangle
 
   pentagon-iso :
       ≅.refl ⊗ᵢ associator ∘ᵢ associator ∘ᵢ associator {X} {Y} {Z} ⊗ᵢ ≅.refl {W}
     ≃ associator ∘ᵢ associator
-  pentagon-iso = lift-pentagon′ pentagon
+  pentagon-iso = lift-pentagon pentagon
 
   refl⊗refl≃refl : ≅.refl {A} ⊗ᵢ ≅.refl {B} ≃ ≅.refl
   refl⊗refl≃refl = ⌞ identity ⌟
