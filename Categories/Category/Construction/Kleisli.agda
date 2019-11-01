@@ -28,9 +28,7 @@ Kleisli {𝒞 = 𝒞} M = record
   }
   where
   module M = Monad M
-  open M using (μ; η; F)
-  module μ = NaturalTransformation μ
-  module η = NaturalTransformation η
+  open M using (module μ; module η; F)
   open Functor F
   open Category 𝒞
   open Equiv
