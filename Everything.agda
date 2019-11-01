@@ -1,5 +1,6 @@
 import Categories.2-Category
 import Categories.Adjoint
+import Categories.Adjoint.Construction.EilenbergMoore
 import Categories.Adjoint.Equivalence
 import Categories.Adjoint.Instance.0-Truncation
 import Categories.Adjoint.Instance.Core
@@ -31,6 +32,7 @@ import Categories.Category.Construction.Comma
 import Categories.Category.Construction.Cones
 import Categories.Category.Construction.Coproduct
 import Categories.Category.Construction.Core
+import Categories.Category.Construction.EilenbergMoore
 import Categories.Category.Construction.Elements
 import Categories.Category.Construction.F-Algebras
 import Categories.Category.Construction.Fin

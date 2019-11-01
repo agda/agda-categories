@@ -38,7 +38,7 @@ EilenbergMoore = record
   ; _≈_       = λ f g → Module⇒.arr f ≈ Module⇒.arr g
   ; id        = record
     { arr     = C.id
-    ; commute = ⟺ id-comm ○ ∘-resp-≈ʳ (⟺ identity)
+    ; commute = id-comm-sym ○ ∘-resp-≈ʳ (⟺ identity)
     }
   ; _∘_       = compose
   ; assoc     = assoc

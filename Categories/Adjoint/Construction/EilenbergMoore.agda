@@ -50,11 +50,11 @@ FF≃F : Forgetful ∘F Free ≃ M.F
 FF≃F = record
   { F⇒G = record
     { η       = λ X → F₁ C.id
-    ; commute = λ f → [ M.F ]-resp-square (⟺ id-comm)
+    ; commute = λ f → [ M.F ]-resp-square id-comm-sym
     }
   ; F⇐G = record
     { η       = λ X → F₁ C.id
-    ; commute = λ f → [ M.F ]-resp-square (⟺ id-comm)
+    ; commute = λ f → [ M.F ]-resp-square id-comm-sym
     }
   ; iso = λ X → record
     { isoˡ = elimˡ identity ○ identity
