@@ -1,19 +1,9 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
 
--- Mainly *properties* of isomorphisms, and a lot of other things too
-
--- TODO: split things up more semantically?
+-- Properties of isomorphisms
 
 module Categories.Morphism.Isomorphism {o ℓ e} (𝒞 : Category o ℓ e) where
-
-open import Level using (_⊔_)
-open import Function using (flip)
-
-open import Data.Product using (_,_)
-open import Relation.Binary using (Rel; _Preserves_⟶_; IsEquivalence)
-open import Relation.Binary.Construct.Closure.Transitive
-open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 import Categories.Category.Construction.Core as Core
 open import Categories.Category.Groupoid using (IsGroupoid)
@@ -21,13 +11,12 @@ import Categories.Category.Groupoid.Properties as GroupoidProps
 import Categories.Morphism as Morphism
 import Categories.Morphism.Properties as MorphismProps
 import Categories.Morphism.IsoEquiv as IsoEquiv
+import Categories.Morphism.Reasoning as MR
 
 open Core 𝒞 using (Core; Core-isGroupoid; CoreGroupoid)
 open Morphism 𝒞
 open MorphismProps 𝒞
 open IsoEquiv 𝒞 using (_≃_; ⌞_⌟)
-
-import Categories.Morphism.Reasoning as MR
 
 open Category 𝒞
 
