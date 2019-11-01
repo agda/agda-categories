@@ -16,6 +16,10 @@ record Comonad {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
     ε : NaturalTransformation F id
     δ : NaturalTransformation F (F ∘F F)
 
+  module F = Functor F
+  module ε = NaturalTransformation ε
+  module δ = NaturalTransformation δ
+
   open Functor F
 
   field

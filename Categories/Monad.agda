@@ -16,7 +16,11 @@ record Monad {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
     η : NaturalTransformation id F
     μ : NaturalTransformation (F ∘F F) F
 
-  open Functor F
+  module F = Functor F
+  module η = NaturalTransformation η
+  module μ = NaturalTransformation μ
+
+  open F
 
   field
     assoc     : μ ∘ᵥ (F ∘ˡ μ) ∘ᵥ (F⇒G (associator F F F)) ≃ μ ∘ᵥ (μ ∘ʳ F)
