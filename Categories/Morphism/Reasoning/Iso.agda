@@ -7,21 +7,21 @@ open import Categories.Category
   both for Category (Switch) and IsGroupoid (GroupoidR)
 -}
 
-module Categories.Morphism.Reasoning.Iso {o ℓ e} (C : Category o ℓ e) where
+module Categories.Morphism.Reasoning.Iso {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
 open import Function renaming (id to idᶠ; _∘_ to _∙_)
 
 open import Categories.Category.Groupoid using (IsGroupoid)
-open import Categories.Morphism C
-open import Categories.Morphism.Reasoning.Core C
+open import Categories.Morphism 𝒞
+open import Categories.Morphism.Reasoning.Core 𝒞
 
 open import Relation.Binary hiding (_⇒_)
 
-open Category C
+open Category 𝒞
 private
   variable
-    A B X Y : Obj
+    A B C D X Y : Obj
     f g h k : X ⇒ Y
 
 open HomReasoning
@@ -83,6 +83,48 @@ module Switch (i : X ≅ Y) where
 
 open Switch public
 
+module _ where
+  open _≅_
+
+  -- We can flip an iso f in a commuting triangle, like so:
+  --
+  --          f                       f⁻¹
+  --    A --------> B            A <-------- B
+  --     \    ≃    /              \    ≃    /
+  --      \       /                \       /
+  --     g \     / h     ===>     g \     / h
+  --        \   /                    \   /
+  --         V V                      V V
+  --          C                        C
+  --
+  flip-iso : (f : A ≅ B) {g : A ⇒ C} {h : B ⇒ C} →
+             g ≈ h ∘ from f → g ∘ to f ≈ h
+  flip-iso f tr₁ = sym (switch-fromtoʳ f (sym tr₁))
+
+  -- Consider two commuting squares
+  --
+  --         f₁                      f₂
+  --    A -------> B            A -------> B
+  --    |          |            |          |
+  --    |          |            |          |
+  --  ≃ | h₁       | h₂       ≃ | h₁       | h₂
+  --    |          |            |          |
+  --    V          V            V          V
+  --    C -------> D            C -------> D
+  --         g₁                      g₂
+  --
+  -- with h₁ an isomorphism.  Then g₁ ≈ g₂ if f₁ ≈ f₂.
+
+  push-eq : (h₁ : A ≅ C) {f₁ f₂ : A ⇒ B} {g₁ g₂ : C ⇒ D} {h₂ : B ⇒ D} →
+            CommutativeSquare f₁ (from h₁) h₂ g₁ →
+            CommutativeSquare f₂ (from h₁) h₂ g₂ →
+            f₁ ≈ f₂ → g₁ ≈ g₂
+  push-eq h₁ {f₁} {f₂} {g₁} {g₂} {h₂} sq₁ sq₂ hyp = begin
+    g₁                  ≈˘⟨ flip-iso h₁ sq₁ ⟩
+    (h₂ ∘ f₁) ∘ to h₁   ≈⟨ ∘-resp-≈ˡ (∘-resp-≈ʳ hyp) ⟩
+    (h₂ ∘ f₂) ∘ to h₁   ≈⟨ flip-iso h₁ sq₂ ⟩
+    g₂                  ∎
+
 -- conjugates
 module _ (i : A ≅ B) (j : X ≅ Y) where
   private
@@ -105,7 +147,7 @@ module _ (i : A ≅ B) (j : X ≅ Y) where
     (j.from ∘ g) ∘ id            ≈⟨ identityʳ ⟩
     j.from ∘ g                   ∎
 
-module GroupoidR (G : IsGroupoid C) where
+module GroupoidR (G : IsGroupoid 𝒞) where
   open IsGroupoid G using (_⁻¹; iso; equiv-obj)
 
   switch-fromtoˡ′ : f ∘ h ≈ k → h ≈ f ⁻¹ ∘ k
