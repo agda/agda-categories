@@ -23,7 +23,7 @@ record Functor (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o �
 
   field
     F₀ : C.Obj → D.Obj
-    F₁ : ∀ {A B} → C [ A , B ] → D [ F₀ A , F₀ B ]
+    F₁ : ∀ {A B} (f : C [ A , B ]) → D [ F₀ A , F₀ B ]
 
     identity     : ∀ {A} → D [ F₁ (C.id {A}) ≈ D.id ]
     homomorphism : ∀ {X Y Z} {f : C [ X , Y ]} {g : C [ Y , Z ]} →

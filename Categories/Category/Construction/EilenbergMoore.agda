@@ -7,15 +7,13 @@ module Categories.Category.Construction.EilenbergMoore {o ℓ e} {C : Category o
 
 open import Level
 
-open import Categories.Functor
-open import Categories.NaturalTransformation
 open import Categories.Morphism.Reasoning C
 
 private
   module C = Category C
   module M = Monad M
   open C
-  open Functor M.F
+  open M.F
   open HomReasoning
 
 record Module : Set (o ⊔ ℓ ⊔ e) where
