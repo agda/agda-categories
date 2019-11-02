@@ -44,6 +44,9 @@ module Utils where
   assoc² : ((i ∘ h) ∘ g) ∘ f ≈ i ∘ (h ∘ (g ∘ f))
   assoc² = trans assoc assoc
 
+  assoc²' : (i ∘ (h ∘ g)) ∘ f ≈ i ∘ (h ∘ (g ∘ f))
+  assoc²' = trans assoc (∘-resp-≈ʳ assoc)
+
 open Utils public
 
 module Pulls (ab≡c : a ∘ b ≈ c) where
