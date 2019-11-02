@@ -19,9 +19,9 @@ coMonad⇒Comonad M = record
     { F         = Functor.op F
     ; ε         = NaturalTransformation.op η
     ; δ         = NaturalTransformation.op μ
-    ; assoc     = identityˡ ○ sym M.assoc ○ ∘-resp-≈ˡ identityˡ
-    ; identityˡ = sym-assoc ○ M.identityˡ
-    ; identityʳ = sym-assoc ○ M.identityʳ
+    ; assoc     = sym M.assoc
+    ; identityˡ = M.identityˡ
+    ; identityʳ = M.identityʳ
     }
   where module M = Monad M
         open M using (F; η; μ)
@@ -31,9 +31,9 @@ Comonad⇒coMonad M = record
     { F         = Functor.op F
     ; η         = NaturalTransformation.op ε
     ; μ         = NaturalTransformation.op δ
-    ; assoc     = ∘-resp-≈ˡ identityˡ ○ sym M.assoc ○ identityˡ
-    ; identityˡ = assoc ○ M.identityˡ
-    ; identityʳ = assoc ○ M.identityʳ
+    ; assoc     = sym M.assoc
+    ; identityˡ = M.identityˡ
+    ; identityʳ = M.identityʳ
     }
   where module M = Comonad M
         open M using (F; ε; δ)

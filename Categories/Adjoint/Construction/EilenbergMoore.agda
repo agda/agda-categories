@@ -34,8 +34,8 @@ Free = record
   { F₀           = λ A → record
     { A        = F₀ A
     ; action   = M.μ.η A
-    ; commute  = ∘-resp-≈ʳ (⟺ identityʳ) ○ M.assoc
-    ; identity = ∘-resp-≈ʳ (⟺ identityʳ) ○ M.identityʳ
+    ; commute  = M.assoc
+    ; identity = M.identityʳ
     }
   ; F₁           = λ f → record
     { arr     = F₁ f
@@ -77,6 +77,6 @@ Free⊣Forgetful = record
         }
     ; commute = λ f → ⟺ (Module⇒.commute f)
     }
-  ; zig    = ∘-resp-≈ʳ (⟺ identityʳ) ○ M.identityˡ
+  ; zig    = M.identityˡ
   ; zag    = λ {B} → Module.identity B
   }

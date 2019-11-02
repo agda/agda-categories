@@ -183,19 +183,12 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
       { η       = μ′.η
       ; commute = μ′.commute
       }
-    ; assoc     = λ {X} → begin
-      μ′.η X ∘ R.F₁ (L.F₁ (μ′.η X)) ∘ C.id   ≈⟨ refl⟩∘⟨ identityʳ ⟩
-      μ′.η X ∘ R.F₁ (L.F₁ (μ′.η X))          ≈⟨ [ R ]-resp-square (counit.commute _) ⟩
-      μ′.η X ∘ μ′.η (R.F₀ (L.F₀ X))          ∎
+    ; assoc     = [ R ]-resp-square (counit.commute _)
     ; identityˡ = λ {X} → begin
-      μ′.η X ∘ R.F₁ (L.F₁ (unit.η X)) ∘ C.id ≈⟨ refl⟩∘⟨ identityʳ ⟩
-      μ′.η X ∘ R.F₁ (L.F₁ (unit.η X))        ≈⟨ [ R ]-resp-∘ zig ⟩
-      R.F₁ D.id                              ≈⟨ R.identity ⟩
-      C.id                                   ∎
-    ; identityʳ = λ {X} → begin
-      μ′.η X ∘ unit.η (R.F₀ (L.F₀ X)) ∘ C.id ≈⟨ refl⟩∘⟨ identityʳ ⟩
-      μ′.η X ∘ unit.η (R.F₀ (L.F₀ X))        ≈⟨ zag ⟩
-      C.id                                   ∎
+      μ′.η X ∘ R.F₁ (L.F₁ (unit.η X)) ≈⟨ [ R ]-resp-∘ zig ⟩
+      R.F₁ D.id                       ≈⟨ R.identity ⟩
+      C.id                            ∎
+    ; identityʳ = zag
     }
     where open C
           open HomReasoning

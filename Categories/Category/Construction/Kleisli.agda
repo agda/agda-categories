@@ -7,6 +7,7 @@ open import Categories.Category
 open import Categories.Functor using (Functor; module Functor)
 open import Categories.NaturalTransformation hiding (id)
 open import Categories.Monad
+import Categories.Morphism.Reasoning as MR
 
 private
   variable
@@ -29,12 +30,10 @@ Kleisli {𝒞 = 𝒞} M = record
   where
   module M = Monad M
   open M using (μ; η; F)
-  module μ = NaturalTransformation μ
-  module η = NaturalTransformation η
   open Functor F
   open Category 𝒞
-  open Equiv
   open HomReasoning
+  open MR 𝒞
 
   -- shorthands to make the proofs nicer
   F≈ = F-resp-≈
@@ -47,7 +46,7 @@ Kleisli {𝒞 = 𝒞} M = record
         μ.η D ∘ (F₁ ((μ.η D ∘ F₁ h) ∘ g) ∘ f)            ≈⟨ refl⟩∘⟨ (F≈ assoc ⟩∘⟨refl ) ⟩
         μ.η D ∘ (F₁ (μ.η D ∘ (F₁ h ∘ g)) ∘ f)            ≈⟨ refl⟩∘⟨ (homomorphism ⟩∘⟨refl) ⟩
         μ.η D ∘ ((F₁ (μ.η D) ∘ F₁ (F₁ h ∘ g)) ∘ f)       ≈⟨ refl⟩∘⟨ assoc ○ ⟺ assoc ⟩
-        (μ.η D ∘ F₁ (μ.η D)) ∘ (F₁ (F₁ h ∘ g) ∘ f)       ≈⟨ (refl⟩∘⟨ ⟺ identityʳ ○ M.assoc) ⟩∘⟨refl ○ assoc ⟩
+        (μ.η D ∘ F₁ (μ.η D)) ∘ (F₁ (F₁ h ∘ g) ∘ f)       ≈⟨ M.assoc ⟩∘⟨refl ○ assoc ⟩
         μ.η D ∘ (μ.η (F₀ D) ∘ (F₁ (F₁ h ∘ g) ∘ f))       ≈˘⟨ refl⟩∘⟨ assoc ⟩
         μ.η D ∘ ((μ.η (F₀ D) ∘ F₁ (F₁ h ∘ g)) ∘ f)       ≈⟨ refl⟩∘⟨ ( (refl⟩∘⟨ homomorphism) ⟩∘⟨refl) ⟩
         μ.η D ∘ ((μ.η (F₀ D) ∘ (F₁ (F₁ h) ∘ F₁ g)) ∘ f)  ≈˘⟨ refl⟩∘⟨ (assoc ⟩∘⟨refl) ⟩
@@ -58,13 +57,7 @@ Kleisli {𝒞 = 𝒞} M = record
       ∎
 
   identityˡ′ : ∀ {A B} {f : A ⇒ F₀ B} → (μ.η B ∘ F₁ (η.η B)) ∘ f ≈ f
-  identityˡ′ {A} {B} {f} =
-      begin
-        (μ.η B ∘ F₁ (η.η B)) ∘ f      ≈˘⟨  (refl⟩∘⟨ identityʳ) ⟩∘⟨refl   ⟩
-        (μ.η B ∘ F₁ (η.η B) ∘ id) ∘ f ≈⟨ M.identityˡ ⟩∘⟨refl ⟩
-        id ∘ f                        ≈⟨ identityˡ ⟩
-        f
-      ∎
+  identityˡ′ {A} {B} {f} = elimˡ M.identityˡ
 
   identityʳ′ : ∀ {A B} {f : A ⇒ F₀ B} → (μ.η B ∘ F₁ f) ∘ η.η A ≈ f
   identityʳ′ {A} {B} {f} =
@@ -72,7 +65,6 @@ Kleisli {𝒞 = 𝒞} M = record
         (μ.η B ∘ F₁ f) ∘ η.η A      ≈⟨ assoc ⟩
         μ.η B ∘ (F₁ f ∘ η.η A)      ≈˘⟨ refl⟩∘⟨ η.commute f ⟩
         μ.η B ∘ (η.η (F₀ B) ∘ f)    ≈˘⟨ assoc ⟩
-        (μ.η B ∘ η.η (F₀ B)) ∘ f    ≈⟨ (refl⟩∘⟨ ⟺ identityʳ ○  M.identityʳ) ⟩∘⟨refl ⟩
-        id ∘ f                      ≈⟨ identityˡ ⟩
+        (μ.η B ∘ η.η (F₀ B)) ∘ f    ≈⟨ elimˡ M.identityʳ ⟩
         f
       ∎
