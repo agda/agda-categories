@@ -81,6 +81,44 @@ module Switch (i : X ≅ Y) where
     from ∘ (to ∘ k) ≈⟨ cancelˡ isoʳ ⟩
     k               ∎
 
+  -- We can flip an iso i in a commuting triangle, like so:
+  --
+  --          i                       i⁻¹
+  --    X --------> Y            X <-------- Y
+  --     \    ≃    /              \    ≃    /
+  --      \       /                \       /
+  --     g \     / h     ===>     g \     / h
+  --        \   /                    \   /
+  --         V V                      V V
+  --          A                        A
+  --
+  flip-iso : {g : X ⇒ A} {h : Y ⇒ A} → g ≈ h ∘ from → g ∘ to ≈ h
+  flip-iso tr₁ = sym (switch-fromtoʳ (sym tr₁))
+
+  -- Consider two commuting squares
+  --
+  --         f₁                      f₂
+  --    X -------> A            X -------> A
+  --    |          |            |          |
+  --    |          |            |          |
+  --  ≃ | i        | h        ≃ | i        | h
+  --    |          |            |          |
+  --    V          V            V          V
+  --    Y -------> B            Y -------> B
+  --         g₁                      g₂
+  --
+  -- with i an isomorphism.  Then g₁ ≈ g₂ if f₁ ≈ f₂.
+
+  push-eq : {f₁ f₂ : X ⇒ A} {g₁ g₂ : Y ⇒ B} {h : A ⇒ B} →
+            CommutativeSquare f₁ from h g₁ →
+            CommutativeSquare f₂ from h g₂ →
+            f₁ ≈ f₂ → g₁ ≈ g₂
+  push-eq {f₁ = f₁} {f₂} {g₁} {g₂} {h₂} sq₁ sq₂ hyp = begin
+    g₁               ≈˘⟨ flip-iso sq₁ ⟩
+    (h₂ ∘ f₁) ∘ to   ≈⟨ ∘-resp-≈ˡ (∘-resp-≈ʳ hyp) ⟩
+    (h₂ ∘ f₂) ∘ to   ≈⟨ flip-iso sq₂ ⟩
+    g₂               ∎
+
 open Switch public
 
 -- conjugates

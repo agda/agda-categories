@@ -11,7 +11,7 @@ open import Data.Product using (_,_)
 
 open import Categories.Category.Monoidal.Properties M
 open import Categories.Functor using (Functor)
-open import Categories.Morphism.Reasoning C
+open import Categories.Morphism.Reasoning C hiding (push-eq)
 open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
   using (push-eq)
 
