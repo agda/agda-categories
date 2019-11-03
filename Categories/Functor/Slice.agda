@@ -9,10 +9,11 @@ open import Data.Product using (_,_)
 open import Categories.Adjoint
 open import Categories.Category.CartesianClosed
 open import Categories.Category.CartesianClosed.Locally
-open import Categories.Category.Slice C
 open import Categories.Functor
 open import Categories.Functor.Properties
 open import Categories.Morphism.Reasoning C
+
+import Categories.Category.Slice as S
 import Categories.Diagram.Pullback as P
 import Categories.Category.Construction.Pullbacks as Pbs
 
@@ -20,9 +21,22 @@ open Category C
 open HomReasoning
 
 module _ {A : Obj} where
-  open SliceObj
-  open Slice⇒
-  
+  open S.SliceObj
+  open S.Slice⇒
+
+  Base-F : ∀ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} (F : Functor C D) → Functor (S.Slice C A) (S.Slice D (Functor.F₀ F A))
+  Base-F {D = D} F = record
+    { F₀           = λ { (S.sliceobj arr) → S.sliceobj (F₁ arr) }
+    ; F₁           = λ { (S.slicearr △) → S.slicearr ([ F ]-resp-∘ △) }
+    ; identity     = identity
+    ; homomorphism = homomorphism
+    ; F-resp-≈     = F-resp-≈
+    }
+    where module D = Category D
+          open Functor F
+
+  open S C
+
   Forgetful : Functor (Slice A) C
   Forgetful = record
     { F₀           = λ X → Y X
@@ -108,4 +122,3 @@ module _ {A : Obj} where
                       ; commute₁ = identityʳ
                       ; commute₂ = △ g
                       }
-            
