@@ -42,7 +42,6 @@ module _ (f : A ⇒ B) where
     K : Functor C/B/f (Slice C/B (fObj ^ fObj))
     K = Base-F C/B (fObj ⇨-)
 
-  -- this functor should be the right adjoint functor of BaseChange*, but I expect
-  -- it's computationally difficult to show.
+  -- this functor should be the right adjoint functor of (BaseChange* C pullbacks f).
   BaseChange⁎ : Functor C/A C/B
   BaseChange⁎ = I ∘F K ∘F J
