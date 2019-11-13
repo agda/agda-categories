@@ -53,3 +53,18 @@ SubCategory {I = I} sc = let open SubCat sc in record
     }
   ; ∘-resp-≈  = ∘-resp-≈
   }
+
+FullSubCategory : ∀ {I : Set i} → (U : I → Obj) → Category _ _ _
+FullSubCategory {I = I} U = record
+  { Obj       = I
+  ; _⇒_       = λ x y → U x ⇒ U y
+  ; _≈_       = _≈_
+  ; id        = id
+  ; _∘_       = _∘_
+  ; assoc     = assoc
+  ; sym-assoc = sym-assoc
+  ; identityˡ = identityˡ
+  ; identityʳ = identityʳ
+  ; equiv     = equiv
+  ; ∘-resp-≈  = ∘-resp-≈
+  }
