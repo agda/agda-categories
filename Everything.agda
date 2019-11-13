@@ -20,6 +20,7 @@ import Categories.Category.Cartesian
 import Categories.Category.Cartesian.Properties
 import Categories.Category.CartesianClosed
 import Categories.Category.CartesianClosed.Locally
+import Categories.Category.CartesianClosed.Locally.Properties
 import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
@@ -62,6 +63,8 @@ import Categories.Category.Instance.PointedSets
 import Categories.Category.Instance.Properties.Setoids
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
+import Categories.Category.Instance.Simplex
+import Categories.Category.Instance.SimplicialSet
 import Categories.Category.Instance.SingletonSet
 import Categories.Category.Instance.Span
 import Categories.Category.Instance.StrictCats
