@@ -87,3 +87,15 @@ module _ (F : Bifunctor C D E) where
 
   appʳ-nat : ∀ {X Y} → (f : Category._⇒_ D X Y) → NaturalTransformation (appʳ F X) (appʳ F Y)
   appʳ-nat f = F ∘ˡ (idN ※ⁿ constNat f)
+
+module _ {F G : Bifunctor C D E} (α : NaturalTransformation F G) where
+  private
+    module C = Category C
+    module D = Category D
+    module E = Category E
+
+  appˡ′ : ∀ X → NaturalTransformation (appˡ F X) (appˡ G X)
+  appˡ′ X = α ∘ₕ idN
+
+  appʳ′ : ∀ X → NaturalTransformation (appʳ F X) (appʳ G X)
+  appʳ′ X = α ∘ₕ idN

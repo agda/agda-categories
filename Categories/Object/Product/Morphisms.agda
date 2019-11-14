@@ -81,6 +81,11 @@ repack≡id×id p₁ p₂ = sym (Product.⟨⟩-cong₂ p₂ identityˡ identity
 [ p ]⟨⟩∘ = ⟺ (unique (⟺ assoc ○ ∘-resp-≈ˡ project₁) (⟺ assoc ○ ∘-resp-≈ˡ project₂))
   where open Product p
 
+repack∘repack≈id : ∀ (p₁ p₂ : Product A B) → repack p₁ p₂ ∘ repack p₂ p₁ ≈ id
+repack∘repack≈id p₁ p₂ = [ p₂ ]⟨⟩∘ ○ p₂.⟨⟩-cong₂ p₁.project₁ p₁.project₂ ○ p₂.η
+  where module p₁ = Product p₁
+        module p₂ = Product p₂
+
 [_⇒_⇒_]×∘× : ∀ (p₁ : Product A B) (p₂ : Product C D) (p₃ : Product E F) →
                ([ p₂ ⇒ p₃ ] g × i) ∘ ([ p₁ ⇒ p₂ ] f × h) ≈ [ p₁ ⇒ p₃ ] (g ∘ f) × (i ∘ h)
 [_⇒_⇒_]×∘× {g = g} {i = i} {f = f} {h = h} p₁ p₂ p₃ = begin

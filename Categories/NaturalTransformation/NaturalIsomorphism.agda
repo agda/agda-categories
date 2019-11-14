@@ -130,6 +130,8 @@ isEquivalence = record
   ; trans = trans
   }
 
+module ≃ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′} = IsEquivalence (isEquivalence {C = C} {D = D})
+
 Functor-NI-setoid : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Setoid _ _
 Functor-NI-setoid C D = record
   { Carrier       = Functor C D

@@ -44,6 +44,9 @@ record Product (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   ∘-distribʳ-⟨⟩ : ∀ {f : C ⇒ A} {g : C ⇒ B} {q : D ⇒ C} → ⟨ f , g ⟩ ∘ q ≈ ⟨ f ∘ q , g ∘ q ⟩
   ∘-distribʳ-⟨⟩ = ⟺ $ unique (pullˡ project₁) (pullˡ project₂)
 
+  unique′ : π₁ ∘ h ≈ π₁ ∘ i → π₂ ∘ h ≈ π₂ ∘ i → h ≈ i
+  unique′ eq₁ eq₂ = trans (sym (unique eq₁ eq₂)) g-η
+
 module _ {A B : Obj} where
   open Product {A} {B} renaming (⟨_,_⟩ to _⟨_,_⟩)
 
