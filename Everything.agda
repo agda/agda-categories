@@ -150,6 +150,7 @@ import Categories.GlobularSet
 import Categories.Kan
 import Categories.Monad
 import Categories.Monad.Duality
+import Categories.Monad.Idempotent
 import Categories.Monad.Strong
 import Categories.Morphism
 import Categories.Morphism.Cartesian
