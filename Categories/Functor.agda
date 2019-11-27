@@ -43,3 +43,15 @@ EssentiallySurjective {C = C} {D = D} F = (d : Obj) → Σ C.Obj (λ c → Funct
   open Morphism D
   open Category D
   module C = Category C
+
+-- inclusion functor
+incl : ∀ (C : Category o ℓ e) (X : Category.Obj D) → Functor C D
+incl {D = D} _ X = record
+  { F₀           = λ _ → X
+  ; F₁           = λ _ → D.id
+  ; identity     = refl
+  ; homomorphism = sym D.identityˡ
+  ; F-resp-≈     = λ _ → refl
+  }
+  where module D = Category D
+        open D.Equiv
