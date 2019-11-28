@@ -7,6 +7,7 @@ open import Data.Product using (Σ; _,_; proj₁; proj₂; zip; map)
 open import Categories.Category
 open import Categories.Category.Instance.One
 open import Categories.Functor renaming (id to idF)
+open import Categories.Functor.Construction.Constant using (const)
 open import Categories.NaturalTransformation using (module NaturalTransformation)
 open import Categories.Category.Construction.Comma
 open import Categories.Category.Product renaming (Product to _×_)
@@ -41,7 +42,7 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
       ; homomorphism = EA.refl , EB.refl
       ; F-resp-≈     = λ f≈g → f≈g
       }
-  
+
     induced-nat : NaturalTransformation (S ∘F Dom S T) (T ∘F Cod S T)
     induced-nat = record
       { η       = f
@@ -86,7 +87,7 @@ module _ {C : Category o ℓ e} where
   open CommaObj
   open Comma⇒
 
-  slice⇒comma : ∀ X → Functor (Slice X) (incl (One {o} {ℓ} {e}) X ↓ idF {C = C})
+  slice⇒comma : ∀ X → Functor (Slice X) (const {C = One {o} {ℓ} {e}} X ↓ idF {C = C})
   slice⇒comma X = record
     { F₀           = λ X → record { f = arr X }
     ; F₁           = λ f → record { g = _ ; h = _ ; commute = identityˡ ○ ⟺ (△ f) }
@@ -95,7 +96,7 @@ module _ {C : Category o ℓ e} where
     ; F-resp-≈     = λ eq → eq , _
     }
 
-  comma⇒slice : ∀ X → Functor (incl (One {o} {ℓ} {e}) X ↓ idF {C = C}) (Slice X)
+  comma⇒slice : ∀ X → Functor (const {C = One {o} {ℓ} {e}} X ↓ idF {C = C}) (Slice X)
   comma⇒slice X = record
     { F₀           = λ X → S.sliceobj (f X)
     ; F₁           = λ g → S.slicearr (⟺ (commute g) ○ identityˡ)

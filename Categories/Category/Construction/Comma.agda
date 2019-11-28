@@ -7,7 +7,8 @@ open import Relation.Binary using (Rel)
 
 open import Categories.Category.Instance.One
 open import Categories.Category using (Category; _[_,_]; _[_∘_])
-open import Categories.Functor using (Functor; incl)
+open import Categories.Functor using (Functor)
+open import Categories.Functor.Construction.Constant using (const)
 import Categories.Morphism.Reasoning as MR
 
 private
@@ -126,7 +127,7 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
     open B.Equiv
 
   _↙_ : (X : C.Obj) (T : Functor A C) → Category _ _ _
-  X ↙ T = incl B X ↓ T
+  X ↙ T = const X ↓ T
 
   _↘_ : (S : Functor B C) (X : C.Obj) → Category _ _ _
-  S ↘ X = S ↓ incl A X
+  S ↘ X = S ↓ const X
