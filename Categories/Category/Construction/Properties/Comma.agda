@@ -97,7 +97,7 @@ module _ {C : Category o ℓ e} where
   open Comma⇒
   open Reas C
 
-  slice⇒comma : ∀ X → Functor (Slice X) (idF {C = C} ↓ const (One {o} {ℓ} {e}) X)
+  slice⇒comma : ∀ X → Functor (Slice X) (idF {C = C} ↓ const {C = One {o} {ℓ} {e}} X)
   slice⇒comma X = record
     { F₀           = λ X → record { f = arr X }
     ; F₁           = λ f → record { g = _ ; h = _ ; commute = identityˡ ○ ⟺ (△ f) }
@@ -106,7 +106,7 @@ module _ {C : Category o ℓ e} where
     ; F-resp-≈     = λ eq → eq , _
     }
 
-  comma⇒slice : ∀ X → Functor (idF {C = C} ↓ const (One {o} {ℓ} {e}) X) (Slice X)
+  comma⇒slice : ∀ X → Functor (idF {C = C} ↓ const {C = One {o} {ℓ} {e}} X) (Slice X)
   comma⇒slice X = record
     { F₀           = λ X → S.sliceobj (f X)
     ; F₁           = λ g → S.slicearr (⟺ (commute g) ○ identityˡ)
@@ -115,7 +115,7 @@ module _ {C : Category o ℓ e} where
     ; F-resp-≈     = proj₁
     }
 
-  comma-slice-equiv : ∀ X → StrongEquivalence (Slice X) (idF {C = C} ↓ incl (One {o} {ℓ} {e}) X)
+  comma-slice-equiv : ∀ X → StrongEquivalence (Slice X) (idF {C = C} ↓ const {C = One {o} {ℓ} {e}} X)
   comma-slice-equiv X = record
     { F            = slice⇒comma X
     ; G            = comma⇒slice X
