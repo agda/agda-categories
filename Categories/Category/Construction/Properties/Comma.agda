@@ -2,10 +2,11 @@
 module Categories.Category.Construction.Properties.Comma where
 
 open import Level
-open import Data.Product using (Σ; _,_; proj₁; proj₂; zip; map)
+open import Data.Product using (Σ; _,_; proj₁; proj₂; zip; map; swap)
 
 open import Categories.Category
 open import Categories.Category.Instance.One
+open import Categories.Category.Equivalence using (StrongEquivalence)
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Construction.Constant using (const)
 open import Categories.NaturalTransformation using (module NaturalTransformation)
@@ -36,11 +37,11 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
 
     S↓T⇒A×B : Functor (S ↓ T) (A × B)
     S↓T⇒A×B = record
-      { F₀           = λ o → α o , β o
-      ; F₁           = λ a → g a , h a
+      { F₀           = λ o → β o , α o
+      ; F₁           = λ a → h a , g a
       ; identity     = EA.refl , EB.refl
       ; homomorphism = EA.refl , EB.refl
-      ; F-resp-≈     = λ f≈g → f≈g
+      ; F-resp-≈     = swap
       }
 
     induced-nat : NaturalTransformation (S ∘F Dom S T) (T ∘F Cod S T)
@@ -60,14 +61,22 @@ module _ {A : Category o₁ ℓ₁ e₁} {B : Category o₂ ℓ₂ e₂} {C : Ca
   -- open Squares C
 
   induced : {s₁ d₁ : Functor A C} {s₂ d₂ : Functor B C} →
-            ((Category.op [ A ⇒ C ] × [ B ⇒ C ]) [ (s₁ , s₂) , (d₁ , d₂) ]) → Functor (s₂ ↓ s₁) (d₂ ↓ d₁)
+            ((Category.op [ A ⇒ C ] × [ B ⇒ C ]) [ (s₁ , s₂) , (d₁ , d₂) ]) → Functor (s₁ ↓ s₂) (d₁ ↓ d₂)
   induced {s₁ = s₁} {d₁ = d₁} {s₂} {d₂} (m₁ , m₂) = record
-    { F₀ = λ o → record { α = α o ; β = β o ; f =  m₂.η (β o) ∘ f o ∘ m₁.η (α o) }
-    ; F₁ = λ {o₁} {o₂} a → record { g = g a ; h = h a ; commute = begin
-        F₁ d₂ (h a) ∘ m₂.η (β o₁) ∘ f o₁ ∘ m₁.η (α o₁)     ≈˘⟨ pushˡ (m₂.commute (h a)) ⟩
-        (m₂.η (β o₂) ∘ F₁ s₂ (h a)) ∘ f o₁ ∘ m₁.η (α o₁)   ≈⟨ pullˡ (pullʳ (commute a)) ⟩
-        (m₂.η (β o₂) ∘ f o₂ ∘ F₁ s₁ (g a)) ∘ m₁.η (α o₁)   ≈˘⟨ extendˡ (extendˡ (m₁.commute (g a))) ⟩
-        (m₂.η (β o₂) ∘ f o₂ ∘ m₁.η (α o₂)) ∘ F₁ d₁ (g a)   ∎ }
+    { F₀ = λ o → record
+      { α = α o
+      ; β = β o
+      ; f =  m₂.η (β o) ∘ f o ∘ m₁.η (α o)
+      }
+    ; F₁ = λ {o₁} {o₂} a → record
+      { g = g a
+      ; h = h a
+      ; commute = begin
+        F₁ d₂ (h a) ∘ m₂.η (β o₁) ∘ f o₁ ∘ m₁.η (α o₁)   ≈˘⟨ pushˡ (m₂.commute (h a)) ⟩
+        (m₂.η (β o₂) ∘ F₁ s₂ (h a)) ∘ f o₁ ∘ m₁.η (α o₁) ≈⟨ pullˡ (pullʳ (commute a)) ⟩
+        (m₂.η (β o₂) ∘ f o₂ ∘ F₁ s₁ (g a)) ∘ m₁.η (α o₁) ≈˘⟨ extendˡ (extendˡ (m₁.commute (g a))) ⟩
+        (m₂.η (β o₂) ∘ f o₂ ∘ m₁.η (α o₂)) ∘ F₁ d₁ (g a) ∎
+      }
     ; identity = A.Equiv.refl , B.Equiv.refl
     ; homomorphism = A.Equiv.refl , B.Equiv.refl
     ; F-resp-≈ = λ f≈g → f≈g
@@ -86,8 +95,9 @@ module _ {C : Category o ℓ e} where
   open HomReasoning
   open CommaObj
   open Comma⇒
+  open Reas C
 
-  slice⇒comma : ∀ X → Functor (Slice X) (const {C = One {o} {ℓ} {e}} X ↓ idF {C = C})
+  slice⇒comma : ∀ X → Functor (Slice X) (idF {C = C} ↓ const (One {o} {ℓ} {e}) X)
   slice⇒comma X = record
     { F₀           = λ X → record { f = arr X }
     ; F₁           = λ f → record { g = _ ; h = _ ; commute = identityˡ ○ ⟺ (△ f) }
@@ -96,11 +106,47 @@ module _ {C : Category o ℓ e} where
     ; F-resp-≈     = λ eq → eq , _
     }
 
-  comma⇒slice : ∀ X → Functor (const {C = One {o} {ℓ} {e}} X ↓ idF {C = C}) (Slice X)
+  comma⇒slice : ∀ X → Functor (idF {C = C} ↓ const (One {o} {ℓ} {e}) X) (Slice X)
   comma⇒slice X = record
     { F₀           = λ X → S.sliceobj (f X)
     ; F₁           = λ g → S.slicearr (⟺ (commute g) ○ identityˡ)
     ; identity     = refl
     ; homomorphism = refl
     ; F-resp-≈     = proj₁
+    }
+
+  comma-slice-equiv : ∀ X → StrongEquivalence (Slice X) (idF {C = C} ↓ incl (One {o} {ℓ} {e}) X)
+  comma-slice-equiv X = record
+    { F            = slice⇒comma X
+    ; G            = comma⇒slice X
+    ; weak-inverse = record
+      { F∘G≈id = record
+        { F⇒G = record
+          { η       = λ Y → record { commute = ⟺ id-comm }
+          ; commute = λ g → ⟺ id-comm , _
+          }
+        ; F⇐G = record
+          { η       = λ Y → record { commute = ⟺ id-comm }
+          ; commute = λ g → ⟺ id-comm , _
+          }
+        ; iso = λ Y → record
+          { isoˡ = identityˡ , _
+          ; isoʳ = identityˡ , _
+          }
+        }
+      ; G∘F≈id = record
+        { F⇒G = record
+          { η       = λ Y → S.slicearr identityʳ
+          ; commute = λ g → ⟺ id-comm
+          }
+        ; F⇐G = record
+          { η       = λ Y → S.slicearr identityʳ
+          ; commute = λ g → ⟺ id-comm
+          }
+        ; iso = λ Y → record
+          { isoˡ = identityˡ
+          ; isoʳ = identityˡ
+          }
+        }
+      }
     }

@@ -8,7 +8,7 @@ open import Relation.Binary using (Rel)
 open import Categories.Category.Instance.One
 open import Categories.Category using (Category; _[_,_]; _[_∘_])
 open import Categories.Functor using (Functor)
-open import Categories.Functor.Construction.Constant using (const)
+open import Categories.Functor.Construction.Constant using (const!)
 import Categories.Morphism.Reasoning as MR
 
 private
@@ -99,8 +99,8 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
         open CommaObj X₂ renaming (α to α₂; β to β₂; f to f₂)
         open CommaObj X₃ renaming (α to α₃; β to β₃; f to f₃)
 
-  _↓_ : (S : Functor B C) (T : Functor A C) → Category _ _ _
-  S ↓ T = Comma T S
+  _↓_ : (S : Functor A C) (T : Functor B C) → Category _ _ _
+  S ↓ T = Comma S T
 
   Dom : (T : Functor A C) → (S : Functor B C) → Functor (Comma T S) A
   Dom T S = record
@@ -126,8 +126,12 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
     open Comma T S
     open B.Equiv
 
-  _↙_ : (X : C.Obj) (T : Functor A C) → Category _ _ _
-  X ↙ T = const X ↓ T
+module _ {C : Category o₁ ℓ₁ e₁} {D : Category o₂ ℓ₂ e₂} where
+  private
+    module C = Category C
+    
+  _↙_ : (X : C.Obj) (T : Functor D C) → Category _ _ _
+  X ↙ T = const! X ↓ T
 
-  _↘_ : (S : Functor B C) (X : C.Obj) → Category _ _ _
-  S ↘ X = S ↓ const X
+  _↘_ : (S : Functor D C) (X : C.Obj) → Category _ _ _
+  S ↘ X = S ↓ const! X
