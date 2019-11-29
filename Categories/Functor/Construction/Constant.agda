@@ -4,6 +4,7 @@ module Categories.Functor.Construction.Constant where
 open import Level
 
 open import Categories.Category
+open import Categories.Category.Instance.One
 open import Categories.Category.Product
 open import Categories.Functor renaming (id to idF)
 open import Categories.NaturalTransformation using (NaturalTransformation)
@@ -24,6 +25,9 @@ const {D = D} d = record
   }
   where open Category D
         open Equiv
+
+const! : (d : Category.Obj D) → Functor (One {0ℓ} {0ℓ} {0ℓ}) D
+const! = const
 
 constˡ : (c : Category.Obj C) → Functor D (Product C D)
 constˡ c = const c ※ idF
