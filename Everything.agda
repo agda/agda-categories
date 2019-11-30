@@ -148,6 +148,7 @@ import Categories.Functor.Representable
 import Categories.Functor.Slice
 import Categories.GlobularSet
 import Categories.Kan
+import Categories.Kan.Duality
 import Categories.Monad
 import Categories.Monad.Duality
 import Categories.Monad.Idempotent

@@ -19,21 +19,27 @@ module _ {A : Category o₀ ℓ₀ e₀} {B : Category o₁ ℓ₁ e₁} {C : Ca
   record Lan : Set (o₀ ⊔ ℓ₀ ⊔ e₀ ⊔ o₁ ⊔ ℓ₁ ⊔ e₁ ⊔ o₂ ⊔ ℓ₂ ⊔ e₂) where
     field
       L : Functor B C
-      ε : NaturalTransformation X (L ∘F F)
+      η : NaturalTransformation X (L ∘F F)
 
       σ : (M : Functor B C) → (α : NaturalTransformation X (M ∘F F)) → NaturalTransformation L M
 
       σ-unique : {M : Functor B C} → {α : NaturalTransformation X (M ∘F F)} →
-                  (σ′ : NaturalTransformation L M) → α ≃ (σ′ ∘ʳ F) ∘ᵥ ε → σ′ ≃ σ M α
-      commutes : (M : Functor B C) → (α : NaturalTransformation X (M ∘F F)) → α ≃ (σ M α ∘ʳ F) ∘ᵥ ε
+                  (σ′ : NaturalTransformation L M) → α ≃ (σ′ ∘ʳ F) ∘ᵥ η → σ′ ≃ σ M α
+      commutes : (M : Functor B C) → (α : NaturalTransformation X (M ∘F F)) → α ≃ (σ M α ∘ʳ F) ∘ᵥ η
+
+    module L = Functor L
+    module η = NaturalTransformation η
 
   record Ran : Set (o₀ ⊔ ℓ₀ ⊔ e₀ ⊔ o₁ ⊔ ℓ₁ ⊔ e₁ ⊔ o₂ ⊔ ℓ₂ ⊔ e₂) where
     field
       R : Functor B C
-      η : NaturalTransformation (R ∘F F) X
+      ε : NaturalTransformation (R ∘F F) X
 
       δ : (M : Functor B C) → (α : NaturalTransformation (M ∘F F) X) → NaturalTransformation M R
 
       δ-unique : {M : Functor B C} → {α : NaturalTransformation (M ∘F F) X} →
-                  (δ′ : NaturalTransformation M R) → α ≃ η ∘ᵥ (δ′ ∘ʳ F) → δ′ ≃ δ M α
-      commutes : (M : Functor B C) → (α : NaturalTransformation (M ∘F F) X) → α ≃ η ∘ᵥ (δ M α ∘ʳ F)
+                  (δ′ : NaturalTransformation M R) → α ≃ ε ∘ᵥ (δ′ ∘ʳ F) → δ′ ≃ δ M α
+      commutes : (M : Functor B C) → (α : NaturalTransformation (M ∘F F) X) → α ≃ ε ∘ᵥ (δ M α ∘ʳ F)
+
+    module R = Functor R
+    module ε = NaturalTransformation ε

@@ -18,6 +18,7 @@ private
     C D : Category o ℓ e
 
 record Functor (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
+  eta-equality
   private module C = Category C
   private module D = Category D
 
