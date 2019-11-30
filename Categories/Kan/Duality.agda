@@ -20,7 +20,7 @@ module _ {F : Functor C D} {G : Functor C E} where
     module F = Functor F
     module G = Functor G
 
-  coLan⇒Ran : Lan (Functor.op F) (Functor.op G) → Ran F G
+  coLan⇒Ran : Lan F.op G.op → Ran F G
   coLan⇒Ran lan = record
     { R        = L.op
     ; ε        = η.op
@@ -30,7 +30,7 @@ module _ {F : Functor C D} {G : Functor C E} where
     }
     where open Lan lan
 
-  coRan⇒Lan : Ran (Functor.op F) (Functor.op G) → Lan F G
+  coRan⇒Lan : Ran F.op G.op → Lan F G
   coRan⇒Lan ran = record
     { L        = R.op
     ; η        = ε.op

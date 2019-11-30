@@ -126,6 +126,7 @@ import Categories.Functor.Cocontinuous
 import Categories.Functor.Construction.Constant
 import Categories.Functor.Construction.Diagonal
 import Categories.Functor.Construction.LiftSetoids
+import Categories.Functor.Construction.Limit
 import Categories.Functor.Continuous
 import Categories.Functor.Core
 import Categories.Functor.Equivalence

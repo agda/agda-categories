@@ -7,7 +7,9 @@ open import Level
 open import Categories.Category
 open import Categories.Functor
 open import Categories.Functor.Properties
+open import Categories.NaturalTransformation
 import Categories.Diagram.Cone as Con
+import Categories.Morphism.Reasoning as MR
 
 private
   variable
@@ -37,5 +39,37 @@ module _ {F : Functor J C} (G : Functor C D) where
   F-map-Cone⇒ f = record
     { arr     = G.F₁ arr
     ; commute = [ G ]-resp-∘ commute
+    }
+    where open CF.Cone⇒ f
+
+module _ {F G : Functor J C} (α : NaturalTransformation F G) where
+  private
+    module C  = Category C
+    module J  = Category J
+    module F  = Functor F
+    module G  = Functor G
+    module α  = NaturalTransformation α
+    module CF = Con F
+    module CG = Con G
+    open C
+    open HomReasoning
+    open MR C
+
+  nat-map-Cone : CF.Cone → CG.Cone
+  nat-map-Cone K = record
+    { apex = record
+      { ψ       = λ j → α.η j C.∘ ψ j
+      ; commute = λ {X Y} f → begin
+        G.F₁ f ∘ α.η X ∘ ψ X ≈˘⟨ pushˡ (α.commute f) ⟩
+        (α.η Y ∘ F.F₁ f) ∘ ψ X ≈⟨ pullʳ (commute f) ⟩
+        α.η Y ∘ ψ Y ∎
+      }
+    }
+    where open CF.Cone K
+
+  nat-map-Cone⇒ : ∀ {K K′} (f : CF.Cone⇒ K K′) → CG.Cone⇒ (nat-map-Cone K) (nat-map-Cone K′)
+  nat-map-Cone⇒ {K} {K′} f = record
+    { arr     = arr
+    ; commute = pullʳ commute
     }
     where open CF.Cone⇒ f

@@ -7,6 +7,7 @@ open import Level
 open import Data.Product using (Σ; _,_; _×_; uncurry′; proj₁)
 
 open import Categories.Category
+open import Categories.Category.Equivalence using (StrongEquivalence)
 open import Categories.Functor
 open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation renaming (id to idN)
@@ -95,25 +96,65 @@ product {A = A} {B = B} {C = C} = record
 -- op induces a Functor on the Functors category.
 -- This is an instance where the proof-irrelevant version is simpler because (op op C) is
 -- just C. Here we rather need to be more explicit.
-opF : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
+opF⇒ : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
       Functor (Category.op (Functors (Category.op A) (Category.op B))) (Functors A B)
-opF {A = A} {B} = record
-  { F₀ = λ F → record
-    { F₀ = F₀ F
-    ; F₁ = F₁ F
-    ; identity = identity F
-    ; homomorphism = homomorphism F
-    ; F-resp-≈ = F-resp-≈ F
-    }
-  ; F₁ = λ B⇒A → record
-    { η = η B⇒A
-    ; commute = λ f → Equiv.sym (commute B⇒A f)
-    }
+opF⇒ {A = A} {B} = record
+  { F₀ = Functor.op
+  ; F₁ = NaturalTransformation.op
   ; identity = Equiv.refl
   ; homomorphism = Equiv.refl
   ; F-resp-≈ = λ eq → eq
   }
-  where
-  open Functor
-  open NaturalTransformation
-  open Category B
+  where open Category B
+
+opF⇐ : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
+      Functor (Functors A B) (Category.op (Functors (Category.op A) (Category.op B)))
+opF⇐ {A = A} {B} = record
+  { F₀           = Functor.op
+  ; F₁           = NaturalTransformation.op
+  ; identity     = Equiv.refl
+  ; homomorphism = Equiv.refl
+  ; F-resp-≈     = λ eq → eq
+  }
+  where open Category B
+
+Functorsᵒᵖ-equiv : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
+                   StrongEquivalence (Category.op (Functors (Category.op A) (Category.op B))) (Functors A B)
+Functorsᵒᵖ-equiv {B = B} = record
+  { F            = opF⇒
+  ; G            = opF⇐
+  ; weak-inverse = record
+    { F∘G≈id = record
+      { F⇒G = record
+        { η       = λ _ → idN
+        ; commute = λ _ → ⟺ id-comm
+        }
+      ; F⇐G = record
+        { η       = λ _ → idN
+        ; commute = λ _ → ⟺ id-comm
+        }
+      ; iso = λ _ → record
+        { isoˡ = identityˡ
+        ; isoʳ = identityˡ
+        }
+      }
+    ; G∘F≈id = record
+      { F⇒G = record
+        { η       = λ _ → idN
+        ; commute = λ _ → ⟺ id-comm
+        }
+      ; F⇐G = record
+        { η       = λ _ → idN
+        ; commute = λ _ → ⟺ id-comm
+        }
+      ; iso = λ _ → record
+        { isoˡ = identityˡ
+        ; isoʳ = identityˡ
+        }
+      }
+    }
+  }
+  where open Category B
+        open HomReasoning
+        open MR B
+
