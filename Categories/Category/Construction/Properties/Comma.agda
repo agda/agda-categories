@@ -122,11 +122,11 @@ module _ {C : Category o ℓ e} where
       { F∘G≈id = record
         { F⇒G = record
           { η       = λ _ → record { commute = id-comm-sym }
-          ; commute = λ _ → ⟺ id-comm , _
+          ; commute = λ _ → id-comm-sym , _
           }
         ; F⇐G = record
           { η       = λ _ → record { commute = id-comm-sym }
-          ; commute = λ _ → ⟺ id-comm , _
+          ; commute = λ _ → id-comm-sym , _
           }
         ; iso = λ Y → record
           { isoˡ = identityˡ , _

@@ -53,7 +53,7 @@ module _ (t : Terminal) where
   open SliceObj
   open Slice⇒
   open C.HomReasoning
-  
+
   lift : ∀ {A B : C.Obj} (f : A C.⇒ B) → Slice⇒ (sliceobj (! {A})) (sliceobj (! {B}))
   lift f = slicearr {h = f} !-unique₂
 
@@ -75,7 +75,7 @@ module _ {A B} (f : A C.⇒ B) where
     C/B : Category _ _ _
     C/B = S.Slice C B
     module C/B = Category C/B
-    
+
     C/A : Category _ _ _
     C/A = S.Slice C A
     module C/A = Category C/A
@@ -108,11 +108,11 @@ module _ {A B} (f : A C.⇒ B) where
       { F∘G≈id = record
         { F⇒G = record
           { η       = λ { (S.sliceobj (S.slicearr △)) → S.slicearr {h = S.slicearr (C.identityʳ ○ ⟺ △)} C.identityʳ }
-          ; commute = λ _ → ⟺ id-comm
+          ; commute = λ _ → id-comm-sym
           }
         ; F⇐G = record
           { η       = λ { (S.sliceobj (S.slicearr △)) → S.slicearr {h = S.slicearr (C.identityʳ ○ △)} C.identityʳ }
-          ; commute = λ _ → ⟺ id-comm
+          ; commute = λ _ → id-comm-sym
           }
         ; iso = λ _ → record
           { isoˡ = C.identityʳ
@@ -122,11 +122,11 @@ module _ {A B} (f : A C.⇒ B) where
       ; G∘F≈id = record
         { F⇒G = record
           { η       = λ { (S.sliceobj arr) → S.slicearr C.identityʳ }
-          ; commute = λ _ → ⟺ id-comm
+          ; commute = λ _ → id-comm-sym
           }
         ; F⇐G = record
           { η       = λ { (S.sliceobj arr) → S.slicearr C.identityʳ }
-          ; commute = λ _ → ⟺ id-comm
+          ; commute = λ _ → id-comm-sym
           }
         ; iso = λ _ → record
           { isoˡ = C.identityʳ

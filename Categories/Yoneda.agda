@@ -54,7 +54,7 @@ module _ (C : Category o ℓ e) where
     { η       = λ X → record { _⟨$⟩_ = λ X⇒A → A⇒B ∘ X⇒A ; cong = ∘-resp-≈ʳ }
     ; commute = λ {X} {Y} f {g} {h} g≈h → begin
         A⇒B ∘ id ∘ g ∘ f   ≈˘⟨ assoc ⟩
-        (A⇒B ∘ id) ∘ g ∘ f ≈⟨ ∘-resp-≈ id-comm (∘-resp-≈ˡ g≈h) ⟩
+        (A⇒B ∘ id) ∘ g ∘ f ≈⟨ id-comm ⟩∘⟨ g≈h ⟩∘⟨refl ⟩
         (id ∘ A⇒B) ∘ h ∘ f ≈⟨ assoc ○ ⟺ (∘-resp-≈ʳ assoc) ⟩ -- TODO: MR.Reassociate
         id ∘ (A⇒B ∘ h) ∘ f ∎
     }
@@ -245,7 +245,8 @@ module _ (C : Category o ℓ e) where
           Hom[-,G-] : Bifunctor C.op D (Setoids ℓ e)
           Hom[-,G-] = Hom[ C ][-,-] ∘F (idF ⁂ G)
 
-        nat-appʳ : ∀ X → NaturalTransformation Hom[-,F-] Hom[-,G-] →  NaturalTransformation Hom[ C ][-, F.F₀ X ] Hom[ C ][-, G.F₀ X ]
+        nat-appʳ : ∀ X → NaturalTransformation Hom[-,F-] Hom[-,G-] →
+                         NaturalTransformation Hom[ C ][-, F.F₀ X ] Hom[ C ][-, G.F₀ X ]
         nat-appʳ X α = record
           { η       = λ Y → η α (Y , X)
           ; commute = λ {_ Y} f eq → cong (η α (Y , X)) (∘-resp-≈ˡ (⟺ F.identity)) ○ commute α (f , D.id) eq ○ ∘-resp-≈ˡ G.identity
@@ -259,7 +260,7 @@ module _ (C : Category o ℓ e) where
             id ∘ (η α (F.F₀ Y , Y) ⟨$⟩ id) ∘ F.F₁ f ≈˘⟨ lower (yoneda.⇒.commute {Y = Hom[ C ][-, G.F₀ Y ] , _} (idN , F.F₁ f) {nat-appʳ Y α} {nat-appʳ Y α} (cong (η α _))) ⟩
             η α (F.F₀ X , Y) ⟨$⟩ F.F₁ f ∘ id        ≈⟨ cong (η α (F.F₀ X , Y)) (∘-resp-≈ʳ (⟺ identityˡ)) ⟩
             η α (F.F₀ X , Y) ⟨$⟩ F.F₁ f ∘ id ∘ id   ≈⟨ commute α (id , f) refl ⟩
-            G.F₁ f ∘ (η α (F.F₀ X , X) ⟨$⟩ id) ∘ id ≈⟨ refl ⟩∘⟨ identityʳ ⟩
+            G.F₁ f ∘ (η α (F.F₀ X , X) ⟨$⟩ id) ∘ id ≈⟨ refl⟩∘⟨ identityʳ ⟩
             G.F₁ f ∘ (η α (F.F₀ X , X) ⟨$⟩ id)      ∎
           }
 

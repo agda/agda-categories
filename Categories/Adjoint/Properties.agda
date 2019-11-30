@@ -61,7 +61,7 @@ module _ {C : Category o ℓ e}
       where open D.HomReasoning
 
     open HomReasoning
-    
+
     decompose₁ : ∀ {A B X Y} {f : A E.⇒ B} {g : X D.⇒ Y} → F′ f g ≈ R.F₁ A g ∘ F′ f D.id
     decompose₁ {A} {B} {X} {Y} {f} {g} = begin
       F′ f g
@@ -119,13 +119,13 @@ module _ {C : Category o ℓ e}
         ≈˘⟨ assoc ⟩
       F′ g D.id ∘ F′ f D.id
         ∎
-  
+
   induced-bifunctorʳ : Bifunctor E.op D C
   induced-bifunctorʳ = record
     { F₀           = λ where
-      (e , d) → R.F₀ e d 
+      (e , d) → R.F₀ e d
     ; F₁           = λ where
-      {A , X} {B , Y} (f , g) → F′ f g
+      (f , g) → F′ f g
     ; identity     = λ where
       {e , d} →
         let open MR D
@@ -173,7 +173,7 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
     module L = Functor L
     module R = Functor R
     open Adjoint L⊣R
-  
+
   rapl′ : ∀ {o ℓ e} → Continuous o ℓ e R
   rapl′ lim = rapl L⊣R _ lim , Mor.≅.refl C
 
@@ -200,7 +200,7 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
           μ′ : NaturalTransformation (R ∘F (L ∘F R) ∘F L) (R ∘F Categories.Functor.id ∘F L)
           μ′ = R ∘ˡ counit ∘ʳ L
           module μ′ = NaturalTransformation μ′
-          
+
 module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
   open Adjoint L⊣R
 
@@ -281,7 +281,7 @@ module _ {R : Functor D C} where
          })
          (record
          { h       = D.id
-         ; commute = C.∘-resp-≈ˡ R.identity ○ ⟺ id-comm
+         ; commute = C.∘-resp-≈ˡ R.identity ○ id-comm-sym
          })
     ; zag    = λ {d} → C.Equiv.trans (commute (⊥Rd⇒id d)) C.identityˡ
     }
