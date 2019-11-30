@@ -48,6 +48,10 @@ documented in the proto-contributor's guide.
 - (bicategory is defined as Enriched over (Monoidal) Cats instead of 'by hand')
 - (definition of Pseudofunctor is in Benabou style rather than 'by hand')
 - (closed) Issue 5 in the github repository contains more discussion.
+- The library relies on eta expansion of records. However, due to a bug in Agda
+  2.6.0.1, we need to switch this on in related records. In the next release of Agda,
+  hopefully we can remove these switches. See also [this agda
+  issue](https://github.com/agda/agda/issues/4142).
 
 ### Smaller Design decisions
 - Do not make implicit fields that can rarely be inferred (like what had been done in
