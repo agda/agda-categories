@@ -145,7 +145,7 @@ module LeftRightId (F : Functor C D) where
   iso-id-id : (X : Category.Obj C) → Morphism.Iso D {A = Functor.F₀ F X} D.id D.id
   iso-id-id X = record { isoˡ = D.identityˡ ; isoʳ = D.identityʳ }
 
--- Left and Right Unitors, Natural Isomorphisms.
+-- Left and Right and 'Central' Unitors, Natural Isomorphisms.
 module _ {F : Functor C D} where
   open Category.HomReasoning D
   open Functor F
@@ -157,6 +157,9 @@ module _ {F : Functor C D} where
 
   unitorʳ : F ∘F ℱ.id ≃ F
   unitorʳ = record { F⇒G = F∘id⇒F ; F⇐G = F⇒F∘id ; iso = iso-id-id }
+
+unitor² : {C : Category o ℓ e} → ℱ.id ∘F ℱ.id ≃ ℱ.id {C = C}
+unitor² = record { F⇒G = id∘id⇒id ; F⇐G = id⇒id∘id ; iso = LeftRightId.iso-id-id ℱ.id }
 
 -- associator
 module _ (F : Functor B C) (G : Functor C D) (H : Functor D E) where
