@@ -127,7 +127,8 @@ module _ (G : Graph o ℓ e) where
     ; assoc     = λ {_ _ _ _} {f g h} → sym $ ≡⇒≈* $ ◅◅-assoc f g h
     ; sym-assoc = λ {_ _ _ _} {f g h} → ≡⇒≈* $ ◅◅-assoc f g h
     ; identityˡ = λ {_ _ f} → ◅◅-identityʳ f
-    ; identityʳ = refl -- refl
+    ; identityʳ = refl
+    ; identity² = refl
     ; equiv     = isEquivalence
     ; ∘-resp-≈  = resp
     }
@@ -238,6 +239,7 @@ Graphs o ℓ e = record
   ; sym-assoc = λ {_ _ _ G} → record { M₀≡ = ≡.refl ; M₁≡ = Equiv.refl G }
   ; identityˡ = λ {_ G}     → record { M₀≡ = ≡.refl ; M₁≡ = Equiv.refl G }
   ; identityʳ = λ {_ G}     → record { M₀≡ = ≡.refl ; M₁≡ = Equiv.refl G }
+  ; identity² = λ {G}       → record { M₀≡ = ≡.refl ; M₁≡ = Equiv.refl G }
   ; equiv     = λ {_ G} → record
     { refl  = record { M₀≡ = ≡.refl ; M₁≡ = Equiv.refl G }
     ; sym   = λ {i j} eq → record

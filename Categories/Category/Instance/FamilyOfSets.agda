@@ -42,6 +42,7 @@ module _ {a b : Level} where
     ; sym-assoc = record { g≡f = refl ; φ≡γ = refl }
     ; identityˡ = record { g≡f = refl ; φ≡γ = refl }
     ; identityʳ = record { g≡f = refl ; φ≡γ = refl }
+    ; identity² = record { g≡f = refl ; φ≡γ = refl }
     ; equiv     = λ {A} {B} → record
       { refl  = record { g≡f = refl ; φ≡γ = refl }
       ; sym   = λ {i} {j} i≡j → record

@@ -39,6 +39,7 @@ Groupoids o ℓ e = record
   ; sym-assoc = λ {_ _ _ _ F G H} → sym (associator F G H)
   ; identityˡ = unitorˡ
   ; identityʳ = unitorʳ
+  ; identity² = unitorˡ
   ; equiv     = isEquivalence
   ; ∘-resp-≈  = _ⓘₕ_
   }

@@ -29,6 +29,7 @@ module _ {o ℓ e : Level} where
     ; sym-assoc = λ { {lift () } }
     ; identityˡ = λ { {()} }
     ; identityʳ = λ { {()} }
+    ; identity² = λ { {()} }
     ; ∘-resp-≈  = λ { () }
     ; equiv     = record
       { refl = λ { {()} }

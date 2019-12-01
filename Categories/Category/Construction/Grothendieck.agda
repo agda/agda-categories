@@ -358,6 +358,7 @@ module _ {C : Category o ℓ e} {b}
     ; sym-assoc = sym assoc
     ; identityˡ = identityˡ
     ; identityʳ = identityʳ
+    ; identity² = identityˡ
     ; equiv     = ≈-equiv
     ; ∘-resp-≈  = ∘-resp-≈
     }

@@ -52,6 +52,9 @@ documented in the proto-contributor's guide.
   2.6.0.1, we need to switch this on in related records. In the next release of Agda,
   hopefully we can remove these switches. See also [this agda
   issue](https://github.com/agda/agda/issues/4142).
+- We add `sym-assoc` and `identity²` in order to achieve better definitional equality
+  of `Category`. The rationale can be found in [this
+  paper](https://arxiv.org/pdf/1401.7694.pdf). 
 
 ### Smaller Design decisions
 - Do not make implicit fields that can rarely be inferred (like what had been done in

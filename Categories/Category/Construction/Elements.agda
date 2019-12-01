@@ -35,6 +35,7 @@ Elements {C = C} F = record
   ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
+  ; identity² = identity²
   ; equiv     = record { refl = Equiv.refl ; sym = Equiv.sym ; trans = Equiv.trans }
   ; ∘-resp-≈  = ∘-resp-≈
   }

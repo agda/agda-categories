@@ -45,6 +45,7 @@ EilenbergMoore = record
   ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
+  ; identity² = identity²
   ; equiv     = record
     { refl  = refl
     ; sym   = sym

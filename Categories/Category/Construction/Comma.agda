@@ -53,6 +53,7 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
     ; sym-assoc   = A.sym-assoc , B.sym-assoc
     ; identityˡ   = A.identityˡ , B.identityˡ
     ; identityʳ   = A.identityʳ , B.identityʳ
+    ; identity²   = A.identity² , B.identity²
     ; equiv = record
       { refl  = A.Equiv.refl , B.Equiv.refl
       ; sym   = map A.Equiv.sym B.Equiv.sym

@@ -22,6 +22,7 @@ Sets o = record
   ; sym-assoc = ≡.refl
   ; identityˡ = ≡.refl
   ; identityʳ = ≡.refl
+  ; identity² = ≡.refl
   ; equiv     = record
     { refl  = ≡.refl
     ; sym   = λ eq → ≡.sym eq

@@ -24,6 +24,7 @@ Kleisli {𝒞 = 𝒞} M = record
   ; sym-assoc = Equiv.sym assoc′
   ; identityˡ = identityˡ′
   ; identityʳ = identityʳ′
+  ; identity² = identityˡ′
   ; equiv     = equiv
   ; ∘-resp-≈  = λ f≈h g≈i → ∘-resp-≈ (∘-resp-≈ʳ (F-resp-≈ f≈h)) g≈i
   }
