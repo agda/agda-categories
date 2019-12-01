@@ -88,6 +88,12 @@ _∘ʳ_ {D = D} {E = E} {G = G} {H = H} α F = record
   where open Functor F
         open NaturalTransformation α
 
+id∘id⇒id : {C : Category o ℓ e} → NaturalTransformation {C = C} {D = C} (idF ∘F idF) idF
+id∘id⇒id {C = C} = record { η = λ _ → Category.id C ; commute = λ f → MR.id-comm-sym C {f = f} }
+
+id⇒id∘id : {C : Category o ℓ e} → NaturalTransformation {C = C} {D = C} idF (idF ∘F idF)
+id⇒id∘id {C = C} = record { η = λ _ → Category.id C ; commute = λ f → MR.id-comm-sym C {f = f} }
+
 module _ {F : Functor C D} where
   open Category.HomReasoning D
   open Functor F

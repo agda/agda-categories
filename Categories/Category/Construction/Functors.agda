@@ -128,11 +128,11 @@ Functorsᵒᵖ-equiv {B = B} = record
     { F∘G≈id = record
       { F⇒G = record
         { η       = λ _ → idN
-        ; commute = λ _ → ⟺ id-comm
+        ; commute = λ _ → id-comm-sym
         }
       ; F⇐G = record
         { η       = λ _ → idN
-        ; commute = λ _ → ⟺ id-comm
+        ; commute = λ _ → id-comm-sym
         }
       ; iso = λ _ → record
         { isoˡ = identityˡ
@@ -142,11 +142,11 @@ Functorsᵒᵖ-equiv {B = B} = record
     ; G∘F≈id = record
       { F⇒G = record
         { η       = λ _ → idN
-        ; commute = λ _ → ⟺ id-comm
+        ; commute = λ _ → id-comm-sym
         }
       ; F⇐G = record
         { η       = λ _ → idN
-        ; commute = λ _ → ⟺ id-comm
+        ; commute = λ _ → id-comm-sym
         }
       ; iso = λ _ → record
         { isoˡ = identityˡ
@@ -158,4 +158,3 @@ Functorsᵒᵖ-equiv {B = B} = record
   where open Category B
         open HomReasoning
         open MR B
-

@@ -24,7 +24,7 @@ Kleisli {𝒞 = 𝒞} M = record
   ; sym-assoc = Equiv.sym assoc′
   ; identityˡ = identityˡ′
   ; identityʳ = identityʳ′
-  ; identity² = identityˡ′
+  ; identity² = identity²′
   ; equiv     = equiv
   ; ∘-resp-≈  = λ f≈h g≈i → ∘-resp-≈ (∘-resp-≈ʳ (F-resp-≈ f≈h)) g≈i
   }
@@ -69,3 +69,6 @@ Kleisli {𝒞 = 𝒞} M = record
         (μ.η B ∘ η.η (F₀ B)) ∘ f    ≈⟨ elimˡ M.identityʳ ⟩
         f
       ∎
+
+  identity²′ : {A : Obj} → (μ.η A ∘ F₁ (η.η A)) ∘ η.η A ≈ η.η A
+  identity²′ = elimˡ M.identityˡ

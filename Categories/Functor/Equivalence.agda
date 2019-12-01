@@ -119,6 +119,12 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} where
   ≡F-identityʳ : {F : Functor C D} → F ∘F idF ≡F F
   ≡F-identityʳ = record { eq₀ = λ _ → refl ; eq₁ = λ _ → id-comm-sym }
 
+module _ {C : Category o ℓ e} where
+  open MorphismReasoning C
+
+  ≡F-identity² : idF ∘F idF ≡F idF {C = C}
+  ≡F-identity² = record { eq₀ = λ _ → refl ; eq₁ = λ _ → id-comm-sym }
+
 module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
          {E : Category o″ ℓ″ e″}
          where

@@ -2,7 +2,7 @@
 module Categories.Category.Construction.Properties.Comma where
 
 open import Level
-open import Data.Product using (Σ; _,_; proj₁; proj₂; zip; map; swap)
+open import Data.Product using (Σ; _,_; proj₁; proj₂; zip; map; swap; <_,_>)
 
 open import Categories.Category
 open import Categories.Category.Instance.One
@@ -37,8 +37,8 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
 
     S↓T⇒A×B : Functor (S ↓ T) (A × B)
     S↓T⇒A×B = record
-      { F₀           = λ o → β o , α o
-      ; F₁           = λ a → h a , g a
+      { F₀           = < β , α >
+      ; F₁           = < h , g >
       ; identity     = EA.refl , EB.refl
       ; homomorphism = EA.refl , EB.refl
       ; F-resp-≈     = swap
@@ -58,7 +58,6 @@ module _ {A : Category o₁ ℓ₁ e₁} {B : Category o₂ ℓ₂ e₂} {C : Ca
   open Functor
   open HomReasoning
   open Reas C
-  -- open Squares C
 
   induced : {s₁ d₁ : Functor A C} {s₂ d₂ : Functor B C} →
             ((Category.op [ A ⇒ C ] × [ B ⇒ C ]) [ (s₁ , s₂) , (d₁ , d₂) ]) → Functor (s₁ ↓ s₂) (d₁ ↓ d₂)
@@ -66,7 +65,7 @@ module _ {A : Category o₁ ℓ₁ e₁} {B : Category o₂ ℓ₂ e₂} {C : Ca
     { F₀ = λ o → record
       { α = α o
       ; β = β o
-      ; f =  m₂.η (β o) ∘ f o ∘ m₁.η (α o)
+      ; f = m₂.η (β o) ∘ f o ∘ m₁.η (α o)
       }
     ; F₁ = λ {o₁} {o₂} a → record
       { g = g a
@@ -100,7 +99,7 @@ module _ {C : Category o ℓ e} where
   slice⇒comma : ∀ X → Functor (Slice X) (idF {C = C} ↓ const {C = One {o} {ℓ} {e}} X)
   slice⇒comma X = record
     { F₀           = λ X → record { f = arr X }
-    ; F₁           = λ f → record { g = _ ; h = _ ; commute = identityˡ ○ ⟺ (△ f) }
+    ; F₁           = λ f → record { commute = identityˡ ○ ⟺ (△ f) }
     ; identity     = refl , _
     ; homomorphism = refl , _
     ; F-resp-≈     = λ eq → eq , _
@@ -122,12 +121,12 @@ module _ {C : Category o ℓ e} where
     ; weak-inverse = record
       { F∘G≈id = record
         { F⇒G = record
-          { η       = λ Y → record { commute = ⟺ id-comm }
-          ; commute = λ g → ⟺ id-comm , _
+          { η       = λ _ → record { commute = id-comm-sym }
+          ; commute = λ _ → id-comm-sym , _
           }
         ; F⇐G = record
-          { η       = λ Y → record { commute = ⟺ id-comm }
-          ; commute = λ g → ⟺ id-comm , _
+          { η       = λ _ → record { commute = id-comm-sym }
+          ; commute = λ _ → id-comm-sym , _
           }
         ; iso = λ Y → record
           { isoˡ = identityˡ , _
@@ -136,14 +135,14 @@ module _ {C : Category o ℓ e} where
         }
       ; G∘F≈id = record
         { F⇒G = record
-          { η       = λ Y → S.slicearr identityʳ
-          ; commute = λ g → ⟺ id-comm
+          { η       = λ _ → S.slicearr identityʳ
+          ; commute = λ _ → id-comm-sym
           }
         ; F⇐G = record
-          { η       = λ Y → S.slicearr identityʳ
-          ; commute = λ g → ⟺ id-comm
+          { η       = λ _ → S.slicearr identityʳ
+          ; commute = λ _ → id-comm-sym
           }
-        ; iso = λ Y → record
+        ; iso = λ _ → record
           { isoˡ = identityˡ
           ; isoʳ = identityˡ
           }
