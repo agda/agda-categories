@@ -26,7 +26,7 @@ Cats o ℓ e = record
   ; sym-assoc = λ {_ _ _ _ F G H} → ≡F-sym-assoc {F = F} {G} {H}
   ; identityˡ = ≡F-identityˡ
   ; identityʳ = ≡F-identityʳ
-  ; identity² = ≡F-identityˡ
+  ; identity² = ≡F-identity²
   ; equiv     = ≡F-equiv
   ; ∘-resp-≈  = ∘F-resp-≡F
   }
