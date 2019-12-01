@@ -52,7 +52,7 @@ Globe = record
   ; sym-assoc = λ {_ _ _ _ f g h} → GlobeEquiv.sym (assoc {f = f} {g} {h})
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
-  ; identity² = identityˡ
+  ; identity² = identity²
   ; equiv     = GlobeEquiv
   ; ∘-resp-≈  = ∘-resp-≡
   }
@@ -69,6 +69,8 @@ Globe = record
   identityˡ {f = τ y} = both-τ
   identityʳ : ∀ {A B} {f : GlobeHom A B} → GlobeEq (f ⊚ I) f
   identityʳ = IsEquivalence.refl GlobeEquiv
+  identity² : {m : ℕ} → GlobeEq {m} (I ⊚ I) I
+  identity² = both-I
   ∘-resp-≡ : ∀ {A B C} {f h : GlobeHom B C} {g i : GlobeHom A B} → GlobeEq f h → GlobeEq g i → GlobeEq (f ⊚ g) (h ⊚ i)
   ∘-resp-≡ f∼h both-I = f∼h
   ∘-resp-≡ f∼h both-σ = both-σ
