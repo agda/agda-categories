@@ -41,6 +41,7 @@ Exp I = record
   ; sym-assoc = λ _ → sym-assoc
   ; identityˡ = λ _ → identityˡ
   ; identityʳ = λ _ → identityʳ
+  ; identity² = λ _ → identity²
   ; equiv     = record
     { refl  = λ _ → refl
     ; sym   = λ eq i → sym $ eq i
