@@ -23,7 +23,7 @@ open import Categories.Functor.Construction.LiftSetoids
 open import Categories.NaturalTransformation using (NaturalTransformation; _∘ₕ_; _∘ᵥ_; _∘ˡ_; _∘ʳ_)
   renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
-  using (NaturalIsomorphism; unitorˡ; unitorʳ; associator)
+  using (NaturalIsomorphism; unitorˡ; unitorʳ; associator; _≃_)
 import Categories.Morphism.Reasoning as MR
 
 private
@@ -326,6 +326,114 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
       }
       where module i {X} = Iso (iso X)
             open i
+
+-- the general case from isomorphic Hom setoids to adjoint functors
+module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D} {R : Functor D C} where
+  private
+    module C = Category C
+    module D = Category D
+    module L = Functor L
+    module R = Functor R
+    open Functor
+    open Π
+    
+    Hom[L-,-] : Bifunctor C.op D (Setoids _ _)
+    Hom[L-,-] = LiftSetoids ℓ e ∘F Hom[ D ][-,-] ∘F (L.op ⁂ idF)
+
+    Hom[-,R-] : Bifunctor C.op D (Setoids _ _)
+    Hom[-,R-] = LiftSetoids ℓ′ e′ ∘F Hom[ C ][-,-] ∘F (idF ⁂ R)
+
+  module _ (Hni : Hom[L-,-] ≃ Hom[-,R-]) where
+    open NaturalIsomorphism Hni
+    private
+      unitη : ∀ X → F₀ Hom[L-,-] (X , L.F₀ X) ⟶ F₀ Hom[-,R-] (X , L.F₀ X)
+      unitη X = ⇒.η (X , L.F₀ X)
+  
+      unit : NaturalTransformation idF (R ∘F L)
+      unit = record
+        { η       = λ X → lower (unitη X ⟨$⟩ lift D.id)
+        ; commute = λ {X Y} f → begin
+          lower (unitη Y ⟨$⟩ lift D.id) ∘ f
+            ≈⟨ introˡ R.identity ⟩
+          R.F₁ D.id ∘ lower (unitη Y ⟨$⟩ lift D.id) ∘ f
+            ≈˘⟨ lower (⇒.commute (f , D.id) (lift D.Equiv.refl)) ⟩
+          lower (⇒.η (X , L.F₀ Y) ⟨$⟩ lift (D.id D.∘ D.id D.∘ L.F₁ f))
+            ≈⟨ lower (cong (⇒.η (X , L.F₀ Y)) (lift (D.Equiv.trans D.identityˡ D.identityˡ))) ⟩
+          lower (⇒.η (X , L.F₀ Y) ⟨$⟩ lift (L.F₁ f))
+            ≈⟨ lower (cong (⇒.η (X , L.F₀ Y)) (lift (MR.introʳ D (MR.elimʳ D L.identity)))) ⟩
+          lower (⇒.η (X , L.F₀ Y) ⟨$⟩ lift (L.F₁ f D.∘ D.id D.∘ L.F₁ id))
+            ≈⟨ lower (⇒.commute (C.id , L.F₁ f) (lift D.Equiv.refl)) ⟩
+          R.F₁ (L.F₁ f) ∘ lower (⇒.η (X , L.F₀ X) ⟨$⟩ lift D.id) ∘ id
+            ≈⟨ refl⟩∘⟨ identityʳ ⟩
+          F₁ (R ∘F L) f ∘ lower (unitη X ⟨$⟩ lift D.id)                ∎
+        }
+        where open C
+              open HomReasoning
+              open MR C
+  
+
+      counitη : ∀ X → F₀ Hom[-,R-] (R.F₀ X , X) ⟶ F₀ Hom[L-,-] (R.F₀ X , X)
+      counitη X = ⇐.η (R.F₀ X , X)
+
+      counit : NaturalTransformation (L ∘F R) idF
+      counit = record
+        { η       = λ X → lower (counitη X ⟨$⟩ lift C.id)
+        ; commute = λ {X} {Y} f → begin
+          lower (⇐.η (R.F₀ Y , Y) ⟨$⟩ lift C.id) ∘ L.F₁ (R.F₁ f)
+            ≈˘⟨ identityˡ ⟩
+          id ∘ lower (⇐.η (R.F₀ Y , Y) ⟨$⟩ lift C.id) ∘ L.F₁ (R.F₁ f)
+            ≈˘⟨ lower (⇐.commute (R.F₁ f , D.id) (lift C.Equiv.refl)) ⟩
+          lower (⇐.η (R.F₀ X , Y) ⟨$⟩ lift (R.F₁ id C.∘ C.id C.∘ R.F₁ f))
+            ≈⟨ lower (cong (⇐.η (R.F₀ X , Y)) (lift (C.Equiv.trans (MR.elimˡ C R.identity) C.identityˡ))) ⟩
+          lower (⇐.η (R.F₀ X , Y) ⟨$⟩ lift (R.F₁ f))
+            ≈⟨ lower (cong (⇐.η (R.F₀ X , Y)) (lift (MR.introʳ C C.identityˡ))) ⟩
+          lower (⇐.η (R.F₀ X , Y) ⟨$⟩ lift (R.F₁ f C.∘ C.id C.∘ C.id))
+            ≈⟨ lower (⇐.commute (C.id , f) (lift C.Equiv.refl)) ⟩
+          f ∘ lower (⇐.η (R.F₀ X , X) ⟨$⟩ lift C.id) ∘ L.F₁ C.id
+            ≈⟨ refl⟩∘⟨ elimʳ L.identity ⟩
+          f ∘ lower (⇐.η (R.F₀ X , X) ⟨$⟩ lift C.id)
+            ∎
+        }
+        where open D
+              open HomReasoning
+              open MR D
+
+    Hom-NI′⇒Adjoint : L ⊣ R
+    Hom-NI′⇒Adjoint = record
+      { unit   = unit
+      ; counit = counit
+      ; zig    = λ {A} →
+        let open D
+            open HomReasoning
+            open MR D
+        in begin
+          lower (counitη (L.F₀ A) ⟨$⟩ lift C.id) ∘ L.F₁ (η unit A)
+            ≈˘⟨ identityˡ ⟩
+          id ∘ lower (counitη (L.F₀ A) ⟨$⟩ lift C.id) ∘ L.F₁ (η unit A)
+            ≈˘⟨ lower (⇐.commute (η unit A , id) (lift C.Equiv.refl)) ⟩
+          lower (⇐.η (A , L.F₀ A) ⟨$⟩ lift (R.F₁ id C.∘ C.id C.∘ lower (⇒.η (A , L.F₀ A) ⟨$⟩ lift id)))
+            ≈⟨ lower (cong (⇐.η (A , L.F₀ A)) (lift (C.Equiv.trans (MR.elimˡ C R.identity) C.identityˡ))) ⟩
+          lower (⇐.η (A , L.F₀ A) ⟨$⟩ (⇒.η (A , L.F₀ A) ⟨$⟩ lift id))
+            ≈⟨ lower (isoˡ (lift refl)) ⟩
+          id ∎
+      ; zag    = λ {B} →
+        let open C
+            open HomReasoning
+            open MR C
+        in begin
+          R.F₁ (lower (⇐.η (R.F₀ B , B) ⟨$⟩ lift id)) ∘ lower (⇒.η (R.F₀ B , L.F₀ (R.F₀ B)) ⟨$⟩ lift D.id)
+            ≈˘⟨ refl⟩∘⟨ identityʳ ⟩
+          R.F₁ (lower (⇐.η (R.F₀ B , B) ⟨$⟩ lift id)) ∘ lower (⇒.η (R.F₀ B , L.F₀ (R.F₀ B)) ⟨$⟩ lift D.id) ∘ id
+            ≈˘⟨ lower (⇒.commute (id , η counit B) (lift D.Equiv.refl)) ⟩
+          lower (⇒.η (R.F₀ B , B) ⟨$⟩ lift (lower (⇐.η (R.F₀ B , B) ⟨$⟩ lift id) D.∘ D.id D.∘ L.F₁ id))
+            ≈⟨ lower (cong (⇒.η (R.F₀ B , B)) (lift (MR.elimʳ D (MR.elimʳ D L.identity)))) ⟩
+          lower (⇒.η (R.F₀ B , B) ⟨$⟩ lift (lower (⇐.η (R.F₀ B , B) ⟨$⟩ lift id)))
+            ≈⟨ lower (isoʳ (lift refl)) ⟩
+          id ∎
+      }
+      where open NaturalTransformation
+            module _ {X} where
+              open Iso (iso X) public
 
 ⊣-id : idF {C = C} ⊣ idF {C = C}
 ⊣-id {C = C} = record

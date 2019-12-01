@@ -51,6 +51,16 @@ record NaturalIsomorphism {C : Category o ℓ e}
     ; iso  = iso X
     }
 
+  op : NaturalIsomorphism G.op F.op
+  op = record
+    { F⇒G = ⇒.op
+    ; F⇐G = ⇐.op
+    ; iso = λ X → record
+      { isoˡ = iso.isoʳ X
+      ; isoʳ = iso.isoˡ X
+      }
+    }
+
 open NaturalIsomorphism
 
 infixr 9 _ⓘᵥ_ _ⓘₕ_ _ⓘˡ_ _ⓘʳ_

@@ -172,6 +172,7 @@ import Categories.NaturalTransformation.Dinatural
 import Categories.NaturalTransformation.Equivalence
 import Categories.NaturalTransformation.NaturalIsomorphism
 import Categories.NaturalTransformation.NaturalIsomorphism.Equivalence
+import Categories.NaturalTransformation.NaturalIsomorphism.Functors
 import Categories.NaturalTransformation.NaturalIsomorphism.Properties
 import Categories.NaturalTransformation.Properties
 import Categories.Object.Coproduct

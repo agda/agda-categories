@@ -43,7 +43,7 @@ module _ {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (Com : Complete o′ 
     id-Cone X = record
       { apex = record
         { ψ       = λ _ → C.id
-        ; commute = λ _ → C.identityˡ
+        ; commute = λ _ → C.identity²
         }
       }
 

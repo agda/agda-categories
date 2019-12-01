@@ -4,22 +4,24 @@ module Categories.NaturalTransformation.Properties where
 
 open import Level
 open import Data.Product using (Σ; _,_)
+open import Function.Equality using (Π)
 
 open import Categories.Category
 open import Categories.Category.Product
-open import Categories.Category.Construction.Functors
+open import Categories.Category.Instance.Setoids
 open import Categories.Functor
 open import Categories.Functor.Construction.Constant
+open import Categories.Functor.Construction.LiftSetoids
 open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
-open import Categories.NaturalTransformation.Dinatural
-import Categories.Morphism as Mor
+open import Categories.NaturalTransformation.Dinatural hiding (_≃_)
+
 import Categories.Morphism.Reasoning as MR
 
 private
   variable
-    o ℓ e : Level
+    o ℓ ℓ′ e : Level
     C D E : Category o ℓ e
 
 module _ {F G : Functor C D} where
@@ -51,32 +53,27 @@ module _ {F G : Functor C D} where
     }
     where open DinaturalTransformation θ
 
-  -- isomorphism in Functors category is the same as natural isomorphism
-  module _ where
-    open Mor (Functors C D)
+  replaceˡ : ∀ {F′} → NaturalTransformation F G → F ≃ F′ → NaturalTransformation F′ G
+  replaceˡ {F′} α F≃F′ = record
+    { η       = λ X → η X ∘ ⇐.η X
+    ; commute = λ {X Y} f → begin
+      (η Y ∘ ⇐.η Y) ∘ F₁ F′ f ≈⟨ pullʳ (⇐.commute f) ⟩
+      η Y ∘ F₁ F f ∘ ⇐.η X    ≈⟨ pullˡ (commute f) ○ assoc ⟩
+      F₁ G f ∘ η X ∘ ⇐.η X    ∎
+    }
+    where open NaturalIsomorphism F≃F′
+          open NaturalTransformation α
 
-    Functors-iso⇒NI : F ≅ G → NaturalIsomorphism F G
-    Functors-iso⇒NI F≅G = record
-      { F⇒G = from
-      ; F⇐G = to
-      ; iso = λ X → record
-        { isoˡ = isoˡ
-        ; isoʳ = isoʳ
-        }
-      }
-      where open Mor._≅_ F≅G
-
-    NI⇒Functors-iso : NaturalIsomorphism F G → F ≅ G
-    NI⇒Functors-iso α = record
-      { from = F⇒G
-      ; to   = F⇐G
-      ; iso  = record
-        { isoˡ = isoˡ (iso _)
-        ; isoʳ = isoʳ (iso _)
-        }
-      }
-      where open NaturalIsomorphism α
-            open Mor.Iso
+  replaceʳ : ∀ {G′} → NaturalTransformation F G → G ≃ G′ → NaturalTransformation F G′
+  replaceʳ {G′} α G≃G′ = record
+    { η       = λ X → ⇒.η X ∘ η X
+    ; commute = λ {X Y} f → begin
+      (⇒.η Y ∘ η Y) ∘ F₁ F f ≈⟨ pullʳ (commute f) ⟩
+      ⇒.η Y ∘ F₁ G f ∘ η X   ≈⟨ pullˡ (⇒.commute f) ○ assoc ⟩
+      F₁ G′ f ∘ ⇒.η X ∘ η X  ∎
+    }
+    where open NaturalIsomorphism G≃G′
+          open NaturalTransformation α  
 
 module _ (F : Bifunctor C D E) where
 
@@ -99,3 +96,17 @@ module _ {F G : Bifunctor C D E} (α : NaturalTransformation F G) where
 
   appʳ′ : ∀ X → NaturalTransformation (appʳ F X) (appʳ G X)
   appʳ′ X = α ∘ₕ idN
+
+-- unlift universe level
+module _ {c ℓ ℓ′ e} {F G : Functor C (Setoids c ℓ)} (α : NaturalTransformation (LiftSetoids ℓ′ e ∘F F) (LiftSetoids ℓ′ e ∘F G)) where
+  open NaturalTransformation α
+  open Π
+
+  unlift-nat : NaturalTransformation F G
+  unlift-nat = record
+    { η       = λ X → record
+      { _⟨$⟩_ = λ x → lower (η X ⟨$⟩ lift x)
+      ; cong = λ eq → lower (cong (η X) (lift eq))
+      }
+    ; commute = λ f eq → lower (commute f (lift eq))
+    }

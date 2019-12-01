@@ -9,20 +9,27 @@ open import Function using (_$_)
 open import Categories.Adjoint
 open import Categories.Adjoint.RAPL public
 open import Categories.Category
+open import Categories.Category.Product
 open import Categories.Category.Instance.One
 open import Categories.Category.Construction.Comma
-open import Categories.Functor
+open import Categories.Functor renaming (id to idF)
+open import Categories.Functor.Hom
 open import Categories.Functor.Construction.Constant
+open import Categories.Functor.Construction.LiftSetoids
 open import Categories.Functor.Properties
 open import Categories.Functor.Continuous
 open import Categories.Functor.Cocontinuous
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation.Properties
+open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; _≃_; _ⓘₕ_; _ⓘˡ_; module ≃)
+open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
 open import Categories.Monad
 open import Categories.Monad.Duality
 open import Categories.Comonad
 open import Categories.Morphism.Universal
+open import Categories.Yoneda
 
 import Categories.Diagram.Colimit as Col
 import Categories.Diagram.Duality as Duality
@@ -166,6 +173,7 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) (F : Functor J C)
   lapc : Colimit F → Colimit (L ∘F F)
   lapc col = Duality.coLimit⇒Colimit D (rapl (Adjoint.op L⊣R) F.op (Duality.Colimit⇒coLimit C col))
 
+-- adjoint functors induce monads and comonads
 module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
   private
     module C = Category C
@@ -207,6 +215,7 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
   adjoint⇒comonad : Comonad D
   adjoint⇒comonad = coMonad⇒Comonad D (adjoint⇒monad op)
 
+-- adjoint functors are the same as universal morphisms
 module _ {R : Functor D C} where
   private
     module C = Category C
@@ -330,3 +339,41 @@ module _ {R : Functor D C} where
           ⊥Rd⇒id d = umors.! (R.F₀ d) {record { f = C.id }}
           ε      : ∀ d → L₀ (R.F₀ d) D.⇒ d
           ε d      = h (⊥Rd⇒id d)
+
+-- adjoint functors of a functor are isomorphic
+module _ (L : Functor C D) where
+
+  R≃R′ : ∀ {R R′} → L ⊣ R → L ⊣ R′ → R ≃ R′
+  R≃R′ {R} {R′} L⊣R L⊣R′ = yoneda-NI C R R′ (unlift-≃ Hom[-,R-]≃Hom[-,R′-])
+    where module ⊣₁ = Adjoint L⊣R
+          module ⊣₂ = Adjoint L⊣R′
+          Hom[-,R-]≃Hom[-,R′-] : ⊣₁.Hom[-,R-]′ ≃ ⊣₂.Hom[-,R-]′
+          Hom[-,R-]≃Hom[-,R′-] = ≃.trans (≃.sym ⊣₁.Hom-NI) ⊣₂.Hom-NI
+
+module _ {R : Functor D C} where
+
+  L≃L′ : ∀ {L L′} → L ⊣ R → L′ ⊣ R → L ≃ L′
+  L≃L′ L⊣R L′⊣R = NaturalIsomorphism.op L′≃Lᵒᵖ
+    where module ⊣₁ = Adjoint L⊣R
+          module ⊣₂ = Adjoint L′⊣R
+          L′≃Lᵒᵖ = R≃R′ (Functor.op R) ⊣₂.op ⊣₁.op
+
+-- adjoint functors are preserved by natural isomorphisms
+module _ {L L′ : Functor C D} {R R′ : Functor D C} where
+  private
+    module C  = Category C
+    module D  = Category D
+    module L  = Functor L
+    module L′ = Functor L′
+    module R  = Functor R
+    module R′ = Functor R′
+
+  ⊣×≃⇒⊣ : L ⊣ R → L ≃ L′ → R ≃ R′ → L′ ⊣ R′
+  ⊣×≃⇒⊣ L⊣R L≃L′ R≃R′ = Hom-NI′⇒Adjoint (≃.trans (LiftSetoids _ _  ⓘˡ Hom[L′-,-]≃Hom[L-,-])
+                                        (≃.trans Hom-NI
+                                                 (LiftSetoids _ _  ⓘˡ Hom[-,R-]≃Hom[-,R′-])))
+    where open Adjoint L⊣R
+          Hom[L′-,-]≃Hom[L-,-] : Hom[ D ][-,-] ∘F (L′.op ⁂ idF) ≃ Hom[ D ][-,-] ∘F (L.op ⁂ idF)
+          Hom[L′-,-]≃Hom[L-,-] = Hom[ D ][-,-] ⓘˡ (NaturalIsomorphism.op L≃L′ ⁂ⁿⁱ ≃.refl)
+          Hom[-,R-]≃Hom[-,R′-] : Hom[ C ][-,-] ∘F (idF ⁂ R) ≃ Hom[ C ][-,-] ∘F (idF ⁂ R′)
+          Hom[-,R-]≃Hom[-,R′-] = Hom[ C ][-,-] ⓘˡ (≃.refl ⁂ⁿⁱ R≃R′)
