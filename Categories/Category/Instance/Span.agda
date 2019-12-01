@@ -36,7 +36,7 @@ Span = record
   ; sym-assoc = sym assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
-  ; identity² = identityˡ
+  ; identity² = λ {x} → identity² {x}
   ; equiv     = isEquivalence
   ; ∘-resp-≈  = λ { refl refl → refl }
   }
@@ -60,3 +60,6 @@ Span = record
         identityʳ {_} {_} {span-id}   = refl
         identityʳ {_} {_} {span-arrˡ} = refl
         identityʳ {_} {_} {span-arrʳ} = refl
+
+        identity² : {x : SpanObj} → span-compose span-id span-id ≡ span-id
+        identity² = refl
