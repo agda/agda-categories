@@ -24,6 +24,7 @@ PointedSets o = record
   ; sym-assoc = λ _ → refl
   ; identityˡ = λ _ → refl
   ; identityʳ = λ _ → refl
+  ; identity² = λ _ → refl
   ; equiv     = record { refl = λ _ → refl ; sym = λ pf x → ≡.sym $ pf x ; trans = λ i≡j j≡k x → ≡.trans (i≡j x) (j≡k x) }
   ; ∘-resp-≈  = λ {_} {_} {_} {_} {h} {g} f≡h g≡i x → ≡.trans (f≡h (proj₁ g x)) (≡.cong (proj₁ h) $ g≡i x)
   }

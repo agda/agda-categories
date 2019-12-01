@@ -63,6 +63,7 @@ Pullbacks W = record
   ; sym-assoc = sym-assoc , sym-assoc
   ; identityˡ = identityˡ , identityˡ
   ; identityʳ = identityʳ , identityʳ
+  ; identity² = identity² , identity²
   ; equiv     = record
     { refl  = refl , refl
     ; sym   = λ { (eq₁ , eq₂) → sym eq₁ , sym eq₂ }

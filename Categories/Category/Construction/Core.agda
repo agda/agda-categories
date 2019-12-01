@@ -28,6 +28,7 @@ Core = record
   ; sym-assoc = ⌞ sym-assoc ⌟
   ; identityˡ = ⌞ identityˡ ⌟
   ; identityʳ = ⌞ identityʳ ⌟
+  ; identity² = ⌞ identityˡ ⌟
   ; equiv     = ≃-isEquivalence
   ; ∘-resp-≈  = λ where ⌞ eq₁ ⌟ ⌞ eq₂ ⌟ → ⌞ ∘-resp-≈ eq₁ eq₂ ⌟
   }

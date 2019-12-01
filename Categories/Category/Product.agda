@@ -31,6 +31,7 @@ Product C D = record
   ; sym-assoc = C.sym-assoc , D.sym-assoc
   ; identityˡ = C.identityˡ , D.identityˡ
   ; identityʳ = C.identityʳ , D.identityʳ
+  ; identity² = C.identity² , D.identity²
   ; equiv     = record
     { refl  = C.Equiv.refl , D.Equiv.refl
     ; sym   = map C.Equiv.sym D.Equiv.sym

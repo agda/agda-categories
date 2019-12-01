@@ -48,6 +48,7 @@ Arrow = record
   ; sym-assoc = sym-assoc , sym-assoc
   ; identityˡ = identityˡ , identityˡ
   ; identityʳ = identityʳ , identityʳ
+  ; identity² = identity² , identity²
   ; equiv     = record
     { refl  = refl , refl
     ; sym   = map sym sym

@@ -24,6 +24,7 @@ open import Relation.Binary.PropositionalEquality
   ; sym-assoc = λ _ → refl
   ; identityˡ = λ _ → refl
   ; identityʳ = λ _ → refl
+  ; identity² = λ _ → refl
   ; equiv     = record
     { refl  = λ _ → refl
     ; sym   = λ eq x → sym (eq x)

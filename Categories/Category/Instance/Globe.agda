@@ -52,6 +52,7 @@ Globe = record
   ; sym-assoc = λ {_ _ _ _ f g h} → GlobeEquiv.sym (assoc {f = f} {g} {h})
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
+  ; identity² = identityˡ
   ; equiv     = GlobeEquiv
   ; ∘-resp-≈  = ∘-resp-≡
   }

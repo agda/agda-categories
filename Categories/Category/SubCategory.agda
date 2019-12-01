@@ -46,6 +46,7 @@ SubCategory {I = I} sc = let open SubCat sc in record
   ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
+  ; identity² = identity²
   ; equiv     = record -- need to expand this out, else the levels don't work out
     { refl  = refl
     ; sym   = sym
@@ -65,6 +66,7 @@ FullSubCategory {I = I} U = record
   ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
+  ; identity² = identity²
   ; equiv     = equiv
   ; ∘-resp-≈  = ∘-resp-≈
   }

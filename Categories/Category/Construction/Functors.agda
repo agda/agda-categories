@@ -32,6 +32,7 @@ Functors C D = record
   ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
+  ; identity² = identity²
   ; equiv     = ≃-isEquivalence
   ; ∘-resp-≈  = λ eq eq′ → ∘-resp-≈ eq eq′
   }

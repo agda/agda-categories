@@ -30,6 +30,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     sym-assoc : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → h ∘ (g ∘ f) ≈ (h ∘ g) ∘ f
     identityˡ : ∀ {A B} {f : A ⇒ B} → id ∘ f ≈ f
     identityʳ : ∀ {A B} {f : A ⇒ B} → f ∘ id ≈ f
+    identity² : ∀ {A} → id ∘ id {A} ≈ id {A}
     equiv     : ∀ {A B} → IsEquivalence (_≈_ {A} {B})
     ∘-resp-≈  : ∀ {A B C} {f h : B ⇒ C} {g i : A ⇒ B} → f ≈ h → g ≈ i → f ∘ g ≈ h ∘ i
 
@@ -115,6 +116,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ; sym-assoc = assoc
     ; identityˡ = identityʳ
     ; identityʳ = identityˡ
+    ; identity² = identity²
     ; equiv     = equiv
     ; ∘-resp-≈  = flip ∘-resp-≈
     }

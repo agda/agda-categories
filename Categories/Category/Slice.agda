@@ -45,6 +45,7 @@ Slice A       = record
   ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
+  ; identity² = identity²
   ; equiv     = record -- must be expanded to get levels to work out
     { refl  = refl
     ; sym   = sym

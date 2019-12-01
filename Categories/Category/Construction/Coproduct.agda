@@ -61,6 +61,8 @@ Coproduct C D = record
                   ; {inj₂ y} {inj₂ y₁} → lift D.identityˡ }
   ; identityʳ = λ { {inj₁ x} {inj₁ x₁} → lift C.identityʳ
                   ; {inj₂ y} {inj₂ y₁} → lift D.identityʳ}
+  ; identity² = λ { {inj₁ x} → lift C.identity²
+                  ; {inj₂ y} → lift D.identity² }
   ; equiv = λ { {inj₁ x} {inj₁ x₁} → record
                 { refl = lift C.Equiv.refl
                 ; sym = λ { (lift p) → lift $ C.Equiv.sym p }
