@@ -5,7 +5,10 @@ module Categories.Functor.Construction.Limit where
 open import Function using (_$_)
 
 open import Categories.Adjoint
+open import Categories.Adjoint.Equivalence
+open import Categories.Adjoint.Properties
 open import Categories.Category
+open import Categories.Category.Equivalence
 open import Categories.Category.Construction.Cones
 open import Categories.Category.Complete
 open import Categories.Category.Cocomplete
@@ -14,6 +17,7 @@ open import Categories.Functor
 open import Categories.Functor.Construction.Diagonal
 open import Categories.Functor.Construction.Constant
 open import Categories.NaturalTransformation renaming (id to idN)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_; module ≃)
 open import Categories.Diagram.Cone.Properties
 open import Categories.Diagram.Duality
 
@@ -120,14 +124,41 @@ module _ {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (Com : Complete o′ 
             ; commute = λ f → identityʳ ○ ⟺ (limit-commute (Com F) f)
             }
 
-module _ {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (Coc : Cocomplete o′ ℓ′ e′ C) where
+module _ {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (Coc : Cocomplete o′ ℓ′ e′ C) {J : Category o′ ℓ′ e′} where
   private
     module C = Category C
-  open C
+    module J = Category J
+    open C
+    open MR C
 
-  ColimitF : ∀ {J : Category o′ ℓ′ e′} → Functor (Functors J C) C
-  ColimitF {J} = Functor.op LF ∘F opF⇐
-    where Com : Complete o′ ℓ′ e′ C.op
-          Com F = Colimit⇒coLimit C (Coc (Functor.op F))
-          LF  : Functor (Functors (Category.op J) op) C.op
-          LF    = LimitF C.op Com {Category.op J}
+    Com : Complete o′ ℓ′ e′ C.op
+    Com F = Colimit⇒coLimit C (Coc (Functor.op F))
+    LF  : Functor (Functors J.op op) C.op
+    LF    = LimitF C.op Com {J.op}
+
+  ColimitF : Functor (Functors J C) C
+  ColimitF = Functor.op LF ∘F opF⇐
+
+  ColimitF⊣Δ : ColimitF ⊣ ΔF J
+  ColimitF⊣Δ = ⊣×≃⇒⊣ helper ≃.refl ΔF≃
+    where Δ⊣LimitFᵒᵖ : ΔF J.op ⊣ LF
+          Δ⊣LimitFᵒᵖ = Δ⊣LimitF op Com {J.op}
+          opF⊣ : opF⇐ {A = J} {C} ⊣ opF⇒
+          opF⊣ = StrongEquivalence.F⊣G.R⊣L Functorsᵒᵖ-equiv
+          helper : ColimitF ⊣ opF⇒ ∘F Functor.op (ΔF J.op)
+          helper = opF⊣ ∘⊣ Adjoint.op Δ⊣LimitFᵒᵖ
+          ΔF≃ : opF⇒ ∘F Functor.op (ΔF J.op) ≃ ΔF J
+          ΔF≃ = record
+            { F⇒G = record
+              { η       = λ _ → idN
+              ; commute = λ _ → id-comm-sym
+              }
+            ; F⇐G = record
+              { η       = λ _ → idN
+              ; commute = λ _ → id-comm-sym
+              }
+            ; iso = λ X → record
+              { isoˡ = identity²
+              ; isoʳ = identity²
+              }
+            }
