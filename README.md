@@ -1,4 +1,4 @@
-# categories-agda library
+# agda-categories library
 
 Welcome to what will hopefully become the standard Category Theory library for Agda.
 
