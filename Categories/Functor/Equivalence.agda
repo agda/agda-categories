@@ -14,6 +14,7 @@ open import Categories.Category.Product
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Properties using ([_]-resp-square)
+open import Categories.NaturalTransformation using (ntHelper)
 import Categories.Morphism as Morphism
 import Categories.Morphism.HeterogeneousIdentity as HId
 import Categories.Morphism.HeterogeneousIdentity.Properties as HIdProps
@@ -79,8 +80,8 @@ record _≡F_ {C : Category o ℓ e}
 
   natIso : F ≃ G
   natIso = record
-    { F⇒G = record { η = hid ⊚ eq₀   ; commute = eq₁   }
-    ; F⇐G = record { η = hid ⊚ eq₀⁻¹ ; commute = eq₁⁻¹ }
+    { F⇒G = ntHelper record { η = hid ⊚ eq₀   ; commute = eq₁   }
+    ; F⇐G = ntHelper record { η = hid ⊚ eq₀⁻¹ ; commute = eq₁⁻¹ }
     ; iso = λ X → hid-iso $ eq₀ X
     }
 

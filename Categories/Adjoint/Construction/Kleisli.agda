@@ -51,7 +51,7 @@ Free = record
 
 FF≃F : Forgetful ∘F Free ≃ M.F
 FF≃F = record
-  { F⇒G = record
+  { F⇒G = ntHelper record
     { η       = λ X → F₁ C.id
     ; commute = λ {X Y} f → begin
       F₁ C.id ∘ M.μ.η Y ∘ F₁ (M.η.η Y ∘ f)      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ homomorphism ⟩
@@ -59,7 +59,7 @@ FF≃F = record
       F₁ C.id ∘ F₁ f                            ≈⟨ [ M.F ]-resp-square id-comm-sym ⟩
       F₁ f ∘ F₁ C.id                            ∎
     }
-  ; F⇐G = record
+  ; F⇐G = ntHelper record
     { η       = λ X → F₁ C.id
     ; commute = λ {X Y} f → begin
       F₁ C.id ∘ F₁ f                            ≈⟨ [ M.F ]-resp-square id-comm-sym ⟩
@@ -75,7 +75,7 @@ FF≃F = record
 
 Free⊣Forgetful : Free ⊣ Forgetful
 Free⊣Forgetful = record
-  { unit   = record
+  { unit   = ntHelper record
     { η       = M.η.η
     ; commute = λ {X Y} f → begin
       M.η.η Y ∘ f                               ≈⟨ M.η.commute f ⟩
@@ -83,7 +83,7 @@ Free⊣Forgetful = record
       (M.μ.η Y ∘ F₁ (M.η.η Y) ∘ F₁ f) ∘ M.η.η X ≈˘⟨ ∘-resp-≈ʳ homomorphism ⟩∘⟨refl ⟩
       (M.μ.η Y ∘ F₁ (M.η.η Y ∘ f)) ∘ M.η.η X    ∎
     }
-  ; counit = record
+  ; counit = ntHelper record
     { η       = λ X → F₁ C.id
     ; commute = λ {X Y} f → begin
       (M.μ.η Y ∘ F₁ (F₁ C.id)) ∘ M.η.η (F₀ Y) ∘ M.μ.η Y ∘ F₁ f

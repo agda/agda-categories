@@ -10,6 +10,7 @@ open import Categories.Category
 open import Categories.Functor
 open import Categories.Category.Instance.Sets
 open import Categories.Category.Instance.Cats
+open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism
 import Categories.Category.Discrete as D
 
@@ -35,21 +36,21 @@ Discrete {o} = record
        }
      DiscreteId : {A : Set o} → NaturalIsomorphism (DiscreteFunctor {A} idf) id
      DiscreteId = record
-       { F⇒G = record { η = λ X → ≡.refl ; commute = λ { ≡.refl → ≡.refl} }
-       ; F⇐G = record { η = λ _ → ≡.refl ; commute = λ { ≡.refl → ≡.refl } }
+       { F⇒G = record { η = λ X → ≡.refl ; commute = λ { ≡.refl → ≡.refl } ; sym-commute = λ { ≡.refl → ≡.refl} }
+       ; F⇐G = record { η = λ _ → ≡.refl ; commute = λ { ≡.refl → ≡.refl } ; sym-commute = λ { ≡.refl → ≡.refl} }
        ; iso = λ X → record { isoˡ = ≡.refl ; isoʳ = ≡.refl }
        }
      PointwiseHom : {X Y Z : Set o} {g : X → Y} {h : Y → Z} →
        NaturalIsomorphism (DiscreteFunctor (h ● g)) (DiscreteFunctor h ∘F DiscreteFunctor g)
      PointwiseHom = record
-       { F⇒G = record { η = λ _ → ≡.refl ; commute = λ { ≡.refl → ≡.refl} }
-       ; F⇐G = record { η = λ _ → ≡.refl ; commute = λ { ≡.refl → ≡.refl} }
+       { F⇒G = record { η = λ _ → ≡.refl ; commute = λ { ≡.refl → ≡.refl} ; sym-commute = λ { ≡.refl → ≡.refl} }
+       ; F⇐G = record { η = λ _ → ≡.refl ; commute = λ { ≡.refl → ≡.refl} ; sym-commute = λ { ≡.refl → ≡.refl} }
        ; iso = λ X → record { isoˡ = ≡.refl ; isoʳ = ≡.refl }
        }
      ExtensionalityNI : {A B : Set o} {g h : A → B} →
       ({x : A} → g x ≡.≡ h x) → NaturalIsomorphism (DiscreteFunctor g) (DiscreteFunctor h)
      ExtensionalityNI g≡h = record
-       { F⇒G = record { η = λ X → g≡h {X} ; commute = λ { ≡.refl → ≡.sym (≡.trans-reflʳ g≡h)} }
-       ; F⇐G = record { η = λ X → ≡.sym (g≡h {X}) ; commute = λ { ≡.refl → ≡.sym (≡.trans-reflʳ _)} }
+       { F⇒G = ntHelper record { η = λ X → g≡h {X} ; commute = λ { ≡.refl → ≡.sym (≡.trans-reflʳ g≡h)} }
+       ; F⇐G = ntHelper record { η = λ X → ≡.sym (g≡h {X}) ; commute = λ { ≡.refl → ≡.sym (≡.trans-reflʳ _)} }
        ; iso = λ X → record { isoˡ = ≡.trans-symʳ g≡h ; isoʳ = ≡.trans-symˡ g≡h }
        }

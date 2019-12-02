@@ -127,12 +127,14 @@ Functorsᵒᵖ-equiv {B = B} = record
   ; weak-inverse = record
     { F∘G≈id = record
       { F⇒G = record
-        { η       = λ _ → idN
-        ; commute = λ _ → id-comm-sym
+        { η           = λ _ → idN
+        ; commute     = λ _ → id-comm-sym
+        ; sym-commute = λ _ → id-comm
         }
       ; F⇐G = record
-        { η       = λ _ → idN
-        ; commute = λ _ → id-comm-sym
+        { η           = λ _ → idN
+        ; commute     = λ _ → id-comm-sym
+        ; sym-commute = λ _ → id-comm
         }
       ; iso = λ _ → record
         { isoˡ = identityˡ
@@ -141,12 +143,14 @@ Functorsᵒᵖ-equiv {B = B} = record
       }
     ; G∘F≈id = record
       { F⇒G = record
-        { η       = λ _ → idN
-        ; commute = λ _ → id-comm-sym
+        { η           = λ _ → idN
+        ; commute     = λ _ → id-comm-sym
+        ; sym-commute = λ _ → id-comm
         }
       ; F⇐G = record
-        { η       = λ _ → idN
-        ; commute = λ _ → id-comm-sym
+        { η           = λ _ → idN
+        ; commute     = λ _ → id-comm-sym
+        ; sym-commute = λ _ → id-comm
         }
       ; iso = λ _ → record
         { isoˡ = identityˡ

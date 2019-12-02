@@ -193,8 +193,9 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
     { F         = R ∘F L
     ; η         = unit
     ; μ         = record
-      { η       = μ′.η
-      ; commute = μ′.commute
+      { η           = μ′.η
+      ; commute     = μ′.commute
+      ; sym-commute = μ′.sym-commute
       }
     ; assoc     = [ R ]-resp-square (counit.commute _)
     ; identityˡ = λ {X} → begin
@@ -244,11 +245,11 @@ module _ {R : Functor D C} where
 
   universalMophisms⇒adjoint : (∀ (X : C.Obj) → UniversalMorphism X R) → Σ (Functor C D) (λ L → L ⊣ R)
   universalMophisms⇒adjoint umors = L , record
-    { unit   = record
+    { unit   = ntHelper record
       { η       = λ c → f (umors.⊥ c)
       ; commute = λ i → let open C.HomReasoning in ⟺ C.identityʳ ○ ⟺ (commute (⊥X⇒⊥Y i))
       }
-    ; counit = record
+    ; counit = ntHelper record
       { η       = ε
       ; commute = λ {X Y} i →
         let open C.HomReasoning

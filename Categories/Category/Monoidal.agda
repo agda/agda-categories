@@ -150,11 +150,11 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   -- All the implicits below can be inferred, but being explicit is clearer
   unitorˡ-naturalIsomorphism : NaturalIsomorphism (unit ⊗-) idF
   unitorˡ-naturalIsomorphism = record
-    { F⇒G = record
+    { F⇒G = ntHelper record
       { η       = λ X → λ⇒ {X}
       ; commute = λ f → unitorˡ-commute-from {f = f}
       }
-    ; F⇐G = record
+    ; F⇐G = ntHelper record
       { η       = λ X → λ⇐ {X}
       ; commute = λ f → unitorˡ-commute-to {f = f}
       }
@@ -163,11 +163,11 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
 
   unitorʳ-naturalIsomorphism : NaturalIsomorphism (-⊗ unit) idF
   unitorʳ-naturalIsomorphism = record
-    { F⇒G = record
+    { F⇒G = ntHelper record
       { η       = λ X → ρ⇒ {X}
       ; commute = λ f → unitorʳ-commute-from {f = f}
       }
-    ; F⇐G = record
+    ; F⇐G = ntHelper record
       { η       = λ X → ρ⇐ {X}
       ; commute = λ f → unitorʳ-commute-to {f = f}
       }
@@ -177,11 +177,11 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   -- skippinf the explicit arguments here, it does not increase understandability
   associator-naturalIsomorphism : NaturalIsomorphism [x⊗y]⊗z x⊗[y⊗z]
   associator-naturalIsomorphism = record
-    { F⇒G = record
+    { F⇒G = ntHelper record
       { η       = λ { ((X , Y) , Z) → α⇒ {X} {Y} {Z}}
       ; commute = λ _ → assoc-commute-from
       }
-    ; F⇐G = record
+    ; F⇐G = ntHelper record
       { η       = λ _ → α⇐
       ; commute = λ _ → assoc-commute-to
       }

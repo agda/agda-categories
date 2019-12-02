@@ -107,30 +107,34 @@ module _ {A B} (f : A C.⇒ B) where
     ; weak-inverse = record
       { F∘G≈id = record
         { F⇒G = record
-          { η       = λ { (S.sliceobj (S.slicearr △)) → S.slicearr {h = S.slicearr (C.identityʳ ○ ⟺ △)} C.identityʳ }
-          ; commute = λ _ → id-comm-sym
+          { η           = λ { (S.sliceobj (S.slicearr △)) → S.slicearr {h = S.slicearr (C.identityʳ ○ ⟺ △)} C.identityʳ }
+          ; commute     = λ _ → id-comm-sym
+          ; sym-commute = λ _ → id-comm
           }
-        ; F⇐G = record
-          { η       = λ { (S.sliceobj (S.slicearr △)) → S.slicearr {h = S.slicearr (C.identityʳ ○ △)} C.identityʳ }
-          ; commute = λ _ → id-comm-sym
+        ; F⇐G           = record
+          { η           = λ { (S.sliceobj (S.slicearr △)) → S.slicearr {h = S.slicearr (C.identityʳ ○ △)} C.identityʳ }
+          ; commute     = λ _ → id-comm-sym
+          ; sym-commute = λ _ → id-comm
           }
         ; iso = λ _ → record
-          { isoˡ = C.identityʳ
-          ; isoʳ = C.identityʳ
+          { isoˡ = C.identity²
+          ; isoʳ = C.identity²
           }
         }
       ; G∘F≈id = record
         { F⇒G = record
-          { η       = λ { (S.sliceobj arr) → S.slicearr C.identityʳ }
-          ; commute = λ _ → id-comm-sym
+          { η           = λ { (S.sliceobj arr) → S.slicearr C.identityʳ }
+          ; commute     = λ _ → id-comm-sym
+          ; sym-commute = λ _ → id-comm
           }
-        ; F⇐G = record
-          { η       = λ { (S.sliceobj arr) → S.slicearr C.identityʳ }
-          ; commute = λ _ → id-comm-sym
+        ; F⇐G           = record
+          { η           = λ { (S.sliceobj arr) → S.slicearr C.identityʳ }
+          ; commute     = λ _ → id-comm-sym
+          ; sym-commute = λ _ → id-comm
           }
         ; iso = λ _ → record
-          { isoˡ = C.identityʳ
-          ; isoʳ = C.identityʳ
+          { isoˡ = C.identity²
+          ; isoʳ = C.identity²
           }
         }
       }

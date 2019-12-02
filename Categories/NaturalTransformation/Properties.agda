@@ -47,14 +47,14 @@ module _ {F G : Functor C D} where
     where open NaturalTransformation β
 
   Dinatural⇒NT : DinaturalTransformation F′ G′ → NaturalTransformation F G
-  Dinatural⇒NT θ = record
+  Dinatural⇒NT θ = ntHelper record
     { η       = α
     ; commute = λ f → introˡ (identity G) ○ ⟺ (commute f) ○ ∘-resp-≈ʳ (elimʳ (identity F))
     }
     where open DinaturalTransformation θ
 
   replaceˡ : ∀ {F′} → NaturalTransformation F G → F ≃ F′ → NaturalTransformation F′ G
-  replaceˡ {F′} α F≃F′ = record
+  replaceˡ {F′} α F≃F′ = ntHelper record
     { η       = λ X → η X ∘ ⇐.η X
     ; commute = λ {X Y} f → begin
       (η Y ∘ ⇐.η Y) ∘ F₁ F′ f ≈⟨ pullʳ (⇐.commute f) ⟩
@@ -65,7 +65,7 @@ module _ {F G : Functor C D} where
           open NaturalTransformation α
 
   replaceʳ : ∀ {G′} → NaturalTransformation F G → G ≃ G′ → NaturalTransformation F G′
-  replaceʳ {G′} α G≃G′ = record
+  replaceʳ {G′} α G≃G′ = ntHelper record
     { η       = λ X → ⇒.η X ∘ η X
     ; commute = λ {X Y} f → begin
       (⇒.η Y ∘ η Y) ∘ F₁ F f ≈⟨ pullʳ (commute f) ⟩
@@ -103,7 +103,7 @@ module _ {c ℓ ℓ′ e} {F G : Functor C (Setoids c ℓ)} (α : NaturalTransfo
   open Π
 
   unlift-nat : NaturalTransformation F G
-  unlift-nat = record
+  unlift-nat = ntHelper record
     { η       = λ X → record
       { _⟨$⟩_ = λ x → lower (η X ⟨$⟩ lift x)
       ; cong = λ eq → lower (cong (η X) (lift eq))

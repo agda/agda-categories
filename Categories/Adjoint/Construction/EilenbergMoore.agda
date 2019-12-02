@@ -49,12 +49,14 @@ Free = record
 FF≃F : Forgetful ∘F Free ≃ M.F
 FF≃F = record
   { F⇒G = record
-    { η       = λ X → F₁ C.id
-    ; commute = λ f → [ M.F ]-resp-square id-comm-sym
+    { η           = λ X → F₁ C.id
+    ; commute     = λ f → [ M.F ]-resp-square id-comm-sym
+    ; sym-commute = λ f → [ M.F ]-resp-square id-comm
     }
   ; F⇐G = record
     { η       = λ X → F₁ C.id
     ; commute = λ f → [ M.F ]-resp-square id-comm-sym
+    ; sym-commute = λ f → [ M.F ]-resp-square id-comm
     }
   ; iso = λ X → record
     { isoˡ = elimˡ identity ○ identity
@@ -65,17 +67,19 @@ FF≃F = record
 Free⊣Forgetful : Free ⊣ Forgetful
 Free⊣Forgetful = record
   { unit   = record
-    { η       = M.η.η
-    ; commute = M.η.commute
+    { η           = M.η.η
+    ; commute     = M.η.commute
+    ; sym-commute = M.η.sym-commute
     }
   ; counit = record
-    { η       = λ X →
+    { η           = λ X →
       let module X = Module X
       in record
         { arr     = X.action
         ; commute = ⟺ X.commute
         }
-    ; commute = λ f → ⟺ (Module⇒.commute f)
+    ; commute     = λ f → ⟺ (Module⇒.commute f)
+    ; sym-commute = Module⇒.commute
     }
   ; zig    = M.identityˡ
   ; zag    = λ {B} → Module.identity B

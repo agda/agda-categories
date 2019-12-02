@@ -57,33 +57,39 @@ El {C = C} = record
     }
   ; identity = λ {P} → record
     { F⇒G = record
-      { η = λ X → id , identity P
-      ; commute = λ _ → MR.id-comm-sym C
+      { η           = λ X → id , identity P
+      ; commute     = λ _ → MR.id-comm-sym C
+      ; sym-commute = λ _ → MR.id-comm C
       }
     ; F⇐G = record
-      { η = λ X → id , identity P
-      ; commute = λ _ → MR.id-comm-sym C
+      { η           = λ X → id , identity P
+      ; commute     = λ _ → MR.id-comm-sym C
+      ; sym-commute = λ _ → MR.id-comm C
       }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ } }
   ; homomorphism = λ {X₁} {Y₁} {Z₁} → record
     { F⇒G = record
-      { η = λ X → id , identity Z₁
-      ; commute = λ _ → MR.id-comm-sym C
+      { η           = λ X → id , identity Z₁
+      ; commute     = λ _ → MR.id-comm-sym C
+      ; sym-commute = λ _ → MR.id-comm C
       }
     ; F⇐G = record
-      { η = λ X → id , identity Z₁
-      ; commute = λ _ → MR.id-comm-sym C
+      { η           = λ X → id , identity Z₁
+      ; commute     = λ _ → MR.id-comm-sym C
+      ; sym-commute = λ _ → MR.id-comm C
       }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ }
     }
   ; F-resp-≈ = λ {_} {B₁} f≈g → record
     { F⇒G = record
-      { η = λ _ → id , trans (identity B₁) f≈g
-      ; commute = λ _ → MR.id-comm-sym C
+      { η           = λ _ → id , trans (identity B₁) f≈g
+      ; commute     = λ _ → MR.id-comm-sym C
+      ; sym-commute = λ _ → MR.id-comm C
       }
     ; F⇐G = record
-      { η = λ _ → id , trans (identity B₁) (sym f≈g)
-      ; commute = λ _ → MR.id-comm-sym C
+      { η           = λ _ → id , trans (identity B₁) (sym f≈g)
+      ; commute     = λ _ → MR.id-comm-sym C
+      ; sym-commute = λ _ → MR.id-comm C
       }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ } }
   }

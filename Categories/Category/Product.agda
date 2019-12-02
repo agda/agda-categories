@@ -75,7 +75,7 @@ _⁂ⁿ_ : ∀ {C₁ : Category o₁ ℓ₁ e₁} {D₁ : Category o′₁ ℓ�
          {F₁ G₁ : Functor C₁ D₁} {F₂ G₂ : Functor C₂ D₂}
          (α : NaturalTransformation F₁ G₁) (β : NaturalTransformation F₂ G₂) →
          NaturalTransformation (F₁ ⁂ F₂) (G₁ ⁂ G₂)
-α ⁂ⁿ β = record
+α ⁂ⁿ β = ntHelper record
   { η       = map⁎′ α.η β.η
   ; commute = map⁎′ α.commute β.commute
   }
@@ -89,7 +89,7 @@ _※ⁿ_ : ∀ {D₁ : Category o ℓ e} {D₂ : Category o′ ℓ′ e′}
          (α : NaturalTransformation F₁ G₁) →
          (β : NaturalTransformation F₂ G₂) →
          NaturalTransformation (F₁ ※ F₂) (G₁ ※ G₂)
-α ※ⁿ β = record
+α ※ⁿ β = ntHelper record
   { η       = < α.η , β.η >
   ; commute = < α.commute , β.commute >
   }

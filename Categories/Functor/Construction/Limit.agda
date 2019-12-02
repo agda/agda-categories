@@ -78,7 +78,7 @@ module _ {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (Com : Complete o′ 
 
   Δ⊣LimitF : ΔF J ⊣ LimitF
   Δ⊣LimitF = record
-    { unit   = record
+    { unit   = ntHelper record
       { η       = λ X → rep (Com (const X)) (id-Cone X)
       ; commute = λ {X Y} f → terminal.!-unique₂ (Com (const Y))
         {record
@@ -97,7 +97,7 @@ module _ {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (Com : Complete o′ 
             ○ identityʳ
           }}
       }
-    ; counit = record
+    ; counit = ntHelper record
       { η       = counit-nat
       ; commute = λ α → ⇒-commute (lim⇒lim α)
       }
@@ -119,7 +119,7 @@ module _ {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (Com : Complete o′ 
          {record { commute = identityʳ }}
     }
     where counit-nat : (F : Functor J C) → NaturalTransformation (const (apex (Com F))) F
-          counit-nat F = record
+          counit-nat F = ntHelper record
             { η       = proj (Com F)
             ; commute = λ f → identityʳ ○ ⟺ (limit-commute (Com F) f)
             }
@@ -150,12 +150,14 @@ module _ {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (Coc : Cocomplete o�
           ΔF≃ : opF⇒ ∘F Functor.op (ΔF J.op) ≃ ΔF J
           ΔF≃ = record
             { F⇒G = record
-              { η       = λ _ → idN
-              ; commute = λ _ → id-comm-sym
+              { η           = λ _ → idN
+              ; commute     = λ _ → id-comm-sym
+              ; sym-commute = λ _ → id-comm
               }
             ; F⇐G = record
-              { η       = λ _ → idN
-              ; commute = λ _ → id-comm-sym
+              { η           = λ _ → idN
+              ; commute     = λ _ → id-comm-sym
+              ; sym-commute = λ _ → id-comm
               }
             ; iso = λ X → record
               { isoˡ = identity²

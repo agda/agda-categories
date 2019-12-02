@@ -53,7 +53,7 @@ Cats-CCC {l} = record
                 F₁ (rewrap.F₁ (E.id , g)) D.∘ F₁ (rewrap.F₁ (E.id , f)) ∎
               ; F-resp-≈     = λ {_ _} {f g} eq → F-resp-≈ (Functor.F-resp-≈ (appˡ rewrap e) eq)
               }
-          ; F₁           = λ {A B} f → record
+          ; F₁           = λ {A B} f → ntHelper record
             { η       = λ c → F₁ (rewrap.F₁ (f , C.id))
             ; commute = λ g → begin
               F₁ (rewrap.F₁ (f , C.id)) D.∘ F₁ (rewrap.F₁ (E.id , g)) ≈˘⟨ homomorphism ⟩
@@ -82,7 +82,7 @@ Cats-CCC {l} = record
         β : ∀ {E C D : Category l l l} (p : Pro E C) {F : Functor (Pro.A×B p) D} →
               eval ∘F (λg p F ∘F Pro.π₁ p ※ idF ∘F Pro.π₂ p) ≃ F
         β {E} {C} {D} p {F} = record
-          { F⇒G = record
+          { F⇒G = ntHelper record
             { η       = natiso.⇒.η
             ; commute = λ {X Y} f → begin
               natiso.⇒.η Y D.∘ Functor.F₁ (eval ∘F (λg p F ∘F π₁ ※ idF ∘F π₂)) f
@@ -94,7 +94,7 @@ Cats-CCC {l} = record
               F₁ f D.∘ natiso.⇒.η X
                 ∎
             }
-          ; F⇐G = record
+          ; F⇐G = ntHelper record
             { η       = natiso.⇐.η
             ; commute = λ {X Y} f → begin
               natiso.⇐.η Y D.∘ F₁ f
@@ -123,15 +123,15 @@ Cats-CCC {l} = record
         λg-cong : ∀ {E C D : Category l l l} (p : Pro E C) {F G : Functor (Pro.A×B p) D} (F≃G : F ≃ G) →
                     λg p F ≃ λg p G
         λg-cong {E} {C} {D} p {F} {G} F≃G = record
-          { F⇒G = record
-            { η       = λ e → record
+          { F⇒G = ntHelper record
+            { η       = λ e → ntHelper record
               { η       = λ c → mapped.⇒.η (e , c)
               ; commute = λ f → mapped.⇒.commute (E.id , f)
               }
             ; commute = λ f → mapped.⇒.commute (f , C.id)
             }
-          ; F⇐G = record
-            { η       = λ e → record
+          ; F⇐G = ntHelper record
+            { η       = λ e → ntHelper record
               { η       = λ c → mapped.⇐.η (e , c)
               ; commute = λ f → mapped.⇐.commute (E.id , f)
               }
@@ -180,10 +180,10 @@ Cats-CCC {l} = record
 
                 cancel : λg p (eval ∘F (G ∘F Pro.π₁ p ※ idF ∘F Pro.π₂ p)) ≃ G
                 cancel = record
-                  { F⇒G = record
+                  { F⇒G = ntHelper record
                     { η       = λ e → 
                       let module Ge  = Functor (G.F₀ e)
-                      in record
+                      in ntHelper record
                       { η       = λ c →
                         let module α = NaturalTransformation (Gproject₁′.⇒.η (e , c))
                         in Ge.F₁ (project₂′.⇒.η (e , c)) D.∘ α.η (π₂r.F₀ (e , c))
@@ -239,10 +239,10 @@ Cats-CCC {l} = record
                          NaturalTransformation.η (G.F₁ f) c D.∘ GX.F₁ (project₂′.⇒.η (X , c)) D.∘ α.η (π₂r.F₀ (X , c))
                            ∎
                     }
-                  ; F⇐G = record
+                  ; F⇐G = ntHelper record
                     { η       = λ e →
                       let module Ge  = Functor (G.F₀ e)
-                      in record
+                      in ntHelper record
                       { η       = λ c →
                         let module α = NaturalTransformation (Gproject₁′.⇐.η (e , c))
                         in α.η (π₂r.F₀ (e , c)) D.∘ Ge.F₁ (project₂′.⇐.η (e , c))

@@ -490,11 +490,11 @@ CatF = record
 -- Because of the Level changes in CatF, sizes must all be same:
 CatF-is-Free : (o : Level) → Adjoint (CatF {o} {o} {o}) (Underlying)
 CatF-is-Free o = record
-  { unit = record
+  { unit = ntHelper record
     { η = GM
     ; commute = λ {X} {Y} f → record { M₀≡ = ≡.refl ; M₁≡ = Graph.Equiv.refl Y ◅ ε }
     }
-  ; counit = record
+  ; counit = ntHelper record
     { η = λ X → record
       { F₀ = idFun
       ; F₁ = unwind X

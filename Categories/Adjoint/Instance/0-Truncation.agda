@@ -18,7 +18,7 @@ open import Categories.Category.Instance.Groupoids using (Groupoids)
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Instance.0-Truncation using (Trunc)
-open import Categories.NaturalTransformation using (NaturalTransformation)
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (refl)
 
 -- The inclusion functor from Setoids to Groupoids
@@ -54,9 +54,10 @@ TruncAdj {o} {ℓ} {e} = record
 
     unit : NaturalTransformation idF (Inclusion e ∘F Trunc)
     unit = record
-      { η       = λ _ → record { F₀ = Function.id ; F₁ = Function.id }
-      ; commute = λ _ → refl
+      { η           = λ _ → record { F₀ = Function.id ; F₁ = Function.id }
+      ; commute     = λ _ → refl
+      ; sym-commute = λ _ → refl
       }
 
     counit : NaturalTransformation (Trunc ∘F Inclusion e) idF
-    counit = record { η = λ S → idΠ ; commute = λ f → cong f }
+    counit = ntHelper record { η = λ S → idΠ ; commute = λ f → cong f }

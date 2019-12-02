@@ -25,11 +25,14 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   field
     assoc     : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → (h ∘ g) ∘ f ≈ h ∘ (g ∘ f)
-    -- we add a symmetric proof of associativity so that the opposite category of the opposite category
-    -- is definitionally equal to the original category. see how `op` is implemented.
+    -- We add a symmetric proof of associativity so that the opposite category of the
+    -- opposite category is definitionally equal to the original category. See how
+    -- `op` is implemented.
     sym-assoc : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → h ∘ (g ∘ f) ≈ (h ∘ g) ∘ f
     identityˡ : ∀ {A B} {f : A ⇒ B} → id ∘ f ≈ f
     identityʳ : ∀ {A B} {f : A ⇒ B} → f ∘ id ≈ f
+    -- We add a proof of "neutral" identity proof, in order to ensure the opposite of
+    -- constant functor is definitionally equal to itself.
     identity² : ∀ {A} → id ∘ id {A} ≈ id {A}
     equiv     : ∀ {A B} → IsEquivalence (_≈_ {A} {B})
     ∘-resp-≈  : ∀ {A B C} {f h : B ⇒ C} {g i : A ⇒ B} → f ≈ h → g ≈ i → f ∘ g ≈ h ∘ i
@@ -125,6 +128,9 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   CommutativeSquare : ∀ {A B C D} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
   CommutativeSquare f g h i = h ∘ f ≈ i ∘ g
 
+-- Since we add extra proofs in the definition of `Category` (i.e. `sym-assoc` and
+-- `identity²`), we might still want to construct a `Category` in its originally
+-- easier manner. Thus, this redundant definition is here to ease the construction.
 record CategoryHelper (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   infix  4 _≈_ _⇒_
   infixr 9 _∘_

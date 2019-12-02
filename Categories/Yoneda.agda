@@ -27,7 +27,7 @@ open import Categories.Functor.Hom using (module Hom; Hom[_][-,_]; Hom[_][-,-])
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Presheaf
 open import Categories.Functor.Construction.LiftSetoids
-open import Categories.NaturalTransformation using (NaturalTransformation) renaming (id to idN)
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper) renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
 
 import Categories.Morphism as Mor
@@ -50,7 +50,7 @@ module _ (C : Category o ℓ e) where
   -- This NaturalTransformation should probably got into NaturalTransformation.Hom,
   -- in analogy with Functor.Hom above.
   Hom[A,C]⇒Hom[B,C] : {A B : Obj} → (A ⇒ B) → NaturalTransformation Hom[ C ][-, A ] Hom[ C ][-, B ]
-  Hom[A,C]⇒Hom[B,C] {A} A⇒B = record
+  Hom[A,C]⇒Hom[B,C] {A} A⇒B = ntHelper record
     { η       = λ X → record { _⟨$⟩_ = λ X⇒A → A⇒B ∘ X⇒A ; cong = ∘-resp-≈ʳ }
     ; commute = λ {X} {Y} f {g} {h} g≈h → begin
         A⇒B ∘ id ∘ g ∘ f   ≈˘⟨ assoc ⟩
@@ -78,7 +78,7 @@ module _ (C : Category o ℓ e) where
       ; cong  = λ i≈j → i≈j CE.refl
       }
     ; from       = record
-      { _⟨$⟩_ = λ x → record
+      { _⟨$⟩_ = λ x → ntHelper record
         { η       = λ X → record
           { _⟨$⟩_ = λ X⇒a → F₁ F X⇒a ⟨$⟩ x
           ; cong  = λ i≈j → F-resp-≈ F i≈j SE.refl
@@ -121,7 +121,7 @@ module _ (C : Category o ℓ e) where
   -- it is easy to show yoneda-inverse first then to yoneda.
   yoneda : NaturalIsomorphism Nat[Hom[C][-,c],F] FC
   yoneda = record
-    { F⇒G = record
+    { F⇒G = ntHelper record
       { η       = λ where
         (F , A) → record
           { _⟨$⟩_ = λ α → lift (yoneda-inverse.to ⟨$⟩ α)
@@ -130,7 +130,7 @@ module _ (C : Category o ℓ e) where
       ; commute = λ where
         {_} {G , B} (α , f) {β} {γ} β≈γ → lift $ cong (η α B) (helper f β γ β≈γ)
       }
-    ; F⇐G = record
+    ; F⇐G = ntHelper record
       { η       = λ where
         (F , A) → record
           { _⟨$⟩_ = λ where
@@ -247,13 +247,13 @@ module _ (C : Category o ℓ e) where
 
         nat-appʳ : ∀ X → NaturalTransformation Hom[-,F-] Hom[-,G-] →
                          NaturalTransformation Hom[ C ][-, F.F₀ X ] Hom[ C ][-, G.F₀ X ]
-        nat-appʳ X α = record
+        nat-appʳ X α = ntHelper record
           { η       = λ Y → η α (Y , X)
           ; commute = λ {_ Y} f eq → cong (η α (Y , X)) (∘-resp-≈ˡ (⟺ F.identity)) ○ commute α (f , D.id) eq ○ ∘-resp-≈ˡ G.identity
           }
 
         transform : NaturalTransformation Hom[-,F-] Hom[-,G-] → NaturalTransformation F G
-        transform α = record
+        transform α = ntHelper record
           { η       = λ X → η α (F.F₀ X , X) ⟨$⟩ id
           ; commute = λ {X Y} f → begin
             (η α (F.F₀ Y , Y) ⟨$⟩ id) ∘ F.F₁ f      ≈˘⟨ identityˡ ⟩

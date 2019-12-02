@@ -49,8 +49,8 @@ module _ {o ℓ e : Level} where
       ; F-resp-≈ = λ { () }
       }
     ; !-unique = λ f → record
-      { F⇒G = record { η = λ { (lift ()) } ; commute = λ { (lift ()) } }
-      ; F⇐G = record { η = λ { (lift ()) } ; commute = λ { (lift ()) } }
+      { F⇒G = record { η = λ { () } ; commute = λ { () } ; sym-commute = λ { () } }
+      ; F⇐G = record { η = λ { () } ; commute = λ { () } ; sym-commute = λ { () } }
       ; iso = λ { (lift ()) }
       }
     }

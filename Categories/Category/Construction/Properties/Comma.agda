@@ -46,8 +46,9 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
 
     induced-nat : NaturalTransformation (S ∘F Dom S T) (T ∘F Cod S T)
     induced-nat = record
-      { η       = f
-      ; commute = λ i → C.Equiv.sym (commute i)
+      { η           = f
+      ; commute     = λ i → C.Equiv.sym (commute i)
+      ; sym-commute = commute
       }
 
 -- There's an induced functor from Functors category to Functors over Comma categories
@@ -121,12 +122,14 @@ module _ {C : Category o ℓ e} where
     ; weak-inverse = record
       { F∘G≈id = record
         { F⇒G = record
-          { η       = λ _ → record { commute = id-comm-sym }
-          ; commute = λ _ → id-comm-sym , _
+          { η           = λ _ → record { commute = id-comm-sym }
+          ; commute     = λ _ → id-comm-sym , _
+          ; sym-commute = λ _ → id-comm , _
           }
         ; F⇐G = record
-          { η       = λ _ → record { commute = id-comm-sym }
-          ; commute = λ _ → id-comm-sym , _
+          { η           = λ _ → record { commute = id-comm-sym }
+          ; commute     = λ _ → id-comm-sym , _
+          ; sym-commute = λ _ → id-comm , _
           }
         ; iso = λ Y → record
           { isoˡ = identityˡ , _
@@ -135,12 +138,14 @@ module _ {C : Category o ℓ e} where
         }
       ; G∘F≈id = record
         { F⇒G = record
-          { η       = λ _ → S.slicearr identityʳ
-          ; commute = λ _ → id-comm-sym
+          { η           = λ _ → S.slicearr identityʳ
+          ; commute     = λ _ → id-comm-sym
+          ; sym-commute = λ _ → id-comm
           }
         ; F⇐G = record
-          { η       = λ _ → S.slicearr identityʳ
-          ; commute = λ _ → id-comm-sym
+          { η           = λ _ → S.slicearr identityʳ
+          ; commute     = λ _ → id-comm-sym
+          ; sym-commute = λ _ → id-comm
           }
         ; iso = λ _ → record
           { isoˡ = identityˡ

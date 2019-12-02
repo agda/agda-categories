@@ -23,6 +23,7 @@ import Categories.Category.Monoidal.Symmetric as Sym
 
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Bifunctor
+open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans)
 
 private
@@ -256,11 +257,11 @@ record Cartesian : Set (levelOfTerm 𝒞) where
 
   ⊤×--id : NaturalIsomorphism (⊤ ×-) idF
   ⊤×--id = record
-    { F⇒G = record
+    { F⇒G = ntHelper record
       { η       = λ _ → π₂
       ; commute = λ _ → project₂
       }
-    ; F⇐G = record
+    ; F⇐G = ntHelper record
       { η       = λ _ → ⟨ ! , id ⟩
       ; commute = λ f → begin
         ⟨ ! , id ⟩ ∘ f                                     ≈⟨ ⟨⟩∘ ⟩
@@ -275,11 +276,11 @@ record Cartesian : Set (levelOfTerm 𝒞) where
 
   -×⊤-id : NaturalIsomorphism (-× ⊤) idF
   -×⊤-id = record
-    { F⇒G = record
+    { F⇒G = ntHelper record
       { η       = λ _ → π₁
       ; commute = λ _ → project₁
       }
-    ; F⇐G = record
+    ; F⇐G = ntHelper record
       { η       = λ _ → ⟨ id , ! ⟩
       ; commute = λ f → begin
         ⟨ id , ! ⟩ ∘ f                                     ≈⟨ ⟨⟩∘ ⟩
@@ -347,11 +348,11 @@ record Cartesian : Set (levelOfTerm 𝒞) where
   symmetric = record
     { braided = record
       { braiding = record
-        { F⇒G = record
+        { F⇒G = ntHelper record
           { η       = λ _ → swap
           ; commute = λ _ → swap∘⁂
           }
-        ; F⇐G = record
+        ; F⇐G = ntHelper record
           { η       = λ _ → swap
           ; commute = λ _ → swap∘⁂
           }

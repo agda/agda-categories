@@ -49,8 +49,8 @@ Core {o} {ℓ} {e} = record
 
      CoreId : {A : Category o ℓ e} → NaturalIsomorphism (CoreFunctor {A} id) id
      CoreId {A} = record
-       { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym A ⌟ }
-       ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym A ⌟ }
+       { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym A ⌟ ; sym-commute = λ _ → ⌞ MR.id-comm A ⌟ }
+       ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym A ⌟ ; sym-commute = λ _ → ⌞ MR.id-comm A ⌟ }
        ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
        }
        where
@@ -62,8 +62,8 @@ Core {o} {ℓ} {e} = record
                NaturalIsomorphism (CoreFunctor (G ∘F F))
                                   (CoreFunctor G ∘F CoreFunctor F)
      CoreHom {A} {B} {C} {F} {G} = record
-       { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym C ⌟ }
-       ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym C ⌟ }
+       { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym C ⌟ ; sym-commute = λ _ → ⌞ MR.id-comm C ⌟ }
+       ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym C ⌟ ; sym-commute = λ _ → ⌞ MR.id-comm C ⌟ }
        ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
        }
        where
@@ -74,8 +74,8 @@ Core {o} {ℓ} {e} = record
                   NaturalIsomorphism F G →
                   NaturalIsomorphism (CoreFunctor F) (CoreFunctor G)
      CoreRespNI {A} {B} {F} {G} μ = record
-       { F⇒G = record { η = λ _ →       FX≅GX ; commute = λ _ → ⌞ ⇒.commute _ ⌟ }
-       ; F⇐G = record { η = λ _ → ≅.sym FX≅GX ; commute = λ _ → ⌞ ⇐.commute _ ⌟ }
+       { F⇒G = record { η = λ _ →       FX≅GX ; commute = λ _ → ⌞ ⇒.commute _ ⌟ ; sym-commute = λ _ → ⌞ ⇒.sym-commute _ ⌟ }
+       ; F⇐G = record { η = λ _ → ≅.sym FX≅GX ; commute = λ _ → ⌞ ⇐.commute _ ⌟ ; sym-commute = λ _ → ⌞ ⇐.sym-commute _ ⌟ }
        ; iso = λ X → record { isoˡ = ⌞ iso.isoˡ X ⌟ ; isoʳ = ⌞ iso.isoʳ X ⌟ }
        }
        where

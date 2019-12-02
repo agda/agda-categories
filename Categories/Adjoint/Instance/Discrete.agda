@@ -23,7 +23,7 @@ open import Categories.Functor.Equivalence
 import Categories.Category.Discrete as D
 open import Categories.Morphism.HeterogeneousIdentity
 open import Categories.Morphism.HeterogeneousIdentity.Properties
-open import Categories.NaturalTransformation as NT using (NaturalTransformation)
+open import Categories.NaturalTransformation as NT using (NaturalTransformation; ntHelper)
 
 -- The forgetful functor from StrictCats to Sets.
 
@@ -158,7 +158,7 @@ DiscreteLeftAdj {o} = record
       }
 
     counit : NaturalTransformation (Discrete ∘F Forgetful) idF
-    counit = record { η = counitFun ; commute = counitComm }
+    counit = ntHelper record { η = counitFun ; commute = counitComm }
 
     zig : {A : Set o} → counitFun (Δ.F₀ A) ∘F (Δ.F₁ Fun.id) ≡F idF
     zig {A} = record { eq₀ = λ _ → refl ; eq₁ = λ{ refl → refl } }
@@ -190,7 +190,7 @@ CodiscreteRightAdj {o} {ℓ} {e} = record
     unitComm {C} {D} F = record { eq₀ = λ _ → refl ; eq₁ = λ _ → lift tt }
 
     unit : NaturalTransformation idF (Codiscrete ℓ e ∘F Forgetful)
-    unit = record { η = unitFun ; commute = unitComm }
+    unit = ntHelper record { η = unitFun ; commute = unitComm }
 
     counit : NaturalTransformation (Forgetful ∘F Codiscrete ℓ e) idF
     counit = NT.id

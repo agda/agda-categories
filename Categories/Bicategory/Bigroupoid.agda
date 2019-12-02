@@ -15,7 +15,7 @@ open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.Functor.Construction.Constant
-open import Categories.NaturalTransformation using (NaturalTransformation)
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_; NaturalIsomorphism)
 
 import Categories.Morphism as Mor
@@ -92,7 +92,7 @@ record IsBigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ 
 
   hom⁻¹⁻¹≃id : ∀ {A B} → hom[ B , A ]⁻¹ ∘F hom[ A , B ]⁻¹ ≃ idF
   hom⁻¹⁻¹≃id {A} {B} = record
-    { F⇒G = record
+    { F⇒G = ntHelper record
       { η       = λ f → (((unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
       ; commute = λ {f g} α → begin
         ((((unitorˡ.from ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ associator.to) ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇐.η g) ∘ᵥ unitorʳ.to) ∘ᵥ α ⁻¹′ ⁻¹′
@@ -120,7 +120,7 @@ record IsBigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ 
         α ∘ᵥ (((unitorˡ.from ∘ᵥ cancel.⇒.η (f ⁻¹) ◁ f) ∘ᵥ associator.to) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ unitorʳ.to
           ∎
       }
-    ; F⇐G = record
+    ; F⇐G = ntHelper record
       { η       = λ f → unitorʳ.from ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇒.η f ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (f ⁻¹) ◁ f ∘ᵥ unitorˡ.to
       ; commute = λ {f g} α → begin
         (unitorʳ.from ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇒.η g ∘ᵥ associator.from ∘ᵥ cancel.⇐.η (g ⁻¹) ◁ g ∘ᵥ unitorˡ.to) ∘ᵥ α

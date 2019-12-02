@@ -181,10 +181,10 @@ module _ (F : Functor B C) (G : Functor C D) (H : Functor D E) where
   private
     -- components of α
     assocʳ : NaturalTransformation ((H ∘F G) ∘F F) (H ∘F (G ∘F F))
-    assocʳ = record { η = λ _ → id ; commute = λ _ → MR.id-comm-sym E  }
+    assocʳ = ntHelper record { η = λ _ → id ; commute = λ _ → MR.id-comm-sym E  }
 
     assocˡ : NaturalTransformation (H ∘F (G ∘F F)) ((H ∘F G) ∘F F)
-    assocˡ = record { η = λ _ → id ; commute = λ _ → MR.id-comm-sym E }
+    assocˡ = ntHelper record { η = λ _ → id ; commute = λ _ → MR.id-comm-sym E }
 
   associator : (H ∘F G) ∘F F ≃ H ∘F (G ∘F F)
   associator = record { F⇒G = assocʳ ; F⇐G = assocˡ ; iso = iso-id-id }

@@ -8,7 +8,7 @@ open import Data.Product
 
 open import Categories.Category
 open import Categories.Functor renaming (id to idF)
-open import Categories.NaturalTransformation using (NaturalTransformation) renaming (id to idNI)
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper) renaming (id to idNI)
 open import Categories.NaturalTransformation.NaturalIsomorphism
 open import Categories.Category.Product
 open import Categories.Morphism
@@ -24,16 +24,16 @@ module _ {A : Category o ℓ e} {B : Category o′ ℓ′ e′} {C : Category o�
 
   project₁ : πˡ ∘F (i ※ j) ≃ i
   project₁ = record
-    { F⇒G = record { η = λ _ → id ; commute = λ _ → id-comm-sym }
-    ; F⇐G = record { η = λ _ → id ; commute = λ _ → id-comm-sym }
+    { F⇒G = ntHelper record { η = λ _ → id ; commute = λ _ → id-comm-sym }
+    ; F⇐G = ntHelper record { η = λ _ → id ; commute = λ _ → id-comm-sym }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ }
     }
     where open Category A; open MR.Basic A
 
   project₂ : πʳ ∘F (i ※ j) ≃ j
   project₂ = record
-    { F⇒G = record { η = λ _ → id ; commute = λ _ → id-comm-sym }
-    ; F⇐G = record { η = λ _ → id ; commute = λ _ → id-comm-sym }
+    { F⇒G = ntHelper record { η = λ _ → id ; commute = λ _ → id-comm-sym }
+    ; F⇐G = ntHelper record { η = λ _ → id ; commute = λ _ → id-comm-sym }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ }
     }
     where open Category B; open MR.Basic B
@@ -41,11 +41,11 @@ module _ {A : Category o ℓ e} {B : Category o′ ℓ′ e′} {C : Category o�
   unique : {h : Functor C (Product A B)} →
         πˡ ∘F h ≃ i → πʳ ∘F h ≃ j → (i ※ j) ≃ h
   unique πˡ→i πʳ→j = record
-    { F⇒G = record
+    { F⇒G = ntHelper record
       { η       = < L⇐.η , R⇐.η >
       ; commute = < L⇐.commute , R⇐.commute >
       }
-    ; F⇐G = record
+    ; F⇐G = ntHelper record
       { η       = < L⇒.η , R⇒.η >
       ; commute = < L⇒.commute , R⇒.commute >
       }
@@ -76,8 +76,8 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
   -- TODO: write an "essentially-equal" combinator for cases such as these?
   πˡ※πʳ≃id : (πˡ ※ πʳ) ≃ idF {C = C×D}
   πˡ※πʳ≃id = record
-    { F⇒G = record { η = λ _ → C×D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }
-    ; F⇐G = record { η = λ _ → C×D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }
+    { F⇒G = ntHelper record { η = λ _ → C×D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }
+    ; F⇐G = ntHelper record { η = λ _ → C×D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }
     ; iso = λ X → record
       { isoˡ = C.identityˡ , D.identityˡ
       ; isoʳ = C.identityʳ , D.identityʳ
@@ -88,8 +88,8 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
     → (F : Functor B C) → (G : Functor B D) → (H : Functor A B)
     → ((F ∘F H) ※ (G ∘F H)) ≃ ((F ※ G) ∘F H)
   ※-distrib F G H = record
-    { F⇒G = record { η = λ _ → C×D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }
-    ; F⇐G = record { η = λ _ → C×D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }
+    { F⇒G = ntHelper record { η = λ _ → C×D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }
+    ; F⇐G = ntHelper record { η = λ _ → C×D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }
     ; iso = λ X → record
       { isoˡ = C.identityˡ , D.identityˡ
       ; isoʳ = C.identityʳ , D.identityʳ
@@ -100,7 +100,7 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
     → (F : Functor B C) → (G : Functor B D)
     → ((F ∘F πˡ) ※ (G ∘F πʳ)) ≃ (F ⁂ G)
   ※-distrib₂ F G = record
-    { F⇒G = record { η = λ X → C.id , D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }
-    ; F⇐G = record { η = λ X → C.id , D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }
+    { F⇒G = ntHelper record { η = λ X → C.id , D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }
+    ; F⇐G = ntHelper record { η = λ X → C.id , D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }
     ; iso = λ X → record { isoˡ = C.identityˡ , D.identityʳ  ; isoʳ = C.identityʳ , D.identityʳ }
     }

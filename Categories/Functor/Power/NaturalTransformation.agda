@@ -17,15 +17,16 @@ open Pow
 open import Categories.Functor.Bifunctor using (Bifunctor)
 
 -- open import Categories.Functor.Bifunctor.NaturalTransformation renaming (id to idⁿ; _≡_ to _≡ⁿ_)
-open import Categories.NaturalTransformation using (NaturalTransformation; _∘ˡ_)
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper; _∘ˡ_)
 open import Categories.Category.Product using (_※ⁿ_)
 open import Categories.Functor using (Functor; module Functor)
 
 flattenPⁿ : {D : Category o ℓ e} {m n : ℕ} {F G : Powerfunctor′ D (Fin m ⊎ Fin n)} (η : NaturalTransformation F G) →
             NaturalTransformation (flattenP F) (flattenP G)
 flattenPⁿ {m = m} {n} η = record
-  { η = λ Xs → η.η (Xs ∙ pack)
-  ; commute = λ fs → η.commute (fs ∙ pack)
+  { η           = λ Xs → η.η (Xs ∙ pack)
+  ; commute     = λ fs → η.commute (fs ∙ pack)
+  ; sym-commute = λ fs → η.sym-commute (fs ∙ pack)
   }
   where
   private module η = NaturalTransformation η
@@ -34,7 +35,7 @@ flattenPⁿ {m = m} {n} η = record
 reduceN′ : ∀ {i j : Level} {I : Set i} {J : Set j}  {F F′ : Powerendo′ I} {G G′ : Powerendo′ J}
   (H : Bifunctor C C C)
   (φ : NaturalTransformation F F′)  (γ : NaturalTransformation G G′) → NaturalTransformation (reduce′ H F G) (reduce′ H F′ G′)
-reduceN′ {I = I} {J} {F} {F′} {G} {G′} H φ γ = record
+reduceN′ {I = I} {J} {F} {F′} {G} {G′} H φ γ = ntHelper record
   { η = my-η
   ; commute = λ {Xs Ys} → my-commute Xs Ys
   }

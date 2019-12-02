@@ -80,7 +80,7 @@ record Closed : Set (levelOfTerm C) where
                        ⟩
 
   L-natural : NaturalTransformation [-,-] ([[X,-],[X,-]] X)
-  L-natural {X} = record
+  L-natural {X} = ntHelper record
     { η       = λ where
       (Y , Z) → L X Y Z
     ; commute = λ _ → L-natural-comm

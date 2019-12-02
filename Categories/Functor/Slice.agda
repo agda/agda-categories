@@ -12,6 +12,7 @@ open import Categories.Category.CartesianClosed.Locally
 open import Categories.Functor
 open import Categories.Functor.Properties
 open import Categories.Morphism.Reasoning C
+open import Categories.NaturalTransformation
 
 import Categories.Category.Slice as S
 import Categories.Diagram.Pullback as P
@@ -77,13 +78,13 @@ module _ {A : Obj} where
 
     !⊣* : ∀ {B} (f : B ⇒ A) →  BaseChange! f ⊣ BaseChange* f
     !⊣* f = record
-      { unit   = record
+      { unit   = ntHelper record
         { η       = λ X → slicearr (p₂∘universal≈h₂ (f ∘ arr X) f {eq = identityʳ})
         ; commute = λ {X Y} g → unique-diagram (f ∘ arr Y) f
                                                (cancelˡ (p₁∘universal≈h₁ (f ∘ arr Y) f) ○ ⟺ (cancelʳ (p₁∘universal≈h₁ (f ∘ arr X) f)) ○ pushˡ (⟺ (p₁∘universal≈h₁ (f ∘ arr Y) f)))
                                                (pullˡ (p₂∘universal≈h₂ (f ∘ arr Y) f) ○ △ g ○ ⟺ (p₂∘universal≈h₂ (f ∘ arr X) f) ○ pushˡ (⟺ (p₂∘universal≈h₂ (f ∘ arr Y) f)))
         }
-      ; counit = record
+      ; counit = ntHelper record
         { η       = λ X → slicearr (pullbacks.commute (arr X) f)
         ; commute = λ {X Y} g → p₁∘universal≈h₁ (arr Y) f
         }

@@ -42,8 +42,8 @@ Forgetful {o} {ℓ} {e} = record
 
 CoreAdj : ∀ {o ℓ e} → Forgetful {o} {ℓ ⊔ e} {e} ⊣ Core
 CoreAdj = record
-  { unit   = record { η = unit   ; commute = λ {G} {H} F → unit-commute {G} {H} F }
-  ; counit = record { η = counit ; commute = counit-commute }
+  { unit   = record { η = unit   ; commute = λ {G H} F → unit-commute {G} {H} F ; sym-commute = λ {G H} F → unit-sym-commute {G} {H} F }
+  ; counit = record { η = counit ; commute = counit-commute                     ; sym-commute = counit-sym-commute }
   ; zig    = λ {G} → zig {G}
   ; zag    = zag
   }
@@ -68,6 +68,13 @@ CoreAdj = record
       ; eq₁ = λ _ → ⌞ MR.id-comm-sym (category H) ⌟
       }
 
+    unit-sym-commute : ∀ {G H} (F : Functor (category G) (category H)) →
+                       Core.F₁ F ∘F unit G ≡F unit H ∘F F
+    unit-sym-commute {_} {H} F = record
+      { eq₀ = λ _ → refl
+      ; eq₁ = λ _ → ⌞ MR.id-comm-sym (category H) ⌟
+      }
+
     counit : ∀ C → Functor (C.Core C) C
     counit C = record
       { F₀ = Function.id
@@ -83,6 +90,13 @@ CoreAdj = record
     counit-commute : ∀ {C D} (F : Functor C D) →
                      counit D ∘F Core.F₁ F ≡F F ∘F counit C
     counit-commute {C} {D} F = record
+      { eq₀ = λ _ → refl
+      ; eq₁ = λ _ → MR.id-comm-sym D
+      }
+      
+    counit-sym-commute : ∀ {C D} (F : Functor C D) →
+                         F ∘F counit C ≡F counit D ∘F Core.F₁ F
+    counit-sym-commute {C} {D} F = record
       { eq₀ = λ _ → refl
       ; eq₁ = λ _ → MR.id-comm-sym D
       }

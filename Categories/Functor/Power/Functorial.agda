@@ -11,7 +11,7 @@ open import Categories.Functor renaming (id to idF)
 open import Categories.Category.Discrete
 open import Categories.Category.Equivalence
 open import Categories.Category.Construction.Functors
-open import Categories.NaturalTransformation using (NaturalTransformation)
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism as NI
   using (module NaturalIsomorphism; _≃_; refl)
 import Categories.Morphism.Reasoning as MR
@@ -40,7 +40,7 @@ exp→functor₀ X = record
   }
 
 exp→functor₁ : {X Y : I → C.Obj} → Exp I [ X , Y ] → NaturalTransformation (exp→functor₀ X) (exp→functor₀ Y)
-exp→functor₁ F = record { η = F ; commute = λ { refl → id-comm} }
+exp→functor₁ F = record { η = F ; commute = λ { refl → id-comm } ; sym-commute = λ { refl → id-comm-sym } }
 
 exp→functor : Functor (Exp I) (Functors (Discrete I) C)
 exp→functor = record
@@ -66,19 +66,23 @@ exp≋functor = record
   ; G = functor→exp
   ; weak-inverse = record
     { F∘G≈id = record
-      { F⇒G = record
-        { η = λ DI → record { η = λ _ → C.id ; commute = λ { refl → C.∘-resp-≈ˡ (CE.sym (Functor.identity DI))} }
+      { F⇒G = ntHelper record
+        { η       = λ DI → record
+          { η           = λ _ → C.id
+          ; commute     = λ { refl → C.∘-resp-≈ˡ (CE.sym (Functor.identity DI))}
+          ; sym-commute = λ { refl → C.∘-resp-≈ˡ (Functor.identity DI)}
+          }
         ; commute = λ f → Equiv.trans C.identityˡ (Equiv.sym C.identityʳ)
         }
-      ; F⇐G = record
-        { η = λ DI → record { η = λ _ → C.id ; commute = λ { refl → C.∘-resp-≈ʳ (Functor.identity DI)} }
+      ; F⇐G = ntHelper record
+        { η = λ DI → ntHelper record { η = λ _ → C.id ; commute = λ { refl → C.∘-resp-≈ʳ (Functor.identity DI)} }
         ; commute = λ f → Equiv.trans C.identityˡ (Equiv.sym C.identityʳ)
         }
       ; iso = λ X → record { isoˡ = C.identityˡ; isoʳ = C.identityˡ }
       }
     ; G∘F≈id = record
-      { F⇒G = record { η = λ _ _ → C.id ; commute = λ _ _ → id-comm-sym }
-      ; F⇐G = record { η = λ _ _ → C.id ; commute = λ _ _ → id-comm-sym }
+      { F⇒G = record { η = λ _ _ → C.id ; commute = λ _ _ → id-comm-sym ; sym-commute = λ _ _ → id-comm }
+      ; F⇐G = record { η = λ _ _ → C.id ; commute = λ _ _ → id-comm-sym ; sym-commute = λ _ _ → id-comm }
       ; iso = λ X → record { isoˡ = λ _ → C.identityˡ ; isoʳ = λ _ → C.identityʳ }
       }
     }

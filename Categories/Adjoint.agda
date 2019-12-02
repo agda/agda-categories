@@ -20,7 +20,7 @@ open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Functor.Hom using (Hom[_][-,-])
 open import Categories.Functor.Construction.LiftSetoids
-open import Categories.NaturalTransformation using (NaturalTransformation; _∘ₕ_; _∘ᵥ_; _∘ˡ_; _∘ʳ_)
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper; _∘ₕ_; _∘ᵥ_; _∘ˡ_; _∘ʳ_)
   renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (NaturalIsomorphism; unitorˡ; unitorʳ; associator; _≃_)
@@ -185,14 +185,14 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
 
     Hom-NI : NaturalIsomorphism Hom[L-,-]′ Hom[-,R-]′
     Hom-NI = record
-      { F⇒G = record
+      { F⇒G = ntHelper record
         { η       = λ _ → record
           { _⟨$⟩_ = λ f → lift (Ladjunct (lower f))
           ; cong  = λ eq → lift (Ladjunct-resp-≈ (lower eq))
           }
         ; commute = λ _ eq → lift $ Ladjunct-comm (lower eq)
         }
-      ; F⇐G = record
+      ; F⇐G = ntHelper record
         { η       = λ _ → record
           { _⟨$⟩_ = λ f → lift (Radjunct (lower f))
           ; cong  = λ eq → lift (Radjunct-resp-≈ (lower eq))
@@ -226,11 +226,11 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
     -- in this case, the hom functors are naturally isomorphism directly
     Hom-NI′ : NaturalIsomorphism Hom[L-,-] Hom[-,R-]
     Hom-NI′ = record
-      { F⇒G = record
+      { F⇒G = ntHelper record
         { η       = λ _ → Hom-inverse.to
         ; commute = λ _ eq → Ladjunct-comm eq
         }
-      ; F⇐G = record
+      ; F⇐G = ntHelper record
         { η       = λ _ → Hom-inverse.from
         ; commute = λ _ eq → Radjunct-comm eq
         }
@@ -262,7 +262,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
       unitη X = ⇒.η (X , L.F₀ X)
 
       unit : NaturalTransformation idF (R ∘F L)
-      unit = record
+      unit = ntHelper record
         { η       = λ X → unitη X ⟨$⟩ D.id
         ; commute = λ {X} {Y} f → begin
           (unitη Y ⟨$⟩ D.id) ∘ f                             ≈⟨ introˡ R.identity ⟩
@@ -281,7 +281,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
       counitη X = ⇐.η (R.F₀ X , X)
 
       counit : NaturalTransformation (L ∘F R) idF
-      counit = record
+      counit = ntHelper record
         { η       = λ X → counitη X ⟨$⟩ C.id
         ; commute = λ {X} {Y} f → begin
           (counitη Y ⟨$⟩ C.id) ∘ L.F₁ (R.F₁ f)               ≈˘⟨ identityˡ ⟩
@@ -350,7 +350,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
       unitη X = ⇒.η (X , L.F₀ X)
   
       unit : NaturalTransformation idF (R ∘F L)
-      unit = record
+      unit = ntHelper record
         { η       = λ X → lower (unitη X ⟨$⟩ lift D.id)
         ; commute = λ {X Y} f → begin
           lower (unitη Y ⟨$⟩ lift D.id) ∘ f
@@ -376,7 +376,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
       counitη X = ⇐.η (R.F₀ X , X)
 
       counit : NaturalTransformation (L ∘F R) idF
-      counit = record
+      counit = ntHelper record
         { η       = λ X → lower (counitη X ⟨$⟩ lift C.id)
         ; commute = λ {X} {Y} f → begin
           lower (⇐.η (R.F₀ Y , Y) ⟨$⟩ lift C.id) ∘ L.F₁ (R.F₁ f)

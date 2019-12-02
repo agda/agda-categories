@@ -217,7 +217,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     closedMonoidal = record
       { [-,-]   = -⇨-
       ; adjoint = λ {A} → record
-        { unit   = record
+        { unit   = ntHelper record
           { η       = λ _ → λg id
           ; commute = λ f → λ-unique₂′ $ begin
             eval′ ∘ first (λg id ∘ f)                     ≈˘⟨ refl⟩∘⟨ first∘first ⟩
@@ -228,7 +228,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
             eval′ ∘ first (A⇨[-×A].F₁ f) ∘ first (λg id)  ≈⟨ refl⟩∘⟨ first∘first ⟩
             eval′ ∘ first (A⇨[-×A].F₁ f ∘ λg id)          ∎
           }
-        ; counit = record
+        ; counit = ntHelper record
           { η       = λ _ → eval′
           ; commute = λ f → begin
             eval′ ∘ [A⇨-]×A.F₁ f ≈⟨ β′ ⟩

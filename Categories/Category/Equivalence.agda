@@ -15,7 +15,7 @@ import Categories.Morphism.Reasoning as MR
 import Categories.Morphism.Properties as MP
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
-open import Categories.NaturalTransformation using (_∘ᵥ_; _∘ˡ_; _∘ʳ_)
+open import Categories.NaturalTransformation using (ntHelper; _∘ᵥ_; _∘ˡ_; _∘ʳ_)
 open import Categories.NaturalTransformation.NaturalIsomorphism as NI
   using (NaturalIsomorphism ; unitorˡ; unitorʳ; associator; _ⓘᵥ_; _ⓘˡ_; _ⓘʳ_)
   renaming (sym to ≃-sym)
@@ -50,7 +50,7 @@ record WeakInverse (F : Functor C D) (G : Functor D C) : Set (levelOfTerm F ⊔ 
           open MR D
           open MP D
       in record
-        { F⇒G = record
+        { F⇒G = ntHelper record
           { η       = λ X → F∘G≈id.⇒.η X ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ X)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
           ; commute = λ {X Y} f → begin
             (F∘G≈id.⇒.η Y ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ Y)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ Y))) ∘ F.F₁ (G.F₁ f)
@@ -68,7 +68,7 @@ record WeakInverse (F : Functor C D) (G : Functor D C) : Set (levelOfTerm F ⊔ 
             f ∘ F∘G≈id.⇒.η X ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ X)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
               ∎
           }
-        ; F⇐G = record
+        ; F⇐G = ntHelper record
           { η       = λ X → (F∘G≈id.⇒.η (F.F₀ (G.F₀ X)) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ X))) ∘ F∘G≈id.⇐.η X
           ; commute = λ {X Y} f → begin
             ((F∘G≈id.⇒.η (F.F₀ (G.F₀ Y)) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ Y))) ∘ F∘G≈id.⇐.η Y) ∘ f
