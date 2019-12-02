@@ -7,20 +7,22 @@ module Categories.Category.Monoidal.Enriched where
 
 open import Level
 open import Data.Product using (_,_)
+open import Function using (flip)
 
 open import Categories.Category using (Category; _[_,_])
 open import Categories.Functor renaming (id to idF)
 open import Categories.Category.Monoidal
+open import Categories.Functor.Bifunctor using (flip-bifunctor)
 
 private
   variable
     o ℓ e : Level
 
 record Enriched {K : Category o ℓ e} (M : Monoidal K) (v : Level) : Set (o ⊔ ℓ ⊔ e ⊔ suc v) where
-  open Category K renaming (Obj to ObjK; id to idK)
+  open Category K renaming (Obj to ObjK; id to idK) hiding (op)
   open Commutation
   open Monoidal M
-  open Functor
+  open Functor hiding (op)
   field
     Obj : Set v
     hom : (A B : Obj)   → ObjK

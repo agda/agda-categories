@@ -51,7 +51,7 @@ Core {o} {ℓ} {e} = record
      CoreId {A} = record
        { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym A ⌟ }
        ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym A ⌟ }
-       ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
+       ; iso = λ _ → record { isoˡ = ⌞ identity² ⌟ ; isoʳ = ⌞ identity² ⌟ }
        }
        where
          open Category A
@@ -64,7 +64,7 @@ Core {o} {ℓ} {e} = record
      CoreHom {A} {B} {C} {F} {G} = record
        { F⇒G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym C ⌟ }
        ; F⇐G = record { η = λ _ → ≅.refl ; commute = λ _ → ⌞ MR.id-comm-sym C ⌟ }
-       ; iso = λ _ → record { isoˡ = ⌞ identityˡ ⌟ ; isoʳ = ⌞ identityˡ ⌟ }
+       ; iso = λ _ → record { isoˡ = ⌞ identity² ⌟ ; isoʳ = ⌞ identity² ⌟ }
        }
        where
          open Category C
