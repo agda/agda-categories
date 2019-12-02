@@ -198,6 +198,7 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
       ; sym-commute = μ′.sym-commute
       }
     ; assoc     = [ R ]-resp-square (counit.commute _)
+    ; sym-assoc = [ R ]-resp-square (counit.sym-commute _)
     ; identityˡ = λ {X} → begin
       μ′.η X ∘ R.F₁ (L.F₁ (unit.η X)) ≈⟨ [ R ]-resp-∘ zig ⟩
       R.F₁ D.id                       ≈⟨ R.identity ⟩

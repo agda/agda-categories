@@ -25,5 +25,6 @@ record Monad {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
 
   field
     assoc     : ∀ {X : Obj} → μ.η X ∘ F₁ (μ.η X) ≈ μ.η X ∘ μ.η (F₀ X)
+    sym-assoc : ∀ {X : Obj} → μ.η X ∘ μ.η (F₀ X) ≈ μ.η X ∘ F₁ (μ.η X)
     identityˡ : ∀ {X : Obj} → μ.η X ∘ F₁ (η.η X) ≈ id
     identityʳ : ∀ {X : Obj} → μ.η X ∘ η.η (F₀ X) ≈ id

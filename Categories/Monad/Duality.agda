@@ -19,7 +19,8 @@ coMonad⇒Comonad M = record
     { F         = Functor.op F
     ; ε         = NaturalTransformation.op η
     ; δ         = NaturalTransformation.op μ
-    ; assoc     = sym M.assoc
+    ; assoc     = M.sym-assoc
+    ; sym-assoc = M.assoc
     ; identityˡ = M.identityˡ
     ; identityʳ = M.identityʳ
     }
@@ -31,7 +32,8 @@ Comonad⇒coMonad M = record
     { F         = Functor.op F
     ; η         = NaturalTransformation.op ε
     ; μ         = NaturalTransformation.op δ
-    ; assoc     = sym M.assoc
+    ; assoc     = M.sym-assoc
+    ; sym-assoc = M.assoc
     ; identityˡ = M.identityˡ
     ; identityʳ = M.identityʳ
     }

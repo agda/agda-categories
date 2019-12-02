@@ -25,5 +25,6 @@ record Comonad {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
 
   field
     assoc     : ∀ {X : Obj} → δ.η (F₀ X) ∘ δ.η X ≈ F₁ (δ.η X) ∘ δ.η X
+    sym-assoc : ∀ {X : Obj} → F₁ (δ.η X) ∘ δ.η X ≈ δ.η (F₀ X) ∘ δ.η X
     identityˡ : ∀ {X : Obj} → F₁ (ε.η X) ∘ δ.η X ≈ id
     identityʳ : ∀ {X : Obj} → ε.η (F₀ X) ∘ δ.η X ≈ id
