@@ -40,7 +40,7 @@ module _ {F G : Functor C D} where
     G′ = G ∘F πʳ
 
   NT⇒Dinatural : NaturalTransformation F G → DinaturalTransformation F′ G′
-  NT⇒Dinatural β = record
+  NT⇒Dinatural β = dtHelper record
     { α       = η
     ; commute = λ f → ∘-resp-≈ʳ (elimʳ (identity F)) ○ ⟺ (commute f) ○ introˡ (identity G)
     }

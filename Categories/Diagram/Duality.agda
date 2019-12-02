@@ -151,24 +151,16 @@ module _ {F : Bifunctor (Category.op D) D C} where
   coWedge⇒Cowedge : Wedge Fop → Cowedge F
   coWedge⇒Cowedge W = record
     { E         = E
-    ; dinatural = record
-      { α       = α
-      ; commute = λ f → ⟺ assoc ○ ⟺ (commute f) ○ assoc
-      }
+    ; dinatural = DinaturalTransformation.op dinatural
     }
     where open Wedge W
-          open DinaturalTransformation dinatural
 
   Cowedge⇒coWedge : Cowedge F → Wedge Fop
   Cowedge⇒coWedge W = record
     { E         = E
-    ; dinatural = record
-      { α       = α
-      ; commute = λ f → assoc ○ ⟺ (commute f) ○ ⟺ assoc
-      }
+    ; dinatural = DinaturalTransformation.op dinatural
     }
     where open Cowedge W
-          open DinaturalTransformation dinatural
 
   coEnd⇒Coend : End Fop → Coend F
   coEnd⇒Coend e = record
