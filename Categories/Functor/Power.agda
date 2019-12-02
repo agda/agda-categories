@@ -238,7 +238,7 @@ nullary X = record
   { F₀           = λ _ → X
   ; F₁           = λ _ → id
   ; identity     = refl
-  ; homomorphism = sym identityˡ
+  ; homomorphism = sym identity²
   ; F-resp-≈     = λ _ → refl
   }
 
@@ -247,7 +247,7 @@ nullaryH X = record
   { F₀           = λ _ _ → X
   ; F₁           = λ _ _ → id
   ; identity     = λ _ → refl
-  ; homomorphism = λ _ → sym identityˡ
+  ; homomorphism = λ _ → sym identity²
   ; F-resp-≈     = λ _ _ → refl
   }
 

@@ -72,18 +72,18 @@ exp≋functor = record
           ; commute     = λ { refl → C.∘-resp-≈ˡ (CE.sym (Functor.identity DI))}
           ; sym-commute = λ { refl → C.∘-resp-≈ˡ (Functor.identity DI)}
           }
-        ; commute = λ f → Equiv.trans C.identityˡ (Equiv.sym C.identityʳ)
+        ; commute = λ _ → id-comm-sym
         }
       ; F⇐G = ntHelper record
         { η = λ DI → ntHelper record { η = λ _ → C.id ; commute = λ { refl → C.∘-resp-≈ʳ (Functor.identity DI)} }
-        ; commute = λ f → Equiv.trans C.identityˡ (Equiv.sym C.identityʳ)
+        ; commute = λ _ → id-comm-sym
         }
-      ; iso = λ X → record { isoˡ = C.identityˡ; isoʳ = C.identityˡ }
+      ; iso = λ X → record { isoˡ = C.identity²; isoʳ = C.identity² }
       }
     ; G∘F≈id = record
       { F⇒G = record { η = λ _ _ → C.id ; commute = λ _ _ → id-comm-sym ; sym-commute = λ _ _ → id-comm }
       ; F⇐G = record { η = λ _ _ → C.id ; commute = λ _ _ → id-comm-sym ; sym-commute = λ _ _ → id-comm }
-      ; iso = λ X → record { isoˡ = λ _ → C.identityˡ ; isoʳ = λ _ → C.identityʳ }
+      ; iso = λ X → record { isoˡ = λ _ → C.identity² ; isoʳ = λ _ → C.identity² }
       }
     }
   }
