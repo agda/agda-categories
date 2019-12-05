@@ -1,4 +1,4 @@
-# categories-agda library
+# agda-categories library
 
 Welcome to what will hopefully become the standard Category Theory library for Agda.
 
@@ -55,6 +55,8 @@ documented in the proto-contributor's guide.
 - We add `sym-assoc` and `identity²` in order to achieve better definitional equality
   of `Category`. The rationale can be found in [this
   paper](https://arxiv.org/pdf/1401.7694.pdf). 
+- We also add other "redundant" axioms into other definitions so that we achieve a better
+  definitional equality property for definitions with opposites.
 
 ### Smaller Design decisions
 - Do not make implicit fields that can rarely be inferred (like what had been done in
