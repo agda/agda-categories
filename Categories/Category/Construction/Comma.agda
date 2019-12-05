@@ -100,6 +100,7 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
         open CommaObj X₂ renaming (α to α₂; β to β₂; f to f₂)
         open CommaObj X₃ renaming (α to α₃; β to β₃; f to f₃)
 
+  infix 4 _↓_
   _↓_ : (S : Functor A C) (T : Functor B C) → Category _ _ _
   S ↓ T = Comma S T
 
@@ -130,7 +131,8 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
 module _ {C : Category o₁ ℓ₁ e₁} {D : Category o₂ ℓ₂ e₂} where
   private
     module C = Category C
-    
+
+  infix 4 _↙_ _↘_
   _↙_ : (X : C.Obj) (T : Functor D C) → Category _ _ _
   X ↙ T = const! X ↓ T
 

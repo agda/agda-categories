@@ -2,25 +2,26 @@
 module Categories.Category.Construction.Properties.Comma where
 
 open import Level
-open import Data.Product using (Σ; _,_; proj₁; proj₂; zip; map; swap; <_,_>)
+open import Data.Product using (Σ; _,_; proj₁; proj₂; zip; map; swap; <_,_>; -,_)
 
 open import Categories.Category
 open import Categories.Category.Instance.One
 open import Categories.Category.Equivalence using (StrongEquivalence)
 open import Categories.Functor renaming (id to idF)
-open import Categories.Functor.Construction.Constant using (const)
+open import Categories.Functor.Construction.Constant using (const; constNat)
 open import Categories.NaturalTransformation using (module NaturalTransformation)
 open import Categories.Category.Construction.Comma
 open import Categories.Category.Product renaming (Product to _×_)
 open import Categories.Category.Construction.Functors renaming (Functors to [_⇒_])
-open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation renaming (id to idN)
 
-import Categories.Category.Slice as S
+import Categories.Category.Slice as Sl
 import Categories.Morphism.Reasoning as Reas
 
 private
   variable
     o ℓ e o₁ ℓ₁ e₁ o₂ ℓ₂ e₂ o₃ ℓ₃ e₃ : Level
+    C D E : Category o ℓ e
 
 -- There's a projection functor down onto the A and B Categories
 module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : Category o₃ ℓ₃ e₃} where
@@ -34,6 +35,9 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
     module C = Category C
 
   module _ (S : Functor B C) (T : Functor A C) where
+    private
+      module S = Functor S
+      module T = Functor T
 
     S↓T⇒A×B : Functor (S ↓ T) (A × B)
     S↓T⇒A×B = record
@@ -51,6 +55,103 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
       ; sym-commute = commute
       }
 
+    module _ (S′ : Functor D B) (T′ : Functor E A) where
+      private
+        module S′ = Functor S′
+        module T′ = Functor T′
+
+      compose-F : Functor (S ∘F S′ ↓ T ∘F T′) (S ↓ T)
+      compose-F = record
+        { F₀           = λ X → record
+          { f = f X
+          }
+        ; F₁           = λ i → record
+          { g       = S′.F₁ (g i)
+          ; h       = T′.F₁ (h i)
+          ; commute = commute i
+          }
+        ; identity     = S′.identity , T′.identity
+        ; homomorphism = S′.homomorphism , T′.homomorphism
+        ; F-resp-≈     = map S′.F-resp-≈ T′.F-resp-≈
+        }
+
+    module _ (S′ : Functor D B) where
+      private
+        module S′ = Functor S′
+
+      compose-Fˡ : Functor (S ∘F S′ ↓ T) (S ↓ T)
+      compose-Fˡ = record
+        { F₀           = λ X → record
+          { f = f X
+          }
+        ; F₁           = λ i → record
+          { g       = S′.F₁ (g i)
+          ; h       = h i
+          ; commute = commute i
+          }
+        ; identity     = S′.identity , A.Equiv.refl
+        ; homomorphism = S′.homomorphism , A.Equiv.refl
+        ; F-resp-≈     = map S′.F-resp-≈ λ eq → eq
+        }
+
+    module _ (T′ : Functor E A) where
+      private
+        module T′ = Functor T′
+
+      compose-Fʳ : Functor (S ↓ T ∘F T′) (S ↓ T)
+      compose-Fʳ = record
+        { F₀           = λ X → record
+          { f = f X
+          }
+        ; F₁           = λ i → record
+          { g       = g i
+          ; h       = T′.F₁ (h i)
+          ; commute = commute i
+          }
+        ; identity     = B.Equiv.refl , T′.identity
+        ; homomorphism = B.Equiv.refl , T′.homomorphism
+        ; F-resp-≈     = map (λ eq → eq) T′.F-resp-≈
+        }
+
+  module _ {S S′ : Functor B C} {T T′ : Functor A C} (γ : NaturalTransformation S′ S) (δ : NaturalTransformation T T′) where
+    private
+      module S′ = Functor S′
+      module T′ = Functor T′
+      module γ  = NaturalTransformation γ
+      module δ  = NaturalTransformation δ
+      module S = Functor S
+      module T = Functor T
+      open C
+      open HomReasoning
+      open Reas C
+      
+    -- functors between Comma categories along natural transformations  
+    along-nat : Functor (S ↓ T) (S′ ↓ T′)
+    along-nat = record
+      { F₀           = λ X → record
+        { f = δ.η (β X) ∘ f X ∘ γ.η (α X)
+        }
+      ; F₁           = λ {X Y} i → record
+        { g       = g i
+        ; h       = h i
+        ; commute = begin
+          T′.F₁ (h i) ∘ δ.η (β X) ∘ f X ∘ γ.η (α X)   ≈⟨ sym-assoc ⟩
+          (T′.F₁ (h i) ∘ δ.η (β X)) ∘ f X ∘ γ.η (α X) ≈˘⟨ center⁻¹ (δ.commute (h i)) refl ⟩
+          δ.η (β Y) ∘ (T.F₁ (h i) ∘ f X) ∘ γ.η (α X)  ≈⟨ refl⟩∘⟨ pushˡ (commute i) ⟩
+          δ.η (β Y) ∘ f Y ∘ S.F₁ (g i) ∘ γ.η (α X)    ≈˘⟨ pull-last (γ.commute (g i)) ⟩
+          (δ.η (β Y) ∘ f Y ∘ γ.η (α Y)) ∘ S′.F₁ (g i) ∎
+        }
+      ; identity     = B.Equiv.refl , A.Equiv.refl
+      ; homomorphism = B.Equiv.refl , A.Equiv.refl
+      ; F-resp-≈     = λ eq → eq
+      }
+
+  along-natʳ : ∀ {T T′ : Functor A C} (S : Functor B C) (δ : NaturalTransformation T T′) → Functor (S ↓ T) (S ↓ T′)
+  along-natʳ S = along-nat idN
+  
+  along-natˡ : ∀ {S S′ : Functor B C} (γ : NaturalTransformation S′ S) (T : Functor A C) → Functor (S ↓ T) (S′ ↓ T)
+  along-natˡ γ T = along-nat γ idN
+  
 -- There's an induced functor from Functors category to Functors over Comma categories
 module _ {A : Category o₁ ℓ₁ e₁} {B : Category o₂ ℓ₂ e₂} {C : Category o₃ ℓ₃ e₃} where
   open CommaObj
@@ -87,9 +188,19 @@ module _ {A : Category o₁ ℓ₁ e₁} {B : Category o₂ ℓ₂ e₂} {C : Ca
     module m₁ = NaturalTransformation m₁
     module m₂ = NaturalTransformation m₂
 
+module _ (F : Functor C D) where
+  private
+    module D = Category D
+
+  along-natˡ′ : ∀ {A B} (f : A D.⇒ B) → Functor (B ↙ F) (A ↙ F)
+  along-natˡ′ f = along-natˡ (constNat f) F
+
+  along-natʳ′ : ∀ {A B} (f : A D.⇒ B) → Functor (F ↘ A) (F ↘ B)
+  along-natʳ′ f = along-natʳ F (constNat f)
+
 module _ {C : Category o ℓ e} where
   open Category C
-  open S C
+  open Sl C
   open SliceObj
   open Slice⇒
   open HomReasoning
@@ -108,8 +219,8 @@ module _ {C : Category o ℓ e} where
 
   comma⇒slice : ∀ X → Functor (idF {C = C} ↓ const {C = One {o} {ℓ} {e}} X) (Slice X)
   comma⇒slice X = record
-    { F₀           = λ X → S.sliceobj (f X)
-    ; F₁           = λ g → S.slicearr (⟺ (commute g) ○ identityˡ)
+    { F₀           = λ X → Sl.sliceobj (f X)
+    ; F₁           = λ g → Sl.slicearr (⟺ (commute g) ○ identityˡ)
     ; identity     = refl
     ; homomorphism = refl
     ; F-resp-≈     = proj₁
@@ -138,12 +249,12 @@ module _ {C : Category o ℓ e} where
         }
       ; G∘F≈id = record
         { F⇒G = record
-          { η           = λ _ → S.slicearr identityʳ
+          { η           = λ _ → Sl.slicearr identityʳ
           ; commute     = λ _ → id-comm-sym
           ; sym-commute = λ _ → id-comm
           }
         ; F⇐G = record
-          { η           = λ _ → S.slicearr identityʳ
+          { η           = λ _ → Sl.slicearr identityʳ
           ; commute     = λ _ → id-comm-sym
           ; sym-commute = λ _ → id-comm
           }

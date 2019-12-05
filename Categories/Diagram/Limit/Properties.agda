@@ -4,13 +4,16 @@ open import Categories.Category
 open import Categories.Functor
 
 module Categories.Diagram.Limit.Properties
-       {o ℓ e} {o′ ℓ′ e′} {C : Category o ℓ e} {J : Category o′ ℓ′ e′} (F : Functor J C) where
+       {o ℓ e} {o′ ℓ′ e′} {C : Category o ℓ e} {J : Category o′ ℓ′ e′}  where
 
 open import Function.Equality using (Π)
 open import Relation.Binary using (Setoid)
 
 open import Categories.Category.Instance.Setoids
+open import Categories.Diagram.Cone.Properties
 open import Categories.Functor.Hom
+open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; _≃_)
+
 import Categories.Category.Construction.Cones as Con
 import Categories.Diagram.Limit as Lim
 open import Categories.Morphism.Reasoning C as MR
@@ -19,11 +22,8 @@ open Π
 open Hom C
 
 private
-  module J  = Category J
-  module C  = Category C
-  module F  = Functor F
-  module LF = Lim F
-  module CF = Con F
+  module J = Category J
+  module C = Category C
 
   open C
   variable
@@ -33,8 +33,11 @@ private
 open HomReasoning
 
 -- Hom functor preserves limits in C
-module _ (W : Obj) (lim : LF.Limit) where
+module _ (W : Obj) {F : Functor J C} (lim : Lim.Limit F) where
   private
+    module F  = Functor F
+    module LF = Lim F
+    module CF = Con F
     module lim = LF.Limit lim
     open lim
     HomF : Functor J (Setoids ℓ e)
@@ -103,3 +106,42 @@ module _ (W : Obj) (lim : LF.Limit) where
                     { arr     = f.arr ⟨$⟩ x
                     ; commute = f.commute (Setoid.refl K.N)
                     }
+
+-- natural isomorphisms respects limits
+module _ {F G : Functor J C} (F≃G : F ≃ G) where
+  private
+    module F  = Functor F
+    module G  = Functor G
+    module LF = Lim F
+    module LG = Lim G
+    open NaturalIsomorphism F≃G
+
+  ≃-resp-lim : LF.Limit → LG.Limit
+  ≃-resp-lim L = record
+    { terminal = record
+      { ⊤        = record
+        { apex = record
+          { ψ       = λ j → ⇒.η j ∘ proj j
+          ; commute = λ {X Y} f → begin
+            G.F₁ f ∘ ⇒.η X ∘ proj X   ≈⟨ pullˡ (⇒.sym-commute f) ⟩
+            (⇒.η Y ∘ F.F₁ f) ∘ proj X ≈⟨ pullʳ (limit-commute f) ⟩
+            ⇒.η Y ∘ proj Y            ∎
+          }
+        }
+      ; !        = λ {A} → record
+        { arr     = rep (nat-map-Cone F⇐G A)
+        ; commute = λ {j} → assoc ○ ⟺ (switch-tofromˡ (record { iso = iso j }) (⟺ commute))
+        }
+      ; !-unique = λ {K} f →
+        let module f = Con.Cone⇒ G f
+        in terminal.!-unique record
+          { arr     = f.arr
+          ; commute = λ {j} → switch-fromtoˡ (record { iso = iso j }) (sym-assoc ○ f.commute)
+          }
+      }
+    }
+    where open LF.Limit L
+
+  ≃⇒Cone⇒ : ∀ {Lf : LF.Limit} {Lg : LG.Limit} → Con.Cones G [ LG.Limit.limit (≃-resp-lim Lf) , LG.Limit.limit Lg ]
+  ≃⇒Cone⇒ {Lf} {Lg} = rep-cone (LG.Limit.limit (≃-resp-lim Lf))
+    where open LG.Limit Lg

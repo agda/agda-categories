@@ -36,7 +36,7 @@ module Basic where
   id-comm = trans identityʳ (sym identityˡ)
 
   id-comm-sym : ∀ {a b} {f : a ⇒ b} → id ∘ f ≈ f ∘ id
-  id-comm-sym = sym id-comm
+  id-comm-sym = trans identityˡ (sym identityʳ)
 
 open Basic public
 
