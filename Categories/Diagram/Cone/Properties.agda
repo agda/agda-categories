@@ -14,7 +14,7 @@ import Categories.Morphism.Reasoning as MR
 private
   variable
     o ℓ e : Level
-    C D J : Category o ℓ e
+    C D J J′ : Category o ℓ e
 
 module _ {F : Functor J C} (G : Functor C D) where
   private
@@ -26,8 +26,8 @@ module _ {F : Functor J C} (G : Functor C D) where
     GF = G ∘F F
     module CGF = Con GF
 
-  F-map-Cone : CF.Cone → CGF.Cone
-  F-map-Cone K = record
+  F-map-Coneˡ : CF.Cone → CGF.Cone
+  F-map-Coneˡ K = record
     { apex = record
       { ψ       = λ X → G.F₁ (ψ X)
       ; commute = λ f → [ G ]-resp-∘ (commute f)
@@ -35,10 +35,36 @@ module _ {F : Functor J C} (G : Functor C D) where
     }
     where open CF.Cone K
 
-  F-map-Cone⇒ : ∀ {K K′} (f : CF.Cone⇒ K K′) → CGF.Cone⇒ (F-map-Cone K) (F-map-Cone K′)
-  F-map-Cone⇒ f = record
+  F-map-Cone⇒ˡ : ∀ {K K′} (f : CF.Cone⇒ K K′) → CGF.Cone⇒ (F-map-Coneˡ K) (F-map-Coneˡ K′)
+  F-map-Cone⇒ˡ f = record
     { arr     = G.F₁ arr
     ; commute = [ G ]-resp-∘ commute
+    }
+    where open CF.Cone⇒ f
+
+module _ {F : Functor J C} (G : Functor J′ J) where
+  private
+    module C   = Category C
+    module J′  = Category J′
+    module F   = Functor F
+    module G   = Functor G
+    module CF  = Con F
+    FG = F ∘F G
+    module CFG = Con FG
+
+  F-map-Coneʳ : CF.Cone → CFG.Cone
+  F-map-Coneʳ K = record
+    { apex = record
+      { ψ       = λ j → ψ (G.F₀ j)
+      ; commute = λ f → commute (G.F₁ f)
+      }
+    }
+    where open CF.Cone K
+
+  F-map-Cone⇒ʳ : ∀ {K K′} (f : CF.Cone⇒ K K′) → CFG.Cone⇒ (F-map-Coneʳ K) (F-map-Coneʳ K′)
+  F-map-Cone⇒ʳ f = record
+    { arr     = arr
+    ; commute = commute
     }
     where open CF.Cone⇒ f
 

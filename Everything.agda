@@ -111,6 +111,7 @@ import Categories.Diagram.Equalizer
 import Categories.Diagram.Finite
 import Categories.Diagram.Limit
 import Categories.Diagram.Limit.Properties
+import Categories.Diagram.Limit.Ran
 import Categories.Diagram.Pullback
 import Categories.Diagram.Pullback.Limit
 import Categories.Diagram.Pullback.Properties

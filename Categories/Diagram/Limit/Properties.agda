@@ -12,11 +12,13 @@ open import Relation.Binary using (Setoid)
 open import Categories.Category.Instance.Setoids
 open import Categories.Diagram.Cone.Properties
 open import Categories.Functor.Hom
-open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; _≃_)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; _≃_; module ≃)
+open import Categories.Morphism.Reasoning C
+open import Categories.Morphism C
 
 import Categories.Category.Construction.Cones as Con
 import Categories.Diagram.Limit as Lim
-open import Categories.Morphism.Reasoning C as MR
+
 
 open Π
 open Hom C
@@ -142,6 +144,32 @@ module _ {F G : Functor J C} (F≃G : F ≃ G) where
     }
     where open LF.Limit L
 
-  ≃⇒Cone⇒ : ∀ {Lf : LF.Limit} {Lg : LG.Limit} → Con.Cones G [ LG.Limit.limit (≃-resp-lim Lf) , LG.Limit.limit Lg ]
-  ≃⇒Cone⇒ {Lf} {Lg} = rep-cone (LG.Limit.limit (≃-resp-lim Lf))
+  ≃⇒Cone⇒ : ∀ (Lf : LF.Limit) (Lg : LG.Limit) → Con.Cones G [ LG.Limit.limit (≃-resp-lim Lf) , LG.Limit.limit Lg ]
+  ≃⇒Cone⇒ Lf Lg = rep-cone (LG.Limit.limit (≃-resp-lim Lf))
     where open LG.Limit Lg
+
+≃⇒lim≅ : ∀ {F G : Functor J C} (F≃G : F ≃ G) (Lf : Lim.Limit F) (Lg : Lim.Limit G) → Lim.Limit.apex Lf ≅ Lim.Limit.apex Lg
+≃⇒lim≅ {F = F} {G} F≃G Lf Lg = record
+  { from = arr (≃⇒Cone⇒ F≃G Lf Lg)
+  ; to   = arr (≃⇒Cone⇒ (≃.sym F≃G) Lg Lf)
+  ; iso  = record
+    { isoˡ = Lf.terminal.⊤-id record
+      { commute = λ {j} → begin
+        Lf.proj j ∘ arr (≃⇒Cone⇒ (≃.sym F≃G) Lg Lf) ∘ arr (≃⇒Cone⇒ F≃G Lf Lg) ≈⟨ pullˡ (⇒-commute (≃⇒Cone⇒ (≃.sym F≃G) Lg Lf)) ⟩
+        (⇐.η j ∘ Lg.proj j) ∘ arr (≃⇒Cone⇒ F≃G Lf Lg)                         ≈⟨ pullʳ (⇒-commute (≃⇒Cone⇒ F≃G Lf Lg)) ⟩
+        ⇐.η j ∘ ⇒.η j ∘ Lf.proj j                                             ≈⟨ cancelˡ (iso.isoˡ j) ⟩
+        Lf.proj j                                                             ∎
+      }
+    ; isoʳ = Lg.terminal.⊤-id record
+      { commute = λ {j} → begin
+        Lg.proj j ∘ arr (≃⇒Cone⇒ F≃G Lf Lg) ∘ arr (≃⇒Cone⇒ (≃.sym F≃G) Lg Lf) ≈⟨ pullˡ (⇒-commute (≃⇒Cone⇒ F≃G Lf Lg)) ⟩
+        (⇒.η j ∘ Lf.proj j) ∘ arr (≃⇒Cone⇒ (≃.sym F≃G) Lg Lf)                 ≈⟨ pullʳ (⇒-commute (≃⇒Cone⇒ (≃.sym F≃G) Lg Lf)) ⟩
+        ⇒.η j ∘ ⇐.η j ∘ Lg.proj j                                             ≈⟨ cancelˡ (iso.isoʳ j) ⟩
+        Lg.proj j                                                             ∎
+      }
+    }
+  }
+  where open Con.Cone⇒ renaming (commute to ⇒-commute)
+        module Lf = Lim.Limit Lf
+        module Lg = Lim.Limit Lg
+        open NaturalIsomorphism F≃G
