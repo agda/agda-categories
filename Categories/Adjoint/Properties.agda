@@ -303,7 +303,7 @@ module _ {R : Functor D C} where
           commaObj∘g : ∀ {X Y} → X C.⇒ Y → CommaObj (const! X) R
           commaObj∘g {X} {Y} g = record { f = f (umors.⊥ Y) C.∘ g }
 
-          ⊥X⇒⊥Y : ∀ {X Y} (g : X C.⇒ Y) → X ↙ R [ umors.⊥ X , commaObj∘g g ]
+          ⊥X⇒⊥Y : ∀ {X Y} (g : X C.⇒ Y) → (X ↙ R) [ umors.⊥ X , commaObj∘g g ]
           ⊥X⇒⊥Y {X} {Y} g = umors.! X {commaObj∘g g}
 
           L₀ : ∀ X → D.Obj
