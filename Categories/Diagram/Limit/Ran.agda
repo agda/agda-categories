@@ -80,7 +80,7 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
     ; ε        = ε
     ; δ        = δ
     ; δ-unique = λ {M γ} δ′ eq → δ-unique {M} {γ} δ′ eq
-    ; commutes = {!!}
+    ; commutes = commutes
     }
     where open MR E
           open E.HomReasoning
@@ -251,7 +251,11 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
               γ.η (CommaObj.β W) E.∘ M.F₁ (CommaObj.f W)
                 ∎
             })
-            where module M        = Functor M
-                  module γ        = NaturalTransformation γ
-                  module δ′       = NaturalTransformation δ′
-                  module δ-Cone d = Cone _ (δ-Cone d M γ)
+            where module M  = Functor M
+                  module γ  = NaturalTransformation γ
+                  module δ′ = NaturalTransformation δ′
+
+          commutes : (M : Functor D E) (α : NaturalTransformation (M ∘F F) X) → α ≊ ε ∘ᵥ δ M α ∘ʳ F
+          commutes M γ {c} = ⟺ (⇒-commute (⊤Gd.rep-cone (F.F₀ c) (δ-Cone (F.F₀ c) M γ)) ○ elimʳ M.identity)
+            where module M  = Functor M
+                  module γ  = NaturalTransformation γ
