@@ -83,7 +83,7 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
     }
     where open MR E
           open E.HomReasoning
-          open D.HomReasoning using () renaming (_○_ to _●_)
+          open D.HomReasoning using () renaming (_○_ to _●_ ; ⟺ to ⟷)
 
           R₀ : D.Obj → E.Obj
           R₀ d = apex (⊤Gd d)
@@ -175,11 +175,11 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
                   F-resp-≈-commute : ∀ {Y Z} {K : Category.Obj (Z ↙ F)} {f g : Y D.⇒ Z} → f D.≈ g →
                                        ⊤Gd.proj Z K ∘ R₁ g ≈ ⊤Gd.proj Y record { f = D.id D.∘ CommaObj.f K D.∘ f }
                   F-resp-≈-commute {Y} {Z} {K} {f} {g} eq = begin
-                    ⊤Gd.proj Z K ∘ R₁ g ≈⟨ pullˡ (⇒-commute (≃⇒Cone⇒ (≃.sym (Gf≃ g)) (Com _) (⊤Gd Z))) ⟩
+                    ⊤Gd.proj Z K ∘ R₁ g                               ≈⟨ pullˡ (⇒-commute (≃⇒Cone⇒ (≃.sym (Gf≃ g)) (Com _) (⊤Gd Z))) ⟩
                     (X.F₁ C.id ∘ proj (Com _) K) ∘ arr (limY⇒limZ∘ g) ≈⟨ pullʳ (⇒-commute (limY⇒limZ∘ g)) ⟩
-                    X.F₁ C.id ∘ ⊤Gd.proj Y _ ≈⟨ elimˡ X.identity ⟩
-                    ⊤Gd.proj Y _ ≈⟨ proj≈ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ (D.Equiv.sym eq))) ⟩
-                    ⊤Gd.proj Y _ ∎
+                    X.F₁ C.id ∘ ⊤Gd.proj Y _                          ≈⟨ elimˡ X.identity ⟩
+                    ⊤Gd.proj Y _                                      ≈⟨ proj≈ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ (D.Equiv.sym eq))) ⟩
+                    ⊤Gd.proj Y _                                      ∎
 
           ε : NaturalTransformation (R ∘F F) X
           ε = ntHelper record
@@ -188,7 +188,7 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
               ⊤Gd.proj (F.F₀ Z) _ ∘ Functor.F₁ (R ∘F F) f              ≈⟨ pullˡ (⇒-commute (≃⇒Cone⇒ (≃.sym (Gf≃ (F.F₁ f))) (Com _) (⊤Gd (F.F₀ Z)))) ⟩
               (X.F₁ C.id ∘ proj (Com _) _) ∘ arr (limY⇒limZ∘ (F.F₁ f)) ≈⟨ pullʳ (⇒-commute (limY⇒limZ∘ (F.F₁ f))) ⟩
               X.F₁ C.id ∘ ⊤Gd.proj (F.F₀ Y) _                          ≈⟨ elimˡ X.identity ⟩
-              ⊤Gd.proj (F.F₀ Y) _                                      ≈⟨ {!!} ⟩
+              ⊤Gd.proj (F.F₀ Y) _                                      ≈˘⟨ K-commute _ (⊤Gd.limit (F.F₀ Y)) record { h = f ; commute = ⟷ (D.∘-resp-≈ˡ D.identityˡ ● D.∘-resp-≈ˡ D.identityˡ) } ⟩
               X.F₁ f ∘ ⊤Gd.proj (F.F₀ Y) _                             ∎
             }
             where open E
