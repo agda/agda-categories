@@ -90,6 +90,13 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
           R₁ : ∀ {A B} → D [ A , B ] → E [ R₀ A , R₀ B ]
           R₁ {A} f = _≅_.to (limZ∘≅limZ f) E.∘ arr (limY⇒limZ∘ f)
 
+          proj-red : ∀ {Y Z} K (f : Y D.⇒ Z) → ⊤Gd.proj Z K E.∘ R₁ f E.≈ ⊤Gd.proj Y (record { f = D.id D.∘ CommaObj.f K D.∘ f })
+          proj-red {Y} {Z} K f = begin
+            ⊤Gd.proj Z K E.∘ R₁ f                                 ≈⟨ pullˡ (⇒-commute (≃⇒Cone⇒ (≃.sym (Gf≃ f)) (Com _) (⊤Gd Z))) ⟩
+            (X.F₁ C.id E.∘ proj (Com _) K) E.∘ arr (limY⇒limZ∘ f) ≈⟨ pullʳ (⇒-commute (limY⇒limZ∘ f)) ⟩
+            X.F₁ C.id E.∘ ⊤Gd.proj Y _                            ≈⟨ elimˡ X.identity ⟩
+            ⊤Gd.proj Y _                                          ∎
+
           proj≈ : ∀ {d b} {f g : d D.⇒ F.F₀ b} → f D.≈ g → ⊤Gd.proj d record { f = f } E.≈ ⊤Gd.proj d record { f = g }
           proj≈ {d} {b} {f} {g} eq = begin
             ⊤Gd.proj d _               ≈⟨ introˡ X.identity ⟩
@@ -102,11 +109,9 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
             ; F₁           = R₁
             ; identity     = λ {d} → terminal.⊤-id (⊤Gd d) record
               { commute = λ {Z} → begin
-                ⊤Gd.proj d Z ∘ R₁ D.id                                               ≈⟨ pullˡ (⇒-commute (≃⇒Cone⇒ (≃.sym (Gf≃ D.id)) (Com _) (⊤Gd d))) ⟩
-                (X.F₁ C.id ∘ proj (Com _) Z) ∘ arr (limY⇒limZ∘ D.id)                 ≈⟨ pullʳ (⇒-commute (limY⇒limZ∘ D.id)) ⟩
-                X.F₁ C.id ∘ ⊤Gd.proj d record { f = D.id D.∘ CommaObj.f Z D.∘ D.id } ≈⟨ refl⟩∘⟨ proj≈ (D.identityˡ ● D.identityʳ) ⟩
-                X.F₁ C.id ∘ ⊤Gd.proj d Z                                             ≈⟨ elimˡ X.identity ⟩
-                ⊤Gd.proj d Z                                                         ∎
+                ⊤Gd.proj d Z ∘ R₁ D.id                                   ≈⟨ proj-red Z D.id ⟩
+                ⊤Gd.proj d record { f = D.id D.∘ CommaObj.f Z D.∘ D.id } ≈⟨ proj≈ (D.identityˡ ● D.identityʳ) ⟩
+                ⊤Gd.proj d Z                                             ∎
               }
             ; homomorphism = λ {Y Z W} {f g} →
               terminal.!-unique₂ (⊤Gd W)
@@ -120,15 +125,7 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
                  }}
                 {record
                   { arr     = R₁ (g D.∘ f)
-                  ; commute = λ {K} → begin
-                    ⊤Gd.proj W K ∘ R₁ (g D.∘ f)
-                      ≈⟨ pullˡ (⇒-commute (≃⇒Cone⇒ (≃.sym (Gf≃ (g D.∘ f))) (Com _) (⊤Gd W))) ⟩
-                    (X.F₁ C.id ∘ proj (Com _) K) ∘ arr (limY⇒limZ∘ (g D.∘ f))
-                      ≈⟨ pullʳ (⇒-commute (limY⇒limZ∘ (g D.∘ f))) ⟩
-                    X.F₁ C.id ∘ ⊤Gd.proj Y record { f = D.id D.∘ CommaObj.f K D.∘ g D.∘ f }
-                      ≈⟨ elimˡ X.identity ⟩
-                    ⊤Gd.proj Y record { f = D.id D.∘ CommaObj.f K D.∘ g D.∘ f }
-                      ∎
+                  ; commute = λ {K} → proj-red K (g D.∘ f)
                   }}
                 {record
                   { arr     = R₁ g ∘ R₁ f
@@ -136,17 +133,9 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
                     ⊤Gd.proj W K ∘ R₁ g ∘ R₁ f
                       ≈⟨ sym-assoc ⟩
                     (⊤Gd.proj W K ∘ R₁ g) ∘ R₁ f
-                      ≈⟨ pullˡ (⇒-commute (≃⇒Cone⇒ (≃.sym (Gf≃ g)) (Com _) (⊤Gd W))) ⟩∘⟨refl ⟩
-                    ((X.F₁ C.id ∘ proj (Com _) K) ∘ arr (limY⇒limZ∘ g)) ∘ R₁ f
-                      ≈⟨ pullʳ (⇒-commute (limY⇒limZ∘ g)) ⟩∘⟨refl ⟩
-                    (X.F₁ C.id ∘ ⊤Gd.proj Z record { f = D.id D.∘ CommaObj.f K D.∘ g }) ∘ R₁ f
-                      ≈⟨ elimˡ X.identity ⟩∘⟨refl ⟩
+                      ≈⟨ proj-red K g ⟩∘⟨refl ⟩
                     ⊤Gd.proj Z record { f = D.id D.∘ CommaObj.f K D.∘ g } ∘ R₁ f
-                      ≈⟨ pullˡ (⇒-commute (≃⇒Cone⇒ (≃.sym (Gf≃ f)) (Com _) (⊤Gd Z))) ⟩
-                    (X.F₁ C.id ∘ proj (Com _) record { f = D.id D.∘ CommaObj.f K D.∘ g }) ∘ arr (limY⇒limZ∘ f)
-                      ≈⟨ pullʳ (⇒-commute (limY⇒limZ∘ f)) ⟩
-                    X.F₁ C.id ∘ ⊤Gd.proj Y record { f = D.id D.∘ (D.id D.∘ CommaObj.f K D.∘ g) D.∘ f }
-                      ≈⟨ elimˡ X.identity ⟩
+                      ≈⟨ proj-red _ f ⟩
                     ⊤Gd.proj Y record { f = D.id D.∘ (D.id D.∘ CommaObj.f K D.∘ g) D.∘ f }
                       ≈⟨ proj≈ (D.identityˡ ● (MR.assoc²' D)) ⟩
                     ⊤Gd.proj Y record { f = D.id D.∘ CommaObj.f K D.∘ g D.∘ f }
@@ -175,20 +164,16 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
                   F-resp-≈-commute : ∀ {Y Z} {K : Category.Obj (Z ↙ F)} {f g : Y D.⇒ Z} → f D.≈ g →
                                        ⊤Gd.proj Z K ∘ R₁ g ≈ ⊤Gd.proj Y record { f = D.id D.∘ CommaObj.f K D.∘ f }
                   F-resp-≈-commute {Y} {Z} {K} {f} {g} eq = begin
-                    ⊤Gd.proj Z K ∘ R₁ g                               ≈⟨ pullˡ (⇒-commute (≃⇒Cone⇒ (≃.sym (Gf≃ g)) (Com _) (⊤Gd Z))) ⟩
-                    (X.F₁ C.id ∘ proj (Com _) K) ∘ arr (limY⇒limZ∘ g) ≈⟨ pullʳ (⇒-commute (limY⇒limZ∘ g)) ⟩
-                    X.F₁ C.id ∘ ⊤Gd.proj Y _                          ≈⟨ elimˡ X.identity ⟩
-                    ⊤Gd.proj Y _                                      ≈⟨ proj≈ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ (D.Equiv.sym eq))) ⟩
-                    ⊤Gd.proj Y _                                      ∎
+                    ⊤Gd.proj Z K ∘ R₁ g ≈⟨ proj-red K g ⟩
+                    ⊤Gd.proj Y _        ≈⟨ proj≈ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ (D.Equiv.sym eq))) ⟩
+                    ⊤Gd.proj Y _        ∎
 
           ε : NaturalTransformation (R ∘F F) X
           ε = ntHelper record
             { η       = λ c → ⊤Gd.proj (F.F₀ c) record { f = D.id }
             ; commute = λ {Y Z} f → begin
-              ⊤Gd.proj (F.F₀ Z) _ ∘ Functor.F₁ (R ∘F F) f              ≈⟨ pullˡ (⇒-commute (≃⇒Cone⇒ (≃.sym (Gf≃ (F.F₁ f))) (Com _) (⊤Gd (F.F₀ Z)))) ⟩
-              (X.F₁ C.id ∘ proj (Com _) _) ∘ arr (limY⇒limZ∘ (F.F₁ f)) ≈⟨ pullʳ (⇒-commute (limY⇒limZ∘ (F.F₁ f))) ⟩
-              X.F₁ C.id ∘ ⊤Gd.proj (F.F₀ Y) _                          ≈⟨ elimˡ X.identity ⟩
-              ⊤Gd.proj (F.F₀ Y) _                                      ≈˘⟨ K-commute _ (⊤Gd.limit (F.F₀ Y)) record { h = f ; commute = ⟷ (D.∘-resp-≈ˡ D.identityˡ ● D.∘-resp-≈ˡ D.identityˡ) } ⟩
-              X.F₁ f ∘ ⊤Gd.proj (F.F₀ Y) _                             ∎
+              ⊤Gd.proj (F.F₀ Z) _ ∘ Functor.F₁ (R ∘F F) f ≈⟨ proj-red _ (F.F₁ f) ⟩
+              ⊤Gd.proj (F.F₀ Y) _                         ≈˘⟨ K-commute _ (⊤Gd.limit (F.F₀ Y)) record { h = f ; commute = ⟷ (D.∘-resp-≈ˡ D.identityˡ ● D.∘-resp-≈ˡ D.identityˡ) } ⟩
+              X.F₁ f ∘ ⊤Gd.proj (F.F₀ Y) _                ∎
             }
             where open E
