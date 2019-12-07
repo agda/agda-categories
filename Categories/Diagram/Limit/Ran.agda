@@ -76,7 +76,7 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
   limit-is-ran : Ran F X
   limit-is-ran = record
     { R        = R
-    ; ε        = {!!}
+    ; ε        = ε
     ; δ        = {!!}
     ; δ-unique = {!!}
     ; commutes = {!!}
@@ -180,3 +180,15 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
                     X.F₁ C.id ∘ ⊤Gd.proj Y _ ≈⟨ elimˡ X.identity ⟩
                     ⊤Gd.proj Y _ ≈⟨ proj≈ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ (D.Equiv.sym eq))) ⟩
                     ⊤Gd.proj Y _ ∎
+
+          ε : NaturalTransformation (R ∘F F) X
+          ε = ntHelper record
+            { η       = λ c → ⊤Gd.proj (F.F₀ c) record { f = D.id }
+            ; commute = λ {Y Z} f → begin
+              ⊤Gd.proj (F.F₀ Z) _ ∘ Functor.F₁ (R ∘F F) f              ≈⟨ pullˡ (⇒-commute (≃⇒Cone⇒ (≃.sym (Gf≃ (F.F₁ f))) (Com _) (⊤Gd (F.F₀ Z)))) ⟩
+              (X.F₁ C.id ∘ proj (Com _) _) ∘ arr (limY⇒limZ∘ (F.F₁ f)) ≈⟨ pullʳ (⇒-commute (limY⇒limZ∘ (F.F₁ f))) ⟩
+              X.F₁ C.id ∘ ⊤Gd.proj (F.F₀ Y) _                          ≈⟨ elimˡ X.identity ⟩
+              ⊤Gd.proj (F.F₀ Y) _                                      ≈⟨ {!!} ⟩
+              X.F₁ f ∘ ⊤Gd.proj (F.F₀ Y) _                             ∎
+            }
+            where open E
