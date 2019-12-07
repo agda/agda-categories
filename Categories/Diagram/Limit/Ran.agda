@@ -16,11 +16,12 @@ open import Categories.Functor
 open import Categories.Functor.Properties
 open import Categories.Functor.Construction.Constant
 open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation.Equivalence using () renaming (_≃_ to _≊_)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; _≃_; module ≃; _ⓘˡ_)
 open import Categories.Kan
 open import Categories.Diagram.Limit
 
-import Categories.Morphism as M
+import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
 
 private
@@ -40,7 +41,7 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
     open Limit
     open Cone renaming (commute to K-commute)
     open Cone⇒ renaming (commute to ⇒-commute)
-    open M E
+    open Mor E
 
     G   : (d : D.Obj) → Functor (d ↙ F) E
     G d   = X ∘F Cod (const! d) F
@@ -77,8 +78,8 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
   limit-is-ran = record
     { R        = R
     ; ε        = ε
-    ; δ        = {!!}
-    ; δ-unique = {!!}
+    ; δ        = δ
+    ; δ-unique = λ {M γ} δ′ eq → δ-unique {M} {γ} δ′ eq
     ; commutes = {!!}
     }
     where open MR E
@@ -177,3 +178,80 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o′ ℓ′ e′} {D : Categor
               X.F₁ f ∘ ⊤Gd.proj (F.F₀ Y) _                ∎
             }
             where open E
+
+          δ-Cone : ∀ d (M : Functor D E) → NaturalTransformation (M ∘F F) X → Cone (G d)
+          δ-Cone d M γ = record
+            { apex = record
+              { ψ       = λ K → γ.η (CommaObj.β K) E.∘ M.F₁ (CommaObj.f K) 
+              ; commute = λ {Y Z} f → begin
+                X.F₁ (Comma⇒.h f) E.∘ γ.η (CommaObj.β Y) E.∘ M.F₁ (CommaObj.f Y)
+                  ≈˘⟨ pushˡ (γ.commute (Comma⇒.h f)) ⟩
+                (γ.η (CommaObj.β Z) E.∘ M.F₁ (F.F₁ (Comma⇒.h f))) E.∘ M.F₁ (CommaObj.f Y)
+                  ≈⟨ pullʳ ([ M ]-resp-∘ (Comma⇒.commute f ● D.identityʳ)) ⟩
+                γ.η (CommaObj.β Z) E.∘ M.F₁ (CommaObj.f Z)
+                  ∎
+              }
+            }
+            where module M = Functor M
+                  module γ = NaturalTransformation γ
+
+          δ : (M : Functor D E) → NaturalTransformation (M ∘F F) X → NaturalTransformation M R
+          δ M γ = ntHelper record
+            { η       = λ d → ⊤Gd.rep d (δ-Cone d M γ)
+            ; commute = λ {Y Z} f →
+              terminal.!-unique₂ (⊤Gd Z)
+                {record
+                  { apex = record
+                    { ψ       = λ W → δ-Cone.ψ Z W E.∘ M.F₁ f
+                    ; commute = λ {W V} g → begin
+                      X.F₁ (Comma⇒.h g) E.∘ (γ.η (CommaObj.β W) E.∘ M.F₁ (CommaObj.f W)) E.∘ M.F₁ f
+                        ≈⟨ E.sym-assoc ⟩
+                      (X.F₁ (Comma⇒.h g) E.∘ γ.η (CommaObj.β W) E.∘ M.F₁ (CommaObj.f W)) E.∘ M.F₁ f
+                        ≈⟨ δ-Cone.commute Z g ⟩∘⟨refl ⟩
+                      (γ.η (CommaObj.β V) E.∘ M.F₁ (CommaObj.f V)) E.∘ M.F₁ f
+                        ∎
+                    }
+                  }}
+                {record
+                  { arr     = ⊤Gd.rep Z (δ-Cone Z M γ) E.∘ M.F₁ f
+                  ; commute = pullˡ (⇒-commute (⊤Gd.rep-cone Z (δ-Cone Z M γ)))
+                  }}
+                {record
+                  { arr     = R₁ f E.∘ ⊤Gd.rep Y (δ-Cone Y M γ)
+                  ; commute = λ {W} → begin
+                    ⊤Gd.proj Z W E.∘ R₁ f E.∘ ⊤Gd.rep Y (δ-Cone Y M γ)
+                      ≈⟨ pullˡ (proj-red W f) ⟩
+                    ⊤Gd.proj Y (record { f = D.id D.∘ CommaObj.f W D.∘ f }) E.∘ ⊤Gd.rep Y (δ-Cone Y M γ)
+                      ≈⟨ ⇒-commute (⊤Gd.rep-cone Y (δ-Cone Y M γ)) ⟩
+                    γ.η (CommaObj.β W) E.∘ M.F₁ (D.id D.∘ CommaObj.f W D.∘ f)
+                      ≈˘⟨ refl⟩∘⟨ [ M ]-resp-∘ (⟷ D.identityˡ) ⟩
+                    γ.η (CommaObj.β W) E.∘ M.F₁ (CommaObj.f W) E.∘ M.F₁ f
+                      ≈⟨ E.sym-assoc ⟩
+                    (γ.η (CommaObj.β W) E.∘ M.F₁ (CommaObj.f W)) E.∘ M.F₁ f
+                      ∎
+                  }}
+            }
+            where module M        = Functor M
+                  module γ        = NaturalTransformation γ
+                  module δ-Cone d = Cone _ (δ-Cone d M γ)
+
+          δ-unique : ∀ {M : Functor D E} {α : NaturalTransformation (M ∘F F) X}
+                       (δ′ : NaturalTransformation M R) → α ≊ ε ∘ᵥ δ′ ∘ʳ F → δ′ ≊ δ M α
+          δ-unique {M} {γ} δ′ eq {d} = ⟺ (⊤Gd.terminal.!-unique d record
+            { arr     = δ′.η d
+            ; commute = λ {W} → begin
+              ⊤Gd.proj d W E.∘ δ′.η d
+                ≈˘⟨ proj≈ (D.identityˡ ● D.identityˡ) ⟩∘⟨refl ⟩
+              ⊤Gd.proj d (record { f = D.id D.∘ D.id D.∘ CommaObj.f W }) E.∘ δ′.η d
+                ≈˘⟨ pullˡ (proj-red _ (CommaObj.f W)) ⟩
+              ⊤Gd.proj (F.F₀ (CommaObj.β W)) _ E.∘ R₁ (CommaObj.f W) E.∘ δ′.η d
+                ≈˘⟨ pullʳ (δ′.commute (CommaObj.f W)) ⟩
+              (⊤Gd.proj (F.F₀ (CommaObj.β W)) (record { f = D.id}) E.∘ δ′.η (F.F₀ (CommaObj.β W))) E.∘ M.F₁ (CommaObj.f W)
+                ≈˘⟨ eq ⟩∘⟨refl ⟩
+              γ.η (CommaObj.β W) E.∘ M.F₁ (CommaObj.f W)
+                ∎
+            })
+            where module M        = Functor M
+                  module γ        = NaturalTransformation γ
+                  module δ′       = NaturalTransformation δ′
+                  module δ-Cone d = Cone _ (δ-Cone d M γ)
