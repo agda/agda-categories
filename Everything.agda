@@ -101,6 +101,7 @@ import Categories.Diagram.Coend
 import Categories.Diagram.Coequalizer
 import Categories.Diagram.Coequalizer.Properties
 import Categories.Diagram.Colimit
+import Categories.Diagram.Colimit.Lan
 import Categories.Diagram.Colimit.Properties
 import Categories.Diagram.Cone
 import Categories.Diagram.Cone.Properties
