@@ -2,7 +2,7 @@
 module Categories.Functor.Construction.Zero where
 
 -- The Zero functor maps everything to the initial object of a
--- category (when it exists).
+-- category (when it exists). Note quite const.
 
 open import Level
 
