@@ -335,9 +335,9 @@ module _ {R : Functor D C} where
                   open MR C
           module L = Functor L
 
-          ⊥Rd    : ∀ d → CommaObj (const! (R.F₀ d)) R
+          ⊥Rd    : (d : D.Obj) → CommaObj (const! (R.F₀ d)) R
           ⊥Rd d    = umors.⊥ (R.F₀ d)
-          ⊥Rd⇒id : ∀ d → R.F₀ d ↙ R [ ⊥Rd d , record { f = C.id } ]
+          ⊥Rd⇒id : (d : D.Obj) →  (R.F₀ d ↙ R) [ ⊥Rd d , record { f = C.id } ]
           ⊥Rd⇒id d = umors.! (R.F₀ d) {record { f = C.id }}
           ε      : ∀ d → L₀ (R.F₀ d) D.⇒ d
           ε d      = h (⊥Rd⇒id d)
