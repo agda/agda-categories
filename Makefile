@@ -12,3 +12,6 @@ Everything.agda:
 
 clean:
 	find . -name '*.agdai' -exec rm \{\} \;
+
+profile: Everything.agda
+	agda ${RTSARGS} -vprofile:7 Everything.agda
