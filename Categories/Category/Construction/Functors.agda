@@ -4,20 +4,25 @@ module Categories.Category.Construction.Functors where
 -- the "Functor Category", often denoted [ C , D ]
 
 open import Level
-open import Data.Product using (Σ; _,_; _×_; uncurry′; proj₁)
+open import Data.Product using (_,_; proj₁; uncurry′)
 
-open import Categories.Category
+open import Categories.Category using (Category; _[_∘_])
 open import Categories.Category.Equivalence using (StrongEquivalence)
-open import Categories.Functor
+open import Categories.Category.Product using (_※ⁿ_) renaming (Product to _×_)
+open import Categories.Functor using (Functor; _∘F_)
 open import Categories.Functor.Bifunctor
-open import Categories.NaturalTransformation renaming (id to idN)
+open import Categories.Functor.Construction.Constant using (constNat)
+open import Categories.NaturalTransformation
+  using (NaturalTransformation; _∘ᵥ_; _∘ˡ_; _∘ₕ_) renaming (id to idN)
 open import Categories.NaturalTransformation.Equivalence using (_≃_; ≃-isEquivalence)
+open import Categories.NaturalTransformation.NaturalIsomorphism
+  using (NaturalIsomorphism)
 import Categories.Morphism.Reasoning as MR
 
 private
   variable
     o ℓ e o′ ℓ′ e′ : Level
-    C D : Category o ℓ e
+    C D C₁ C₂ : Category o ℓ e
 
 -- The reason the proofs below are so easy is that _∘ᵥ_ 'computes' all the way down into
 -- expressions in D, from which the properties follow.
@@ -70,6 +75,74 @@ eval {C = C} {D = D} = record
         open D
         open MR D
         open HomReasoning
+
+-- Currying induces a functor between functor categories -- another
+-- part of the proof that Cats is a catesian closed (bi)category.
+
+curry : Functor (Functors (C₁ × C₂) D) (Functors C₁ (Functors C₂ D))
+curry {C₁ = C₁} {C₂ = C₂} {D = D} = record
+  { F₀ = curry₀
+  ; F₁ = curry₁
+  ; identity     = Equiv.refl D
+  ; homomorphism = Equiv.refl D
+  ; F-resp-≈     = λ F≈G {x₁} {x₂} → F≈G {x₁ , x₂}
+  }
+  where
+    open Category
+
+    curry₀ : Bifunctor C₁ C₂ D → Functor C₁ (Functors C₂ D)
+    curry₀ F = record
+      { F₀ = λ c → appˡ F c
+      ; F₁ = λ f → F ∘ˡ (constNat f ※ⁿ idN)
+      ; identity     = identity
+      ; homomorphism = λ {_} {_} {_} {f} {g} → begin
+          F₁ (C₁ [ g ∘ f ] , id C₂)
+        ≈˘⟨ F-resp-≈ (Equiv.refl C₁ , identityˡ C₂) ⟩
+          F₁ (C₁ [ g ∘ f ] , C₂ [ id C₂ ∘ id C₂ ])
+        ≈⟨ homomorphism ⟩
+          D [ F₁ (g , id C₂) ∘ F₁ (f , id C₂) ]
+        ∎
+      ; F-resp-≈ = λ f≈g → F-resp-≈ (f≈g , Equiv.refl C₂)
+      }
+      where
+        open Functor F
+        open HomReasoning D
+
+    curry₁ : {F G : Bifunctor C₁ C₂ D} →
+             NaturalTransformation F G →
+             NaturalTransformation (curry₀ F) (curry₀ G)
+    curry₁ α = record
+      { η = λ c → record
+        { η           = λ a → η α (c , a)
+        ; commute     = λ f → commute α (id C₁  , f)
+        ; sym-commute = λ f → sym-commute α (id C₁  , f)
+        }
+      ; commute       = λ f → commute α (f , id C₂)
+      ; sym-commute   = λ f → sym-commute α (f , id C₂)
+      }
+      where open NaturalTransformation
+
+module curry {o₁ e₁ ℓ₁} {C₁ : Category o₁ e₁ ℓ₁}
+             {o₂ e₂ ℓ₂} {C₂ : Category o₂ e₂ ℓ₂}
+             {o′ e′ ℓ′} {D  : Category o′ e′ ℓ′}
+             where
+  open Functor (curry {C₁ = C₁} {C₂ = C₂} {D = D}) public
+  open Category
+  open NaturalIsomorphism
+
+  -- Currying preserves natural isos.
+  -- This makes |curry.F₀| a map between the hom-setoids of Cats.
+
+  resp-NI : {F G : Bifunctor C₁ C₂ D} →
+            NaturalIsomorphism F G → NaturalIsomorphism (F₀ F) (F₀ G)
+  resp-NI α = record
+    { F⇒G = F₁ (F⇒G α)
+    ; F⇐G = F₁ (F⇐G α)
+    ; iso = λ x → record
+      { isoˡ = iso.isoˡ α (x , _)
+      ; isoʳ = iso.isoʳ α (x , _)
+      }
+    }
 
 -- Godement product ?
 product : {A B C : Category o ℓ e} → Bifunctor (Functors B C) (Functors A B) (Functors A C)
