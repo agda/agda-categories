@@ -110,8 +110,9 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
     λ⇐ = unitorˡ.to
     ρ⇒ = unitorʳ.from
     ρ⇐ = unitorʳ.to
-    α⇒ = associator.from
-    α⇐ = associator.to
+    -- eta expansion fixes a problem in 2.6.1, will be reported
+    α⇒ = λ {X} {Y} {Z} → associator.from {X} {Y} {Z}
+    α⇐ = λ {X} {Y} {Z} → associator.to {X} {Y} {Z}
 
   field
     unitorˡ-commute-from : CommutativeSquare (C.id ⊗₁ f) λ⇒ λ⇒ f
