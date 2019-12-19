@@ -10,8 +10,7 @@ module Categories.Yoneda where
 --   Hom[ Presheaves C] (Functor.F₀ embed a , F) ≅ Functor.F₀ F a
 --   as Setoids. In addition, Yoneda (yoneda) also says that this isomorphism is natural in a and F.
 open import Level
-open import Function using (_$_) -- else there's a conflict with the import below
-open import Function.Inverse using (Inverse)
+open import Function using (_$_; Inverse) -- else there's a conflict with the import below
 open import Function.Equality using (Π; _⟨$⟩_; cong)
 open import Relation.Binary using (module Setoid)
 import Relation.Binary.Reasoning.Setoid as SetoidR
@@ -73,12 +72,8 @@ module _ (C : Category o ℓ e) where
   yoneda-inverse : (a : Obj) (F : Presheaf C (Setoids ℓ e)) →
     Inverse (Category.hom-setoid (Presheaves C) {Functor.F₀ embed a} {F}) (Functor.F₀ F a)
   yoneda-inverse a F = record
-    { to         = record
-      { _⟨$⟩_ = λ nat → η nat a ⟨$⟩ id
-      ; cong  = λ i≈j → i≈j CE.refl
-      }
-    ; from       = record
-      { _⟨$⟩_ = λ x → ntHelper record
+    { f = λ nat → η nat a ⟨$⟩ id
+    ; f⁻¹ = λ x → ntHelper record
         { η       = λ X → record
           { _⟨$⟩_ = λ X⇒a → F₁ F X⇒a ⟨$⟩ x
           ; cong  = λ i≈j → F-resp-≈ F i≈j SE.refl
@@ -92,15 +87,12 @@ module _ (C : Category o ℓ e) where
              F₁ F Y⇒X ⟨$⟩ (F₁ F g ⟨$⟩ x)
            SR.∎
         }
-      ; cong  = λ i≈j y≈z → F-resp-≈ F y≈z i≈j
-      }
-    ; inverse-of = record
-      { left-inverse-of  = λ nat {x} {z} z≈y →
+    ; cong₁ = λ i≈j → i≈j CE.refl
+    ; cong₂ = λ i≈j y≈z → F-resp-≈ F y≈z i≈j
+    ; inverse = (λ Fa → identity F SE.refl) , λ nat {x} {z} z≈y →
         let module S     = Setoid (F₀ F x) in
         S.trans (S.sym (commute nat z CE.refl))
                 (cong (η nat x) (identityˡ ○ identityˡ ○ z≈y))
-      ; right-inverse-of = λ Fa → identity F SE.refl
-      }
     }
     where module SE = Setoid (F₀ F a)
 
@@ -124,7 +116,7 @@ module _ (C : Category o ℓ e) where
     { F⇒G = ntHelper record
       { η       = λ where
         (F , A) → record
-          { _⟨$⟩_ = λ α → lift (yoneda-inverse.to ⟨$⟩ α)
+          { _⟨$⟩_ = λ α → lift (yoneda-inverse.f α)
           ; cong  = λ i≈j → lift (i≈j CE.refl)
           }
       ; commute = λ where
@@ -134,7 +126,7 @@ module _ (C : Category o ℓ e) where
       { η       = λ where
         (F , A) → record
           { _⟨$⟩_ = λ where
-            (lift x) → yoneda-inverse.from ⟨$⟩ x
+            (lift x) → yoneda-inverse.f⁻¹ x
           ; cong  = λ where
             (lift i≈j) y≈z → F-resp-≈ F y≈z i≈j
           }
@@ -145,11 +137,11 @@ module _ (C : Category o ℓ e) where
       (F , A) → record
         { isoˡ = λ {α β} i≈j {X} y≈z →
           let module S = Setoid (F₀ F X)
-          in S.trans (yoneda-inverse.left-inverse-of α {x = X} y≈z) (i≈j CE.refl)
+          in S.trans ( yoneda-inverse.inverseʳ α {x = X} y≈z) (i≈j CE.refl)
         ; isoʳ = λ where
           (lift eq) →
             let module S = Setoid (F₀ F A)
-            in lift (S.trans (yoneda-inverse.right-inverse-of {F = F} _) eq)
+            in lift (S.trans ( yoneda-inverse.inverseˡ {F = F} _) eq)
         }
     }
     where helper : ∀ {F : Functor (Category.op C) (Setoids ℓ e)}
@@ -214,12 +206,12 @@ module _ (C : Category o ℓ e) where
     ; iso  = record
       { isoˡ = begin
         (⇐.η B ⟨$⟩ id) ∘ (⇒.η A ⟨$⟩ id)      ≈˘⟨ identityˡ ⟩
-        id ∘ (⇐.η B ⟨$⟩ id) ∘ (⇒.η A ⟨$⟩ id) ≈⟨ B⇒A.left-inverse-of F⇐G refl ⟩
+        id ∘ (⇐.η B ⟨$⟩ id) ∘ (⇒.η A ⟨$⟩ id) ≈⟨  B⇒A.inverseʳ F⇐G refl  ⟩
         ⇐.η A ⟨$⟩ (⇒.η A ⟨$⟩ id)             ≈⟨ isoX.isoˡ refl ⟩
         id                                   ∎
       ; isoʳ = begin
         (⇒.η A ⟨$⟩ id) ∘ (⇐.η B ⟨$⟩ id)      ≈˘⟨ identityˡ ⟩
-        id ∘ (⇒.η A ⟨$⟩ id) ∘ (⇐.η B ⟨$⟩ id) ≈⟨ A⇒B.left-inverse-of F⇒G refl ⟩
+        id ∘ (⇒.η A ⟨$⟩ id) ∘ (⇐.η B ⟨$⟩ id) ≈⟨  A⇒B.inverseʳ F⇒G refl  ⟩
         ⇒.η B ⟨$⟩ (⇐.η B ⟨$⟩ id)             ≈⟨ isoX.isoʳ refl ⟩
         id                                   ∎
       }
