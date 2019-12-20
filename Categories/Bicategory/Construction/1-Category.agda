@@ -50,8 +50,8 @@ open C hiding (id)
     hom : C.Obj → C.Obj → Category ℓ e b
     hom A B = Groupoid.category (0-Groupoid b (hom-setoid {A} {B}))
 
-    id : ∀ A → Functor unit (hom A A)
-    id A = const (C.id {A})
+    id : ∀ {A} → Functor unit (hom A A)
+    id = const C.id
 
     ⊚ : ∀ {A B C} → Bifunctor (hom B C) (hom A B) (hom A C)
     ⊚ {A} {B} {C} = record
@@ -78,7 +78,7 @@ open C hiding (id)
 
     unitˡ : ∀ {A B} →
       [ unit ⊗₀ hom A B ⇒ hom A B ]⟨
-        id B ⊗₁ idF   ⇒⟨ hom B B ⊗₀ hom A B ⟩
+        id ⊗₁ idF    ⇒⟨ hom B B ⊗₀ hom A B ⟩
         ⊚
       ≈ unitorˡ.from
       ⟩
@@ -90,7 +90,7 @@ open C hiding (id)
 
     unitʳ : ∀ {A B} →
       [ hom A B ⊗₀ unit ⇒ hom A B ]⟨
-        idF ⊗₁ id A    ⇒⟨ hom A B ⊗₀ hom A A ⟩
+        idF ⊗₁ id    ⇒⟨ hom A B ⊗₀ hom A A ⟩
         ⊚
       ≈ unitorʳ.from
       ⟩
@@ -102,7 +102,7 @@ open C hiding (id)
 
 open Bicategory 1-Category
 
--- The hom-categories are hom-groupids
+-- The hom-categories are hom-groupoids
 
 hom-isGroupoid : ∀ {A B} → IsGroupoid (hom A B)
 hom-isGroupoid = Groupoid.isGroupoid (0-Groupoid b hom-setoid)
