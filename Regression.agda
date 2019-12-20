@@ -3,6 +3,7 @@
 
 module Regression  where
 open import Level
+open import Relation.Binary using (Rel)
 
 record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   eta-equality
@@ -11,18 +12,25 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   field
     Obj : Set o
-    _⇒_ : Obj → Obj → Set ℓ
-    _≈_ : ∀ {A B} → (A ⇒ B) → (A ⇒ B) → Set e
+    _⇒_ : Rel Obj ℓ
+    _≈_ : ∀ {A B} → Rel (A ⇒ B) e
 
+    id  : ∀ {A} → (A ⇒ A)
     _∘_ : ∀ {A B C} → (B ⇒ C) → (A ⇒ B) → (A ⇒ C)
 
   CommutativeSquare : ∀ {A B C D} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
   CommutativeSquare f g h i = h ∘ f ≈ i ∘ g
 
-infix 10  _[_,_]
+infix 10  _[_,_] _[_≈_] _[_∘_]
 
 _[_,_] : ∀ {o ℓ e} → (C : Category o ℓ e) → (X : Category.Obj C) → (Y : Category.Obj C) → Set ℓ
 _[_,_] = Category._⇒_
+
+_[_≈_] : ∀ {o ℓ e} → (C : Category o ℓ e) → ∀ {X Y} (f g : C [ X , Y ]) → Set e
+_[_≈_] = Category._≈_
+
+_[_∘_] : ∀ {o ℓ e} → (C : Category o ℓ e) → ∀ {X Y Z} (f : C [ Y , Z ]) → (g : C [ X , Y ]) → C [ X , Z ]
+_[_∘_] = Category._∘_
 
 postulate
   x₁ x₂ x₃ : Level
@@ -46,6 +54,7 @@ record Functor (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o �
   field
     F₀ : C.Obj → D.Obj
     F₁ : ∀ {A B} (f : C [ A , B ]) → D [ F₀ A , F₀ B ]
+    identity     : ∀ {A} → D [ F₁ (C.id {A}) ≈ D.id ]
 
 Product : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Category (o ⊔ o′) (ℓ ⊔ ℓ′) (e ⊔ e′)
 Product C D = record
@@ -53,6 +62,7 @@ Product C D = record
   ; _⇒_       = C._⇒_ -< _×_ >- D._⇒_
   ; _≈_       = C._≈_ -< _×_ >- D._≈_
   ; _∘_       = zip C._∘_ D._∘_
+  ; id        = C.id , D.id
   }
   where module C = Category C
         module D = Category D
@@ -63,7 +73,7 @@ Bifunctor C D E = Functor (Product C D) E
 private
   module CC = Category CC
 
-open CC
+open CC hiding (id)
 
 infix 4 _≅_
 record _≅_ (A B : Obj) : Set x₂ where
