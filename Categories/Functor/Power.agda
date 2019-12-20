@@ -14,7 +14,7 @@ open HomReasoning
 open import Level using (Level; _⊔_)
 open import Data.Nat using (ℕ; _+_; zero; suc; _<_)
 open import Data.Product using (_,_)
-open import Data.Fin using (Fin; inject+; raise; zero; suc; fromℕ≤)
+open import Data.Fin using (Fin; inject+; raise; zero; suc; fromℕ<)
 open import Data.Sum using (_⊎_; inj₁; inj₂; map) renaming ([_,_] to ⟦_,_⟧; [_,_]′ to ⟦_,_⟧′)
 open import Data.Vec.N-ary hiding (curryⁿ)
 open import Function as Fun using (flip; _$_) renaming (_∘_ to _∙_; id to idf)
@@ -191,7 +191,7 @@ select′ i = record
 
 -- select (m < n) is really select′ (Fin n), but only for m < n
 select : m < n → Powerendo n
-select m<n = select′ (fromℕ≤ m<n)
+select m<n = select′ (fromℕ< m<n)
 
 triv : (n : ℕ) → Hyperendo n n
 triv n = record
