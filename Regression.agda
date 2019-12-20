@@ -82,7 +82,7 @@ record Monoidal : Set (x₁ ⊔ x₂ ⊔ x₃) where
   field
     ⊗  : Bifunctor CC CC CC
 
---  module ⊗ = Functor ⊗
+  module ⊗ = Functor ⊗
 
   open Functor ⊗
 
