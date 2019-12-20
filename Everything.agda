@@ -17,11 +17,11 @@ import Categories.Bicategory.Instance.Cats
 import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
-import Categories.Category.Cartesian.Properties
 import Categories.Category.CartesianClosed
 import Categories.Category.CartesianClosed.Canonical
 import Categories.Category.CartesianClosed.Locally
 import Categories.Category.CartesianClosed.Locally.Properties
+import Categories.Category.Cartesian.Properties
 import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
