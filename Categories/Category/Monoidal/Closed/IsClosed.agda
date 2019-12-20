@@ -177,8 +177,8 @@ private
     [ [ id , f ]₁ , [ id , g ]₁ ]₁ ∘ L X Y Z
       ∎
 
-  L-dinatural-comm :  [ [ f , id ]₁ , [ id , id ]₁ ]₁ ∘ L X′ Y Z ≈ [ [ id , id ]₁ , [ f , id ]₁ ]₁ ∘ L X Y Z
-  L-dinatural-comm {X′ = X′} {Y = Y} {Z = Z} {X = X} {f = f} = begin
+  L-dinatural-comm :  ∀ {X′ Y Z X f} → [ [ f , id ]₁ , [ id , id ]₁ ]₁ ∘ L X′ Y Z ≈ [ [ id , id ]₁ , [ f , id ]₁ ]₁ ∘ L X Y Z
+  L-dinatural-comm {X′} {Y} {Z} {X} {f} = begin
     [ [ f , id ]₁ , [ id , id ]₁ ]₁ ∘ L X′ Y Z
       ≈⟨ [-,-].F-resp-≈ (refl , [-,-].identity) ⟩∘⟨refl ⟩
     [ [ f , id ]₁ , id ]₁ ∘ L X′ Y Z
