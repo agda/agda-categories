@@ -3,7 +3,6 @@
 
 module Regression  where
 open import Level
-open import Relation.Binary using (Rel)
 
 record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   eta-equality
@@ -12,8 +11,8 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   field
     Obj : Set o
-    _⇒_ : Rel Obj ℓ
-    _≈_ : ∀ {A B} → Rel (A ⇒ B) e
+    _⇒_ : Obj → Obj → Set ℓ
+    _≈_ : ∀ {A B} → (A ⇒ B) → (A ⇒ B) → Set e
 
     id  : ∀ {A} → (A ⇒ A)
     _∘_ : ∀ {A B C} → (B ⇒ C) → (A ⇒ B) → (A ⇒ C)
@@ -36,6 +35,7 @@ postulate
   x₁ x₂ x₃ : Level
   CC : Category x₁ x₂ x₃
 
+open import Level
 private
   variable
     o ℓ e o′ ℓ′ e′ o″ ℓ″ e″ : Level
