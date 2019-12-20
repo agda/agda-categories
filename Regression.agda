@@ -3,7 +3,6 @@
 module Regression where
 
 open import Level
-open import Relation.Binary using (Rel)
 
 -- open import Categories.Category.Core
 record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
@@ -13,22 +12,18 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   field
     Obj : Set o
-    _⇒_ : Rel Obj ℓ
-    _≈_ : ∀ {A B} → Rel (A ⇒ B) e
+    _⇒_ : Obj → Obj → Set ℓ
+    _≈_ : ∀ {A B} → (A ⇒ B) → (A ⇒ B) → Set e
 
-    id  : ∀ {A} → (A ⇒ A)
     _∘_ : ∀ {A B C} → (B ⇒ C) → (A ⇒ B) → (A ⇒ C)
 
   CommutativeSquare : ∀ {A B C D} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
   CommutativeSquare f g h i = h ∘ f ≈ i ∘ g
 
-infix 10  _[_,_] _[_≈_]
+infix 10  _[_,_]
 
 _[_,_] : ∀ {o ℓ e} → (C : Category o ℓ e) → (X : Category.Obj C) → (Y : Category.Obj C) → Set ℓ
 _[_,_] = Category._⇒_
-
-_[_≈_] : ∀ {o ℓ e} → (C : Category o ℓ e) → ∀ {X Y} (f g : C [ X , Y ]) → Set e
-_[_≈_] = Category._≈_
 
 module Inner {x₁ x₂ x₃} (CC : Category x₁ x₂ x₃) where
 
@@ -58,7 +53,6 @@ module Inner {x₁ x₂ x₃} (CC : Category x₁ x₂ x₃) where
     ; _⇒_       = C._⇒_ -< _×_ >- D._⇒_
     ; _≈_       = C._≈_ -< _×_ >- D._≈_
     ; _∘_       = zip C._∘_ D._∘_
-    ; id        = C.id , D.id
     }
     where module C = Category C
           module D = Category D
@@ -69,7 +63,7 @@ module Inner {x₁ x₂ x₃} (CC : Category x₁ x₂ x₃) where
   private
     module CC = Category CC
 
-  open CC hiding (id)
+  open CC
 
   infix 4 _≅_
   record _≅_ (A B : Obj) : Set (x₂) where
