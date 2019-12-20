@@ -3,7 +3,7 @@
 module Regression where
 
 open import Level
-open import Relation.Binary using (Rel; IsEquivalence)
+open import Relation.Binary using (Rel)
 
 -- open import Categories.Category.Core
 record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
@@ -22,16 +22,13 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   CommutativeSquare : ∀ {A B C D} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
   CommutativeSquare f g h i = h ∘ f ≈ i ∘ g
 
-infix 10  _[_,_] _[_≈_] _[_∘_]
+infix 10  _[_,_] _[_≈_]
 
 _[_,_] : ∀ {o ℓ e} → (C : Category o ℓ e) → (X : Category.Obj C) → (Y : Category.Obj C) → Set ℓ
 _[_,_] = Category._⇒_
 
 _[_≈_] : ∀ {o ℓ e} → (C : Category o ℓ e) → ∀ {X Y} (f g : C [ X , Y ]) → Set e
 _[_≈_] = Category._≈_
-
-_[_∘_] : ∀ {o ℓ e} → (C : Category o ℓ e) → ∀ {X Y Z} (f : C [ Y , Z ]) → (g : C [ X , Y ]) → C [ X , Z ]
-_[_∘_] = Category._∘_
 
 module Inner {x₁ x₂ x₃} (CC : Category x₁ x₂ x₃) where
 
@@ -54,10 +51,6 @@ module Inner {x₁ x₂ x₃} (CC : Category x₁ x₂ x₃) where
     field
       F₀ : C.Obj → D.Obj
       F₁ : ∀ {A B} (f : C [ A , B ]) → D [ F₀ A , F₀ B ]
-      identity     : ∀ {A} → D [ F₁ (C.id {A}) ≈ D.id ]
-      homomorphism : ∀ {X Y Z} {f : C [ X , Y ]} {g : C [ Y , Z ]} →
-                       D [ F₁ (C [ g ∘ f ]) ≈ D [ F₁ g ∘ F₁ f ] ]
-      F-resp-≈     : ∀ {A B} {f g : C [ A , B ]} → C [ f ≈ g ] → D [ F₁ f ≈ F₁ g ]
 
   Product : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Category (o ⊔ o′) (ℓ ⊔ ℓ′) (e ⊔ e′)
   Product C D = record
