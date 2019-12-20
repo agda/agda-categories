@@ -1,21 +1,42 @@
-{-# OPTIONS --without-K --safe #-}
-open import Categories.Category
+{-# OPTIONS --without-K #-}
 
-module Regression {x₁ x₂ x₃} (CC : Category x₁ x₂ x₃) where
 
+module Regression  where
 open import Level
+
+record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
+  eta-equality
+  infix  4 _≈_ _⇒_
+  infixr 9 _∘_
+
+  field
+    Obj : Set o
+    _⇒_ : Obj → Obj → Set ℓ
+    _≈_ : ∀ {A B} → (A ⇒ B) → (A ⇒ B) → Set e
+
+    _∘_ : ∀ {A B C} → (B ⇒ C) → (A ⇒ B) → (A ⇒ C)
+
+  CommutativeSquare : ∀ {A B C D} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
+  CommutativeSquare f g h i = h ∘ f ≈ i ∘ g
+
+infix 10  _[_,_]
+
+_[_,_] : ∀ {o ℓ e} → (C : Category o ℓ e) → (X : Category.Obj C) → (Y : Category.Obj C) → Set ℓ
+_[_,_] = Category._⇒_
+
+postulate
+  x₁ x₂ x₃ : Level
+  CC : Category x₁ x₂ x₃
+
 private
   variable
     o ℓ e o′ ℓ′ e′ o″ ℓ″ e″ : Level
 
-open import Data.Product using (_×_; Σ; _,_; curry′; proj₁; proj₂; zip; map; <_,_>; swap)
+open import Data.Product using (_×_; Σ; _,_; curry′; proj₁; proj₂; zip; map; <_,_>)
 
 zipWith : ∀ {a b c p q r s} {A : Set a} {B : Set b} {C : Set c} {P : A → Set p} {Q : B → Set q} {R : C → Set r} {S : (x : C) → R x → Set s} (_∙_ : A → B → C) → (_∘_ : ∀ {x y} → P x → Q y → R (x ∙ y)) → (_*_ : (x : C) → (y : R x) → S x y) → (x : Σ A P) → (y : Σ B Q) → S (proj₁ x ∙ proj₁ y) (proj₂ x ∘ proj₂ y)
 zipWith _∙_ _∘_ _*_ (a , p) (b , q) = (a ∙ b) * (p ∘ q)
 syntax zipWith f g h = f -< h >- g
-
--- open import Categories.Functor using (Functor)
-
 
 record Functor (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   eta-equality
@@ -25,10 +46,6 @@ record Functor (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o �
   field
     F₀ : C.Obj → D.Obj
     F₁ : ∀ {A B} (f : C [ A , B ]) → D [ F₀ A , F₀ B ]
-    identity     : ∀ {A} → D [ F₁ (C.id {A}) ≈ D.id ]
-    homomorphism : ∀ {X Y Z} {f : C [ X , Y ]} {g : C [ Y , Z ]} →
-                     D [ F₁ (C [ g ∘ f ]) ≈ D [ F₁ g ∘ F₁ f ] ]
-    F-resp-≈     : ∀ {A B} {f g : C [ A , B ]} → C [ f ≈ g ] → D [ F₁ f ≈ F₁ g ]
 
 Product : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Category (o ⊔ o′) (ℓ ⊔ ℓ′) (e ⊔ e′)
 Product C D = record
@@ -36,18 +53,6 @@ Product C D = record
   ; _⇒_       = C._⇒_ -< _×_ >- D._⇒_
   ; _≈_       = C._≈_ -< _×_ >- D._≈_
   ; _∘_       = zip C._∘_ D._∘_
-  ; id        = C.id , D.id
-  ; assoc     = C.assoc , D.assoc
-  ; sym-assoc = C.sym-assoc , D.sym-assoc
-  ; identityˡ = C.identityˡ , D.identityˡ
-  ; identityʳ = C.identityʳ , D.identityʳ
-  ; identity² = C.identity² , D.identity²
-  ; equiv     = record
-    { refl  = C.Equiv.refl , D.Equiv.refl
-    ; sym   = map C.Equiv.sym D.Equiv.sym
-    ; trans = zip C.Equiv.trans D.Equiv.trans
-    }
-  ; ∘-resp-≈  = zip C.∘-resp-≈ D.∘-resp-≈
   }
   where module C = Category C
         module D = Category D
@@ -58,10 +63,10 @@ Bifunctor C D E = Functor (Product C D) E
 private
   module CC = Category CC
 
-open CC hiding (id; identityˡ; identityʳ; assoc)
+open CC
 
 infix 4 _≅_
-record _≅_ (A B : Obj) : Set (x₂) where
+record _≅_ (A B : Obj) : Set x₂ where
   field
     from : A ⇒ B
     to   : B ⇒ A
@@ -77,7 +82,7 @@ record Monoidal : Set (x₁ ⊔ x₂ ⊔ x₃) where
   field
     ⊗  : Bifunctor CC CC CC
 
-  module ⊗ = Functor ⊗
+--  module ⊗ = Functor ⊗
 
   open Functor ⊗
 
