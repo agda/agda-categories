@@ -19,22 +19,6 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     id  : ∀ {A} → (A ⇒ A)
     _∘_ : ∀ {A B C} → (B ⇒ C) → (A ⇒ B) → (A ⇒ C)
 
-  field
-    assoc     : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → (h ∘ g) ∘ f ≈ h ∘ (g ∘ f)
-    -- We add a symmetric proof of associativity so that the opposite category of the
-    -- opposite category is definitionally equal to the original category. See how
-    -- `op` is implemented.
-    sym-assoc : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → h ∘ (g ∘ f) ≈ (h ∘ g) ∘ f
-    identityˡ : ∀ {A B} {f : A ⇒ B} → id ∘ f ≈ f
-    identityʳ : ∀ {A B} {f : A ⇒ B} → f ∘ id ≈ f
-    -- We add a proof of "neutral" identity proof, in order to ensure the opposite of
-    -- constant functor is definitionally equal to itself.
-    identity² : ∀ {A} → id ∘ id {A} ≈ id {A}
-    equiv     : ∀ {A B} → IsEquivalence (_≈_ {A} {B})
-    ∘-resp-≈  : ∀ {A B C} {f h : B ⇒ C} {g i : A ⇒ B} → f ≈ h → g ≈ i → f ∘ g ≈ h ∘ i
-
-  module Equiv {A B : Obj} = IsEquivalence (equiv {A} {B})
-
   CommutativeSquare : ∀ {A B C D} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
   CommutativeSquare f g h i = h ∘ f ≈ i ∘ g
 
@@ -82,17 +66,6 @@ module Inner {x₁ x₂ x₃} (CC : Category x₁ x₂ x₃) where
     ; _≈_       = C._≈_ -< _×_ >- D._≈_
     ; _∘_       = zip C._∘_ D._∘_
     ; id        = C.id , D.id
-    ; assoc     = C.assoc , D.assoc
-    ; sym-assoc = C.sym-assoc , D.sym-assoc
-    ; identityˡ = C.identityˡ , D.identityˡ
-    ; identityʳ = C.identityʳ , D.identityʳ
-    ; identity² = C.identity² , D.identity²
-    ; equiv     = record
-      { refl  = C.Equiv.refl , D.Equiv.refl
-      ; sym   = map C.Equiv.sym D.Equiv.sym
-      ; trans = zip C.Equiv.trans D.Equiv.trans
-      }
-    ; ∘-resp-≈  = zip C.∘-resp-≈ D.∘-resp-≈
     }
     where module C = Category C
           module D = Category D
@@ -103,7 +76,7 @@ module Inner {x₁ x₂ x₃} (CC : Category x₁ x₂ x₃) where
   private
     module CC = Category CC
 
-  open CC hiding (id; identityˡ; identityʳ; assoc)
+  open CC hiding (id)
 
   infix 4 _≅_
   record _≅_ (A B : Obj) : Set (x₂) where
