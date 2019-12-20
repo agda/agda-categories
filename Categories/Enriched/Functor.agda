@@ -9,7 +9,7 @@ module Categories.Enriched.Functor {o ℓ e : Level} {V : Category o ℓ e} (M :
 open import Function renaming (id to id→; _∘_ to _●_) using ()
 open import Relation.Binary hiding (_⇒_)
 
-open import Categories.Category.Monoidal.Enriched
+open import Categories.Enriched.Category renaming (Category to Enriched) hiding (_[_,_])
 import Categories.Functor as Func
 import Categories.Morphism as R
 import Categories.Morphism.Reasoning as MR
@@ -30,7 +30,7 @@ record Functor (C : Enriched M v) (D : Enriched M v′) : Set (o ⊔ ℓ ⊔ e �
     F₀ : C.Obj → D.Obj
     F₁ : (A B : C.Obj) → V [ C.hom A B , D.hom (F₀ A) (F₀ B) ]
 
-    identity     : {A : C.Obj} → V [ (F₁ A A ∘ C.id A) ≈ D.id (F₀ A) ]
+    identity     : {A : C.Obj} → V [ (F₁ A A ∘ C.id) ≈ D.id {F₀ A} ]
     homomorphism : {X Y Z : C.Obj} → V [ (F₁ X Z ∘ C.⊚) ≈ (D.⊚ ∘ F₁ Y Z ⊗₁ F₁ X Y) ]
     -- We don't need F-resp-≈ as "C.hom A B" is an object of V, which has no 'equality'
 
@@ -90,12 +90,12 @@ _∘F_ {C = C} {D = D} {E = E} F G = record
   open Monoidal M
   open Enriched using (Obj; ⊚) renaming (id to idE)
 
-  identity′ : {A : Obj C} → V [ ((F₁ (G₀ A) (G₀ A) ∘ G₁ A A) ∘ idE C A) ≈ idE E (F₀ (G₀ A)) ]
+  identity′ : {A : Obj C} → V [ ((F₁ (G₀ A) (G₀ A) ∘ G₁ A A) ∘ idE C) ≈ idE E {F₀ (G₀ A)} ]
   identity′ {A} = begin
-    (F₁ (G₀ A) (G₀ A) ∘ G₁ A A) ∘ idE C A ≈⟨ assoc ⟩
-    F₁ (G₀ A) (G₀ A) ∘ (G₁ A A ∘ idE C A) ≈⟨ refl⟩∘⟨ (identity G) ⟩
-    F₁ (G₀ A) (G₀ A) ∘ (idE D (G₀ A))     ≈⟨ identity F ⟩
-    idE E (F₀ (G₀ A)) ∎
+    (F₁ (G₀ A) (G₀ A) ∘ G₁ A A) ∘ idE C  ≈⟨ assoc ⟩
+    F₁ (G₀ A) (G₀ A) ∘ (G₁ A A ∘ idE C)  ≈⟨ refl⟩∘⟨ (identity G) ⟩
+    F₁ (G₀ A) (G₀ A) ∘ (idE D)           ≈⟨ identity F ⟩
+    idE E                                ∎
 
   homomorphism′ : {X Y Z : C.Obj} →
       V [ (F₁ (G₀ X) (G₀ Z) ∘ G₁ X Z) ∘ C.⊚ ≈

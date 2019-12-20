@@ -22,7 +22,7 @@ Cats o ℓ e = record
   { enriched = record
     { Obj     = Category o ℓ e
     ; hom     = Functors
-    ; id      = λ A → const {D = Functors A A} {C = One} idF
+    ; id      = λ {A} → const {D = Functors A A} {C = One} idF
     ; ⊚       = product
     ; ⊚-assoc = λ {A B C D} →
       let module D = Category D in
