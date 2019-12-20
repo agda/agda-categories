@@ -2,7 +2,41 @@
 
 module Regression where
 
-open import Categories.Category.Core
+open import Level
+open import Relation.Binary using (Rel; IsEquivalence)
+
+-- open import Categories.Category.Core
+record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
+  eta-equality
+  infix  4 _≈_ _⇒_
+  infixr 9 _∘_
+
+  field
+    Obj : Set o
+    _⇒_ : Rel Obj ℓ
+    _≈_ : ∀ {A B} → Rel (A ⇒ B) e
+
+    id  : ∀ {A} → (A ⇒ A)
+    _∘_ : ∀ {A B C} → (B ⇒ C) → (A ⇒ B) → (A ⇒ C)
+
+  field
+    assoc     : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → (h ∘ g) ∘ f ≈ h ∘ (g ∘ f)
+    -- We add a symmetric proof of associativity so that the opposite category of the
+    -- opposite category is definitionally equal to the original category. See how
+    -- `op` is implemented.
+    sym-assoc : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → h ∘ (g ∘ f) ≈ (h ∘ g) ∘ f
+    identityˡ : ∀ {A B} {f : A ⇒ B} → id ∘ f ≈ f
+    identityʳ : ∀ {A B} {f : A ⇒ B} → f ∘ id ≈ f
+    -- We add a proof of "neutral" identity proof, in order to ensure the opposite of
+    -- constant functor is definitionally equal to itself.
+    identity² : ∀ {A} → id ∘ id {A} ≈ id {A}
+    equiv     : ∀ {A B} → IsEquivalence (_≈_ {A} {B})
+    ∘-resp-≈  : ∀ {A B C} {f h : B ⇒ C} {g i : A ⇒ B} → f ≈ h → g ≈ i → f ∘ g ≈ h ∘ i
+
+  module Equiv {A B : Obj} = IsEquivalence (equiv {A} {B})
+
+  CommutativeSquare : ∀ {A B C D} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
+  CommutativeSquare f g h i = h ∘ f ≈ i ∘ g
 
 infix 10  _[_,_] _[_≈_] _[_∘_]
 
