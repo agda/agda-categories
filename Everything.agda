@@ -17,11 +17,11 @@ import Categories.Bicategory.Instance.Cats
 import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
+import Categories.Category.Cartesian.Properties
 import Categories.Category.CartesianClosed
 import Categories.Category.CartesianClosed.Canonical
 import Categories.Category.CartesianClosed.Locally
 import Categories.Category.CartesianClosed.Locally.Properties
-import Categories.Category.Cartesian.Properties
 import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
@@ -77,6 +77,11 @@ import Categories.Category.Monoidal.Braided
 import Categories.Category.Monoidal.Braided.Properties
 import Categories.Category.Monoidal.Closed
 import Categories.Category.Monoidal.Closed.IsClosed
+import Categories.Category.Monoidal.Closed.IsClosed.Diagonal
+import Categories.Category.Monoidal.Closed.IsClosed.Dinatural
+import Categories.Category.Monoidal.Closed.IsClosed.Identity
+import Categories.Category.Monoidal.Closed.IsClosed.L
+import Categories.Category.Monoidal.Closed.IsClosed.Pentagon
 import Categories.Category.Monoidal.Enriched
 import Categories.Category.Monoidal.Instance.Cats
 import Categories.Category.Monoidal.Instance.Setoids
