@@ -27,9 +27,7 @@ import Categories.Category.Closed as Cls
 open Closed Cl
 
 private
-  module C = Category C
   open Category C
-  open Commutation
   α⇒ = associator.from
   α⇐ = associator.to
   module ℱ = Functor
@@ -54,7 +52,7 @@ L-dinatural-comm {X′} {Y} {Z} {X} {f} = begin
   [ id , 𝕃 L-inner ]₁ ∘ 𝕃 (id ⊗₁ fˡ)                    ≈˘⟨ pushˡ (ℱ.homomorphism [ XY ,-]) ⟩
   𝕃 (𝕃 L-inner ∘ id ⊗₁ fˡ)                              ≈˘⟨ 𝕃-resp-≈ 𝕃-comm′ ⟩
   𝕃 (𝕃 $ L-inner ∘ (id ⊗₁ fˡ) ⊗₁ id)                   ≈⟨ 𝕃-resp-≈ $ 𝕃-resp-≈ push-f-right ⟩
-  𝕃 (𝕃 $ (ε.η Z ∘ id ⊗₁ ε.η Y ∘ α⇒) ∘ (id ⊗₁ id) ⊗₁ f) ≈⟨ 𝕃-resp-≈ $ pushˡ (ℱ.homomorphism [ X′ ,-]) ⟩
+  𝕃 (𝕃 $ L-inner ∘ (id ⊗₁ id) ⊗₁ f)                    ≈⟨ 𝕃-resp-≈ $ pushˡ (ℱ.homomorphism [ X′ ,-]) ⟩
   𝕃 ([ id , L-inner {X} ]₁ ∘ 𝕃 ((id ⊗₁ id) ⊗₁ f))       ≈⟨ 𝕃-resp-≈ $ ∘-resp-≈ʳ (∘-resp-≈ˡ (X′-resp-≈ (⊗.F-resp-≈ (⊗.identity , refl))) ○ mate.commute₁ f) ⟩
   𝕃 ([ id , L-inner {X} ]₁ ∘ fˡ ∘ η.η (YZ ⊗₀ XY))        ≈⟨ 𝕃-resp-≈ $ pullˡ [ [-,-] ]-commute ○ assoc ⟩
   𝕃 (fˡ ∘ 𝕃 L-inner)                                     ≈⟨ ∘-resp-≈ˡ (ℱ.homomorphism [ XY ,-]) ○ assoc ⟩
