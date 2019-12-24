@@ -46,6 +46,79 @@ X ⊗ᵢ- = appˡ ⊗-iso X
 -⊗ᵢ_ : Obj → Functor Core Core
 -⊗ᵢ X = appʳ ⊗-iso X
 
+-- Parallel-to-serial conversions and splitting of ∘ across ⊗
+
+module Serialize where
+  open MonoidalReasoning
+
+  -- Parallel-to-serial conversions
+  --
+  --   |   |        |   |       |   |
+  --   |   |        |  [g]     [f]  |
+  --  [f] [g]   =   |   |   =   |   |
+  --   |   |       [f]  |       |  [g]
+  --   |   |        |   |       |   |
+
+  serialize₁₂ : ∀ {X₁ Y₁ X₂ Y₂} {f : X₁ ⇒ Y₁} {g : X₂ ⇒ Y₂} →
+                f ⊗₁ g ≈ f ⊗₁ C.id ∘ C.id ⊗₁ g
+  serialize₁₂ {f = f} {g} = begin
+    f ⊗₁ g                     ≈˘⟨ identityʳ ⟩⊗⟨ identityˡ ⟩
+    (f ∘ C.id) ⊗₁ (C.id ∘ g)   ≈⟨ ⊗-distrib-over-∘ ⟩
+    f ⊗₁ C.id ∘ C.id ⊗₁ g      ∎
+
+  serialize₂₁ : ∀ {X₁ Y₁ X₂ Y₂} {f : X₁ ⇒ Y₁} {g : X₂ ⇒ Y₂} →
+                f ⊗₁ g ≈ id ⊗₁ g ∘ f ⊗₁ C.id
+  serialize₂₁ {f = f} {g} = begin
+    f ⊗₁ g                     ≈˘⟨ identityˡ ⟩⊗⟨ identityʳ ⟩
+    (C.id ∘ f) ⊗₁ (g ∘ C.id)   ≈⟨ ⊗-distrib-over-∘ ⟩
+    C.id ⊗₁ g ∘ f ⊗₁ C.id      ∎
+
+  -- Split a composite in the first component
+  --
+  --   |   |        |   |       |   |
+  --  [g]  |       [g]  |      [g] [h]
+  --   |  [h]   =   |   |   =   |   |
+  --  [f]  |       [f] [h]     [f]  |
+  --   |   |        |   |       |   |
+
+  split₁ʳ : ∀ {X₁ Y₁ Z₁ X₂ Y₂} {f : Y₁ ⇒ Z₁} {g : X₁ ⇒ Y₁} {h : X₂ ⇒ Y₂} →
+            (f ∘ g) ⊗₁ h ≈ f ⊗₁ h ∘ g ⊗₁ C.id
+  split₁ʳ {f = f} {g} {h} = begin
+    (f ∘ g) ⊗₁ h            ≈˘⟨ refl⟩⊗⟨ identityʳ ⟩
+    (f ∘ g) ⊗₁ (h ∘ C.id)   ≈⟨ ⊗-distrib-over-∘ ⟩
+    f ⊗₁ h ∘ g ⊗₁ C.id      ∎
+
+  split₁ˡ : ∀ {X₁ Y₁ Z₁ X₂ Y₂} {f : Y₁ ⇒ Z₁} {g : X₁ ⇒ Y₁} {h : X₂ ⇒ Y₂} →
+            (f ∘ g) ⊗₁ h ≈ f ⊗₁ C.id ∘ g ⊗₁ h
+  split₁ˡ {f = f} {g} {h} = begin
+    (f ∘ g) ⊗₁ h            ≈˘⟨ refl⟩⊗⟨ identityˡ ⟩
+    (f ∘ g) ⊗₁ (C.id ∘ h)   ≈⟨ ⊗-distrib-over-∘ ⟩
+    f ⊗₁ C.id ∘ g ⊗₁ h      ∎
+
+  -- Split a composite in the second component
+  --
+  --   |   |        |   |       |   |
+  --   |  [h]       |  [h]     [f] [h]
+  --  [f]  |    =   |   |   =   |   |
+  --   |  [g]      [f] [g]      |  [g]
+  --   |   |        |   |       |   |
+
+  split₂ʳ : ∀ {X₁ Y₁ X₂ Y₂ Z₂} {f : X₁ ⇒ Y₁} {g : Y₂ ⇒ Z₂} {h : X₂ ⇒ Y₂} →
+            f ⊗₁ (g ∘ h) ≈ f ⊗₁ g ∘ C.id ⊗₁ h
+  split₂ʳ {f = f} {g} {h} = begin
+    f ⊗₁ (g ∘ h)            ≈˘⟨ identityʳ ⟩⊗⟨refl ⟩
+    (f ∘ C.id) ⊗₁ (g ∘ h)   ≈⟨ ⊗-distrib-over-∘ ⟩
+    f ⊗₁ g ∘ C.id ⊗₁ h      ∎
+
+  split₂ˡ : ∀ {X₁ Y₁ X₂ Y₂ Z₂} {f : X₁ ⇒ Y₁} {g : Y₂ ⇒ Z₂} {h : X₂ ⇒ Y₂} →
+            f ⊗₁ (g ∘ h) ≈ C.id ⊗₁ g ∘ f ⊗₁ h
+  split₂ˡ {f = f} {g} {h} = begin
+    f ⊗₁ (g ∘ h)            ≈˘⟨ identityˡ ⟩⊗⟨refl ⟩
+    (C.id ∘ f) ⊗₁ (g ∘ h)   ≈⟨ ⊗-distrib-over-∘ ⟩
+    C.id ⊗₁ g ∘ f ⊗₁ h      ∎
+
+open Serialize public
+
 -- Coherence laws due to Mac Lane (1963) the were subsequently proven
 -- admissible by Max Kelly (1964).  See
 -- https://ncatlab.org/nlab/show/monoidal+category#other_coherence_conditions
