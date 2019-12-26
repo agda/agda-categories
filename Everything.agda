@@ -180,6 +180,7 @@ import Categories.NaturalTransformation
 import Categories.NaturalTransformation.Core
 import Categories.NaturalTransformation.Dinatural
 import Categories.NaturalTransformation.Equivalence
+import Categories.NaturalTransformation.Hom
 import Categories.NaturalTransformation.NaturalIsomorphism
 import Categories.NaturalTransformation.NaturalIsomorphism.Equivalence
 import Categories.NaturalTransformation.NaturalIsomorphism.Functors
@@ -199,4 +200,5 @@ import Categories.Pseudofunctor
 import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda
+import Categories.Yoneda.Properties
 import Relation.Binary.Construct.Symmetrize

@@ -30,6 +30,7 @@ open import Categories.Monad.Duality
 open import Categories.Comonad
 open import Categories.Morphism.Universal
 open import Categories.Yoneda
+import Categories.Yoneda.Properties as YP
 
 import Categories.Diagram.Colimit as Col
 import Categories.Diagram.Duality as Duality
@@ -344,9 +345,10 @@ module _ {R : Functor D C} where
 
 -- adjoint functors of a functor are isomorphic
 module _ (L : Functor C D) where
+  open YP C
 
   R≃R′ : ∀ {R R′} → L ⊣ R → L ⊣ R′ → R ≃ R′
-  R≃R′ {R} {R′} L⊣R L⊣R′ = yoneda-NI C R R′ (unlift-≃ Hom[-,R-]≃Hom[-,R′-])
+  R≃R′ {R} {R′} L⊣R L⊣R′ = yoneda-NI R R′ (unlift-≃ Hom[-,R-]≃Hom[-,R′-])
     where module ⊣₁ = Adjoint L⊣R
           module ⊣₂ = Adjoint L⊣R′
           Hom[-,R-]≃Hom[-,R′-] : ⊣₁.Hom[-,R-]′ ≃ ⊣₂.Hom[-,R-]′
