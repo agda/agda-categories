@@ -101,19 +101,10 @@ _∘F_ {C = C} {D = D} {E = E} F G = record
       V [ (F₁ (G₀ X) (G₀ Z) ∘ G₁ X Z) ∘ C.⊚ ≈
       E.⊚ ∘ (F₁ (G₀ Y) (G₀ Z) ∘ G₁ Y Z) ⊗₁ (F₁ (G₀ X) (G₀ Y) ∘ G₁ X Y) ]
   homomorphism′ {X} {Y} {Z} = begin
-    (F₁ (G₀ X) (G₀ Z) ∘ G₁ X Z) ∘ C.⊚                                ≈⟨ assoc ⟩
-    F₁ (G₀ X) (G₀ Z) ∘ (G₁ X Z ∘ C.⊚)                                ≈⟨ refl⟩∘⟨ homomorphism G ⟩
-    F₁ (G₀ X) (G₀ Z) ∘ D.⊚ ∘ G₁ Y Z ⊗₁ G₁ X Y                        ≈⟨ sym-assoc ⟩
-    (F₁ (G₀ X) (G₀ Z) ∘ D.⊚) ∘ G₁ Y Z ⊗₁ G₁ X Y                      ≈⟨ homomorphism F ⟩∘⟨refl ⟩
-    (E.⊚ ∘ F₁ (G₀ Y) (G₀ Z) ⊗₁ F₁ (G₀ X) (G₀ Y)) ∘ G₁ Y Z ⊗₁ G₁ X Y  ≈⟨ assoc ⟩
-    E.⊚ ∘ (F₁ (G₀ Y) (G₀ Z) ⊗₁ F₁ (G₀ X) (G₀ Y) ∘ G₁ Y Z ⊗₁ G₁ X Y)  ≈˘⟨ refl⟩∘⟨ {!Func.Functor.homomorphism ⊗!} ⟩
-    E.⊚ ∘ (F₁ (G₀ Y) (G₀ Z) ∘ G₁ Y Z) ⊗₁ (F₁ (G₀ X) (G₀ Y) ∘ G₁ X Y) ∎
-{-
-  homomorphism′ : ∀ {X Y Z} {f : C [ X , Y ]} {g : C [ Y , Z ]}
-                 → E [ F₁ (G₁ (C [ g ∘ f ])) ≈ E [ F₁ (G₁ g) ∘ F₁ (G₁ f) ] ]
-  homomorphism′ {f = f} {g = g} = begin
-    F₁ (G₁ (C [ g ∘ f ]))       ≈⟨ F-resp-≈ G.homomorphism ⟩
-    F₁ (D [ G₁ g ∘ G₁ f ])      ≈⟨ F.homomorphism ⟩
-    E [ F₁ (G₁ g) ∘ F₁ (G₁ f) ] ∎
-    where open SetoidR E.hom-setoid
--}
+    (F₁ (G₀ X) (G₀ Z) ∘ G₁ X Z) ∘ C.⊚                                 ≈⟨ assoc ⟩
+    F₁ (G₀ X) (G₀ Z) ∘ (G₁ X Z ∘ C.⊚)                                 ≈⟨ refl⟩∘⟨ homomorphism G ⟩
+    F₁ (G₀ X) (G₀ Z) ∘ D.⊚ ∘ G₁ Y Z ⊗₁ G₁ X Y                         ≈⟨ sym-assoc ⟩
+    (F₁ (G₀ X) (G₀ Z) ∘ D.⊚) ∘ G₁ Y Z ⊗₁ G₁ X Y                       ≈⟨ homomorphism F ⟩∘⟨refl ⟩
+    (E.⊚ ∘ F₁ (G₀ Y) (G₀ Z) ⊗₁ F₁ (G₀ X) (G₀ Y)) ∘ G₁ Y Z ⊗₁ G₁ X Y   ≈⟨ assoc ⟩
+    E.⊚ ∘ (F₁ (G₀ Y) (G₀ Z) ⊗₁ F₁ (G₀ X) (G₀ Y) ∘ G₁ Y Z ⊗₁ G₁ X Y)   ≈˘⟨ refl⟩∘⟨ Func.Functor.homomorphism ⊗ ⟩
+    E.⊚ ∘ (F₁ (G₀ Y) (G₀ Z) ∘ G₁ Y Z) ⊗₁ (F₁ (G₀ X) (G₀ Y) ∘ G₁ X Y)  ∎
