@@ -11,5 +11,5 @@ open import Categories.Category.Construction.Functors
 open import Categories.Category.Instance.Setoids using (Setoids)
 
 Presheaves : ∀ {o ℓ e o′ ℓ′ : Level} → Category o ℓ e →
-  Category (o ⊔ ℓ ⊔ e ⊔ suc (o′ ⊔ ℓ′)) (o ⊔ ℓ ⊔ e ⊔ suc (o′ ⊔ ℓ′)) (o ⊔ o′ ⊔ ℓ′)
+  Category (o ⊔ ℓ ⊔ e ⊔ suc (o′ ⊔ ℓ′)) (o ⊔ ℓ ⊔ o′ ⊔ ℓ′) (o ⊔ o′ ⊔ ℓ′)
 Presheaves {o} {ℓ} {e} {o′} {ℓ′} C = Functors (Category.op C) (Setoids o′ ℓ′)

@@ -26,7 +26,7 @@ private
 
 -- The reason the proofs below are so easy is that _∘ᵥ_ 'computes' all the way down into
 -- expressions in D, from which the properties follow.
-Functors : Category o ℓ e → Category o′ ℓ′ e′ → Category (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ e′)
+Functors : Category o ℓ e → Category o′ ℓ′ e′ → Category (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ ℓ ⊔ ℓ′ ⊔ e′) (o ⊔ e′)
 Functors C D = record
   { Obj       = Functor C D
   ; _⇒_       = NaturalTransformation

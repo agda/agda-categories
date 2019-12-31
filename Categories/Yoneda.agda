@@ -95,7 +95,7 @@ module Yoneda (C : Category o ℓ e) where
     -- in this bifunctor, it needs to go from Presheaves which maps C to Setoids ℓ e,
     -- so the universe level needs to be lifted.
     FC : Bifunctor (Presheaves C) (Category.op C) (Setoids _ _)
-    FC = LiftSetoids (o ⊔ suc ℓ ⊔ suc e) (o ⊔ ℓ) ∘F eval {C = Category.op C} {D = Setoids ℓ e}
+    FC = LiftSetoids (o ⊔ ℓ ⊔ e) (o ⊔ ℓ) ∘F eval {C = Category.op C} {D = Setoids ℓ e}
 
     module yoneda-inverse {a} {F} = Inverse (yoneda-inverse a F)
 

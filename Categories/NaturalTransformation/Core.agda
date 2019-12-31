@@ -17,7 +17,7 @@ private
 
 record NaturalTransformation {C : Category o ℓ e}
                              {D : Category o′ ℓ′ e′}
-                             (F G : Functor C D) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
+                             (F G : Functor C D) : Set (o ⊔ ℓ ⊔ ℓ′ ⊔ e′) where
   eta-equality
   private
     module F = Functor F
