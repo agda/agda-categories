@@ -38,6 +38,7 @@ import Categories.Category.Construction.Coproduct
 import Categories.Category.Construction.Core
 import Categories.Category.Construction.EilenbergMoore
 import Categories.Category.Construction.Elements
+import Categories.Category.Construction.EnrichedFunctors
 import Categories.Category.Construction.F-Algebras
 import Categories.Category.Construction.Fin
 import Categories.Category.Construction.Functors
