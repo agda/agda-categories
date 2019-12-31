@@ -131,6 +131,7 @@ import Categories.Diagram.SubobjectClassifier
 import Categories.Enriched.Category
 import Categories.Enriched.Functor
 import Categories.Enriched.NaturalTransformation
+import Categories.Enriched.NaturalTransformation.NaturalIsomorphism
 import Categories.Enriched.Over.One
 import Categories.Functor
 import Categories.Functor.Algebra
