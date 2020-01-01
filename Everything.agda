@@ -84,6 +84,7 @@ import Categories.Category.Monoidal.Closed.IsClosed.L
 import Categories.Category.Monoidal.Closed.IsClosed.Pentagon
 import Categories.Category.Monoidal.Enriched
 import Categories.Category.Monoidal.Instance.Cats
+import Categories.Category.Monoidal.Instance.One
 import Categories.Category.Monoidal.Instance.Setoids
 import Categories.Category.Monoidal.Instance.Sets
 import Categories.Category.Monoidal.Instance.StrictCats
@@ -126,6 +127,9 @@ import Categories.Diagram.Pullback.Properties
 import Categories.Diagram.Pushout
 import Categories.Diagram.Pushout.Properties
 import Categories.Diagram.SubobjectClassifier
+import Categories.Enriched.Functor
+import Categories.Enriched.NaturalTransformation
+import Categories.Enriched.Over.One
 import Categories.Functor
 import Categories.Functor.Algebra
 import Categories.Functor.Bifunctor
