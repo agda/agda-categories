@@ -31,7 +31,7 @@ record Pseudofunctor {o ℓ e t o′ ℓ′ e′ t′  : Level} (C : Bicategory 
     P₀ : C.Obj → D.Obj
     P₁ : {x y : C.Obj} → Functor (C.hom x y) (D.hom (P₀ x) (P₀ y))
     -- For maximal generality, shift the levels of One. P preserves id
-    P-identity : {A : C.Obj} →  D.id (P₀ A) ∘F shift o′ ℓ′ e′ ≃ P₁ ∘F (C.id A)
+    P-identity : {A : C.Obj} →  D.id {P₀ A} ∘F shift o′ ℓ′ e′ ≃ P₁ ∘F (C.id {A})
     -- P preserves composition
     P-homomorphism : {x y z : C.Obj} → D.⊚ ∘F (P₁ ⁂ P₁) ≃ P₁ ∘F C.⊚ {x} {y} {z}
     -- P preserves ≃

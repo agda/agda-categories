@@ -8,8 +8,8 @@ open import Relation.Binary using (Rel)
 
 open import Categories.Category
 open import Categories.Category.Monoidal.Instance.Cats using (module Product)
-open import Categories.Category.Monoidal.Enriched
 open import Categories.Category.Instance.Cats
+open import Categories.Enriched.Category renaming (Category to Enriched)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Bifunctor.Properties
@@ -32,7 +32,7 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   module ⊚-assoc {A B C D}  = NaturalIsomorphism (⊚-assoc {A} {B} {C} {D})
   module unitˡ {A B}        = NaturalIsomorphism (unitˡ {A} {B})
   module unitʳ {A B}        = NaturalIsomorphism (unitʳ {A} {B})
-  module id {A}             = Functor (id A)
+  module id {A}             = Functor (id {A})
 
   infix 4 _⇒₁_ _⇒₂_ _≈_
   infixr 7 _∘ᵥ_ _∘ₕ_

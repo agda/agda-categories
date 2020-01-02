@@ -6,7 +6,7 @@ open import Categories.Category.Monoidal
 
 module Categories.Enriched.NaturalTransformation {o ℓ e : Level} {V : Category o ℓ e} (M : Monoidal V) where
 
-open import Categories.Category.Monoidal.Enriched
+open import Categories.Enriched.Category renaming (Category to Enriched) hiding (_[_,_])
 open import Categories.Enriched.Functor M hiding (id)
 
 private
