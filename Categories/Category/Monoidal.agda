@@ -50,8 +50,6 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
     ⊗  : Bifunctor C C C
     unit : Obj
 
-  module ⊗ = Functor ⊗
-
   open Functor ⊗
 
   _⊗₀_ : Obj → Obj → Obj
@@ -66,21 +64,6 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
 
   -⊗_ : Obj → Functor C C
   -⊗ X = appʳ ⊗ X
-
-  -- removing the {_} makes the whole thing not type check anymore for some reason
-  -- an issue was raised on the main agda GitHub repository about this
-  -- (https://github.com/agda/agda/issues/4140)
-  -- if this is fixed feel free to remove the {_}
-  ⊗-distrib-over-∘ : ((f ∘ h) ⊗₁ (g ∘ i)) ≈ ((f ⊗₁ g) ∘ (h ⊗₁ i))
-  ⊗-distrib-over-∘ {_} = homomorphism
-    -- This also corresponds with the graphical coherence property of diagrams modelling monoidal categories:
-  --   |        |         |   |
-  --  [h]      [i]       [h] [i]
-  --   |        |    ≈    |   |
-  --  [f]      [g]        |   |
-  --   |        |         |   |
-  --                     [f] [g]
-  --                      |   |
 
   field
     unitorˡ    : unit ⊗₀ X ≅ X
@@ -166,7 +149,7 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
     ; iso = λ X → unitorʳ.iso {X}
     }
 
-  -- skippinf the explicit arguments here, it does not increase understandability
+  -- skipping the explicit arguments here, it does not increase understandability
   associator-naturalIsomorphism : NaturalIsomorphism [x⊗y]⊗z x⊗[y⊗z]
   associator-naturalIsomorphism = record
     { F⇒G = ntHelper record
@@ -208,7 +191,7 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
 
 module MonoidalReasoning (M : Monoidal) where
   open Monoidal M using (_⊗₁_; ⊗)
-  open Functor ⊗ using (F-resp-≈)
+  open Functor ⊗ using (F-resp-≈; homomorphism)
   open HomReasoning public
 
   infixr 6 _⟩⊗⟨_ refl⟩⊗⟨_
@@ -231,3 +214,18 @@ module MonoidalReasoning (M : Monoidal) where
 
   _⟩⊗⟨refl : f ≈ h → (f ⊗₁ g) ≈ (h ⊗₁ g)
   _⟩⊗⟨refl = ⊗-resp-≈ˡ
+
+  -- removing the {_} makes the whole thing not type check anymore for some reason
+  -- an issue was raised on the main agda GitHub repository about this
+  -- (https://github.com/agda/agda/issues/4140)
+  -- if this is fixed feel free to remove the {_}
+  ⊗-distrib-over-∘ : ((f ∘ h) ⊗₁ (g ∘ i)) ≈ ((f ⊗₁ g) ∘ (h ⊗₁ i))
+  ⊗-distrib-over-∘ {_} = homomorphism
+    -- This also corresponds with the graphical coherence property of diagrams modelling monoidal categories:
+  --   |        |         |   |
+  --  [h]      [i]       [h] [i]
+  --   |        |    ≈    |   |
+  --  [f]      [g]        |   |
+  --   |        |         |   |
+  --                     [f] [g]
+  --                      |   |

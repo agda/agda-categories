@@ -29,6 +29,7 @@ open Closed Cl
 private
   open Category C
   module ℱ = Functor
+  module ⊗ = Functor ⊗
   α⇒ = associator.from
   α⇐ = associator.to
   λ⇒ = unitorˡ.from

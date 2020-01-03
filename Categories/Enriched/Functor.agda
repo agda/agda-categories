@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category using () renaming (Category to Setoid-Category)
-open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Category.Monoidal using (Monoidal; module MonoidalReasoning)
 
 module Categories.Enriched.Functor {o ℓ e} {V : Setoid-Category o ℓ e}
                                    (M : Monoidal V) where
@@ -16,6 +16,7 @@ open Setoid-Category V renaming (Obj to ObjV; id to idV)
 open Commutation
 open HomReasoning
 open Monoidal M
+open MonoidalReasoning V M using (⊗-distrib-over-∘)
 
 record Functor {c d} (C : Category c) (D : Category d) : Set (ℓ ⊔ e ⊔ c ⊔ d) where
   eta-equality
@@ -56,7 +57,9 @@ id {_} {C} = record
   ; identity     = identityˡ
   ; homomorphism = id-comm-sym ○ ∘-resp-≈ʳ (⟺ ⊗.identity)
   }
-  where open Category C
+  where
+  open Category C
+  module ⊗ = Setoid-Functor ⊗
 
 infixr 9 _∘F_
 
@@ -81,6 +84,7 @@ _∘F_ {_} {_} {_} {C} {D} {E} G F = record
     module E = Category E
     module F = Functor F
     module G = Functor G
+    module ⊗ = Setoid-Functor ⊗
 
 -- A V-enriched functor induces an ordinary functor on the underlying
 -- categories.

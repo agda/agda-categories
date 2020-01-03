@@ -24,6 +24,7 @@ private
   module ℱ = Functor
   α⇒ = associator.from
   α⇐ = associator.to
+  module ⊗ = Functor ⊗
 
 open Π.Π
 open adjoint renaming (unit to η; counit to ε; Ladjunct to 𝕃; Ladjunct-comm′ to 𝕃-comm′;

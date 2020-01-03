@@ -31,6 +31,7 @@ private
   open Category C
   open Commutation
   module ℱ = Functor
+  module ⊗ = Functor ⊗
   α⇒ = associator.from
   α⇐ = associator.to
   λ⇒ = unitorˡ.from
