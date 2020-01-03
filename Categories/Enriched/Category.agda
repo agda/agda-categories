@@ -74,16 +74,11 @@ record Category v : Set (o ⊔ ℓ ⊔ e ⊔ suc v) where
         ⊚
       ⟩
   ⊚-assoc-var {f = f} {g} {h} = begin
-        ⊚ ∘ (⊚ ∘ f ⊗₁ g) ⊗₁ h
-      ≈⟨ refl⟩∘⟨ split₁ˡ ⟩
-        ⊚ ∘ ⊚ ⊗₁ idV ∘ (f ⊗₁ g) ⊗₁ h
-      ≈⟨ pullˡ ⊚-assoc ⟩
-        (⊚ ∘ idV ⊗₁ ⊚ ∘ associator.from) ∘ (f ⊗₁ g) ⊗₁ h
-      ≈⟨ pullʳ (pullʳ assoc-commute-from) ⟩
-        ⊚ ∘ idV ⊗₁ ⊚ ∘ f ⊗₁ (g ⊗₁ h) ∘ associator.from
-      ≈˘⟨ refl⟩∘⟨ pushˡ split₂ˡ ⟩
-        ⊚ ∘ f ⊗₁ (⊚ ∘ g ⊗₁ h) ∘ associator.from
-      ∎
+    ⊚ ∘ (⊚ ∘ f ⊗₁ g) ⊗₁ h                               ≈⟨ refl⟩∘⟨ split₁ˡ ⟩
+    ⊚ ∘ ⊚ ⊗₁ idV ∘ (f ⊗₁ g) ⊗₁ h                       ≈⟨ pullˡ ⊚-assoc ⟩
+    (⊚ ∘ idV ⊗₁ ⊚ ∘ associator.from) ∘ (f ⊗₁ g) ⊗₁ h   ≈⟨ pullʳ (pullʳ assoc-commute-from) ⟩
+    ⊚ ∘ idV ⊗₁ ⊚ ∘ f ⊗₁ (g ⊗₁ h) ∘ associator.from     ≈˘⟨ refl⟩∘⟨ pushˡ split₂ˡ ⟩
+    ⊚ ∘ f ⊗₁ (⊚ ∘ g ⊗₁ h) ∘ associator.from             ∎
 
 -- The usual shorthand for hom-objects of an arbitrary category.
 
@@ -91,7 +86,6 @@ infix 15 _[_,_]
 
 _[_,_] : ∀ {c} (C : Category c) (X Y : Category.Obj C) → ObjV
 _[_,_] = Category.hom
-
 
 -- A V-category C does not have morphisms of its own, but the
 -- collection of V-morphisms from the monoidal unit into the
