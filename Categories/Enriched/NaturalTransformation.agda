@@ -30,13 +30,11 @@ record NaturalTransformation {C : Enriched M v}
     module D = Enriched D
     module F = Functor F
     module G = Functor G
-  open F using (F₀; F₁)
-  open G renaming (F₀ to G₀; F₁ to G₁)
   open Enriched D
 
   field
-    η           : (X : C.Obj) → V [ unit , D.hom (F₀ X) (G.F₀ X) ]
-    commute    : {X Y : C.Obj} → V [ (⊚ ∘ (η Y ⊗₁ F₁ X Y) ∘ λ⇐)  ≈ ( ⊚ ∘ G₁ X Y ⊗₁ η X ∘ ρ⇐) ]
+    η           : (X : C.Obj) → V [ unit , D.hom (F.₀ X) (G.₀ X) ]
+    commute    : {X Y : C.Obj} → V [ (⊚ ∘ (η Y ⊗₁ F.₁) ∘ λ⇐)  ≈ ( ⊚ ∘ G.₁ ⊗₁ η X ∘ ρ⇐) ]
 
 {- This still needs to be completed
 id : {F : Functor C D} → NaturalTransformation F F
