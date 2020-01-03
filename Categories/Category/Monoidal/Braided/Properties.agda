@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category using (Category)
-open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Category.Monoidal using (Monoidal; module MonoidalReasoning)
 open import Categories.Category.Monoidal.Braided using (Braided)
 
 module Categories.Category.Monoidal.Braided.Properties
@@ -18,7 +18,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
 open Category C
 open Braided BM
 open Commutation
-open MonoidalReasoning
+open MonoidalReasoning C M
 
 private
   variable

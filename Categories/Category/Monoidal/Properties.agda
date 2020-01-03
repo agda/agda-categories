@@ -49,7 +49,7 @@ X ⊗ᵢ- = appˡ ⊗-iso X
 -- Parallel-to-serial conversions and splitting of ∘ across ⊗
 
 module Serialize where
-  open MonoidalReasoning
+  open M.MonoidalReasoning C MC
 
   -- Parallel-to-serial conversions
   --

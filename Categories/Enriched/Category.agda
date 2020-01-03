@@ -4,7 +4,7 @@
 
 open import Categories.Category
   using (categoryHelper) renaming (Category to Setoid-Category)
-open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Category.Monoidal using (Monoidal; module MonoidalReasoning)
 
 module Categories.Enriched.Category {o ℓ e} {V : Setoid-Category o ℓ e}
                                     (M : Monoidal V) where
@@ -21,7 +21,7 @@ import Categories.Morphism.IsoEquiv V as IsoEquiv
 open Setoid-Category V renaming (Obj to ObjV; id to idV)
 open Monoidal M
 open Commutation
-open MonoidalReasoning
+open MonoidalReasoning V M
 open MorphismReasoning
 open IsoEquiv._≃_
 open Serialize

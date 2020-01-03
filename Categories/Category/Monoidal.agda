@@ -67,15 +67,6 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   -⊗_ : Obj → Functor C C
   -⊗ X = appʳ ⊗ X
 
-  ⊗-resp-≈ : f ≈ h → g ≈ i → (f ⊗₁ g) ≈ (h ⊗₁ i)
-  ⊗-resp-≈ p q = F-resp-≈ (p , q)
-
-  ⊗-resp-≈ˡ : f ≈ h → (f ⊗₁ g) ≈ (h ⊗₁ g)
-  ⊗-resp-≈ˡ p = ⊗-resp-≈ p Equiv.refl
-
-  ⊗-resp-≈ʳ : g ≈ i → (f ⊗₁ g) ≈ (f ⊗₁ i)
-  ⊗-resp-≈ʳ p = ⊗-resp-≈ Equiv.refl p
-
   -- removing the {_} makes the whole thing not type check anymore for some reason
   -- an issue was raised on the main agda GitHub repository about this
   -- (https://github.com/agda/agda/issues/4140)
@@ -215,17 +206,28 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
   refl⊗refl≃refl : ≅.refl {A} ⊗ᵢ ≅.refl {B} ≃ ≅.refl
   refl⊗refl≃refl = ⌞ identity ⌟
 
-  module MonoidalReasoning where
-    open HomReasoning public
+module MonoidalReasoning (M : Monoidal) where
+  open Monoidal M using (_⊗₁_; ⊗)
+  open Functor ⊗ using (F-resp-≈)
+  open HomReasoning public
 
-    infixr 6 _⟩⊗⟨_ refl⟩⊗⟨_
-    infixl 7 _⟩⊗⟨refl
+  infixr 6 _⟩⊗⟨_ refl⟩⊗⟨_
+  infixl 7 _⟩⊗⟨refl
 
-    _⟩⊗⟨_ : f ≈ h → g ≈ i → (f ⊗₁ g) ≈ (h ⊗₁ i)
-    _⟩⊗⟨_ = ⊗-resp-≈
+  ⊗-resp-≈ : f ≈ h → g ≈ i → (f ⊗₁ g) ≈ (h ⊗₁ i)
+  ⊗-resp-≈ p q = F-resp-≈ (p , q)
 
-    refl⟩⊗⟨_ : g ≈ i → (f ⊗₁ g) ≈ (f ⊗₁ i)
-    refl⟩⊗⟨_ = ⊗-resp-≈ʳ
+  ⊗-resp-≈ˡ : f ≈ h → (f ⊗₁ g) ≈ (h ⊗₁ g)
+  ⊗-resp-≈ˡ p = ⊗-resp-≈ p Equiv.refl
 
-    _⟩⊗⟨refl : f ≈ h → (f ⊗₁ g) ≈ (h ⊗₁ g)
-    _⟩⊗⟨refl = ⊗-resp-≈ˡ
+  ⊗-resp-≈ʳ : g ≈ i → (f ⊗₁ g) ≈ (f ⊗₁ i)
+  ⊗-resp-≈ʳ p = ⊗-resp-≈ Equiv.refl p
+
+  _⟩⊗⟨_ : f ≈ h → g ≈ i → (f ⊗₁ g) ≈ (h ⊗₁ i)
+  _⟩⊗⟨_ = ⊗-resp-≈
+
+  refl⟩⊗⟨_ : g ≈ i → (f ⊗₁ g) ≈ (f ⊗₁ i)
+  refl⟩⊗⟨_ = ⊗-resp-≈ʳ
+
+  _⟩⊗⟨refl : f ≈ h → (f ⊗₁ g) ≈ (h ⊗₁ g)
+  _⟩⊗⟨refl = ⊗-resp-≈ˡ
