@@ -43,12 +43,30 @@ SubCategory {I = I} sc = let open SubCat sc in record
   ; id        = id , Rid
   ; _∘_       = zip _∘_ _∘R_
   ; assoc     = assoc
+  ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
+  ; identity² = identity²
   ; equiv     = record -- need to expand this out, else the levels don't work out
     { refl  = refl
     ; sym   = sym
     ; trans = trans
     }
+  ; ∘-resp-≈  = ∘-resp-≈
+  }
+
+FullSubCategory : ∀ {I : Set i} → (U : I → Obj) → Category _ _ _
+FullSubCategory {I = I} U = record
+  { Obj       = I
+  ; _⇒_       = λ x y → U x ⇒ U y
+  ; _≈_       = _≈_
+  ; id        = id
+  ; _∘_       = _∘_
+  ; assoc     = assoc
+  ; sym-assoc = sym-assoc
+  ; identityˡ = identityˡ
+  ; identityʳ = identityʳ
+  ; identity² = identity²
+  ; equiv     = equiv
   ; ∘-resp-≈  = ∘-resp-≈
   }

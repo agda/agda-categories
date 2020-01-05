@@ -4,7 +4,7 @@ open import Categories.Category
 {-
   Various combinators for working with Isomorphisms in the
   context of morphism equalities
-  both for Category (Switch) and Groupoid (GroupoidR)
+  both for Category (Switch) and IsGroupoid (GroupoidR)
 -}
 
 module Categories.Morphism.Reasoning.Iso {o ℓ e} (C : Category o ℓ e) where
@@ -12,7 +12,7 @@ module Categories.Morphism.Reasoning.Iso {o ℓ e} (C : Category o ℓ e) where
 open import Level
 open import Function renaming (id to idᶠ; _∘_ to _∙_)
 
-open import Categories.Category.Groupoid
+open import Categories.Category.Groupoid using (IsGroupoid)
 open import Categories.Morphism C
 open import Categories.Morphism.Reasoning.Core C
 
@@ -53,6 +53,72 @@ module Switch (i : X ≅ Y) where
     (h ∘ to) ∘ from ≈⟨ pf ⟩∘⟨refl ⟩
     k ∘ from        ∎
 
+  cancel-fromʳ : h ∘ from ≈ k ∘ from → h ≈ k
+  cancel-fromʳ {h = h} {k = k} pf = begin
+    h               ≈˘⟨ cancelʳ isoʳ ⟩
+    (h ∘ from) ∘ to ≈⟨ pf ⟩∘⟨refl ⟩
+    (k ∘ from) ∘ to ≈⟨ cancelʳ isoʳ ⟩
+    k               ∎
+
+  cancel-fromˡ : from ∘ h ≈ from ∘ k → h ≈ k
+  cancel-fromˡ {h = h} {k = k} pf = begin
+    h               ≈˘⟨ cancelˡ isoˡ ⟩
+    to ∘ (from ∘ h) ≈⟨ refl⟩∘⟨ pf ⟩
+    to ∘ (from ∘ k) ≈⟨ cancelˡ isoˡ ⟩
+    k               ∎
+
+  cancel-toʳ : h ∘ to ≈ k ∘ to → h ≈ k
+  cancel-toʳ {h = h} {k = k} pf = begin
+    h               ≈˘⟨ cancelʳ isoˡ ⟩
+    (h ∘ to) ∘ from ≈⟨ pf ⟩∘⟨refl ⟩
+    (k ∘ to) ∘ from ≈⟨ cancelʳ isoˡ ⟩
+    k               ∎
+
+  cancel-toˡ : to ∘ h ≈ to ∘ k → h ≈ k
+  cancel-toˡ {h = h} {k = k} pf = begin
+    h               ≈˘⟨ cancelˡ isoʳ ⟩
+    from ∘ (to ∘ h) ≈⟨ refl⟩∘⟨ pf ⟩
+    from ∘ (to ∘ k) ≈⟨ cancelˡ isoʳ ⟩
+    k               ∎
+
+  -- We can flip an iso i in a commuting triangle, like so:
+  --
+  --          i                       i⁻¹
+  --    X --------> Y            X <-------- Y
+  --     \    ≃    /              \    ≃    /
+  --      \       /                \       /
+  --     g \     / h     ===>     g \     / h
+  --        \   /                    \   /
+  --         V V                      V V
+  --          A                        A
+  --
+  flip-iso : {g : X ⇒ A} {h : Y ⇒ A} → g ≈ h ∘ from → g ∘ to ≈ h
+  flip-iso tr₁ = sym (switch-fromtoʳ (sym tr₁))
+
+  -- Consider two commuting squares
+  --
+  --         f₁                      f₂
+  --    X -------> A            X -------> A
+  --    |          |            |          |
+  --    |          |            |          |
+  --  ≃ | i        | h        ≃ | i        | h
+  --    |          |            |          |
+  --    V          V            V          V
+  --    Y -------> B            Y -------> B
+  --         g₁                      g₂
+  --
+  -- with i an isomorphism.  Then g₁ ≈ g₂ if f₁ ≈ f₂.
+
+  push-eq : {f₁ f₂ : X ⇒ A} {g₁ g₂ : Y ⇒ B} {h : A ⇒ B} →
+            CommutativeSquare f₁ from h g₁ →
+            CommutativeSquare f₂ from h g₂ →
+            f₁ ≈ f₂ → g₁ ≈ g₂
+  push-eq {f₁ = f₁} {f₂} {g₁} {g₂} {h₂} sq₁ sq₂ hyp = begin
+    g₁               ≈˘⟨ flip-iso sq₁ ⟩
+    (h₂ ∘ f₁) ∘ to   ≈⟨ ∘-resp-≈ˡ (∘-resp-≈ʳ hyp) ⟩
+    (h₂ ∘ f₂) ∘ to   ≈⟨ flip-iso sq₂ ⟩
+    g₂               ∎
+
 open Switch public
 
 -- conjugates
@@ -77,8 +143,8 @@ module _ (i : A ≅ B) (j : X ≅ Y) where
     (j.from ∘ g) ∘ id            ≈⟨ identityʳ ⟩
     j.from ∘ g                   ∎
 
-module GroupoidR (G : Groupoid C) where
-  open Groupoid G using (_⁻¹; iso; equiv-obj)
+module GroupoidR (G : IsGroupoid C) where
+  open IsGroupoid G using (_⁻¹; iso; equiv-obj)
 
   switch-fromtoˡ′ : f ∘ h ≈ k → h ≈ f ⁻¹ ∘ k
   switch-fromtoˡ′ = switch-fromtoˡ (equiv-obj _)

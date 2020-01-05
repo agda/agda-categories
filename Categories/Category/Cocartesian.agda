@@ -186,12 +186,14 @@ record Cocartesian : Set (levelOfTerm 𝒞) where
     { braided     = record
       { braiding = record
         { F⇒G = record
-          { η       = λ _ → +-swap
-          ; commute = λ _ → ⟺ +₁∘+-swap
+          { η           = λ _ → +-swap
+          ; commute     = λ _ → ⟺ +₁∘+-swap
+          ; sym-commute = λ _ → +₁∘+-swap
           }
         ; F⇐G = record
-          { η       = λ _ → +-swap
-          ; commute = λ _ → ⟺ +₁∘+-swap
+          { η           = λ _ → +-swap
+          ; commute     = λ _ → ⟺ +₁∘+-swap
+          ; sym-commute = λ _ → +₁∘+-swap
           }
         ; iso = λ _ → iso +-comm
         }

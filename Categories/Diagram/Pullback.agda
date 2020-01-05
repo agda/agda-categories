@@ -3,7 +3,7 @@ open import Categories.Category
 
 module Categories.Diagram.Pullback {o ℓ e} (C : Category o ℓ e) where
 
-open Category C hiding (id-unique)
+open Category C
 open HomReasoning
 
 open import Level
@@ -12,7 +12,8 @@ open import Function using (flip; _$_) renaming (_∘_ to _●_)
 open import Categories.Morphism C
 open import Categories.Object.Product C
 open import Categories.Diagram.Equalizer C
-open import Categories.Morphism.Reasoning C as Square renaming (glue to glue-square)
+open import Categories.Morphism.Reasoning C as Square
+  renaming (glue to glue-square) hiding (id-unique)
 
 private
   variable

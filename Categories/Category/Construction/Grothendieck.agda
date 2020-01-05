@@ -135,16 +135,17 @@ module _ {C : Category o ℓ e} {b}
         P₁ f₁ $₁ ((P₁ f₂ $₁ g₃) E.∘ g₂) ∙ g₁
       ≈˘⟨ ∘-resp-≈ˡ $ ∘-resp-≈ʳ P-assoc ⟩
         (η (P₂ C.assoc) a₄ ∙
-         η (P₂ (C.Equiv.sym C.assoc)) a₄ ∙
+         η (P₂ C.sym-assoc) a₄ ∙
          η (Hom.η (f₂ C.∘ f₁ , f₃)) a₄ ∙ P₁ (f₂ C.∘ f₁) $₁ F.id ∙
          η (Hom.η (f₁ , f₂)) (P₁ f₃ $₀ a₄)) ∙
         P₁ f₁ $₁ ((P₁ f₂ $₁ g₃) E.∘ g₂) ∙ g₁
       ≈˘⟨ ∘-resp-≈ˡ D.assoc ⟩
-        ((η (P₂ C.assoc) a₄ ∙ η (P₂ (C.Equiv.sym C.assoc)) a₄) ∙
+        ((η (P₂ C.assoc) a₄ ∙ η (P₂ C.sym-assoc) a₄) ∙
          η (Hom.η (f₂ C.∘ f₁ , f₃)) a₄ ∙ P₁ (f₂ C.∘ f₁) $₁ F.id ∙
          η (Hom.η (f₁ , f₂)) (P₁ f₃ $₀ a₄)) ∙
         P₁ f₁ $₁ ((P₁ f₂ $₁ g₃) E.∘ g₂) ∙ g₁
-      ≈⟨ ∘-resp-≈ˡ $ ∘-resp-≈ˡ $ Iso.isoʳ (P-resp-Iso C.assoc) ⟩
+      ≈⟨ ∘-resp-≈ˡ $ ∘-resp-≈ˡ $
+         (sym (homomorphism PF) then P-resp-≈ _ then identity PF) ⟩
         (D.id ∙
          η (Hom.η (f₂ C.∘ f₁ , f₃)) a₄ ∙ P₁ (f₂ C.∘ f₁) $₁ F.id ∙
          η (Hom.η (f₁ , f₂)) (P₁ f₃ $₀ a₄)) ∙
@@ -348,15 +349,16 @@ module _ {C : Category o ℓ e} {b}
 
   Grothendieck : Category (o ⊔ o′) (ℓ ⊔ ℓ′) (e ⊔ e′)
   Grothendieck = record
-    { Obj = Obj
-    ; _⇒_ = _⇒_
-    ; _≈_ = _≈_
-    ; id  = id
-    ; _∘_ = _∘_
+    { Obj       = Obj
+    ; _⇒_       = _⇒_
+    ; _≈_       = _≈_
+    ; id        = id
+    ; _∘_       = _∘_
     ; assoc     = assoc
+    ; sym-assoc = sym assoc
     ; identityˡ = identityˡ
     ; identityʳ = identityʳ
+    ; identity² = identityˡ
     ; equiv     = ≈-equiv
     ; ∘-resp-≈  = ∘-resp-≈
     }
-    where

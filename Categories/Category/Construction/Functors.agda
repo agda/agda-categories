@@ -4,23 +4,29 @@ module Categories.Category.Construction.Functors where
 -- the "Functor Category", often denoted [ C , D ]
 
 open import Level
-open import Data.Product using (Σ; _,_; _×_; uncurry′; proj₁)
+open import Data.Product using (_,_; proj₁; uncurry′)
 
-open import Categories.Category
-open import Categories.Functor
+open import Categories.Category using (Category; _[_∘_])
+open import Categories.Category.Equivalence using (StrongEquivalence)
+open import Categories.Category.Product using (_※ⁿ_) renaming (Product to _×_)
+open import Categories.Functor using (Functor; _∘F_)
 open import Categories.Functor.Bifunctor
-open import Categories.NaturalTransformation renaming (id to idN)
+open import Categories.Functor.Construction.Constant using (constNat)
+open import Categories.NaturalTransformation
+  using (NaturalTransformation; _∘ᵥ_; _∘ˡ_; _∘ₕ_) renaming (id to idN)
 open import Categories.NaturalTransformation.Equivalence using (_≃_; ≃-isEquivalence)
+open import Categories.NaturalTransformation.NaturalIsomorphism
+  using (NaturalIsomorphism)
 import Categories.Morphism.Reasoning as MR
 
 private
   variable
     o ℓ e o′ ℓ′ e′ : Level
-    C D : Category o ℓ e
+    C D C₁ C₂ : Category o ℓ e
 
 -- The reason the proofs below are so easy is that _∘ᵥ_ 'computes' all the way down into
 -- expressions in D, from which the properties follow.
-Functors : Category o ℓ e → Category o′ ℓ′ e′ → Category (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ e′)
+Functors : Category o ℓ e → Category o′ ℓ′ e′ → Category (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ ℓ ⊔ ℓ′ ⊔ e′) (o ⊔ e′)
 Functors C D = record
   { Obj       = Functor C D
   ; _⇒_       = NaturalTransformation
@@ -28,8 +34,10 @@ Functors C D = record
   ; id        = idN
   ; _∘_       = _∘ᵥ_
   ; assoc     = assoc
+  ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
+  ; identity² = identity²
   ; equiv     = ≃-isEquivalence
   ; ∘-resp-≈  = λ eq eq′ → ∘-resp-≈ eq eq′
   }
@@ -68,6 +76,74 @@ eval {C = C} {D = D} = record
         open MR D
         open HomReasoning
 
+-- Currying induces a functor between functor categories -- another
+-- part of the proof that Cats is a catesian closed (bi)category.
+
+curry : Functor (Functors (C₁ × C₂) D) (Functors C₁ (Functors C₂ D))
+curry {C₁ = C₁} {C₂ = C₂} {D = D} = record
+  { F₀ = curry₀
+  ; F₁ = curry₁
+  ; identity     = Equiv.refl D
+  ; homomorphism = Equiv.refl D
+  ; F-resp-≈     = λ F≈G {x₁} {x₂} → F≈G {x₁ , x₂}
+  }
+  where
+    open Category
+
+    curry₀ : Bifunctor C₁ C₂ D → Functor C₁ (Functors C₂ D)
+    curry₀ F = record
+      { F₀ = λ c → appˡ F c
+      ; F₁ = λ f → F ∘ˡ (constNat f ※ⁿ idN)
+      ; identity     = identity
+      ; homomorphism = λ {_} {_} {_} {f} {g} → begin
+          F₁ (C₁ [ g ∘ f ] , id C₂)
+        ≈˘⟨ F-resp-≈ (Equiv.refl C₁ , identityˡ C₂) ⟩
+          F₁ (C₁ [ g ∘ f ] , C₂ [ id C₂ ∘ id C₂ ])
+        ≈⟨ homomorphism ⟩
+          D [ F₁ (g , id C₂) ∘ F₁ (f , id C₂) ]
+        ∎
+      ; F-resp-≈ = λ f≈g → F-resp-≈ (f≈g , Equiv.refl C₂)
+      }
+      where
+        open Functor F
+        open HomReasoning D
+
+    curry₁ : {F G : Bifunctor C₁ C₂ D} →
+             NaturalTransformation F G →
+             NaturalTransformation (curry₀ F) (curry₀ G)
+    curry₁ α = record
+      { η = λ c → record
+        { η           = λ a → η α (c , a)
+        ; commute     = λ f → commute α (id C₁  , f)
+        ; sym-commute = λ f → sym-commute α (id C₁  , f)
+        }
+      ; commute       = λ f → commute α (f , id C₂)
+      ; sym-commute   = λ f → sym-commute α (f , id C₂)
+      }
+      where open NaturalTransformation
+
+module curry {o₁ e₁ ℓ₁} {C₁ : Category o₁ e₁ ℓ₁}
+             {o₂ e₂ ℓ₂} {C₂ : Category o₂ e₂ ℓ₂}
+             {o′ e′ ℓ′} {D  : Category o′ e′ ℓ′}
+             where
+  open Functor (curry {C₁ = C₁} {C₂ = C₂} {D = D}) public
+  open Category
+  open NaturalIsomorphism
+
+  -- Currying preserves natural isos.
+  -- This makes |curry.F₀| a map between the hom-setoids of Cats.
+
+  resp-NI : {F G : Bifunctor C₁ C₂ D} →
+            NaturalIsomorphism F G → NaturalIsomorphism (F₀ F) (F₀ G)
+  resp-NI α = record
+    { F⇒G = F₁ (F⇒G α)
+    ; F⇐G = F₁ (F⇐G α)
+    ; iso = λ x → record
+      { isoˡ = iso.isoˡ α (x , _)
+      ; isoʳ = iso.isoʳ α (x , _)
+      }
+    }
+
 -- Godement product ?
 product : {A B C : Category o ℓ e} → Bifunctor (Functors B C) (Functors A B) (Functors A C)
 product {A = A} {B = B} {C = C} = record
@@ -94,25 +170,68 @@ product {A = A} {B = B} {C = C} = record
 -- op induces a Functor on the Functors category.
 -- This is an instance where the proof-irrelevant version is simpler because (op op C) is
 -- just C. Here we rather need to be more explicit.
-opF : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
+opF⇒ : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
       Functor (Category.op (Functors (Category.op A) (Category.op B))) (Functors A B)
-opF {A = A} {B} = record
-  { F₀ = λ F → record
-    { F₀ = F₀ F
-    ; F₁ = F₁ F
-    ; identity = identity F
-    ; homomorphism = homomorphism F
-    ; F-resp-≈ = F-resp-≈ F
-    }
-  ; F₁ = λ B⇒A → record
-    { η = η B⇒A
-    ; commute = λ f → Equiv.sym (commute B⇒A f)
-    }
+opF⇒ {A = A} {B} = record
+  { F₀ = Functor.op
+  ; F₁ = NaturalTransformation.op
   ; identity = Equiv.refl
   ; homomorphism = Equiv.refl
   ; F-resp-≈ = λ eq → eq
   }
-  where
-  open Functor
-  open NaturalTransformation
-  open Category B
+  where open Category B
+
+opF⇐ : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
+      Functor (Functors A B) (Category.op (Functors (Category.op A) (Category.op B)))
+opF⇐ {A = A} {B} = record
+  { F₀           = Functor.op
+  ; F₁           = NaturalTransformation.op
+  ; identity     = Equiv.refl
+  ; homomorphism = Equiv.refl
+  ; F-resp-≈     = λ eq → eq
+  }
+  where open Category B
+
+Functorsᵒᵖ-equiv : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
+                   StrongEquivalence (Category.op (Functors (Category.op A) (Category.op B))) (Functors A B)
+Functorsᵒᵖ-equiv {B = B} = record
+  { F            = opF⇒
+  ; G            = opF⇐
+  ; weak-inverse = record
+    { F∘G≈id = record
+      { F⇒G = record
+        { η           = λ _ → idN
+        ; commute     = λ _ → id-comm-sym
+        ; sym-commute = λ _ → id-comm
+        }
+      ; F⇐G = record
+        { η           = λ _ → idN
+        ; commute     = λ _ → id-comm-sym
+        ; sym-commute = λ _ → id-comm
+        }
+      ; iso = λ _ → record
+        { isoˡ = identityˡ
+        ; isoʳ = identityˡ
+        }
+      }
+    ; G∘F≈id = record
+      { F⇒G = record
+        { η           = λ _ → idN
+        ; commute     = λ _ → id-comm-sym
+        ; sym-commute = λ _ → id-comm
+        }
+      ; F⇐G = record
+        { η           = λ _ → idN
+        ; commute     = λ _ → id-comm-sym
+        ; sym-commute = λ _ → id-comm
+        }
+      ; iso = λ _ → record
+        { isoˡ = identityˡ
+        ; isoʳ = identityˡ
+        }
+      }
+    }
+  }
+  where open Category B
+        open HomReasoning
+        open MR B

@@ -11,7 +11,7 @@ open import Relation.Binary using (IsEquivalence; Setoid)
 open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 open import Categories.Morphism C
-open import Categories.Morphism.IsoEquiv C using (_≃_)
+open import Categories.Morphism.IsoEquiv C using (_≃_; ⌞_⌟)
 open import Categories.Morphism.Reasoning C
 
 open Category C
@@ -57,10 +57,7 @@ transport-by-iso t {X} t≅X = record
   where open _≅_ t≅X
 
 up-to-iso-unique : ∀ t t′ → (i : ⊤ t ≅ ⊤ t′) → up-to-iso t t′ ≃ i
-up-to-iso-unique t t′ i = record
-  { from-≈ = !-unique t′ _
-  ; to-≈   = !-unique t _
-  }
+up-to-iso-unique t t′ i = ⌞ !-unique t′ _ ⌟
 
 up-to-iso-invˡ : ∀ {t X} {i : ⊤ t ≅ X} → up-to-iso t (transport-by-iso t i) ≃ i
 up-to-iso-invˡ {t} {i = i} = up-to-iso-unique t (transport-by-iso t i) i

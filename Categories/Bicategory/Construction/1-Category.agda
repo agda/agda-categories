@@ -13,10 +13,11 @@ open import Data.Product using (uncurry)
 open import Relation.Binary using (Setoid)
 
 open import Categories.Bicategory
+open import Categories.Category.Construction.0-Groupoid using (0-Groupoid)
 open import Categories.Category.Instance.Cats using (Cats)
 open import Categories.Category.Monoidal using (Monoidal)
 open import Categories.Category.Monoidal.Instance.Cats using (module Product)
-open import Categories.Category.Groupoid using (Groupoid)
+open import Categories.Category.Groupoid using (Groupoid; IsGroupoid)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Construction.Constant using (const)
 open import Categories.Functor.Bifunctor using (Bifunctor)
@@ -47,26 +48,10 @@ open C hiding (id)
     -- thin hom-groupoids.
 
     hom : C.Obj → C.Obj → Category ℓ e b
-    hom A B = record
-      { Obj = HomSetoid.Carrier
-      ; _⇒_ = HomSetoid._≈_
-      ; _≈_ = λ _ _ → Lift b ⊤
-      ; id  = HomSetoid.refl
-      ; _∘_ = λ f g → HomSetoid.trans g f
-      ; assoc     = lift tt
-      ; identityˡ = lift tt
-      ; identityʳ = lift tt
-      ; equiv     = record
-        { refl    = lift tt
-        ; sym     = λ _ → lift tt
-        ; trans   = λ _ _ → lift tt
-        }
-      ; ∘-resp-≈  = λ _ _ → lift tt
-      }
-      where module HomSetoid = Setoid (hom-setoid {A} {B})
+    hom A B = Groupoid.category (0-Groupoid b (hom-setoid {A} {B}))
 
-    id : ∀ A → Functor unit (hom A A)
-    id A = const (C.id {A})
+    id : ∀ {A} → Functor unit (hom A A)
+    id = const C.id
 
     ⊚ : ∀ {A B C} → Bifunctor (hom B C) (hom A B) (hom A C)
     ⊚ {A} {B} {C} = record
@@ -86,14 +71,14 @@ open C hiding (id)
         ⊚
       ⟩
     ⊚-assoc = record
-      { F⇒G = record { η = λ _ →           assoc ; commute = λ _ → lift tt }
-      ; F⇐G = record { η = λ _ → Equiv.sym assoc ; commute = λ _ → lift tt }
+      { F⇒G = record { η = λ _ →     assoc ; commute = λ _ → lift tt }
+      ; F⇐G = record { η = λ _ → sym-assoc ; commute = λ _ → lift tt }
       ; iso = λ _ → record { isoˡ = lift tt ; isoʳ = lift tt }
       }
 
     unitˡ : ∀ {A B} →
       [ unit ⊗₀ hom A B ⇒ hom A B ]⟨
-        id B ⊗₁ idF   ⇒⟨ hom B B ⊗₀ hom A B ⟩
+        id ⊗₁ idF    ⇒⟨ hom B B ⊗₀ hom A B ⟩
         ⊚
       ≈ unitorˡ.from
       ⟩
@@ -105,7 +90,7 @@ open C hiding (id)
 
     unitʳ : ∀ {A B} →
       [ hom A B ⊗₀ unit ⇒ hom A B ]⟨
-        idF ⊗₁ id A    ⇒⟨ hom A B ⊗₀ hom A A ⟩
+        idF ⊗₁ id    ⇒⟨ hom A B ⊗₀ hom A A ⟩
         ⊚
       ≈ unitorʳ.from
       ⟩
@@ -117,10 +102,7 @@ open C hiding (id)
 
 open Bicategory 1-Category
 
--- The hom-categories are hom-groupids
+-- The hom-categories are hom-groupoids
 
-hom-groupoid : ∀ {A B} → Groupoid (hom A B)
-hom-groupoid = record
-  { _⁻¹ = C.Equiv.sym
-  ; iso = record { isoˡ = lift tt ; isoʳ = lift tt }
-  }
+hom-isGroupoid : ∀ {A B} → IsGroupoid (hom A B)
+hom-isGroupoid = Groupoid.isGroupoid (0-Groupoid b hom-setoid)

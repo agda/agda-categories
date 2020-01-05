@@ -2,7 +2,7 @@
 
 OTHEROPTS=
 
-RTSARGS = +RTS -H6G ${OTHEROPTS} -A64M -RTS
+RTSARGS = +RTS -H6G -M6G -K64M ${OTHEROPTS} -A64M -RTS
 
 test: Everything.agda
 	agda ${RTSARGS} Everything.agda
@@ -12,3 +12,6 @@ Everything.agda:
 
 clean:
 	find . -name '*.agdai' -exec rm \{\} \;
+
+profile: Everything.agda
+	agda ${RTSARGS} -vprofile:7 Everything.agda

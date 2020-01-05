@@ -16,8 +16,9 @@ open import Categories.Category.Slice.Properties C
 open import Categories.Object.Product
 open import Categories.Object.Exponential
 open import Categories.Object.Terminal C
-open import Categories.Diagram.Pullback C
+import Categories.Diagram.Pullback as P
 import Categories.Diagram.Pullback.Properties C as Pₚ
+import Categories.Morphism.Reasoning as MR
 
 open Category C
 
@@ -27,6 +28,38 @@ record Locally : Set (levelOfTerm C) where
 
   module sliceCCC A = CartesianClosed (sliceCCC A)
 
+  pullbacks : ∀ {X A B} (f : A ⇒ X) (g : B ⇒ X) → P.Pullback C f g
+  pullbacks {X} f g = product⇒pullback product
+    where C/X = sliceCCC X
+          open CartesianClosed C/X using (product)
+
+  -- the slice categories also have pullbacks, because slice of slice is slice.
+  slice-pullbacks : ∀ {A} {B X Y : SliceObj A} (f : Slice⇒ X B) (g : Slice⇒ Y B) → P.Pullback (Slice A) f g
+  slice-pullbacks {A} {B} {X} {Y} f g = record
+    { P               = sliceobj (X.arr ∘ p.p₁)
+    ; p₁              = slicearr refl
+    ; p₂              = slicearr comm
+    ; commute         = p.commute
+    ; universal       = λ {Z} {h i} eq → slicearr {h = p.universal eq} (pullʳ p.p₁∘universal≈h₁ ○ Slice⇒.△ h)
+    ; unique          = λ eq₁ eq₂ → p.unique eq₁ eq₂
+    ; p₁∘universal≈h₁ = p.p₁∘universal≈h₁
+    ; p₂∘universal≈h₂ = p.p₂∘universal≈h₂
+    }
+    where open HomReasoning
+          module X = SliceObj X
+          module Y = SliceObj Y
+          module B = SliceObj B
+          module f = Slice⇒ f
+          module g = Slice⇒ g
+          module p = P.Pullback (pullbacks f.h g.h)
+          open MR C
+
+          comm : Y.arr ∘ p.p₂ ≈ X.arr ∘ p.p₁
+          comm = begin
+            Y.arr ∘ p.p₂         ≈˘⟨ g.△ ⟩∘⟨refl ⟩
+            (B.arr ∘ g.h) ∘ p.p₂ ≈˘⟨ pushʳ p.commute ⟩
+            B.arr ∘ f.h ∘ p.p₁   ≈⟨ pullˡ f.△ ⟩
+            X.arr ∘ p.p₁         ∎
 
 module _ (LCCC : Locally) (t : Terminal) where
   open Locally LCCC

@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category
-open import Categories.Category.Monoidal
+open import Categories.Category.Monoidal.Core using (Monoidal)
 
 module Categories.Category.Monoidal.Braided {o ℓ e} {C : Category o ℓ e} (M : Monoidal C) where
 
@@ -29,7 +29,7 @@ record Braided : Set (levelOfTerm M) where
     braiding : NaturalIsomorphism ⊗ (flip-bifunctor ⊗)
 
   module braiding = NaturalIsomorphism braiding
-  
+
   private
     B : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X
     B {X} {Y} = braiding.⇒.η (X , Y)
@@ -46,7 +46,7 @@ record Braided : Set (levelOfTerm M) where
     hexagon₂ : [ X ⊗₀ Y ⊗₀ Z ⇒ (Z ⊗₀ X) ⊗₀ Y ]⟨
                  id ⊗₁ B                     ⇒⟨ X ⊗₀ Z ⊗₀ Y ⟩
                  associator.to               ⇒⟨ (X ⊗₀ Z) ⊗₀ Y ⟩
-                 B ⊗₁ id                 
+                 B ⊗₁ id
                ≈ associator.to               ⇒⟨ (X ⊗₀ Y) ⊗₀ Z ⟩
                  B                           ⇒⟨ Z ⊗₀ X ⊗₀ Y ⟩
                  associator.to

@@ -33,17 +33,19 @@ module _ {a b : Level} where
 
   Cat : Category (suc a ⊔ suc b) (a ⊔ b) (a ⊔ b)
   Cat = record
-    { Obj = Fam
-    ; _⇒_ = Hom
-    ; _≈_ = _≡Fam_
-    ; id = record { f = idf ; φ = λ _ → idf }
-    ; _∘_ = λ H I → record { f = Hom.f H ⊚ Hom.f I ; φ = λ ua → Hom.φ H (Hom.f I ua) ⊚ Hom.φ I ua }
-    ; assoc = record { g≡f = refl ; φ≡γ = refl }
+    { Obj       = Fam
+    ; _⇒_       = Hom
+    ; _≈_       = _≡Fam_
+    ; id        = record { f = idf ; φ = λ _ → idf }
+    ; _∘_       = λ H I → record { f = Hom.f H ⊚ Hom.f I ; φ = λ ua → Hom.φ H (Hom.f I ua) ⊚ Hom.φ I ua }
+    ; assoc     = record { g≡f = refl ; φ≡γ = refl }
+    ; sym-assoc = record { g≡f = refl ; φ≡γ = refl }
     ; identityˡ = record { g≡f = refl ; φ≡γ = refl }
     ; identityʳ = record { g≡f = refl ; φ≡γ = refl }
-    ; equiv = λ {A} {B} → record
-      { refl = record { g≡f = refl ; φ≡γ = refl }
-      ; sym = λ {i} {j} i≡j → record
+    ; identity² = record { g≡f = refl ; φ≡γ = refl }
+    ; equiv     = λ {A} {B} → record
+      { refl  = record { g≡f = refl ; φ≡γ = refl }
+      ; sym   = λ {i} {j} i≡j → record
         { g≡f = sym (Eq.g≡f i≡j)
         ; φ≡γ = λ {x} {bx} →
           let open SetoidR (setoid (T B (Hom.f j x) )) in

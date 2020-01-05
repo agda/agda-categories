@@ -11,6 +11,7 @@ open import Categories.Functor
 open import Categories.Category.Product
 open import Categories.Category.Construction.Functors
 open import Categories.Functor.Construction.Constant
+open import Categories.NaturalTransformation using (ntHelper)
 
 import Categories.Functor.Power as Power
 
@@ -43,7 +44,7 @@ private
 ΔF : {C : Category o ℓ e} (I : Category o′ ℓ′ e′) → Functor C (Functors I C)
 ΔF {C = C} I = record
   { F₀           = const
-  ; F₁           = λ f → record { η = λ _ → f; commute = λ _ → C.identityʳ ○ ⟺ C.identityˡ }
+  ; F₁           = λ f → ntHelper record { η = λ _ → f; commute = λ _ → C.identityʳ ○ ⟺ C.identityˡ }
   ; identity     = refl
   ; homomorphism = refl
   ; F-resp-≈     = λ x → x

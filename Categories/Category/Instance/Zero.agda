@@ -26,8 +26,10 @@ module _ {o ℓ e : Level} where
     ; id        = λ { { lift () } }
     ; _∘_       = λ a _ → a -- left-biased rather than strict
     ; assoc     = λ { {lift () } }
+    ; sym-assoc = λ { {lift () } }
     ; identityˡ = λ { {()} }
     ; identityʳ = λ { {()} }
+    ; identity² = λ { {()} }
     ; ∘-resp-≈  = λ { () }
     ; equiv     = record
       { refl = λ { {()} }
@@ -47,8 +49,8 @@ module _ {o ℓ e : Level} where
       ; F-resp-≈ = λ { () }
       }
     ; !-unique = λ f → record
-      { F⇒G = record { η = λ { (lift ()) } ; commute = λ { (lift ()) } }
-      ; F⇐G = record { η = λ { (lift ()) } ; commute = λ { (lift ()) } }
+      { F⇒G = record { η = λ { () } ; commute = λ { () } ; sym-commute = λ { () } }
+      ; F⇐G = record { η = λ { () } ; commute = λ { () } ; sym-commute = λ { () } }
       ; iso = λ { (lift ()) }
       }
     }

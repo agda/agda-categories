@@ -24,7 +24,7 @@ private
 
 record NaturalIsomorphism {C : Category o ℓ e}
                           {D : Category o′ ℓ′ e′}
-                          (F G : Functor C D) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
+                          (F G : Functor C D) : Set (o ⊔ ℓ ⊔ ℓ′ ⊔ e′) where
 
   private
     module F = Functor F
@@ -49,6 +49,26 @@ record NaturalIsomorphism {C : Category o ℓ e}
     { from = _
     ; to   = _
     ; iso  = iso X
+    }
+
+  op : NaturalIsomorphism G.op F.op
+  op = record
+    { F⇒G = ⇒.op
+    ; F⇐G = ⇐.op
+    ; iso = λ X → record
+      { isoˡ = iso.isoʳ X
+      ; isoʳ = iso.isoˡ X
+      }
+    }
+
+  op′ : NaturalIsomorphism F.op G.op
+  op′ = record
+    { F⇒G = ⇐.op
+    ; F⇐G = ⇒.op
+    ; iso = λ X → record
+      { isoˡ = iso.isoˡ X
+      ; isoʳ = iso.isoʳ X
+      }
     }
 
 open NaturalIsomorphism
@@ -130,14 +150,22 @@ isEquivalence = record
   ; trans = trans
   }
 
-Functor-setoid : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Setoid _ _
-Functor-setoid C D = record
+module ≃ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′} = IsEquivalence (isEquivalence {C = C} {D = D})
+
+Functor-NI-setoid : (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Setoid _ _
+Functor-NI-setoid C D = record
   { Carrier       = Functor C D
   ; _≈_           = NaturalIsomorphism
   ; isEquivalence = isEquivalence
   }
 
--- Left and Right Unitors, Natural Isomorphisms.
+module LeftRightId (F : Functor C D) where
+  module D = Category D
+
+  iso-id-id : (X : Category.Obj C) → Morphism.Iso D {A = Functor.F₀ F X} D.id D.id
+  iso-id-id X = record { isoˡ = D.identityˡ ; isoʳ = D.identityʳ }
+
+-- Left and Right and 'Central' Unitors, Natural Isomorphisms.
 module _ {F : Functor C D} where
   open Category.HomReasoning D
   open Functor F
@@ -150,6 +178,9 @@ module _ {F : Functor C D} where
   unitorʳ : F ∘F ℱ.id ≃ F
   unitorʳ = record { F⇒G = F∘id⇒F ; F⇐G = F⇒F∘id ; iso = iso-id-id }
 
+unitor² : {C : Category o ℓ e} → ℱ.id ∘F ℱ.id ≃ ℱ.id {C = C}
+unitor² = record { F⇒G = id∘id⇒id ; F⇐G = id⇒id∘id ; iso = LeftRightId.iso-id-id ℱ.id }
+
 -- associator
 module _ (F : Functor B C) (G : Functor C D) (H : Functor D E) where
   open Category.HomReasoning E
@@ -160,10 +191,10 @@ module _ (F : Functor B C) (G : Functor C D) (H : Functor D E) where
   private
     -- components of α
     assocʳ : NaturalTransformation ((H ∘F G) ∘F F) (H ∘F (G ∘F F))
-    assocʳ = record { η = λ _ → id ; commute = comm }
+    assocʳ = ntHelper record { η = λ _ → id ; commute = λ _ → MR.id-comm-sym E  }
 
     assocˡ : NaturalTransformation (H ∘F (G ∘F F)) ((H ∘F G) ∘F F)
-    assocˡ = record { η = λ _ → id ; commute = comm }
+    assocˡ = ntHelper record { η = λ _ → id ; commute = λ _ → MR.id-comm-sym E }
 
   associator : (H ∘F G) ∘F F ≃ H ∘F (G ∘F F)
   associator = record { F⇒G = assocʳ ; F⇐G = assocˡ ; iso = iso-id-id }

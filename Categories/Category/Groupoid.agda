@@ -1,12 +1,12 @@
 {-# OPTIONS --without-K --safe #-}
 module Categories.Category.Groupoid where
 
-open import Level
+open import Level using (Level; suc; _⊔_)
 
-open import Categories.Category
+open import Categories.Category using (Category)
 import Categories.Morphism
 
-record Groupoid {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
+record IsGroupoid {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   open Category C public
 
   open Categories.Morphism C
@@ -29,3 +29,12 @@ record Groupoid {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   -- this definition doesn't seem to 'carry its weight'
   equiv-obj-sym : ∀ {A B} → A ⇒ B → B ≅ A
   equiv-obj-sym f = ≅.sym (equiv-obj f)
+
+-- A groupoid is a category that has a groupoid structure
+
+record Groupoid (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
+  field
+    category   : Category o ℓ e
+    isGroupoid : IsGroupoid category
+
+  open IsGroupoid isGroupoid public

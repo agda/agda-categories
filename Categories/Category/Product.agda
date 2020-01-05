@@ -7,7 +7,7 @@ open import Data.Product using (_×_; Σ; _,_; proj₁; proj₂; zip; map; <_,_>
 
 open import Categories.Utils.Product
 open import Categories.Category using (Category)
-open import Categories.Category.Groupoid using (Groupoid)
+open import Categories.Category.Groupoid using (IsGroupoid)
 open import Categories.Functor renaming (id to idF)
 open import Categories.NaturalTransformation.Core
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl)
@@ -28,8 +28,10 @@ Product C D = record
   ; _∘_       = zip C._∘_ D._∘_
   ; id        = C.id , D.id
   ; assoc     = C.assoc , D.assoc
+  ; sym-assoc = C.sym-assoc , D.sym-assoc
   ; identityˡ = C.identityˡ , D.identityˡ
   ; identityʳ = C.identityʳ , D.identityʳ
+  ; identity² = C.identity² , D.identity²
   ; equiv     = record
     { refl  = C.Equiv.refl , D.Equiv.refl
     ; sym   = map C.Equiv.sym D.Equiv.sym
@@ -73,7 +75,7 @@ _⁂ⁿ_ : ∀ {C₁ : Category o₁ ℓ₁ e₁} {D₁ : Category o′₁ ℓ�
          {F₁ G₁ : Functor C₁ D₁} {F₂ G₂ : Functor C₂ D₂}
          (α : NaturalTransformation F₁ G₁) (β : NaturalTransformation F₂ G₂) →
          NaturalTransformation (F₁ ⁂ F₂) (G₁ ⁂ G₂)
-α ⁂ⁿ β = record
+α ⁂ⁿ β = ntHelper record
   { η       = map⁎′ α.η β.η
   ; commute = map⁎′ α.commute β.commute
   }
@@ -87,7 +89,7 @@ _※ⁿ_ : ∀ {D₁ : Category o ℓ e} {D₂ : Category o′ ℓ′ e′}
          (α : NaturalTransformation F₁ G₁) →
          (β : NaturalTransformation F₂ G₂) →
          NaturalTransformation (F₁ ※ F₂) (G₁ ※ G₂)
-α ※ⁿ β = record
+α ※ⁿ β = ntHelper record
   { η       = < α.η , β.η >
   ; commute = < α.commute , β.commute >
   }
@@ -135,9 +137,10 @@ _※ⁿⁱ_ : ∀ {D₁ : Category o ℓ e} {D₂ : Category o′ ℓ′ e′}
 
 module _ (C₁ : Category o ℓ e) (C₂ : Category o′ ℓ′ e′) (C₃ : Category o″ ℓ″ e″) where
 
-  module C₁ = Category C₁
-  module C₂ = Category C₂
-  module C₃ = Category C₃
+  private
+    module C₁ = Category C₁
+    module C₂ = Category C₂
+    module C₃ = Category C₃
 
   assocˡ : Functor (Product (Product C₁ C₂) C₃) (Product C₁ (Product C₂ C₃))
   assocˡ = record
@@ -194,14 +197,14 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} where
 
 -- Groupoid Product
 Groupoid-× : {C : Category o₁ ℓ₁ e₁} {D : Category o₂ ℓ₂ e₂}
-        → Groupoid C → Groupoid D → Groupoid (Product C D)
+        → IsGroupoid C → IsGroupoid D → IsGroupoid (Product C D)
 Groupoid-× c₁ c₂ = record
-    { _⁻¹ = map (Groupoid._⁻¹ c₁) (Groupoid._⁻¹ c₂)
+    { _⁻¹ = map (IsGroupoid._⁻¹ c₁) (IsGroupoid._⁻¹ c₂)
     ; iso = record { isoˡ = Iso.isoˡ i₁ , Iso.isoˡ i₂
                    ; isoʳ = Iso.isoʳ i₁ , Iso.isoʳ i₂
                    }
     }
   where
   open Morphism
-  i₁ = Groupoid.iso c₁
-  i₂ = Groupoid.iso c₂
+  i₁ = IsGroupoid.iso c₁
+  i₂ = IsGroupoid.iso c₂

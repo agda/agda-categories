@@ -11,6 +11,7 @@ import Relation.Binary.Reasoning.Setoid as SetoidR
 -- Basic definition of a |Category| with a Hom setoid.
 -- Also comes with some reasoning combinators (see HomReasoning)
 record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
+  eta-equality
   infix  4 _≈_ _⇒_
   infixr 9 _∘_
 
@@ -24,8 +25,15 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   field
     assoc     : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → (h ∘ g) ∘ f ≈ h ∘ (g ∘ f)
+    -- We add a symmetric proof of associativity so that the opposite category of the
+    -- opposite category is definitionally equal to the original category. See how
+    -- `op` is implemented.
+    sym-assoc : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → h ∘ (g ∘ f) ≈ (h ∘ g) ∘ f
     identityˡ : ∀ {A B} {f : A ⇒ B} → id ∘ f ≈ f
     identityʳ : ∀ {A B} {f : A ⇒ B} → f ∘ id ≈ f
+    -- We add a proof of "neutral" identity proof, in order to ensure the opposite of
+    -- constant functor is definitionally equal to itself.
+    identity² : ∀ {A} → id ∘ id {A} ≈ id {A}
     equiv     : ∀ {A B} → IsEquivalence (_≈_ {A} {B})
     ∘-resp-≈  : ∀ {A B C} {f h : B ⇒ C} {g i : A ⇒ B} → f ≈ h → g ≈ i → f ∘ g ≈ h ∘ i
 
@@ -59,7 +67,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     open Equiv {A = A} {B = B} public
 
     infixr 4 _⟩∘⟨_ refl⟩∘⟨_
-    infixl 4 _⟩∘⟨refl
+    infixl 5 _⟩∘⟨refl
     _⟩∘⟨_ : ∀ {M} {f h : M ⇒ B} {g i : A ⇒ M} → f ≈ h → g ≈ i → f ∘ g ≈ h ∘ i
     _⟩∘⟨_ = ∘-resp-≈
 
@@ -102,24 +110,61 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   op : Category o ℓ e
   op = record
-    { Obj = Obj
-    ; _⇒_ = flip _⇒_
-    ; _≈_ = _≈_
-    ; _∘_ = flip _∘_
-    ; id = id
-    ; assoc = sym assoc
+    { Obj       = Obj
+    ; _⇒_       = flip _⇒_
+    ; _≈_       = _≈_
+    ; _∘_       = flip _∘_
+    ; id        = id
+    ; assoc     = sym-assoc
+    ; sym-assoc = assoc
     ; identityˡ = identityʳ
     ; identityʳ = identityˡ
-    ; equiv = equiv
-    ; ∘-resp-≈ = flip ∘-resp-≈
+    ; identity² = identity²
+    ; equiv     = equiv
+    ; ∘-resp-≈  = flip ∘-resp-≈
     }
 
-  -- Q: Should the following 3 really be defined here?
+  -- Q: Should this really be defined here?
   CommutativeSquare : ∀ {A B C D} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
   CommutativeSquare f g h i = h ∘ f ≈ i ∘ g
 
-  id-unique : ∀ {o} {f : o ⇒ o} → (∀ g → g ∘ f ≈ g) → f ≈ id
-  id-unique g∘f≈g = trans (sym identityˡ) (g∘f≈g id)
+-- Since we add extra proofs in the definition of `Category` (i.e. `sym-assoc` and
+-- `identity²`), we might still want to construct a `Category` in its originally
+-- easier manner. Thus, this redundant definition is here to ease the construction.
+record CategoryHelper (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
+  infix  4 _≈_ _⇒_
+  infixr 9 _∘_
 
-  id-comm : ∀ {a b} {f : a ⇒ b} → f ∘ id ≈ id ∘ f
-  id-comm = trans identityʳ (sym identityˡ)
+  field
+    Obj : Set o
+    _⇒_ : Rel Obj ℓ
+    _≈_ : ∀ {A B} → Rel (A ⇒ B) e
+
+    id  : ∀ {A} → (A ⇒ A)
+    _∘_ : ∀ {A B C} → (B ⇒ C) → (A ⇒ B) → (A ⇒ C)
+
+  field
+    assoc     : ∀ {A B C D} {f : A ⇒ B} {g : B ⇒ C} {h : C ⇒ D} → (h ∘ g) ∘ f ≈ h ∘ (g ∘ f)
+    identityˡ : ∀ {A B} {f : A ⇒ B} → id ∘ f ≈ f
+    identityʳ : ∀ {A B} {f : A ⇒ B} → f ∘ id ≈ f
+    equiv     : ∀ {A B} → IsEquivalence (_≈_ {A} {B})
+    ∘-resp-≈  : ∀ {A B C} {f h : B ⇒ C} {g i : A ⇒ B} → f ≈ h → g ≈ i → f ∘ g ≈ h ∘ i
+
+categoryHelper : ∀ {o ℓ e} → CategoryHelper o ℓ e → Category o ℓ e
+categoryHelper C = record
+  { Obj       = Obj
+  ; _⇒_       = _⇒_
+  ; _≈_       = _≈_
+  ; id        = id
+  ; _∘_       = _∘_
+  ; assoc     = assoc
+  ; sym-assoc = sym assoc
+  ; identityˡ = identityˡ
+  ; identityʳ = identityʳ
+  ; identity² = identityˡ
+  ; equiv     = equiv
+  ; ∘-resp-≈  = ∘-resp-≈
+  }
+  where open CategoryHelper C
+        module _ {A B} where
+          open IsEquivalence (equiv {A} {B}) public

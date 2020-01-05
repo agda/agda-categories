@@ -18,8 +18,10 @@ Setoids c ℓ = record
   ; id        = ⟶-id
   ; _∘_       = _∘_
   ; assoc     = λ {_ _ _ D} {f g h} → cong (h ∘ g ∘ f)
+  ; sym-assoc = λ {_ _ _ D} {f g h} → cong (h ∘ g ∘ f)
   ; identityˡ = λ {_ _} {f} → cong f
   ; identityʳ = λ {_ _} {f} → cong f
+  ; identity² = λ eq → eq
   ; equiv     = λ {A B} → Setoid.isEquivalence (A ⇨ B)
   ; ∘-resp-≈  = λ f≡h g≡i x≡y → f≡h (g≡i x≡y)
   }

@@ -4,7 +4,7 @@ open import Categories.Category
 
 module Categories.Diagram.Pushout {o ℓ e} (C : Category o ℓ e) where
 
-open Category C hiding (id-unique)
+open Category C
 open HomReasoning
 
 open import Level

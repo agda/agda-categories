@@ -17,6 +17,7 @@ open import Categories.Category.Instance.Cats
 open import Categories.Category.Construction.Functors
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans)
 open import Categories.NaturalTransformation hiding (id)
+import Categories.Morphism.Reasoning as MR
 
 private
   variable
@@ -25,16 +26,18 @@ private
 -- the first, most explicit definition is taken as 'canonical'.
 Elements : {C : Category o ℓ e} → Functor C (Sets o′) → Category (o ⊔ o′) (ℓ ⊔ o′) e
 Elements {C = C} F = record
-  { Obj = Σ Obj F₀
-  ; _⇒_ = λ { (c , x) (c′ , x′) → Σ (c ⇒ c′) (λ f → F₁ f x ≡ x′)  }
-  ; _≈_ = λ p q → proj₁ p ≈ proj₁ q
-  ; id = id , identity
-  ; _∘_ = λ { (f , Ff≡) (g , Fg≡) → f ∘ g ,  trans homomorphism (trans (cong (F₁ f) Fg≡) Ff≡)}
-  ; assoc = assoc
+  { Obj       = Σ Obj F₀
+  ; _⇒_       = λ { (c , x) (c′ , x′) → Σ (c ⇒ c′) (λ f → F₁ f x ≡ x′)  }
+  ; _≈_       = λ p q → proj₁ p ≈ proj₁ q
+  ; id        = id , identity
+  ; _∘_       = λ { (f , Ff≡) (g , Fg≡) → f ∘ g ,  trans homomorphism (trans (cong (F₁ f) Fg≡) Ff≡)}
+  ; assoc     = assoc
+  ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
-  ; equiv = record { refl = Equiv.refl ; sym = Equiv.sym ; trans = Equiv.trans }
-  ; ∘-resp-≈ = ∘-resp-≈
+  ; identity² = identity²
+  ; equiv     = record { refl = Equiv.refl ; sym = Equiv.sym ; trans = Equiv.trans }
+  ; ∘-resp-≈  = ∘-resp-≈
   }
   where
   open Category C
@@ -54,33 +57,39 @@ El {C = C} = record
     }
   ; identity = λ {P} → record
     { F⇒G = record
-      { η = λ X → id , identity P
-      ; commute = λ _ → Equiv.sym id-comm
+      { η           = λ X → id , identity P
+      ; commute     = λ _ → MR.id-comm-sym C
+      ; sym-commute = λ _ → MR.id-comm C
       }
     ; F⇐G = record
-      { η = λ X → id , identity P
-      ; commute = λ _ → Equiv.sym id-comm
+      { η           = λ X → id , identity P
+      ; commute     = λ _ → MR.id-comm-sym C
+      ; sym-commute = λ _ → MR.id-comm C
       }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ } }
   ; homomorphism = λ {X₁} {Y₁} {Z₁} → record
     { F⇒G = record
-      { η = λ X → id , identity Z₁
-      ; commute = λ _ → Equiv.sym id-comm
+      { η           = λ X → id , identity Z₁
+      ; commute     = λ _ → MR.id-comm-sym C
+      ; sym-commute = λ _ → MR.id-comm C
       }
     ; F⇐G = record
-      { η = λ X → id , identity Z₁
-      ; commute = λ _ → Equiv.sym id-comm
+      { η           = λ X → id , identity Z₁
+      ; commute     = λ _ → MR.id-comm-sym C
+      ; sym-commute = λ _ → MR.id-comm C
       }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ }
     }
   ; F-resp-≈ = λ {_} {B₁} f≈g → record
     { F⇒G = record
-      { η = λ _ → id , trans (identity B₁) f≈g
-      ; commute = λ _ → Equiv.sym id-comm
+      { η           = λ _ → id , trans (identity B₁) f≈g
+      ; commute     = λ _ → MR.id-comm-sym C
+      ; sym-commute = λ _ → MR.id-comm C
       }
     ; F⇐G = record
-      { η = λ _ → id , trans (identity B₁) (sym f≈g)
-      ; commute = λ _ → Equiv.sym id-comm
+      { η           = λ _ → id , trans (identity B₁) (sym f≈g)
+      ; commute     = λ _ → MR.id-comm-sym C
+      ; sym-commute = λ _ → MR.id-comm C
       }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ } }
   }

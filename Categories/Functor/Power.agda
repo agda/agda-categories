@@ -14,7 +14,7 @@ open HomReasoning
 open import Level using (Level; _⊔_)
 open import Data.Nat using (ℕ; _+_; zero; suc; _<_)
 open import Data.Product using (_,_)
-open import Data.Fin using (Fin; inject+; raise; zero; suc; fromℕ≤)
+open import Data.Fin using (Fin; inject+; raise; zero; suc; fromℕ<)
 open import Data.Sum using (_⊎_; inj₁; inj₂; map) renaming ([_,_] to ⟦_,_⟧; [_,_]′ to ⟦_,_⟧′)
 open import Data.Vec.N-ary hiding (curryⁿ)
 open import Function as Fun using (flip; _$_) renaming (_∘_ to _∙_; id to idf)
@@ -38,8 +38,10 @@ Exp I = record
   ; id        = λ _ → id
   ; _∘_       = λ f g i → f i ∘ g i
   ; assoc     = λ _ → assoc
+  ; sym-assoc = λ _ → sym-assoc
   ; identityˡ = λ _ → identityˡ
   ; identityʳ = λ _ → identityʳ
+  ; identity² = λ _ → identity²
   ; equiv     = record
     { refl  = λ _ → refl
     ; sym   = λ eq i → sym $ eq i
@@ -189,7 +191,7 @@ select′ i = record
 
 -- select (m < n) is really select′ (Fin n), but only for m < n
 select : m < n → Powerendo n
-select m<n = select′ (fromℕ≤ m<n)
+select m<n = select′ (fromℕ< m<n)
 
 triv : (n : ℕ) → Hyperendo n n
 triv n = record
@@ -236,7 +238,7 @@ nullary X = record
   { F₀           = λ _ → X
   ; F₁           = λ _ → id
   ; identity     = refl
-  ; homomorphism = sym identityˡ
+  ; homomorphism = sym identity²
   ; F-resp-≈     = λ _ → refl
   }
 
@@ -245,7 +247,7 @@ nullaryH X = record
   { F₀           = λ _ _ → X
   ; F₁           = λ _ _ → id
   ; identity     = λ _ → refl
-  ; homomorphism = λ _ → sym identityˡ
+  ; homomorphism = λ _ → sym identity²
   ; F-resp-≈     = λ _ _ → refl
   }
 

@@ -8,7 +8,7 @@ open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 open Category C
 open import Categories.Morphism C using (Epi; _≅_)
-open import Categories.Morphism.IsoEquiv C using (_≃_)
+open import Categories.Morphism.IsoEquiv C using (_≃_; ⌞_⌟)
 open import Categories.Morphism.Reasoning C
 
 open HomReasoning
@@ -53,10 +53,7 @@ transport-by-iso i {X} i≅X = record
   where open _≅_ i≅X
 
 up-to-iso-unique : ∀ i i′ → (iso : ⊥ i ≅ ⊥ i′) → up-to-iso i i′ ≃ iso
-up-to-iso-unique i i′ iso = record
-  { from-≈ = !-unique i _
-  ; to-≈   = !-unique i′ _
-  }
+up-to-iso-unique i i′ iso = ⌞ !-unique i _ ⌟
 
 up-to-iso-invˡ : ∀ {t X} {i : ⊥ t ≅ X} → up-to-iso t (transport-by-iso t i) ≃ i
 up-to-iso-invˡ {t} {i = i} = up-to-iso-unique t (transport-by-iso t i) i

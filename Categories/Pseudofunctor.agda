@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Bicategory
+open import Categories.Bicategory using (Bicategory)
 
 -- A Pseudofunctor is a homomorphism of Bicategories
 -- Follow Bénabou's definition, which is basically that of a Functor
@@ -9,34 +9,29 @@ open import Categories.Bicategory
 module Categories.Pseudofunctor where
 
 open import Level
-open import Data.Unit using (⊤; tt)
-open import Data.Product using (Σ; _,_)
+open import Data.Product using (_,_)
 
 import Categories.Category as Category
 open Category.Category using (Obj; module Commutation)
 open Category using (Category; _[_,_])
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
-open import Categories.Category.Product
+open import Categories.Category.Product using (_⁂_)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; _≃_)
-open import Categories.Functor.Construction.Constant
-open import Categories.Category.Instance.One
-open import Categories.Category.Construction.Functors
+open import Categories.Category.Instance.One using (shift)
+open NaturalIsomorphism using (F⇒G; F⇐G)
 
-private
-  variable
-    o ℓ e t o′ ℓ′ e′ t′  : Level
-
-record Pseudofunctor (C : Bicategory o ℓ e t) (D : Bicategory o′ ℓ′ e′ t′) : Set (o ⊔ ℓ ⊔ e ⊔ t ⊔ o′ ⊔ ℓ′ ⊔ e′ ⊔ t′) where
-  private module C = Bicategory C
-  private module D = Bicategory D
-  open NaturalIsomorphism
+record Pseudofunctor {o ℓ e t o′ ℓ′ e′ t′  : Level} (C : Bicategory o ℓ e t) (D : Bicategory o′ ℓ′ e′ t′)
+    : Set (o ⊔ ℓ ⊔ e ⊔ t ⊔ o′ ⊔ ℓ′ ⊔ e′ ⊔ t′) where
+  private
+    module C = Bicategory C
+    module D = Bicategory D
 
   field
     P₀ : C.Obj → D.Obj
     P₁ : {x y : C.Obj} → Functor (C.hom x y) (D.hom (P₀ x) (P₀ y))
     -- For maximal generality, shift the levels of One. P preserves id
-    P-identity : {A : C.Obj} →  D.id (P₀ A) ∘F shift o′ ℓ′ e′ ≃ P₁ ∘F (C.id A)
+    P-identity : {A : C.Obj} →  D.id {P₀ A} ∘F shift o′ ℓ′ e′ ≃ P₁ ∘F (C.id {A})
     -- P preserves composition
     P-homomorphism : {x y z : C.Obj} → D.⊚ ∘F (P₁ ⁂ P₁) ≃ P₁ ∘F C.⊚ {x} {y} {z}
     -- P preserves ≃

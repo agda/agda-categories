@@ -8,8 +8,8 @@ open import Relation.Binary using (Rel)
 
 open import Categories.Category
 open import Categories.Category.Monoidal.Instance.Cats using (module Product)
-open import Categories.Category.Monoidal.Enriched
 open import Categories.Category.Instance.Cats
+open import Categories.Enriched.Category renaming (Category to Enriched)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Bifunctor.Properties
@@ -24,8 +24,7 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
     enriched : Enriched (Product.Cats-Monoidal {o} {ℓ} {e}) t
 
   open Enriched enriched public
-  module Cats = Category (Cats o ℓ e)
-  module hom {A B} = Category (hom A B)  
+  module hom {A B} = Category (hom A B)
 
   open Functor
 
@@ -33,7 +32,7 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   module ⊚-assoc {A B C D}  = NaturalIsomorphism (⊚-assoc {A} {B} {C} {D})
   module unitˡ {A B}        = NaturalIsomorphism (unitˡ {A} {B})
   module unitʳ {A B}        = NaturalIsomorphism (unitʳ {A} {B})
-  module id {A}             = Functor (id A)
+  module id {A}             = Functor (id {A})
 
   infix 4 _⇒₁_ _⇒₂_ _≈_
   infixr 7 _∘ᵥ_ _∘ₕ_
@@ -44,39 +43,39 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   _⇒₁_ : Obj → Obj → Set o
   A ⇒₁ B = Category.Obj (hom A B)
 
-  _⇒₂_ : ∀ {A B} → A ⇒₁ B → A ⇒₁ B → Set ℓ
+  _⇒₂_ : {A B : Obj} → A ⇒₁ B → A ⇒₁ B → Set ℓ
   _⇒₂_ = hom._⇒_
 
-  _⊚₀_ : ∀ {A B C} → B ⇒₁ C → A ⇒₁ B → A ⇒₁ C
+  _⊚₀_ : {A B C : Obj} → B ⇒₁ C → A ⇒₁ B → A ⇒₁ C
   f ⊚₀ g = ⊚.F₀ (f , g)
 
-  _⊚₁_ : ∀ {A B C} {f h : B ⇒₁ C} {g i : A ⇒₁ B} → f ⇒₂ h → g ⇒₂ i → f ⊚₀ g ⇒₂ h ⊚₀ i
+  _⊚₁_ : {A B C : Obj} {f h : B ⇒₁ C} {g i : A ⇒₁ B} → f ⇒₂ h → g ⇒₂ i → f ⊚₀ g ⇒₂ h ⊚₀ i
   α ⊚₁ β = ⊚.F₁ (α , β)
 
-  _≈_ : ∀ {A B} {f g : A ⇒₁ B} → Rel (f ⇒₂ g) e
+  _≈_ : {A B : Obj} {f g : A ⇒₁ B} → Rel (f ⇒₂ g) e
   _≈_ = hom._≈_
 
-  id₁ : ∀ {A} → A ⇒₁ A
+  id₁ : {A : Obj} → A ⇒₁ A
   id₁ {_} = id.F₀ _
 
-  id₂ : ∀ {A B} {f : A ⇒₁ B} → f ⇒₂ f
+  id₂ : {A B : Obj} {f : A ⇒₁ B} → f ⇒₂ f
   id₂ = hom.id
 
   -- horizontal composition
-  _∘ₕ_ : ∀ {A B C} → B ⇒₁ C → A ⇒₁ B → A ⇒₁ C
+  _∘ₕ_ : {A B C : Obj} → B ⇒₁ C → A ⇒₁ B → A ⇒₁ C
   _∘ₕ_ = _⊚₀_
 
   -- vertical composition
-  _∘ᵥ_ : ∀ {A B} {f g h : A ⇒₁ B} (α : g ⇒₂ h) (β : f ⇒₂ g) → f ⇒₂ h
+  _∘ᵥ_ : {A B : Obj} {f g h : A ⇒₁ B} (α : g ⇒₂ h) (β : f ⇒₂ g) → f ⇒₂ h
   _∘ᵥ_ = hom._∘_
 
-  _◁_ : ∀ {A B C} {g h : B ⇒₁ C} (α : g ⇒₂ h) (f : A ⇒₁ B) → g ∘ₕ f ⇒₂ h ∘ₕ f
+  _◁_ : {A B C : Obj} {g h : B ⇒₁ C} (α : g ⇒₂ h) (f : A ⇒₁ B) → g ∘ₕ f ⇒₂ h ∘ₕ f
   α ◁ f = α ⊚₁ id₂
 
-  _▷_ : ∀ {A B C} {f g : A ⇒₁ B} (h : B ⇒₁ C) (α : f ⇒₂ g) → h ∘ₕ f ⇒₂ h ∘ₕ g
+  _▷_ : {A B C : Obj} {f g : A ⇒₁ B} (h : B ⇒₁ C) (α : f ⇒₂ g) → h ∘ₕ f ⇒₂ h ∘ₕ g
   h ▷ α = id₂ ⊚₁ α
 
-  unitorˡ : ∀ {A B} {f : A ⇒₁ B} → Mor._≅_ (hom A B) (id₁ ∘ₕ f) f
+  unitorˡ : {A B : Obj} {f : A ⇒₁ B} → Mor._≅_ (hom A B) (id₁ ∘ₕ f) f
   unitorˡ {_} {_} {f} = record
     { from = unitˡ.⇒.η (_ , f)
     ; to   = unitˡ.⇐.η (_ , f)
@@ -85,7 +84,7 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
 
   module unitorˡ {A B f} = Mor._≅_ (unitorˡ {A} {B} {f})
 
-  unitorʳ : ∀ {A B} {f : A ⇒₁ B} → Mor._≅_ (hom A B) (f ∘ₕ id₁) f
+  unitorʳ : {A B : Obj} {f : A ⇒₁ B} → Mor._≅_ (hom A B) (f ∘ₕ id₁) f
   unitorʳ {_} {_} {f} = record
     { from = unitʳ.⇒.η (f , _)
     ; to   = unitʳ.⇐.η (f , _)
@@ -94,7 +93,7 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
 
   module unitorʳ {A B f} = Mor._≅_ (unitorʳ {A} {B} {f})
 
-  associator : ∀ {A B C D} {f : D ⇒₁ B} {g : C ⇒₁ D} {h : A ⇒₁ C} →  Mor._≅_ (hom A B) ((f ∘ₕ g) ∘ₕ h) (f ∘ₕ g ∘ₕ h)
+  associator : {A B C D : Obj} {f : D ⇒₁ B} {g : C ⇒₁ D} {h : A ⇒₁ C} →  Mor._≅_ (hom A B) ((f ∘ₕ g) ∘ₕ h) (f ∘ₕ g ∘ₕ h)
   associator {_} {_} {_} {_} {f} {g} {h} = record
     { from = ⊚-assoc.⇒.η ((f , g) , h)
     ; to   = ⊚-assoc.⇐.η ((f , g) , h)
@@ -106,13 +105,13 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   open hom.Commutation
 
   field
-    triangle : ∀ {A B C} {f : A ⇒₁ B} {g : B ⇒₁ C} →
+    triangle : {A B C : Obj} {f : A ⇒₁ B} {g : B ⇒₁ C} →
                  [ (g ∘ₕ id₁) ∘ₕ f ⇒ g ∘ₕ f ]⟨
                    associator.from          ⇒⟨ g ∘ₕ id₁ ∘ₕ f ⟩
                    g ▷ unitorˡ.from
                  ≈ unitorʳ.from ◁ f
                  ⟩
-    pentagon : ∀ {A B C D E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+    pentagon : {A B C D E : Obj} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
                  [ ((i ∘ₕ h) ∘ₕ g) ∘ₕ f ⇒ i ∘ₕ h ∘ₕ g ∘ₕ f ]⟨
                    associator.from ◁ f                     ⇒⟨ (i ∘ₕ h ∘ₕ g) ∘ₕ f ⟩
                    associator.from                         ⇒⟨ i ∘ₕ (h ∘ₕ g) ∘ₕ f ⟩
@@ -135,7 +134,7 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
 
   identity₂ˡ : id₂ ∘ᵥ α ≈ α
   identity₂ˡ = hom.identityˡ
-  
+
   identity₂ʳ : α ∘ᵥ id₂ ≈ α
   identity₂ʳ = hom.identityʳ
 
@@ -145,8 +144,8 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   id₂◁ : id₂ {f = g} ◁ f ≈ id₂
   id₂◁ = ⊚.identity
 
-  ◁id₂ : f ▷ id₂ {f = g} ≈ id₂
-  ◁id₂ = ⊚.identity
+  ▷id₂ : f ▷ id₂ {f = g} ≈ id₂
+  ▷id₂ = ⊚.identity
 
   open hom.HomReasoning
   private

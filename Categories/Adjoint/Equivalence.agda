@@ -7,8 +7,10 @@ open import Level
 open import Categories.Adjoint
 open import Categories.Category
 open import Categories.Functor renaming (id to idF)
+open import Categories.Functor.Properties
 open import Categories.NaturalTransformation.NaturalIsomorphism as ≃ using (_≃_; NaturalIsomorphism)
 open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
+import Categories.Morphism.Reasoning as MR
 
 private
   variable
@@ -54,5 +56,41 @@ record ⊣Equivalence (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L �
     ; zag    = zag
     }
 
-  open Adjoint L⊣R hiding (unit; counit; zig; zag) public
+  module L⊣R = Adjoint L⊣R
+  open L⊣R hiding (unit; counit; zig; zag) public
 
+  R⊣L : R ⊣ L
+  R⊣L = record
+    { unit   = counit.F⇐G
+    ; counit = unit.F⇐G
+    ; zig    = λ {X} →
+      let open C.HomReasoning
+          open MR C
+      in begin
+        unit.⇐.η (R.F₀ X) C.∘ R.F₁ (counit.⇐.η X)
+          ≈˘⟨ elimʳ zag ⟩
+        (unit.⇐.η (R.F₀ X) C.∘ R.F₁ (counit.⇐.η X)) C.∘ (R.F₁ (counit.⇒.η X) C.∘ unit.⇒.η (R.F₀ X))
+          ≈⟨ center ([ R ]-resp-∘ (counit.iso.isoˡ _) ○ R.identity) ⟩
+        unit.⇐.η (R.F₀ X) C.∘ C.id C.∘ unit.⇒.η (R.F₀ X)
+          ≈⟨ refl⟩∘⟨ C.identityˡ ⟩
+        unit.⇐.η (R.F₀ X) C.∘ unit.⇒.η (R.F₀ X)
+          ≈⟨ unit.iso.isoˡ _ ⟩
+        C.id
+          ∎
+    ; zag    = λ {X} →
+      let open D.HomReasoning
+          open MR D
+      in begin
+        L.F₁ (unit.⇐.η X) D.∘ counit.⇐.η (L.F₀ X)
+          ≈˘⟨ elimʳ zig ⟩
+        (L.F₁ (unit.⇐.η X) D.∘ counit.⇐.η (L.F₀ X)) D.∘ counit.⇒.η (L.F₀ X) D.∘ L.F₁ (unit.⇒.η X)
+          ≈⟨ center (counit.iso.isoˡ _) ⟩
+        L.F₁ (unit.⇐.η X) D.∘ D.id D.∘ L.F₁ (unit.⇒.η X)
+          ≈⟨ refl⟩∘⟨ D.identityˡ ⟩
+        L.F₁ (unit.⇐.η X) D.∘ L.F₁ (unit.⇒.η X)
+          ≈⟨ ([ L ]-resp-∘ (unit.iso.isoˡ _)) ○ L.identity ⟩
+        D.id
+          ∎
+    }
+
+  module R⊣L = Adjoint R⊣L
