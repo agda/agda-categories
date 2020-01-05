@@ -12,19 +12,18 @@ module Categories.Enriched.Category {o ℓ e} {V : Setoid-Category o ℓ e}
 open import Level
 open import Function using (_$_)
 
-open import Categories.Category.Monoidal.Properties M
-  using (module Serialize; module Kelly's)
-open import Categories.Functor using (Functor)
-import Categories.Morphism.Reasoning V as MorphismReasoning
-import Categories.Morphism.IsoEquiv V as IsoEquiv
+open import Categories.Category.Monoidal.Properties M using (module Kelly's)
 open import Categories.Category.Monoidal.Reasoning M
+open import Categories.Category.Monoidal.Utilities M using (module Shorthands)
+open import Categories.Functor using (Functor)
+open import Categories.Morphism.Reasoning V
+import Categories.Morphism.IsoEquiv V as IsoEquiv
 
 open Setoid-Category V renaming (Obj to ObjV; id to idV)
-open Monoidal M
 open Commutation
-open MorphismReasoning
+open Monoidal M
+open Shorthands
 open IsoEquiv._≃_
-open Serialize
 
 record Category v : Set (o ⊔ ℓ ⊔ e ⊔ suc v) where
   field
@@ -74,11 +73,11 @@ record Category v : Set (o ⊔ ℓ ⊔ e ⊔ suc v) where
         ⊚
       ⟩
   ⊚-assoc-var {f = f} {g} {h} = begin
-    ⊚ ∘ (⊚ ∘ f ⊗₁ g) ⊗₁ h                               ≈⟨ refl⟩∘⟨ split₁ˡ ⟩
-    ⊚ ∘ ⊚ ⊗₁ idV ∘ (f ⊗₁ g) ⊗₁ h                       ≈⟨ pullˡ ⊚-assoc ⟩
-    (⊚ ∘ idV ⊗₁ ⊚ ∘ associator.from) ∘ (f ⊗₁ g) ⊗₁ h   ≈⟨ pullʳ (pullʳ assoc-commute-from) ⟩
-    ⊚ ∘ idV ⊗₁ ⊚ ∘ f ⊗₁ (g ⊗₁ h) ∘ associator.from     ≈˘⟨ refl⟩∘⟨ pushˡ split₂ˡ ⟩
-    ⊚ ∘ f ⊗₁ (⊚ ∘ g ⊗₁ h) ∘ associator.from             ∎
+    ⊚ ∘ (⊚ ∘ f ⊗₁ g) ⊗₁ h                 ≈⟨ refl⟩∘⟨ split₁ˡ ⟩
+    ⊚ ∘ ⊚ ⊗₁ idV ∘ (f ⊗₁ g) ⊗₁ h          ≈⟨ pullˡ ⊚-assoc ⟩
+    (⊚ ∘ idV ⊗₁ ⊚ ∘ α⇒) ∘ (f ⊗₁ g) ⊗₁ h   ≈⟨ pullʳ (pullʳ assoc-commute-from) ⟩
+    ⊚ ∘ idV ⊗₁ ⊚ ∘ f ⊗₁ (g ⊗₁ h) ∘ α⇒     ≈˘⟨ refl⟩∘⟨ pushˡ split₂ˡ ⟩
+    ⊚ ∘ f ⊗₁ (⊚ ∘ g ⊗₁ h) ∘ α⇒            ∎
 
 -- The usual shorthand for hom-objects of an arbitrary category.
 
@@ -98,53 +97,39 @@ underlying C = categoryHelper (record
   ; _⇒_ = λ A B → unit ⇒ hom A B
   ; _≈_ = λ f g → f ≈ g
   ; id  = id
-  ; _∘_ = λ f g → ⊚ ∘ f ⊗₁ g ∘ unitorˡ.to
+  ; _∘_ = λ f g → ⊚ ∘ f ⊗₁ g ∘ λ⇐
   ; assoc = λ {_} {_} {_} {_} {f} {g} {h} →
     begin
-      ⊚ ∘ (⊚ ∘ h ⊗₁ g ∘ unitorˡ.to) ⊗₁ f ∘ unitorˡ.to
+      ⊚ ∘ (⊚ ∘ h ⊗₁ g ∘ λ⇐) ⊗₁ f ∘ λ⇐
     ≈˘⟨ refl⟩∘⟨ assoc ⟩⊗⟨refl ⟩∘⟨refl ⟩
-      ⊚ ∘ ((⊚ ∘ h ⊗₁ g) ∘ unitorˡ.to) ⊗₁ f ∘ unitorˡ.to
+      ⊚ ∘ ((⊚ ∘ h ⊗₁ g) ∘ λ⇐) ⊗₁ f ∘ λ⇐
     ≈⟨ refl⟩∘⟨ pushˡ split₁ʳ ⟩
-      ⊚ ∘ (⊚ ∘ h ⊗₁ g) ⊗₁ f ∘ (unitorˡ.to ⊗₁ idV) ∘ unitorˡ.to
+      ⊚ ∘ (⊚ ∘ h ⊗₁ g) ⊗₁ f ∘ (λ⇐ ⊗₁ idV) ∘ λ⇐
     ≈⟨ pullˡ ⊚-assoc-var ⟩
-      (⊚ ∘ h ⊗₁ (⊚ ∘ g ⊗₁ f) ∘ associator.from) ∘
-        (unitorˡ.to ⊗₁ idV) ∘ unitorˡ.to
-    ≈˘⟨ assoc ⟩∘⟨ to-≈ Kelly's.coherence-iso₁ ⟩∘⟨refl ⟩
-      ((⊚ ∘ h ⊗₁ (⊚ ∘ g ⊗₁ f)) ∘ associator.from) ∘
-        (associator.to ∘ unitorˡ.to) ∘ unitorˡ.to
-    ≈⟨ pullˡ (cancelInner associator.isoʳ) ⟩
-      ((⊚ ∘ h ⊗₁ (⊚ ∘ g ⊗₁ f)) ∘ unitorˡ.to) ∘ unitorˡ.to
-    ≈⟨ pullʳ unitorˡ-commute-to ⟩
-      (⊚ ∘ h ⊗₁ (⊚ ∘ g ⊗₁ f)) ∘ idV ⊗₁ unitorˡ.to ∘ unitorˡ.to
-    ≈˘⟨ pushʳ (pushˡ split₂ʳ) ⟩
-      ⊚ ∘ h ⊗₁ ((⊚ ∘ g ⊗₁ f) ∘ unitorˡ.to) ∘ unitorˡ.to
+      (⊚ ∘ h ⊗₁ (⊚ ∘ g ⊗₁ f) ∘ α⇒) ∘ (λ⇐ ⊗₁ idV) ∘ λ⇐
+    ≈˘⟨ pushˡ (pushʳ (pushʳ
+          (switch-tofromˡ associator (to-≈ Kelly's.coherence-iso₁)))) ⟩
+      (⊚ ∘ h ⊗₁ (⊚ ∘ g ⊗₁ f) ∘ λ⇐) ∘ λ⇐
+    ≈⟨ pullʳ (pullʳ unitorˡ-commute-to) ⟩
+      ⊚ ∘ h ⊗₁ (⊚ ∘ g ⊗₁ f) ∘ idV ⊗₁ λ⇐ ∘ λ⇐
+    ≈˘⟨ refl⟩∘⟨ pushˡ split₂ʳ ⟩
+      ⊚ ∘ h ⊗₁ ((⊚ ∘ g ⊗₁ f) ∘ λ⇐) ∘ λ⇐
     ≈⟨ refl⟩∘⟨ refl⟩⊗⟨ assoc ⟩∘⟨refl ⟩
-      ⊚ ∘ h ⊗₁ (⊚ ∘ g ⊗₁ f ∘ unitorˡ.to) ∘ unitorˡ.to
+      ⊚ ∘ h ⊗₁ (⊚ ∘ g ⊗₁ f ∘ λ⇐) ∘ λ⇐
     ∎
   ; identityˡ = λ {_} {_} {f} → begin
-      ⊚ ∘ id ⊗₁ f ∘ unitorˡ.to
-    ≈⟨ refl⟩∘⟨ serialize₁₂ ⟩∘⟨refl ⟩
-      ⊚ ∘ (id ⊗₁ idV ∘ idV ⊗₁ f) ∘ unitorˡ.to
-    ≈˘⟨ refl⟩∘⟨ pushʳ unitorˡ-commute-to ⟩
-      ⊚ ∘ id ⊗₁ idV ∘ unitorˡ.to ∘ f
-    ≈⟨ pullˡ unitˡ ⟩
-      unitorˡ.from ∘ unitorˡ.to ∘ f
-    ≈⟨ cancelˡ unitorˡ.isoʳ ⟩
-      f
-    ∎
+      ⊚ ∘ id ⊗₁ f ∘ λ⇐                 ≈⟨ refl⟩∘⟨ serialize₁₂ ⟩∘⟨refl ⟩
+      ⊚ ∘ (id ⊗₁ idV ∘ idV ⊗₁ f) ∘ λ⇐  ≈˘⟨ refl⟩∘⟨ pushʳ unitorˡ-commute-to ⟩
+      ⊚ ∘ id ⊗₁ idV ∘ λ⇐ ∘ f           ≈⟨ pullˡ unitˡ ⟩
+      λ⇒ ∘ λ⇐ ∘ f                      ≈⟨ cancelˡ unitorˡ.isoʳ ⟩
+      f                                ∎
   ; identityʳ = λ {_} {_} {f} → begin
-      ⊚ ∘ f ⊗₁ id ∘ unitorˡ.to
-    ≈⟨ refl⟩∘⟨ serialize₂₁ ⟩∘⟨refl ⟩
-      ⊚ ∘ (idV ⊗₁ id ∘ f ⊗₁ idV) ∘ unitorˡ.to
-    ≈⟨ pullˡ (pullˡ unitʳ) ⟩
-      (unitorʳ.from ∘ f ⊗₁ idV) ∘ unitorˡ.to
-    ≈⟨ unitorʳ-commute-from ⟩∘⟨refl ⟩
-      (f ∘ unitorʳ.from) ∘ unitorˡ.to
-    ≈˘⟨ (refl⟩∘⟨ Kelly's.coherence₃) ⟩∘⟨refl ⟩
-      (f ∘ unitorˡ.from) ∘ unitorˡ.to
-    ≈⟨ cancelʳ unitorˡ.isoʳ ⟩
-      f
-    ∎
+      ⊚ ∘ f ⊗₁ id ∘ λ⇐                 ≈⟨ refl⟩∘⟨ serialize₂₁ ⟩∘⟨refl ⟩
+      ⊚ ∘ (idV ⊗₁ id ∘ f ⊗₁ idV) ∘ λ⇐  ≈⟨ pullˡ (pullˡ unitʳ) ⟩
+      (unitorʳ.from ∘ f ⊗₁ idV) ∘ λ⇐   ≈⟨ unitorʳ-commute-from ⟩∘⟨refl ⟩
+      (f ∘ unitorʳ.from) ∘ λ⇐          ≈˘⟨ (refl⟩∘⟨ Kelly's.coherence₃) ⟩∘⟨refl ⟩
+      (f ∘ λ⇒) ∘ λ⇐                    ≈⟨ cancelʳ unitorˡ.isoʳ ⟩
+      f                                ∎
   ; equiv    = equiv
   ; ∘-resp-≈ = λ eq₁ eq₂ → ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ⊗-resp-≈ eq₁ eq₂
   })
