@@ -85,6 +85,7 @@ import Categories.Category.Monoidal.Closed.IsClosed.Dinatural
 import Categories.Category.Monoidal.Closed.IsClosed.Identity
 import Categories.Category.Monoidal.Closed.IsClosed.L
 import Categories.Category.Monoidal.Closed.IsClosed.Pentagon
+import Categories.Category.Monoidal.Construction.Minus2
 import Categories.Category.Monoidal.Core
 import Categories.Category.Monoidal.Instance.Cats
 import Categories.Category.Monoidal.Instance.One
@@ -171,6 +172,10 @@ import Categories.Functor.Slice
 import Categories.GlobularSet
 import Categories.Kan
 import Categories.Kan.Duality
+import Categories.Minus2-Category
+import Categories.Minus2-Category.Construction.Indiscrete
+import Categories.Minus2-Category.Instance.One
+import Categories.Minus2-Category.Properties
 import Categories.Monad
 import Categories.Monad.Duality
 import Categories.Monad.Idempotent
