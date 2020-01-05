@@ -2,7 +2,7 @@
 open import Categories.Category
 import Categories.Category.Monoidal as M
 
--- Propoerties of Monoidal Categories
+-- Properties of Monoidal Categories
 
 module Categories.Category.Monoidal.Properties
   {o ℓ e} {C : Category o ℓ e} (MC : M.Monoidal C) where
@@ -11,6 +11,8 @@ open import Data.Product using (_,_; Σ; uncurry′)
 
 open Category C
 open M.Monoidal MC
+open import Categories.Category.Monoidal.Utilities MC
+import Categories.Category.Monoidal.Reasoning as MonR
 open import Categories.Category.Construction.Core C
 open import Categories.Category.Product using (Product)
 open import Categories.Functor using (Functor)
@@ -49,8 +51,7 @@ X ⊗ᵢ- = appˡ ⊗-iso X
 -- Parallel-to-serial conversions and splitting of ∘ across ⊗
 
 module Serialize where
-  open M.MonoidalReasoning C MC
-
+  open MonR MC
   -- Parallel-to-serial conversions
   --
   --   |   |        |   |       |   |

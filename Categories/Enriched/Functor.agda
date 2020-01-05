@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category using () renaming (Category to Setoid-Category)
-open import Categories.Category.Monoidal using (Monoidal; module MonoidalReasoning)
+open import Categories.Category.Monoidal using (Monoidal)
 
 module Categories.Enriched.Functor {o ℓ e} {V : Setoid-Category o ℓ e}
                                    (M : Monoidal V) where
@@ -11,12 +11,12 @@ open import Level
 open import Categories.Enriched.Category M
 open import Categories.Functor using () renaming (Functor to Setoid-Functor)
 open import Categories.Morphism.Reasoning V
+open import Categories.Category.Monoidal.Reasoning M using (⊗-distrib-over-∘)
 
 open Setoid-Category V renaming (Obj to ObjV; id to idV)
 open Commutation
 open HomReasoning
 open Monoidal M
-open MonoidalReasoning V M using (⊗-distrib-over-∘)
 
 record Functor {c d} (C : Category c) (D : Category d) : Set (ℓ ⊔ e ⊔ c ⊔ d) where
   eta-equality

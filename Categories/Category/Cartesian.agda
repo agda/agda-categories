@@ -18,7 +18,7 @@ open import Categories.Object.Terminal 𝒞
 open import Categories.Object.Product 𝒞
 open import Categories.Morphism 𝒞
 open import Categories.Morphism.Reasoning 𝒞
-open import Categories.Category.Monoidal 𝒞
+open import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Symmetric as Sym
 
 open import Categories.Functor renaming (id to idF)
@@ -293,7 +293,7 @@ record Cartesian : Set (levelOfTerm 𝒞) where
     ; iso = λ _ → _≅_.iso A×⊤≅A
     }
 
-  monoidal : Monoidal
+  monoidal : Monoidal 𝒞
   monoidal = record
     { ⊗                    = -×-
     ; unit                 = ⊤

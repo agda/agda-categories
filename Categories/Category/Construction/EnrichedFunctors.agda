@@ -17,10 +17,10 @@ open import Categories.Enriched.NaturalTransformation M renaming (id to idNT)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Morphism.Reasoning V
 open import Categories.NaturalTransformation using (ntHelper)
+open import Categories.Category.Monoidal.Reasoning (M)
 
 open Setoid-Category V renaming (Obj to ObjV; id to idV)
 open Monoidal M
-open MonoidalReasoning V M
 open NaturalTransformation
 
 EnrichedFunctors : ∀ {c d} (C : Category c) (D : Category d) →

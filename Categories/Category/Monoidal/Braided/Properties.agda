@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category using (Category)
-open import Categories.Category.Monoidal using (Monoidal; module MonoidalReasoning)
+open import Categories.Category.Monoidal
 open import Categories.Category.Monoidal.Braided using (Braided)
 
 module Categories.Category.Monoidal.Braided.Properties
@@ -10,6 +10,8 @@ module Categories.Category.Monoidal.Braided.Properties
 open import Data.Product using (_,_)
 
 open import Categories.Category.Monoidal.Properties M
+open import Categories.Category.Monoidal.Reasoning M
+open import Categories.Category.Monoidal.Utilities M
 open import Categories.Functor using (Functor)
 open import Categories.Morphism.Reasoning C hiding (push-eq)
 open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
@@ -18,7 +20,6 @@ open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
 open Category C
 open Braided BM
 open Commutation
-open MonoidalReasoning C M
 
 private
   variable

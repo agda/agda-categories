@@ -84,14 +84,17 @@ import Categories.Category.Monoidal.Closed.IsClosed.Dinatural
 import Categories.Category.Monoidal.Closed.IsClosed.Identity
 import Categories.Category.Monoidal.Closed.IsClosed.L
 import Categories.Category.Monoidal.Closed.IsClosed.Pentagon
+import Categories.Category.Monoidal.Core
 import Categories.Category.Monoidal.Instance.Cats
 import Categories.Category.Monoidal.Instance.One
 import Categories.Category.Monoidal.Instance.Setoids
 import Categories.Category.Monoidal.Instance.Sets
 import Categories.Category.Monoidal.Instance.StrictCats
 import Categories.Category.Monoidal.Properties
+import Categories.Category.Monoidal.Reasoning
 import Categories.Category.Monoidal.Symmetric
 import Categories.Category.Monoidal.Traced
+import Categories.Category.Monoidal.Utilities
 import Categories.Category.Product
 import Categories.Category.Product.Properties
 import Categories.Category.RigCategory

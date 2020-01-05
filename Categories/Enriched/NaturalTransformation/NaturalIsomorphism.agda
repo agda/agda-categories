@@ -14,13 +14,12 @@ open import Categories.Enriched.Functor M renaming (id to idF)
 open import Categories.Enriched.NaturalTransformation M renaming (id to idNT)
 open import Categories.Functor.Properties using ([_]-resp-Iso)
 open import Categories.Morphism as Morphism using (Iso)
-
+open import Categories.Category.Monoidal.Reasoning M
 open import Relation.Binary using (IsEquivalence)
 
 open Setoid-Category V renaming (Obj to ObjV; id to idV)
 module M = Monoidal M
 open M hiding (unitorˡ; unitorʳ; associator)
-open MonoidalReasoning V M
 open NaturalTransformation
 
 module NaturalIsomorphism = Morphism._≅_

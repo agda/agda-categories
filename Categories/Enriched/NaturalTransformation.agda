@@ -10,6 +10,8 @@ open import Level
 
 open import Categories.Category.Monoidal.Properties M
   using (module Serialize; module Kelly's)
+open import Categories.Category.Monoidal.Reasoning M
+open import Categories.Category.Monoidal.Utilities M
 open import Categories.Enriched.Category M
 open import Categories.Enriched.Functor M renaming (id to idF)
 open import Categories.Morphism.Reasoning V
@@ -20,7 +22,6 @@ open import Categories.NaturalTransformation using (ntHelper)
 open Setoid-Category V renaming (Obj to ObjV; id to idV)
 open Commutation
 open Monoidal M
-open MonoidalReasoning V M
 open Serialize
 private
   λ⇐ = unitorˡ.to

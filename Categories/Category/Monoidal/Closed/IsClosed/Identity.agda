@@ -6,7 +6,7 @@
 -- hope that that will help.
 
 open import Categories.Category using (Category)
-open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Category.Monoidal
 open import Categories.Category.Monoidal.Closed using (Closed)
 
 module Categories.Category.Monoidal.Closed.IsClosed.Identity
@@ -14,6 +14,7 @@ module Categories.Category.Monoidal.Closed.IsClosed.Identity
 
 open import Function using (_$_) renaming (_∘_ to _∙_)
 
+open import Categories.Category.Monoidal.Utilities M
 open import Categories.Morphism C using (Iso)
 open import Categories.Morphism.Properties C using (Iso-resp-≈)
 open import Categories.Morphism.Reasoning C using (pullʳ; pullˡ; pushˡ; cancelʳ)
@@ -41,7 +42,7 @@ private
 
 identity : NaturalIsomorphism idF [ unit ,-]
 identity = record
-  { F⇒G = F∘id⇒F ∘ᵥ ([ unit ,-] ∘ˡ unitorʳ-natural.F⇒G) ∘ᵥ η
+  { F⇒G = F∘id⇒F ∘ᵥ ([ unit ,-] ∘ˡ (unitorʳ-natural.F⇒G)) ∘ᵥ η
   ; F⇐G = ε ∘ᵥ (unitorʳ-natural.F⇐G ∘ʳ [ unit ,-]) ∘ᵥ F⇒id∘F
   ; iso = λ X → Iso-resp-≈ (iso X) (⟺ identityˡ) (⟺ (∘-resp-≈ʳ identityʳ))
   }
