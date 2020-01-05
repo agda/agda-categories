@@ -56,6 +56,7 @@ import Categories.Category.Equivalence
 import Categories.Category.Finite
 import Categories.Category.Groupoid
 import Categories.Category.Groupoid.Properties
+import Categories.Category.Indiscrete
 import Categories.Category.Instance.Cats
 import Categories.Category.Instance.EmptySet
 import Categories.Category.Instance.FamilyOfSets
