@@ -15,6 +15,7 @@ import Categories.Bicategory
 import Categories.Bicategory.Bigroupoid
 import Categories.Bicategory.Construction.1-Category
 import Categories.Bicategory.Instance.Cats
+import Categories.Bicategory.Instance.EnrichedCats
 import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
