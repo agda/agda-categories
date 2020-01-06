@@ -8,8 +8,7 @@ module Categories.Enriched.NaturalTransformation
 
 open import Level
 
-open import Categories.Category.Monoidal.Properties M
-  using (module Serialize; module Kelly's)
+open import Categories.Category.Monoidal.Properties M using (module Kelly's)
 open import Categories.Category.Monoidal.Reasoning M
 open import Categories.Category.Monoidal.Utilities M
 open import Categories.Enriched.Category M
@@ -22,12 +21,7 @@ open import Categories.NaturalTransformation using (ntHelper)
 open Setoid-Category V renaming (Obj to ObjV; id to idV)
 open Commutation
 open Monoidal M
-open Serialize
-private
-  λ⇐ = unitorˡ.to
-  ρ⇐ = unitorʳ.to
-  α⇒ = associator.from
-  α⇐ = associator.to
+open Shorthands
 
 module _ {c d} {C : Category c} {D : Category d} where
 
