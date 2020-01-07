@@ -12,7 +12,7 @@ open import Categories.Minus2-Category
 open import Categories.Category.Indiscrete
 open import Categories.Morphism using (_≅_)
 
-InhIndIs-2 : ∀ {o ℓ} → (X : Set o) → (x : X) → -2-Category {o} {ℓ} {ℓ}
+InhIndIs-2 : (X : Set) → (x : X) → -2-Category
 InhIndIs-2 X x = record
   { cat = Indiscrete X
   ; Obj-Contr = x , λ y → record

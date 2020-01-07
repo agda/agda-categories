@@ -7,5 +7,5 @@ open import Categories.Minus2-Category
 open import Categories.Category.Instance.One
 
 -- Proof is trivial
-⊤-is-2-Category : ∀ {o ℓ e} → -2-Category {o} {ℓ} {e}
+⊤-is-2-Category : -2-Category
 ⊤-is-2-Category = record  { cat = One }

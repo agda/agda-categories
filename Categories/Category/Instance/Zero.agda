@@ -7,10 +7,11 @@ open import Level
 module Categories.Category.Instance.Zero where
 
 open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Unit using (⊤; tt)
 open import Function renaming (id to idf)
 
 open import Categories.Category
-open import Categories.Functor
+open import Categories.Functor renaming (id to idF)
 open import Categories.Category.Instance.Cats
 import Categories.Object.Initial as Init
 
@@ -21,19 +22,17 @@ module _ {o ℓ e : Level} where
   Zero : Category o ℓ e
   Zero = record
     { Obj       = Lift o ⊥
-    ; _⇒_       = λ _ _ → Lift ℓ ⊥
-    ; _≈_       = λ _ _ → Lift e ⊥
-    ; id        = λ { { lift () } }
-    ; _∘_       = λ a _ → a -- left-biased rather than strict
+    ; _⇒_       = λ _ _ → Lift ℓ ⊤
+    ; _≈_       = λ _ _ → Lift e ⊤
+    ; id        = _
+    ; _∘_       = _
     ; assoc     = λ { {lift () } }
     ; sym-assoc = λ { {lift () } }
     ; identityˡ = λ { {()} }
     ; identityʳ = λ { {()} }
     ; identity² = λ { {()} }
-    ; ∘-resp-≈  = λ { () }
     ; equiv     = record
-      { refl = λ { {()} }
-      ; sym = idf
+      { sym = idf
       ; trans = λ a _ → a
       }
     }
@@ -42,15 +41,16 @@ module _ {o ℓ e : Level} where
   Zero-⊥ = record
     { ⊥ = Zero
     ; ! = record
-      { F₀ = λ { (lift x) → ⊥-elim x }
-      ; F₁ = λ { (lift ()) }
+      { F₀ = λ {()}
+      ; F₁ = λ { {lift ()} }
       ; identity = λ { {lift ()} }
       ; homomorphism = λ { {lift ()} }
-      ; F-resp-≈ = λ { () }
+      ; F-resp-≈ = λ { {()} }
       }
     ; !-unique = λ f → record
-      { F⇒G = record { η = λ { () } ; commute = λ { () } ; sym-commute = λ { () } }
-      ; F⇐G = record { η = λ { () } ; commute = λ { () } ; sym-commute = λ { () } }
+      { F⇒G = record { η = λ { () } ; commute = λ { {()} } ; sym-commute = λ { {()} } }
+      ; F⇐G = record { η = λ { () } ; commute = λ { {()} } ; sym-commute = λ { {()} } }
       ; iso = λ { (lift ()) }
       }
     }
+    where open Category

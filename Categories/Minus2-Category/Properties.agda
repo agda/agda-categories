@@ -16,11 +16,7 @@ open import Categories.Category.Instance.One
 open import Categories.Category.Equivalence hiding (refl)
 open import Categories.NaturalTransformation using (ntHelper)
 
-private
-  variable
-    o ℓ e : Level
-
-shrink-them-all : (X : -2-Category {o} {ℓ} {e}) → StrongEquivalence (-2-Category.cat X) (One {o} {ℓ} {e})
+shrink-them-all : (X : -2-Category) → StrongEquivalence (-2-Category.cat X) (One {0ℓ} {0ℓ} {0ℓ})
 shrink-them-all X = record
   { F = record
     { F₀ = λ _ → lift tt

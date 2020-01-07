@@ -14,7 +14,7 @@ open import Categories.Category.Monoidal
 import Categories.Morphism as M
 
 -- Doing it manually is just as easy as going through Cartesian here
--2-Monoidal : ∀ {o ℓ e} → (C : -2-Category {o} {ℓ} {e}) → Monoidal (-2-Category.cat C)
+-2-Monoidal : (C : -2-Category) → Monoidal (-2-Category.cat C)
 -2-Monoidal C = record
   { ⊗ = record
     { F₀ = proj₁

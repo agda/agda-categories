@@ -14,6 +14,10 @@
 -- 1. |Obj| is (Categorically) contractible
 -- 2. |Hom| is connected (all arrows are equal)
 -- Note that we don't need to say anything at all about ≈
+--
+-- Furthermore, there really are no degrees of freedom, so there is
+-- no point in artificially have 3 levels. So making them all 0ℓ
+-- and the levels will appear with enrichmend.
 
 module Categories.Minus2-Category where
 
@@ -22,13 +26,9 @@ open import Categories.Category
 open import Data.Product using (Σ)
 import Categories.Morphism as M
 
-private
-  variable
-    o ℓ e : Level
-
-record -2-Category : Set (suc (o ⊔ ℓ ⊔ e)) where
+record -2-Category : Set (suc 0ℓ) where
    field
-     cat : Category o ℓ e
+     cat : Category 0ℓ 0ℓ 0ℓ
    open Category cat public
    open M cat using (_≅_)
 
