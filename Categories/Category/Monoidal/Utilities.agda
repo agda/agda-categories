@@ -43,7 +43,8 @@ module ⊗ = Functor ⊗
 -- convenient. However, they are not symmetric, even though the concepts are, so
 -- we'll use ⇒ and ⇐ arrows to indicate that
 
-private
+module Shorthands where
+
   λ⇒ = unitorˡ.from
   λ⇐ = unitorˡ.to
   ρ⇒ = unitorʳ.from
@@ -51,6 +52,8 @@ private
   -- eta expansion fixes a problem in 2.6.1, will be reported
   α⇒ = λ {X} {Y} {Z} → associator.from {X} {Y} {Z}
   α⇐ = λ {X} {Y} {Z} → associator.to {X} {Y} {Z}
+
+open Shorthands
 
 private
   [x⊗y]⊗z : Bifunctor (Product C C) C C
