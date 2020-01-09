@@ -71,6 +71,42 @@ record NaturalIsomorphism {C : Category o ℓ e}
       }
     }
 
+-- This helper definition lets us specify only one of the commuting
+-- squares and have the other one derived.
+
+record NIHelper {C : Category o ℓ e}
+                {D : Category o′ ℓ′ e′}
+                (F G : Functor C D) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
+  open Functor F using (F₀; F₁)
+  open Functor G using () renaming (F₀ to G₀; F₁ to G₁)
+  open Category D
+  field
+    η           : ∀ X → D [ F₀ X , G₀ X ]
+    η⁻¹         : ∀ X → D [ G₀ X , F₀ X ]
+    commute     : ∀ {X Y} (f : C [ X , Y ]) → η Y ∘ F₁ f ≈ G₁ f ∘ η X
+    iso         : ∀ X → Morphism.Iso D (η X) (η⁻¹ X)
+
+niHelper : ∀ {F G : Functor C D} → NIHelper F G → NaturalIsomorphism F G
+niHelper {D = D} {F = F} {G = G} α = record
+  { F⇒G = ntHelper record { η = η ; commute = commute }
+  ; F⇐G = ntHelper record
+    { η = η⁻¹
+    ; commute = λ {X Y} f → begin
+        η⁻¹ Y ∘ F₁ G f                     ≈˘⟨ cancelʳ (isoʳ (iso X)) ⟩
+        ((η⁻¹ Y ∘ F₁ G f) ∘ η X) ∘ η⁻¹ X   ≈˘⟨ pushʳ (commute f) ⟩∘⟨refl ⟩
+        (η⁻¹ Y ∘ (η Y ∘ F₁ F f)) ∘ η⁻¹ X   ≈⟨ cancelˡ (isoˡ (iso Y)) ⟩∘⟨refl ⟩
+        F₁ F f ∘ η⁻¹ X                     ∎
+    }
+  ; iso = iso
+  }
+  where
+    open Morphism.Iso
+    open NIHelper α
+    open Functor
+    open Category D
+    open HomReasoning
+    open MR D
+
 open NaturalIsomorphism
 
 infixr 9 _ⓘᵥ_ _ⓘₕ_ _ⓘˡ_ _ⓘʳ_
