@@ -15,13 +15,8 @@ open import Categories.Enriched.Category M
 open import Categories.Enriched.Functor M renaming (id to idF)
 open import Categories.Enriched.NaturalTransformation M renaming (id to idNT)
 open import Categories.Functor.Bifunctor using (Bifunctor)
-open import Categories.Morphism.Reasoning V
-open import Categories.NaturalTransformation using (ntHelper)
-open import Categories.Category.Monoidal.Reasoning (M)
 
-open Setoid-Category V renaming (Obj to ObjV; id to idV)
-open Monoidal M
-open NaturalTransformation
+open NaturalTransformation using (_[_])
 
 EnrichedFunctors : ∀ {c d} (C : Category c) (D : Category d) →
                    Setoid-Category (ℓ ⊔ e ⊔ c ⊔ d) (ℓ ⊔ e ⊔ c) (e ⊔ c)
@@ -31,22 +26,25 @@ EnrichedFunctors C D = record
   ; _≈_ = λ α β → ∀ {X} → α [ X ] ≈ β [ X ]
   ; id  = idNT
   ; _∘_ = _∘ᵥ_
-  ; assoc     = U.assoc
-  ; sym-assoc = U.sym-assoc
-  ; identityˡ = U.identityˡ
-  ; identityʳ = U.identityʳ
-  ; identity² = U.identity²
+  ; assoc     = assoc
+  ; sym-assoc = sym-assoc
+  ; identityˡ = identityˡ
+  ; identityʳ = identityʳ
+  ; identity² = identity²
   ; equiv     = record
-    { refl  = U.Equiv.refl
-    ; sym   = λ α≈β → U.Equiv.sym α≈β
-    ; trans = λ α≈β β≈γ → U.Equiv.trans α≈β β≈γ
+    { refl  = Equiv.refl
+    ; sym   = λ α≈β → Equiv.sym α≈β
+    ; trans = λ α≈β β≈γ → Equiv.trans α≈β β≈γ
     }
-  ; ∘-resp-≈ = λ α₁≈β₁ α₂≈β₂ → U.∘-resp-≈ α₁≈β₁ α₂≈β₂
+  ; ∘-resp-≈ = λ α₁≈β₁ α₂≈β₂ → ∘-resp-≈ α₁≈β₁ α₂≈β₂
   }
-  where module U = Underlying D
+  where open Underlying D
 
 -- Horizontal composition of natural transformations (aka the Godement
 -- product) induces a composition functor over functor categories.
+--
+-- Note that all the equational reasoning happens in the underlying
+-- (ordinary) categories!
 
 ⊚ : ∀ {c d e} {C : Category c} {D : Category d} {E : Category e} →
     Bifunctor (EnrichedFunctors D E) (EnrichedFunctors C D) (EnrichedFunctors C E)
@@ -54,36 +52,34 @@ EnrichedFunctors C D = record
   { F₀ = uncurry′ _∘F_
   ; F₁ = uncurry′ _∘ₕ_
   ; identity = λ{ {F , G} {X} →
-    let module F = Functor F
-    in begin
-      (F.₁ ∘ D.id) ∙ E.id   ≈⟨ UE.identityʳ ⟩
-      F.₁ ∘ D.id            ≈⟨ UF.identity F ⟩
-      E.id                  ∎ }
+    begin
+      (F $₁ D.id) ∘ E.id   ≈⟨ identityʳ ⟩
+      F $₁ D.id            ≈⟨ identity F ⟩
+      E.id                 ∎ }
   ; homomorphism = λ{ {_ , F₂} {G₁ , G₂} {H₁ , _} {α₁ , α₂} {β₁ , β₂} {X} →
-    let module F₂ = Functor F₂
-        module G₁ = Functor G₁
-        module G₂ = Functor G₂
-        module H₁ = Functor H₁
-    in begin
-      (H₁.₁ ∘ β₂ [ X ] UD.∘ α₂ [ X ]) ∙ β₁ [ F₂.₀ X ] ∙ α₁ [ F₂.₀ X ]
-    ≈⟨ UF.homomorphism H₁ UR.⟩∘⟨refl ⟩
-      ((H₁.₁ ∘ β₂ [ X ]) ∙ (H₁.₁ ∘ α₂ [ X ])) ∙ β₁ [ F₂.₀ X ] ∙ α₁ [ F₂.₀ X ]
-    ≈⟨ ⟺ UE.assoc ○ (UE.assoc UR.⟩∘⟨refl) ⟩
-      ((H₁.₁ ∘ β₂ [ X ]) ∙ ((H₁.₁ ∘ α₂ [ X ]) ∙ β₁ [ F₂.₀ X ])) ∙
-      α₁ [ F₂.₀ X ]
-    ≈˘⟨ (UR.refl⟩∘⟨ UnderlyingNT.commute β₁ (α₂ [ X ])) UR.⟩∘⟨refl ⟩
-      ((H₁.₁ ∘ β₂ [ X ]) ∙ (β₁ [ G₂.₀ X ] ∙ (G₁.₁ ∘ α₂ [ X ]))) ∙
-      α₁ [ F₂.₀ X ]
-    ≈˘⟨ ⟺ UE.assoc ○ UE.∘-resp-≈ UE.assoc UE.Equiv.refl ⟩
-      ((H₁.₁ ∘ β₂ [ X ]) ∙ β₁ [ G₂.₀ X ]) ∙ (G₁.₁ ∘ α₂ [ X ]) ∙ α₁ [ F₂.₀ X ]
+    begin
+      H₁ $₁ (β₂ [ X ] D.∘ α₂ [ X ]) ∘ β₁ [ F₂ $₀ X ] ∘ α₁ [ F₂ $₀ X ]
+    ≈⟨ homomorphism H₁ ⟩∘⟨refl ⟩
+      (H₁ $₁ β₂ [ X ] ∘ H₁ $₁ α₂ [ X ]) ∘ β₁ [ F₂ $₀ X ] ∘ α₁ [ F₂ $₀ X ]
+    ≈⟨ ⟺ assoc ○ ∘-resp-≈ˡ assoc ⟩
+      (H₁ $₁ β₂ [ X ] ∘ (H₁ $₁ α₂ [ X ] ∘ β₁ [ F₂ $₀ X ])) ∘ α₁ [ F₂ $₀ X ]
+    ≈˘⟨ (refl⟩∘⟨ commute β₁ (α₂ [ X ])) ⟩∘⟨refl ⟩
+      (H₁ $₁ β₂ [ X ] ∘ (β₁ [ G₂ $₀ X ] ∘ G₁ $₁ α₂ [ X ])) ∘ α₁ [ F₂ $₀ X ]
+    ≈˘⟨ ⟺ assoc ○ ∘-resp-≈ˡ assoc ⟩
+      (H₁ $₁ β₂ [ X ] ∘ β₁ [ G₂ $₀ X ]) ∘ G₁ $₁ α₂ [ X ] ∘ α₁ [ F₂ $₀ X ]
     ∎ }
-  ; F-resp-≈ = λ{ {_} {F , _} (eq₁ , eq₂) → UE.∘-resp-≈ (UF.F-resp-≈ F eq₂) eq₁ }
+  ; F-resp-≈ = λ{ {_} {F , _} (eq₁ , eq₂) → ∘-resp-≈ (F-resp-≈ F eq₂) eq₁ }
   }
   where
-    module D = Category D
-    module E = Category E
-    module UD = Underlying D
-    module UE = Underlying E
-    module UR = UE.HomReasoning
-    module UF = UnderlyingFunctor
-    open UE using () renaming (_∘_ to _∙_)
+    module D = Underlying D
+    module E = Underlying E
+    open E hiding (id)
+    open HomReasoning
+    open UnderlyingFunctor hiding (F₀; F₁)
+    open UnderlyingNT
+
+    -- Aliases used to shorten some proof expressions
+
+    infixr 14 _$₀_ _$₁_
+    _$₀_ = UnderlyingFunctor.F₀
+    _$₁_ = UnderlyingFunctor.F₁
