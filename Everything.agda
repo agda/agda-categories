@@ -214,6 +214,7 @@ import Categories.Object.Product.Morphisms
 import Categories.Object.Terminal
 import Categories.Object.Zero
 import Categories.Pseudofunctor
+import Categories.Pseudofunctor.Instance.EnrichedUnderlying
 import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda
