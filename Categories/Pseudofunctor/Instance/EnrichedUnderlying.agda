@@ -17,6 +17,7 @@ open import Categories.Bicategory.Instance.EnrichedCats M
 open import Categories.Enriched.Category M
 open import Categories.Enriched.Functor M
 open import Categories.Enriched.NaturalTransformation M
+import Categories.Morphism.Reasoning as MorphismReasoning
 open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
 open import Categories.Pseudofunctor using (Pseudofunctor)
@@ -26,6 +27,7 @@ private
   module UnderlyingReasoning {c} (C : Category c) where
     open Underlying C public hiding (id)
     open HomReasoning public
+    open MorphismReasoning (Underlying C) public
   open NaturalTransformation using (_[_])
 
   -- Aliases used to shorten some proof expressions
@@ -81,23 +83,18 @@ EnrichedUnderlying = record
       { η = λ{ (F , G) → ntHelper record
         { η       = λ _ → E.id
         ; commute = λ f → begin
-            E.id ∘ F $₁ G $₁ f     ≈⟨ identityˡ ⟩
-            F $₁ G $₁ f            ≈˘⟨ V.assoc ⟩
-            (F ∘F G) $₁ f          ≈˘⟨ identityʳ ⟩
+            E.id ∘ F $₁ G $₁ f     ≈⟨ id-comm-sym ⟩
+            F $₁ G $₁ f ∘ E.id     ≈˘⟨ V.assoc ⟩∘⟨refl ⟩
             (F ∘F G) $₁ f ∘ E.id   ∎
         } }
       ; η⁻¹ = λ{ (F , G) → ntHelper record
         { η       = λ _ → E.id
         ; commute = λ f → begin
-            E.id ∘ (F ∘F G) $₁ f   ≈⟨ identityˡ ⟩
-            (F ∘F G) $₁ f          ≈⟨ V.assoc ⟩
-            F $₁ G $₁ f            ≈˘⟨ identityʳ ⟩
+            E.id ∘ (F ∘F G) $₁ f   ≈⟨ id-comm-sym ⟩
+            (F ∘F G) $₁ f ∘ E.id   ≈⟨ V.assoc ⟩∘⟨refl ⟩
             F $₁ G $₁ f ∘ E.id     ∎
         } }
-      ; commute = λ{ {F , G} {H , I} (α , β) {X} → begin
-          E.id ∘ H $₁ β [ X ] ∘ α [ G $₀ X ]     ≈⟨ identityˡ ⟩
-          H $₁ β [ X ] ∘ α [ G $₀ X ]            ≈˘⟨ identityʳ ⟩
-          (H $₁ β [ X ] ∘ α [ G $₀ X ]) ∘ E.id   ∎ }
+      ; commute = λ _ → id-comm-sym
       ; iso     = λ _ → record { isoˡ = E.identityˡ ; isoʳ = E.identityʳ }
       }
   ; unitaryˡ = λ {_ D} →
@@ -120,11 +117,10 @@ EnrichedUnderlying = record
         module C = Underlying C
         module D = Underlying D
         open UnderlyingReasoning D
-    in begin
-      D.id ∘ D.id ∘ (H ∘F G) $₁ B.id ∘ D.id  ≈⟨ identityˡ ⟩
-      D.id ∘ (H ∘F G) $₁ B.id ∘ D.id         ≈⟨ refl⟩∘⟨ V.assoc ⟩∘⟨refl ⟩
-      D.id ∘ H $₁ G $₁ B.id ∘ D.id           ≈⟨ refl⟩∘⟨ UF.F-resp-≈ H
-                                                  (UF.identity G) ⟩∘⟨refl ⟩
-      D.id ∘ (H $₁ C.id) ∘ D.id              ≈˘⟨ refl⟩∘⟨ identityʳ ⟩∘⟨refl ⟩
-      D.id ∘ (H $₁ C.id ∘ D.id) ∘ D.id       ∎
+    in ∘-resp-≈ʳ (begin
+      D.id ∘ (H ∘F G) $₁ B.id ∘ D.id   ≈⟨ refl⟩∘⟨ V.assoc ⟩∘⟨refl ⟩
+      D.id ∘ H $₁ G $₁ B.id ∘ D.id     ≈⟨ refl⟩∘⟨ UF.F-resp-≈ H
+                                                    (UF.identity G) ⟩∘⟨refl ⟩
+      D.id ∘ H $₁ C.id ∘ D.id          ≈⟨ id-comm-sym ⟩
+      (H $₁ C.id ∘ D.id) ∘ D.id        ∎)
   }
