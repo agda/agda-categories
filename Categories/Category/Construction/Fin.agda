@@ -8,7 +8,7 @@ open import Level
 open import Data.Fin.Properties
 
 open import Categories.Category
-open import Categories.Category.Construction.Thin (≤-preorder n)
+open import Categories.Category.Construction.Thin (≤-poset n)
 
 Fin : Category 0ℓ 0ℓ 0ℓ
 Fin = Thin 0ℓ
