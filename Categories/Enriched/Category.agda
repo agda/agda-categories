@@ -91,8 +91,8 @@ _[_,_] = Category.hom
 -- hom-objects of C forms a setoid.  This induces the *underlying*
 -- category of C.
 
-underlying : ∀ {c} (C : Category c) → Setoid-Category c ℓ e
-underlying C = categoryHelper (record
+Underlying : ∀ {c} (C : Category c) → Setoid-Category c ℓ e
+Underlying C = categoryHelper (record
   { Obj = Obj
   ; _⇒_ = λ A B → unit ⇒ hom A B
   ; _≈_ = λ f g → f ≈ g
@@ -135,4 +135,4 @@ underlying C = categoryHelper (record
   })
   where open Category C
 
-module Underlying {c} (C : Category c) = Setoid-Category (underlying C)
+module Underlying {c} (C : Category c) = Setoid-Category (Underlying C)

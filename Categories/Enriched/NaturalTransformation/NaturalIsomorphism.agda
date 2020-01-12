@@ -44,7 +44,7 @@ module _ {c d} {C : Category c} {D : Category d} where
     private
       module F = Functor F
       module G = Functor G
-    open Morphism (underlying D) using (_≅_)
+    open Morphism (Underlying D) using (_≅_)
 
     -- Natural isomorphisms are pointwise isomorphisms: each component
     -- |α [ X ]| is an isomorphism |F X ≅ G X|.
@@ -75,8 +75,7 @@ module _ {c d} {C : Category c} {D : Category d} where
   α ⓘᵥ β = ≃.trans β α
 
   private
-    module D  = Category D
-    module UD = Underlying D
+    module D = Underlying D
 
   -- Left and right unitors
 
@@ -90,7 +89,7 @@ module _ {c d} {C : Category c} {D : Category d} where
       { comp    = λ _ → D.id
       ; commute = comm ○ (refl⟩∘⟨ ⟺ identityˡ ⟩⊗⟨refl ⟩∘⟨refl)
       }
-    ; iso = record { isoˡ = UD.identity² ; isoʳ = UD.identity² }
+    ; iso = record { isoˡ = D.identity² ; isoʳ = D.identity² }
     }
     where comm = commute (idNT {F = F})
 
@@ -104,7 +103,7 @@ module _ {c d} {C : Category c} {D : Category d} where
       { comp    = λ _ → D.id
       ; commute = comm ○ (refl⟩∘⟨ ⟺ identityʳ ⟩⊗⟨refl ⟩∘⟨refl)
       }
-    ; iso = record { isoˡ = UD.identity² ; isoʳ = UD.identity² }
+    ; iso = record { isoˡ = D.identity² ; isoʳ = D.identity² }
     }
     where comm = commute (idNT {F = F})
 
@@ -122,7 +121,7 @@ module _ {c d e} {C : Category c} {D : Category d} {E : Category e} where
     ; iso  = record { isoˡ = iso.isoˡ ; isoʳ = iso.isoʳ }
     }
     where
-      module iso {X} = Iso ([ underlyingFunctor H ]-resp-Iso (iso (α ᵢ[ X ])))
+      module iso {X} = Iso ([ UnderlyingFunctor H ]-resp-Iso (iso (α ᵢ[ X ])))
 
   _ⓘʳ_ : {G H : Functor D E} → G ≃ H → (F : Functor C D) → G ∘F F ≃ H ∘F F
   α ⓘʳ F = record
