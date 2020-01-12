@@ -143,9 +143,9 @@ module _ {c d} {C : Category c} {D : Category d} where
   -- A V-enriched natural transformation induces an ordinary natural
   -- transformation on the underlying functors.
 
-  underlyingNT : {F G : Functor C D} → NaturalTransformation F G →
-                 Setoid-NT (underlyingFunctor F) (underlyingFunctor G)
-  underlyingNT {F} {G} α = ntHelper (record
+  UnderlyingNT : {F G : Functor C D} → NaturalTransformation F G →
+                 Setoid-NT (UnderlyingFunctor F) (UnderlyingFunctor G)
+  UnderlyingNT {F} {G} α = ntHelper (record
     { η       = comp α
     ; commute = λ {X Y} f →
       begin
@@ -161,7 +161,7 @@ module _ {c d} {C : Category c} {D : Category d} where
       module F = Functor F
       module G = Functor G
 
-  module UnderlyingNT {F} {G} α = Setoid-NT (underlyingNT {F} {G} α)
+  module UnderlyingNT {F} {G} α = Setoid-NT (UnderlyingNT {F} {G} α)
 
 module _ {c d e} {C : Category c} {D : Category d} {E : Category e} where
 

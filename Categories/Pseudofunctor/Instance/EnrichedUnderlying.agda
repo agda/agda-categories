@@ -43,10 +43,10 @@ private
 
 EnrichedUnderlying : Pseudofunctor (EnrichedCats v) (Cats v ℓ e)
 EnrichedUnderlying = record
-  { P₀ = underlying
+  { P₀ = Underlying
   ; P₁ = record
-    { F₀ = underlyingFunctor
-    ; F₁ = underlyingNT
+    { F₀ = UnderlyingFunctor
+    ; F₁ = UnderlyingNT
     ; identity     = V.Equiv.refl
     ; homomorphism = V.Equiv.refl
     ; F-resp-≈     = λ eq → eq

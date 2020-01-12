@@ -75,7 +75,7 @@ _∘F_ {_} {_} {_} {C} {D} {E} G F = record
   ; homomorphism = begin
       (G.₁ ∘ F.₁) ∘ C.⊚                  ≈⟨ pullʳ F.homomorphism ⟩
       G.₁ ∘ (D.⊚ ∘ F.₁ ⊗₁ F.₁)           ≈⟨ pullˡ G.homomorphism ⟩
-      (E.⊚ ∘ G.₁ ⊗₁ G.₁) ∘ F.₁ ⊗₁ F.₁    ≈˘⟨ pushʳ ⊗.homomorphism ⟩
+      (E.⊚ ∘ G.₁ ⊗₁ G.₁) ∘ F.₁ ⊗₁ F.₁    ≈˘⟨ pushʳ ⊗-distrib-over-∘ ⟩
       E.⊚ ∘ (G.₁ ∘ F.₁) ⊗₁ (G.₁ ∘ F.₁)   ∎
   }
   where
@@ -84,15 +84,14 @@ _∘F_ {_} {_} {_} {C} {D} {E} G F = record
     module E = Category E
     module F = Functor F
     module G = Functor G
-    module ⊗ = Setoid-Functor ⊗
 
 -- A V-enriched functor induces an ordinary functor on the underlying
 -- categories.
 
 module _ {c d} {C : Category c} {D : Category d} where
 
-  underlyingFunctor : Functor C D → Setoid-Functor (underlying C) (underlying D)
-  underlyingFunctor F = record
+  UnderlyingFunctor : Functor C D → Setoid-Functor (Underlying C) (Underlying D)
+  UnderlyingFunctor F = record
     { F₀           = F.₀
     ; F₁           = F.₁ ∘_
     ; identity     = F.identity
@@ -109,4 +108,4 @@ module _ {c d} {C : Category c} {D : Category d} where
 
       λ⇐ = unitorˡ.to
 
-  module UnderlyingFunctor F = Setoid-Functor (underlyingFunctor F)
+  module UnderlyingFunctor F = Setoid-Functor (UnderlyingFunctor F)
