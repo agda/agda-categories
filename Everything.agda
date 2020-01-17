@@ -5,6 +5,7 @@ import Categories.Adjoint.Construction.EilenbergMoore
 import Categories.Adjoint.Construction.Kleisli
 import Categories.Adjoint.Equivalence
 import Categories.Adjoint.Instance.0-Truncation
+import Categories.Adjoint.Instance.01-Truncation
 import Categories.Adjoint.Instance.Core
 import Categories.Adjoint.Instance.Discrete
 import Categories.Adjoint.Instance.StrictCore
@@ -158,6 +159,7 @@ import Categories.Functor.Fibration
 import Categories.Functor.Groupoid
 import Categories.Functor.Hom
 import Categories.Functor.Instance.0-Truncation
+import Categories.Functor.Instance.01-Truncation
 import Categories.Functor.Instance.Core
 import Categories.Functor.Instance.Discrete
 import Categories.Functor.Instance.SetoidDiscrete
