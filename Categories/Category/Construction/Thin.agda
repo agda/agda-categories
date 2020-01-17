@@ -5,7 +5,7 @@ open import Relation.Binary using (Poset)
 -- A thin (or posetal) category is a category with at most one
 -- morphism between any pair of objects.
 --
--- As discussed on nLab:
+-- As explained on nLab:
 --
 --   "Up to isomorphism, a thin category is the same thing as a
 --   proset. Up to equivalence, a thin category is the same thing as a
@@ -18,7 +18,7 @@ open import Relation.Binary using (Poset)
 -- Since
 --
 --  1. posets in the standard library are defined up to an underlying
---     equivalence/setoid, and
+--     equivalence/setoid, but
 --
 --  2. categories in this library do not have a notion of equality on
 --     objects (i.e. objects are considered up to isomorphism),
@@ -28,9 +28,10 @@ open import Relation.Binary using (Poset)
 -- means that the core of a thin category (the groupoid consisting of
 -- all its isomorphism) is just the setoid underlying the
 -- corresponding poset.
+--
+-- (See Categories.Adjoint.Instance.PosetCore for more details.)
 
-
-module Categories.Category.Construction.Thin {o ℓ₁ ℓ₂} (P : Poset o ℓ₁ ℓ₂) where
+module Categories.Category.Construction.Thin {o ℓ₁ ℓ₂} e (P : Poset o ℓ₁ ℓ₂) where
 
 open import Level
 open import Data.Unit using (⊤)
@@ -41,8 +42,8 @@ import Categories.Morphism as Morphism
 
 open Poset P
 
-Thin : ∀ e → Category o ℓ₂ e
-Thin e = record
+Thin : Category o ℓ₂ e
+Thin = record
   { Obj       = Carrier
   ; _⇒_       = _≤_
   ; _≈_       = λ _ _ → Lift e ⊤
@@ -55,10 +56,10 @@ Thin e = record
   ; ∘-resp-≈  = _
   }
 
-module EqIsIso {e} where
+module EqIsIso where
 
-  open Category (Thin e) hiding (_≈_)
-  open Morphism (Thin e) using (_≅_)
+  open Category Thin hiding (_≈_)
+  open Morphism Thin using (_≅_)
   open _≅_
 
   -- Equivalent elements of |P| are isomorphic objects of |Thin P|.
