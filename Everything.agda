@@ -69,6 +69,7 @@ import Categories.Category.Instance.One
 import Categories.Category.Instance.PointedSets
 import Categories.Category.Instance.Posets
 import Categories.Category.Instance.Properties.Cats
+import Categories.Category.Instance.Properties.Posets
 import Categories.Category.Instance.Properties.Setoids
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
