@@ -72,11 +72,11 @@ private
     ; iso  = record
       { isoˡ = begin
         (to A≅B ∘ to B≅C) ∘ from B≅C ∘ from A≅B ≈⟨ cancelInner (isoˡ B≅C) ⟩
-        to A≅B ∘ from A≅B                       ≈⟨ isoʳ (≅-sym A≅B) ⟩
+        to A≅B ∘ from A≅B                       ≈⟨  isoˡ A≅B  ⟩
         id                                      ∎
       ; isoʳ = begin
         (from B≅C ∘ from A≅B) ∘ to A≅B ∘ to B≅C ≈⟨ cancelInner (isoʳ A≅B) ⟩
-        from B≅C ∘ to B≅C                       ≈⟨ isoˡ (≅-sym B≅C) ⟩
+        from B≅C ∘ to B≅C                       ≈⟨ isoʳ B≅C ⟩
         id                                      ∎
       }
     }
