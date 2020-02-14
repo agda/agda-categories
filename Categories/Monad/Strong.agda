@@ -16,26 +16,27 @@ open import Categories.Functor renaming (id to idF)
 open import Categories.Category.Monoidal
 open import Categories.Category.Product
 open import Categories.NaturalTransformation hiding (id)
--- open import Categories.NaturalTransformation.NaturalIsomorphism
 open import Categories.Monad
 
 private
   variable
     o ℓ e : Level
 
-record Strength {C : Category o ℓ e} (V : Monoidal C) (m : Monad C) : Set (o ⊔ ℓ ⊔ e) where
+record Strength {C : Category o ℓ e} (V : Monoidal C) (M : Monad C) : Set (o ⊔ ℓ ⊔ e) where
   open Category C
   open Monoidal V
-  open Monad m using (F)
-  module M = Monad m
+  private
+    module M = Monad M
+  open M using (F)
   open NaturalTransformation M.η using (η)
   open NaturalTransformation M.μ renaming (η to μ)
   open Functor F
   field
     strengthen : NaturalTransformation (⊗ ∘F (idF ⁂ F)) (F ∘F ⊗)
 
+  module strengthen = NaturalTransformation strengthen
   private
-    module t = NaturalTransformation strengthen
+    module t = strengthen
 
   field
     -- strengthening with 1 is irrelevant
@@ -51,5 +52,8 @@ record Strength {C : Category o ℓ e} (V : Monoidal C) (m : Monad C) : Set (o �
 
 record StrongMonad {C : Category o ℓ e} (V : Monoidal C) : Set (o ⊔ ℓ ⊔ e) where
   field
-    m : Monad C
-    strength : Strength V m
+    M        : Monad C
+    strength : Strength V M
+
+  module M = Monad M
+  open Strength strength public
