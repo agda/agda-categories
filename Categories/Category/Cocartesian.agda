@@ -197,8 +197,8 @@ record Cocartesian : Set (levelOfTerm 𝒞) where
           }
         ; iso = λ _ → iso +-comm
         }
-      ; hexagon₁ = ⟺ assoc ○ braided.hexagon₂ ○ assoc
-      ; hexagon₂ = ⟺ assoc ○ braided.hexagon₁ ○ assoc
+      ; hexagon₁ = braided.hexagon₂
+      ; hexagon₂ = braided.hexagon₁
       }
     ; commutative = commutative
     }

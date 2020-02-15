@@ -45,9 +45,9 @@ record Braided : Set (levelOfTerm M) where
                ⟩
     hexagon₂ : [ X ⊗₀ Y ⊗₀ Z ⇒ (Z ⊗₀ X) ⊗₀ Y ]⟨
                  id ⊗₁ B                     ⇒⟨ X ⊗₀ Z ⊗₀ Y ⟩
-                 associator.to               ⇒⟨ (X ⊗₀ Z) ⊗₀ Y ⟩
-                 B ⊗₁ id
+                 (associator.to              ⇒⟨ (X ⊗₀ Z) ⊗₀ Y ⟩
+                 B ⊗₁ id)
                ≈ associator.to               ⇒⟨ (X ⊗₀ Y) ⊗₀ Z ⟩
-                 B                           ⇒⟨ Z ⊗₀ X ⊗₀ Y ⟩
-                 associator.to
+                 (B                          ⇒⟨ Z ⊗₀ X ⊗₀ Y ⟩
+                 associator.to)
                ⟩

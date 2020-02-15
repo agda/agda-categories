@@ -345,23 +345,23 @@ record Cartesian : Set (levelOfTerm 𝒞) where
   open Sym monoidal
 
   symmetric : Symmetric
-  symmetric = record
-    { braided = record
-      { braiding = record
-        { F⇒G = ntHelper record
-          { η       = λ _ → swap
-          ; commute = λ _ → swap∘⁂
-          }
-        ; F⇐G = ntHelper record
-          { η       = λ _ → swap
-          ; commute = λ _ → swap∘⁂
-          }
-        ; iso = λ _ → record
-          { isoˡ = swap∘swap
-          ; isoʳ = swap∘swap
-          }
+  symmetric = symmetricHelper record
+    { braiding    = record
+      { F⇒G = ntHelper record
+        { η       = λ _ → swap
+        ; commute = λ _ → swap∘⁂
         }
-      ; hexagon₁ = begin
+      ; F⇐G = ntHelper record
+        { η       = λ _ → swap
+        ; commute = λ _ → swap∘⁂
+        }
+      ; iso = λ _ → record
+        { isoˡ = swap∘swap
+        ; isoʳ = swap∘swap
+        }
+      }
+    ; commutative = swap∘swap
+    ; hexagon     = begin
         id ⊗₁ swap ∘ assocˡ ∘ swap ⊗₁ id                          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘ ⟩
         id ⊗₁ swap ∘ assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₁ ∘ π₁ ⟩ , id ∘ π₂ ⟩ ≈⟨ refl⟩∘⟨ assocˡ∘⟨⟩ ⟩
         id ⊗₁ swap ∘ ⟨ π₂ ∘ π₁ , ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩          ≈⟨ ⁂∘⟨⟩ ⟩
@@ -370,17 +370,6 @@ record Cartesian : Set (levelOfTerm 𝒞) where
         ⟨ π₂ ∘ π₁ , ⟨ π₂ , π₁ ∘ π₁ ⟩ ⟩                            ≈˘⟨ assocˡ∘⟨⟩ ⟩
         assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ , π₁ ∘ π₁ ⟩                   ≈˘⟨ refl ⟩∘⟨ swap∘⟨⟩ ⟩
         assocˡ ∘ swap ∘ assocˡ                                    ∎
-      ; hexagon₂ = begin
-        swap ⊗₁ id ∘ assocʳ ∘ id ⊗₁ swap                          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩-congˡ ⟨⟩∘ ⟩
-        swap ⊗₁ id ∘ assocʳ ∘ ⟨ id ∘ π₁ , ⟨ π₂ ∘ π₂ , π₁ ∘ π₂ ⟩ ⟩ ≈⟨ refl⟩∘⟨ assocʳ∘⟨⟩ ⟩
-        swap ⊗₁ id ∘ ⟨ ⟨ id ∘ π₁ , π₂ ∘ π₂ ⟩ , π₁ ∘ π₂ ⟩          ≈⟨ ⁂∘⟨⟩ ⟩
-        ⟨ swap ∘ ⟨ id ∘ π₁ , π₂ ∘ π₂ ⟩ , id ∘ π₁ ∘ π₂ ⟩           ≈⟨ ⟨⟩-cong₂ swap∘⟨⟩ identityˡ ⟩
-        ⟨ ⟨ π₂ ∘ π₂ , id ∘ π₁ ⟩ , π₁ ∘ π₂ ⟩                       ≈⟨ ⟨⟩-congʳ (⟨⟩-congˡ identityˡ) ⟩
-        ⟨ ⟨ π₂ ∘ π₂ , π₁ ⟩ , π₁ ∘ π₂ ⟩                            ≈˘⟨ assocʳ∘⟨⟩ ⟩
-        assocʳ ∘ ⟨ π₂ ∘ π₂ , ⟨ π₁ , π₁ ∘ π₂ ⟩ ⟩                   ≈˘⟨ refl ⟩∘⟨ swap∘⟨⟩ ⟩
-        assocʳ ∘ swap ∘ assocʳ                                    ∎
-      }
-    ; commutative = swap∘swap
     }
 
   module symmetric = Symmetric symmetric
