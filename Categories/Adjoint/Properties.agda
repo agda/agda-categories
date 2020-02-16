@@ -3,15 +3,14 @@
 module Categories.Adjoint.Properties where
 
 open import Level
-open import Data.Product using (Σ; _,_; -,_; proj₂)
+open import Data.Product using (Σ; _,_; -,_; proj₂; uncurry)
 open import Function using (_$_)
 
-open import Categories.Adjoint
+open import Categories.Adjoint using (_⊣_; Adjoint; Hom-NI′⇒Adjoint)
 open import Categories.Adjoint.RAPL public
-open import Categories.Category
-open import Categories.Category.Product
-open import Categories.Category.Instance.One
-open import Categories.Category.Construction.Comma
+open import Categories.Category using (Category; _[_,_])
+open import Categories.Category.Product using (_⁂_; _⁂ⁿⁱ_)
+open import Categories.Category.Construction.Comma using (CommaObj; Comma⇒; _↙_)
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Hom
 open import Categories.Functor.Construction.Constant
@@ -130,10 +129,8 @@ module _ {C : Category o ℓ e}
 
   induced-bifunctorʳ : Bifunctor E.op D C
   induced-bifunctorʳ = record
-    { F₀           = λ where
-      (e , d) → R.F₀ e d
-    ; F₁           = λ where
-      (f , g) → F′ f g
+    { F₀           = uncurry R.F₀
+    ; F₁           = uncurry F′
     ; identity     = λ where
       {e , d} →
         let open MR D
@@ -235,7 +232,7 @@ module _ {R : Functor D C} where
       ; !-unique = λ {A} g →
         let open D.HomReasoning
         in -, (begin
-          Radjunct (f A)            ≈⟨ Radjunct-resp-≈ (C.Equiv.trans (C.Equiv.sym C.identityʳ) (C.Equiv.sym (commute g))) ⟩
+          Radjunct (f A)            ≈⟨ Radjunct-resp-≈ (C.Equiv.sym (C.Equiv.trans (commute g) (C.identityʳ {f = f A}))) ⟩
           Radjunct (Ladjunct (h g)) ≈⟨ RLadjunct≈id ⟩
           h g                       ∎)
       }
@@ -249,7 +246,7 @@ module _ {R : Functor D C} where
   universalMophisms⇒adjoint umors = L , record
     { unit   = ntHelper record
       { η       = λ c → f (umors.⊥ c)
-      ; commute = λ i → let open C.HomReasoning in ⟺ C.identityʳ ○ ⟺ (commute (⊥X⇒⊥Y i))
+      ; commute = λ i → let open C.HomReasoning in ⟺ (commute (⊥X⇒⊥Y i) ○ C.identityʳ )
       }
     ; counit = ntHelper record
       { η       = ε
@@ -329,7 +326,7 @@ module _ {R : Functor D C} where
                   ≈˘⟨ C.identityʳ ⟩
                 (f (umors.⊥ Z) C.∘ j C.∘ i) C.∘ C.id
                   ∎ }
-            ; F-resp-≈     = λ {X Y} {i j} eq → proj₂ $ umors.!-unique₂ X (umors.! X) $
+            ; F-resp-≈     = λ {X} eq → proj₂ $ umors.!-unique₂ X (umors.! X) $
               record { commute = commute (umors.! X) ○ C.∘-resp-≈ˡ (C.∘-resp-≈ʳ (⟺ eq)) }
             }
             where open C.HomReasoning
