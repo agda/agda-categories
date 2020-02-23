@@ -32,14 +32,14 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝓥 : CartesianClosed 𝒞) where
       lemma : ∀ {A B C D} → (f : B ⇒ C) → (g : B ⇒ D) → (h : A ⇒ B) → (f ⁂ g) ∘ ⟨ h , h ⟩ ≈ ⟨ f , g ⟩ ∘ h
       lemma f g h = begin
         (f ⁂ g) ∘ ⟨ h , h ⟩ ≈⟨  ⁂∘⟨⟩ ⟩
-        ⟨ f ∘ h , g ∘ h ⟩ ≈⟨ sym ⟨⟩∘ ⟩
-        ⟨ f , g ⟩ ∘ h ∎
+        ⟨ f ∘ h , g ∘ h ⟩   ≈˘⟨ ⟨⟩∘ ⟩
+        ⟨ f , g ⟩ ∘ h       ∎
 
       g-fixed-point : f ∘ (g ∘ x) ≈ g ∘ x
       g-fixed-point = begin
-        f ∘ g ∘ x ≈⟨  refl⟩∘⟨ sym g-surjective ⟩
+        f ∘ g ∘ x                        ≈⟨  refl⟩∘⟨ sym g-surjective ⟩
         f ∘ eval′ ∘ first ϕ ∘ ⟨ x , x ⟩  ≈⟨ refl⟩∘⟨ refl⟩∘⟨ lemma ϕ id x ⟩
-        f ∘ eval′ ∘ ⟨ ϕ , id ⟩ ∘ x ≈⟨ sym assoc ○ sym assoc ○ ∘-resp-≈ˡ assoc ⟩
-        (f ∘ eval′ ∘ ⟨ ϕ , id ⟩) ∘ x ≈⟨  refl ⟩∘⟨refl ⟩
-        g ∘ x ∎
+        f ∘ eval′ ∘ ⟨ ϕ , id ⟩ ∘ x       ≈˘⟨ ∘-resp-≈ˡ sym-assoc ○ assoc ○ assoc ⟩
+        (f ∘ eval′ ∘ ⟨ ϕ , id ⟩) ∘ x     ≈⟨ refl ⟩
+        g ∘ x                            ∎
 
