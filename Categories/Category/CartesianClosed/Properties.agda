@@ -13,11 +13,11 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝓥 : CartesianClosed 𝒞) where
   open CartesianClosed 𝓥
   open HomReasoning
 
-  point-surjective : ∀ {A X Y : Obj} → (X ⇒ Y ^ A) → Set (ℓ ⊔ e)
-  point-surjective {A = A} {X = X} {Y = Y} ϕ =
+  PointSurjective : ∀ {A X Y : Obj} → (X ⇒ Y ^ A) → Set (ℓ ⊔ e)
+  PointSurjective {A = A} {X = X} {Y = Y} ϕ =
     ∀ (f : A ⇒ Y) → Σ[ x ∈ ⊤ ⇒ X ] (∀ (a : ⊤ ⇒ A) → eval′ ∘ first ϕ ∘ ⟨ x , a ⟩  ≈ f ∘ a)
 
-  lawvere-fixed-point : ∀ {A B : Obj} → (ϕ : A ⇒ B ^ A) → point-surjective ϕ → (f : B ⇒ B) → Σ[ s ∈ ⊤ ⇒ B ] f ∘ s ≈ s
+  lawvere-fixed-point : ∀ {A B : Obj} → (ϕ : A ⇒ B ^ A) → PointSurjective ϕ → (f : B ⇒ B) → Σ[ s ∈ ⊤ ⇒ B ] f ∘ s ≈ s
   lawvere-fixed-point {A = A} {B = B} ϕ surjective f = g ∘ x , g-fixed-point
     where
       g : A ⇒ B
@@ -42,3 +42,4 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝓥 : CartesianClosed 𝒞) where
         f ∘ eval′ ∘ ⟨ ϕ , id ⟩ ∘ x ≈⟨ sym assoc ○ sym assoc ○ ∘-resp-≈ˡ assoc ⟩
         (f ∘ eval′ ∘ ⟨ ϕ , id ⟩) ∘ x ≈⟨  refl ⟩∘⟨refl ⟩
         g ∘ x ∎
+
