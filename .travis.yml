@@ -2,7 +2,7 @@ language: c
 branches:
   only:
   - master
-  - experimental
+  - travis
 
 dist: xenial
 
