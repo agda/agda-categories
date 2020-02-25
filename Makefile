@@ -8,7 +8,6 @@ test: Everything.agda
 	agda ${RTSARGS} -isrc/ Everything.agda
 
 html: Everything.agda
-	cat Everything.agda
 	agda ${RTSARGS} --html -isrc/ Everything.agda
 
 Everything.agda:
