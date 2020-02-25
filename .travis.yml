@@ -54,7 +54,9 @@ install:
   # installing agda-stdlib
   - mkdir -p $HOME/.agda
   - cd $HOME/.agda
-  - git clone https://github.com/agda/agda-stdlib/releases/tag/v$STDLIB_VER --depth=1 agda-stdlib
+  - wget https://github.com/agda/agda-stdlib/archive/v$STDLIB_VER.tar.gz
+  - tar -xzvf v$STDLIB_VER.tar.gz
+  - mv agda-stdlib-$STDLIB_VER agda-stdlib
   - echo "standard-library ~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
   - cd -
 
