@@ -57,7 +57,7 @@ install:
   - wget https://github.com/agda/agda-stdlib/archive/v$STDLIB_VER.tar.gz
   - tar -xzvf v$STDLIB_VER.tar.gz
   - mv agda-stdlib-$STDLIB_VER agda-stdlib
-  - echo "standard-library ~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
+  - echo "~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
   - cd -
 
 before_script:
