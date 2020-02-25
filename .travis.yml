@@ -2,7 +2,6 @@ language: c
 branches:
   only:
   - master
-  - travis
 
 dist: xenial
 
@@ -28,7 +27,7 @@ install:
   - cabal update
   - sed -i 's/^jobs:/-- jobs:/' $HOME/.cabal/config
   # installing agda dev
-  - git clone git@github.com:agda/agda --depth=1
+  - git clone https://github.com/agda/agda --depth=1
   - cd agda
   # checking whether .ghc is still valid
   - cabal install alex happy
