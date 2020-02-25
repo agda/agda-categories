@@ -7,6 +7,9 @@ RTSARGS = +RTS -H6G -M6G -K64M ${OTHEROPTS} -A64M -RTS
 test: Everything.agda
 	agda ${RTSARGS} Everything.agda
 
+html: Everything.agda
+	agda ${RTSARGS} --html Everything.agda
+
 Everything.agda:
 	find . -name '[^\.]*.agda' | sed -e 's|^./|import |' -e 's|/|.|g' -e 's/.agda//' -e '/import Everything/d' | sort > Everything.agda
 
