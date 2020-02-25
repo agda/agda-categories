@@ -12,7 +12,7 @@ cache:
 
 matrix:
   include:
-    - env: TEST=MAIN GHC_VER=8.4.4 BUILD=CABAL CABAL_VER=2.2 AGDA_VER=2.6.0.1
+    - env: TEST=MAIN GHC_VER=8.4.4 BUILD=CABAL CABAL_VER=2.2 AGDA_VER=2.6.0.1 STDLIB_VER=1.2
       addons:
         apt:
           packages:
@@ -51,12 +51,12 @@ install:
     mkdir $HOME/.cabsnap;
     cp -a $HOME/.ghc $HOME/.cabsnap/ghc;
     cp -a $HOME/.cabal/lib $HOME/.cabal/share $HOME/.cabal/bin $HOME/installplan.txt $HOME/.cabsnap/;
-  # installing fix-whitespace
-  - git clone https://github.com/agda/fix-whitespace --depth=1
-  - cd fix-whitespace
-  - cabal install fix-whitespace.cabal
+  # installing agda-stdlib
+  - mkdir -p $HOME/.agda
+  - cd $HOME/.agda
+  - git clone https://github.com/agda/agda-stdlib/releases/tag/v$STDLIB_VER --depth=1 agda-stdlib
+  - echo "standard-library ~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
   - cd -
-  - yes | rm -R fix-whitespace/
 
 before_script:
   - export RTS_OPTIONS="+RTS -H6G -M6G -K64M -A64M -RTS"
