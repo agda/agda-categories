@@ -2,7 +2,7 @@
 
 OTHEROPTS=
 
-RTSARGS = +RTS -H7G -M7G -K64M ${OTHEROPTS} -A64M -RTS
+RTSARGS = +RTS -H6.5G -M6.5G -K64M ${OTHEROPTS} -A64M -RTS
 
 test: Everything.agda
 	agda ${RTSARGS} -isrc/ Everything.agda
