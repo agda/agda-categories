@@ -12,7 +12,7 @@ cache:
 
 matrix:
   include:
-    - env: TEST=MAIN GHC_VER=8.4.4 BUILD=CABAL CABAL_VER=2.2 AGDA_VER=2.6.0.1 STDLIB_VER=1.2
+    - env: TEST=MAIN GHC_VER=8.4.4 BUILD=CABAL CABAL_VER=2.2 STDLIB_VER=1.2
       addons:
         apt:
           packages:
@@ -27,9 +27,12 @@ before_install:
 install:
   - cabal update
   - sed -i 's/^jobs:/-- jobs:/' $HOME/.cabal/config
+  # installing agda dev
+  - git clone git@github.com:agda/agda --depth=1
+  - cd agda
   # checking whether .ghc is still valid
   - cabal install alex happy
-  - cabal install --only-dependencies --dry -v Agda-$AGDA_VER > $HOME/installplan.txt
+  - cabal install --only-dependencies --dry -v > $HOME/installplan.txt
   - sed -i -e '1,/^Resolving /d' $HOME/installplan.txt; cat $HOME/installplan.txt
   - touch $HOME/.cabsnap/installplan.txt
   - mkdir -p $HOME/.cabsnap/ghc $HOME/.cabsnap/lib $HOME/.cabsnap/share $HOME/.cabsnap/bin
@@ -45,7 +48,8 @@ install:
       mkdir -p $HOME/.ghc $HOME/.cabal/lib $HOME/.cabal/share $HOME/.cabal/bin;
     fi
   - cabal install cpphs
-  - cabal install Agda-$AGDA_VER
+  - cabal install
+  - cd -
   # snapshot package-db on cache miss
   - echo "snapshotting package-db to build-cache";
     mkdir $HOME/.cabsnap;
