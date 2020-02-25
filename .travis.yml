@@ -63,9 +63,6 @@ install:
   - echo "~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
   - cd -
 
-before_script:
-  - export RTS_OPTIONS="+RTS -H6G -M6G -K64M -A64M -RTS"
-
 script:
   # generating html doc
   - make html
