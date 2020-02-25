@@ -77,7 +77,7 @@ after_success:
   - git init
   - git config --global user.name "Travis CI bot"
   - git config --global user.email "travis-ci-bot@travis.fake"
-  - git remote add upstream https://$GH_TOKEN@github.com/gallais/agda-categories.git &>/dev/null
+  - git remote add upstream https://$GH_TOKEN@github.com/agda/agda-categories.git &>/dev/null
   - git fetch upstream && git reset upstream/gh-pages
   - git add -f \*.html
   - git commit -m "Automatic HTML update via Travis"
