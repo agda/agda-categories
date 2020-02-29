@@ -21,8 +21,9 @@ matrix:
       addons:
         apt:
           packages:
-            - cabal-install-$CABAL_VER
-            - ghc-$GHC_VER
+            # Unfortunately we cannot use the X_VER variables here
+            - cabal-install-2.2
+            - ghc-8.4.4
           sources:
             - hvr-ghc
 
