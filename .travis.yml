@@ -12,7 +12,6 @@ cache:
 matrix:
   include:
     - env:
-        TEST=MAIN
         GHC_VER=8.4.4
         CABAL_VER=2.2
         ALEX_VER=3.2.5
