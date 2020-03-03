@@ -211,7 +211,7 @@ infix 5 _⊣_
 _⊣_ = Adjoint
 
 -- a special case of the natural isomorphism in which homsets in C and D have the same
--- universe level. therefore there is no need to lift Setoids to the saem level.
+-- universe level. therefore there is no need to lift Setoids to the same level.
 -- this is helpful when combining with Yoneda lemma.
 module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R : Functor D C} where
   private
