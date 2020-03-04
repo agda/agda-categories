@@ -22,12 +22,10 @@ private
     o ℓ e : Level
     𝒞 𝒟 : Category o ℓ e
 
-open NaturalTransformation
-
-module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (adjoint : Adjoint F G) where
+module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (F⊣G : Adjoint F G) where
   private
     T : Monad 𝒞
-    T = adjoint⇒monad adjoint
+    T = adjoint⇒monad F⊣G
 
     𝒞ᵀ : Category _ _ _
     𝒞ᵀ = EilenbergMoore T
@@ -42,7 +40,8 @@ module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (adjoint : Adjoint F G)
     module F = Functor F
     module G = Functor G
 
-    open Adjoint adjoint
+    open Adjoint F⊣G
+    open NaturalTransformation
 
   -- Maclane's Comparison Functor
   ComparisonF : Functor 𝒟 𝒞ᵀ
@@ -77,11 +76,11 @@ module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (adjoint : Adjoint F G)
     { eq₀ = λ X → ≡.refl
     ; eq₁ = λ {A} {B} f → begin
       Module⇒.arr (𝒞ᵀ [ (hid 𝒞ᵀ ≡.refl) ∘ K.F₁ (F.F₁ f) ]) ≈⟨ hid-refl 𝒞ᵀ {A = K.F₀ (F.F₀ B)} ⟩∘⟨refl ⟩
-      Module⇒.arr (𝒞ᵀ [ 𝒞ᵀ.id ∘ K.F₁ (F.F₁ f) ])       ≈⟨ 𝒞.identityˡ {f = Module⇒.arr (K.F₁ (F.F₁ f))} ⟩
-      Module⇒.arr (K.F₁ (F.F₁ f))                       ≈⟨ refl ⟩
-      Module⇒.arr (Fᵀ.F₁ f)                             ≈˘⟨ 𝒞ᵀ.identityʳ {f = Fᵀ.F₁ f} ⟩
-      Module⇒.arr (𝒞ᵀ [ Fᵀ.F₁ f ∘ 𝒞ᵀ.id ])             ≈˘⟨ refl⟩∘⟨ hid-refl 𝒞ᵀ {A = Fᵀ.F₀ A} ⟩
-      Module⇒.arr (𝒞ᵀ [ Fᵀ.F₁ f ∘ (hid 𝒞ᵀ ≡.refl) ])   ∎
+      Module⇒.arr (𝒞ᵀ [ 𝒞ᵀ.id ∘ K.F₁ (F.F₁ f) ])           ≈⟨ 𝒞.identityˡ {f = Module⇒.arr (K.F₁ (F.F₁ f))} ⟩
+      Module⇒.arr (K.F₁ (F.F₁ f))                           ≈⟨ refl ⟩
+      Module⇒.arr (Fᵀ.F₁ f)                                 ≈˘⟨ 𝒞ᵀ.identityʳ {f = Fᵀ.F₁ f} ⟩
+      Module⇒.arr (𝒞ᵀ [ Fᵀ.F₁ f ∘ 𝒞ᵀ.id ])                 ≈˘⟨ refl⟩∘⟨ hid-refl 𝒞ᵀ {A = Fᵀ.F₀ A} ⟩
+      Module⇒.arr (𝒞ᵀ [ Fᵀ.F₁ f ∘ (hid 𝒞ᵀ ≡.refl) ])       ∎
     }
 
   Forgetful∘ComparisonF≡U : (Forgetful T ∘F ComparisonF) ≡F G
@@ -89,9 +88,9 @@ module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (adjoint : Adjoint F G)
     { eq₀ = λ X → ≡.refl
     ; eq₁ = λ f → begin
       𝒞 [ (hid 𝒞 ≡.refl) ∘ (Gᵀ.F₁ (K.F₁ f)) ] ≈⟨ hid-refl 𝒞 ⟩∘⟨refl ⟩
-      𝒞 [ 𝒞.id ∘ (Gᵀ.F₁ (K.F₁ f)) ]        ≈⟨ 𝒞.identityˡ ⟩
-      (Gᵀ.F₁ (K.F₁ f))                      ≈⟨ refl ⟩
-      G.F₁ f                                ≈˘⟨ 𝒞.identityʳ ⟩
-      𝒞 [ G.F₁ f ∘ 𝒞.id ]                  ≈˘⟨ refl⟩∘⟨ hid-refl 𝒞 ⟩
-      𝒞 [ G.F₁ f ∘ (hid 𝒞 ≡.refl) ]        ∎
+      𝒞 [ 𝒞.id ∘ (Gᵀ.F₁ (K.F₁ f)) ]           ≈⟨ 𝒞.identityˡ ⟩
+      (Gᵀ.F₁ (K.F₁ f))                         ≈⟨ refl ⟩
+      G.F₁ f                                   ≈˘⟨ 𝒞.identityʳ ⟩
+      𝒞 [ G.F₁ f ∘ 𝒞.id ]                     ≈˘⟨ refl⟩∘⟨ hid-refl 𝒞 ⟩
+      𝒞 [ G.F₁ f ∘ (hid 𝒞 ≡.refl) ]           ∎
     }
