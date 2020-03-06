@@ -57,6 +57,9 @@ documented in the proto-contributor's guide.
   paper](https://arxiv.org/pdf/1401.7694.pdf). 
 - We also add other "redundant" axioms into other definitions so that we achieve a better
   definitional equality property for definitions with opposites.
+- Use (private) modules instead of local renaming to resolve name clashes that
+  would occur with opening the same module twice, such as when working with
+  two categories, two functors, etc.
 
 ### Smaller Design decisions
 - Do not make implicit fields that can rarely be inferred (like what had been done in
