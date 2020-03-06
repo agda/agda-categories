@@ -83,8 +83,8 @@ module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (F⊣G : Adjoint F G) w
       Module⇒.arr (𝒞ᵀ [ Fᵀ.F₁ f ∘ (hid 𝒞ᵀ ≡.refl) ])       ∎
     }
 
-  Forgetful∘ComparisonF≡U : (Forgetful T ∘F ComparisonF) ≡F G
-  Forgetful∘ComparisonF≡U = record
+  Forgetful∘ComparisonF≡G : (Forgetful T ∘F ComparisonF) ≡F G
+  Forgetful∘ComparisonF≡G = record
     { eq₀ = λ X → ≡.refl
     ; eq₁ = λ f → begin
       𝒞 [ (hid 𝒞 ≡.refl) ∘ (Gᵀ.F₁ (K.F₁ f)) ] ≈⟨ hid-refl 𝒞 ⟩∘⟨refl ⟩
