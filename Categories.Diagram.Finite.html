@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="utf-8"><title>Categories.Diagram.Finite</title><link rel="stylesheet" href="Agda.css"></head><body><pre class="Agda"><a id="1" class="Symbol">{-#</a> <a id="5" class="Keyword">OPTIONS</a> <a id="13" class="Pragma">--without-K</a> <a id="25" class="Pragma">--safe</a> <a id="32" class="Symbol">#-}</a>
+
+<a id="37" class="Keyword">module</a> <a id="44" href="Categories.Diagram.Finite.html" class="Module">Categories.Diagram.Finite</a> <a id="70" class="Keyword">where</a>
+
+<a id="77" class="Keyword">open</a> <a id="82" class="Keyword">import</a> <a id="89" href="Level.html" class="Module">Level</a>
+
+<a id="96" class="Keyword">open</a> <a id="101" class="Keyword">import</a> <a id="108" href="Categories.Category.html" class="Module">Categories.Category</a>
+<a id="128" class="Keyword">open</a> <a id="133" class="Keyword">import</a> <a id="140" href="Categories.Category.Finite.html" class="Module">Categories.Category.Finite</a> <a id="167" class="Keyword">renaming</a> <a id="176" class="Symbol">(</a><a id="177" href="Categories.Category.Finite.html#548" class="Record">Finite</a> <a id="184" class="Symbol">to</a> <a id="Finite"></a><a id="187" href="Categories.Diagram.Finite.html#187" class="Record">FiniteC</a><a id="194" class="Symbol">)</a>
+<a id="196" class="Keyword">open</a> <a id="201" class="Keyword">import</a> <a id="208" href="Categories.Functor.html" class="Module">Categories.Functor</a>
+
+<a id="228" class="Keyword">private</a>
+  <a id="238" class="Keyword">variable</a>
+    <a id="251" href="Categories.Diagram.Finite.html#251" class="Generalizable">o</a> <a id="253" href="Categories.Diagram.Finite.html#253" class="Generalizable">ℓ</a> <a id="255" href="Categories.Diagram.Finite.html#255" class="Generalizable">e</a> <a id="257" class="Symbol">:</a> <a id="259" href="Agda.Primitive.html#423" class="Postulate">Level</a>
+    <a id="269" href="Categories.Diagram.Finite.html#269" class="Generalizable">J</a> <a id="271" href="Categories.Diagram.Finite.html#271" class="Generalizable">C</a> <a id="273" class="Symbol">:</a> <a id="275" href="Categories.Category.Core.html#398" class="Record">Category</a> <a id="284" href="Categories.Diagram.Finite.html#251" class="Generalizable">o</a> <a id="286" href="Categories.Diagram.Finite.html#253" class="Generalizable">ℓ</a> <a id="288" href="Categories.Diagram.Finite.html#255" class="Generalizable">e</a>
+
+<a id="291" class="Keyword">record</a> <a id="Finite"></a><a id="298" href="Categories.Diagram.Finite.html#298" class="Record">Finite</a> <a id="305" class="Symbol">(</a><a id="306" href="Categories.Diagram.Finite.html#306" class="Bound">F</a> <a id="308" class="Symbol">:</a> <a id="310" href="Categories.Functor.Core.html#407" class="Record">Functor</a> <a id="318" href="Categories.Diagram.Finite.html#269" class="Generalizable">J</a> <a id="320" href="Categories.Diagram.Finite.html#271" class="Generalizable">C</a><a id="321" class="Symbol">)</a> <a id="323" class="Symbol">:</a> <a id="325" class="PrimitiveType">Set</a> <a id="329" class="Symbol">(</a><a id="330" href="Level.html#593" class="Function">levelOfTerm</a> <a id="342" href="Categories.Diagram.Finite.html#306" class="Bound">F</a><a id="343" class="Symbol">)</a> <a id="345" class="Keyword">where</a>
+  <a id="353" class="Keyword">field</a>
+    <a id="Finite.finite"></a><a id="363" href="Categories.Diagram.Finite.html#363" class="Field">finite</a> <a id="370" class="Symbol">:</a> <a id="372" href="Categories.Diagram.Finite.html#187" class="Record">FiniteC</a> <a id="380" href="Categories.Diagram.Finite.html#318" class="Bound">J</a>
+
+  <a id="385" class="Keyword">open</a> <a id="390" href="Categories.Functor.Core.html#407" class="Module">Functor</a> <a id="398" href="Categories.Diagram.Finite.html#306" class="Bound">F</a> <a id="400" class="Keyword">public</a>
+  <a id="409" class="Keyword">open</a> <a id="414" href="Categories.Diagram.Finite.html#187" class="Module">FiniteC</a> <a id="422" href="Categories.Diagram.Finite.html#363" class="Field">finite</a> <a id="429" class="Keyword">public</a>
+</pre></body></html>

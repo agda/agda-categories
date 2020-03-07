@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="utf-8"><title>Categories.Category.BicartesianClosed</title><link rel="stylesheet" href="Agda.css"></head><body><pre class="Agda"><a id="1" class="Symbol">{-#</a> <a id="5" class="Keyword">OPTIONS</a> <a id="13" class="Pragma">--without-K</a> <a id="25" class="Pragma">--safe</a> <a id="32" class="Symbol">#-}</a>
+
+<a id="37" class="Keyword">open</a> <a id="42" class="Keyword">import</a> <a id="49" href="Categories.Category.html" class="Module">Categories.Category</a>
+
+<a id="70" class="Keyword">module</a> <a id="77" href="Categories.Category.BicartesianClosed.html" class="Module">Categories.Category.BicartesianClosed</a> <a id="115" class="Symbol">{</a><a id="116" href="Categories.Category.BicartesianClosed.html#116" class="Bound">o</a> <a id="118" href="Categories.Category.BicartesianClosed.html#118" class="Bound">ℓ</a> <a id="120" href="Categories.Category.BicartesianClosed.html#120" class="Bound">e</a><a id="121" class="Symbol">}</a> <a id="123" class="Symbol">(</a><a id="124" href="Categories.Category.BicartesianClosed.html#124" class="Bound">𝒞</a> <a id="126" class="Symbol">:</a> <a id="128" href="Categories.Category.Core.html#398" class="Record">Category</a> <a id="137" href="Categories.Category.BicartesianClosed.html#116" class="Bound">o</a> <a id="139" href="Categories.Category.BicartesianClosed.html#118" class="Bound">ℓ</a> <a id="141" href="Categories.Category.BicartesianClosed.html#120" class="Bound">e</a><a id="142" class="Symbol">)</a> <a id="144" class="Keyword">where</a>
+
+<a id="151" class="Keyword">open</a> <a id="156" class="Keyword">import</a> <a id="163" href="Level.html" class="Module">Level</a>
+
+<a id="170" class="Keyword">open</a> <a id="175" class="Keyword">import</a> <a id="182" href="Categories.Category.CartesianClosed.html" class="Module">Categories.Category.CartesianClosed</a> <a id="218" href="Categories.Category.BicartesianClosed.html#124" class="Bound">𝒞</a>
+<a id="220" class="Keyword">open</a> <a id="225" class="Keyword">import</a> <a id="232" href="Categories.Category.Cocartesian.html" class="Module">Categories.Category.Cocartesian</a> <a id="264" href="Categories.Category.BicartesianClosed.html#124" class="Bound">𝒞</a>
+
+<a id="267" class="Keyword">record</a> <a id="BicartesianClosed"></a><a id="274" href="Categories.Category.BicartesianClosed.html#274" class="Record">BicartesianClosed</a> <a id="292" class="Symbol">:</a> <a id="294" class="PrimitiveType">Set</a> <a id="298" class="Symbol">(</a><a id="299" href="Level.html#593" class="Function">levelOfTerm</a> <a id="311" href="Categories.Category.BicartesianClosed.html#124" class="Bound">𝒞</a><a id="312" class="Symbol">)</a> <a id="314" class="Keyword">where</a>
+  <a id="322" class="Keyword">field</a>
+    <a id="BicartesianClosed.cartesianClosed"></a><a id="332" href="Categories.Category.BicartesianClosed.html#332" class="Field">cartesianClosed</a> <a id="348" class="Symbol">:</a> <a id="350" href="Categories.Category.CartesianClosed.html#1016" class="Record">CartesianClosed</a>
+    <a id="BicartesianClosed.cocartesian"></a><a id="370" href="Categories.Category.BicartesianClosed.html#370" class="Field">cocartesian</a>     <a id="386" class="Symbol">:</a> <a id="388" href="Categories.Category.Cocartesian.html#3098" class="Record">Cocartesian</a>
+
+  <a id="403" class="Keyword">module</a> <a id="cartesianClosed"></a><a id="410" href="Categories.Category.BicartesianClosed.html#410" class="Module">cartesianClosed</a> <a id="426" class="Symbol">=</a> <a id="428" href="Categories.Category.CartesianClosed.html#1016" class="Module">CartesianClosed</a> <a id="444" href="Categories.Category.BicartesianClosed.html#332" class="Field">cartesianClosed</a>
+  <a id="462" class="Keyword">module</a> <a id="cocartesian"></a><a id="469" href="Categories.Category.BicartesianClosed.html#469" class="Module">cocartesian</a>     <a id="485" class="Symbol">=</a> <a id="487" href="Categories.Category.Cocartesian.html#3098" class="Module">Cocartesian</a> <a id="499" href="Categories.Category.BicartesianClosed.html#370" class="Field">cocartesian</a>
+
+  <a id="514" class="Keyword">open</a> <a id="519" href="Categories.Category.BicartesianClosed.html#410" class="Module">cartesianClosed</a> <a id="535" class="Keyword">public</a>
+  <a id="544" class="Keyword">open</a> <a id="549" href="Categories.Category.BicartesianClosed.html#469" class="Module">cocartesian</a> <a id="561" class="Keyword">public</a>
+</pre></body></html>
