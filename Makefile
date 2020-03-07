@@ -11,7 +11,7 @@ html: Everything.agda
 	agda ${RTSARGS} --html -i. Everything.agda
 
 Everything.agda:
-	find src/ -name '[^\.]*.agda' | sed -e 's|^src/|import |' -e 's|/|.|g' -e 's/.agda//' -e '/import Everything/d' | sort > Everything.agda
+	find src/ -name '[^\.]*.agda' | sed -e 's|^src/[/]*|import |' -e 's|/|.|g' -e 's/.agda//' -e '/import Everything/d' | sort > Everything.agda
 
 clean:
 	find . -name '*.agdai' -exec rm \{\} \;
