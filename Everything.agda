@@ -52,7 +52,6 @@ import Categories.Category.Construction.Kleisli
 import Categories.Category.Construction.Path
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Construction.Properties.Comma
-import Categories.Category.Construction.Properties.EilenbergMoore
 import Categories.Category.Construction.Pullbacks
 import Categories.Category.Construction.Thin
 import Categories.Category.Core

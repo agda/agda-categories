@@ -9,7 +9,6 @@ test: Everything.agda
 
 html: Everything.agda
 	agda ${RTSARGS} --html -i. Everything.agda
-	cp html/Everything.html html/index.html
 
 Everything.agda:
 	find src/ -name '[^\.]*.agda' | sed -e 's|^src/|import |' -e 's|/|.|g' -e 's/.agda//' -e '/import Everything/d' | sort > Everything.agda
