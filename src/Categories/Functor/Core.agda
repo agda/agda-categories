@@ -31,6 +31,10 @@ record Functor (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o �
                      D [ F₁ (C [ g ∘ f ]) ≈ D [ F₁ g ∘ F₁ f ] ]
     F-resp-≈     : ∀ {A B} {f g : C [ A , B ]} → C [ f ≈ g ] → D [ F₁ f ≈ F₁ g ]
 
+  -- nice shorthands
+  ₀ = F₀ 
+  ₁ = F₁
+ 
   op : Functor C.op D.op
   op = record
     { F₀           = F₀
