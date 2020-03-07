@@ -16,6 +16,7 @@ matrix:
         CABAL_VER=2.2
         ALEX_VER=3.2.5
         HAPPY_VER=1.19.12
+        AGDA_VER=2.6.0.1
         STDLIB_VER=1.2
       addons:
         apt:
@@ -35,6 +36,7 @@ install:
   # installing agda dev
   - git clone https://github.com/agda/agda --depth=1
   - cd agda
+  - git checkout release-${AGDA_VER}
   # checking whether .ghc is still valid
   - cabal install alex-$ALEX_VER happy-$HAPPY_VER cpphs
   - cabal install --only-dependencies --dry -v > $HOME/installplan.txt
