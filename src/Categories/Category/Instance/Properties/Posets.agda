@@ -249,8 +249,7 @@ Posets-CanonicallyCCC = record
   ; !-unique     = !-unique
   ; π₁-comp      = λ {_ _ f _ g}   → π₁-comp {f = f} {g}
   ; π₂-comp      = λ {_ _ f _ g}   → π₂-comp {f = f} {g}
-  ; ⟨,⟩-unique   = λ { {h = h} {f = f} {g = g} →
-                   ⟨,⟩-unique {f = f} {g = g} {h = h} }
+  ; ⟨,⟩-unique   = λ {_ _ _ f g h} → ⟨,⟩-unique {f = f} {g} {h}
   ; eval         = eval
   ; curry        = curry
   ; eval-comp    = λ {_ _ _ f}   → eval-comp {f = f}

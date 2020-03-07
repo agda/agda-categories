@@ -62,7 +62,8 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     π₁-comp  : π₁ ∘ ⟨ f , g ⟩ ≈ f
     π₂-comp  : π₂ ∘ ⟨ f , g ⟩ ≈ g
 
-    ⟨,⟩-unique : π₁ ∘ h ≈ f → π₂ ∘ h ≈ g → ⟨ f , g ⟩ ≈ h
+    ⟨,⟩-unique : ∀ {f g} {h : C ⇒ A × B} →
+                 π₁ ∘ h ≈ f → π₂ ∘ h ≈ g → ⟨ f , g ⟩ ≈ h
 
   -- The above defines canonical finite products, making 𝒞 cartesian.
 
