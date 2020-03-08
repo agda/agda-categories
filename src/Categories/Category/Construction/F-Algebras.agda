@@ -38,7 +38,7 @@ F-Algebras {𝒞 = 𝒞} F = record
   where
     open Category 𝒞
     open Equiv
-    open HomReasoning using (⟺; _○_; begin_; _≈⟨_⟩_; _∎)
+    open HomReasoning hiding (refl; sym; trans)
     open Functor F
     open F-Algebra-Morphism
     open F-Algebra
