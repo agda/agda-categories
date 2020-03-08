@@ -79,7 +79,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
     -- convenient inline versions
     infix 2 ⟺
-    infixr 9 _○_
+    infixr 3 _○_
     ⟺ : {f g : A ⇒ B} → f ≈ g → g ≈ f
     ⟺ = Equiv.sym
     _○_ : {f g h : A ⇒ B} → f ≈ g → g ≈ h → f ≈ h
