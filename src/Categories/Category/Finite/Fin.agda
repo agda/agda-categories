@@ -4,12 +4,19 @@ module Categories.Category.Finite.Fin where
 
 open import Level
 open import Data.Nat using (ℕ)
+open import Data.List
 open import Data.Fin
 open import Data.Fin.Properties
 open import Relation.Binary using (Rel)
 open import Relation.Binary.PropositionalEquality as ≡
 
 open import Categories.Category
+
+record Arrow (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set where
+  field
+    dom : Fin n
+    cod : Fin n
+    arr : Fin ∣ dom ⇒ cod ∣
 
 -- a shape of a finite catgegory
 --
@@ -23,9 +30,10 @@ open import Categories.Category
 -- be able to count them. As a result, finite categories are just adjoint equivalent
 -- to some category with a finite shape. Motivated by this idea, we can consider a
 -- category with both objects and morphisms represented by Fin. We know Fin has
--- decidable equality and consequently also UIP. We additionally require categorical
--- axioms and thus ensures all shapes form categories.
-record FinCatShape (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set where
+-- decidable equality and consequently also UIP. This allows us to operate
+-- classically. We additionally require categorical axioms and thus ensures all shapes
+-- form categories.
+record HasFinCatShape (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set where
   infixr 9 _∘_
 
   _⇒_ : Rel (Fin n) 0ℓ
@@ -40,9 +48,25 @@ record FinCatShape (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set where
     identityˡ : ∀ {a b} {f : a ⇒ b} → id ∘ f ≡ f
     identityʳ : ∀ {a b} {f : a ⇒ b} → f ∘ id ≡ f
 
-FinCategory : ∀ {n card} → FinCatShape n card → Category 0ℓ 0ℓ 0ℓ
-FinCategory {n} {card} s = record
-  { Obj       = Fin n
+  objects : List (Fin n)
+  objects = allFin n
+
+  morphisms : List (Arrow n ∣_⇒_∣)
+  morphisms = concat (zipWith (λ d c → map (λ arr → record { arr = arr }) (allFin ∣ c ⇒ d ∣)) objects objects)
+
+record FinCatShape : Set where
+  infix 9 ∣_⇒_∣
+
+  field
+    size  : ℕ
+    ∣_⇒_∣ : Fin size → Fin size → ℕ
+    shape : HasFinCatShape size ∣_⇒_∣
+
+  open HasFinCatShape shape public
+
+FinCategory : FinCatShape → Category 0ℓ 0ℓ 0ℓ
+FinCategory s = record
+  { Obj       = Fin size
   ; _⇒_       = _⇒_
   ; _≈_       = _≡_
   ; id        = id

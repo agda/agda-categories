@@ -58,6 +58,9 @@ import Categories.Category.Core
 import Categories.Category.Discrete
 import Categories.Category.Equivalence
 import Categories.Category.Finite
+import Categories.Category.Finite.Fin
+import Categories.Category.Finite.Fin.Instance.Span
+import Categories.Category.Finite.Fin.Instance.Triangle
 import Categories.Category.Groupoid
 import Categories.Category.Groupoid.Properties
 import Categories.Category.Indiscrete
