@@ -52,7 +52,7 @@ record HasFinCatShape (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set wh
   objects = allFin n
 
   morphisms : List (Arrow n ∣_⇒_∣)
-  morphisms = concat (zipWith (λ d c → map (λ arr → record { arr = arr }) (allFin ∣ c ⇒ d ∣)) objects objects)
+  morphisms = concatMap (λ d → concatMap (λ c → map (λ arr → record { arr = arr }) (allFin ∣ c ⇒ d ∣)) objects) objects
 
 record FinCatShape : Set where
   infix 9 ∣_⇒_∣
