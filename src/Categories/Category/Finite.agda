@@ -44,4 +44,3 @@ record Finite {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   module S⇒C     = Functor S⇒C
   module C⇒S     = Functor C⇒S
   module adjoint = Adjoint adjoint
-  open adjoint public
