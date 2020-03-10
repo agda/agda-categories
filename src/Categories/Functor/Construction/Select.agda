@@ -19,15 +19,8 @@ open 𝒞.HomReasoning
 Select : ∀ {o} {A : Set o} → (A → Obj) → Functor (Discrete A) 𝒞
 Select {o} {A = A} select = record
   { F₀ = select
-  ; F₁ = F₁
+  ; F₁ = λ { ≡.refl → id }
   ; identity = refl
-  ; homomorphism = λ {X} {Y} {Z} {f} {g} → homomorphism f g
+  ; homomorphism = λ { {_} {_} {_} {≡.refl} {≡.refl} → sym identity² }
   ; F-resp-≈ = λ { ≡.refl → refl }
   }
-  where
-    F₁ : ∀ {X Y} → (f : Discrete A [ X , Y ]) → 𝒞 [ select X , select Y ]
-    F₁ {X} {.X} ≡.refl = id
-
-    homomorphism : ∀ {X Y Z} → (f : Discrete A [ X , Y ]) → (g : Discrete A [ Y , Z ])
-                   → F₁ (Discrete A [ g ∘ f ]) ≈ 𝒞 [ F₁ g ∘ F₁ f ]
-    homomorphism ≡.refl ≡.refl = sym 𝒞.identity²
