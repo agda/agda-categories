@@ -26,9 +26,9 @@ private
 --
 SpanShape : FinCatShape
 SpanShape = record
-  { size  = 3
-  ; ∣_⇒_∣ = morph
-  ; shape = record
+  { size     = 3
+  ; ∣_⇒_∣    = morph
+  ; hasShape = record
     { id        = id
     ; _∘_       = _∘_
     ; assoc     = assoc

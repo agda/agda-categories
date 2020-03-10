@@ -19,7 +19,7 @@ record Arrow (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set where
     cod : Fin n
     arr : Fin ∣ dom ⇒ cod ∣
 
--- a shape of a finite catgegory
+-- a hasShape of a finite catgegory
 --
 -- Classically, a finite category has a finite number of objects and a finite number
 -- of morphisms. However, in this library, we cannot conveniently count the number of
@@ -29,7 +29,7 @@ record Arrow (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set where
 --
 -- Nevetheless, if we know precisely what the objects and morphisms are, then we might
 -- be able to count them. As a result, finite categories are just adjoint equivalent
--- to some category with a finite shape. Motivated by this idea, we can consider a
+-- to some category with a finite hasShape. Motivated by this idea, we can consider a
 -- category with both objects and morphisms represented by Fin. We know Fin has
 -- decidable equality and consequently also UIP. This allows us to operate
 -- classically. We additionally require categorical axioms and thus ensure all shapes
@@ -71,11 +71,11 @@ record FinCatShape : Set where
   infix 9 ∣_⇒_∣
 
   field
-    size  : ℕ
-    ∣_⇒_∣ : Fin size → Fin size → ℕ
-    shape : HasFinCatShape size ∣_⇒_∣
+    size     : ℕ
+    ∣_⇒_∣    : Fin size → Fin size → ℕ
+    hasShape : HasFinCatShape size ∣_⇒_∣
 
-  open HasFinCatShape shape public
+  open HasFinCatShape hasShape public
 
 FinCategory : FinCatShape → Category 0ℓ 0ℓ 0ℓ
 FinCategory s = record

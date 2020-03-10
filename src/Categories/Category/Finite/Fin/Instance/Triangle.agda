@@ -27,9 +27,9 @@ private
 -- all morphisms are 0 (because there is at most one morphism between each pair of objects). 
 TriangleShape : FinCatShape
 TriangleShape = record
-  { size  = 3
-  ; ∣_⇒_∣ = morph
-  ; shape = record
+  { size     = 3
+  ; ∣_⇒_∣    = morph
+  ; hasShape = record
     { id        = id
     ; _∘_       = _∘_
     ; assoc     = assoc

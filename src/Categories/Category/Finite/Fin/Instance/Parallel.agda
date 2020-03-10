@@ -21,9 +21,9 @@ private
 --
 ParallelShape : FinCatShape
 ParallelShape = record
-  { size  = 2
-  ; ∣_⇒_∣ = card
-  ; shape = record
+  { size     = 2
+  ; ∣_⇒_∣    = card
+  ; hasShape = record
     { id        = id
     ; _∘_       = _∘_
     ; assoc     = assoc
