@@ -99,3 +99,5 @@ TriangleShape = record
 
 Triangle : Category _ _ _
 Triangle = FinCategory TriangleShape
+
+module Triangle = Category Triangle

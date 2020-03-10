@@ -87,6 +87,8 @@ SpanShape = record
 Span : Category _ _ _
 Span = FinCategory SpanShape
 
+module Span = Category Span
+
 open FinCatShape SpanShape
 
 SpanToF : Functor Span Sp.Span

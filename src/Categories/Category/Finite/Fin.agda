@@ -7,7 +7,8 @@ open import Data.Nat using (ℕ)
 open import Data.List
 open import Data.Fin
 open import Data.Fin.Properties
-open import Relation.Binary using (Rel)
+open import Axiom.UniquenessOfIdentityProofs
+open import Relation.Binary using (Rel ; Decidable)
 open import Relation.Binary.PropositionalEquality as ≡
 
 open import Categories.Category
@@ -31,7 +32,7 @@ record Arrow (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set where
 -- to some category with a finite shape. Motivated by this idea, we can consider a
 -- category with both objects and morphisms represented by Fin. We know Fin has
 -- decidable equality and consequently also UIP. This allows us to operate
--- classically. We additionally require categorical axioms and thus ensures all shapes
+-- classically. We additionally require categorical axioms and thus ensure all shapes
 -- form categories.
 record HasFinCatShape (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set where
   infixr 9 _∘_
@@ -53,6 +54,18 @@ record HasFinCatShape (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set wh
 
   morphisms : List (Arrow n ∣_⇒_∣)
   morphisms = concatMap (λ d → concatMap (λ c → map (λ arr → record { arr = arr }) (allFin ∣ c ⇒ d ∣)) objects) objects
+
+  Obj-≟ : Decidable {A = Fin n} _≡_
+  Obj-≟ = _≟_
+
+  ⇒-≟ : ∀ {a b} → Decidable {A = a ⇒ b} _≡_
+  ⇒-≟ = _≟_
+
+  Obj-UIP : UIP (Fin n)
+  Obj-UIP = Decidable⇒UIP.≡-irrelevant Obj-≟
+
+  ⇒-UIP : ∀ {a b} → UIP (a ⇒ b)
+  ⇒-UIP = Decidable⇒UIP.≡-irrelevant ⇒-≟
 
 record FinCatShape : Set where
   infix 9 ∣_⇒_∣
