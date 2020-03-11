@@ -4,6 +4,7 @@ module Categories.Category.Finite.Fin where
 
 open import Level
 open import Data.Nat using (ℕ)
+open import Data.Vec as Vec using (Vec)
 open import Data.List
 open import Data.Fin
 open import Data.Fin.Properties
@@ -53,10 +54,13 @@ record HasFinCatShape (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set wh
   objects = allFin n
 
   morphisms : List (Arrow n ∣_⇒_∣)
-  morphisms = concatMap (λ d → concatMap (λ c → map (λ arr → record { arr = arr }) (allFin ∣ c ⇒ d ∣)) objects) objects
+  morphisms = concatMap (λ c → concatMap (λ d → map (λ arr → record { arr = arr }) (allFin ∣ c ⇒ d ∣)) objects) objects
 
   Obj-≟ : Decidable {A = Fin n} _≡_
   Obj-≟ = _≟_
+
+  objects-vec : Vec (Fin n) n
+  objects-vec = Vec.allFin n
 
   ⇒-≟ : ∀ {a b} → Decidable {A = a ⇒ b} _≡_
   ⇒-≟ = _≟_

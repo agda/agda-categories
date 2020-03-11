@@ -6,7 +6,7 @@ open import Level
 open import Data.Nat using (ℕ)
 open import Data.Fin
 
-open import Categories.Adjoint
+open import Categories.Adjoint.Equivalence
 open import Categories.Category
 open import Categories.Functor
 open import Categories.Category.Finite.Fin
@@ -20,6 +20,9 @@ open import Categories.Category.Finite.Fin
 -- use adjoint equivalence. intuitively, the shape category is an "overapproximation"
 -- of C, which is a very strong constraint. so requiring adjoint equivalence sounds an
 -- unnecessarily stronger constraint. is adjoint equivalence necessary?
+--
+-- Answer: probably yes. adjoint equivalence seems necessary as the notion needs to
+-- show that shapes are preserved.
 record Finite {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   field
     shape : FinCatShape
@@ -30,8 +33,8 @@ record Finite {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   shapeCat = FinCategory shape
 
   field
-    S⇒C     : Functor shapeCat C
-    C⇒S     : Functor C shapeCat
+    S⇒C    : Functor shapeCat C
+    C⇒S    : Functor C shapeCat
     --
     --   /------------\
     --  <              \
@@ -39,8 +42,8 @@ record Finite {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
     --  \      -       ^
     --   \------------/
     --
-    adjoint : S⇒C ⊣ C⇒S
+    ⊣equiv : ⊣Equivalence S⇒C C⇒S
 
-  module S⇒C     = Functor S⇒C
-  module C⇒S     = Functor C⇒S
-  module adjoint = Adjoint adjoint
+  module S⇒C    = Functor S⇒C
+  module C⇒S    = Functor C⇒S
+  module ⊣equiv = ⊣Equivalence ⊣equiv
