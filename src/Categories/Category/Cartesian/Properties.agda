@@ -87,20 +87,20 @@ module Prods (car : Cartesian) where
   π[ there x∈xs ] = π[ x∈xs ] ∘ π₂
 
   data _⇒_* : Obj → List Obj → Set (o ⊔ ℓ) where
-    _[] : ∀ x → x ⇒ [] *
-    _∷_ : ∀ {x y ys} → x ⇒ y → x ⇒ ys * → x ⇒ y ∷ ys *
+    _~[] : ∀ x → x ⇒ [] *
+    _∷_  : ∀ {x y ys} → x ⇒ y → x ⇒ ys * → x ⇒ y ∷ ys *
 
   ⟨_⟩* : ∀ {x ys} (fs : x ⇒ ys *) → x ⇒ prod ys
-  ⟨ x [] ⟩*   = !
+  ⟨ x ~[] ⟩*  = !
   ⟨ f ∷ fs ⟩* = ⟨ f , ⟨ fs ⟩* ⟩
 
   ∈⇒mor : ∀ {x y ys} (fs : x ⇒ ys *) (y∈ys : y ∈ ys) → x ⇒ y
-  ∈⇒mor (x []) ()
+  ∈⇒mor (x ~[]) ()
   ∈⇒mor (f ∷ fs) (here refl)  = f
   ∈⇒mor (f ∷ fs) (there y∈ys) = ∈⇒mor fs y∈ys
 
   project* : ∀ {x y ys} (fs : x ⇒ ys *) (y∈ys : y ∈ ys) → π[ y∈ys ] ∘ ⟨ fs ⟩* ≈ ∈⇒mor fs y∈ys
-  project* (x []) ()
+  project* (x ~[]) ()
   project* (f ∷ fs) (here refl)  = project₁
   project* (f ∷ fs) (there y∈ys) = pullʳ project₂ ○ project* fs y∈ys
 
@@ -115,19 +115,19 @@ module Prods (car : Cartesian) where
   π[_]ᵥ {.(suc _)} {x} {_ ∷ y ∷ xs} (there x∈xs) = π[ x∈xs ]ᵥ ∘ π₂
 
   data [_]_⇒ᵥ_* : ∀ n → Obj → Vec Obj n → Set (o ⊔ ℓ) where
-    _[] : ∀ x → [ 0 ] x ⇒ᵥ [] *
-    _∷_ : ∀ {x y n} {ys : Vec Obj n} → x ⇒ y → [ n ] x ⇒ᵥ ys * → [ suc n ] x ⇒ᵥ y ∷ ys *
+    _~[] : ∀ x → [ 0 ] x ⇒ᵥ [] *
+    _∷_  : ∀ {x y n} {ys : Vec Obj n} → x ⇒ y → [ n ] x ⇒ᵥ ys * → [ suc n ] x ⇒ᵥ y ∷ ys *
 
   ⟨_⟩ᵥ* : ∀ {n x ys} (fs : [ suc n ] x ⇒ᵥ ys *) → x ⇒ prodᵥ ys
-  ⟨ f ∷ (x []) ⟩ᵥ*   = f
+  ⟨ f ∷ (x ~[]) ⟩ᵥ*  = f
   ⟨ f ∷ (g ∷ fs) ⟩ᵥ* = ⟨ f , ⟨ g ∷ fs ⟩ᵥ* ⟩
   
   ∈⇒morᵥ : ∀ {n x y ys} (fs : [ n ] x ⇒ᵥ ys *) (y∈ys : y ∈ᵥ ys) → x ⇒ y
-  ∈⇒morᵥ (x []) ()
+  ∈⇒morᵥ (x ~[]) ()
   ∈⇒morᵥ (f ∷ fs) (here refl)  = f
   ∈⇒morᵥ (f ∷ fs) (there y∈ys) = ∈⇒morᵥ fs y∈ys
 
   projectᵥ* : ∀ {n x y ys} (fs : [ suc n ] x ⇒ᵥ ys *) (y∈ys : y ∈ᵥ ys) → π[ y∈ys ]ᵥ ∘ ⟨ fs ⟩ᵥ* ≈ ∈⇒morᵥ fs y∈ys
-  projectᵥ* (f ∷ (x [])) (here ≡.refl) = identityˡ
-  projectᵥ* (f ∷ g ∷ fs) (here ≡.refl) = project₁
-  projectᵥ* (f ∷ g ∷ fs) (there y∈ys)  = pullʳ project₂ ○ projectᵥ* (g ∷ fs) y∈ys
+  projectᵥ* (f ∷ (x ~[])) (here ≡.refl) = identityˡ
+  projectᵥ* (f ∷ g ∷ fs) (here ≡.refl)  = project₁
+  projectᵥ* (f ∷ g ∷ fs) (there y∈ys)   = pullʳ project₂ ○ projectᵥ* (g ∷ fs) y∈ys
