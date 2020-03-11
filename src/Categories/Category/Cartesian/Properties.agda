@@ -4,8 +4,9 @@ open import Categories.Category
 
 module Categories.Category.Cartesian.Properties {o ℓ e} (C : Category o ℓ e) where
 
+open import Level using (_⊔_)
 open import Function using (_$_)
-open import Data.Nat
+open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (Σ; _,_; proj₁)
 open import Data.Product.Properties
 open import Data.List as List
@@ -73,14 +74,8 @@ module _ (prods : BinaryProducts) (pullbacks : ∀ {A B X} (f : A ⇒ X) (g : B 
             pb.p₂ ∘ pb′.p₂            ∎
 
 
-module _ (car : Cartesian) where
+module Prods (car : Cartesian) where
   open Cartesian car
-  private
-    _⇒* : Obj → Set _
-    x ⇒* = List (Σ Obj (x ⇒_))
-
-    _⇒*[_]ᵥ : Obj → ℕ → Set _
-    x ⇒*[ n ]ᵥ = Vec (Σ Obj (x ⇒_)) (suc n)
 
   -- for lists
 
@@ -91,22 +86,25 @@ module _ (car : Cartesian) where
   π[ here refl ]  = π₁
   π[ there x∈xs ] = π[ x∈xs ] ∘ π₂
 
-  ⟨_⟩* : ∀ {x} (fs : x ⇒*) → x ⇒ prod (map proj₁ fs)
-  ⟨ [] ⟩*           = !
-  ⟨ (_ , f) ∷ fs ⟩* = ⟨ f , ⟨ fs ⟩* ⟩
+  data _⇒_* : Obj → List Obj → Set (o ⊔ ℓ) where
+    _[] : ∀ x → x ⇒ [] *
+    _∷_ : ∀ {x y ys} → x ⇒ y → x ⇒ ys * → x ⇒ y ∷ ys *
 
-  f∈fs⇒x∈xs : ∀ {x y f} {fs : x ⇒*} → (y , f) ∈ fs → y ∈ map proj₁ fs
-  f∈fs⇒x∈xs (here refl)  = here ≡.refl
-  f∈fs⇒x∈xs (there f∈fs) = there (f∈fs⇒x∈xs f∈fs)
+  ⟨_⟩* : ∀ {x ys} (fs : x ⇒ ys *) → x ⇒ prod ys
+  ⟨ x [] ⟩*   = !
+  ⟨ f ∷ fs ⟩* = ⟨ f , ⟨ fs ⟩* ⟩
 
-  project* : ∀ {x y f} {fs : x ⇒*} (f∈fs : (y , f) ∈ fs) → π[ f∈fs⇒x∈xs f∈fs ] ∘ ⟨ fs ⟩* ≈ f
-  project* (here refl)                           = project₁
-  project* {_} {_} {f} (there {_ , g} {fs} f∈fs) = begin
-    (π[ f∈fs⇒x∈xs f∈fs ] ∘ π₂) ∘ ⟨ g , ⟨ fs ⟩* ⟩ ≈⟨ pullʳ project₂ ⟩
-    π[ f∈fs⇒x∈xs f∈fs ] ∘ ⟨ fs ⟩*                ≈⟨ project* f∈fs ⟩
-    f                                            ∎
+  ∈⇒mor : ∀ {x y ys} (fs : x ⇒ ys *) (y∈ys : y ∈ ys) → x ⇒ y
+  ∈⇒mor (x []) ()
+  ∈⇒mor (f ∷ fs) (here refl)  = f
+  ∈⇒mor (f ∷ fs) (there y∈ys) = ∈⇒mor fs y∈ys
 
-  -- for vectors
+  project* : ∀ {x y ys} (fs : x ⇒ ys *) (y∈ys : y ∈ ys) → π[ y∈ys ] ∘ ⟨ fs ⟩* ≈ ∈⇒mor fs y∈ys
+  project* (x []) ()
+  project* (f ∷ fs) (here refl)  = project₁
+  project* (f ∷ fs) (there y∈ys) = pullʳ project₂ ○ project* fs y∈ys
+
+  -- -- for vectors
 
   prodᵥ : ∀ {n} → Vec Obj (suc n) → Obj
   prodᵥ v = Vec.foldr₁ _×_ v
@@ -116,16 +114,20 @@ module _ (car : Cartesian) where
   π[_]ᵥ {.(suc _)} {.x} {x ∷ y ∷ xs} (here refl) = π₁
   π[_]ᵥ {.(suc _)} {x} {_ ∷ y ∷ xs} (there x∈xs) = π[ x∈xs ]ᵥ ∘ π₂
 
-  ⟨_⟩*ᵥ : ∀ {x n} (fs : x ⇒*[ n ]ᵥ) → x ⇒ prodᵥ (Vec.map proj₁ fs)
-  ⟨ (x , f) ∷ [] ⟩*ᵥ           = f
-  ⟨ (x , f) ∷ (y , g) ∷ fs ⟩*ᵥ = ⟨ f , ⟨ (y , g) ∷ fs ⟩*ᵥ ⟩
+  data [_]_⇒ᵥ_* : ∀ n → Obj → Vec Obj n → Set (o ⊔ ℓ) where
+    _[] : ∀ x → [ 0 ] x ⇒ᵥ [] *
+    _∷_ : ∀ {x y n} {ys : Vec Obj n} → x ⇒ y → [ n ] x ⇒ᵥ ys * → [ suc n ] x ⇒ᵥ y ∷ ys *
 
-  f∈fs⇒x∈xsᵥ : ∀ {x n y f} {fs : x ⇒*[ n ]ᵥ} → (y , f) ∈ᵥ fs → y ∈ᵥ Vec.map proj₁ fs
-  f∈fs⇒x∈xsᵥ {_} {_} {_} {_} {_ ∷ []} (here refl)      = here ≡.refl
-  f∈fs⇒x∈xsᵥ {_} {_} {_} {_} {_ ∷ x ∷ xs} (here refl)  = here ≡.refl
-  f∈fs⇒x∈xsᵥ {_} {_} {_} {_} {_ ∷ x ∷ xs} (there f∈fs) = there (f∈fs⇒x∈xsᵥ f∈fs)
+  ⟨_⟩ᵥ* : ∀ {n x ys} (fs : [ suc n ] x ⇒ᵥ ys *) → x ⇒ prodᵥ ys
+  ⟨ f ∷ (x []) ⟩ᵥ*   = f
+  ⟨ f ∷ (g ∷ fs) ⟩ᵥ* = ⟨ f , ⟨ g ∷ fs ⟩ᵥ* ⟩
+  
+  ∈⇒morᵥ : ∀ {n x y ys} (fs : [ n ] x ⇒ᵥ ys *) (y∈ys : y ∈ᵥ ys) → x ⇒ y
+  ∈⇒morᵥ (x []) ()
+  ∈⇒morᵥ (f ∷ fs) (here refl)  = f
+  ∈⇒morᵥ (f ∷ fs) (there y∈ys) = ∈⇒morᵥ fs y∈ys
 
-  project*ᵥ : ∀ {x n y f} {fs : x ⇒*[ n ]ᵥ} (f∈fs : (y , f) ∈ᵥ fs) → π[ f∈fs⇒x∈xsᵥ f∈fs ]ᵥ ∘ ⟨ fs ⟩*ᵥ ≈ f
-  project*ᵥ {_} {_} {_} {_} {_ ∷ []} (here refl)      = identityˡ
-  project*ᵥ {_} {_} {_} {_} {_ ∷ _ ∷ fs} (here refl)  = project₁
-  project*ᵥ {_} {_} {_} {_} {_ ∷ _ ∷ fs} (there f∈fs) = pullʳ project₂ ○ project*ᵥ f∈fs
+  projectᵥ* : ∀ {n x y ys} (fs : [ suc n ] x ⇒ᵥ ys *) (y∈ys : y ∈ᵥ ys) → π[ y∈ys ]ᵥ ∘ ⟨ fs ⟩ᵥ* ≈ ∈⇒morᵥ fs y∈ys
+  projectᵥ* (f ∷ (x [])) (here ≡.refl) = identityˡ
+  projectᵥ* (f ∷ g ∷ fs) (here ≡.refl) = project₁
+  projectᵥ* (f ∷ g ∷ fs) (there y∈ys)  = pullʳ project₂ ○ projectᵥ* (g ∷ fs) y∈ys
