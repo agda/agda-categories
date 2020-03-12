@@ -54,7 +54,7 @@ record HasFinCatShape (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set wh
   objects = allFin n
 
   morphisms : List (Arrow n ∣_⇒_∣)
-  morphisms = concatMap (λ c → concatMap (λ d → map (λ arr → record { arr = arr }) (allFin ∣ c ⇒ d ∣)) objects) objects
+  morphisms = concatMap (λ d → concatMap (λ c → tabulate {n = ∣ d ⇒ c ∣} (λ arr → record { arr = arr })) objects) objects
 
   Obj-≟ : Decidable {A = Fin n} _≡_
   Obj-≟ = _≟_
