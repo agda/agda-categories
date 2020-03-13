@@ -41,18 +41,24 @@ module GeneralProperties where
     concatMap-∈ f (there {z} x∈l) y∈fx = ++⁺ʳ (f z) (concatMap-∈ f x∈l y∈fx)
 
   module _ {a} {A : Set a} where
-  
-    concatMap²-tabulate-∈ : ∀ {m n} {ms : List (Fin m)} {ns : List (Fin n)}
-                              (i : Fin m → Fin n → ℕ) (f : ∀ {m n} → Fin (i m n) → A) →
-                              ∀ {x y} (xy : Fin (i x y)) →
-                                x ∈ ms → y ∈ ns →
-                                f xy ∈ concatMap (λ z → concatMap (λ w → tabulate {n = i z w} f) ns) ms
-    concatMap²-tabulate-∈ {m} {n} {ms} {ns} i f xy x∈ms y∈ns = concatMap-∈ _ x∈ms fxy∈z
-      where fxy∈zw : f xy ∈ tabulate f
-            fxy∈zw = tabulate-∈ f xy
-            fxy∈z : f xy ∈ concatMap (λ w → tabulate f) ns
-            fxy∈z  = concatMap-∈ _ y∈ns fxy∈zw
-  
+
+    concatMap²-∈ : ∀ {m n} {ms : List (Fin m)} {ns : List (Fin n)}
+                     (f : Fin m → Fin n → List A) →
+                     ∀ {x y k} → x ∈ ms → y ∈ ns → k ∈ f x y →
+                       k ∈ concatMap (λ z → concatMap (λ w → f z w) ns) ms
+    concatMap²-∈ {m} {n} {ms} {ns} f {x} {y} {k} x∈ms y∈ns k∈fxy = concatMap-∈ _ x∈ms k∈ns
+      where k∈ns : k ∈ concatMap (λ w → f x w) ns
+            k∈ns  = concatMap-∈ _ y∈ns k∈fxy
+
+    module _ {b} {B : Set b} where
+
+      concatMap²-map-∈ : ∀ {m n} {ms : List (Fin m)} {ns : List (Fin n)}
+                           (f : Fin m → Fin n → List A) →
+                           (g : A → B) →
+                           ∀ {x y k} → x ∈ ms → y ∈ ns → k ∈ f x y →
+                             g k ∈ map g (concatMap (λ z → concatMap (λ w → f z w) ns) ms)
+      concatMap²-map-∈ f g x∈ms y∈ns k∈fxy = map⁺ (Any.map (cong g) (concatMap²-∈ f x∈ms y∈ns k∈fxy))
+
 open GeneralProperties
 open Prods cartesian
 
@@ -109,8 +115,11 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
     ψ : prods ⇒ arrs
     ψ = ⟨ ψπ ⟩*
 
+    wrap-arr : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) → Arrow size ∣_⇒_∣
+    wrap-arr f = record { arr = f }
+
     ∈-morphisms : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) → record { arr = f } ∈ morphisms
-    ∈-morphisms {d} {c} f = concatMap²-tabulate-∈ ∣_⇒_∣ (λ arr → record { arr = arr }) f (∈-objects d) (∈-objects c)
+    ∈-morphisms {d} {c} f = concatMap²-∈ (λ _ _ → tabulate wrap-arr) (∈-objects d) (∈-objects c) (tabulate-∈ _ f)
 
     Fc∈cods : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) → F.₀ c ∈ cods
     Fc∈cods f = map⁺ (Any.map (cong (λ n → F.₀ (Arrow.cod n))) (∈-morphisms f))
