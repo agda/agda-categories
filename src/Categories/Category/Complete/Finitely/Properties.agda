@@ -27,17 +27,29 @@ import Categories.Diagram.Limit as Lim
 
 open FinitelyComplete finite
 
-module GeneralProperties {a} {A : Set a} where
+module GeneralProperties where
 
-  tabulate-∈ : ∀ {n} (f : Fin n → A) → ∀ m → f m ∈ tabulate f
-  tabulate-∈ {.(ℕ.suc _)} f Fin.zero    = here ≡.refl
-  tabulate-∈ {.(ℕ.suc _)} f (Fin.suc m) = there (tabulate-∈ (λ x → f (suc x)) m)
+  module _ {a} {A : Set a} where
+  
+    tabulate-∈ : ∀ {n} (f : Fin n → A) → ∀ m → f m ∈ tabulate f
+    tabulate-∈ {.(ℕ.suc _)} f Fin.zero    = here ≡.refl
+    tabulate-∈ {.(ℕ.suc _)} f (Fin.suc m) = there (tabulate-∈ (λ x → f (suc x)) m)
+  
+    concatMap-∈ : ∀ {b} {B : Set b} (f : A → List B) {l : List A} →
+                  ∀ {x y} → x ∈ l → y ∈ f x → y ∈ concatMap f l
+    concatMap-∈ f (here refl) y∈fx     = ++⁺ˡ y∈fx
+    concatMap-∈ f (there {z} x∈l) y∈fx = ++⁺ʳ (f z) (concatMap-∈ f x∈l y∈fx)
 
-  concatMap-∈ : ∀ {b} {B : Set b} (f : A → List B) {l : List A} →
-                ∀ {x y} → x ∈ l → y ∈ f x → y ∈ concatMap f l
-  concatMap-∈ f (here refl) y∈fx     = ++⁺ˡ y∈fx
-  concatMap-∈ f (there {z} x∈l) y∈fx = ++⁺ʳ (f z) (concatMap-∈ f x∈l y∈fx)
-
+  module _ {a} {A : Set a} where
+  
+    concatMap²-tabulate-∈ : ∀ {m n} (i : Fin m → Fin n → ℕ) (f : ∀ {m n} → Fin (i m n) → A) →
+                              ∀ {x y} (xy : Fin (i x y)) → f xy ∈ concatMap (λ z → concatMap (λ w → tabulate {n = i z w} f) (allFin n)) (allFin m)
+    concatMap²-tabulate-∈ {m} {n} i f {x} {y} xy = concatMap-∈ _ (tabulate-∈ (λ z → z) x) fxy∈z
+      where fxy∈zw : f xy ∈ tabulate f
+            fxy∈zw = tabulate-∈ f xy
+            fxy∈z : f xy ∈ concatMap (λ w → tabulate f) (allFin n)
+            fxy∈z  = concatMap-∈ _ (tabulate-∈ (λ z → z) y) fxy∈zw
+  
 open GeneralProperties
 open Prods cartesian
 
@@ -95,13 +107,7 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
     ψ = ⟨ ψπ ⟩*
 
     ∈-morphisms : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) → record { arr = f } ∈ morphisms
-    ∈-morphisms {d} {c} f = concatMap-∈ _ (∈-objects d) f∈d
-      where arr : Arrow size ∣_⇒_∣
-            arr = record { arr = f }
-            f∈dc : arr ∈ tabulate {n = ∣ d ⇒ c ∣} λ arr → record { arr = arr }
-            f∈dc = tabulate-∈ _ f
-            f∈d : arr ∈ concatMap (λ c → tabulate {n = ∣ d ⇒ c ∣} (λ arr → record { arr = arr })) objects
-            f∈d = concatMap-∈ _ (∈-objects c) f∈dc
+    ∈-morphisms {d} {c} f = concatMap²-tabulate-∈ ∣_⇒_∣ (λ arr → record { arr = arr }) f
 
     Fc∈cods : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) → F.₀ c ∈ cods
     Fc∈cods f = map⁺ (Any.map (cong (λ n → F.₀ (Arrow.cod n))) (∈-morphisms f))
