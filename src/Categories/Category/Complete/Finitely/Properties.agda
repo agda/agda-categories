@@ -153,12 +153,12 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
       ; apex = record
         { ψ       = λ n → π n ∘ arr
         ; commute = λ {m n} f → begin
-          F.₁ f ∘ π m ∘ arr                ≈⟨ pullˡ (reflexive (ψπ-proj≡ (∈-morphisms f))) ⟩
-          ∈⇒mor ψπ (Fc∈cods f) ∘ arr       ≈˘⟨ project* ψπ (Fc∈cods f) ⟩∘⟨refl ⟩
-          (π[ Fc∈cods f ] ∘ ⟨ ψπ ⟩*) ∘ arr ≈⟨ pullʳ equality ⟩
-          π[ Fc∈cods f ] ∘ ϕ ∘ arr         ≈⟨ pullˡ (project* ϕπ (Fc∈cods f)) ⟩
-          ∈⇒mor ϕπ (Fc∈cods f) ∘ arr       ≈˘⟨ reflexive (ϕπ-proj≡ (∈-morphisms f)) ⟩∘⟨refl ⟩
-          π n ∘ arr                        ∎
+          F.₁ f ∘ π m ∘ arr          ≈⟨ pullˡ (reflexive (ψπ-proj≡ (∈-morphisms f))) ⟩
+          ∈⇒mor ψπ (Fc∈cods f) ∘ arr ≈˘⟨ project* ψπ (Fc∈cods f) ⟩∘⟨refl ⟩
+          (π[ Fc∈cods f ] ∘ ψ) ∘ arr ≈⟨ pullʳ equality ⟩
+          π[ Fc∈cods f ] ∘ ϕ ∘ arr   ≈⟨ pullˡ (project* ϕπ (Fc∈cods f)) ⟩
+          ∈⇒mor ϕπ (Fc∈cods f) ∘ arr ≈˘⟨ reflexive (ϕπ-proj≡ (∈-morphisms f)) ⟩∘⟨refl ⟩
+          π n ∘ arr                  ∎
         }
       }
 

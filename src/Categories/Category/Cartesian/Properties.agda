@@ -104,7 +104,11 @@ module Prods (car : Cartesian) where
   project* (f ∷ fs) (here refl)  = project₁
   project* (f ∷ fs) (there y∈ys) = pullʳ project₂ ○ project* fs y∈ys
 
-  -- -- for vectors
+  uniqueness* : ∀ {x ys} {g h : x ⇒ prod ys} → (∀ {y} (y∈ys : y ∈ ys) → π[ y∈ys ] ∘ g ≈ π[ y∈ys ] ∘ h) → g ≈ h
+  uniqueness* {x} {[]} uni     = !-unique₂
+  uniqueness* {x} {y ∷ ys} uni = unique′ (uni (here ≡.refl)) (uniqueness* λ y∈ys → sym-assoc ○ uni (there y∈ys) ○ assoc)
+
+  -- for vectors
 
   prodᵥ : ∀ {n} → Vec Obj (suc n) → Obj
   prodᵥ v = Vec.foldr₁ _×_ v
@@ -131,3 +135,7 @@ module Prods (car : Cartesian) where
   projectᵥ* (f ∷ (x ~[])) (here ≡.refl) = identityˡ
   projectᵥ* (f ∷ g ∷ fs) (here ≡.refl)  = project₁
   projectᵥ* (f ∷ g ∷ fs) (there y∈ys)   = pullʳ project₂ ○ projectᵥ* (g ∷ fs) y∈ys
+
+  uniquenessᵥ* : ∀ {x n ys} {g h : x ⇒ prodᵥ {n} ys} → (∀ {y} (y∈ys : y ∈ᵥ ys) → π[ y∈ys ]ᵥ ∘ g ≈ π[ y∈ys ]ᵥ ∘ h) → g ≈ h
+  uniquenessᵥ* {x} {.0} {y ∷ []} uni           = ⟺ identityˡ ○ uni (here ≡.refl) ○ identityˡ
+  uniquenessᵥ* {x} {.(suc _)} {y ∷ z ∷ ys} uni = unique′ (uni (here ≡.refl)) (uniquenessᵥ* (λ y∈ys → sym-assoc ○ uni (there y∈ys) ○ assoc))
