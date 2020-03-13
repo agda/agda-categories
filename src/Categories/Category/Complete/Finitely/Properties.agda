@@ -42,13 +42,16 @@ module GeneralProperties where
 
   module _ {a} {A : Set a} where
   
-    concatMap²-tabulate-∈ : ∀ {m n} (i : Fin m → Fin n → ℕ) (f : ∀ {m n} → Fin (i m n) → A) →
-                              ∀ {x y} (xy : Fin (i x y)) → f xy ∈ concatMap (λ z → concatMap (λ w → tabulate {n = i z w} f) (allFin n)) (allFin m)
-    concatMap²-tabulate-∈ {m} {n} i f {x} {y} xy = concatMap-∈ _ (tabulate-∈ (λ z → z) x) fxy∈z
+    concatMap²-tabulate-∈ : ∀ {m n} {ms : List (Fin m)} {ns : List (Fin n)}
+                              (i : Fin m → Fin n → ℕ) (f : ∀ {m n} → Fin (i m n) → A) →
+                              ∀ {x y} (xy : Fin (i x y)) →
+                                x ∈ ms → y ∈ ns →
+                                f xy ∈ concatMap (λ z → concatMap (λ w → tabulate {n = i z w} f) ns) ms
+    concatMap²-tabulate-∈ {m} {n} {ms} {ns} i f xy x∈ms y∈ns = concatMap-∈ _ x∈ms fxy∈z
       where fxy∈zw : f xy ∈ tabulate f
             fxy∈zw = tabulate-∈ f xy
-            fxy∈z : f xy ∈ concatMap (λ w → tabulate f) (allFin n)
-            fxy∈z  = concatMap-∈ _ (tabulate-∈ (λ z → z) y) fxy∈zw
+            fxy∈z : f xy ∈ concatMap (λ w → tabulate f) ns
+            fxy∈z  = concatMap-∈ _ y∈ns fxy∈zw
   
 open GeneralProperties
 open Prods cartesian
@@ -107,13 +110,17 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
     ψ = ⟨ ψπ ⟩*
 
     ∈-morphisms : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) → record { arr = f } ∈ morphisms
-    ∈-morphisms {d} {c} f = concatMap²-tabulate-∈ ∣_⇒_∣ (λ arr → record { arr = arr }) f
+    ∈-morphisms {d} {c} f = concatMap²-tabulate-∈ ∣_⇒_∣ (λ arr → record { arr = arr }) f (∈-objects d) (∈-objects c)
 
     Fc∈cods : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) → F.₀ c ∈ cods
     Fc∈cods f = map⁺ (Any.map (cong (λ n → F.₀ (Arrow.cod n))) (∈-morphisms f))
 
     π′ : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) → arrs ⇒ F.₀ c
     π′ f = π[ Fc∈cods f ]
+
+    -- ψπ-proj≡ : ∀ {ns : List (Arrow size ∣_⇒_∣)} (a : Arrow size ∣_⇒_∣) →
+    --              F.₁ (Arrow.arr a) ∘ π (Arrow.dom a) ≡ ∈⇒mor (ψπ-rec ns) {!Fc∈cods (Arrow.arr a)!}
+    -- ψπ-proj≡ = {!!}
 
     e⇒prods : Equalizer ψ ϕ
     e⇒prods = equalizer ψ ϕ
@@ -122,24 +129,24 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
 
     open e⇒prods
 
-    -- ⊤cone : Cone
-    -- ⊤cone = record
-    --   { N    = obj
-    --   ; apex = record
-    --     { ψ       = λ n → π n ∘ arr
-    --     ; commute = λ {m n} f → begin
-    --       F.₁ f ∘ π m ∘ arr ≈⟨ {!project* ψπ (Fc∈cods f)!} ⟩
-    --       {!!} ≈⟨ {!!} ⟩
-    --       {!!} ≈⟨ {!!} ⟩
-    --       π n ∘ arr ∎
-    --     }
-    --   }
+  --   ⊤cone : Cone
+  --   ⊤cone = record
+  --     { N    = obj
+  --     ; apex = record
+  --       { ψ       = λ n → π n ∘ arr
+  --       ; commute = λ {m n} f → begin
+  --         F.₁ f ∘ π m ∘ arr ≈⟨ {!project* ψπ (Fc∈cods f)!} ⟩
+  --         {!!} ≈⟨ {!!} ⟩
+  --         {!!} ≈⟨ {!!} ⟩
+  --         π n ∘ arr ∎
+  --       }
+  --     }
 
-  -- -- finiteLimit : Limit
-  -- -- finiteLimit = record
-  -- --   { terminal = record
-  -- --     { ⊤        = {!obj!}
-  -- --     ; !        = {!!}
-  -- --     ; !-unique = {!!}
-  -- --     }
-  -- --   }
+  -- -- -- finiteLimit : Limit
+  -- -- -- finiteLimit = record
+  -- -- --   { terminal = record
+  -- -- --     { ⊤        = {!obj!}
+  -- -- --     ; !        = {!!}
+  -- -- --     ; !-unique = {!!}
+  -- -- --     }
+  -- -- --   }
