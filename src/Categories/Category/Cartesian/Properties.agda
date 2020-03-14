@@ -11,12 +11,13 @@ open import Data.Product using (Σ; _,_; proj₁)
 open import Data.Product.Properties
 open import Data.List as List
 open import Data.List.Any as Any using (here; there)
+open import Data.List.Any.Properties
 open import Data.List.Membership.Propositional
 open import Data.Vec as Vec using (Vec; []; _∷_)
 open import Data.Vec.Any as AnyV using (here; there)
 open import Data.Vec.Membership.Propositional renaming (_∈_ to _∈ᵥ_)
 
-open import Relation.Binary.PropositionalEquality as ≡ using (refl)
+open import Relation.Binary.PropositionalEquality as ≡ using (refl; _≡_)
 
 open import Categories.Category.Cartesian C
 
@@ -108,6 +109,24 @@ module Prods (car : Cartesian) where
   uniqueness* {x} {[]} uni     = !-unique₂
   uniqueness* {x} {y ∷ ys} uni = unique′ (uni (here ≡.refl)) (uniqueness* λ y∈ys → sym-assoc ○ uni (there y∈ys) ○ assoc)
 
+  module _ {a} {A : Set a} (f : A → Obj) where
+  
+    f∈fl : ∀ {a l} (a∈l : a ∈ l) → f a ∈ map f l
+    f∈fl a∈l = map⁺ (Any.map (≡.cong f) a∈l)
+
+    module _ {x} (g : ∀ a → x ⇒ f a) where
+  
+      build-mors : (l : List A) → x ⇒ map f l *
+      build-mors []      = _ ~[]
+      build-mors (y ∷ l) = g y ∷ build-mors l
+  
+      build-proj≡ : ∀ {a l} (a∈l : a ∈ l) → g a ≡ ∈⇒mor (build-mors l) (f∈fl a∈l)
+      build-proj≡ (here refl) = ≡.refl
+      build-proj≡ (there a∈l) = build-proj≡ a∈l
+  
+      build-proj : ∀ {a l} (a∈l : a ∈ l) → g a ≈ π[ f∈fl a∈l ] ∘ ⟨ build-mors l ⟩*
+      build-proj {_} {l} a∈l = reflexive (build-proj≡ a∈l) ○ ⟺ (project* (build-mors l) _)
+  
   -- for vectors
 
   prodᵥ : ∀ {n} → Vec Obj (suc n) → Obj

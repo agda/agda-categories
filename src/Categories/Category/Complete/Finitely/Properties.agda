@@ -93,25 +93,22 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
     ∈-objects : ∀ n → n ∈ objects
     ∈-objects n = tabulate-∈ (λ x → x) n
 
-    π : ∀ n → prods ⇒ F.₀ n
-    π n = π[ map⁺ (Any.map (≡.cong F.₀) (∈-objects n)) ]
+    Fn∈obj : ∀ n → F.₀ n ∈ map F.₀ objects
+    Fn∈obj n = f∈fl F.₀ (∈-objects n)
 
-    ϕπ-rec : ∀ (ns : List (Arrow size ∣_⇒_∣)) → prods ⇒ map (λ n → F.₀ (Arrow.cod n)) ns *
-    ϕπ-rec []       = prods ~[]
-    ϕπ-rec (n ∷ ns) = π (Arrow.cod n) ∷ ϕπ-rec ns
+    π : ∀ n → prods ⇒ F.₀ n
+    π n = π[ Fn∈obj n ]
 
     ϕπ : prods ⇒ cods *
-    ϕπ = ϕπ-rec morphisms
+    ϕπ = build-mors (λ a → F.₀ (Arrow.cod a)) (λ a → π (Arrow.cod a)) morphisms
 
     ϕ : prods ⇒ arrs
     ϕ = ⟨ ϕπ ⟩*
 
-    ψπ-rec : ∀ (ns : List (Arrow size ∣_⇒_∣)) → prods ⇒ map (λ n → F.₀ (Arrow.cod n)) ns *
-    ψπ-rec []       = prods ~[]
-    ψπ-rec (n ∷ ns) = F.₁ (Arrow.arr n) ∘ π (Arrow.dom n) ∷ ψπ-rec ns
-
     ψπ : prods ⇒ cods *
-    ψπ = ψπ-rec morphisms
+    ψπ = build-mors (λ a → F.₀ (Arrow.cod a))
+                    (λ a → F.₁ (Arrow.arr a) ∘ π (Arrow.dom a))
+                    morphisms
 
     ψ : prods ⇒ arrs
     ψ = ⟨ ψπ ⟩*
@@ -123,22 +120,22 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
     ∈-morphisms {d} {c} f = concatMap²-∈ (λ _ _ → tabulate wrap-arr) (∈-objects d) (∈-objects c) (tabulate-∈ _ f)
 
     Fc∈cods : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) → F.₀ c ∈ cods
-    Fc∈cods f = map⁺ (Any.map (cong (λ n → F.₀ (Arrow.cod n))) (∈-morphisms f))
+    Fc∈cods f = f∈fl (λ a → F.₀ (Arrow.cod a)) (∈-morphisms f)
 
     π′ : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) → arrs ⇒ F.₀ c
     π′ f = π[ Fc∈cods f ]
 
-    ψπ-proj≡ : ∀ {ns : List (Arrow size ∣_⇒_∣)} {a : Arrow size ∣_⇒_∣}
-                 (a∈ns : a ∈ ns) →
-                 F.₁ (Arrow.arr a) ∘ π (Arrow.dom a) ≡ ∈⇒mor (ψπ-rec ns) (map⁺ (Any.map (cong (λ n → F.₀ (Arrow.cod n))) a∈ns))
-    ψπ-proj≡ (here refl)  = ≡.refl
-    ψπ-proj≡ (there a∈ns) = ψπ-proj≡ a∈ns
+    ψπ-proj : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) →
+                F.₁ f ∘ π d ≈ π[ Fc∈cods f ] ∘ ψ
+    ψπ-proj f = build-proj (λ a → F.₀ (Arrow.cod a))
+                           (λ a → F.₁ (Arrow.arr a) ∘ π (Arrow.dom a))
+                           (∈-morphisms f)
 
-    ϕπ-proj≡ : ∀ {ns : List (Arrow size ∣_⇒_∣)} {a : Arrow size ∣_⇒_∣}
-                 (a∈ns : a ∈ ns) →
-                 π (Arrow.cod a) ≡ ∈⇒mor (ϕπ-rec ns) (map⁺ (Any.map (cong (λ n → F.₀ (Arrow.cod n))) a∈ns))
-    ϕπ-proj≡ (here refl)  = ≡.refl
-    ϕπ-proj≡ (there a∈ns) = ϕπ-proj≡ a∈ns
+    ϕπ-proj : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) →
+                π c ≈ π[ Fc∈cods f ] ∘ ϕ
+    ϕπ-proj f = build-proj (λ a → F.₀ (Arrow.cod a))
+                           (λ a → π (Arrow.cod a))
+                           (∈-morphisms f)
 
     e⇒prods : Equalizer ψ ϕ
     e⇒prods = equalizer ψ ϕ
@@ -153,27 +150,47 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
       ; apex = record
         { ψ       = λ n → π n ∘ arr
         ; commute = λ {m n} f → begin
-          F.₁ f ∘ π m ∘ arr          ≈⟨ pullˡ (reflexive (ψπ-proj≡ (∈-morphisms f))) ⟩
-          ∈⇒mor ψπ (Fc∈cods f) ∘ arr ≈˘⟨ project* ψπ (Fc∈cods f) ⟩∘⟨refl ⟩
-          (π[ Fc∈cods f ] ∘ ψ) ∘ arr ≈⟨ pullʳ equality ⟩
-          π[ Fc∈cods f ] ∘ ϕ ∘ arr   ≈⟨ pullˡ (project* ϕπ (Fc∈cods f)) ⟩
-          ∈⇒mor ϕπ (Fc∈cods f) ∘ arr ≈˘⟨ reflexive (ϕπ-proj≡ (∈-morphisms f)) ⟩∘⟨refl ⟩
-          π n ∘ arr                  ∎
+          F.₁ f ∘ π m ∘ arr ≈⟨ pullˡ (ψπ-proj f) ⟩
+          (π′ f ∘ ψ) ∘ arr  ≈⟨ pullʳ equality ⟩
+          π′ f ∘ ϕ ∘ arr    ≈˘⟨ pushˡ (ϕπ-proj f) ⟩
+          π n ∘ arr         ∎
         }
       }
 
-  --   !cone : ∀ K → Cone⇒ K ⊤cone
-  --   !cone K = record
-  --     { arr     = {!K.ψ!}
-  --     ; commute = {!!}
-  --     }
-  --     where module K = Cone K
+    module _ {K : Cone} where
+      module K = Cone K
 
-  -- finiteLimit : Limit
-  -- finiteLimit = record
-  --   { terminal = record
-  --     { ⊤        = ⊤cone
-  --     ; !        = !cone _
-  --     ; !-unique = {!!}
-  --     }
-  --   }
+      N⇒* : K.N ⇒ map F.₀ objects *
+      N⇒* = build-mors F.₀ K.ψ objects
+
+      Kmor : K.N ⇒ prods
+      Kmor = ⟨ N⇒* ⟩*
+
+      π∘ψ∘Kmor : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) →
+                   π[ Fc∈cods f ] ∘ ψ ∘ Kmor ≈ F.₁ f ∘ K.ψ d
+      π∘ψ∘Kmor {d} {c} f = begin
+        π[ Fc∈cods f ] ∘ ψ ∘ Kmor ≈˘⟨ pushˡ (ψπ-proj f) ⟩
+        (F.₁ f ∘ π d) ∘ Kmor      ≈˘⟨ pushʳ (build-proj F.₀ K.ψ (∈-objects d)) ⟩
+        F.₁ f ∘ K.ψ d             ∎
+
+      π∘ϕ∘Kmor : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) →
+                   π[ Fc∈cods f ] ∘ ϕ ∘ Kmor ≈ K.ψ c
+      π∘ϕ∘Kmor {d} {c} f = begin
+        π[ Fc∈cods f ] ∘ ϕ ∘ Kmor ≈˘⟨ pushˡ (ϕπ-proj f) ⟩
+        π c ∘ Kmor ≈˘⟨ build-proj F.₀ K.ψ (∈-objects c) ⟩
+        K.ψ c ∎
+
+      -- !cone : Cone⇒ K ⊤cone
+      -- !cone = record
+      --   { arr     = {!equalize !}
+      --   ; commute = {!K.commute!}
+      --   }
+  
+  -- -- finiteLimit : Limit
+  -- -- finiteLimit = record
+  -- --   { terminal = record
+  -- --     { ⊤        = ⊤cone
+  -- --     ; !        = !cone _
+  -- --     ; !-unique = {!!}
+  -- --     }
+  -- --   }
