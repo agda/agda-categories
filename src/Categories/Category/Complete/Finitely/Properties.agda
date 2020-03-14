@@ -227,10 +227,10 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
         π c ∘ Kmor ≈˘⟨ build-proj F.₀ K.ψ (∈-objects c) ⟩
         K.ψ c ∎
 
-      -- Kmor-commute : ∀ {z} (z∈zs : z ∈ cods) →
-      --                  π[ z∈zs ] ∘ ψ ∘ Kmor ≈ π[ z∈zs ] ∘ ϕ ∘ Kmor
-      -- Kmor-commute {z} z∈zs with concatMap²-map-∈⁻¹ objects objects (λ d c → tabulate (wrap-arr {d} {c})) (λ a → F.₀ (Arrow.cod a)) z∈zs
-      -- ... | x , y , a , eq , x∈ , y∈ , a∈ = {!commute (Arrow.arr a)!}
+      -- Kmor-commute : ∀ {a} (a∈as : a ∈ morphisms) →
+      --                  π[ f∈fl (λ a → F.₀ (Arrow.cod a)) a∈as ] ∘ ψ ∘ Kmor ≈ π[ f∈fl (λ a → F.₀ (Arrow.cod a)) a∈as ] ∘ ϕ ∘ Kmor
+      -- Kmor-commute {a} a∈as with concatMap²-∈⁻¹ objects objects (λ d c → tabulate (wrap-arr {d} {c})) a∈as
+      -- ... | x , y , x∈ , y∈ , a∈ = {!commute (Arrow.arr a)!}
       --   where commute : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) → π[ Fc∈cods f ] ∘ ψ ∘ Kmor ≈ π[ Fc∈cods f ] ∘ ϕ ∘ Kmor
       --         commute {d} {c} f = begin
       --           π[ Fc∈cods f ] ∘ ψ ∘ Kmor ≈⟨ π∘ψ∘Kmor f ⟩
@@ -240,7 +240,7 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
 
       -- !cone : Cone⇒ K ⊤cone
       -- !cone = record
-      --   { arr     = equalize (uniqueness* Kmor-commute)
+      --   { arr     = equalize (uniqueness*′ (λ a → F.₀ (Arrow.cod a)) Kmor-commute)
       --   ; commute = {!K.commute!}
       --   }
   

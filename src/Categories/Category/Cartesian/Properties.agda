@@ -114,6 +114,11 @@ module Prods (car : Cartesian) where
     f∈fl : ∀ {a l} (a∈l : a ∈ l) → f a ∈ map f l
     f∈fl a∈l = map⁺ (Any.map (≡.cong f) a∈l)
 
+    uniqueness*′ : ∀ {x ys} {g h : x ⇒ prod (map f ys)} → (∀ {y} (y∈ys : y ∈ ys) → π[ f∈fl y∈ys ] ∘ g ≈ π[ f∈fl y∈ys ] ∘ h) → g ≈ h
+    uniqueness*′ {x} {[]} uni = !-unique₂
+    uniqueness*′ {x} {y ∷ ys} uni = unique′ (uni (here ≡.refl)) (uniqueness*′ λ y∈ys → sym-assoc ○ uni (there y∈ys) ○ assoc)
+
+
     f∈fl⁻¹ : ∀ {x l} → x ∈ map f l → Σ A (λ a → a ∈ l & x ≡ f a)
     f∈fl⁻¹ {x} {a ∷ l} (here px) = a , here ≡.refl , px
     f∈fl⁻¹ {x} {b ∷ l} (there x∈fl) with f∈fl⁻¹ x∈fl
