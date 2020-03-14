@@ -7,7 +7,7 @@ module Categories.Category.Cartesian.Properties {o ℓ e} (C : Category o ℓ e)
 open import Level using (_⊔_)
 open import Function using (_$_)
 open import Data.Nat using (ℕ; zero; suc)
-open import Data.Product using (Σ; _,_; proj₁)
+open import Data.Product using (Σ; _,_; proj₁) renaming (_×_ to _&_)
 open import Data.Product.Properties
 open import Data.List as List
 open import Data.List.Any as Any using (here; there)
@@ -113,6 +113,11 @@ module Prods (car : Cartesian) where
   
     f∈fl : ∀ {a l} (a∈l : a ∈ l) → f a ∈ map f l
     f∈fl a∈l = map⁺ (Any.map (≡.cong f) a∈l)
+
+    f∈fl⁻¹ : ∀ {x l} → x ∈ map f l → Σ A (λ a → a ∈ l & x ≡ f a)
+    f∈fl⁻¹ {x} {a ∷ l} (here px) = a , here ≡.refl , px
+    f∈fl⁻¹ {x} {b ∷ l} (there x∈fl) with f∈fl⁻¹ x∈fl
+    ... | a , a∈l , eq           = a , there a∈l , eq
 
     module _ {x} (g : ∀ a → x ⇒ f a) where
   

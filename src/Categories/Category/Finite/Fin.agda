@@ -53,8 +53,11 @@ record HasFinCatShape (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set wh
   objects : List (Fin n)
   objects = allFin n
 
+  wrap-arr : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) → Arrow n ∣_⇒_∣
+  wrap-arr f = record { arr = f }
+
   morphisms : List (Arrow n ∣_⇒_∣)
-  morphisms = concatMap (λ d → concatMap (λ c → tabulate {n = ∣ d ⇒ c ∣} (λ arr → record { arr = arr })) objects) objects
+  morphisms = concatMap (λ d → concatMap (λ c → tabulate (wrap-arr {d} {c})) objects) objects
 
   Obj-≟ : Decidable {A = Fin n} _≡_
   Obj-≟ = _≟_
