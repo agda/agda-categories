@@ -10,13 +10,14 @@ open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (Σ; _,_; proj₁) renaming (_×_ to _&_)
 open import Data.Product.Properties
 open import Data.List as List
-open import Data.List.Any as Any using (here; there)
-open import Data.List.Any.Properties
+open import Data.List.Relation.Unary.Any as Any using (here; there)
+open import Data.List.Relation.Unary.Any.Properties
 open import Data.List.Membership.Propositional
 open import Data.Vec as Vec using (Vec; []; _∷_)
-open import Data.Vec.Any as AnyV using (here; there)
+open import Data.Vec.Relation.Unary.Any as AnyV using (here; there)
 open import Data.Vec.Membership.Propositional renaming (_∈_ to _∈ᵥ_)
 
+open import Relation.Binary using (Rel)
 open import Relation.Binary.PropositionalEquality as ≡ using (refl; _≡_)
 
 open import Categories.Category.Cartesian C
@@ -136,7 +137,31 @@ module Prods (car : Cartesian) where
   
       build-proj : ∀ {a l} (a∈l : a ∈ l) → g a ≈ π[ f∈fl a∈l ] ∘ ⟨ build-mors l ⟩*
       build-proj {_} {l} a∈l = reflexive (build-proj≡ a∈l) ○ ⟺ (project* (build-mors l) _)
-  
+
+    build-⟨⟩*∘ : ∀ {x y} (g : ∀ a → x ⇒ f a) (h : y ⇒ x) → ∀ l → ⟨ build-mors g l ⟩* ∘ h ≈ ⟨ build-mors (λ a → g a ∘ h) l ⟩*
+    build-⟨⟩*∘ g h []      = !-unique₂
+    build-⟨⟩*∘ g h (x ∷ l) = begin
+      ⟨ build-mors g (x ∷ l) ⟩* ∘ h                   ≈⟨ ⟨⟩∘ ⟩
+      ⟨ g x ∘ h , ⟨ build-mors g l ⟩* ∘ h ⟩           ≈⟨ ⟨⟩-congˡ (build-⟨⟩*∘ g h l) ⟩
+      ⟨ g x ∘ h , ⟨ build-mors (λ a → g a ∘ h) l ⟩* ⟩ ∎
+
+    build-uniqueness* : ∀ {x} {g h : ∀ a → x ⇒ f a} → (∀ a → g a ≈ h a) → ∀ l → ⟨ build-mors g l ⟩* ≈ ⟨ build-mors h l ⟩*
+    build-uniqueness* {x} {g} {h} uni []      = Equiv.refl
+    build-uniqueness* {x} {g} {h} uni (y ∷ l) = ⟨⟩-cong₂ (uni y) (build-uniqueness* uni l)
+
+  data ⟨_∙_⟩_≈*_ {a} {A : Set a} {f : A → Obj} {x} (g h : ∀ a → x ⇒ f a) :
+       ∀ {l} → Rel (x ⇒ map f l *) (a ⊔ o ⊔ ℓ ⊔ e) where
+    []  : ⟨ g ∙ h ⟩ (x ~[]) ≈* (x ~[])
+    _∷_ : ∀ {y l} {gs hs : x ⇒ map f l *} →
+            g y ≈ h y → ⟨ g ∙ h ⟩ gs ≈* hs → ⟨ g ∙ h ⟩ (g y ∷ gs) ≈* (h y ∷ hs)
+
+  module _ {a} {A : Set a} {f : A → Obj} {x} (g h : ∀ a → x ⇒ f a) where
+
+    uniqueness≈* : ∀ {l} {fs gs : x ⇒ map f l *} →
+                     ⟨ g ∙ h ⟩ fs ≈* gs → ⟨ (build-mors f g l) ⟩* ≈ ⟨ (build-mors f h l) ⟩*
+    uniqueness≈* []           = Equiv.refl
+    uniqueness≈* (gy≈hy ∷ eq) = ⟨⟩-cong₂ gy≈hy (uniqueness≈* eq)
+
   -- for vectors
 
   prodᵥ : ∀ {n} → Vec Obj (suc n) → Obj

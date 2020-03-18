@@ -149,16 +149,20 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
     π : ∀ n → prods ⇒ F.₀ n
     π n = π[ Fn∈obj n ]
 
+    ϕ⇒ : ∀ (a : Arrow size ∣_⇒_∣) → prods ⇒ F.F₀ (Arrow.cod a)
+    ϕ⇒ a = π (Arrow.cod a)
+
     ϕπ : prods ⇒ cods *
-    ϕπ = build-mors (λ a → F.₀ (Arrow.cod a)) (λ a → π (Arrow.cod a)) morphisms
+    ϕπ = build-mors _ ϕ⇒ morphisms
 
     ϕ : prods ⇒ arrs
     ϕ = ⟨ ϕπ ⟩*
 
+    ψ⇒ : ∀ a → prods ⇒ F.F₀ (Arrow.cod a)
+    ψ⇒ a = F.₁ (Arrow.arr a) ∘ π (Arrow.dom a)
+
     ψπ : prods ⇒ cods *
-    ψπ = build-mors (λ a → F.₀ (Arrow.cod a))
-                    (λ a → F.₁ (Arrow.arr a) ∘ π (Arrow.dom a))
-                    morphisms
+    ψπ = build-mors _ ψ⇒ morphisms
 
     ψ : prods ⇒ arrs
     ψ = ⟨ ψπ ⟩*
@@ -213,42 +217,36 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
       Kmor : K.N ⇒ prods
       Kmor = ⟨ N⇒* ⟩*
 
-      π∘ψ∘Kmor : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) →
-                   π[ Fc∈cods f ] ∘ ψ ∘ Kmor ≈ F.₁ f ∘ K.ψ d
-      π∘ψ∘Kmor {d} {c} f = begin
-        π[ Fc∈cods f ] ∘ ψ ∘ Kmor ≈˘⟨ pushˡ (ψπ-proj f) ⟩
-        (F.₁ f ∘ π d) ∘ Kmor      ≈˘⟨ pushʳ (build-proj F.₀ K.ψ (∈-objects d)) ⟩
-        F.₁ f ∘ K.ψ d             ∎
+      ψ∘Kmor≈ϕ∘Kmor : ∀ a → ψ⇒ a ∘ Kmor ≈ ϕ⇒ a ∘ Kmor
+      ψ∘Kmor≈ϕ∘Kmor a = begin
+        ψ⇒ a ∘ Kmor                           ≈˘⟨ pushʳ (build-proj F.₀ K.ψ (∈-objects (Arrow.dom a))) ⟩
+        F.₁ (Arrow.arr a) ∘ K.ψ (Arrow.dom a) ≈⟨ K.commute (Arrow.arr a) ⟩
+        K.ψ (Arrow.cod a)                     ≈⟨ build-proj F.₀ K.ψ (∈-objects (Arrow.cod a)) ⟩
+        ϕ⇒ a ∘ Kmor                           ∎
 
-      π∘ϕ∘Kmor : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) →
-                   π[ Fc∈cods f ] ∘ ϕ ∘ Kmor ≈ K.ψ c
-      π∘ϕ∘Kmor {d} {c} f = begin
-        π[ Fc∈cods f ] ∘ ϕ ∘ Kmor ≈˘⟨ pushˡ (ϕπ-proj f) ⟩
-        π c ∘ Kmor ≈˘⟨ build-proj F.₀ K.ψ (∈-objects c) ⟩
-        K.ψ c ∎
+      !cone : Cone⇒ K ⊤cone
+      !cone = record
+        { arr     = equalize equalize-eq
+        ; commute = commute _
+        }
+        where equalize-eq : ψ ∘ Kmor ≈ ϕ ∘ Kmor
+              equalize-eq = begin
+                ψ ∘ Kmor                                        ≈⟨ build-⟨⟩*∘ _ ψ⇒ Kmor morphisms ⟩
+                ⟨ build-mors _ (λ a → ψ⇒ a ∘ Kmor) morphisms ⟩* ≈⟨ build-uniqueness* _ ψ∘Kmor≈ϕ∘Kmor morphisms ⟩
+                ⟨ build-mors _ (λ a → ϕ⇒ a ∘ Kmor) morphisms ⟩* ≈˘⟨ build-⟨⟩*∘ _ ϕ⇒ Kmor morphisms ⟩
+                ϕ ∘ Kmor ∎
 
-      -- Kmor-commute : ∀ {a} (a∈as : a ∈ morphisms) →
-      --                  π[ f∈fl (λ a → F.₀ (Arrow.cod a)) a∈as ] ∘ ψ ∘ Kmor ≈ π[ f∈fl (λ a → F.₀ (Arrow.cod a)) a∈as ] ∘ ϕ ∘ Kmor
-      -- Kmor-commute {a} a∈as with concatMap²-∈⁻¹ objects objects (λ d c → tabulate (wrap-arr {d} {c})) a∈as
-      -- ... | x , y , x∈ , y∈ , a∈ = {!commute (Arrow.arr a)!}
-      --   where commute : ∀ {d c} (f : Fin ∣ d ⇒ c ∣) → π[ Fc∈cods f ] ∘ ψ ∘ Kmor ≈ π[ Fc∈cods f ] ∘ ϕ ∘ Kmor
-      --         commute {d} {c} f = begin
-      --           π[ Fc∈cods f ] ∘ ψ ∘ Kmor ≈⟨ π∘ψ∘Kmor f ⟩
-      --           F.₁ f ∘ K.ψ d             ≈⟨ K.commute f ⟩
-      --           K.ψ c                     ≈˘⟨ π∘ϕ∘Kmor f ⟩
-      --           π[ Fc∈cods f ] ∘ ϕ ∘ Kmor ∎
-
-      -- !cone : Cone⇒ K ⊤cone
-      -- !cone = record
-      --   { arr     = equalize (uniqueness*′ (λ a → F.₀ (Arrow.cod a)) Kmor-commute)
-      --   ; commute = {!K.commute!}
-      --   }
+              commute : ∀ n → (π n ∘ arr) ∘ equalize equalize-eq ≈ K.ψ n
+              commute n = begin
+                (π n ∘ arr) ∘ equalize equalize-eq ≈˘⟨ pushʳ universal ⟩
+                π n ∘ Kmor                         ≈˘⟨ build-proj _ K.ψ (∈-objects n) ⟩
+                K.ψ n                              ∎
   
-  -- -- finiteLimit : Limit
-  -- -- finiteLimit = record
-  -- --   { terminal = record
-  -- --     { ⊤        = ⊤cone
-  -- --     ; !        = !cone _
-  -- --     ; !-unique = {!!}
-  -- --     }
-  -- --   }
+  -- finiteLimit : Limit
+  -- finiteLimit = record
+  --   { terminal = record
+  --     { ⊤        = ⊤cone
+  --     ; !        = !cone _
+  --     ; !-unique = {!!}
+  --     }
+  --   }
