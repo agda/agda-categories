@@ -20,6 +20,8 @@ open import Data.Vec.Membership.Propositional renaming (_∈_ to _∈ᵥ_)
 open import Relation.Binary using (Rel)
 open import Relation.Binary.PropositionalEquality as ≡ using (refl; _≡_)
 
+import Data.List.Membership.Propositional.Properties as ∈ₚ
+
 open import Categories.Category.Cartesian C
 
 open import Categories.Diagram.Pullback C
@@ -112,18 +114,9 @@ module Prods (car : Cartesian) where
 
   module _ {a} {A : Set a} (f : A → Obj) where
   
-    f∈fl : ∀ {a l} (a∈l : a ∈ l) → f a ∈ map f l
-    f∈fl a∈l = map⁺ (Any.map (≡.cong f) a∈l)
-
-    uniqueness*′ : ∀ {x ys} {g h : x ⇒ prod (map f ys)} → (∀ {y} (y∈ys : y ∈ ys) → π[ f∈fl y∈ys ] ∘ g ≈ π[ f∈fl y∈ys ] ∘ h) → g ≈ h
+    uniqueness*′ : ∀ {x ys} {g h : x ⇒ prod (map f ys)} → (∀ {y} (y∈ys : y ∈ ys) → π[ ∈ₚ.∈-map⁺ f y∈ys ] ∘ g ≈ π[ ∈ₚ.∈-map⁺ f y∈ys ] ∘ h) → g ≈ h
     uniqueness*′ {x} {[]} uni = !-unique₂
     uniqueness*′ {x} {y ∷ ys} uni = unique′ (uni (here ≡.refl)) (uniqueness*′ λ y∈ys → sym-assoc ○ uni (there y∈ys) ○ assoc)
-
-
-    f∈fl⁻¹ : ∀ {x l} → x ∈ map f l → Σ A (λ a → a ∈ l & x ≡ f a)
-    f∈fl⁻¹ {x} {a ∷ l} (here px) = a , here ≡.refl , px
-    f∈fl⁻¹ {x} {b ∷ l} (there x∈fl) with f∈fl⁻¹ x∈fl
-    ... | a , a∈l , eq           = a , there a∈l , eq
 
     module _ {x} (g : ∀ a → x ⇒ f a) where
   
@@ -131,11 +124,11 @@ module Prods (car : Cartesian) where
       build-mors []      = _ ~[]
       build-mors (y ∷ l) = g y ∷ build-mors l
   
-      build-proj≡ : ∀ {a l} (a∈l : a ∈ l) → g a ≡ ∈⇒mor (build-mors l) (f∈fl a∈l)
+      build-proj≡ : ∀ {a l} (a∈l : a ∈ l) → g a ≡ ∈⇒mor (build-mors l) (∈ₚ.∈-map⁺ f a∈l)
       build-proj≡ (here refl) = ≡.refl
       build-proj≡ (there a∈l) = build-proj≡ a∈l
   
-      build-proj : ∀ {a l} (a∈l : a ∈ l) → g a ≈ π[ f∈fl a∈l ] ∘ ⟨ build-mors l ⟩*
+      build-proj : ∀ {a l} (a∈l : a ∈ l) → g a ≈ π[ ∈ₚ.∈-map⁺ f a∈l ] ∘ ⟨ build-mors l ⟩*
       build-proj {_} {l} a∈l = reflexive (build-proj≡ a∈l) ○ ⟺ (project* (build-mors l) _)
 
     build-⟨⟩*∘ : ∀ {x y} (g : ∀ a → x ⇒ f a) (h : y ⇒ x) → ∀ l → ⟨ build-mors g l ⟩* ∘ h ≈ ⟨ build-mors (λ a → g a ∘ h) l ⟩*
