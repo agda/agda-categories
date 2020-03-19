@@ -3,53 +3,47 @@
 module Categories.Category.Finite where
 
 open import Level
-open import Data.Product using (Σ; _,_; ∃₂)
-open import Function.Equality using (Π; _⟶_)
-open import Function.Inverse
-open import Data.Nat as ℕ hiding (_⊔_)
-import Data.Fin as Fin
-open import Data.Vec as Vec
-open import Relation.Binary using (Setoid)
-import Relation.Binary.PropositionalEquality as ≡
+open import Data.Nat using (ℕ)
+open import Data.Fin
 
+open import Categories.Adjoint.Equivalence
 open import Categories.Category
-open Π
+open import Categories.Functor
+open import Categories.Category.Finite.Fin
 
-FiniteSetoid : ∀ {c ℓ} n (S : Setoid c ℓ) → Set _
-FiniteSetoid n S = Inverse (≡.setoid (Fin.Fin n)) S
-
+-- definition of a finite category
+-- 
+-- the idea is to require a functor from C to a category generated from a finite shape
+-- is the right adjoint.
+--
+-- Question: it seems to me right adjoint is enough, though the original plan is to
+-- use adjoint equivalence. intuitively, the shape category is an "overapproximation"
+-- of C, which is a very strong constraint. so requiring adjoint equivalence sounds an
+-- unnecessarily stronger constraint. is adjoint equivalence necessary?
+--
+-- Answer: probably yes. adjoint equivalence seems necessary as the notion needs to
+-- show that shapes are preserved.
 record Finite {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
-  open Category C
-  
   field
-    ∣Obj∣ : ℕ
-    ∣_⇒_∣ : Obj → Obj → ℕ
+    shape : FinCatShape
 
-    Obj-finite : FiniteSetoid ∣Obj∣ (≡.setoid Obj)
-    ⇒-finite   : ∀ A B → FiniteSetoid ∣ A ⇒ B ∣ (hom-setoid {A} {B})
+  open FinCatShape public renaming (size to ∣Obj∣)
 
-  module Obj-finite   = Inverse Obj-finite
-  module ⇒-finite A B = Inverse (⇒-finite A B)
+  shapeCat : Category _ _ _
+  shapeCat = FinCategory shape
 
-  private
-    Fins : ∀ n → Vec (Fin.Fin n) n
-    Fins ℕ.zero    = []
-    Fins (ℕ.suc n) = Fin.fromℕ n ∷ Vec.map (Fin.raise 1) (Fins n)
+  field
+    S⇒C    : Functor shapeCat C
+    C⇒S    : Functor C shapeCat
+    --
+    --   /------------\
+    --  <              \
+    -- C       |        S
+    --  \      -       ^
+    --   \------------/
+    --
+    ⊣equiv : ⊣Equivalence S⇒C C⇒S
 
-  -- enumeration of all objects
-  Objs : Vec Obj ∣Obj∣
-  Objs = Vec.map (Obj-finite.to ⟨$⟩_) (Fins ∣Obj∣)
-
-  private
-    ObjPairs : ∀ {a} {A : Set a} → (Obj → Obj → A) → Vec A (∣Obj∣ * ∣Obj∣)
-    ObjPairs {_} {A} f = Objs >>= ap
-      where ap : Obj → Vec A ∣Obj∣
-            ap X = Vec.map (f X) Objs
-
-  -- enumeration of all morphisms of a given pair of objects
-  ⟦_⇒_⟧ : ∀ A B → Vec (A ⇒ B) ∣ A ⇒ B ∣
-  ⟦ A ⇒ B ⟧ = Vec.map (⇒-finite.to A B ⟨$⟩_) (Fins ∣ A ⇒ B ∣)
-
-  -- number of all morphisms
-  ∣-⇒-| : ℕ
-  ∣-⇒-| = foldr (λ _ → ℕ) _+_ 0 (ObjPairs ∣_⇒_∣)
+  module S⇒C    = Functor S⇒C
+  module C⇒S    = Functor C⇒S
+  module ⊣equiv = ⊣Equivalence ⊣equiv

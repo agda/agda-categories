@@ -7,16 +7,22 @@ module Categories.Category.Cartesian.Properties {o ℓ e} (C : Category o ℓ e)
 open import Level using (_⊔_)
 open import Function using (_$_)
 open import Data.Nat using (ℕ; zero; suc)
-open import Data.Product using (Σ; _,_; proj₁)
+open import Data.Product using (Σ; _,_; proj₁) renaming (_×_ to _&_)
 open import Data.Product.Properties
 open import Data.List as List
-open import Data.List.Any as Any using (here; there)
+open import Data.List.Relation.Unary.Any as Any using (here; there)
+open import Data.List.Relation.Unary.Any.Properties
 open import Data.List.Membership.Propositional
 open import Data.Vec as Vec using (Vec; []; _∷_)
-open import Data.Vec.Any as AnyV using (here; there)
+open import Data.Vec.Relation.Unary.Any as AnyV using (here; there)
+open import Data.Vec.Relation.Unary.Any.Properties
 open import Data.Vec.Membership.Propositional renaming (_∈_ to _∈ᵥ_)
 
-open import Relation.Binary.PropositionalEquality as ≡ using (refl)
+open import Relation.Binary using (Rel)
+open import Relation.Binary.PropositionalEquality as ≡ using (refl; _≡_)
+
+import Data.List.Membership.Propositional.Properties as ∈ₚ
+import Data.Vec.Membership.Propositional.Properties as ∈ᵥₚ
 
 open import Categories.Category.Cartesian C
 
@@ -104,7 +110,41 @@ module Prods (car : Cartesian) where
   project* (f ∷ fs) (here refl)  = project₁
   project* (f ∷ fs) (there y∈ys) = pullʳ project₂ ○ project* fs y∈ys
 
-  -- -- for vectors
+  uniqueness* : ∀ {x ys} {g h : x ⇒ prod ys} → (∀ {y} (y∈ys : y ∈ ys) → π[ y∈ys ] ∘ g ≈ π[ y∈ys ] ∘ h) → g ≈ h
+  uniqueness* {x} {[]} uni     = !-unique₂
+  uniqueness* {x} {y ∷ ys} uni = unique′ (uni (here ≡.refl)) (uniqueness* λ y∈ys → sym-assoc ○ uni (there y∈ys) ○ assoc)
+
+  module _ {a} {A : Set a} (f : A → Obj) where
+  
+    uniqueness*′ : ∀ {x ys} {g h : x ⇒ prod (map f ys)} → (∀ {y} (y∈ys : y ∈ ys) → π[ ∈ₚ.∈-map⁺ f y∈ys ] ∘ g ≈ π[ ∈ₚ.∈-map⁺ f y∈ys ] ∘ h) → g ≈ h
+    uniqueness*′ {x} {[]} uni = !-unique₂
+    uniqueness*′ {x} {y ∷ ys} uni = unique′ (uni (here ≡.refl)) (uniqueness*′ λ y∈ys → sym-assoc ○ uni (there y∈ys) ○ assoc)
+
+    module _ {x} (g : ∀ a → x ⇒ f a) where
+  
+      build-mors : (l : List A) → x ⇒ map f l *
+      build-mors []      = _ ~[]
+      build-mors (y ∷ l) = g y ∷ build-mors l
+  
+      build-proj≡ : ∀ {a l} (a∈l : a ∈ l) → g a ≡ ∈⇒mor (build-mors l) (∈ₚ.∈-map⁺ f a∈l)
+      build-proj≡ (here refl) = ≡.refl
+      build-proj≡ (there a∈l) = build-proj≡ a∈l
+  
+      build-proj : ∀ {a l} (a∈l : a ∈ l) → g a ≈ π[ ∈ₚ.∈-map⁺ f a∈l ] ∘ ⟨ build-mors l ⟩*
+      build-proj {_} {l} a∈l = reflexive (build-proj≡ a∈l) ○ ⟺ (project* (build-mors l) _)
+
+    build-⟨⟩*∘ : ∀ {x y} (g : ∀ a → x ⇒ f a) (h : y ⇒ x) → ∀ l → ⟨ build-mors g l ⟩* ∘ h ≈ ⟨ build-mors (λ a → g a ∘ h) l ⟩*
+    build-⟨⟩*∘ g h []      = !-unique₂
+    build-⟨⟩*∘ g h (x ∷ l) = begin
+      ⟨ build-mors g (x ∷ l) ⟩* ∘ h                   ≈⟨ ⟨⟩∘ ⟩
+      ⟨ g x ∘ h , ⟨ build-mors g l ⟩* ∘ h ⟩           ≈⟨ ⟨⟩-congˡ (build-⟨⟩*∘ g h l) ⟩
+      ⟨ g x ∘ h , ⟨ build-mors (λ a → g a ∘ h) l ⟩* ⟩ ∎
+
+    build-uniqueness* : ∀ {x} {g h : ∀ a → x ⇒ f a} → (∀ a → g a ≈ h a) → ∀ l → ⟨ build-mors g l ⟩* ≈ ⟨ build-mors h l ⟩*
+    build-uniqueness* {x} {g} {h} uni []      = Equiv.refl
+    build-uniqueness* {x} {g} {h} uni (y ∷ l) = ⟨⟩-cong₂ (uni y) (build-uniqueness* uni l)
+
+  -- for vectors
 
   prodᵥ : ∀ {n} → Vec Obj (suc n) → Obj
   prodᵥ v = Vec.foldr₁ _×_ v
@@ -131,3 +171,41 @@ module Prods (car : Cartesian) where
   projectᵥ* (f ∷ (x ~[])) (here ≡.refl) = identityˡ
   projectᵥ* (f ∷ g ∷ fs) (here ≡.refl)  = project₁
   projectᵥ* (f ∷ g ∷ fs) (there y∈ys)   = pullʳ project₂ ○ projectᵥ* (g ∷ fs) y∈ys
+
+  uniquenessᵥ* : ∀ {x n ys} {g h : x ⇒ prodᵥ {n} ys} → (∀ {y} (y∈ys : y ∈ᵥ ys) → π[ y∈ys ]ᵥ ∘ g ≈ π[ y∈ys ]ᵥ ∘ h) → g ≈ h
+  uniquenessᵥ* {x} {.0} {y ∷ []} uni           = ⟺ identityˡ ○ uni (here ≡.refl) ○ identityˡ
+  uniquenessᵥ* {x} {.(suc _)} {y ∷ z ∷ ys} uni = unique′ (uni (here ≡.refl)) (uniquenessᵥ* (λ y∈ys → sym-assoc ○ uni (there y∈ys) ○ assoc))
+
+  module _ {a} {A : Set a} (f : A → Obj) where
+  
+    uniquenessᵥ*′ : ∀ {x n ys} {g h : x ⇒ prodᵥ {n} (Vec.map f ys)} → (∀ {y} (y∈ys : y ∈ᵥ ys) → π[ ∈ᵥₚ.∈-map⁺ f y∈ys ]ᵥ ∘ g ≈ π[ ∈ᵥₚ.∈-map⁺ f y∈ys ]ᵥ ∘ h) → g ≈ h
+    uniquenessᵥ*′ {x} {.0} {y ∷ []} uni           = ⟺ identityˡ ○ uni (here ≡.refl) ○ identityˡ
+    uniquenessᵥ*′ {x} {.(suc _)} {y ∷ z ∷ ys} uni = unique′ (uni (here ≡.refl)) (uniquenessᵥ*′ (λ y∈ys → sym-assoc ○ uni (there y∈ys) ○ assoc))
+
+    module _ {x} (g : ∀ a → x ⇒ f a) where
+  
+      buildᵥ-mors : ∀ {n} (l : Vec A n) → [ n ] x ⇒ᵥ Vec.map f l *
+      buildᵥ-mors []          = _ ~[]
+      buildᵥ-mors (y ∷ [])    = g y ∷ _ ~[]
+      buildᵥ-mors (y ∷ z ∷ l) = g y ∷ buildᵥ-mors (z ∷ l)
+  
+      buildᵥ-proj≡ : ∀ {a n} {l : Vec A n} (a∈l : a ∈ᵥ l) → g a ≡ ∈⇒morᵥ (buildᵥ-mors l) (∈ᵥₚ.∈-map⁺ f a∈l)
+      buildᵥ-proj≡ {_} {_} {y ∷ []} (here refl)    = ≡.refl
+      buildᵥ-proj≡ {_} {_} {y ∷ z ∷ l} (here refl) = ≡.refl
+      buildᵥ-proj≡ {_} {_} {y ∷ z ∷ l} (there a∈l) = buildᵥ-proj≡ a∈l
+  
+      buildᵥ-proj : ∀ {a n} {l : Vec A (suc n)} (a∈l : a ∈ᵥ l) → g a ≈ π[ ∈ᵥₚ.∈-map⁺ f a∈l ]ᵥ ∘ ⟨ buildᵥ-mors l ⟩ᵥ*
+      buildᵥ-proj {_} {_} {l} a∈l = reflexive (buildᵥ-proj≡ a∈l) ○ ⟺ (projectᵥ* (buildᵥ-mors l) _)
+
+    buildᵥ-⟨⟩*∘ : ∀ {x y} (g : ∀ a → x ⇒ f a) (h : y ⇒ x) → ∀ {n} (l : Vec A (suc n)) → ⟨ buildᵥ-mors g l ⟩ᵥ* ∘ h ≈ ⟨ buildᵥ-mors (λ a → g a ∘ h) l ⟩ᵥ*
+    buildᵥ-⟨⟩*∘ g h (x ∷ [])        = Equiv.refl
+    buildᵥ-⟨⟩*∘ g h (x ∷ y ∷ [])    = ⟨⟩∘
+    buildᵥ-⟨⟩*∘ g h (x ∷ y ∷ z ∷ l) = begin
+      ⟨ g x , ⟨ buildᵥ-mors g (y ∷ z ∷ l) ⟩ᵥ* ⟩ ∘ h                 ≈⟨ ⟨⟩∘ ⟩
+      ⟨ g x ∘ h , ⟨ buildᵥ-mors g (y ∷ z ∷ l) ⟩ᵥ* ∘ h ⟩             ≈⟨ ⟨⟩-congˡ (buildᵥ-⟨⟩*∘ g h (y ∷ z ∷ l)) ⟩
+      ⟨ g x ∘ h , ⟨ buildᵥ-mors (λ a₁ → g a₁ ∘ h) (y ∷ z ∷ l) ⟩ᵥ* ⟩ ∎
+
+    buildᵥ-uniqueness* : ∀ {x} {g h : ∀ a → x ⇒ f a} → (∀ a → g a ≈ h a) → ∀ {n} (l : Vec A (suc n)) → ⟨ buildᵥ-mors g l ⟩ᵥ* ≈ ⟨ buildᵥ-mors h l ⟩ᵥ*
+    buildᵥ-uniqueness* {x} {g} {h} uni (y ∷ []) = uni y
+    buildᵥ-uniqueness* {x} {g} {h} uni (y ∷ z ∷ []) = ⟨⟩-cong₂ (uni y) (uni z)
+    buildᵥ-uniqueness* {x} {g} {h} uni (y ∷ z ∷ w ∷ l) = ⟨⟩-cong₂ (uni y) (buildᵥ-uniqueness* uni (z ∷ w ∷ l))

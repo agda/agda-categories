@@ -33,6 +33,7 @@ import Categories.Category.Cocomplete
 import Categories.Category.Cocomplete.Finitely
 import Categories.Category.Complete
 import Categories.Category.Complete.Finitely
+import Categories.Category.Complete.Finitely.Properties
 import Categories.Category.Construction.0-Groupoid
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Cocones
@@ -58,6 +59,11 @@ import Categories.Category.Core
 import Categories.Category.Discrete
 import Categories.Category.Equivalence
 import Categories.Category.Finite
+import Categories.Category.Finite.Fin
+import Categories.Category.Finite.Fin.Construction.Discrete
+import Categories.Category.Finite.Fin.Instance.Parallel
+import Categories.Category.Finite.Fin.Instance.Span
+import Categories.Category.Finite.Fin.Instance.Triangle
 import Categories.Category.Groupoid
 import Categories.Category.Groupoid.Properties
 import Categories.Category.Indiscrete
