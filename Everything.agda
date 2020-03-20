@@ -53,6 +53,8 @@ import Categories.Category.Construction.Kleisli
 import Categories.Category.Construction.Path
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Construction.Properties.Comma
+import Categories.Category.Construction.Properties.EilenbergMoore
+import Categories.Category.Construction.Properties.Kleisli
 import Categories.Category.Construction.Pullbacks
 import Categories.Category.Construction.Thin
 import Categories.Category.Core
@@ -158,6 +160,7 @@ import Categories.Functor.Coalgebra
 import Categories.Functor.Cocontinuous
 import Categories.Functor.Construction.Constant
 import Categories.Functor.Construction.Diagonal
+import Categories.Functor.Construction.FromDiscrete
 import Categories.Functor.Construction.LiftSetoids
 import Categories.Functor.Construction.Limit
 import Categories.Functor.Construction.Zero
