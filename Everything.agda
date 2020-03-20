@@ -4,6 +4,7 @@ import Categories.Adjoint
 import Categories.Adjoint.Construction.EilenbergMoore
 import Categories.Adjoint.Construction.Kleisli
 import Categories.Adjoint.Equivalence
+import Categories.Adjoint.Equivalence.Properties
 import Categories.Adjoint.Instance.01-Truncation
 import Categories.Adjoint.Instance.0-Truncation
 import Categories.Adjoint.Instance.Core
