@@ -34,18 +34,15 @@ record Finite {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   shapeCat : Category _ _ _
   shapeCat = FinCategory shape
 
+  --
+  --   /------------\
+  --  <      -       \
+  -- C       |        S
+  --  \      -       ^
+  --   \------------/
+  --
   field
-    S⇒C    : Functor shapeCat C
-    C⇒S    : Functor C shapeCat
-    --
-    --   /------------\
-    --  <      -       \
-    -- C       |        S
-    --  \      -       ^
-    --   \------------/
-    --
-    ⊣equiv : ⊣Equivalence S⇒C C⇒S
+    ⊣equiv : ⊣Equivalence shapeCat C
 
-  module S⇒C    = Functor S⇒C
-  module C⇒S    = Functor C⇒S
   module ⊣equiv = ⊣Equivalence ⊣equiv
+  open ⊣equiv public

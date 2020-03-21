@@ -144,7 +144,7 @@ module _ {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (Coc : Cocomplete o�
     where Δ⊣LimitFᵒᵖ : ΔF J.op ⊣ LF
           Δ⊣LimitFᵒᵖ = Δ⊣LimitF op Com {J.op}
           opF⊣ : opF⇐ {A = J} {C} ⊣ opF⇒
-          opF⊣ = StrongEquivalence.F⊣G.R⊣L Functorsᵒᵖ-equiv
+          opF⊣ = StrongEquivalence.F⊣⊢G.R⊣L Functorsᵒᵖ-equiv
           helper : ColimitF ⊣ opF⇒ ∘F Functor.op (ΔF J.op)
           helper = opF⊣ ∘⊣ Adjoint.op Δ⊣LimitFᵒᵖ
           ΔF≃ : opF⇒ ∘F Functor.op (ΔF J.op) ≃ ΔF J

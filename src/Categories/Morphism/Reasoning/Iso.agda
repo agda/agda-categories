@@ -81,6 +81,30 @@ module Switch (i : X ≅ Y) where
     from ∘ (to ∘ k) ≈⟨ cancelˡ isoʳ ⟩
     k               ∎
 
+  flip-fromˡ : from ∘ h ≈ id → h ≈ to
+  flip-fromˡ {h} eq = begin
+    h               ≈⟨ introˡ isoˡ ⟩
+    (to ∘ from) ∘ h ≈⟨ cancelʳ eq ⟩
+    to              ∎
+
+  flip-fromʳ : h ∘ from ≈ id → h ≈ to
+  flip-fromʳ {h} eq = begin
+    h             ≈⟨ introʳ isoʳ ⟩
+    h ∘ from ∘ to ≈⟨ cancelˡ eq ⟩
+    to            ∎
+
+  flip-toˡ : to ∘ h ≈ id → h ≈ from
+  flip-toˡ {h} eq = begin
+    h               ≈⟨ introˡ isoʳ ⟩
+    (from ∘ to) ∘ h ≈⟨ cancelʳ eq ⟩
+    from            ∎
+
+  flip-toʳ : h ∘ to ≈ id → h ≈ from
+  flip-toʳ {h} eq = begin
+    h             ≈⟨ introʳ isoˡ ⟩
+    h ∘ to ∘ from ≈⟨ cancelˡ eq ⟩
+    from          ∎
+
   -- We can flip an iso i in a commuting triangle, like so:
   --
   --          i                       i⁻¹
