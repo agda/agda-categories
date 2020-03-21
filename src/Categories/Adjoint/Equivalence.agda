@@ -14,8 +14,9 @@ import Categories.Morphism.Reasoning as MR
 
 private
   variable
-    o ℓ e : Level
-    C D E : Category o ℓ e
+    o ℓ e    : Level
+    o′ ℓ′ e′ : Level
+    C D E    : Category o ℓ e
 
 infix 5 _⊣⊢_
 
@@ -37,6 +38,40 @@ record _⊣⊢_ (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ lev
     zig : ∀ {A : C.Obj} → counit.⇒.η (L.₀ A) D.∘ L.₁ (unit.⇒.η A) D.≈ D.id
     zag : ∀ {B : D.Obj} → R.₁ (counit.⇒.η B) C.∘ unit.⇒.η (R.₀ B) C.≈ C.id
 
+  op₁ : R.op ⊣⊢ L.op
+  op₁ = record
+    { unit   = counit.op
+    ; counit = unit.op
+    ; zig    = zag
+    ; zag    = zig
+    }
+
+  zag⁻¹ : {B : D.Obj} → unit.⇐.η (R.F₀ B) C.∘ R.F₁ (counit.⇐.η B) C.≈ C.id
+  zag⁻¹ {B} = begin
+    unit.⇐.η (R.₀ B) C.∘ R.₁ (counit.⇐.η B)   ≈˘⟨ flip-fromʳ unit.FX≅GX zag ⟩∘⟨refl ⟩
+    R.₁ (counit.⇒.η B) C.∘ R.₁ (counit.⇐.η B) ≈⟨ [ R ]-resp-∘ (counit.iso.isoʳ B) ⟩
+    R.₁ D.id                                  ≈⟨ R.identity ⟩
+    C.id                                      ∎
+    where open C.HomReasoning
+          open MR C
+
+  zig⁻¹ : {A : C.Obj} → L.F₁ (unit.⇐.η A) D.∘ counit.⇐.η (L.F₀ A) D.≈ D.id
+  zig⁻¹ {A} = begin
+      L.₁ (unit.⇐.η A) D.∘ counit.⇐.η (L.₀ A) ≈˘⟨ refl⟩∘⟨ flip-fromˡ counit.FX≅GX zig ⟩
+      L.₁ (unit.⇐.η A) D.∘ L.₁ (unit.⇒.η A)   ≈⟨ [ L ]-resp-∘ (unit.iso.isoˡ A) ⟩
+      L.₁ C.id                                ≈⟨ L.identity ⟩
+      D.id                                    ∎
+      where open D.HomReasoning
+            open MR D
+
+  op₂ : R ⊣⊢ L
+  op₂ = record
+    { unit   = ≃.sym counit
+    ; counit = ≃.sym unit
+    ; zig    = zag⁻¹
+    ; zag    = zig⁻¹
+    }
+
   L⊣R : L ⊣ R
   L⊣R = record
     { unit   = unit.F⇒G
@@ -46,40 +81,14 @@ record _⊣⊢_ (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ lev
     }
 
   module L⊣R = Adjoint L⊣R
-  open L⊣R hiding (unit; counit; zig; zag) public
+  open L⊣R hiding (unit; counit; zig; zag; op) public
 
   R⊣L : R ⊣ L
   R⊣L = record
     { unit   = counit.F⇐G
     ; counit = unit.F⇐G
-    ; zig    = λ {X} →
-      let open C.HomReasoning
-          open MR C
-      in begin
-        unit.⇐.η (R.₀ X) C.∘ R.₁ (counit.⇐.η X)
-          ≈˘⟨ elimʳ zag ⟩
-        (unit.⇐.η (R.₀ X) C.∘ R.₁ (counit.⇐.η X)) C.∘ (R.₁ (counit.⇒.η X) C.∘ unit.⇒.η (R.₀ X))
-          ≈⟨ center ([ R ]-resp-∘ (counit.iso.isoˡ _) ○ R.identity) ⟩
-        unit.⇐.η (R.₀ X) C.∘ C.id C.∘ unit.⇒.η (R.₀ X)
-          ≈⟨ refl⟩∘⟨ C.identityˡ ⟩
-        unit.⇐.η (R.₀ X) C.∘ unit.⇒.η (R.₀ X)
-          ≈⟨ unit.iso.isoˡ _ ⟩
-        C.id
-          ∎
-    ; zag    = λ {X} →
-      let open D.HomReasoning
-          open MR D
-      in begin
-        L.₁ (unit.⇐.η X) D.∘ counit.⇐.η (L.₀ X)
-          ≈˘⟨ elimʳ zig ⟩
-        (L.₁ (unit.⇐.η X) D.∘ counit.⇐.η (L.₀ X)) D.∘ counit.⇒.η (L.₀ X) D.∘ L.₁ (unit.⇒.η X)
-          ≈⟨ center (counit.iso.isoˡ _) ⟩
-        L.₁ (unit.⇐.η X) D.∘ D.id D.∘ L.₁ (unit.⇒.η X)
-          ≈⟨ refl⟩∘⟨ D.identityˡ ⟩
-        L.₁ (unit.⇐.η X) D.∘ L.₁ (unit.⇒.η X)
-          ≈⟨ ([ L ]-resp-∘ (unit.iso.isoˡ _)) ○ L.identity ⟩
-        D.id
-          ∎
+    ; zig    = zag⁻¹
+    ; zag    = zig⁻¹
     }
 
   module R⊣L = Adjoint R⊣L
@@ -165,3 +174,48 @@ module _ {L : Functor C D} {R : Functor D C} where
     ; zag    = zag
     }
     where open WithZag LR
+
+id⊣⊢id : idF {C = C} ⊣⊢ idF
+id⊣⊢id {C = C} = record
+  { unit   = ≃.sym ≃.unitor²
+  ; counit = ≃.unitor²
+  ; zig    = identity²
+  ; zag    = identity²
+  }
+  where open Category C
+
+record ⊣Equivalence (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
+  field
+    L    : Functor C D
+    R    : Functor D C
+    L⊣⊢R : L ⊣⊢ R
+
+  module L    = Functor L
+  module R    = Functor R
+  module L⊣⊢R = _⊣⊢_ L⊣⊢R
+
+  open L⊣⊢R public
+
+refl : ⊣Equivalence C C
+refl = record
+  { L    = idF
+  ; R    = idF
+  ; L⊣⊢R = id⊣⊢id
+  }
+
+sym : ⊣Equivalence C D → ⊣Equivalence D C
+sym e = record
+  { L    = R
+  ; R    = L
+  ; L⊣⊢R = op₂
+  }
+  where open ⊣Equivalence e
+
+-- trans : ⊣Equivalence C D → ⊣Equivalence D E → ⊣Equivalence C E
+-- trans e e′ = record
+--   { L    = e′.L ∘F e.L
+--   ; R    = e.R ∘F e′.R
+--   ; L⊣⊢R = {!!}
+--   }
+--   where module e  = ⊣Equivalence e
+--         module e′ = ⊣Equivalence e′

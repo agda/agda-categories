@@ -9,16 +9,15 @@ module Categories.Category.Equivalence where
 open import Level
 open import Relation.Binary using (IsEquivalence; Setoid)
 
-open import Categories.Adjoint.Equivalence
+open import Categories.Adjoint.Equivalence using (_⊣⊢_; ⊣Equivalence; withZig)
 open import Categories.Category
 import Categories.Morphism.Reasoning as MR
 import Categories.Morphism.Properties as MP
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
 open import Categories.NaturalTransformation using (ntHelper; _∘ᵥ_; _∘ˡ_; _∘ʳ_)
-open import Categories.NaturalTransformation.NaturalIsomorphism as NI
+open import Categories.NaturalTransformation.NaturalIsomorphism as ≃
   using (NaturalIsomorphism ; unitorˡ; unitorʳ; associator; _ⓘᵥ_; _ⓘˡ_; _ⓘʳ_)
-  renaming (sym to ≃-sym)
 open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
 
 private
@@ -41,9 +40,9 @@ record WeakInverse (F : Functor C D) (G : Functor D C) : Set (levelOfTerm F ⊔ 
     module G = Functor G
 
   -- adjoint equivalence
-  F⊣G : ⊣Equivalence F G
-  F⊣G = record
-    { unit   = ≃-sym G∘F≈id
+  F⊣⊢G : F ⊣⊢ G
+  F⊣⊢G = withZig record
+    { unit   = ≃.sym G∘F≈id
     ; counit =
       let open D
           open HomReasoning
@@ -110,7 +109,7 @@ record WeakInverse (F : Functor C D) (G : Functor D C) : Set (levelOfTerm F ⊔ 
         ∎
     }
 
-  module F⊣G = ⊣Equivalence F⊣G
+  module F⊣⊢G = _⊣⊢_ F⊣⊢G
 
 record StrongEquivalence {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   field
@@ -119,6 +118,15 @@ record StrongEquivalence {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (D : 
     weak-inverse : WeakInverse F G
 
   open WeakInverse weak-inverse public
+
+  C≅D : ⊣Equivalence C D
+  C≅D = record
+    { L    = F
+    ; R    = G
+    ; L⊣⊢R = F⊣⊢G
+    }
+
+  module C≅D = ⊣Equivalence C≅D
 
 refl : StrongEquivalence C C
 refl = record
@@ -146,13 +154,13 @@ trans {C = C} {D = D} {E = E} e e′ = record
   { F            = e′.F ∘F e.F
   ; G            = e.G ∘F e′.G
   ; weak-inverse = record
-    { F∘G≈id = let module S = Setoid (NI.Functor-NI-setoid E E)
+    { F∘G≈id = let module S = Setoid (≃.Functor-NI-setoid E E)
                in S.trans (S.trans (associator (e.G ∘F e′.G) e.F e′.F)
-                                   (e′.F ⓘˡ (unitorˡ ⓘᵥ (e.F∘G≈id ⓘʳ e′.G) ⓘᵥ NI.sym (associator e′.G e.G e.F))))
+                                   (e′.F ⓘˡ (unitorˡ ⓘᵥ (e.F∘G≈id ⓘʳ e′.G) ⓘᵥ ≃.sym (associator e′.G e.G e.F))))
                           e′.F∘G≈id
-    ; G∘F≈id = let module S = Setoid (NI.Functor-NI-setoid C C)
+    ; G∘F≈id = let module S = Setoid (≃.Functor-NI-setoid C C)
                in S.trans (S.trans (associator (e′.F ∘F e.F) e′.G e.G)
-                                   (e.G ⓘˡ (unitorˡ ⓘᵥ (e′.G∘F≈id ⓘʳ e.F) ⓘᵥ NI.sym (associator e.F e′.F e′.G))))
+                                   (e.G ⓘˡ (unitorˡ ⓘᵥ (e′.G∘F≈id ⓘʳ e.F) ⓘᵥ ≃.sym (associator e.F e′.F e′.G))))
                           e.G∘F≈id
     }
   }

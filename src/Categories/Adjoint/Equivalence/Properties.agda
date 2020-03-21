@@ -22,7 +22,7 @@ private
 -- diagrams are preserved by adjoint equivalence
 --
 -- if categories C and D are adjoint equivalent, then a limit from one determines one from another
-module _ {L : Functor C D} {R : Functor D C} (⊣equiv : ⊣Equivalence L R) (F : Functor C E) where
+module _  (⊣equiv : ⊣Equivalence C D) (F : Functor C E) where
   private
     module LF where
       open Co F public
@@ -30,8 +30,6 @@ module _ {L : Functor C D} {R : Functor D C} (⊣equiv : ⊣Equivalence L R) (F 
     module C = Category C
     module D = Category D
     module E = Category E
-    module L = Functor L
-    module R = Functor R
     module F = Functor F
     module ⊣equiv = ⊣Equivalence ⊣equiv
     open ⊣equiv

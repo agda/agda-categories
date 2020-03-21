@@ -24,7 +24,7 @@ open import Level
 open import Function using (_$_; flip) renaming (id to idFun; _∘_ to _⊚_)
 open import Relation.Binary hiding (_⇒_)
 open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
-import Relation.Binary.EqReasoning as EqR
+import Relation.Binary.Reasoning.Setoid as EqR
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive.Properties hiding (trans)
 open import Data.Product using (proj₁; proj₂; _,_)

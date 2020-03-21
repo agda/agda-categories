@@ -154,7 +154,7 @@ record IsBigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ 
 
   module hom⁻¹-weakInverse {A B} = WeakInverse (hom⁻¹-weakInverse {A} {B})
 
-  open hom⁻¹-weakInverse using () renaming (F⊣G to hom⁻¹-⊣Equivalence) public
+  open hom⁻¹-weakInverse using () renaming (F⊣⊢G to hom⁻¹-⊣Equivalence) public
 
 -- A bigroupoid is a bicategory that has a bigroupoid structure
 

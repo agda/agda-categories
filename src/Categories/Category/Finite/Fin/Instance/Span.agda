@@ -12,7 +12,7 @@ open import Categories.Category
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)
-open import Categories.Adjoint.Equivalence
+open import Categories.Adjoint.Equivalence using (_⊣⊢_; ⊣Equivalence; withZig)
 import Categories.Morphism as Mor
 import Categories.Category.Instance.Span as Sp
 
@@ -179,8 +179,8 @@ SpanFromF = record
 
 module SpanFromF = Functor SpanFromF
 
-SpansEquiv : ⊣Equivalence SpanToF SpanFromF
-SpansEquiv = record
+SpansEquivF : SpanToF ⊣⊢ SpanFromF
+SpansEquivF = withZig record
   { unit   = unit
   ; counit = counit
   ; zig    = zig
@@ -291,3 +291,8 @@ SpansEquiv = record
         zig {0F} = refl
         zig {1F} = refl
         zig {2F} = refl
+
+SpansEquiv : ⊣Equivalence Span Sp.Span
+SpansEquiv = record { L⊣⊢R = SpansEquivF }
+
+module SpansEquiv = ⊣Equivalence SpansEquiv
