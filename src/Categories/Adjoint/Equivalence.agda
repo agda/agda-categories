@@ -17,12 +17,14 @@ private
     o ℓ e : Level
     C D E : Category o ℓ e
 
-record ⊣Equivalence (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ levelOfTerm R) where
+infix 5 _⊣⊢_
+
+record _⊣⊢_ (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ levelOfTerm R) where
   field
     unit   : idF ≃ (R ∘F L)
     counit : (L ∘F R) ≃ idF
 
-  module unit = NaturalIsomorphism unit
+  module unit   = NaturalIsomorphism unit
   module counit = NaturalIsomorphism counit
 
   private
@@ -30,23 +32,10 @@ record ⊣Equivalence (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L �
     module D = Category D
     module L = Functor L
     module R = Functor R
-    module ℱ = Functor
 
   field
-    zig : ∀ {A : C.Obj} → counit.⇒.η (L.F₀ A) D.∘ L.F₁ (unit.⇒.η A) D.≈ D.id
-
-  zag : ∀ {B : D.Obj} → R.F₁ (counit.⇒.η B) C.∘ unit.⇒.η (R.F₀ B) C.≈ C.id
-  zag {B} = F≃id⇒id (≃.sym unit) helper
-    where open C
-          open HomReasoning
-          helper : R.F₁ (L.F₁ (R.F₁ (counit.⇒.η B) ∘ unit.⇒.η (R.F₀ B))) ≈ id
-          helper = begin
-            R.F₁ (L.F₁ (R.F₁ (counit.⇒.η B) ∘ unit.⇒.η (R.F₀ B)))               ≈⟨ ℱ.homomorphism (R ∘F L) ⟩
-            R.F₁ (L.F₁ (R.F₁ (counit.⇒.η B))) ∘ R.F₁ (L.F₁ (unit.⇒.η (R.F₀ B))) ≈˘⟨ R.F-resp-≈ (F≃id-comm₁ counit) ⟩∘⟨refl ⟩
-            R.F₁ (counit.⇒.η (L.F₀ (R.F₀ B))) ∘ R.F₁ (L.F₁ (unit.⇒.η (R.F₀ B))) ≈˘⟨ R.homomorphism ⟩
-            R.F₁ (counit.⇒.η (L.F₀ (R.F₀ B)) D.∘ L.F₁ (unit.⇒.η (R.F₀ B)))      ≈⟨ R.F-resp-≈ zig ⟩
-            R.F₁ D.id                                                           ≈⟨ R.identity ⟩
-            id                                                                  ∎
+    zig : ∀ {A : C.Obj} → counit.⇒.η (L.₀ A) D.∘ L.₁ (unit.⇒.η A) D.≈ D.id
+    zag : ∀ {B : D.Obj} → R.₁ (counit.⇒.η B) C.∘ unit.⇒.η (R.₀ B) C.≈ C.id
 
   L⊣R : L ⊣ R
   L⊣R = record
@@ -67,13 +56,13 @@ record ⊣Equivalence (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L �
       let open C.HomReasoning
           open MR C
       in begin
-        unit.⇐.η (R.F₀ X) C.∘ R.F₁ (counit.⇐.η X)
+        unit.⇐.η (R.₀ X) C.∘ R.₁ (counit.⇐.η X)
           ≈˘⟨ elimʳ zag ⟩
-        (unit.⇐.η (R.F₀ X) C.∘ R.F₁ (counit.⇐.η X)) C.∘ (R.F₁ (counit.⇒.η X) C.∘ unit.⇒.η (R.F₀ X))
+        (unit.⇐.η (R.₀ X) C.∘ R.₁ (counit.⇐.η X)) C.∘ (R.₁ (counit.⇒.η X) C.∘ unit.⇒.η (R.₀ X))
           ≈⟨ center ([ R ]-resp-∘ (counit.iso.isoˡ _) ○ R.identity) ⟩
-        unit.⇐.η (R.F₀ X) C.∘ C.id C.∘ unit.⇒.η (R.F₀ X)
+        unit.⇐.η (R.₀ X) C.∘ C.id C.∘ unit.⇒.η (R.₀ X)
           ≈⟨ refl⟩∘⟨ C.identityˡ ⟩
-        unit.⇐.η (R.F₀ X) C.∘ unit.⇒.η (R.F₀ X)
+        unit.⇐.η (R.₀ X) C.∘ unit.⇒.η (R.₀ X)
           ≈⟨ unit.iso.isoˡ _ ⟩
         C.id
           ∎
@@ -81,16 +70,98 @@ record ⊣Equivalence (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L �
       let open D.HomReasoning
           open MR D
       in begin
-        L.F₁ (unit.⇐.η X) D.∘ counit.⇐.η (L.F₀ X)
+        L.₁ (unit.⇐.η X) D.∘ counit.⇐.η (L.₀ X)
           ≈˘⟨ elimʳ zig ⟩
-        (L.F₁ (unit.⇐.η X) D.∘ counit.⇐.η (L.F₀ X)) D.∘ counit.⇒.η (L.F₀ X) D.∘ L.F₁ (unit.⇒.η X)
+        (L.₁ (unit.⇐.η X) D.∘ counit.⇐.η (L.₀ X)) D.∘ counit.⇒.η (L.₀ X) D.∘ L.₁ (unit.⇒.η X)
           ≈⟨ center (counit.iso.isoˡ _) ⟩
-        L.F₁ (unit.⇐.η X) D.∘ D.id D.∘ L.F₁ (unit.⇒.η X)
+        L.₁ (unit.⇐.η X) D.∘ D.id D.∘ L.₁ (unit.⇒.η X)
           ≈⟨ refl⟩∘⟨ D.identityˡ ⟩
-        L.F₁ (unit.⇐.η X) D.∘ L.F₁ (unit.⇒.η X)
+        L.₁ (unit.⇐.η X) D.∘ L.₁ (unit.⇒.η X)
           ≈⟨ ([ L ]-resp-∘ (unit.iso.isoˡ _)) ○ L.identity ⟩
         D.id
           ∎
     }
 
   module R⊣L = Adjoint R⊣L
+
+private
+
+  record WithZig (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ levelOfTerm R) where
+    field
+      unit   : idF ≃ (R ∘F L)
+      counit : (L ∘F R) ≃ idF
+  
+    module unit   = NaturalIsomorphism unit
+    module counit = NaturalIsomorphism counit
+  
+    private
+      module C = Category C
+      module D = Category D
+      module L = Functor L
+      module R = Functor R
+      module ℱ = Functor
+  
+    field
+      zig : ∀ {A : C.Obj} → counit.⇒.η (L.₀ A) D.∘ L.₁ (unit.⇒.η A) D.≈ D.id
+
+    zag : ∀ {B : D.Obj} → R.₁ (counit.⇒.η B) C.∘ unit.⇒.η (R.₀ B) C.≈ C.id
+    zag {B} = F≃id⇒id (≃.sym unit) helper
+      where open C
+            open HomReasoning
+            helper : R.₁ (L.₁ (R.₁ (counit.⇒.η B) ∘ unit.⇒.η (R.₀ B))) ≈ id
+            helper = begin
+              R.₁ (L.₁ (R.₁ (counit.⇒.η B) ∘ unit.⇒.η (R.₀ B)))             ≈⟨ ℱ.homomorphism (R ∘F L) ⟩
+              R.₁ (L.₁ (R.₁ (counit.⇒.η B))) ∘ R.₁ (L.₁ (unit.⇒.η (R.₀ B))) ≈˘⟨ R.F-resp-≈ (F≃id-comm₁ counit) ⟩∘⟨refl ⟩
+              R.₁ (counit.⇒.η (L.₀ (R.₀ B))) ∘ R.₁ (L.₁ (unit.⇒.η (R.₀ B))) ≈⟨ [ R ]-resp-∘ zig ⟩
+              R.₁ D.id                                                      ≈⟨ R.identity ⟩
+              id                                                            ∎
+
+  record WithZag (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ levelOfTerm R) where
+    field
+      unit   : idF ≃ (R ∘F L)
+      counit : (L ∘F R) ≃ idF
+  
+    module unit   = NaturalIsomorphism unit
+    module counit = NaturalIsomorphism counit
+  
+    private
+      module C = Category C
+      module D = Category D
+      module L = Functor L
+      module R = Functor R
+      module ℱ = Functor
+  
+    field
+      zag : ∀ {B : D.Obj} → R.₁ (counit.⇒.η B) C.∘ unit.⇒.η (R.₀ B) C.≈ C.id
+
+    zig : ∀ {A : C.Obj} → counit.⇒.η (L.₀ A) D.∘ L.₁ (unit.⇒.η A) D.≈ D.id
+    zig {A} = F≃id⇒id counit helper
+      where open D
+            open HomReasoning
+            helper : L.₁ (R.₁ (counit.⇒.η (L.₀ A) ∘ L.₁ (unit.⇒.η A))) ≈ id
+            helper = begin
+              L.₁ (R.₁ (counit.⇒.η (L.₀ A) ∘ L.₁ (unit.⇒.η A)))               ≈⟨ ℱ.homomorphism (L ∘F R) ⟩
+              (L.₁ (R.₁ (counit.⇒.η (L.₀ A))) ∘ L.₁ (R.₁ (L.₁ (unit.⇒.η A)))) ≈˘⟨ refl⟩∘⟨ L.F-resp-≈ (F≃id-comm₂ (≃.sym unit)) ⟩
+              L.₁ (R.₁ (counit.⇒.η (L.₀ A))) ∘ L.₁ (unit.⇒.η (R.₀ (L.₀ A)))   ≈⟨ [ L ]-resp-∘ zag ⟩
+              L.F₁ C.id                                                       ≈⟨ L.identity ⟩
+              id                                                              ∎
+
+module _ {L : Functor C D} {R : Functor D C} where
+
+  withZig : WithZig L R → L ⊣⊢ R
+  withZig LR = record
+    { unit   = unit
+    ; counit = counit
+    ; zig    = zig
+    ; zag    = zag
+    }
+    where open WithZig LR
+
+  withZag : WithZag L R → L ⊣⊢ R
+  withZag LR = record
+    { unit   = unit
+    ; counit = counit
+    ; zig    = zig
+    ; zag    = zag
+    }
+    where open WithZag LR
