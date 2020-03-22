@@ -96,7 +96,7 @@ module _ {C : Category o ℓ e}
       (R.F₁ A (LR.counit.η B Y D.∘ L.F₁ (R.F₁ B D.id , f)) ∘ R.F₁ A (L.F₁ (R.F₁ B g , E.id))) ∘ LR.unit.η A (R.F₀ B X)
         ≈˘⟨ MR.pushʳ C (LR.unit.commute A (R.F₁ B g)) ⟩
       R.F₁ A (LR.counit.η B Y D.∘ L.F₁ (R.F₁ B D.id , f)) ∘ LR.unit.η A (R.F₀ B Y) ∘ R.F₁ B g
-        ≈˘⟨ assoc ⟩
+        ≈⟨ sym-assoc ⟩
       F′ f D.id ∘ R.F₁ B g
         ∎
       where open MR D
@@ -115,7 +115,7 @@ module _ {C : Category o ℓ e}
       R.F₁ X ((LR.counit.η Y A D.∘ L.F₁ (F′ f D.id , E.id)) D.∘ L.F₁ (C.id , g)) ∘ LR.unit.η X (R.F₀ Z A)
         ≈˘⟨ R.F-resp-≈ X (MR.pushʳ D [ L ]-commute) ⟩∘⟨refl ⟩
       R.F₁ X (LR.counit.η Y A D.∘ L.F₁ (C.id , g) D.∘ L.F₁ (F′ f D.id , E.id)) ∘ LR.unit.η X (R.F₀ Z A)
-        ≈˘⟨ R.F-resp-≈ X D.assoc ⟩∘⟨refl ⟩
+        ≈⟨ R.F-resp-≈ X D.sym-assoc ⟩∘⟨refl ⟩
       R.F₁ X ((LR.counit.η Y A D.∘ L.F₁ (C.id , g)) D.∘ L.F₁ (F′ f D.id , E.id)) ∘ LR.unit.η X (R.F₀ Z A)
         ≈⟨ R.homomorphism X ⟩∘⟨refl ⟩
       (R.F₁ X (LR.counit.η Y A D.∘ L.F₁ (C.id , g)) ∘ R.F₁ X (L.F₁ (F′ f D.id , E.id))) ∘ LR.unit.η X (R.F₀ Z A)
@@ -123,7 +123,7 @@ module _ {C : Category o ℓ e}
       R.F₁ X (LR.counit.η Y A D.∘ L.F₁ (C.id , g)) ∘ LR.unit.η X (R.F₀ Y A) ∘ F′ f D.id
         ≈˘⟨ R.F-resp-≈ X (D.∘-resp-≈ʳ (L.F-resp-≈ (R.identity Y , E.Equiv.refl))) ⟩∘⟨ refl ⟩∘⟨ refl ⟩
       R.F₁ X (LR.counit.η Y A D.∘ L.F₁ (R.F₁ Y D.id , g)) ∘ LR.unit.η X (R.F₀ Y A) ∘ F′ f D.id
-        ≈˘⟨ assoc ⟩
+        ≈⟨ sym-assoc ⟩
       F′ g D.id ∘ F′ f D.id
         ∎
 

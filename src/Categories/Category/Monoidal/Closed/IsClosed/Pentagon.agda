@@ -57,36 +57,36 @@ private
   VU-UY⇒VY-VU : {U V X Y : Obj} → inner {X} V U ∘ (id ⊗₁ 𝕃 (inner U Y) ∘ α⇒) ⊗₁ id ≈
                           inner V Y ∘ (𝕃 (inner V U) ⊗₁ id) ⊗₁ id
   VU-UY⇒VY-VU {U} {V} {X} {Y} = begin
-    inner V U ∘ (id ⊗₁ 𝕃 (inner U Y) ∘ α⇒) ⊗₁ id                        ≈⟨ pushʳ $ ℱ.homomorphism (-⊗ X) ⟩
-    (inner V U ∘ (id ⊗₁ 𝕃 (inner U Y)) ⊗₁ id) ∘ α⇒ ⊗₁ id                ≈⟨ pull-last assoc-commute-from ⟩∘⟨refl ⟩
-    (ε.η V ∘ id ⊗₁ ε.η U ∘ id ⊗₁ 𝕃 (inner U Y) ⊗₁ id ∘ α⇒) ∘ α⇒ ⊗₁ id   ≈⟨ (∘-resp-≈ʳ $ pullˡ $ ⟺ (ℱ.homomorphism ([ U , V ]₀ ⊗-))) ⟩∘⟨refl ⟩
-    (ε.η V ∘ id ⊗₁ (ε.η U ∘ 𝕃 (inner U Y) ⊗₁ id) ∘ α⇒) ∘ α⇒ ⊗₁ id       ≈⟨ ∘-resp-≈ˡ (⟺ assoc) ○ assoc ⟩
-    (ε.η V ∘ id ⊗₁ (ε.η U ∘ 𝕃 (inner U Y) ⊗₁ id)) ∘ (α⇒ ∘ α⇒ ⊗₁ id)     ≈⟨ ∘-resp-≈ˡ $ ∘-resp-≈ʳ $ ℱ.F-resp-≈ ([ U , V ]₀ ⊗-) (RLadjunct≈id ○ ⟺ assoc) ⟩
-    (ε.η V ∘ id ⊗₁ ((ε.η U ∘ id ⊗₁ ε.η Y) ∘ α⇒)) ∘ (α⇒ ∘ α⇒ ⊗₁ id)      ≈⟨ ∘-resp-≈ˡ $ ∘-resp-≈ʳ $ ℱ.homomorphism ([ U , V ]₀ ⊗-) ⟩
-    (ε.η V ∘ id ⊗₁ (ε.η U ∘ id ⊗₁ ε.η Y) ∘ id ⊗₁ α⇒) ∘ (α⇒ ∘ α⇒ ⊗₁ id)  ≈⟨ pull-last refl ⟩
-    ε.η V ∘ id ⊗₁ (ε.η U ∘ id ⊗₁ ε.η Y) ∘ (id ⊗₁ α⇒ ∘ α⇒ ∘ α⇒ ⊗₁ id)    ≈⟨ refl⟩∘⟨ ∘-resp-≈ (ℱ.homomorphism ([ U , V ]₀ ⊗-)) pentagon ⟩
-    ε.η V ∘ (id ⊗₁ ε.η U ∘ id ⊗₁ (id ⊗₁ ε.η Y)) ∘ (α⇒ ∘ α⇒)             ≈⟨ ⟺ assoc ○ ⟺ assoc ⟩
-    ((ε.η V ∘ id ⊗₁ ε.η U ∘ id ⊗₁ (id ⊗₁ ε.η Y)) ∘ α⇒) ∘ α⇒             ≈⟨ pull-last (⟺ assoc-commute-from) ⟩∘⟨refl ⟩
-    (ε.η V ∘ id ⊗₁ ε.η U ∘ α⇒ ∘ (id ⊗₁ id) ⊗₁ ε.η Y) ∘ α⇒                ≈⟨ assoc ○ ∘-resp-≈ʳ (∘-resp-≈ˡ (⟺ assoc)) ○ ⟺ (center refl) ⟩
-    (ε.η V ∘ id ⊗₁ ε.η U ∘ α⇒) ∘ (id ⊗₁ id) ⊗₁ ε.η Y ∘ α⇒                ≈⟨ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ⊗.F-resp-≈ (⊗.identity , refl) ⟩
-    (ε.η V ∘ id ⊗₁ ε.η U ∘ α⇒) ∘ id ⊗₁ ε.η Y ∘ α⇒                        ≈˘⟨ center⁻¹ RLadjunct≈id refl ⟩
-    ε.η V ∘ (𝕃 (ε.η V ∘ id ⊗₁ ε.η U ∘ α⇒) ⊗₁ id ∘ id ⊗₁ ε.η Y) ∘ α⇒      ≈⟨ ∘-resp-≈ʳ $ pushˡ (⟺ [ ⊗ ]-commute) ⟩
-    ε.η V ∘ id ⊗₁ ε.η Y ∘ 𝕃 (inner V U) ⊗₁ id ∘ α⇒                       ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ ⊗.F-resp-≈ (refl , ⊗.identity) ⟩∘⟨refl ⟩
-    ε.η V ∘ id ⊗₁ ε.η Y ∘ 𝕃 (inner V U) ⊗₁ (id ⊗₁ id) ∘ α⇒               ≈˘⟨ pull-last assoc-commute-from ⟩
-    (inner V Y) ∘ (𝕃 (inner V U) ⊗₁ id) ⊗₁ id                             ∎
+    inner V U ∘ (id ⊗₁ 𝕃 (inner U Y) ∘ α⇒) ⊗₁ id                       ≈⟨ pushʳ $ ℱ.homomorphism (-⊗ X) ⟩
+    (inner V U ∘ (id ⊗₁ 𝕃 (inner U Y)) ⊗₁ id) ∘ α⇒ ⊗₁ id               ≈⟨ pull-last assoc-commute-from ⟩∘⟨refl ⟩
+    (ε.η V ∘ id ⊗₁ ε.η U ∘ id ⊗₁ 𝕃 (inner U Y) ⊗₁ id ∘ α⇒) ∘ α⇒ ⊗₁ id  ≈⟨ (∘-resp-≈ʳ $ pullˡ $ ⟺ (ℱ.homomorphism ([ U , V ]₀ ⊗-))) ⟩∘⟨refl ⟩
+    (ε.η V ∘ id ⊗₁ (ε.η U ∘ 𝕃 (inner U Y) ⊗₁ id) ∘ α⇒) ∘ α⇒ ⊗₁ id      ≈⟨ ∘-resp-≈ˡ sym-assoc ○ assoc ⟩
+    (ε.η V ∘ id ⊗₁ (ε.η U ∘ 𝕃 (inner U Y) ⊗₁ id)) ∘ (α⇒ ∘ α⇒ ⊗₁ id)    ≈⟨ ∘-resp-≈ˡ $ ∘-resp-≈ʳ $ ℱ.F-resp-≈ ([ U , V ]₀ ⊗-) (RLadjunct≈id ○ sym-assoc) ⟩
+    (ε.η V ∘ id ⊗₁ ((ε.η U ∘ id ⊗₁ ε.η Y) ∘ α⇒)) ∘ (α⇒ ∘ α⇒ ⊗₁ id)     ≈⟨ ∘-resp-≈ˡ $ ∘-resp-≈ʳ $ ℱ.homomorphism ([ U , V ]₀ ⊗-) ⟩
+    (ε.η V ∘ id ⊗₁ (ε.η U ∘ id ⊗₁ ε.η Y) ∘ id ⊗₁ α⇒) ∘ (α⇒ ∘ α⇒ ⊗₁ id) ≈⟨ pull-last refl ⟩
+    ε.η V ∘ id ⊗₁ (ε.η U ∘ id ⊗₁ ε.η Y) ∘ (id ⊗₁ α⇒ ∘ α⇒ ∘ α⇒ ⊗₁ id)   ≈⟨ refl⟩∘⟨ ∘-resp-≈ (ℱ.homomorphism ([ U , V ]₀ ⊗-)) pentagon ⟩
+    ε.η V ∘ (id ⊗₁ ε.η U ∘ id ⊗₁ (id ⊗₁ ε.η Y)) ∘ (α⇒ ∘ α⇒)            ≈⟨ sym-assoc ○ sym-assoc ⟩
+    ((ε.η V ∘ id ⊗₁ ε.η U ∘ id ⊗₁ (id ⊗₁ ε.η Y)) ∘ α⇒) ∘ α⇒            ≈⟨ pull-last (⟺ assoc-commute-from) ⟩∘⟨refl ⟩
+    (ε.η V ∘ id ⊗₁ ε.η U ∘ α⇒ ∘ (id ⊗₁ id) ⊗₁ ε.η Y) ∘ α⇒              ≈⟨ assoc ○ ∘-resp-≈ʳ (∘-resp-≈ˡ sym-assoc) ○ ⟺ (center refl) ⟩
+    (ε.η V ∘ id ⊗₁ ε.η U ∘ α⇒) ∘ (id ⊗₁ id) ⊗₁ ε.η Y ∘ α⇒              ≈⟨ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ ⊗.F-resp-≈ (⊗.identity , refl) ⟩
+    (ε.η V ∘ id ⊗₁ ε.η U ∘ α⇒) ∘ id ⊗₁ ε.η Y ∘ α⇒                      ≈˘⟨ center⁻¹ RLadjunct≈id refl ⟩
+    ε.η V ∘ (𝕃 (ε.η V ∘ id ⊗₁ ε.η U ∘ α⇒) ⊗₁ id ∘ id ⊗₁ ε.η Y) ∘ α⇒    ≈⟨ ∘-resp-≈ʳ $ pushˡ (⟺ [ ⊗ ]-commute) ⟩
+    ε.η V ∘ id ⊗₁ ε.η Y ∘ 𝕃 (inner V U) ⊗₁ id ∘ α⇒                     ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ ⊗.F-resp-≈ (refl , ⊗.identity) ⟩∘⟨refl ⟩
+    ε.η V ∘ id ⊗₁ ε.η Y ∘ 𝕃 (inner V U) ⊗₁ (id ⊗₁ id) ∘ α⇒             ≈˘⟨ pull-last assoc-commute-from ⟩
+    (inner V Y) ∘ (𝕃 (inner V U) ⊗₁ id) ⊗₁ id                          ∎
 
   expand-[-,-] : {U V X Y : Obj} →
       (ε.η [ X , V ]₀ ∘ id ⊗₁ ε.η [ X , U ]₀ ∘ α⇒) ∘ (L X U V ⊗₁ L X Y U) ⊗₁ id ≈
       𝕃 (ε.η V ∘ id ⊗₁ ε.η Y ∘ α⇒) ∘ 𝕃 (ε.η V ∘ id ⊗₁ ε.η U ∘ α⇒) ⊗₁ id
   expand-[-,-] {U} {V} {X} {Y} = begin
-    (inner XV XU) ∘ (L X U V ⊗₁ L X Y U) ⊗₁ id                        ≈⟨ pull-last assoc-commute-from ⟩
-    ε.η XV ∘ id ⊗₁ ε.η XU ∘ L X U V ⊗₁ L X Y U ⊗₁ id ∘ α⇒             ≈⟨ refl⟩∘⟨ pullˡ (⟺ ⊗.homomorphism ○ ⊗.F-resp-≈ (identityˡ , refl)) ⟩
-    ε.η XV ∘ L X U V ⊗₁ (ε.η XU ∘ L X Y U ⊗₁ id) ∘ α⇒                 ≈⟨ refl⟩∘⟨ [ ⊗ ]-decompose₁ ⟩∘⟨refl ⟩
-    ε.η XV ∘ (L X U V ⊗₁ id ∘ id ⊗₁ (ε.η XU ∘ L X Y U ⊗₁ id)) ∘ α⇒    ≈⟨ center⁻¹ RLadjunct≈id (∘-resp-≈ˡ (ℱ.F-resp-≈ ([ U , V ]₀ ⊗-) RLadjunct≈id)) ⟩
-    𝕃 (inner V U) ∘ (id ⊗₁ 𝕃 (inner U Y) ∘ α⇒)                         ≈˘⟨ 𝕃-comm′ ⟩
-    𝕃 (inner V U ∘ (id ⊗₁ 𝕃 (inner U Y) ∘ α⇒) ⊗₁ id)                   ≈⟨ 𝕃-resp-≈ VU-UY⇒VY-VU ⟩
-    𝕃 (inner V Y ∘ (𝕃 (inner V U) ⊗₁ id) ⊗₁ id)                        ≈⟨ 𝕃-comm′ ⟩
-    𝕃 (inner V Y) ∘ 𝕃 (inner V U) ⊗₁ id ∎
+    (inner XV XU) ∘ (L X U V ⊗₁ L X Y U) ⊗₁ id                     ≈⟨ pull-last assoc-commute-from ⟩
+    ε.η XV ∘ id ⊗₁ ε.η XU ∘ L X U V ⊗₁ L X Y U ⊗₁ id ∘ α⇒          ≈⟨ refl⟩∘⟨ pullˡ (⟺ ⊗.homomorphism ○ ⊗.F-resp-≈ (identityˡ , refl)) ⟩
+    ε.η XV ∘ L X U V ⊗₁ (ε.η XU ∘ L X Y U ⊗₁ id) ∘ α⇒              ≈⟨ refl⟩∘⟨ [ ⊗ ]-decompose₁ ⟩∘⟨refl ⟩
+    ε.η XV ∘ (L X U V ⊗₁ id ∘ id ⊗₁ (ε.η XU ∘ L X Y U ⊗₁ id)) ∘ α⇒ ≈⟨ center⁻¹ RLadjunct≈id (∘-resp-≈ˡ (ℱ.F-resp-≈ ([ U , V ]₀ ⊗-) RLadjunct≈id)) ⟩
+    𝕃 (inner V U) ∘ (id ⊗₁ 𝕃 (inner U Y) ∘ α⇒)                     ≈˘⟨ 𝕃-comm′ ⟩
+    𝕃 (inner V U ∘ (id ⊗₁ 𝕃 (inner U Y) ∘ α⇒) ⊗₁ id)               ≈⟨ 𝕃-resp-≈ VU-UY⇒VY-VU ⟩
+    𝕃 (inner V Y ∘ (𝕃 (inner V U) ⊗₁ id) ⊗₁ id)                    ≈⟨ 𝕃-comm′ ⟩
+    𝕃 (inner V Y) ∘ 𝕃 (inner V U) ⊗₁ id                            ∎
     where
     XV = [ X , V ]₀
     XU = [ X , U ]₀
@@ -101,16 +101,16 @@ pentagon′ : {U V X Y : Obj} →
              [ id , L X Y V ]₁
            ⟩
 pentagon′ {U} {V} {X} {Y} = begin
-  [ L X Y U , id ]₁ ∘ L [ X , Y ]₀ XU XV ∘ L X U V                               ≈˘⟨ refl ⟩∘⟨ 𝕃-comm′ ⟩
-  [ L X Y U , id ]₁ ∘ 𝕃 (𝕃 (ε.η XV ∘ id ⊗₁ ε.η XU ∘ α⇒) ∘ L X U V ⊗₁ id)        ≈˘⟨ pushˡ [ [-,-] ]-commute ⟩
-  ([ id , 𝕃 (inner XV XU) ∘ L X U V ⊗₁ id ]₁ ∘ [ L X Y U , id ]₁) ∘ η.η UV       ≈˘⟨ pushʳ (mate.commute₁ (L X Y U)) ⟩
-  [ id , 𝕃 (inner XV XU) ∘ L X U V ⊗₁ id ]₁ ∘ [ id , id ⊗₁ L X Y U ]₁ ∘ η.η UV   ≈˘⟨ pushˡ (ℱ.homomorphism [ [ Y , U ]₀ ,-]) ⟩
-  𝕃 ((𝕃 (inner XV XU) ∘ L X U V ⊗₁ id) ∘ id ⊗₁ L X Y U)                          ≈˘⟨ 𝕃-resp-≈ $ pushʳ [ ⊗ ]-decompose₁ ⟩
-  𝕃 (𝕃 (inner XV XU) ∘ L X U V ⊗₁ L X Y U)                                       ≈˘⟨ 𝕃-resp-≈ $ 𝕃-comm′ ⟩
-  𝕃 (𝕃 $ (inner XV XU) ∘ (L X U V ⊗₁ L X Y U) ⊗₁ id)                             ≈⟨ 𝕃-resp-≈ $ 𝕃-resp-≈ $ expand-[-,-] ⟩
-  𝕃 (𝕃 $ 𝕃 (inner V Y) ∘ 𝕃 (inner V U) ⊗₁ id)                                    ≈⟨ 𝕃-resp-≈ 𝕃-comm′ ⟩
-  𝕃 (L X Y V ∘ 𝕃 (inner V U))                                                     ≈⟨ pushˡ (ℱ.homomorphism [ [ Y , U ]₀ ,-]) ⟩
-  [ id , L X Y V ]₁ ∘ L Y U V                                                     ∎
+  [ L X Y U , id ]₁ ∘ L [ X , Y ]₀ XU XV ∘ L X U V                             ≈˘⟨ refl ⟩∘⟨ 𝕃-comm′ ⟩
+  [ L X Y U , id ]₁ ∘ 𝕃 (𝕃 (ε.η XV ∘ id ⊗₁ ε.η XU ∘ α⇒) ∘ L X U V ⊗₁ id)       ≈˘⟨ pushˡ [ [-,-] ]-commute ⟩
+  ([ id , 𝕃 (inner XV XU) ∘ L X U V ⊗₁ id ]₁ ∘ [ L X Y U , id ]₁) ∘ η.η UV     ≈˘⟨ pushʳ (mate.commute₁ (L X Y U)) ⟩
+  [ id , 𝕃 (inner XV XU) ∘ L X U V ⊗₁ id ]₁ ∘ [ id , id ⊗₁ L X Y U ]₁ ∘ η.η UV ≈˘⟨ pushˡ (ℱ.homomorphism [ [ Y , U ]₀ ,-]) ⟩
+  𝕃 ((𝕃 (inner XV XU) ∘ L X U V ⊗₁ id) ∘ id ⊗₁ L X Y U)                        ≈˘⟨ 𝕃-resp-≈ $ pushʳ [ ⊗ ]-decompose₁ ⟩
+  𝕃 (𝕃 (inner XV XU) ∘ L X U V ⊗₁ L X Y U)                                     ≈˘⟨ 𝕃-resp-≈ $ 𝕃-comm′ ⟩
+  𝕃 (𝕃 $ (inner XV XU) ∘ (L X U V ⊗₁ L X Y U) ⊗₁ id)                           ≈⟨ 𝕃-resp-≈ $ 𝕃-resp-≈ $ expand-[-,-] ⟩
+  𝕃 (𝕃 $ 𝕃 (inner V Y) ∘ 𝕃 (inner V U) ⊗₁ id)                                  ≈⟨ 𝕃-resp-≈ 𝕃-comm′ ⟩
+  𝕃 (L X Y V ∘ 𝕃 (inner V U))                                                  ≈⟨ pushˡ (ℱ.homomorphism [ [ Y , U ]₀ ,-]) ⟩
+  [ id , L X Y V ]₁ ∘ L Y U V                                                  ∎
   where
   XV = [ X , V ]₀
   XU = [ X , U ]₀

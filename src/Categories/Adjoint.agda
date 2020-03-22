@@ -132,12 +132,12 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
       (R.F₁ g ∘ R.F₁ (h D.∘ L.F₁ f)) ∘ unit.η A    ≈⟨ (refl⟩∘⟨ R.homomorphism) ⟩∘⟨refl ⟩
       (R.F₁ g ∘ R.F₁ h ∘ R.F₁ (L.F₁ f)) ∘ unit.η A ≈⟨ pullʳ assoc ⟩
       R.F₁ g ∘ R.F₁ h ∘ R.F₁ (L.F₁ f) ∘ unit.η A   ≈˘⟨ refl⟩∘⟨ ⟺ (R.F-resp-≈ eq) ⟩∘⟨ unit.commute f ⟩
-      R.F₁ g ∘ R.F₁ i ∘ unit.η X ∘ f               ≈˘⟨ refl⟩∘⟨ assoc ⟩
+      R.F₁ g ∘ R.F₁ i ∘ unit.η X ∘ f               ≈⟨ refl⟩∘⟨ sym-assoc ⟩
       R.F₁ g ∘ (R.F₁ i ∘ unit.η X) ∘ f             ∎
 
     Ladjunct-comm′ : ∀ {X A B} {f : A ⇒ X} {g : L.F₀ X D.⇒ B} →
                       Ladjunct (g D.∘ L.F₁ f) ≈ Ladjunct g ∘ f
-    Ladjunct-comm′ = ∘-resp-≈ˡ R.homomorphism ○ (pullʳ (⟺ (unit.commute _))) ○ ⟺ assoc
+    Ladjunct-comm′ = ∘-resp-≈ˡ R.homomorphism ○ (pullʳ (⟺ (unit.commute _))) ○ sym-assoc
 
     Ladjunct-resp-≈ : ∀ {A B} {f g : L.F₀ A D.⇒ B} → f D.≈ g → Ladjunct f ≈ Ladjunct g
     Ladjunct-resp-≈ eq = ∘-resp-≈ˡ (R.F-resp-≈ eq)
@@ -155,7 +155,7 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
       counit.η B ∘ L.F₁ (R.F₁ g) ∘ L.F₁ (h C.∘ f)  ≈⟨ pullˡ (counit.commute g) ⟩
       (g ∘ counit.η Y) ∘ L.F₁ (h C.∘ f)            ≈⟨ refl⟩∘⟨ L.homomorphism ⟩
       (g ∘ counit.η Y) ∘ L.F₁ h ∘ L.F₁ f           ≈⟨ refl ⟩∘⟨ L.F-resp-≈ eq ⟩∘⟨ refl ⟩
-      (g ∘ counit.η Y) ∘ L.F₁ i ∘ L.F₁ f           ≈⟨ pullʳ (⟺ assoc) ⟩
+      (g ∘ counit.η Y) ∘ L.F₁ i ∘ L.F₁ f           ≈⟨ pullʳ sym-assoc ⟩
       g ∘ (counit.η Y ∘ L.F₁ i) ∘ L.F₁ f           ∎
 
     Radjunct-comm′ : ∀ {Y A B} {f : A C.⇒ R.F₀ Y} {g : Y ⇒ B} →
@@ -497,7 +497,7 @@ _∘⊣_ {C = C} {D = D} {E = E} {L = L} {R} {M} {S} LR MS = record
         εMS (M₀ (L₀ A)) E.∘ M₁ (εLR (S₀ (M₀ (L₀ A))) D.∘ L₁ ((R₁ (ηMS (L₀ A))) C.∘ ηLR A))
       ≈⟨  refl⟩∘⟨ M.F-resp-≈ (D.∘-resp-≈ʳ L.homomorphism) ⟩
         εMS (M₀ (L₀ A)) E.∘ M₁ (εLR (S₀ (M₀ (L₀ A))) D.∘ L₁ (R₁ (ηMS (L₀ A))) D.∘ L₁ (ηLR A))
-      ≈˘⟨  refl⟩∘⟨ M.F-resp-≈ D.assoc ⟩
+      ≈⟨ refl⟩∘⟨ M.F-resp-≈ D.sym-assoc ⟩
         εMS (M₀ (L₀ A)) E.∘ M₁ ((εLR (S₀ (M₀ (L₀ A))) D.∘ L₁ (R₁ (ηMS (L₀ A)))) D.∘ L₁ (ηLR A))
       ≈⟨  refl⟩∘⟨ M.F-resp-≈ (D.∘-resp-≈ˡ (LRε.commute _)) ⟩
         εMS (M₀ (L₀ A)) E.∘ M₁ ( (_ D.∘ εLR _) D.∘ L₁ (ηLR A))
@@ -505,7 +505,7 @@ _∘⊣_ {C = C} {D = D} {E = E} {L = L} {R} {M} {S} LR MS = record
         εMS (M₀ (L₀ A)) E.∘ M₁ (_ D.∘ εLR _) E.∘ M₁ (L₁ (ηLR A))
       ≈⟨  refl⟩∘⟨ ( M.homomorphism ⟩∘⟨refl ) ⟩
         εMS (M₀ (L₀ A)) E.∘ (M₁ (ηMS (L₀ A)) E.∘ M₁ (εLR _)) E.∘ M₁ (L₁ (ηLR A))
-      ≈˘⟨ E.assoc ○ E.∘-resp-≈ʳ (⟺ E.assoc) ⟩
+      ≈⟨ E.∘-resp-≈ʳ E.assoc ○ E.sym-assoc ⟩
         (εMS (M₀ (L₀ A)) E.∘ M₁ (ηMS (L₀ A))) E.∘ (M₁ (εLR _) E.∘ M₁ (L₁ (ηLR A)))
       ≈⟨ MS.zig ⟩∘⟨refl ⟩
         E.id E.∘ (M₁ (εLR _) E.∘ M₁ (L₁ (ηLR A)))
@@ -530,7 +530,7 @@ _∘⊣_ {C = C} {D = D} {E = E} {L = L} {R} {M} {S} LR MS = record
          C.∘-resp-≈ˡ (C.∘-resp-≈ C.identityˡ (C.∘-resp-≈ʳ R.identity) ○
           C.∘-resp-≈ R.identity C.identityʳ ○ C.identityˡ) ⟩
          R₁ (S₁ (εMS B E.∘ M₁ (εLR (S₀ B)))) C.∘ R₁ (ηMS (L₀ (R₀ (S₀ B)))) C.∘ ηLR (R₀ (S₀ B))
-      ≈˘⟨ C.assoc ⟩
+      ≈⟨ C.sym-assoc ⟩
          (R₁ (S₁ (εMS B E.∘ M₁ (εLR (S₀ B)))) C.∘ R₁ (ηMS (L₀ (R₀ (S₀ B))))) C.∘ ηLR (R₀ (S₀ B))
       ≈˘⟨  R.homomorphism ⟩∘⟨refl ⟩
          R₁ (S₁ (εMS B E.∘ M₁ (εLR (S₀ B))) D.∘ ηMS (L₀ (R₀ (S₀ B)))) C.∘ ηLR (R₀ (S₀ B))
@@ -540,7 +540,7 @@ _∘⊣_ {C = C} {D = D} {E = E} {L = L} {R} {M} {S} LR MS = record
         R₁ (S₁ (εMS B) D.∘ S₁ (M₁ (εLR (S₀ B))) D.∘ ηMS (L₀ (R₀ (S₀ B)))) C.∘ ηLR (R₀ (S₀ B))
       ≈⟨ R.F-resp-≈ (D.∘-resp-≈ʳ (D.HomReasoning.⟺ (MSη.commute (εLR (S₀ B))))) ⟩∘⟨refl ⟩
          R₁ (S₁ (εMS B) D.∘ ηMS (S₀ B) D.∘ εLR (S₀ B)) C.∘ ηLR (R₀ (S₀ B))
-      ≈˘⟨ R.F-resp-≈ D.assoc ⟩∘⟨refl ⟩
+      ≈⟨ R.F-resp-≈ D.sym-assoc ⟩∘⟨refl ⟩
          R₁ ((S₁ (εMS B) D.∘ ηMS (S₀ B)) D.∘ εLR (S₀ B)) C.∘ ηLR (R₀ (S₀ B))
       ≈⟨ R.F-resp-≈ (D.∘-resp-≈ˡ MS.zag) ⟩∘⟨refl ⟩
          R₁ (D.id D.∘ εLR (S₀ B)) C.∘ ηLR (R₀ (S₀ B))

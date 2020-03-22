@@ -36,7 +36,7 @@ Wedge-∘ : (W : Wedge) → A ⇒ Wedge.E W → Wedge
 Wedge-∘ {A = A} W f = record
   { E         = A
   ; dinatural = extranaturalʳ (λ X → dinatural.α X ∘ f)
-                              (⟺ assoc ○ ∘-resp-≈ˡ (extranatural-commʳ dinatural) ○ assoc )
+                              (sym-assoc ○ ∘-resp-≈ˡ (extranatural-commʳ dinatural) ○ assoc)
   }
   where open Wedge W
 

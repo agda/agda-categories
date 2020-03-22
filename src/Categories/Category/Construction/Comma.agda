@@ -87,7 +87,7 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
         ; commute = begin
           S₁ (h₁ B.∘ h₂) C.∘ f₁      ≈⟨ S.homomorphism ⟩∘⟨refl ○ C.assoc ⟩
           S₁ h₁ C.∘  (S₁ h₂ C.∘ f₁)  ≈⟨  refl⟩∘⟨ commutes₂ ⟩
-          S₁ h₁ C.∘  (f₂ C.∘ T₁ g₂)  ≈˘⟨  C.assoc ⟩
+          S₁ h₁ C.∘  (f₂ C.∘ T₁ g₂)  ≈⟨ C.sym-assoc ⟩
           (S₁ h₁ C.∘  f₂) C.∘ T₁ g₂  ≈⟨ commutes₁ ⟩∘⟨refl ⟩
           (f₃ C.∘ T₁ g₁) C.∘ T₁ g₂   ≈⟨ C.assoc ○ refl⟩∘⟨ ⟺ T.homomorphism ⟩
           f₃ C.∘ T₁ (g₁ A.∘ g₂) ∎

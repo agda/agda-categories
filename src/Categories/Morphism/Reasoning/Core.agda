@@ -59,7 +59,7 @@ module Pulls (ab≡c : a ∘ b ≈ c) where
 
   pullˡ : a ∘ b ∘ f ≈ c ∘ f
   pullˡ {f = f} = begin
-    a ∘ b ∘ f   ≈⟨ sym assoc ⟩
+    a ∘ b ∘ f   ≈⟨ sym-assoc ⟩
     (a ∘ b) ∘ f ≈⟨ ab≡c ⟩∘⟨refl ⟩
     c ∘ f       ∎
 
@@ -69,7 +69,7 @@ module Pushes (c≡ab : c ≈ a ∘ b) where
   pushʳ : f ∘ c ≈ (f ∘ a) ∘ b
   pushʳ {f = f} = begin
     f ∘ c       ≈⟨ refl⟩∘⟨ c≡ab ⟩
-    f ∘ (a ∘ b) ≈˘⟨ assoc ⟩
+    f ∘ (a ∘ b) ≈⟨ sym-assoc ⟩
     (f ∘ a) ∘ b ∎
 
   pushˡ : c ∘ f ≈ a ∘ (b ∘ f)
@@ -105,7 +105,7 @@ module Extends (s : CommutativeSquare f g h i) where
   extendˡ : CommutativeSquare f g (a ∘ h) (a ∘ i)
   extendˡ {a = a} = begin
     (a ∘ h) ∘ f ≈⟨ pullʳ s ⟩
-    a ∘ i ∘ g   ≈˘⟨ assoc ⟩
+    a ∘ i ∘ g   ≈⟨ sym-assoc ⟩
     (a ∘ i) ∘ g ∎
 
   extendʳ : CommutativeSquare (f ∘ a) (g ∘ a) h i
@@ -117,7 +117,7 @@ module Extends (s : CommutativeSquare f g h i) where
   extend² : CommutativeSquare (f ∘ b) (g ∘ b) (a ∘ h) (a ∘ i)
   extend² {b = b} {a = a } = begin
     (a ∘ h) ∘ (f ∘ b) ≈⟨ pullʳ extendʳ ⟩
-    a ∘ (i ∘ (g ∘ b)) ≈˘⟨ assoc ⟩
+    a ∘ (i ∘ (g ∘ b)) ≈⟨ sym-assoc ⟩
     (a ∘ i) ∘ (g ∘ b) ∎
 
 open Extends public

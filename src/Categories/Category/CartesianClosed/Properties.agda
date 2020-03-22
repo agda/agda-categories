@@ -1,4 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
+
 module Categories.Category.CartesianClosed.Properties where
 
 open import Level
@@ -7,11 +8,13 @@ open import Data.Product using (Σ; _,_; Σ-syntax; proj₁; proj₂)
 open import Categories.Category
 open import Categories.Category.CartesianClosed
 
+import Categories.Morphism.Reasoning as MR
 
 module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝓥 : CartesianClosed 𝒞) where
   open Category 𝒞
   open CartesianClosed 𝓥
   open HomReasoning
+  open MR 𝒞
 
   PointSurjective : ∀ {A X Y : Obj} → (X ⇒ Y ^ A) → Set (ℓ ⊔ e)
   PointSurjective {A = A} {X = X} {Y = Y} ϕ =
@@ -39,7 +42,7 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝓥 : CartesianClosed 𝒞) where
       g-fixed-point = begin
         f ∘ g ∘ x                        ≈⟨  refl⟩∘⟨ sym g-surjective ⟩
         f ∘ eval′ ∘ first ϕ ∘ ⟨ x , x ⟩  ≈⟨ refl⟩∘⟨ refl⟩∘⟨ lemma ϕ id x ⟩
-        f ∘ eval′ ∘ ⟨ ϕ , id ⟩ ∘ x       ≈˘⟨ ∘-resp-≈ˡ sym-assoc ○ assoc ○ assoc ⟩
-        (f ∘ eval′ ∘ ⟨ ϕ , id ⟩) ∘ x     ≈⟨ refl ⟩
+        f ∘ eval′ ∘ ⟨ ϕ , id ⟩ ∘ x       ≈⟨ ∘-resp-≈ʳ sym-assoc ○ sym-assoc ⟩
+        (f ∘ eval′ ∘ ⟨ ϕ , id ⟩) ∘ x     ≡⟨⟩
         g ∘ x                            ∎
 

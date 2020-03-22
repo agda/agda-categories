@@ -121,9 +121,9 @@ module _ {C : Category o ℓ e} {b}
         (η (Hom.η (f₁ , f₃ C.∘ f₂)) a₄ ∙
          P₁ f₁ $₁ η (Hom.η (f₂ , f₃)) a₄ ∙
          P₁ f₁ $₁ (P₁ f₂ $₁ g₃ E.∘ g₂)) ∙ g₁
-      ≈˘⟨ D.assoc                          then
-          D.Equiv.sym $ ∘-resp-≈ʳ D.assoc  then
-          ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ D.assoc  ⟩
+      ≈⟨ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ D.sym-assoc then
+         ∘-resp-≈ʳ D.assoc                   then
+         D.sym-assoc                         ⟩
         (η (P₂ C.assoc) a₄ ∙
          η (Hom.η (f₁ , f₃ C.∘ f₂)) a₄ ∙
          P₁ f₁ $₁ η (Hom.η (f₂ , f₃)) a₄) ∙
@@ -139,7 +139,7 @@ module _ {C : Category o ℓ e} {b}
          η (Hom.η (f₂ C.∘ f₁ , f₃)) a₄ ∙ P₁ (f₂ C.∘ f₁) $₁ F.id ∙
          η (Hom.η (f₁ , f₂)) (P₁ f₃ $₀ a₄)) ∙
         P₁ f₁ $₁ ((P₁ f₂ $₁ g₃) E.∘ g₂) ∙ g₁
-      ≈˘⟨ ∘-resp-≈ˡ D.assoc ⟩
+      ≈⟨ ∘-resp-≈ˡ D.sym-assoc ⟩
         ((η (P₂ C.assoc) a₄ ∙ η (P₂ C.sym-assoc) a₄) ∙
          η (Hom.η (f₂ C.∘ f₁ , f₃)) a₄ ∙ P₁ (f₂ C.∘ f₁) $₁ F.id ∙
          η (Hom.η (f₁ , f₂)) (P₁ f₃ $₀ a₄)) ∙
@@ -189,7 +189,7 @@ module _ {C : Category o ℓ e} {b}
       (begin
         η (P₂ C.identityˡ) a₂ ∙
         ((η (Hom.η (f , C.id)) a₂ ∙ P₁ f $₁ η (unitˡ.η _) a₂) ∙ g)
-      ≈˘⟨ D.assoc ⟩
+      ≈⟨ D.sym-assoc ⟩
         (η (P₂ C.identityˡ) a₂ ∙
          (η (Hom.η (f , C.id)) a₂ ∙ P₁ f $₁ η (unitˡ.η _) a₂)) ∙ g
       ≈˘⟨ ∘-resp-≈ˡ (∘-resp-≈ʳ (∘-resp-≈ʳ D.identityʳ)) ⟩
@@ -217,10 +217,10 @@ module _ {C : Category o ℓ e} {b}
       ≈˘⟨ ∘-resp-≈ʳ $ ∘-resp-≈ʳ $ commute (unitˡ.η _) g ⟩
         η (P₂ C.identityʳ) a₂ ∙
         (η (Hom.η (C.id , f)) a₂ ∙ (η (unitˡ.η _) (P₁ f $₀ a₂) ∙ g))
-      ≈˘⟨ ∘-resp-≈ʳ D.assoc ⟩
+      ≈⟨ ∘-resp-≈ʳ D.sym-assoc ⟩
         η (P₂ C.identityʳ) a₂ ∙
         ((η (Hom.η (C.id , f)) a₂ ∙ η (unitˡ.η _) (P₁ f $₀ a₂)) ∙ g)
-      ≈˘⟨ D.assoc ⟩
+      ≈⟨ D.sym-assoc ⟩
         (η (P₂ C.identityʳ) a₂ ∙
          (η (Hom.η (C.id , f)) a₂ ∙ η (unitˡ.η _) (P₁ f $₀ a₂))) ∙ g
       ≈˘⟨ ∘-resp-≈ˡ $ ∘-resp-≈ʳ $ ∘-resp-≈ʳ D.identityˡ ⟩
@@ -255,7 +255,7 @@ module _ {C : Category o ℓ e} {b}
          η (P₂ $ C.Equiv.sym f₁≈f₂) a₂ ∙ g₂
        ≈˘⟨ ∘-resp-≈ʳ g₁≈g₂ ⟩
          η (P₂ $ C.Equiv.sym f₁≈f₂) a₂ ∙ η (P₂ f₁≈f₂) a₂ ∙ g₁
-       ≈˘⟨ D.assoc ⟩
+       ≈⟨ D.sym-assoc ⟩
          (η (P₂ $ C.Equiv.sym f₁≈f₂) a₂ ∙ η (P₂ f₁≈f₂) a₂) ∙ g₁
        ≈⟨ ∘-resp-≈ˡ $ Iso.isoˡ $ P-resp-Iso f₁≈f₂ ⟩
          D.id ∙ g₁
@@ -309,7 +309,7 @@ module _ {C : Category o ℓ e} {b}
              (begin
                 η (P₂ $ C.∘-resp-≈ f₁≈f₂ f₃≈f₄) a₃ ∙
                 (η (Hom.η (f₃ , f₁)) a₃ ∙ P₁ f₃ $₁ g₁) ∙ g₃
-              ≈⟨ ∘-resp-≈ʳ D.assoc  then  D.Equiv.sym D.assoc ⟩
+              ≈⟨ ∘-resp-≈ʳ D.assoc  then D.sym-assoc ⟩
                 (η (P₂ $ C.∘-resp-≈ f₁≈f₂ f₃≈f₄) a₃ ∙ η (Hom.η (f₃ , f₁)) a₃) ∙
                 P₁ f₃ $₁ g₁ ∙ g₃
               ≈˘⟨ ∘-resp-≈ˡ $ Hom.commute (f₃≈f₄ , f₁≈f₂) ⟩
@@ -318,7 +318,7 @@ module _ {C : Category o ℓ e} {b}
                 P₁ f₃ $₁ g₁ ∙ g₃
               ≈⟨ D.assoc                                   then
                  ∘-resp-≈ʳ D.assoc                         then
-                 ∘-resp-≈ʳ $ ∘-resp-≈ʳ $ Equiv.sym D.assoc ⟩
+                 ∘-resp-≈ʳ $ ∘-resp-≈ʳ $ D.sym-assoc ⟩
                 η (Hom.η (f₄ , f₂)) a₃ ∙
                 P₁ f₄ $₁ (η (P₂ f₁≈f₂) a₃) ∙
                 (η (P₂ f₃≈f₄) (P₁ f₁ $₀ a₃) ∙ P₁ f₃ $₁ g₁) ∙ g₃
@@ -326,9 +326,9 @@ module _ {C : Category o ℓ e} {b}
                 η (Hom.η (f₄ , f₂)) a₃ ∙
                 P₁ f₄ $₁ (η (P₂ f₁≈f₂) a₃) ∙
                 (P₁ f₄ $₁ g₁ ∙ η (P₂ f₃≈f₄) a₂) ∙ g₃
-              ≈⟨ ∘-resp-≈ʳ $ ∘-resp-≈ʳ D.assoc    then
-                 Equiv.sym $ ∘-resp-≈ʳ $ D.assoc  then
-                 Equiv.sym $ D.assoc              ⟩
+              ≈⟨ ∘-resp-≈ʳ $ ∘-resp-≈ʳ D.assoc then
+                 ∘-resp-≈ʳ $ D.sym-assoc       then
+                 D.sym-assoc                   ⟩
                 (η (Hom.η (f₄ , f₂)) a₃ ∙
                  P₁ f₄ $₁ (η (P₂ f₁≈f₂) a₃) ∙ P₁ f₄ $₁ g₁) ∙
                 η (P₂ f₃≈f₄) a₂ ∙ g₃

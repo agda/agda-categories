@@ -74,7 +74,7 @@ module _ where
       to iso₂ ∘ h                           ≈⟨ introʳ (isoʳ iso₁) ⟩
       (to iso₂ ∘ h) ∘ from iso₁ ∘ to iso₁   ≈⟨ assoc ⟩
       to iso₂ ∘ h ∘ from iso₁ ∘ to iso₁     ≈˘⟨ refl ⟩∘⟨ pushˡ sq ⟩
-      to iso₂ ∘ (from iso₂ ∘ f) ∘ to iso₁   ≈˘⟨ assoc ⟩
+      to iso₂ ∘ (from iso₂ ∘ f) ∘ to iso₁   ≈⟨ sym-assoc ⟩
       (to iso₂ ∘ (from iso₂ ∘ f)) ∘ to iso₁ ≈⟨ cancelˡ (isoˡ iso₂) ⟩∘⟨ refl ⟩
       f ∘ to iso₁                           ∎ }
     ; iso  = record

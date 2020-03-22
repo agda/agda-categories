@@ -37,7 +37,7 @@ Hom[A,C]⇒Hom[B,C] : {A B : Obj} → (A ⇒ B) → NaturalTransformation Hom[ C
 Hom[A,C]⇒Hom[B,C] {A} A⇒B = ntHelper record
   { η       = λ X → record { _⟨$⟩_ = λ X⇒A → A⇒B ∘ X⇒A ; cong = ∘-resp-≈ʳ }
   ; commute = λ f {g} {h} g≈h → begin
-      A⇒B ∘ id ∘ g ∘ f   ≈˘⟨ assoc ⟩
+      A⇒B ∘ id ∘ g ∘ f   ≈⟨ sym-assoc ⟩
       (A⇒B ∘ id) ∘ g ∘ f ≈⟨ id-comm ⟩∘⟨ g≈h ⟩∘⟨refl ⟩
       (id ∘ A⇒B) ∘ h ∘ f ≈⟨ assoc ○ ⟺ (∘-resp-≈ʳ assoc) ⟩ -- TODO: MR.Reassociate
       id ∘ (A⇒B ∘ h) ∘ f ∎

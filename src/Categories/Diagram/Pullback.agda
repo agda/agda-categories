@@ -71,13 +71,13 @@ glue {h = h} p q = record
   { p₁              = q.p₁
   ; p₂              = p.p₂ ∘ q.p₂
   ; commute        = glue-square p.commute q.commute
-  ; universal       = λ eq → q.universal (⟺ (p.p₁∘universal≈h₁ {eq = ⟺ assoc ○ eq}))
+  ; universal       = λ eq → q.universal (⟺ (p.p₁∘universal≈h₁ {eq = sym-assoc ○ eq}))
   ; unique          = λ {_ h₁ h₂ i} eq eq′ →
     q.unique eq (p.unique (begin
       p.p₁ ∘ q.p₂ ∘ i ≈˘⟨ extendʳ q.commute ⟩
       h ∘ q.p₁ ∘ i    ≈⟨ refl⟩∘⟨ eq ⟩
       h ∘ h₁          ∎)
-                          (⟺ assoc ○ eq′))
+                          (sym-assoc ○ eq′))
   ; p₁∘universal≈h₁ = q.p₁∘universal≈h₁
   ; p₂∘universal≈h₂ = assoc ○ ∘-resp-≈ʳ q.p₂∘universal≈h₂ ○ p.p₂∘universal≈h₂
   }
@@ -104,7 +104,7 @@ unglue {f = f} {g = g} {h = h} p q = record
   }
   where module p = Pullback p
         module q = Pullback q
-        p₂′ = p.universal (⟺ assoc ○ q.commute) -- used twice above
+        p₂′ = p.universal (sym-assoc ○ q.commute) -- used twice above
 
 Product×Equalizer⇒Pullback :
   (p : Product A B) → Equalizer (f ∘ Product.π₁ p) (g ∘ Product.π₂ p) →
@@ -112,13 +112,13 @@ Product×Equalizer⇒Pullback :
 Product×Equalizer⇒Pullback {f = f} {g = g} p e = record
   { p₁              = π₁ ∘ arr
   ; p₂              = π₂ ∘ arr
-  ; commute        = ⟺ assoc ○ equality ○ assoc
+  ; commute         = sym-assoc ○ equality ○ assoc
   ; universal       = λ {_ h₁ h₂} eq → equalize $ begin
     (f ∘ π₁) ∘ ⟨ h₁ , h₂ ⟩ ≈⟨ pullʳ project₁ ⟩
     f ∘ h₁                ≈⟨ eq ⟩
     g ∘ h₂                ≈˘⟨ pullʳ project₂ ⟩
     (g ∘ π₂) ∘ ⟨ h₁ , h₂ ⟩ ∎
-  ; unique          = λ eq eq′ → e.unique (p.unique (⟺ assoc ○ eq) (⟺ assoc ○ eq′))
+  ; unique          = λ eq eq′ → e.unique (p.unique (sym-assoc ○ eq) (sym-assoc ○ eq′))
   ; p₁∘universal≈h₁ = pullʳ (⟺ e.universal) ○ project₁
   ; p₂∘universal≈h₂ = pullʳ (⟺ e.universal) ○ project₂
   }
@@ -136,7 +136,7 @@ Product×Pullback⇒Equalizer {f = f} {g = g} p pu = record
     f ∘ p₁                 ≈⟨ commute ⟩
     g ∘ p₂                 ≈˘⟨ pullʳ project₂ ⟩
     (g ∘ π₂) ∘ ⟨ p₁ , p₂ ⟩ ∎
-  ; equalize  = λ eq → pu.universal (⟺ assoc ○ eq ○ assoc)
+  ; equalize  = λ eq → pu.universal (sym-assoc ○ eq ○ assoc)
   ; universal = λ {_ h} → begin
     h                      ≈˘⟨ p.unique (⟺ p₁∘universal≈h₁) (⟺ p₂∘universal≈h₂) ⟩
     ⟨ p₁ ∘ _ , p₂ ∘ _ ⟩    ≈⟨ p.unique (pullˡ project₁) (pullˡ project₂) ⟩

@@ -78,7 +78,7 @@ repack≡id×id p₁ p₂ = sym (Product.⟨⟩-cong₂ p₂ identityˡ identity
         module p₂ = Product p₂
 
 [_]⟨⟩∘ : ∀ (p : Product A B) → [ p ]⟨ f , g ⟩ ∘ h ≈ [ p ]⟨ f ∘ h , g ∘ h ⟩
-[ p ]⟨⟩∘ = ⟺ (unique (⟺ assoc ○ ∘-resp-≈ˡ project₁) (⟺ assoc ○ ∘-resp-≈ˡ project₂))
+[ p ]⟨⟩∘ = ⟺ (unique (sym-assoc ○ ∘-resp-≈ˡ project₁) (sym-assoc ○ ∘-resp-≈ˡ project₂))
   where open Product p
 
 repack∘repack≈id : ∀ (p₁ p₂ : Product A B) → repack p₁ p₂ ∘ repack p₂ p₁ ≈ id
@@ -90,7 +90,7 @@ repack∘repack≈id p₁ p₂ = [ p₂ ]⟨⟩∘ ○ p₂.⟨⟩-cong₂ p₁.
                ([ p₂ ⇒ p₃ ] g × i) ∘ ([ p₁ ⇒ p₂ ] f × h) ≈ [ p₁ ⇒ p₃ ] (g ∘ f) × (i ∘ h)
 [_⇒_⇒_]×∘× {g = g} {i = i} {f = f} {h = h} p₁ p₂ p₃ = begin
   [ p₃ ]⟨ g ∘ p₂.π₁ , i ∘ p₂.π₂ ⟩ ∘ [ p₂ ]⟨ f ∘ p₁.π₁ , h ∘ p₁.π₂ ⟩ ≈⟨ [ p₂ ⇒ p₃ ]×∘⟨⟩ ⟩
-  [ p₃ ]⟨ g ∘ f ∘ p₁.π₁ , i ∘ h ∘ p₁.π₂ ⟩                          ≈˘⟨ p₃.⟨⟩-cong₂ assoc assoc ⟩
+  [ p₃ ]⟨ g ∘ f ∘ p₁.π₁ , i ∘ h ∘ p₁.π₂ ⟩                           ≈⟨ p₃.⟨⟩-cong₂ sym-assoc sym-assoc ⟩
   [ p₃ ]⟨ (g ∘ f) ∘ p₁.π₁ , (i ∘ h) ∘ p₁.π₂ ⟩                       ∎
   where module p₁ = Product p₁
         module p₂ = Product p₂

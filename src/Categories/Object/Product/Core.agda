@@ -84,8 +84,8 @@ transport-by-iso p {X} p≅X = record
   ; project₂ = cancelInner isoˡ ○ project₂
   ; unique = λ {_ i l r} pf₁ pf₂ → begin
     from ∘ ⟨ l , r ⟩                         ≈˘⟨ refl⟩∘⟨ ⟨⟩-cong₂ pf₁ pf₂ ⟩
-    from ∘ ⟨ (π₁ ∘ to) ∘ i , (π₂ ∘ to) ∘ i ⟩ ≈⟨ refl⟩∘⟨ unique (⟺ assoc) (⟺ assoc) ⟩
-    from ∘ to ∘ i                           ≈⟨ cancelˡ isoʳ ⟩
+    from ∘ ⟨ (π₁ ∘ to) ∘ i , (π₂ ∘ to) ∘ i ⟩ ≈⟨ refl⟩∘⟨ unique sym-assoc sym-assoc ⟩
+    from ∘ to ∘ i                            ≈⟨ cancelˡ isoʳ ⟩
     i                                        ∎
   }
   where open Product p
@@ -153,8 +153,8 @@ Mobile p A₁≅A₂ B₁≅B₂ = record
     (from B₁≅B₂ ∘ π₂) ∘ ⟨ to A₁≅A₂ ∘ _ , to B₁≅B₂ ∘ _ ⟩ ≈⟨ pullʳ project₂ ⟩
     from B₁≅B₂ ∘ (to B₁≅B₂ ∘ _)                         ≈⟨ cancelˡ (isoʳ B₁≅B₂) ⟩
     _                                                   ∎
-  ; unique        = λ pfˡ pfʳ → unique (switch-fromtoˡ A₁≅A₂ (⟺ assoc ○ pfˡ))
-                                       (switch-fromtoˡ B₁≅B₂ (⟺ assoc ○ pfʳ))
+  ; unique        = λ pfˡ pfʳ → unique (switch-fromtoˡ A₁≅A₂ (sym-assoc ○ pfˡ))
+                                       (switch-fromtoˡ B₁≅B₂ (sym-assoc ○ pfʳ))
   }
   where open Product p
         open _≅_

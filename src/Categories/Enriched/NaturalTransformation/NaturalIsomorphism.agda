@@ -155,7 +155,7 @@ module _ {b c d e} {B : Category b} {C : Category c}
       }
     ; to = record
       { comp    = λ _ → E.id
-      ; commute = comm ○ (refl⟩∘⟨ ⟺ assoc ⟩⊗⟨refl ⟩∘⟨refl)
+      ; commute = comm ○ (refl⟩∘⟨ sym-assoc ⟩⊗⟨refl ⟩∘⟨refl)
       }
     ; iso = record { isoˡ = UE.identity² ; isoʳ = UE.identity² }
     }

@@ -37,17 +37,17 @@ F-Algebras {𝒞 = 𝒞} F = record
   }
   where
     open Category 𝒞
-    open Equiv
-    open HomReasoning hiding (refl; sym; trans)
+    open MR 𝒞
+    open HomReasoning
     open Functor F
     open F-Algebra-Morphism
     open F-Algebra
     commut : {A B C : F-Algebra F} (α₁ : F-Algebra-Morphism B C) (α₂ : F-Algebra-Morphism A B) →
       (f α₁ ∘ f α₂) ∘ α A ≈ α C ∘ F₁ (f α₁ ∘ f α₂)
     commut {A} {B} {C} α₁ α₂ = begin
-      (f α₁ ∘ f α₂) ∘ α A            ≈⟨ assoc ○ ∘-resp-≈ʳ (commutes α₂) ⟩
-      f α₁ ∘ (α B ∘ F₁ (f α₂))       ≈⟨ ⟺ assoc ○ ∘-resp-≈ˡ (commutes α₁) ⟩
-      (α C ∘ F₁ (f α₁)) ∘ F₁ (f α₂)  ≈⟨ assoc ○ ∘-resp-≈ʳ (⟺ homomorphism) ⟩
+      (f α₁ ∘ f α₂) ∘ α A            ≈⟨ pullʳ (commutes α₂) ⟩
+      f α₁ ∘ (α B ∘ F₁ (f α₂))       ≈⟨ pullˡ (commutes α₁) ⟩
+      (α C ∘ F₁ (f α₁)) ∘ F₁ (f α₂)  ≈⟨ pullʳ (⟺ homomorphism) ⟩
       α C ∘ F₁ (f α₁ ∘ f α₂)   ∎
 
 

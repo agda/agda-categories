@@ -109,7 +109,7 @@ module _ {F G H : Bifunctor (Category.op C) C D} where
     ; commute = λ {X Y} f → begin
       F₁ H (C.id , f) ∘ (η (X , X) ∘ α X) ∘ F₁ F (f , C.id)   ≈˘⟨ pushˡ (pushˡ (θ.commute (C.id , f))) ⟩
       ((η (X , Y) ∘ F₁ G (C.id , f)) ∘ α X) ∘ F₁ F (f , C.id) ≈⟨ assoc ○ pullʳ (β.commute f) ⟩
-      η (X , Y) ∘ F₁ G (f , C.id) ∘ α Y ∘ F₁ F (C.id , f)     ≈⟨ pullˡ (θ.commute (f , C.id)) ○ pullʳ (⟺ assoc) ⟩
+      η (X , Y) ∘ F₁ G (f , C.id) ∘ α Y ∘ F₁ F (C.id , f)     ≈⟨ pullˡ (θ.commute (f , C.id)) ○ pullʳ sym-assoc ⟩
       F₁ H (f , C.id) ∘ (η (Y , Y) ∘ α Y) ∘ F₁ F (C.id , f)   ∎
     }
     where module θ = NaturalTransformation θ
@@ -122,7 +122,7 @@ module _ {F G H : Bifunctor (Category.op C) C D} where
     { α       = λ X → α X ∘ η (X , X)
     ; commute = λ {X Y} f → begin
       F₁ H (C.id , f) ∘ (α X ∘ η (X , X)) ∘ F₁ F (f , C.id) ≈⟨ refl⟩∘⟨ pullʳ (θ.commute (f , C.id)) ⟩
-      F₁ H (C.id , f) ∘ α X ∘ F₁ G (f , C.id) ∘ η (Y , X)   ≈˘⟨ assoc ○ ∘-resp-≈ʳ assoc ⟩
+      F₁ H (C.id , f) ∘ α X ∘ F₁ G (f , C.id) ∘ η (Y , X)   ≈⟨ ∘-resp-≈ʳ sym-assoc ○ sym-assoc ⟩
       (F₁ H (C.id , f) ∘ α X ∘ F₁ G (f , C.id)) ∘ η (Y , X) ≈⟨ β.commute f ⟩∘⟨refl ⟩
       (F₁ H (f , C.id) ∘ α Y ∘ F₁ G (C.id , f)) ∘ η (Y , X) ≈˘⟨ pushʳ (assoc ○ pushʳ (θ.commute (C.id , f))) ⟩
       F₁ H (f , C.id) ∘ (α Y ∘ η (Y , Y)) ∘ F₁ F (C.id , f) ∎

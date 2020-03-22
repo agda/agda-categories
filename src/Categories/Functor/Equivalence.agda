@@ -61,10 +61,10 @@ record _≡F_ {C : Category o ℓ e}
       τ⁻¹ Y ∘   G₁ f                      ≈˘⟨ identityʳ ⟩
      (τ⁻¹ Y ∘   G₁ f) ∘  id               ≈˘⟨ ∘-resp-≈ʳ $ hid-symʳ _ ⟩
      (τ⁻¹ Y ∘   G₁ f) ∘ (τ X   ∘ τ⁻¹ X)   ≈⟨ assoc ⟩
-      τ⁻¹ Y ∘  (G₁ f  ∘ (τ X   ∘ τ⁻¹ X))  ≈˘⟨ ∘-resp-≈ʳ assoc ⟩
+      τ⁻¹ Y ∘  (G₁ f  ∘ (τ X   ∘ τ⁻¹ X))  ≈⟨ ∘-resp-≈ʳ sym-assoc ⟩
       τ⁻¹ Y ∘ ((G₁ f  ∘  τ X)  ∘ τ⁻¹ X)   ≈˘⟨ ∘-resp-≈ʳ $ ∘-resp-≈ˡ $ eq₁ f ⟩
-      τ⁻¹ Y ∘ ((τ Y   ∘ F₁ f)  ∘ τ⁻¹ X)   ≈˘⟨ assoc ⟩
-     (τ⁻¹ Y ∘  (τ Y   ∘ F₁ f)) ∘ τ⁻¹ X    ≈˘⟨ ∘-resp-≈ˡ assoc ⟩
+      τ⁻¹ Y ∘ ((τ Y   ∘ F₁ f)  ∘ τ⁻¹ X)   ≈⟨ sym-assoc ⟩
+     (τ⁻¹ Y ∘  (τ Y   ∘ F₁ f)) ∘ τ⁻¹ X    ≈⟨ ∘-resp-≈ˡ sym-assoc ⟩
     ((τ⁻¹ Y ∘   τ Y)  ∘ F₁ f)  ∘ τ⁻¹ X    ≈⟨ ∘-resp-≈ˡ $ ∘-resp-≈ˡ $ hid-symˡ _ ⟩
     (id               ∘ F₁ f)  ∘ τ⁻¹ X    ≈⟨ ∘-resp-≈ˡ identityˡ ⟩
     F₁ f                       ∘ τ⁻¹ X    ∎

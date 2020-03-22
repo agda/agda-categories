@@ -65,7 +65,7 @@ eval {C = C} {D = D} = record
         (η β C ∘ η α C) ∘ F₁ F g ∘ F₁ F f ≈⟨ assoc ⟩
         η β C ∘ η α C ∘ F₁ F g ∘ F₁ F f   ≈⟨ refl ⟩∘⟨ pullˡ (commute α g) ⟩
         η β C ∘ (F₁ G g ∘ η α B) ∘ F₁ F f ≈⟨ refl ⟩∘⟨ assoc ⟩
-        η β C ∘ F₁ G g ∘ η α B ∘ F₁ F f   ≈˘⟨ assoc ⟩
+        η β C ∘ F₁ G g ∘ η α B ∘ F₁ F f   ≈⟨ sym-assoc ⟩
         (η β C ∘ F₁ G g) ∘ η α B ∘ F₁ F f ∎
   ; F-resp-≈     = λ where
     {F , _} (comm , eq) → ∘-resp-≈ comm (Functor.F-resp-≈ F eq)
@@ -152,16 +152,18 @@ product {A = A} {B = B} {C = C} = record
   ; identity = λ {f} → identityʳ ○ identity {D = C} (proj₁ f)
   ; homomorphism = λ { {_ , F₂} {G₁ , G₂} {H₁ , _} {f₁ , f₂} {g₁ , g₂} {x} → begin
       F₁ H₁ (η g₂ x B.∘ η f₂ x) ∘ η g₁ (F₀ F₂ x) ∘ η f₁ (F₀ F₂ x)
-          ≈⟨ ∘-resp-≈ˡ (homomorphism H₁) ○ assoc ○ ∘-resp-≈ʳ (⟺ assoc) ⟩
-      F₁ H₁ (η g₂ x) ∘ (F₁ H₁ (η f₂ x) ∘ η g₁ (F₀ F₂ x)) ∘ η f₁ (F₀ F₂ x)
-          ≈⟨  ⟺ ( refl⟩∘⟨ ( commute g₁ (η f₂ x) ⟩∘⟨refl) ) ⟩
+        ≈⟨ ∘-resp-≈ˡ (homomorphism H₁) ⟩
+      ((F₁ H₁ (η g₂ x) ∘ F₁ H₁ (η f₂ x)) ∘ η g₁ (F₀ F₂ x) ∘ η f₁ (F₀ F₂ x))
+        ≈⟨ center (⟺ (commute g₁ (η f₂ x))) ⟩
       F₁ H₁ (η g₂ x) ∘ (η g₁ (F₀ G₂ x) ∘ F₁  G₁ (η f₂ x)) ∘ η f₁ (F₀ F₂ x)
-          ≈⟨ ∘-resp-≈ʳ assoc ○ ⟺ assoc ⟩
-      (F₁ H₁ (η g₂ x) ∘ η g₁ (F₀ G₂ x)) ∘ F₁ G₁ (η f₂ x) ∘ η f₁ (F₀ F₂ x) ∎ }
+        ≈⟨ pull-first refl ⟩
+      (F₁ H₁ (η g₂ x) ∘ η g₁ (F₀ G₂ x)) ∘ F₁ G₁ (η f₂ x) ∘ η f₁ (F₀ F₂ x)
+        ∎ }
   ; F-resp-≈ = λ { {_} {g₁ , _} (≈₁ , ≈₂) → ∘-resp-≈ (F-resp-≈ g₁ ≈₂) ≈₁ }
   }
   where
     open Category C
+    open MR C
     open HomReasoning
     open Functor
     module B = Category B
@@ -173,11 +175,11 @@ product {A = A} {B = B} {C = C} = record
 opF⇒ : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
       Functor (Category.op (Functors (Category.op A) (Category.op B))) (Functors A B)
 opF⇒ {A = A} {B} = record
-  { F₀ = Functor.op
-  ; F₁ = NaturalTransformation.op
-  ; identity = Equiv.refl
+  { F₀           = Functor.op
+  ; F₁           = NaturalTransformation.op
+  ; identity     = Equiv.refl
   ; homomorphism = Equiv.refl
-  ; F-resp-≈ = λ eq → eq
+  ; F-resp-≈     = λ eq → eq
   }
   where open Category B
 

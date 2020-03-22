@@ -51,7 +51,7 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
                             (proj₂ g ∘ proj₂ f) ∘ x ∘ proj₁ f ∘ proj₁ g ≈
                             proj₂ g ∘ (proj₂ f ∘ y ∘ proj₁ f) ∘ proj₁ g
           homomorphism′ {f = f₁ , f₂} {g₁ , g₂} {x} {y} x≈y = begin
-            (g₂ ∘ f₂) ∘ x ∘ f₁ ∘ g₁   ≈˘⟨ refl⟩∘⟨ assoc ⟩
+            (g₂ ∘ f₂) ∘ x ∘ f₁ ∘ g₁   ≈⟨ refl⟩∘⟨ sym-assoc ⟩
             (g₂ ∘ f₂) ∘ (x ∘ f₁) ∘ g₁ ≈⟨ pullʳ (pullˡ (∘-resp-≈ʳ (∘-resp-≈ˡ x≈y))) ⟩
             g₂ ∘ (f₂ ∘ y ∘ f₁) ∘ g₁   ∎
 

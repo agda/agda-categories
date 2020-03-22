@@ -52,7 +52,7 @@ identity = record
   iso X = record
     { isoˡ = begin
       (ε.η X ∘ ρ⇐) ∘ 𝕃 ρ⇒      ≈⟨ pullʳ unitorʳ-commute-to ⟩
-      ε.η X ∘ 𝕃 ρ⇒ ⊗₁ id ∘ ρ⇐  ≈˘⟨ assoc ⟩
+      ε.η X ∘ 𝕃 ρ⇒ ⊗₁ id ∘ ρ⇐  ≈⟨ sym-assoc ⟩
       Radjunct (𝕃 ρ⇒) ∘ ρ⇐     ≈⟨ RLadjunct≈id ⟩∘⟨refl ⟩
       ρ⇒ ∘ ρ⇐                  ≈⟨ unitorʳ.isoʳ ⟩
       id                       ∎

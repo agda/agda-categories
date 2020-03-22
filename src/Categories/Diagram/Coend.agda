@@ -36,7 +36,7 @@ Cowedge-∘ : (W : Cowedge) → Cowedge.E W ⇒ A → Cowedge
 Cowedge-∘ {A = A} W f = record
   { E         = A
   ; dinatural = extranaturalˡ (λ X → f ∘ dinatural.α X)
-                              (assoc ○ ∘-resp-≈ʳ (extranatural-commˡ dinatural) ○ ⟺ assoc)
+                              (assoc ○ ∘-resp-≈ʳ (extranatural-commˡ dinatural) ○ sym-assoc)
   }
   where open Cowedge W
 

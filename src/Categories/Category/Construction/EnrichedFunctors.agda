@@ -16,6 +16,7 @@ open import Categories.Enriched.Functor M renaming (id to idF)
 open import Categories.Enriched.NaturalTransformation M renaming (id to idNT)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 
+import Categories.Morphism.Reasoning as MR
 open NaturalTransformation using (_[_])
 
 EnrichedFunctors : ∀ {c d} (C : Category c) (D : Category d) →
@@ -61,11 +62,9 @@ EnrichedFunctors C D = record
       H₁ $₁ (β₂ [ X ] D.∘ α₂ [ X ]) ∘ β₁ [ F₂ $₀ X ] ∘ α₁ [ F₂ $₀ X ]
     ≈⟨ homomorphism H₁ ⟩∘⟨refl ⟩
       (H₁ $₁ β₂ [ X ] ∘ H₁ $₁ α₂ [ X ]) ∘ β₁ [ F₂ $₀ X ] ∘ α₁ [ F₂ $₀ X ]
-    ≈⟨ ⟺ assoc ○ ∘-resp-≈ˡ assoc ⟩
-      (H₁ $₁ β₂ [ X ] ∘ (H₁ $₁ α₂ [ X ] ∘ β₁ [ F₂ $₀ X ])) ∘ α₁ [ F₂ $₀ X ]
-    ≈˘⟨ (refl⟩∘⟨ commute β₁ (α₂ [ X ])) ⟩∘⟨refl ⟩
-      (H₁ $₁ β₂ [ X ] ∘ (β₁ [ G₂ $₀ X ] ∘ G₁ $₁ α₂ [ X ])) ∘ α₁ [ F₂ $₀ X ]
-    ≈˘⟨ ⟺ assoc ○ ∘-resp-≈ˡ assoc ⟩
+    ≈⟨ center (⟺ (commute β₁ (α₂ [ X ]))) ⟩
+      (H₁ $₁ β₂ [ X ] ∘ (β₁ [ G₂ $₀ X ] ∘ G₁ $₁ α₂ [ X ]) ∘ α₁ [ F₂ $₀ X ])
+    ≈⟨ pull-first refl ⟩
       (H₁ $₁ β₂ [ X ] ∘ β₁ [ G₂ $₀ X ]) ∘ G₁ $₁ α₂ [ X ] ∘ α₁ [ F₂ $₀ X ]
     ∎ }
   ; F-resp-≈ = λ{ {_} {F , _} (eq₁ , eq₂) → ∘-resp-≈ (F-resp-≈ F eq₂) eq₁ }
@@ -74,6 +73,7 @@ EnrichedFunctors C D = record
     module D = Underlying D
     module E = Underlying E
     open E hiding (id)
+    open MR (Underlying E)
     open HomReasoning
     open UnderlyingFunctor hiding (F₀; F₁)
     open UnderlyingNT

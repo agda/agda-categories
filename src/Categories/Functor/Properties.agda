@@ -106,15 +106,15 @@ module _ (F : Functor C D) where
       let (y , sy) = surj Y in
       let (z , sz) = surj Z in
       let open Morphism._≅_ in faith _ _ (E.begin
-      F₁ (from full ⟨$⟩ to sz ∘ (g ∘ f) ∘ from sx)                                    E.≈⟨ right-inverse-of full _ ⟩
-      (to sz ∘ (g ∘ f) ∘ from sx)                                                    E.≈⟨ D.∘-resp-≈ʳ (D.∘-resp-≈ˡ (D.∘-resp-≈ʳ (introˡ (isoʳ sy)))) ⟩
-      (to sz ∘ (g ∘ (from sy ∘ to sy) ∘ f) ∘ from sx)                                E.≈˘⟨ D.assoc ⟩
-      (to sz ∘ g ∘ ((from sy ∘ to sy) ∘ f)) ∘ from sx                                E.≈⟨ D.∘-resp-≈ˡ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ D.assoc)) ⟩
-      (to sz ∘ g ∘ (from sy ∘ (to sy ∘ f))) ∘ from sx                                E.≈˘⟨ D.∘-resp-≈ˡ D.assoc ⟩
-      ((to sz ∘ g) ∘ (from sy ∘ (to sy ∘ f))) ∘ from sx                              E.≈˘⟨ D.∘-resp-≈ˡ D.assoc ⟩
-      (((to sz ∘ g) ∘ from sy) ∘ (to sy ∘ f)) ∘ from sx                              E.≈⟨ D.assoc ⟩
-      ((to sz ∘ g) ∘ from sy) ∘ ((to sy ∘ f) ∘ from sx)                              E.≈⟨ D.∘-resp-≈ D.assoc D.assoc  ⟩
-      (to sz ∘ g ∘ from sy) ∘ (to sy ∘ f ∘ from sx)                                  E.≈˘⟨ D.∘-resp-≈ (right-inverse-of full _) (right-inverse-of full _) ⟩
+      F₁ (from full ⟨$⟩ to sz ∘ (g ∘ f) ∘ from sx)                                     E.≈⟨ right-inverse-of full _ ⟩
+      (to sz ∘ (g ∘ f) ∘ from sx)                                                      E.≈⟨ D.∘-resp-≈ʳ (D.∘-resp-≈ˡ (D.∘-resp-≈ʳ (introˡ (isoʳ sy)))) ⟩
+      (to sz ∘ (g ∘ (from sy ∘ to sy) ∘ f) ∘ from sx)                                  E.≈⟨ D.sym-assoc ⟩
+      (to sz ∘ g ∘ ((from sy ∘ to sy) ∘ f)) ∘ from sx                                  E.≈⟨ D.∘-resp-≈ˡ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ D.assoc)) ⟩
+      (to sz ∘ g ∘ (from sy ∘ (to sy ∘ f))) ∘ from sx                                  E.≈⟨ D.∘-resp-≈ˡ D.sym-assoc ⟩
+      ((to sz ∘ g) ∘ (from sy ∘ (to sy ∘ f))) ∘ from sx                                E.≈⟨ D.∘-resp-≈ˡ D.sym-assoc ⟩
+      (((to sz ∘ g) ∘ from sy) ∘ (to sy ∘ f)) ∘ from sx                                E.≈⟨ D.assoc ⟩
+      ((to sz ∘ g) ∘ from sy) ∘ ((to sy ∘ f) ∘ from sx)                                E.≈⟨ D.∘-resp-≈ D.assoc D.assoc  ⟩
+      (to sz ∘ g ∘ from sy) ∘ (to sy ∘ f ∘ from sx)                                    E.≈˘⟨ D.∘-resp-≈ (right-inverse-of full _) (right-inverse-of full _) ⟩
       F₁ (from full ⟨$⟩ to sz ∘ g ∘ from sy) ∘ F₁ (from full ⟨$⟩ to sy ∘ f ∘ from sx)  E.≈˘⟨ homomorphism ⟩
       F₁ ((from full ⟨$⟩ to sz ∘ g ∘ from sy) C.∘ (from full ⟨$⟩ to sy ∘ f ∘ from sx)) E.∎)
     ; F-resp-≈ = λ f≈g → cong (from full) (D.∘-resp-≈ʳ (D.∘-resp-≈ˡ f≈g))

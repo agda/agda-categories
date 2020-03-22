@@ -53,12 +53,12 @@ open HomReasoning
     g ∘ [ p ]⟨ [ p ]π₁ , [ p ]π₂ ⟩          ≈⟨ refl⟩∘⟨ η p ○ identityʳ ⟩
     g                                      ∎
   ; λ-unique = λ {X} p {g} {h} h-comm → begin
-    h                                   ≈˘⟨ identityʳ ⟩
-    h ∘ id                              ≈˘⟨  refl⟩∘⟨ project₁ p ⟩
-    h ∘ [ p ]π₁ ∘ [ p ]⟨ id , ! ⟩        ≈˘⟨ assoc ⟩
+    h                                    ≈˘⟨ identityʳ ⟩
+    h ∘ id                               ≈˘⟨  refl⟩∘⟨ project₁ p ⟩
+    h ∘ [ p ]π₁ ∘ [ p ]⟨ id , ! ⟩        ≈⟨ sym-assoc ⟩
     (h ∘ [ p ]π₁) ∘ [ p ]⟨ id , ! ⟩      ≈˘⟨ identityˡ ⟩∘⟨refl ⟩
     (id ∘ h ∘ [ p ]π₁) ∘ [ p ]⟨ id , ! ⟩ ≈⟨ h-comm ⟩∘⟨refl ⟩
-    g ∘ repack [ X ×⊤]-product p ∎
+    g ∘ repack [ X ×⊤]-product p         ∎
   }
   where open Product
 

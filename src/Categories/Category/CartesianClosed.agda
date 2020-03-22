@@ -186,11 +186,10 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
           helper {g = g} {f = f} {h = h} {i = i} = begin
             eval′ ∘ first (λg ((g ∘ f) ∘ eval′ ∘ second (h ∘ i)))                         ≈⟨ β′ ⟩
             (g ∘ f) ∘ eval′ ∘ second (h ∘ i)                                              ≈˘⟨ refl⟩∘⟨ pullʳ second∘second ⟩
-            (g ∘ f) ∘ (eval′ ∘ second h) ∘ second i                                       ≈˘⟨ pullˡ refl ⟩
-            g ∘ f ∘ (eval′ ∘ second h) ∘ second i                                         ≈˘⟨ refl⟩∘⟨ assoc ⟩
+            (g ∘ f) ∘ (eval′ ∘ second h) ∘ second i                                       ≈⟨ center refl ⟩
             g ∘ (f ∘ eval′ ∘ second h) ∘ second i                                         ≈˘⟨ refl⟩∘⟨ pullˡ β′ ⟩
             g ∘ eval′ ∘ first (λg (f ∘ eval′ ∘ second h)) ∘ second i                      ≈⟨ refl⟩∘⟨ pushʳ first↔second ⟩
-            g ∘ (eval′ ∘ second i) ∘ first (λg (f ∘ eval′ ∘ second h))                    ≈˘⟨ assoc ⟩
+            g ∘ (eval′ ∘ second i) ∘ first (λg (f ∘ eval′ ∘ second h))                    ≈⟨ sym-assoc ⟩
             (g ∘ eval′ ∘ second i) ∘ first (λg (f ∘ eval′ ∘ second h))                    ≈˘⟨ pullˡ β′ ⟩
             eval′ ∘ first (λg (g ∘ eval′ ∘ second i)) ∘ first (λg (f ∘ eval′ ∘ second h)) ≈⟨ refl⟩∘⟨ first∘first ⟩
             eval′ ∘ first (λg (g ∘ eval′ ∘ second i) ∘ λg (f ∘ eval′ ∘ second h))         ∎
