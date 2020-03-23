@@ -11,6 +11,8 @@ open import Categories.Category.Complete.Finitely C
 open import Categories.Diagram.Equalizer C
 open import Categories.Diagram.SubobjectClassifier C
 
+import Categories.Category.Complete.Finitely.Properties as Fₚ
+
 open Category C
 
 record Topos : Set (levelOfTerm C) where
@@ -30,3 +32,5 @@ record Topos : Set (levelOfTerm C) where
     }
 
   open FinitelyComplete finitelyComplete using (module equalizer; pullback) public
+  
+  open Fₚ finitelyComplete using (finiteLimit) public
