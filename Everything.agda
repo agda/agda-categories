@@ -64,6 +64,7 @@ import Categories.Category.Equivalence
 import Categories.Category.Finite
 import Categories.Category.Finite.Fin
 import Categories.Category.Finite.Fin.Construction.Discrete
+import Categories.Category.Finite.Fin.Construction.Poset
 import Categories.Category.Finite.Fin.Instance.Parallel
 import Categories.Category.Finite.Fin.Instance.Span
 import Categories.Category.Finite.Fin.Instance.Triangle
