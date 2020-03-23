@@ -79,18 +79,10 @@ module _  (⊣equiv : ⊣Equivalence C D) (F : Functor C E) where
           { arr     = rep K′
           ; commute = λ {d} → begin
             proj (R.₀ d) ∘ rep K′                          ≈⟨ commute ⟩
-            F.₁ (unit.⇐.η (R.₀ d)) ∘ K.ψ (L.₀ (R.₀ d))     ≈˘⟨ F.F-resp-≈ eq ⟩∘⟨refl ⟩
+            F.₁ (unit.⇐.η (R.₀ d)) ∘ K.ψ (L.₀ (R.₀ d))     ≈˘⟨ F.F-resp-≈ (MR.flip-fromʳ C unit.FX≅GX zag) ⟩∘⟨refl ⟩
             (F.₁ (R.₁ (counit.⇒.η d)) ∘ K.ψ (L.₀ (R.₀ d))) ≈⟨ K.commute (counit.⇒.η d) ⟩
             K.ψ d                                          ∎
           }
-          where eq : ∀ {d} → C [ R.₁ (counit.⇒.η d) ≈ unit.⇐.η (R.₀ d) ]
-                eq {d} = CH.begin
-                  R.₁ (counit.⇒.η d)                                           CH.≈⟨ CH.introʳ (unit.iso.isoʳ (R.₀ d)) ⟩
-                  R.₁ (counit.⇒.η d) C.∘ unit.⇒.η (R.₀ d) C.∘ unit.⇐.η (R.₀ d) CH.≈⟨ CH.cancelˡ zag ⟩
-                  unit.⇐.η (R.₀ d)                                             CH.∎
-                  where module CH where
-                          open C.HomReasoning public
-                          open MR C public
 
       module _ {K : LFR.Cone} (f : LFR.Cones [ K , ⊤cone ]) where
         private
