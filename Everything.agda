@@ -74,6 +74,7 @@ import Categories.Category.Indiscrete
 import Categories.Category.Instance.Cats
 import Categories.Category.Instance.EmptySet
 import Categories.Category.Instance.FamilyOfSets
+import Categories.Category.Instance.FinCatShapes
 import Categories.Category.Instance.Globe
 import Categories.Category.Instance.Groupoids
 import Categories.Category.Instance.One

@@ -36,6 +36,7 @@ record Arrow (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set where
 -- classically. We additionally require categorical axioms and thus ensure all shapes
 -- form categories.
 record HasFinCatShape (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set where
+  infix  4 _⇒_
   infixr 9 _∘_
 
   _⇒_ : Rel (Fin n) 0ℓ
