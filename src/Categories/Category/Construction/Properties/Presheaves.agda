@@ -8,7 +8,7 @@ open import Level
 open import Data.Unit
 open import Data.Product using (_,_)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent
-open import Function.Equality using (Π)
+open import Function.Equality using (Π) renaming (_∘_ to _∙_)
 open import Relation.Binary
 
 open import Categories.Category.Cartesian
@@ -23,6 +23,8 @@ open import Categories.Functor.Presheaf
 open import Categories.NaturalTransformation
 
 import Categories.Object.Product as Prod
+import Categories.Object.Exponential as Exp
+import Categories.Morphism.Reasoning as MR
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
 open Π using (_⟨$⟩_)
@@ -33,6 +35,8 @@ module _ o′ ℓ′ {o ℓ e} (C : Category o ℓ e) where
     open C
     P = Presheaves′ o′ ℓ′ C
     module P = Category P
+    S = Setoids o′ ℓ′
+    module S = Category S
     
   Presheaves-Cartesian : Cartesian P
   Presheaves-Cartesian = record
@@ -126,7 +130,7 @@ module _ o′ ℓ′ {o ℓ e} (C : Category o ℓ e) where
           F.F₁ C.id ⟨$⟩ x         ≈⟨ F.identity eq ⟩
           y                       ∎
       ; homomorphism = λ {Y Z W} {f} {g} {x y} eq →
-        let open Setoid (F.₀ (X × Y))
+        let open Setoid  (F.₀ (X × Y))
             open SetoidR (F.₀ (X × W))
         in begin
           F.₁ (second (f ∘ g)) ⟨$⟩ x                ≈˘⟨ [ F ]-resp-∘ second∘second (sym eq) ⟩
@@ -151,14 +155,50 @@ module _ o′ ℓ′ {o ℓ e} (C : Category o ℓ e) where
           F₁ C.id ⟨$⟩ y         ≈⟨ identity refl ⟩
           y                     ∎
       ; homomorphism = λ {X Y Z} {f g} {W} {x y} eq →
-        let open Setoid (F₀ (X × W))
+        let open Setoid  (F₀ (X × W))
             open SetoidR (F₀ (Z × W))
         in begin
-          F₁ (first (f ∘ g)) ⟨$⟩ x ≈˘⟨ [ F ]-resp-∘ first∘first (sym eq) ⟩
+          F₁ (first (f ∘ g)) ⟨$⟩ x              ≈˘⟨ [ F ]-resp-∘ first∘first (sym eq) ⟩
           F₁ (first g) ⟨$⟩ (F₁ (first f) ⟨$⟩ y) ∎
       ; F-resp-≈     = λ {A B} {f g} eq → F-resp-≈ (⁂-cong₂ eq Equiv.refl)
       }
       where open Functor F
+
+    module _ (F G : Presheaf C (Setoids o′ ℓ′)) where
+      private
+        module F = Functor F
+        module G = Functor G
+
+      Presheaf^ : Presheaf C (Setoids (o′ ⊔ ℓ′ ⊔ o ⊔ ℓ) (o′ ⊔ ℓ′ ⊔ o))
+      Presheaf^ = record
+        { F₀           = λ X → Hom[ Presheaves C ][ F , Pres-exp G X ]
+        ; F₁           = λ {A B} f → record
+          { _⟨$⟩_ = λ α →
+            let module α = NaturalTransformation α
+            in ntHelper record
+            { η       = λ X → G.₁ (first f) ∙ α.η X
+            ; commute = λ {X Y} g  {x y} eq →
+              let open SetoidR (G.₀ (B × Y))
+              in begin
+                G.₁ (first f) ⟨$⟩ (α.η Y ⟨$⟩ (F.₁ g ⟨$⟩ x))          ≈⟨ Π.cong (G.₁ (first f)) (α.commute g eq) ⟩
+                G.₁ (first f) ⟨$⟩ (G.₁ (second g) ⟨$⟩ (α.η X ⟨$⟩ y)) ≈˘⟨ [ G ]-resp-square first↔second (Setoid.refl (G.₀ (A × X))) ⟩
+                G.₁ (second g) ⟨$⟩ (G.₁ (first f) ⟨$⟩ (α.η X ⟨$⟩ y)) ∎
+            }
+          ; cong  = λ eq eq′ → Π.cong (G.₁ (first f)) (eq eq′)
+          }
+        ; identity     = λ {X} {α β} eq {Y} {x y} eq′ →
+          let module α = NaturalTransformation α
+              module β = NaturalTransformation β
+              open SetoidR (G.₀ (X × Y))
+          in begin
+            G.₁ (first C.id) ⟨$⟩ (α.η Y ⟨$⟩ x) ≈⟨ G.F-resp-≈ (id×id product) (eq eq′) ⟩
+            G.F₁ C.id ⟨$⟩ (β.η Y ⟨$⟩ y)        ≈⟨ G.identity (Setoid.refl (G.₀ (X × Y))) ⟩
+            β.η Y ⟨$⟩ y                        ∎
+        ; homomorphism = λ {X Y Z} eq {W} eq′ →
+          let open Setoid  (G.₀ (X × W))
+          in Setoid.sym (G.₀ (Z × W)) ([ G ]-resp-∘ first∘first (sym (eq eq′)))
+        ; F-resp-≈     = λ eq eq′ eq″ → G.F-resp-≈ (⁂-cong₂ eq Equiv.refl) (eq′ eq″)
+        }
 
 -- module _ {o} (C : Category o o o) (Car : Cartesian C) where
 --   private
@@ -181,16 +221,7 @@ module _ o′ ℓ′ {o ℓ e} (C : Category o ℓ e) where
 --     ; π₁-comp      = λ {_ _ f} {_ g} → PC.project₁ {h = f} {g}
 --     ; π₂-comp      = λ {_ _ f} {_ g} → PC.project₂ {h = f} {g}
 --     ; ⟨,⟩-unique   = λ {_ _ _ f g h} → PC.unique {h = h} {i = f} {j = g}
---     ; _^_          = λ F G →
---       let module F = Functor F
---           module G = Functor G
---       in record
---       { F₀           = λ X → Hom[ F , Pres-exp G X ]
---       ; F₁           = {!!}
---       ; identity     = {!!}
---       ; homomorphism = {!!}
---       ; F-resp-≈     = {!!}
---       }
+--     ; _^_          = Presheaf^ o o C Car
 --     ; eval         = {!!}
 --     ; curry        = {!!}
 --     ; eval-comp    = {!!}
