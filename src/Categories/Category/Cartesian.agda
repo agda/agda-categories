@@ -120,6 +120,18 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   second∘second : ∀ {A} → second {A = A} f ∘ second g ≈ second (f ∘ g)
   second∘second = [ product ⇒ product ⇒ product ]id×∘id×
 
+  first∘second : first f ∘ second g ≈ f ⁂ g
+  first∘second {f = f} {g = g} = begin
+    first f ∘ second g       ≈⟨ first∘⟨⟩ ⟩
+    ⟨ f ∘ id ∘ π₁ , g ∘ π₂ ⟩ ≈⟨ ⟨⟩-congʳ (∘-resp-≈ʳ identityˡ) ⟩
+    f ⁂ g                    ∎
+
+  second∘first : second f ∘ first g ≈ g ⁂ f
+  second∘first {f = f} {g = g} = begin
+    second f ∘ first g ≈⟨ second∘⟨⟩ ⟩
+    ⟨ g ∘ π₁ , f ∘ id ∘ π₂ ⟩ ≈⟨ ⟨⟩-congˡ (∘-resp-≈ʳ identityˡ) ⟩
+    g ⁂ f ∎
+
   first↔second : first f ∘ second g ≈ second g ∘ first f
   first↔second = [ product ⇒ product , product ⇒ product ]first↔second
 
@@ -202,6 +214,21 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
     ≈˘⟨ ⁂∘⟨⟩ ⟩
       (f ⁂ (g ⁂ h)) ∘ assocˡ
     ∎
+
+  Δ : ∀ {C} → C ⇒ C × C
+  Δ {C} = ⟨ id {C} , id ⟩
+
+  Δ∘ : Δ ∘ f ≈ ⟨ f , f ⟩
+  Δ∘ {f = f} = begin
+    Δ ∘ f               ≈⟨ ⟨⟩∘ ⟩
+    ⟨ id ∘ f , id ∘ f ⟩ ≈⟨ ⟨⟩-cong₂ identityˡ identityˡ ⟩
+    ⟨ f , f ⟩           ∎
+
+  ⁂∘Δ : (f ⁂ g) ∘ Δ ≈ ⟨ f , g ⟩
+  ⁂∘Δ {f = f} {g = g} = begin
+    (f ⁂ g) ∘ Δ         ≈⟨ ⁂∘⟨⟩ ⟩
+    ⟨ f ∘ id , g ∘ id ⟩ ≈⟨ ⟨⟩-cong₂ identityʳ identityʳ ⟩
+    ⟨ f , g ⟩           ∎
 
   -×- : Bifunctor 𝒞 𝒞 𝒞
   -×- = record
