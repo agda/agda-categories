@@ -216,100 +216,143 @@ module HasClosedStructure o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Ca
       ; F-resp-≈     = λ eq eq′ eq″ → F.F-resp-≈ (⁂-cong₂ eq Equiv.refl) (eq′ eq″)
       }
 
--- module IsCCC {o} (C : Category o o o) (Car : Cartesian C) where
---   private
---     module C  = Category C
---     module CH = C.HomReasoning
---     open C
---     open Prod C
---     P = Presheaves′ o o C
---     module P = Category P
---     open Cartesian Car
---     open IsCartesian o o C
---     open HasClosedStructure o o Car
+module IsCCC {o} {C : Category o o o} (Car : Cartesian C) where
+  private
+    module C  = Category C
+    module CH = C.HomReasoning
+    open C
+    open Prod C
+    P = Presheaves′ o o C
+    module P = Category P
+    open Cartesian Car
+    open IsCartesian o o C
+    open HasClosedStructure o o Car
 
---   CanonicalCCC : CCartesianClosed P
---   CanonicalCCC = record
---     { ⊤            = PC.terminal.⊤
---     ; _×_          = PC._×_
---     ; !            = PC.!
---     ; π₁           = PC.π₁
---     ; π₂           = PC.π₂
---     ; ⟨_,_⟩        = PC.⟨_,_⟩
---     ; !-unique     = PC.!-unique
---     ; π₁-comp      = λ {_ _ f} {_ g} → PC.project₁ {h = f} {g}
---     ; π₂-comp      = λ {_ _ f} {_ g} → PC.project₂ {h = f} {g}
---     ; ⟨,⟩-unique   = λ {_ _ _ f g h} → PC.unique {h = h} {i = f} {j = g}
---     ; _^_          = Presheaf^
---     ; eval         = λ {F G} →
---       let module F = Functor F
---           module G = Functor G
---       in ntHelper record
---         { η       = λ X → record
---           { _⟨$⟩_ = λ { (α , x) →
---             let module α = NaturalTransformation α
---             in F.₁ Δ ⟨$⟩ (α.η X ⟨$⟩ x) }
---           ; cong  = λ { (eq , eq′) → Π.cong (F.₁ Δ) (eq eq′) }
---           }
---         ; commute = λ {X Y} f → λ { {α , x} {β , y} (eq , eq′) →
---           let module α = NaturalTransformation α
---               module β = NaturalTransformation β
---               open Setoid  (F.₀ (X × X))
---               open SetoidR (F.₀ Y)
---           in begin
---             F.₁ Δ ⟨$⟩ (F.₁ (first f) ⟨$⟩ (α.η Y ⟨$⟩ (G.₁ f ⟨$⟩ x)))
---               ≈⟨ Π.cong (F.₁ Δ ∙ F.₁ (first f)) (α.commute f eq′) ⟩
---             F.₁ Δ ∙ F.₁ (first f) ∙ F.₁ (second f) ⟨$⟩ (α.η X ⟨$⟩ y)
---               ≈⟨ Π.cong (F.₁ Δ) ([ F ]-resp-∘ second∘first refl) ⟩
---             F.₁ Δ ⟨$⟩ (F.F₁ (f ⁂ f) ⟨$⟩ (α.η X ⟨$⟩ y))
---               ≈⟨ [ F ]-resp-∘ ⁂∘Δ refl ⟩
---             F.F₁ ⟨ f , f ⟩ ⟨$⟩ (α.η X ⟨$⟩ y)
---               ≈˘⟨ [ F ]-resp-∘ Δ∘ (sym (eq (Setoid.refl (G.₀ X)))) ⟩
---             F.₁ f ⟨$⟩ (F.₁ Δ ⟨$⟩ (β.η X ⟨$⟩ y))
---               ∎ }
---         }
---     ; curry        = λ {F G H} α →
---       let module F = Functor F
---           module G = Functor G
---           module H = Functor H
---           module α = NaturalTransformation α
---       in ntHelper record
---         { η       = λ X → record
---           { _⟨$⟩_ = λ x → ntHelper record
---             { η       = λ Y → record
---               { _⟨$⟩_ = λ y → α.η (X × Y) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ y)
---               ; cong  = λ eq → Π.cong (α.η (X × Y)) (Setoid.refl (F.₀ (X × Y)) , Π.cong (G.₁ π₂) eq)
---               }
---             ; commute = λ {Y Z} f {y z} eq →
---               let open SetoidR (H.₀ (X × Z))
---               in begin
---                 α.η (X × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ (G.₁ f ⟨$⟩ y))
---                   ≈˘⟨ Π.cong (α.η (X × Z)) ( [ F ]-resp-∘ (π₁∘⁂ CH.○ identityˡ) (Setoid.refl (F.₀ X))
---                                            , [ G ]-resp-square π₂∘⁂ (Setoid.refl (G.₀ Y))) ⟩
---                 α.η (X × Z) ⟨$⟩ (F.₁ (second f) ∙ F.₁ π₁ ⟨$⟩ x , G.₁ (second f) ⟨$⟩ (G.₁ π₂ ⟨$⟩ y))
---                   ≈⟨ α.commute (second f) (Setoid.refl (F.₀ (X × Y)) , Π.cong (G.₁ π₂) eq) ⟩
---                 H.₁ (second f) ⟨$⟩ (α.η (X × Y) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ z))
---                   ∎
---             }
---           ; cong  = λ eq₁ eq₂ → Π.cong (α.η _) (Π.cong (F.F₁ π₁) eq₁ , Π.cong (G.₁ π₂) eq₂)
---           }
---         ; commute = λ {X Y} f {x y} eq₁ {Z} {z w} eq₂ →
---           let open SetoidR (H.₀ (Y × Z))
---           in begin
---             α.η (Y × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ (F.₁ f ⟨$⟩ x) , G.₁ π₂ ⟨$⟩ z)
---               ≈˘⟨ Π.cong (α.η _) ( [ F ]-resp-square π₁∘⁂ (Setoid.refl (F.₀ X))
---                                  , [ G ]-resp-∘ (π₂∘⁂ CH.○ identityˡ) (Setoid.refl (G.₀ Z))) ⟩
---             α.η (Y × Z) ⟨$⟩ (F.₁ (first f) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x) , G.₁ (first f) ⟨$⟩ (G.₁ π₂ ⟨$⟩ z))
---               ≈⟨ α.commute (first f) (Π.cong (F.₁ π₁) eq₁ , Π.cong (G.₁ π₂) eq₂) ⟩
---             H.₁ (first f) ⟨$⟩ (α.η (X × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ y , G.₁ π₂ ⟨$⟩ w))
---               ∎
---         }
---     ; eval-comp    = {!!}
---     ; curry-resp-≈ = {!!}
---     ; curry-unique = {!!}
---     }
---     where module PC = Presheaves-Cartesian
---           open Hom P
+  CanonicalCCC : CCartesianClosed P
+  CanonicalCCC = record
+    { ⊤            = PC.terminal.⊤
+    ; _×_          = PC._×_
+    ; !            = PC.!
+    ; π₁           = PC.π₁
+    ; π₂           = PC.π₂
+    ; ⟨_,_⟩        = PC.⟨_,_⟩
+    ; !-unique     = PC.!-unique
+    ; π₁-comp      = λ {_ _ f} {_ g} → PC.project₁ {h = f} {g}
+    ; π₂-comp      = λ {_ _ f} {_ g} → PC.project₂ {h = f} {g}
+    ; ⟨,⟩-unique   = λ {_ _ _ f g h} → PC.unique {h = h} {i = f} {j = g}
+    ; _^_          = Presheaf^
+    ; eval         = λ {F G} →
+      let module F = Functor F
+          module G = Functor G
+      in ntHelper record
+        { η       = λ X → record
+          { _⟨$⟩_ = λ { (α , x) →
+            let module α = NaturalTransformation α
+            in F.₁ Δ ⟨$⟩ (α.η X ⟨$⟩ x) }
+          ; cong  = λ { (eq , eq′) → Π.cong (F.₁ Δ) (eq eq′) }
+          }
+        ; commute = λ {X Y} f → λ { {α , x} {β , y} (eq , eq′) →
+          let module α = NaturalTransformation α
+              module β = NaturalTransformation β
+              open Setoid  (F.₀ (X × X))
+              open SetoidR (F.₀ Y)
+          in begin
+            F.₁ Δ ⟨$⟩ (F.₁ (first f) ⟨$⟩ (α.η Y ⟨$⟩ (G.₁ f ⟨$⟩ x)))
+              ≈⟨ Π.cong (F.₁ Δ ∙ F.₁ (first f)) (α.commute f eq′) ⟩
+            F.₁ Δ ∙ F.₁ (first f) ∙ F.₁ (second f) ⟨$⟩ (α.η X ⟨$⟩ y)
+              ≈⟨ Π.cong (F.₁ Δ) ([ F ]-resp-∘ second∘first refl) ⟩
+            F.₁ Δ ⟨$⟩ (F.F₁ (f ⁂ f) ⟨$⟩ (α.η X ⟨$⟩ y))
+              ≈⟨ [ F ]-resp-∘ ⁂∘Δ refl ⟩
+            F.F₁ ⟨ f , f ⟩ ⟨$⟩ (α.η X ⟨$⟩ y)
+              ≈˘⟨ [ F ]-resp-∘ Δ∘ (sym (eq (Setoid.refl (G.₀ X)))) ⟩
+            F.₁ f ⟨$⟩ (F.₁ Δ ⟨$⟩ (β.η X ⟨$⟩ y))
+              ∎ }
+        }
+    ; curry        = λ {F G H} α →
+      let module F = Functor F
+          module G = Functor G
+          module H = Functor H
+          module α = NaturalTransformation α
+      in ntHelper record
+        { η       = λ X → record
+          { _⟨$⟩_ = λ x → ntHelper record
+            { η       = λ Y → record
+              { _⟨$⟩_ = λ y → α.η (X × Y) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ y)
+              ; cong  = λ eq → Π.cong (α.η (X × Y)) (Setoid.refl (F.₀ (X × Y)) , Π.cong (G.₁ π₂) eq)
+              }
+            ; commute = λ {Y Z} f {y z} eq →
+              let open SetoidR (H.₀ (X × Z))
+              in begin
+                α.η (X × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ (G.₁ f ⟨$⟩ y))
+                  ≈˘⟨ Π.cong (α.η (X × Z)) ( [ F ]-resp-∘ (π₁∘⁂ CH.○ identityˡ) (Setoid.refl (F.₀ X))
+                                           , [ G ]-resp-square π₂∘⁂ (Setoid.refl (G.₀ Y))) ⟩
+                α.η (X × Z) ⟨$⟩ (F.₁ (second f) ∙ F.₁ π₁ ⟨$⟩ x , G.₁ (second f) ⟨$⟩ (G.₁ π₂ ⟨$⟩ y))
+                  ≈⟨ α.commute (second f) (Setoid.refl (F.₀ (X × Y)) , Π.cong (G.₁ π₂) eq) ⟩
+                H.₁ (second f) ⟨$⟩ (α.η (X × Y) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ z))
+                  ∎
+            }
+          ; cong  = λ eq₁ eq₂ → Π.cong (α.η _) (Π.cong (F.F₁ π₁) eq₁ , Π.cong (G.₁ π₂) eq₂)
+          }
+        ; commute = λ {X Y} f {x y} eq₁ {Z} {z w} eq₂ →
+          let open SetoidR (H.₀ (Y × Z))
+          in begin
+            α.η (Y × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ (F.₁ f ⟨$⟩ x) , G.₁ π₂ ⟨$⟩ z)
+              ≈˘⟨ Π.cong (α.η _) ( [ F ]-resp-square π₁∘⁂ (Setoid.refl (F.₀ X))
+                                 , [ G ]-resp-∘ (π₂∘⁂ CH.○ identityˡ) (Setoid.refl (G.₀ Z))) ⟩
+            α.η (Y × Z) ⟨$⟩ (F.₁ (first f) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x) , G.₁ (first f) ⟨$⟩ (G.₁ π₂ ⟨$⟩ z))
+              ≈⟨ α.commute (first f) (Π.cong (F.₁ π₁) eq₁ , Π.cong (G.₁ π₂) eq₂) ⟩
+            H.₁ (first f) ⟨$⟩ (α.η (X × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ y , G.₁ π₂ ⟨$⟩ w))
+              ∎
+        }
+    ; eval-comp    = λ {F G H} {α} → λ { {X} {x , y} {z , w} (eq₁ , eq₂) →
+      let module F = Functor F
+          module G = Functor G
+          module H = Functor H
+          module α = NaturalTransformation α
+          module HX = Setoid (H.₀ X)
+          module GX = Setoid (G.₀ X)
+          open SetoidR (F.₀ X)
+      in begin
+        F.₁ Δ ⟨$⟩ (α.η (X × X) ⟨$⟩ (H.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ y))
+          ≈⟨ α.sym-commute Δ (Π.cong (H.₁ π₁) eq₁ , Π.cong (G.₁ π₂) eq₂) ⟩
+        α.η X ⟨$⟩ (H.₁ Δ ⟨$⟩ (H.F₁ π₁ ⟨$⟩ z) , G.₁ Δ ⟨$⟩ (G.₁ π₂ ⟨$⟩ w))
+          ≈⟨ Π.cong (α.η X) ([ H ]-resp-∘ project₁ HX.refl , [ G ]-resp-∘ project₂ GX.refl) ⟩
+        α.η X ⟨$⟩ (H.F₁ C.id ⟨$⟩ z , G.F₁ C.id ⟨$⟩ w)
+          ≈⟨ Π.cong (α.η X) (H.identity HX.refl , G.identity GX.refl) ⟩
+        α.η X ⟨$⟩ (z , w)
+          ∎ }
+    ; curry-resp-≈ = λ {F G H} eq eq₁ eq₂ → 
+      let module G = Functor G
+          module H = Functor H
+      in eq (Π.cong (G.₁ π₁) eq₁ , Π.cong (H.₁ π₂) eq₂)
+    ; curry-unique = λ {F G H} {α β} eq {X} {x y} eq₁ {Y} {z w} eq₂ →
+      let module F   = Functor F
+          module G   = Functor G
+          module H   = Functor H
+          module α   = NaturalTransformation α
+          module β   = NaturalTransformation β
+          module GXY = Setoid (G.₀ (X × Y))
+          module αXx = NaturalTransformation (α.η X ⟨$⟩ x)
+          open SetoidR (G.₀ (X × Y))
+      in begin
+        αXx.η Y ⟨$⟩ z
+          ≈˘⟨ G.identity GXY.refl ⟩
+        G.₁ C.id ⟨$⟩ (αXx.η Y ⟨$⟩ z)
+          ≈˘⟨ [ G ]-resp-∘ (⁂∘Δ CH.○ η) GXY.refl ⟩
+        G.₁ Δ ⟨$⟩ (G.F₁ (π₁ ⁂ π₂) ⟨$⟩ (αXx.η Y ⟨$⟩ z))
+          ≈˘⟨ Π.cong (G.₁ Δ) ([ G ]-resp-∘ second∘first GXY.refl) ⟩
+        G.₁ Δ ⟨$⟩ (G.₁ (first π₁) ⟨$⟩ (G.₁ (second π₂) ⟨$⟩ (αXx.η Y ⟨$⟩ z)))
+          ≈⟨ Π.cong (G.₁ Δ ∙ G.₁ (first π₁)) (αXx.sym-commute π₂ (Setoid.refl (H.₀ Y))) ⟩
+        G.₁ Δ ⟨$⟩ (G.₁ (first π₁) ⟨$⟩ (αXx.η (X × Y) ⟨$⟩ (H.₁ π₂ ⟨$⟩ z)))
+          ≈⟨ Π.cong (G.₁ Δ) (α.sym-commute π₁ (Setoid.refl (F.₀ X)) (Setoid.refl (H.₀ (X × Y)))) ⟩
+        G.₁ Δ ⟨$⟩ (NaturalTransformation.η (α.η (X × Y) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x)) (X × Y) ⟨$⟩ (H.₁ π₂ ⟨$⟩ z))
+          ≈⟨ eq (Π.cong (F.₁ π₁) eq₁ , Π.cong (H.₁ π₂) eq₂) ⟩
+        β.η (X × Y) ⟨$⟩ (F.₁ π₁ ⟨$⟩ y , H.₁ π₂ ⟨$⟩ w)
+          ∎
+    }
+    where module PC = Presheaves-Cartesian
 
---   Presheaves-CartesianClosed : CartesianClosed P
---   Presheaves-CartesianClosed = Equivalence.fromCanonical P CanonicalCCC
+  Presheaves-CartesianClosed : CartesianClosed P
+  Presheaves-CartesianClosed = Equivalence.fromCanonical P CanonicalCCC
+
+  module Presheaves-CartesianClosed = CartesianClosed Presheaves-CartesianClosed
