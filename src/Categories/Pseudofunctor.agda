@@ -24,8 +24,8 @@ open NaturalIsomorphism using (F⇒G; F⇐G)
 record Pseudofunctor {o ℓ e t o′ ℓ′ e′ t′  : Level} (C : Bicategory o ℓ e t) (D : Bicategory o′ ℓ′ e′ t′)
     : Set (o ⊔ ℓ ⊔ e ⊔ t ⊔ o′ ⊔ ℓ′ ⊔ e′ ⊔ t′) where
   private
-    module C = Bicategory C
-    module D = Bicategory D
+    module C = Bicategory C using (Obj; hom; id; ⊚; id₁; _⊚₀_; unitorˡ; unitorʳ; associator)
+    module D = Bicategory D using (Obj; hom; id; ⊚; id₁; id₂; _⊚₀_; _⊚₁_; unitorˡ; unitorʳ; associator)
 
   field
     P₀ : C.Obj → D.Obj
