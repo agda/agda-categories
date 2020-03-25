@@ -73,6 +73,9 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
 
   Hom[-,_] : Obj → Contravariant C (Setoids ℓ e)
   Hom[-,_] = appʳ Hom[-,-]
+
+  Hom[_,_] : Obj → Obj → Setoid ℓ e
+  Hom[ A , B ] = hom-setoid {A} {B}
   
 -- Notation for when the ambient Category must be specified explicitly.
 module _ {o ℓ e} (C : Category o ℓ e) where
@@ -87,3 +90,6 @@ module _ {o ℓ e} (C : Category o ℓ e) where
 
   Hom[_][-,_] : Obj → Contravariant C (Setoids ℓ e)
   Hom[_][-,_] B = Hom[-, B ]
+
+  Hom[_][_,_] : Obj → Obj → Setoid ℓ e
+  Hom[_][_,_] A B = hom-setoid {A} {B}
