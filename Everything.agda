@@ -241,4 +241,4 @@ import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda
 import Categories.Yoneda.Properties
-import Relation.Binary.Construct.Symmetrize
+import Relation.Binary.Construct.Closure.SymmetricTransitive
