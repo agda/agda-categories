@@ -11,5 +11,5 @@ open import Categories.Category.Construction.Properties.Presheaves.CartesianClos
   public
 
 open import Categories.Category.Construction.Properties.Presheaves.Complete
-  using (Presheaves-Complete)
+  using (Presheaves-Complete; Presheaves-Cocomplete)
   public

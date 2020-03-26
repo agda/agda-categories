@@ -113,8 +113,7 @@ module _ o′ where
         { arr     = arr.η X
         ; commute = comm
         }
-        where open FCone K
-              open FCone⇒ K⇒⊤ renaming (commute to comm)
+        where open FCone⇒ K⇒⊤ renaming (commute to comm)
 
       complete : Limit F
       complete = record
@@ -135,6 +134,7 @@ module _ o′ where
             in LimFX.terminal.!-unique X (K⇒⊤′ X K⇒⊤) eq j
           }
         }      
+
 
       -- colimit related definitions
 
@@ -206,6 +206,50 @@ module _ o′ where
               hom-map : ∀ {X Y Z} → Y C.⇒ X → Z C.⇒ Y → Σ J.Obj (λ j → Setoid.Carrier (F₀.₀ j X)) → Σ J.Obj (λ j → Setoid.Carrier (F₀.₀ j Z))
               hom-map f g (j , Sj) = j , F₀.₁ j (f ∘ g) ⟨$⟩ Sj -- F₀.₁ j g ∙ F₀.₁ j f ⟨$⟩ Sj
 
+      ⊥⇒K′ : ∀ X {K} → Coc.Cocones F [ ⊥ , K ] → Coc.Cocones F[-, X ] [ ColimFX.colimit X , FXcocone X K ]
+      ⊥⇒K′ X {K} ⊥⇒K = record
+        { arr     = arr.η X
+        ; commute = comm
+        }
+        where open FCocone⇒ ⊥⇒K renaming (commute to comm)
+
+      ! : {K : Coc.Cocone F} → Coc.Cocone⇒ F ⊥ K
+      ! {K} = record
+        { arr     = ntHelper record
+          { η       = λ X → ColimFX.rep X (FXcocone X K)
+          ; commute = λ {X Y} f → λ { {a , Sa} {b , Sb} eq →
+            let open SetoidR (K.N.F₀ Y)
+            in begin
+              K.ψ.η a Y ⟨$⟩ (F₀.₁ a f ⟨$⟩ Sa) ≈⟨ K.ψ.commute a f (Setoid.refl (F₀.₀ a X)) ⟩
+              K.N.F₁ f ⟨$⟩ (K.ψ.η a X ⟨$⟩ Sa) ≈⟨ Π.cong (K.N.F₁ f) (ST.minimal (coc-preorder o′ o′ F[-, X ]) (K.N.₀ X) (Kψ X) (helper X) eq) ⟩
+              K.N.F₁ f ⟨$⟩ (K.ψ.η b X ⟨$⟩ Sb) ∎ }
+          }
+        ; commute = λ eq → Π.cong (K.ψ.η _ _) eq
+        }
+        where module K = FCocone K
+              Kψ : ∀ X → Σ J.Obj (λ j → Setoid.Carrier (F₀.₀ j X)) → Setoid.Carrier (K.N.F₀ X)
+              Kψ X (j , S) = K.ψ.η j X ⟨$⟩ S
+              helper : ∀ X → coc o′ o′ F[-, X ] =[ Kψ X ]⇒ [ K.N.₀ X ]_≈_
+              helper X {a , Sa} {b , Sb} (f , eq) = begin
+                K.ψ.η a X ⟨$⟩ Sa                ≈˘⟨ K.commute f (Setoid.refl (F₀.₀ a X)) ⟩
+                K.ψ.η b X ⟨$⟩ (F₁.η f X ⟨$⟩ Sa) ≈⟨ Π.cong (K.ψ.η b X) eq ⟩
+                K.ψ.η b X ⟨$⟩ Sb                ∎
+                where open SetoidR (K.N.₀ X)
+
+      cocomplete : Colimit F
+      cocomplete = record
+        { initial = record
+          { ⊥        = ⊥
+          ; !        = !
+          ; !-unique = λ {K} ⊥⇒K {X} → λ { {a , Sa} {b , Sb} →
+            let module K   = FCocone K
+                module ⊥⇒K = FCocone⇒ ⊥⇒K
+            in ColimFX.initial.!-unique X (⊥⇒K′ X ⊥⇒K) }
+          }
+        }
 
   Presheaves-Complete : Complete o′ o′ o′ P
   Presheaves-Complete F = complete F
+
+  Presheaves-Cocomplete : Cocomplete o′ o′ o′ P
+  Presheaves-Cocomplete F = cocomplete F
