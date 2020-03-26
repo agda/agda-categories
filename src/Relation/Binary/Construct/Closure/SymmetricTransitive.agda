@@ -21,6 +21,30 @@ module _ {A : Set a} (_≤_ : Rel A ℓ) where
     forth⁺ : x ≤ y → Plus⇔ y z → Plus⇔ x z
     back⁺  : y ≤ x → Plus⇔ y z → Plus⇔ x z
 
+module Plus⇔Reasoning (_≤_ : Rel A ℓ) where
+  infix  3 forth-synax back-syntax
+  infixr 2 forth⁺-syntax back⁺-syntax
+  
+  forth-synax : ∀ x y → x ≤ y → Plus⇔ _≤_ x y
+  forth-synax _ _ = forth
+
+  syntax forth-synax x y x≤y = x ⇒⟨ x≤y ⟩∎ y ∎
+
+  back-syntax : ∀ x y → y ≤ x → Plus⇔ _≤_ x y
+  back-syntax _ _ = back
+
+  syntax back-syntax x y y≤x = x ⇐⟨ y≤x ⟩∎ y ∎
+
+  forth⁺-syntax : ∀ x {y z} → x ≤ y → Plus⇔ _≤_ y z → Plus⇔ _≤_ x z
+  forth⁺-syntax _ = forth⁺
+
+  syntax forth⁺-syntax x x≤y y⇔z = x ⇒⟨ x≤y ⟩ y⇔z
+
+  back⁺-syntax : ∀ x {y z} → y ≤ x → Plus⇔ _≤_ y z → Plus⇔ _≤_ x z
+  back⁺-syntax _ = back⁺
+
+  syntax back⁺-syntax x y≤x y⇔z = x ⇐⟨ y≤x ⟩ y⇔z
+
 module _ {_≤_ : Rel A ℓ} {_≼_ : Rel B ℓ′} (f : A → B) (inj : _≤_ =[ f ]⇒ _≼_) where
 
   map : ∀ {x y} → Plus⇔ _≤_ x y → Plus⇔ _≼_ (f x) (f y)

@@ -5,18 +5,23 @@ open import Categories.Category
 module Categories.Category.Construction.Properties.Presheaves.Complete {o ℓ e} (C : Category o ℓ e) where
 
 open import Data.Product
-open import Function.Equality using (Π)
+open import Function.Equality using (Π) renaming (_∘_ to _∙_)
 open import Relation.Binary
+open import Relation.Binary.Construct.Closure.SymmetricTransitive as ST using (Plus⇔)
+open Plus⇔
 
 open import Categories.Category.Complete
+open import Categories.Category.Cocomplete
 open import Categories.Category.Construction.Presheaves
 open import Categories.Category.Instance.Setoids
 open import Categories.Category.Instance.Properties.Setoids
 open import Categories.Diagram.Limit as Lim
+open import Categories.Diagram.Colimit
 open import Categories.Functor
 open import Categories.NaturalTransformation
 
 import Categories.Category.Construction.Cones as Co
+import Categories.Category.Construction.Cocones as Coc
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
 private
@@ -35,6 +40,7 @@ module _ o′ where
       open F
       module F₀ j = Functor (F₀ j)
       module F₁ {a b} (f : a J.⇒ b) = NaturalTransformation (F₁ f)
+      open Setoid using () renaming (_≈_ to [_]_≈_)
 
       F[-,_] : Obj → Functor J (Setoids o′ o′)
       F[-, X ] = record
@@ -44,6 +50,8 @@ module _ o′ where
         ; homomorphism = homomorphism
         ; F-resp-≈     = λ eq → F-resp-≈ eq -- this application cannot be eta reduced
         }
+
+      -- limit related definitions
 
       module LimFX X = Limit (Setoids-Complete _ _ _ o′ o′ F[-, X ])
 
@@ -127,6 +135,77 @@ module _ o′ where
             in LimFX.terminal.!-unique X (K⇒⊤′ X K⇒⊤) eq j
           }
         }      
-  
+
+      -- colimit related definitions
+
+      module ColimFX X = Colimit (Setoids-Cocomplete _ _ _ o′ o′ F[-, X ])
+
+      module FCocone (K : Coc.Cocone F) where
+        open Coc.Cocone F K public
+        module N = Functor N
+        module ψ j = NaturalTransformation (ψ j)
+
+      module FCocone⇒ {K K′ : Coc.Cocone F} (K⇒K′ : Coc.Cocone⇒ F K K′) where
+        open Coc.Cocone⇒ F K⇒K′ public
+        module arr = NaturalTransformation arr
+
+      FXcocone : ∀ X → (K : Coc.Cocone F) → Coc.Cocone F[-, X ]
+      FXcocone X K = record
+        { N      = N.₀ X
+        ; coapex = record
+          { ψ       = λ j → ψ.η j X
+          ; commute = λ f → commute f -- this application cannot be eta reduced
+          }
+        }
+        where open FCocone K
+
+      ⊥ : Coc.Cocone F
+      ⊥ = record
+        { N      = record
+          { F₀           = λ X → ColimFX.coapex X
+          ; F₁           = λ {A B} f → record
+            { _⟨$⟩_ = λ { (j , Sj) → j , F₀.₁ j f ⟨$⟩ Sj  }
+            ; cong  = λ { {a , Sa} {b , Sb} →
+              ST.map (λ { (j , Sj) → j , F₀.₁ j f ⟨$⟩ Sj }) (helper f) }
+            }
+          ; identity     = λ { {A} {j , _} eq → forth⁺ (J.id , identity (F₀.identity j (Setoid.refl (F₀.₀ j A)))) eq }
+          ; homomorphism = λ {X Y Z} {f g} → λ { {_} {j , Sj} eq →
+            let open Setoid (F₀.₀ j Z)
+            in ST.trans (coc-preorder o′ o′ F[-, Z ])
+                        (ST.map (hom-map f g) (helper (f ∘ g)) eq)
+                        (forth (J.id , trans (identity refl) (F₀.homomorphism j (Setoid.refl (F₀.₀ j X))))) }
+          ; F-resp-≈     = λ {A B} {f g} eq → λ { {j , Sj} eq′ →
+            let open Setoid (F₀.₀ j B)
+            in ST.trans (coc-preorder o′ o′ F[-, B ])
+                        (forth (J.id , trans (identity refl) (F₀.F-resp-≈ j eq (Setoid.refl (F₀.₀ j A)))))
+                        (ST.map (λ { (j , Sj) → (j , F₀.₁ j g ⟨$⟩ Sj) }) (helper g) eq′) }
+          }
+        ; coapex = record
+          { ψ       = λ j → ntHelper record
+            { η       = λ X → record
+              { _⟨$⟩_ = j ,_
+              ; cong  = λ eq → forth (-, identity eq)
+              }
+            ; commute = λ {X Y} f eq → back (-, identity (Π.cong (F₀.₁ j f) (Setoid.sym (F₀.₀ j X) eq)))
+            }
+          ; commute = λ {a b} f {X} {x y} eq →
+            let open ST.Plus⇔Reasoning (coc o′ o′ F[-, X ])
+            in back (f , Π.cong (F₁.η f X) (Setoid.sym (F₀.₀ a X) eq))
+          }
+        }
+        where helper : ∀ {A B} (f : B C.⇒ A) {a Sa b Sb} →
+                         Σ (a J.⇒ b) (λ g → [ F₀.₀ b A ] F₁.η g A ⟨$⟩ Sa ≈ Sb) →
+                         Σ (a J.⇒ b) λ h → [ F₀.₀ b B ] F₁.η h B ⟨$⟩ (F₀.₁ a f ⟨$⟩ Sa) ≈ F₀.₁ b f ⟨$⟩ Sb
+              helper {A} {B} f {a} {Sa} {b} {Sb} (g , eq′) =
+                let open SetoidR (F₀.₀ b B)
+                in g , (begin
+                  F₁.η g B ⟨$⟩ (F₀.₁ a f ⟨$⟩ Sa) ≈⟨ F₁.commute g f (Setoid.refl (F₀.₀ a A)) ⟩
+                  F₀.₁ b f ⟨$⟩ (F₁.η g A ⟨$⟩ Sa) ≈⟨ Π.cong (F₀.₁ b f) eq′ ⟩
+                  F₀.₁ b f ⟨$⟩ Sb ∎)
+
+              hom-map : ∀ {X Y Z} → Y C.⇒ X → Z C.⇒ Y → Σ J.Obj (λ j → Setoid.Carrier (F₀.₀ j X)) → Σ J.Obj (λ j → Setoid.Carrier (F₀.₀ j Z))
+              hom-map f g (j , Sj) = j , F₀.₁ j (f ∘ g) ⟨$⟩ Sj -- F₀.₁ j g ∙ F₀.₁ j f ⟨$⟩ Sj
+
+
   Presheaves-Complete : Complete o′ o′ o′ P
   Presheaves-Complete F = complete F
