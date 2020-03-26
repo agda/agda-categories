@@ -74,7 +74,7 @@ Setoids-Cocomplete o ℓ e c ℓ′ {J} F = record
       in record
       { arr     = record
         { _⟨$⟩_ = to-coapex K
-        ; cong  = minimal (coc-preorder c ℓ′ F) K.N (to-coapex K) (coapex-cong K)
+        ; cong  = minimal (coc c ℓ′ F) K.N (to-coapex K) (coapex-cong K)
         }
       ; commute = λ {X} x≈y → Π.cong (Coapex.ψ (Cocone.coapex K) X) x≈y
       }
@@ -96,7 +96,7 @@ Setoids-Cocomplete o ℓ e c ℓ′ {J} F = record
 
         -- this is essentially a symmetric transitive closure of coc
         ⇛-Setoid : Setoid (o ⊔ c) (o ⊔ ℓ ⊔ c ⊔ ℓ′)
-        ⇛-Setoid = ST.setoid (coc-preorder c ℓ′ F)
+        ⇛-Setoid = ST.setoid (coc c ℓ′ F) (Preorder.refl (coc-preorder c ℓ′ F))
         
         to-coapex : ∀ K → vertex-carrier c ℓ′ F → Setoid.Carrier (Cocone.N K)
         to-coapex K (j , Sj) = K.ψ j ⟨$⟩ Sj

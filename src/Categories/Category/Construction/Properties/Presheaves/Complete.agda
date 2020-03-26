@@ -168,12 +168,12 @@ module _ o′ where
           ; identity     = λ { {A} {j , _} eq → forth⁺ (J.id , identity (F₀.identity j (Setoid.refl (F₀.₀ j A)))) eq }
           ; homomorphism = λ {X Y Z} {f g} → λ { {_} {j , Sj} eq →
             let open Setoid (F₀.₀ j Z)
-            in ST.trans (coc-preorder o′ o′ F[-, Z ])
+            in ST.trans (coc o′ o′ F[-, Z ])
                         (ST.map (hom-map f g) (helper (f ∘ g)) eq)
                         (forth (J.id , trans (identity refl) (F₀.homomorphism j (Setoid.refl (F₀.₀ j X))))) }
           ; F-resp-≈     = λ {A B} {f g} eq → λ { {j , Sj} eq′ →
             let open Setoid (F₀.₀ j B)
-            in ST.trans (coc-preorder o′ o′ F[-, B ])
+            in ST.trans (coc o′ o′ F[-, B ])
                         (forth (J.id , trans (identity refl) (F₀.F-resp-≈ j eq (Setoid.refl (F₀.₀ j A)))))
                         (ST.map (λ { (j , Sj) → (j , F₀.₁ j g ⟨$⟩ Sj) }) (helper g) eq′) }
           }
@@ -218,7 +218,7 @@ module _ o′ where
             let open SetoidR (K.N.F₀ Y)
             in begin
               K.ψ.η a Y ⟨$⟩ (F₀.₁ a f ⟨$⟩ Sa) ≈⟨ K.ψ.commute a f (Setoid.refl (F₀.₀ a X)) ⟩
-              K.N.F₁ f ⟨$⟩ (K.ψ.η a X ⟨$⟩ Sa) ≈⟨ Π.cong (K.N.F₁ f) (ST.minimal (coc-preorder o′ o′ F[-, X ]) (K.N.₀ X) (Kψ X) (helper X) eq) ⟩
+              K.N.F₁ f ⟨$⟩ (K.ψ.η a X ⟨$⟩ Sa) ≈⟨ Π.cong (K.N.F₁ f) (ST.minimal (coc o′ o′ F[-, X ]) (K.N.₀ X) (Kψ X) (helper X) eq) ⟩
               K.N.F₁ f ⟨$⟩ (K.ψ.η b X ⟨$⟩ Sb) ∎ }
           }
         ; commute = λ eq → Π.cong (K.ψ.η _ _) eq

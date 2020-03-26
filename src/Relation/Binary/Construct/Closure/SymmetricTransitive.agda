@@ -21,6 +21,61 @@ module _ {A : Set a} (_≤_ : Rel A ℓ) where
     forth⁺ : x ≤ y → Plus⇔ y z → Plus⇔ x z
     back⁺  : y ≤ x → Plus⇔ y z → Plus⇔ x z
 
+module _ (_∼_ : Rel A ℓ) where
+
+  trans : Transitive (Plus⇔ _∼_)
+  trans (forth r) rel′      = forth⁺ r rel′
+  trans (back r) rel′       = back⁺ r rel′
+  trans (forth⁺ r rel) rel′ = forth⁺ r (trans rel rel′)
+  trans (back⁺ r rel) rel′  = back⁺ r (trans rel rel′)
+
+  sym : Symmetric (Plus⇔ _∼_)
+  sym (forth r) = back r
+  sym (back r) = forth r
+  sym (forth⁺ r rel) = trans (sym rel) (back r)
+  sym (back⁺ r rel) = trans (sym rel) (forth r)
+
+  isPartialEquivalence : IsPartialEquivalence (Plus⇔ _∼_)
+  isPartialEquivalence = record
+    { sym   = sym
+    ; trans = trans
+    }
+
+  partialSetoid : PartialSetoid _ _
+  partialSetoid = record
+    { Carrier              = A
+    ; _≈_                  = Plus⇔ _∼_
+    ; isPartialEquivalence = isPartialEquivalence
+    }
+
+  module _ (refl : Reflexive _∼_) where
+
+    isEquivalence : IsEquivalence (Plus⇔ _∼_)
+    isEquivalence = record
+      { refl  = forth refl
+      ; sym   = sym
+      ; trans = trans
+      }
+  
+    setoid : Setoid _ _
+    setoid = record
+      { Carrier       = A
+      ; _≈_           = Plus⇔ _∼_
+      ; isEquivalence = isEquivalence
+      }
+
+  module _ {c e} (S : Setoid c e) where
+    private
+      module S = Setoid S
+
+    minimal : (f : A → Setoid.Carrier S) →
+              _∼_ =[ f ]⇒ Setoid._≈_ S →
+              Plus⇔ _∼_ =[ f ]⇒ Setoid._≈_ S
+    minimal f inj (forth r)      = inj r
+    minimal f inj (back r)       = S.sym (inj r)
+    minimal f inj (forth⁺ r rel) = S.trans (inj r) (minimal f inj rel)
+    minimal f inj (back⁺ r rel)  = S.trans (S.sym (inj r)) (minimal f inj rel)
+
 module Plus⇔Reasoning (_≤_ : Rel A ℓ) where
   infix  3 forth-synax back-syntax
   infixr 2 forth⁺-syntax back⁺-syntax
@@ -52,50 +107,3 @@ module _ {_≤_ : Rel A ℓ} {_≼_ : Rel B ℓ′} (f : A → B) (inj : _≤_ =
   map (back r)       = back (inj r)
   map (forth⁺ r rel) = forth⁺ (inj r) (map rel)
   map (back⁺ r rel)  = back⁺ (inj r) (map rel)
-
-module _ (P : Preorder a ℓ ℓ′) where
-  private
-    module P = Preorder P
-    open P hiding (refl; trans; isEquivalence)
-
-  refl : Reflexive (Plus⇔ _∼_)
-  refl {x} = forth P.refl
-
-  trans : Transitive (Plus⇔ _∼_)
-  trans (forth r) rel′      = forth⁺ r rel′
-  trans (back r) rel′       = back⁺ r rel′
-  trans (forth⁺ r rel) rel′ = forth⁺ r (trans rel rel′)
-  trans (back⁺ r rel) rel′  = back⁺ r (trans rel rel′)
-
-  sym : Symmetric (Plus⇔ _∼_)
-  sym (forth r) = back r
-  sym (back r) = forth r
-  sym (forth⁺ r rel) = trans (sym rel) (back r)
-  sym (back⁺ r rel) = trans (sym rel) (forth r)
-
-  isEquivalence : IsEquivalence (Plus⇔ _∼_)
-  isEquivalence = record
-    { refl  = refl
-    ; sym   = sym
-    ; trans = trans
-    }
-
-  setoid : Setoid a (a ⊔ ℓ′)
-  setoid = record
-    { Carrier       = Carrier
-    ; _≈_           = Plus⇔ _∼_
-    ; isEquivalence = isEquivalence
-    }
-
-  module _ {c e} (S : Setoid c e) where
-    private
-      module S = Setoid S
-
-    minimal : (f : Carrier → Setoid.Carrier S) →
-              _∼_ =[ f ]⇒ Setoid._≈_ S →
-              Plus⇔ _∼_ =[ f ]⇒ Setoid._≈_ S
-    minimal f inj (forth r)      = inj r
-    minimal f inj (back r)       = S.sym (inj r)
-    minimal f inj (forth⁺ r rel) = S.trans (inj r) (minimal f inj rel)
-    minimal f inj (back⁺ r rel)  = S.trans (S.sym (inj r)) (minimal f inj rel)
-  
