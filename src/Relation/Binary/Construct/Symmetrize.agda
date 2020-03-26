@@ -27,7 +27,7 @@ data ZigZag′ (_∼_ : Rel Carrier ℓ₂) : (x y : Carrier) (begin end : Direc
   slish : ∀ {x y} (last : x ∼ y) → ZigZag′ _∼_ x y ↘ ↘
   slash : ∀ {x y} (last : y ∼ x) → ZigZag′ _∼_ x y ↗ ↗
 
-data Alternating′ (_∼_ : Carrier -> Carrier -> Set ℓ₂) (x y : Carrier) : Set (levelOfTerm x ⊔ ℓ₂) where
+data Alternating′ (_∼_ : Carrier → Carrier → Set ℓ₂) (x y : Carrier) : Set (levelOfTerm x ⊔ ℓ₂) where
   disorient : ∀ {begin end} (zz : ZigZag′ _∼_ x y begin end) → Alternating′ _∼_ x y
 
 module _ (Base : Preorder c ℓ₁ ℓ₂) where
