@@ -87,7 +87,7 @@ Setoids-Cocomplete o ℓ e c ℓ′ {J} F = record { initial = record
       where module A = Cocone A
 
 
-Setoids-Complete : (o ℓ e c ℓ′ : Level) → Complete o ℓ e (Setoids (ℓ′ ⊔ ℓ ⊔ o) (o ⊔ ℓ′))
+Setoids-Complete : (o ℓ e c ℓ′ : Level) → Complete o ℓ e (Setoids (c ⊔ ℓ ⊔ o ⊔ ℓ′) (o ⊔ ℓ′))
 Setoids-Complete o ℓ e c ℓ′ {J} F = record { terminal = record
   { ⊤ = record
     { N = record
@@ -120,7 +120,4 @@ Setoids-Complete o ℓ e c ℓ′ {J} F = record { terminal = record
   } }
   where
     open Functor F
-    S : Category (suc (c ⊔ ℓ)) (c ⊔ ℓ) (c ⊔ ℓ)
-    S = Setoids c ℓ
-    open Category S
     open Cone

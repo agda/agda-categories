@@ -59,6 +59,7 @@ import Categories.Category.Construction.Properties.Kleisli
 import Categories.Category.Construction.Properties.Presheaves
 import Categories.Category.Construction.Properties.Presheaves.Cartesian
 import Categories.Category.Construction.Properties.Presheaves.CartesianClosed
+import Categories.Category.Construction.Properties.Presheaves.Complete
 import Categories.Category.Construction.Pullbacks
 import Categories.Category.Construction.Thin
 import Categories.Category.Core

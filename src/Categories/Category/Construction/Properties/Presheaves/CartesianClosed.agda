@@ -1,7 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
-
 module Categories.Category.Construction.Properties.Presheaves.CartesianClosed where
 
 open import Level

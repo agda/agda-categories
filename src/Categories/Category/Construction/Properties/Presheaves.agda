@@ -9,3 +9,7 @@ open import Categories.Category.Construction.Properties.Presheaves.Cartesian
 open import Categories.Category.Construction.Properties.Presheaves.CartesianClosed
   using (module IsCCC)
   public
+
+open import Categories.Category.Construction.Properties.Presheaves.Complete
+  using (Presheaves-Complete)
+  public
