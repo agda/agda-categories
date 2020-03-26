@@ -128,10 +128,7 @@ module _ o′ where
               }
             ; commute = λ eq → Π.cong (K.ψ.η _ _) eq
             }
-          ; !-unique = λ {K} K⇒⊤ {X} {x y} eq j →
-            let module K   = FCone K
-                module K⇒⊤ = FCone⇒ K⇒⊤
-            in LimFX.terminal.!-unique X (K⇒⊤′ X K⇒⊤) eq j
+          ; !-unique = λ K⇒⊤ {X} → LimFX.terminal.!-unique X (K⇒⊤′ X K⇒⊤)
           }
         }      
 
@@ -204,7 +201,7 @@ module _ o′ where
                   F₀.₁ b f ⟨$⟩ Sb ∎)
 
               hom-map : ∀ {X Y Z} → Y C.⇒ X → Z C.⇒ Y → Σ J.Obj (λ j → Setoid.Carrier (F₀.₀ j X)) → Σ J.Obj (λ j → Setoid.Carrier (F₀.₀ j Z))
-              hom-map f g (j , Sj) = j , F₀.₁ j (f ∘ g) ⟨$⟩ Sj -- F₀.₁ j g ∙ F₀.₁ j f ⟨$⟩ Sj
+              hom-map f g (j , Sj) = j , F₀.₁ j (f ∘ g) ⟨$⟩ Sj
 
       ⊥⇒K′ : ∀ X {K} → Coc.Cocones F [ ⊥ , K ] → Coc.Cocones F[-, X ] [ ColimFX.colimit X , FXcocone X K ]
       ⊥⇒K′ X {K} ⊥⇒K = record
@@ -241,10 +238,7 @@ module _ o′ where
         { initial = record
           { ⊥        = ⊥
           ; !        = !
-          ; !-unique = λ {K} ⊥⇒K {X} → λ { {a , Sa} {b , Sb} →
-            let module K   = FCocone K
-                module ⊥⇒K = FCocone⇒ ⊥⇒K
-            in ColimFX.initial.!-unique X (⊥⇒K′ X ⊥⇒K) }
+          ; !-unique = λ ⊥⇒K {X} → ColimFX.initial.!-unique X (⊥⇒K′ X ⊥⇒K)
           }
         }
 
