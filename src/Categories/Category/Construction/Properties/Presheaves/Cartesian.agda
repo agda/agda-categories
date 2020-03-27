@@ -11,7 +11,6 @@ open import Data.Product.Relation.Binary.Pointwise.NonDependent
 open import Function.Equality using (Π) renaming (_∘_ to _∙_)
 open import Relation.Binary
 
-open import Categories.Category
 open import Categories.Category.Cartesian
 open import Categories.Category.Construction.Presheaves
 open import Categories.Category.Instance.Setoids
