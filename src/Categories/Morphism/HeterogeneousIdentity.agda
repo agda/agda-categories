@@ -58,8 +58,14 @@ hid-symˡ refl = identityˡ
 hid-symʳ : ∀ {A B} (p : A ≡ B) → hid p ∘ hid (sym p) ≈ id {B}
 hid-symʳ refl = identityˡ
 
+hid-sym-sym : ∀ {A B} (p : A ≡ B) → hid (sym (sym p)) ≈ hid p
+hid-sym-sym refl = Equiv.refl
+
 hid-iso : ∀ {A B} (p : A ≡ B) → Iso (hid p) (hid (sym p))
 hid-iso p = record { isoˡ = hid-symˡ p ; isoʳ = hid-symʳ p }
+
+hid-≅ : ∀ {A B} (p : A ≡ B) → A ≅ B
+hid-≅ p = record { from = hid p ; to = hid (sym p) ; iso = hid-iso p }
 
 hid-cong : ∀ {A B} {p q : A ≡ B} → p ≡ q → hid p ≈ hid q
 hid-cong refl = Equiv.refl
