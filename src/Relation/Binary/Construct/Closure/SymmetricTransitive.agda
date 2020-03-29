@@ -3,6 +3,7 @@
 module Relation.Binary.Construct.Closure.SymmetricTransitive where
 
 open import Level
+open import Function
 open import Relation.Binary
 
 private
@@ -30,10 +31,10 @@ module _ (_∼_ : Rel A ℓ) where
   trans (back⁺ r rel) rel′  = back⁺ r (trans rel rel′)
 
   sym : Symmetric (Plus⇔ _∼_)
-  sym (forth r) = back r
-  sym (back r) = forth r
+  sym (forth r)      = back r
+  sym (back r)       = forth r
   sym (forth⁺ r rel) = trans (sym rel) (back r)
-  sym (back⁺ r rel) = trans (sym rel) (forth r)
+  sym (back⁺ r rel)  = trans (sym rel) (forth r)
 
   isPartialEquivalence : IsPartialEquivalence (Plus⇔ _∼_)
   isPartialEquivalence = record
@@ -77,13 +78,13 @@ module _ (_∼_ : Rel A ℓ) where
     minimal f inj (back⁺ r rel)  = S.trans (S.sym (inj r)) (minimal f inj rel)
 
 module Plus⇔Reasoning (_≤_ : Rel A ℓ) where
-  infix  3 forth-synax back-syntax
+  infix  3 forth-syntax back-syntax
   infixr 2 forth⁺-syntax back⁺-syntax
   
-  forth-synax : ∀ x y → x ≤ y → Plus⇔ _≤_ x y
-  forth-synax _ _ = forth
+  forth-syntax : ∀ x y → x ≤ y → Plus⇔ _≤_ x y
+  forth-syntax _ _ = forth
 
-  syntax forth-synax x y x≤y = x ⇒⟨ x≤y ⟩∎ y ∎
+  syntax forth-syntax x y x≤y = x ⇒⟨ x≤y ⟩∎ y ∎
 
   back-syntax : ∀ x y → y ≤ x → Plus⇔ _≤_ x y
   back-syntax _ _ = back
@@ -100,10 +101,15 @@ module Plus⇔Reasoning (_≤_ : Rel A ℓ) where
 
   syntax back⁺-syntax x y≤x y⇔z = x ⇐⟨ y≤x ⟩ y⇔z
 
-module _ {_≤_ : Rel A ℓ} {_≼_ : Rel B ℓ′} (f : A → B) (inj : _≤_ =[ f ]⇒ _≼_) where
+module _ {_≤_ : Rel A ℓ} {_≼_ : Rel B ℓ′} (f : A → B) where
 
-  map : ∀ {x y} → Plus⇔ _≤_ x y → Plus⇔ _≼_ (f x) (f y)
-  map (forth r)      = forth (inj r)
-  map (back r)       = back (inj r)
-  map (forth⁺ r rel) = forth⁺ (inj r) (map rel)
-  map (back⁺ r rel)  = back⁺ (inj r) (map rel)
+  module _ (inj : _≤_ =[ f ]⇒ _≼_) where
+
+    gmap : Plus⇔ _≤_ =[ f ]⇒ Plus⇔ _≼_
+    gmap (forth r)      = forth (inj r)
+    gmap (back r)       = back (inj r)
+    gmap (forth⁺ r rel) = forth⁺ (inj r) (gmap rel)
+    gmap (back⁺ r rel)  = back⁺ (inj r) (gmap rel)
+
+map : {_≤_ : Rel A ℓ} {_≼_ : Rel A ℓ′} (inj : _≤_ ⇒ _≼_) → Plus⇔ _≤_ ⇒ Plus⇔ _≼_
+map = gmap id
