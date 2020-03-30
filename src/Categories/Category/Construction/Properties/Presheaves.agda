@@ -7,7 +7,7 @@ open import Categories.Category.Construction.Properties.Presheaves.Cartesian
   public
 
 open import Categories.Category.Construction.Properties.Presheaves.CartesianClosed
-  using (module IsCCC)
+  using (module IsCartesianClosed; module FromCartesianCCC)
   public
 
 open import Categories.Category.Construction.Properties.Presheaves.Complete
