@@ -33,9 +33,11 @@ import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
 import Categories.Category.Cocomplete.Finitely
+import Categories.Category.Cocomplete.Properties
 import Categories.Category.Complete
 import Categories.Category.Complete.Finitely
 import Categories.Category.Complete.Finitely.Properties
+import Categories.Category.Complete.Properties
 import Categories.Category.Construction.0-Groupoid
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Cocones

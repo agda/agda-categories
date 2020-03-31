@@ -6,8 +6,8 @@ module Categories.Category.Construction.Functors where
 open import Level
 open import Data.Product using (_,_; proj₁; uncurry′)
 
+open import Categories.Adjoint.Equivalence using (⊣Equivalence; withZig)
 open import Categories.Category using (Category; _[_∘_])
-open import Categories.Category.Equivalence using (StrongEquivalence)
 open import Categories.Category.Product using (_※ⁿ_) renaming (Product to _×_)
 open import Categories.Functor using (Functor; _∘F_)
 open import Categories.Functor.Bifunctor
@@ -194,13 +194,13 @@ opF⇐ {A = A} {B} = record
   }
   where open Category B
 
-Functorsᵒᵖ-equiv : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
-                   StrongEquivalence (Category.op (Functors (Category.op A) (Category.op B))) (Functors A B)
-Functorsᵒᵖ-equiv {B = B} = record
-  { F            = opF⇒
-  ; G            = opF⇐
-  ; weak-inverse = record
-    { F∘G≈id = record
+Functorsᵒᵖ-equiv : (A : Category o ℓ e) (B : Category o′ ℓ′ e′) →
+                   ⊣Equivalence (Category.op (Functors (Category.op A) (Category.op B))) (Functors A B)
+Functorsᵒᵖ-equiv A B = record
+  { L    = opF⇒
+  ; R    = opF⇐
+  ; L⊣⊢R = withZig record
+    { unit   = record
       { F⇒G = record
         { η           = λ _ → idN
         ; commute     = λ _ → id-comm-sym
@@ -212,11 +212,11 @@ Functorsᵒᵖ-equiv {B = B} = record
         ; sym-commute = λ _ → id-comm
         }
       ; iso = λ _ → record
-        { isoˡ = identityˡ
-        ; isoʳ = identityˡ
+        { isoˡ = identity²
+        ; isoʳ = identity²
         }
       }
-    ; G∘F≈id = record
+    ; counit = record
       { F⇒G = record
         { η           = λ _ → idN
         ; commute     = λ _ → id-comm-sym
@@ -228,12 +228,15 @@ Functorsᵒᵖ-equiv {B = B} = record
         ; sym-commute = λ _ → id-comm
         }
       ; iso = λ _ → record
-        { isoˡ = identityˡ
-        ; isoʳ = identityˡ
+        { isoˡ = identity²
+        ; isoʳ = identity²
         }
       }
+    ; zig    = identity²
     }
   }
   where open Category B
         open HomReasoning
         open MR B
+
+module Functorsᵒᵖ-equiv {o ℓ e o′ ℓ′ e′} (A : Category o ℓ e) (B : Category o′ ℓ′ e′) = ⊣Equivalence (Functorsᵒᵖ-equiv A B)
