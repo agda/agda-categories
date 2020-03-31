@@ -238,3 +238,5 @@ Functorsᵒᵖ-equiv A B = record
   where open Category B
         open HomReasoning
         open MR B
+
+module Functorsᵒᵖ-equiv {o ℓ e o′ ℓ′ e′} (A : Category o ℓ e) (B : Category o′ ℓ′ e′) = ⊣Equivalence (Functorsᵒᵖ-equiv A B)
