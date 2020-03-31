@@ -11,6 +11,7 @@ module Categories.Pseudofunctor where
 open import Level
 open import Data.Product using (_,_)
 
+open import Categories.Bicategory.Extras using (module Extras)
 import Categories.Category as Category
 open Category.Category using (Obj; module Commutation)
 open Category using (Category; _[_,_])
@@ -24,8 +25,10 @@ open NaturalIsomorphism using (F⇒G; F⇐G)
 record Pseudofunctor {o ℓ e t o′ ℓ′ e′ t′  : Level} (C : Bicategory o ℓ e t) (D : Bicategory o′ ℓ′ e′ t′)
     : Set (o ⊔ ℓ ⊔ e ⊔ t ⊔ o′ ⊔ ℓ′ ⊔ e′ ⊔ t′) where
   private
-    module C = Bicategory C using (Obj; hom; id; ⊚; id₁; _⊚₀_; unitorˡ; unitorʳ; associator)
-    module D = Bicategory D using (Obj; hom; id; ⊚; id₁; id₂; _⊚₀_; _⊚₁_; unitorˡ; unitorʳ; associator)
+    module C = Bicategory C using (Obj; hom; id; ⊚; id₁; _⊚₀_)
+    module CC = Extras C using (unitorˡ; unitorʳ; associator)
+    module D = Bicategory D using (Obj; hom; id; ⊚; id₁; id₂; _⊚₀_; _⊚₁_)
+    module DD = Extras D using (unitorˡ; unitorʳ; associator)
 
   field
     P₀ : C.Obj → D.Obj
@@ -51,8 +54,8 @@ record Pseudofunctor {o ℓ e t o′ ℓ′ e′ t′  : Level} (C : Bicategory 
                [ D.id₁ D.⊚₀ (F₀ f)            ⇒ F₀ f ]⟨
                  unitˡ.η _ D.⊚₁ D.id₂         ⇒⟨ F₀ C.id₁ D.⊚₀ F₀ f ⟩
                  Hom.η ( C.id₁ , f)           ⇒⟨ F₀ (C.id₁ C.⊚₀ f) ⟩
-                 Functor.F₁ P₁ C.unitorˡ.from
-               ≈ D.unitorˡ.from
+                 Functor.F₁ P₁ CC.unitorˡ.from
+               ≈ DD.unitorˡ.from
                ⟩
     unitaryʳ : {x y : C.Obj} →
                let open Commutation (D.hom (P₀ x) (P₀ y)) in
@@ -60,8 +63,8 @@ record Pseudofunctor {o ℓ e t o′ ℓ′ e′ t′  : Level} (C : Bicategory 
                [ (F₀ f) D.⊚₀ D.id₁             ⇒ F₀ f ]⟨
                  D.id₂ D.⊚₁ unitˡ.η _          ⇒⟨ F₀ f D.⊚₀ F₀ C.id₁ ⟩
                  Hom.η ( f , C.id₁ )            ⇒⟨ F₀ (f C.⊚₀ C.id₁) ⟩
-                 Functor.F₁ P₁ (C.unitorʳ.from)
-               ≈ D.unitorʳ.from
+                 Functor.F₁ P₁ (CC.unitorʳ.from)
+               ≈ DD.unitorʳ.from
                ⟩
 
     assoc : {x y z w : C.Obj} →
@@ -70,8 +73,8 @@ record Pseudofunctor {o ℓ e t o′ ℓ′ e′ t′  : Level} (C : Bicategory 
             [ (F₀ h D.⊚₀ F₀ g) D.⊚₀ F₀ f     ⇒ F₀ (h C.⊚₀ (g C.⊚₀ f)) ]⟨
               Hom.η (h , g) D.⊚₁ D.id₂       ⇒⟨ F₀ (h C.⊚₀ g) D.⊚₀ F₀ f ⟩
               Hom.η (_ , f)                   ⇒⟨ F₀ ((h C.⊚₀ g) C.⊚₀ f) ⟩
-              Functor.F₁ P₁ C.associator.from
-            ≈ D.associator.from               ⇒⟨ F₀ h D.⊚₀ (F₀ g D.⊚₀ F₀ f) ⟩
+              Functor.F₁ P₁ CC.associator.from
+            ≈ DD.associator.from              ⇒⟨ F₀ h D.⊚₀ (F₀ g D.⊚₀ F₀ f) ⟩
               D.id₂ D.⊚₁ Hom.η (g , f)       ⇒⟨ F₀ h D.⊚₀ F₀ (g C.⊚₀ f) ⟩
               Hom.η (h , _)
             ⟩
