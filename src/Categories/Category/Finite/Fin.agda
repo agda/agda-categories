@@ -11,6 +11,7 @@ open import Data.Fin.Properties
 open import Axiom.UniquenessOfIdentityProofs
 open import Relation.Binary using (Rel ; Decidable)
 open import Relation.Binary.PropositionalEquality as ≡
+open import Function using (flip)
 
 open import Categories.Category
 
@@ -84,6 +85,19 @@ record FinCatShape : Set where
     hasShape : HasFinCatShape size ∣_⇒_∣
 
   open HasFinCatShape hasShape public
+
+  op : FinCatShape
+  op = record
+    { size     = size
+    ; ∣_⇒_∣    = λ a b → ∣ b ⇒ a ∣
+    ; hasShape = record
+      { id        = id
+      ; _∘_       = flip _∘_
+      ; assoc     = ≡.sym assoc
+      ; identityˡ = identityʳ
+      ; identityʳ = identityˡ
+      }
+    }
 
 FinCategory : FinCatShape → Category 0ℓ 0ℓ 0ℓ
 FinCategory s = record
