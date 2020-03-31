@@ -8,7 +8,6 @@ open import Categories.Adjoint
 open import Categories.Adjoint.Equivalence
 open import Categories.Adjoint.Properties
 open import Categories.Category
-open import Categories.Category.Equivalence
 open import Categories.Category.Construction.Cones
 open import Categories.Category.Complete
 open import Categories.Category.Cocomplete
@@ -144,7 +143,7 @@ module _ {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (Coc : Cocomplete o�
     where Δ⊣LimitFᵒᵖ : ΔF J.op ⊣ LF
           Δ⊣LimitFᵒᵖ = Δ⊣LimitF op Com {J.op}
           opF⊣ : opF⇐ {A = J} {C} ⊣ opF⇒
-          opF⊣ = StrongEquivalence.F⊣⊢G.R⊣L Functorsᵒᵖ-equiv
+          opF⊣ = ⊣Equivalence.R⊣L (Functorsᵒᵖ-equiv J C)
           helper : ColimitF ⊣ opF⇒ ∘F Functor.op (ΔF J.op)
           helper = opF⊣ ∘⊣ Adjoint.op Δ⊣LimitFᵒᵖ
           ΔF≃ : opF⇒ ∘F Functor.op (ΔF J.op) ≃ ΔF J
