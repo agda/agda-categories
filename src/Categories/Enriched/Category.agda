@@ -2,28 +2,24 @@
 
 -- Enriched category over a Monoidal category V
 
-open import Categories.Category
-  using (categoryHelper) renaming (Category to Setoid-Category)
+open import Categories.Category using () renaming (Category to Setoid-Category)
 open import Categories.Category.Monoidal using (Monoidal)
 
 module Categories.Enriched.Category {o ℓ e} {V : Setoid-Category o ℓ e}
                                     (M : Monoidal V) where
 
 open import Level
-open import Function using (_$_)
 
-open import Categories.Category.Monoidal.Properties M using (module Kelly's)
 open import Categories.Category.Monoidal.Reasoning M
 open import Categories.Category.Monoidal.Utilities M using (module Shorthands)
-open import Categories.Functor using (Functor)
-open import Categories.Morphism.Reasoning V
-import Categories.Morphism.IsoEquiv V as IsoEquiv
+open import Categories.Morphism.Reasoning V using (pullˡ; pullʳ; pushˡ)
 
 open Setoid-Category V renaming (Obj to ObjV; id to idV)
+  using (module Commutation; _⇒_; _∘_)
 open Commutation
-open Monoidal M
+open Monoidal M using (unit; _⊗₀_; _⊗₁_; module associator; module unitorˡ;
+  module unitorʳ; assoc-commute-from)
 open Shorthands
-open IsoEquiv._≃_
 
 record Category (v : Level) : Set (o ⊔ ℓ ⊔ e ⊔ suc v) where
   field
