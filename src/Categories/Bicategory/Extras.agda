@@ -8,6 +8,8 @@ open import Categories.Bicategory using (Bicategory)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor using (appʳ; appˡ)
 open import Categories.Functor.Bifunctor.Properties using ([_]-commute)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
+
 import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
 
@@ -18,6 +20,12 @@ module Extras {o ℓ e t} (Bicat : Bicategory o ℓ e t) where
       A B C D : Obj
       f g h i : A ⇒₁ B
       α β γ : f ⇒₂ g
+
+  module ⊚ {A B C}          = Functor (⊚ {A} {B} {C})
+  module ⊚-assoc {A B C D}  = NaturalIsomorphism (⊚-assoc {A} {B} {C} {D})
+  module unitˡ {A B}        = NaturalIsomorphism (unitˡ {A} {B})
+  module unitʳ {A B}        = NaturalIsomorphism (unitʳ {A} {B})
+  module id {A}             = Functor (id {A})
 
   unitorˡ : {A B : Obj} {f : A ⇒₁ B} → Mor._≅_ (hom A B) (id₁ ∘ₕ f) f
   unitorˡ {_} {_} {f} = record

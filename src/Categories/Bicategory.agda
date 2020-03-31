@@ -9,7 +9,7 @@ open import Relation.Binary using (Rel)
 open import Categories.Category using (Category)
 open import Categories.Category.Monoidal.Instance.Cats using (module Product)
 open import Categories.Enriched.Category using () renaming (Category to Enriched)
-open import Categories.Functor using (Functor)
+open import Categories.Functor using (module Functor)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
 
 -- https://ncatlab.org/nlab/show/bicategory
@@ -20,14 +20,6 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
 
   open Enriched enriched public
   module hom {A B} = Category (hom A B)
-
-  open Functor
-
-  module ⊚ {A B C}          = Functor (⊚ {A} {B} {C})
-  module ⊚-assoc {A B C D}  = NaturalIsomorphism (⊚-assoc {A} {B} {C} {D})
-  module unitˡ {A B}        = NaturalIsomorphism (unitˡ {A} {B})
-  module unitʳ {A B}        = NaturalIsomorphism (unitʳ {A} {B})
-  module id {A}             = Functor (id {A})
 
   infix 4 _⇒₁_ _⇒₂_ _≈_
   infixr 7 _∘ᵥ_ _∘ₕ_
@@ -42,19 +34,19 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   _⇒₂_ = hom._⇒_
 
   _⊚₀_ : {A B C : Obj} → B ⇒₁ C → A ⇒₁ B → A ⇒₁ C
-  f ⊚₀ g = ⊚.F₀ (f , g)
+  f ⊚₀ g = Functor.F₀ ⊚ (f , g)
 
   _⊚₁_ : {A B C : Obj} {f h : B ⇒₁ C} {g i : A ⇒₁ B} → f ⇒₂ h → g ⇒₂ i → f ⊚₀ g ⇒₂ h ⊚₀ i
-  α ⊚₁ β = ⊚.F₁ (α , β)
+  α ⊚₁ β = Functor.F₁ ⊚ (α , β)
 
   _≈_ : {A B : Obj} {f g : A ⇒₁ B} → Rel (f ⇒₂ g) e
   _≈_ = hom._≈_
 
   id₁ : {A : Obj} → A ⇒₁ A
-  id₁ {_} = id.F₀ _
+  id₁ {_} = Functor.F₀ id _
 
   id₂ : {A B : Obj} {f : A ⇒₁ B} → f ⇒₂ f
-  id₂ = hom.id
+  id₂ {A} {B} = Category.id (hom A B)
 
   -- horizontal composition
   _∘ₕ_ : {A B C : Obj} → B ⇒₁ C → A ⇒₁ B → A ⇒₁ C
@@ -71,15 +63,15 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   _ ▷ α = id₂ ⊚₁ α
 
   private
-    λ⇒ : {A B : Obj} {f : A ⇒₁ B} → ⊚.F₀ (id₁ , f) hom.⇒ f
-    λ⇒ {_} {_} {f} = unitˡ.⇒.η (_ , f)
+    λ⇒ : {A B : Obj} {f : A ⇒₁ B} → id₁ ⊚₀ f hom.⇒ f
+    λ⇒ {_} {_} {f} = NaturalIsomorphism.⇒.η unitˡ (_ , f)
 
-    ρ⇒ : {A B : Obj} {f : A ⇒₁ B} → ⊚.F₀ (f , id₁) hom.⇒ f
-    ρ⇒ {_} {_} {f} = unitʳ.⇒.η (f , _)
+    ρ⇒ : {A B : Obj} {f : A ⇒₁ B} → f ⊚₀ id₁ hom.⇒ f
+    ρ⇒ {_} {_} {f} = NaturalIsomorphism.⇒.η unitʳ (f , _)
 
     α⇒ : {A B C D : Obj} {f : D ⇒₁ B} {g : C ⇒₁ D} {h : A ⇒₁ C} →
-         ⊚.F₀ (⊚.F₀ (f , g) , h) hom.⇒ ⊚.F₀ (f , ⊚.F₀ (g , h))
-    α⇒ {_} {_} {_} {_} {f} {g} {h} = ⊚-assoc.⇒.η ((f , g) , h)
+          ((f ⊚₀ g) ⊚₀ h) hom.⇒ (f ⊚₀ (g ⊚₀ h))
+    α⇒ {_} {_} {_} {_} {f} {g} {h} = NaturalIsomorphism.⇒.η ⊚-assoc ((f , g) , h)
 
   open hom.Commutation
 
