@@ -12,6 +12,7 @@ open import Categories.Category.Monoidal.Properties M using (module Kelly's)
 open import Categories.Category.Monoidal.Reasoning M
 open import Categories.Category.Monoidal.Utilities M
 open import Categories.Enriched.Category M
+open import Categories.Enriched.Category.Underlying M
 open import Categories.Enriched.Functor M renaming (id to idF)
 open import Categories.Morphism.Reasoning V
 import Categories.Morphism.IsoEquiv V as IsoEquiv

@@ -156,6 +156,7 @@ import Categories.Diagram.Pushout
 import Categories.Diagram.Pushout.Properties
 import Categories.Diagram.SubobjectClassifier
 import Categories.Enriched.Category
+import Categories.Enriched.Category.Underlying
 import Categories.Enriched.Functor
 import Categories.Enriched.NaturalTransformation
 import Categories.Enriched.NaturalTransformation.NaturalIsomorphism

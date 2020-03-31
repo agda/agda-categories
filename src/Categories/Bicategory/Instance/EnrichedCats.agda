@@ -14,6 +14,7 @@ open import Data.Product as Prod using (_,_)
 open import Categories.Bicategory using (Bicategory)
 open import Categories.Category.Construction.EnrichedFunctors M
 open import Categories.Enriched.Category M
+open import Categories.Enriched.Category.Underlying M
 open import Categories.Enriched.Functor M renaming (id to idF)
 open import Categories.Enriched.NaturalTransformation M hiding (id)
 import Categories.Enriched.NaturalTransformation.NaturalIsomorphism M as NI

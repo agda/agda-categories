@@ -130,7 +130,7 @@ module _ o′ where
             }
           ; !-unique = λ K⇒⊤ {X} → LimFX.terminal.!-unique X (K⇒⊤′ X K⇒⊤)
           }
-        }      
+        }
 
 
       -- colimit related definitions
@@ -163,19 +163,19 @@ module _ o′ where
           ; F₁           = λ {A B} f → record
             { _⟨$⟩_ = λ { (j , Sj) → j , F₀.₁ j f ⟨$⟩ Sj  }
             ; cong  = λ { {a , Sa} {b , Sb} →
-              ST.map (λ { (j , Sj) → j , F₀.₁ j f ⟨$⟩ Sj }) (helper f) }
+              ST.gmap (λ { (j , Sj) → j , F₀.₁ j f ⟨$⟩ Sj }) (helper f) }
             }
           ; identity     = λ { {A} {j , _} eq → forth⁺ (J.id , identity (F₀.identity j (Setoid.refl (F₀.₀ j A)))) eq }
           ; homomorphism = λ {X Y Z} {f g} → λ { {_} {j , Sj} eq →
             let open Setoid (F₀.₀ j Z)
             in ST.trans (coc o′ o′ F[-, Z ])
-                        (ST.map (hom-map f g) (helper (f ∘ g)) eq)
+                        (ST.gmap (hom-map f g) (helper (f ∘ g)) eq)
                         (forth (J.id , trans (identity refl) (F₀.homomorphism j (Setoid.refl (F₀.₀ j X))))) }
           ; F-resp-≈     = λ {A B} {f g} eq → λ { {j , Sj} eq′ →
             let open Setoid (F₀.₀ j B)
             in ST.trans (coc o′ o′ F[-, B ])
                         (forth (J.id , trans (identity refl) (F₀.F-resp-≈ j eq (Setoid.refl (F₀.₀ j A)))))
-                        (ST.map (λ { (j , Sj) → (j , F₀.₁ j g ⟨$⟩ Sj) }) (helper g) eq′) }
+                        (ST.gmap (λ { (j , Sj) → (j , F₀.₁ j g ⟨$⟩ Sj) }) (helper g) eq′) }
           }
         ; coapex = record
           { ψ       = λ j → ntHelper record
