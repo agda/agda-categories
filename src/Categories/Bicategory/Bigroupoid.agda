@@ -11,6 +11,7 @@ open import Categories.Category.Equivalence using (WeakInverse)
 open import Categories.Category.Product
 open import Categories.Category.Groupoid using (IsGroupoid)
 open import Categories.Bicategory
+open import Categories.Bicategory.Extras
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
 open import Categories.Functor.Bifunctor.Properties
@@ -25,6 +26,7 @@ import Categories.Morphism.Reasoning as MR
 -- https://link.springer.com/article/10.1023/A:1011270417127
 record IsBigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e ⊔ t) where
   open Bicategory C public
+  open Extras C
 
   field
     hom-isGroupoid : ∀ A B → IsGroupoid (hom A B)

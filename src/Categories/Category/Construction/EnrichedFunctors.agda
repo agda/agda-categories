@@ -12,6 +12,7 @@ open import Level
 open import Data.Product using (_,_; uncurry′)
 
 open import Categories.Enriched.Category M
+open import Categories.Enriched.Category.Underlying M
 open import Categories.Enriched.Functor M renaming (id to idF)
 open import Categories.Enriched.NaturalTransformation M renaming (id to idNT)
 open import Categories.Functor.Bifunctor using (Bifunctor)

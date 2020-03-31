@@ -15,6 +15,7 @@ open import Data.Product as Prod using (_,_)
 open import Categories.Bicategory.Instance.Cats
 open import Categories.Bicategory.Instance.EnrichedCats M
 open import Categories.Enriched.Category M
+open import Categories.Enriched.Category.Underlying M
 open import Categories.Enriched.Functor M
 open import Categories.Enriched.NaturalTransformation M
 import Categories.Morphism.Reasoning as MorphismReasoning

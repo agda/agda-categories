@@ -9,6 +9,7 @@ module Categories.Enriched.Functor {o ℓ e} {V : Setoid-Category o ℓ e}
 open import Level
 
 open import Categories.Enriched.Category M
+open import Categories.Enriched.Category.Underlying M
 open import Categories.Functor using () renaming (Functor to Setoid-Functor)
 open import Categories.Morphism.Reasoning V
 open import Categories.Category.Monoidal.Reasoning M using (⊗-distrib-over-∘)
