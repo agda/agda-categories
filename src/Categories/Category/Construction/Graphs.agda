@@ -488,8 +488,8 @@ CatF = record
   open GraphMorphism≈
 
 -- Because of the Level changes in CatF, sizes must all be same:
-CatF-is-Free : (o : Level) → Adjoint (CatF {o} {o} {o}) (Underlying)
-CatF-is-Free o = record
+CatF-is-Free : (o ℓ e : Level) → Adjoint (CatF {o} {o ⊔ ℓ} {o ⊔ ℓ ⊔ e}) (Underlying)
+CatF-is-Free o ℓ e = record
   { unit = ntHelper record
     { η = GM
     ; commute = λ {X} {Y} f → record { M₀≡ = ≡.refl ; M₁≡ = Graph.Equiv.refl Y ◅ ε }
@@ -514,9 +514,9 @@ CatF-is-Free o = record
   ; zag = λ {B} → record { M₀≡ = ≡.refl ; M₁≡ = Category.identityˡ B  }
   }
   where
-  GM : (X : Graph o o o) → GraphMorphism X (Underlying₀ (Free X))
+  GM : (X : Graph o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) → GraphMorphism X (Underlying₀ (Free X))
   GM _ = record { M₀ = idFun ; M₁ = return ; M-resp-≈ = λ f≈g → f≈g ◅ ε }
-  module _ (X : Category o o o) where
+  module _ (X : Category o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) where
     open Category X
     open HomReasoning
     unwind : {A B : Obj} → Star _⇒_ A B → A ⇒ B
@@ -529,12 +529,12 @@ CatF-is-Free o = record
     unwind-resp-≈ ε = Equiv.refl
     unwind-resp-≈ (x ◅ eq) = ∘-resp-≈ (unwind-resp-≈ eq) x
 
-  zig′ : (X : Graph o o o) → {A B : Graph.Obj X} → (f : Star (Graph._⇒_ X) A B) →
-    let Y = Free X in [ X ] (unwind Y) (mapGraph (GM X) f) ≈* f
+  zig′ : (X : Graph o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) → {A B : Graph.Obj X} → (f : Star (Graph._⇒_ X) A B) →
+    [ X ] (unwind (Free X)) (mapGraph (GM X) f) ≈* f
   zig′ A ε        = ε
   zig′ A (fs ◅ f) = Graph.Equiv.refl A ◅ zig′ A f
 
-  module _ {X Y : Category o o o} (F : Functor X Y) where
+  module _ {X Y : Category o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)} (F : Functor X Y) where
     open Category X renaming (Obj to Obj₁; _⇒_ to _⇒₁_)
     open Category Y renaming (_≈_ to _≈₂_; module Equiv to EY)
     open Category.HomReasoning Y
