@@ -25,7 +25,7 @@ private
 -- 1 <------- 0 -------> 2
 --
 SpanShape : FinCatShape
-SpanShape = record
+SpanShape = shapeHelper record
   { size      = 3
   ; ∣_⇒_∣     = morph
   ; id        = id
