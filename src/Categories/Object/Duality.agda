@@ -33,28 +33,28 @@ op⊤⇒⊥ t = record
   }
   where open Terminal t
 
-coproduct→product : ∀ {A B} → Coproduct A B → Product A B
-coproduct→product A+B = record
-  { A×B = A+B.A+B
-  ; π₁ = A+B.i₁
-  ; π₂ = A+B.i₂
-  ; ⟨_,_⟩ = A+B.[_,_]
+Coproduct⇒coProduct : ∀ {A B} → Coproduct A B → Product A B
+Coproduct⇒coProduct A+B = record
+  { A×B      = A+B.A+B
+  ; π₁       = A+B.i₁
+  ; π₂       = A+B.i₂
+  ; ⟨_,_⟩    = A+B.[_,_]
   ; project₁ = A+B.inject₁
   ; project₂ = A+B.inject₂
-  ; unique = A+B.unique
+  ; unique   = A+B.unique
   }
   where
   module A+B = Coproduct A+B
 
-product→coproduct : ∀ {A B} → Product A B → Coproduct A B
-product→coproduct A×B = record
-  { A+B = A×B.A×B
-  ; i₁ = A×B.π₁
-  ; i₂ = A×B.π₂
-  ; [_,_] = A×B.⟨_,_⟩
+coProduct⇒Coproduct : ∀ {A B} → Product A B → Coproduct A B
+coProduct⇒Coproduct A×B = record
+  { A+B     = A×B.A×B
+  ; i₁      = A×B.π₁
+  ; i₂      = A×B.π₂
+  ; [_,_]   = A×B.⟨_,_⟩
   ; inject₁ = A×B.project₁
   ; inject₂ = A×B.project₂
-  ; unique = A×B.unique
+  ; unique  = A×B.unique
   }
   where
   module A×B = Product A×B

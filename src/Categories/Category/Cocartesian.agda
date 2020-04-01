@@ -54,7 +54,7 @@ record BinaryCoproducts : Set (levelOfTerm 𝒞) where
 
   module Dual where
     op-binaryProducts : BinaryProducts
-    op-binaryProducts = record { product = coproduct→product coproduct }
+    op-binaryProducts = record { product = Coproduct⇒coProduct coproduct }
     
     module op-binaryProducts = BinaryProducts op-binaryProducts
 
