@@ -46,16 +46,14 @@ private
 module _ (n : ℕ) where
 
   DiscreteShape : FinCatShape
-  DiscreteShape = record
-    { size     = n
-    ; ∣_⇒_∣    = card {n}
-    ; hasShape = record
-      { id        = id {n} _
-      ; _∘_       = comp n
-      ; assoc     = assoc n
-      ; identityˡ = identityˡ n
-      ; identityʳ = identityʳ n
-      }
+  DiscreteShape = shapeHelper record
+    { size      = n
+    ; ∣_⇒_∣     = card {n}
+    ; id        = id {n} _
+    ; _∘_       = comp n
+    ; assoc     = assoc n
+    ; identityˡ = identityˡ n
+    ; identityʳ = identityʳ n
     }
 
 Discrete : ∀ n → Category _ _ _

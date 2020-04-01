@@ -20,16 +20,14 @@ private
 --  \---1---/
 --
 ParallelShape : FinCatShape
-ParallelShape = record
-  { size     = 2
-  ; ∣_⇒_∣    = card
-  ; hasShape = record
-    { id        = id
-    ; _∘_       = _∘_
-    ; assoc     = assoc
-    ; identityˡ = identityˡ
-    ; identityʳ = identityʳ
-    }
+ParallelShape = shapeHelper record
+  { size      = 2
+  ; ∣_⇒_∣     = card
+  ; id        = id
+  ; _∘_       = _∘_
+  ; assoc     = assoc
+  ; identityˡ = identityˡ
+  ; identityʳ = identityʳ
   }
   where card : Fin 2 → Fin 2 → ℕ
         card 0F 0F = 1

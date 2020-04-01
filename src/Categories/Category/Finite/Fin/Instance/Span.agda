@@ -26,15 +26,13 @@ private
 --
 SpanShape : FinCatShape
 SpanShape = record
-  { size     = 3
-  ; ∣_⇒_∣    = morph
-  ; hasShape = record
-    { id        = id
-    ; _∘_       = _∘_
-    ; assoc     = assoc
-    ; identityˡ = identityˡ
-    ; identityʳ = identityʳ
-    }
+  { size      = 3
+  ; ∣_⇒_∣     = morph
+  ; id        = id
+  ; _∘_       = _∘_
+  ; assoc     = assoc
+  ; identityˡ = identityˡ
+  ; identityʳ = identityʳ
   }
   where morph : Fin 3 → Fin 3 → ℕ
         morph 0F 0F = 1
