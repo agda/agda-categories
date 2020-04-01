@@ -68,16 +68,14 @@ card-complete₂ {.(ℕ.suc _)} {suc x} {suc y} (s≤s y<x) = card-complete₂ y
 module _ (size : ℕ) where
 
   PosetShape : FinCatShape
-  PosetShape = record
-    { size     = size
-    ; ∣_⇒_∣    = card
-    ; hasShape = record
-      { id        = id size
-      ; _∘_       = comp size
-      ; assoc     = assoc size
-      ; identityˡ = identityˡ size
-      ; identityʳ = identityʳ size
-      }
+  PosetShape = shapeHelper record
+    { size      = size
+    ; ∣_⇒_∣     = card
+    ; id        = id size
+    ; _∘_       = comp size
+    ; assoc     = assoc size
+    ; identityˡ = identityˡ size
+    ; identityʳ = identityʳ size
     }
 
 Poset : ℕ → Category _ _ _

@@ -17,5 +17,4 @@ record Finite (F : Functor J C) : Set (levelOfTerm F) where
   field
     finite : FiniteC J
 
-  open Functor F public
   open FiniteC finite public

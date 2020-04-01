@@ -59,14 +59,14 @@ Coproduct×Coequalizer⇒Pushout : (cp : Coproduct A B) →
                                 Coequalizer (Coproduct.i₁ cp ∘ f) (Coproduct.i₂ cp ∘ g) →
                                 Pushout f g
 Coproduct×Coequalizer⇒Pushout cp coe =
-  coPullback⇒Pushout (P′.Product×Equalizer⇒Pullback (coproduct→product cp)
+  coPullback⇒Pushout (P′.Product×Equalizer⇒Pullback (Coproduct⇒coProduct cp)
                                                     (Coequalizer⇒coEqualizer coe))
 
 Coproduct×Pushout⇒Coequalizer : (cp : Coproduct A B) →
                                 Pushout f g →
                                 Coequalizer (Coproduct.i₁ cp ∘ f) (Coproduct.i₂ cp ∘ g)
 Coproduct×Pushout⇒Coequalizer cp p =
-  coEqualizer⇒Coequalizer (P′.Product×Pullback⇒Equalizer (coproduct→product cp)
+  coEqualizer⇒Coequalizer (P′.Product×Pullback⇒Equalizer (Coproduct⇒coProduct cp)
                                                          (Pushout⇒coPullback p))
 
 module _ (i : Initial) where
@@ -76,10 +76,10 @@ module _ (i : Initial) where
     t = ⊥⇒op⊤ i
 
   pushout-⊥⇒coproduct : Pushout (! {X}) (! {Y}) → Coproduct X Y
-  pushout-⊥⇒coproduct p = product→coproduct (pullback-⊤⇒product t (Pushout⇒coPullback p))
+  pushout-⊥⇒coproduct p = coProduct⇒Coproduct (pullback-⊤⇒product t (Pushout⇒coPullback p))
 
   coproduct⇒pushout-⊥ : Coproduct X Y → Pushout (! {X}) (! {Y})
-  coproduct⇒pushout-⊥ c = coPullback⇒Pushout (product⇒pullback-⊤ t (coproduct→product c))
+  coproduct⇒pushout-⊥ c = coPullback⇒Pushout (product⇒pullback-⊤ t (Coproduct⇒coProduct c))
 
 pushout-resp-≈ : Pushout f g → f ≈ h → g ≈ i → Pushout h i
 pushout-resp-≈ p eq eq′ = coPullback⇒Pushout (pullback-resp-≈ (Pushout⇒coPullback p) eq eq′)

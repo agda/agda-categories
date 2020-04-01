@@ -11,6 +11,7 @@ open import Data.Fin.Properties
 open import Axiom.UniquenessOfIdentityProofs
 open import Relation.Binary using (Rel ; Decidable)
 open import Relation.Binary.PropositionalEquality as ≡
+open import Function using (flip)
 
 open import Categories.Category
 
@@ -48,8 +49,11 @@ record HasFinCatShape (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set wh
 
   field
     assoc     : ∀ {a b c d} {f : a ⇒ b} {g : b ⇒ c} {h : c ⇒ d} → (h ∘ g) ∘ f ≡ h ∘ (g ∘ f)
+    sym-assoc : ∀ {a b c d} {f : a ⇒ b} {g : b ⇒ c} {h : c ⇒ d} → h ∘ (g ∘ f) ≡ (h ∘ g) ∘ f
     identityˡ : ∀ {a b} {f : a ⇒ b} → id ∘ f ≡ f
     identityʳ : ∀ {a b} {f : a ⇒ b} → f ∘ id ≡ f
+    identity² : ∀ {a} → id {a} ∘ id ≡ id
+    ∘-resp-≈  : ∀ {a b c} {f h : b ⇒ c} {g i : a ⇒ b} → f ≡ h → g ≡ i → f ∘ g ≡ h ∘ i
 
   objects : List (Fin n)
   objects = allFin n
@@ -85,6 +89,60 @@ record FinCatShape : Set where
 
   open HasFinCatShape hasShape public
 
+  op : FinCatShape
+  op = record
+    { size     = size
+    ; ∣_⇒_∣    = flip ∣_⇒_∣
+    ; hasShape = record
+      { id        = id
+      ; _∘_       = flip _∘_
+      ; assoc     = sym-assoc
+      ; sym-assoc = assoc
+      ; identityˡ = identityʳ
+      ; identityʳ = identityˡ
+      ; identity² = identity²
+      ; ∘-resp-≈  = flip ∘-resp-≈
+      }
+    }
+
+private
+  shape-involutie : (shape : FinCatShape) → shape ≡ FinCatShape.op (FinCatShape.op shape)
+  shape-involutie _ = refl
+
+  record FinCatShape′ : Set where
+    field
+      size     : ℕ
+      ∣_⇒_∣    : Fin size → Fin size → ℕ
+
+    _⇒_ : Rel (Fin size) 0ℓ
+    a ⇒ b = Fin ∣ a ⇒ b ∣
+
+    field
+      id  : ∀ {a} → a ⇒ a
+      _∘_ : ∀ {a b c} → b ⇒ c → a ⇒ b → a ⇒ c
+  
+    field
+      assoc     : ∀ {a b c d} {f : a ⇒ b} {g : b ⇒ c} {h : c ⇒ d} → (h ∘ g) ∘ f ≡ h ∘ (g ∘ f)
+      identityˡ : ∀ {a b} {f : a ⇒ b} → id ∘ f ≡ f
+      identityʳ : ∀ {a b} {f : a ⇒ b} → f ∘ id ≡ f
+
+shapeHelper : FinCatShape′ → FinCatShape
+shapeHelper s = record
+  { size     = size
+  ; ∣_⇒_∣    = ∣_⇒_∣
+  ; hasShape = record
+    { id        = id
+    ; _∘_       = _∘_
+    ; assoc     = assoc
+    ; sym-assoc = sym assoc
+    ; identityˡ = identityˡ
+    ; identityʳ = identityʳ
+    ; identity² = identityˡ
+    ; ∘-resp-≈  = cong₂ _∘_
+    }
+  }
+  where open FinCatShape′ s
+
 FinCategory : FinCatShape → Category 0ℓ 0ℓ 0ℓ
 FinCategory s = record
   { Obj       = Fin size
@@ -93,11 +151,16 @@ FinCategory s = record
   ; id        = id
   ; _∘_       = _∘_
   ; assoc     = assoc
-  ; sym-assoc = sym assoc
+  ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
-  ; identity² = identityˡ
+  ; identity² = identity²
   ; equiv     = ≡.isEquivalence
-  ; ∘-resp-≈  = cong₂ _∘_
+  ; ∘-resp-≈  = ∘-resp-≈
   }
   where open FinCatShape s
+
+private
+  opposite-functorial : (shape : FinCatShape) →
+                        FinCategory (FinCatShape.op shape) ≡ Category.op (FinCategory shape)
+  opposite-functorial _ = refl
