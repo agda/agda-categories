@@ -5,8 +5,8 @@ import Categories.Adjoint.Construction.EilenbergMoore
 import Categories.Adjoint.Construction.Kleisli
 import Categories.Adjoint.Equivalence
 import Categories.Adjoint.Equivalence.Properties
-import Categories.Adjoint.Instance.01-Truncation
 import Categories.Adjoint.Instance.0-Truncation
+import Categories.Adjoint.Instance.01-Truncation
 import Categories.Adjoint.Instance.Core
 import Categories.Adjoint.Instance.Discrete
 import Categories.Adjoint.Instance.PosetCore
@@ -23,12 +23,12 @@ import Categories.Bicategory.Instance.EnrichedCats
 import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.Cartesian
+import Categories.Category.Cartesian.Properties
 import Categories.Category.CartesianClosed
 import Categories.Category.CartesianClosed.Canonical
 import Categories.Category.CartesianClosed.Locally
 import Categories.Category.CartesianClosed.Locally.Properties
 import Categories.Category.CartesianClosed.Properties
-import Categories.Category.Cartesian.Properties
 import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
@@ -182,8 +182,8 @@ import Categories.Functor.Equivalence
 import Categories.Functor.Fibration
 import Categories.Functor.Groupoid
 import Categories.Functor.Hom
-import Categories.Functor.Instance.01-Truncation
 import Categories.Functor.Instance.0-Truncation
+import Categories.Functor.Instance.01-Truncation
 import Categories.Functor.Instance.Core
 import Categories.Functor.Instance.Discrete
 import Categories.Functor.Instance.SetoidDiscrete
