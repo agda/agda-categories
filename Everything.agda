@@ -33,6 +33,7 @@ import Categories.Category.Closed
 import Categories.Category.Cocartesian
 import Categories.Category.Cocomplete
 import Categories.Category.Cocomplete.Finitely
+import Categories.Category.Cocomplete.Finitely.Properties
 import Categories.Category.Cocomplete.Properties
 import Categories.Category.Complete
 import Categories.Category.Complete.Finitely
@@ -68,6 +69,7 @@ import Categories.Category.Construction.Pullbacks
 import Categories.Category.Construction.Thin
 import Categories.Category.Core
 import Categories.Category.Discrete
+import Categories.Category.Duality
 import Categories.Category.Equivalence
 import Categories.Category.Finite
 import Categories.Category.Finite.Fin
