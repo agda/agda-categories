@@ -239,8 +239,10 @@ import Categories.Object.Initial
 import Categories.Object.Product
 import Categories.Object.Product.Construction
 import Categories.Object.Product.Core
+import Categories.Object.Product.Limit
 import Categories.Object.Product.Morphisms
 import Categories.Object.Terminal
+import Categories.Object.Terminal.Limit
 import Categories.Object.Zero
 import Categories.Pseudofunctor
 import Categories.Pseudofunctor.Instance.EnrichedUnderlying
