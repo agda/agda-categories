@@ -4,10 +4,14 @@ open import Categories.Category
 
 module Categories.Category.Cocomplete.Properties {o ℓ e} (C : Category o ℓ e) where
 
+open import Level
+
 open import Categories.Adjoint.Properties
 open import Categories.Category.Complete
 open import Categories.Category.Complete.Properties
 open import Categories.Category.Cocomplete
+open import Categories.Category.Cocomplete.Finitely
+open import Categories.Category.Duality
 open import Categories.Category.Construction.Functors
 open import Categories.Functor
 open import Categories.NaturalTransformation as N
@@ -19,9 +23,15 @@ open import Categories.Diagram.Duality
 import Categories.Morphism.Reasoning as MR
 
 private
+  variable
+    o′ ℓ′ e′ o″ ℓ″ e″ : Level
   module C = Category C
+    
+Cocomplete⇒FinitelyCocomplete : Cocomplete o′ ℓ′ e′ C → FinitelyCocomplete C
+Cocomplete⇒FinitelyCocomplete Coc =
+  coFinitelyComplete⇒FinitelyCocomplete C (Complete⇒FinitelyComplete C.op (Cocomplete⇒coComplete C Coc))
 
-Functors-Cocomplete : ∀ {o′ ℓ′ e′ o″ ℓ″ e″} {D : Category o′ ℓ′ e′}
+Functors-Cocomplete : ∀ {D : Category o′ ℓ′ e′}
                         (Coc : Cocomplete o″ ℓ″ e″ D) →
                         Cocomplete o″ ℓ″ e″ (Functors C D)
 Functors-Cocomplete {D = D} Coc {J} F = coLimit⇒Colimit (Functors C D) LFop
