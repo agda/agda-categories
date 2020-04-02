@@ -4,13 +4,18 @@ open import Categories.Category
 
 module Categories.Category.Complete.Properties {o ℓ e} (C : Category o ℓ e) where
 
+open import Level
 open import Data.Product
 open import Relation.Binary
 
 open import Categories.Category.Complete
+open import Categories.Category.Complete.Finitely
 open import Categories.Category.Construction.Functors
 open import Categories.Diagram.Limit as Lim
+open import Categories.Diagram.Equalizer.Limit C
 open import Categories.Diagram.Cone.Properties
+open import Categories.Object.Product.Limit C
+open import Categories.Object.Terminal.Limit C
 open import Categories.Functor
 open import Categories.Functor.Properties
 open import Categories.NaturalTransformation
@@ -18,7 +23,24 @@ open import Categories.NaturalTransformation
 import Categories.Category.Construction.Cones as Co
 import Categories.Morphism.Reasoning as MR
 
-module _ {o′ ℓ′ e′ o″ ℓ″ e″} {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) where
+private
+  variable
+    o′ ℓ′ e′ o″ ℓ″ e″ : Level
+
+module _ (Com : Complete o′ ℓ′ e′ C) where
+
+  Complete⇒FinitelyComplete : FinitelyComplete C
+  Complete⇒FinitelyComplete = record
+    { cartesian = record
+      { terminal = limit⇒⊥ (Com (⊥⇒limit-F _ _ _))
+      ; products = record
+        { product = λ {A B} → limit⇒product (Com (product⇒limit-F _ _ _ A B))
+        }
+      }
+    ; equalizer = λ f g → limit⇒equalizer (Com (equalizer⇒limit-F _ _ _ f g))
+    }
+
+module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) where
   private
     D^C = Functors C D
     module D^C = Category D^C
