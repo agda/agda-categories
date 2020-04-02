@@ -102,6 +102,7 @@ import Categories.Category.Instance.Span
 import Categories.Category.Instance.StrictCats
 import Categories.Category.Instance.StrictGroupoids
 import Categories.Category.Instance.Zero
+import Categories.Category.Lift
 import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
 import Categories.Category.Monoidal.Braided.Properties
@@ -150,6 +151,7 @@ import Categories.Diagram.Duality
 import Categories.Diagram.End
 import Categories.Diagram.End.Properties
 import Categories.Diagram.Equalizer
+import Categories.Diagram.Equalizer.Limit
 import Categories.Diagram.Finite
 import Categories.Diagram.Limit
 import Categories.Diagram.Limit.Properties
