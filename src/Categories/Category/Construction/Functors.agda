@@ -76,6 +76,9 @@ eval {C = C} {D = D} = record
         open MR D
         open HomReasoning
 
+evalF : ∀ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Category.Obj C → Functor (Functors C D) D
+evalF _ _ X = appʳ eval X
+
 -- Currying induces a functor between functor categories -- another
 -- part of the proof that Cats is a catesian closed (bi)category.
 

@@ -12,20 +12,26 @@ open import Categories.Category.Complete
 open import Categories.Category.Complete.Finitely
 open import Categories.Category.Construction.Functors
 open import Categories.Diagram.Limit as Lim
+open import Categories.Diagram.Limit.Properties
 open import Categories.Diagram.Equalizer.Limit C
 open import Categories.Diagram.Cone.Properties
 open import Categories.Object.Product.Limit C
 open import Categories.Object.Terminal.Limit C
 open import Categories.Functor
+open import Categories.Functor.Continuous
 open import Categories.Functor.Properties
 open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)
 
 import Categories.Category.Construction.Cones as Co
 import Categories.Morphism.Reasoning as MR
+import Categories.Morphism as Mor
+import Categories.Morphism.Properties as Morₚ
 
 private
   variable
     o′ ℓ′ e′ o″ ℓ″ e″ : Level
+  module C = Category C
 
 module _ (Com : Complete o′ ℓ′ e′ C) where
 
@@ -45,14 +51,14 @@ module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) whe
     D^C = Functors C D
     module D^C = Category D^C
     module D   = Category D    
-    module C   = Category C
 
     module _ {J : Category o″ ℓ″ e″} (F : Functor J D^C) where
-      module J = Category J
-      module F = Functor F
-      open F
-      module F₀ j = Functor (F₀ j)
-      module F₁ {a b} (f : a J.⇒ b) = NaturalTransformation (F₁ f)
+      private
+        module J = Category J
+        module F = Functor F
+        open F
+        module F₀ j = Functor (F₀ j)
+        module F₁ {a b} (f : a J.⇒ b) = NaturalTransformation (F₁ f)
 
       F[-,_] : C.Obj → Functor J D
       F[-, X ] = record
@@ -185,5 +191,56 @@ module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) whe
               open D.HomReasoning
               open MR D
 
+      ev : C.Obj → Functor D^C D
+      ev = evalF C D
+
+      module _ (L : Limit F) (X : C.Obj) where
+        private
+          module ev = Functor (ev X)
+          open Mor D^C
+          module DM = Mor D
+          open Morₚ D
+          open D.HomReasoning
+          open MR D
+
+        L′ : Limit (ev X ∘F F)
+        L′ = Com (ev X ∘F F)
+
+        Fiso : F[-, X ] ≃ ev X ∘F F
+        Fiso = record
+          { F⇒G = ntHelper record
+            { η       = λ _ → D.id
+            ; commute = λ _ → id-comm-sym ○ D.∘-resp-≈ˡ (introʳ (F₀.identity _))
+            }
+          ; F⇐G = ntHelper record
+            { η       = λ _ → D.id
+            ; commute = λ _ → D.∘-resp-≈ʳ (elimʳ (F₀.identity _)) ○ id-comm-sym
+            }
+          ; iso = λ _ → record
+            { isoˡ = D.identity²
+            ; isoʳ = D.identity²
+            }
+          }
+
+        apex-iso : Limit.apex L ≅ Limit.apex complete
+        apex-iso = up-to-iso F L complete
+
+        apex-iso′ : Limit.apex (Com F[-, X ]) DM.≅ Limit.apex L′
+        apex-iso′ = ≃⇒lim≅ Fiso (Com F[-, X ]) L′
+
+        project-iso : Functor.F₀ (Limit.apex L) X DM.≅ Limit.apex L′
+        project-iso = record
+          { from = ai.from D.∘ from.η X
+          ; to   = to.η X D.∘ ai.to
+          ; iso  = Iso-∘ (record { isoˡ = isoˡ ; isoʳ = isoʳ }) ai.iso
+          }
+          where open _≅_ apex-iso
+                module from = NaturalTransformation from
+                module to   = NaturalTransformation to
+                module ai   = DM._≅_ apex-iso′
+
   Functors-Complete : Complete o″ ℓ″ e″ D^C
   Functors-Complete F = complete F
+
+  evalF-Continuous : ∀ X → Continuous o″ ℓ″ e″ (evalF C D X)
+  evalF-Continuous X {J} {F} L = Com (evalF C D X ∘F F) , project-iso F L X
