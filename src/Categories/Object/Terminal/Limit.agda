@@ -8,6 +8,7 @@ open import Data.Nat using (ℕ)
 open import Data.Fin
 open import Data.Fin.Patterns
 
+open import Categories.Category.Lift
 open import Categories.Category.Finite.Fin
 open import Categories.Category.Finite.Fin.Construction.Discrete
 open import Categories.Object.Terminal C
@@ -21,7 +22,7 @@ private
   module C = Category C
   open C
 
-module _ {F : Functor (Discrete 0) C} where
+module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C} where
   private
     module F = Functor F
     open F
@@ -44,7 +45,18 @@ module _ {F : Functor (Discrete 0) C} where
     }
     where open Limit L
 
-  ⊥⇒limit : Terminal → Limit F
+module _ o′ ℓ′ e′ where
+
+  ⊥⇒limit-F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C
+  ⊥⇒limit-F = record
+    { F₀           = λ ()
+    ; F₁           = λ { {()} }
+    ; identity     = λ { {()} }
+    ; homomorphism = λ { {()} }
+    ; F-resp-≈     = λ { {()} }
+    }
+
+  ⊥⇒limit : Terminal → Limit ⊥⇒limit-F
   ⊥⇒limit t = record
     { terminal = record
       { ⊤        = record
@@ -55,13 +67,13 @@ module _ {F : Functor (Discrete 0) C} where
           }
         }
       ; !        = λ {K} →
-        let open Co.Cone F K
+        let open Co.Cone ⊥⇒limit-F K
         in record
         { arr     = !
         ; commute = λ { {()} }
         }
       ; !-unique = λ f →
-        let module f = Co.Cone⇒ F f
+        let module f = Co.Cone⇒ ⊥⇒limit-F f
         in !-unique f.arr
       }
     }
