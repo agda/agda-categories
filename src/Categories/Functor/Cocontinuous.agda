@@ -8,7 +8,6 @@ open import Data.Product using (Σ)
 open import Categories.Category
 open import Categories.Functor
 import Categories.Category.Construction.Cocones as Coc
-import Categories.Diagram.Cocone.Properties as Cocₚ
 import Categories.Diagram.Colimit as Col
 import Categories.Morphism as Mor
 

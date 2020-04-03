@@ -182,6 +182,7 @@ import Categories.Functor.Construction.Limit
 import Categories.Functor.Construction.Zero
 import Categories.Functor.Continuous
 import Categories.Functor.Core
+import Categories.Functor.Duality
 import Categories.Functor.Equivalence
 import Categories.Functor.Fibration
 import Categories.Functor.Groupoid
