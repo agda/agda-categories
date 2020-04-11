@@ -93,6 +93,6 @@ hid-square : ∀ {A B C D} {f : A ⇒ B} {p : A ≡ C} {q : B ≡ D} {g : C ⇒ 
 hid-square {f = f} {p} {q} {g} eq = switch-tofromʳ (hid-≅ p) (begin
   (hid q ∘ f) ∘ hid (sym p)     ≈⟨ assoc ⟩
   hid q ∘ f ∘ hid (sym p)       ≈˘⟨ hid-subst₂ p q f ⟩
-  subst₂ _⇒_ p q f             ≈⟨ eq ⟩
-  g ∎)
+  subst₂ _⇒_ p q f              ≈⟨ eq ⟩
+  g                             ∎)
   where open HomReasoning hiding (sym)
