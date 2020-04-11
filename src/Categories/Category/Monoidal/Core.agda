@@ -107,3 +107,78 @@ record Monoidal : Set (o ⊔ ℓ ⊔ e) where
                            ≈ α⇒               ⇒⟨ (X ⊗₀ Y) ⊗₀ Z ⊗₀ W ⟩
                              α⇒
                            ⟩
+
+private
+  record Monoidal′ : Set (o ⊔ ℓ ⊔ e) where
+    infixr 10 _⊗₀_ _⊗₁_
+
+    field
+      ⊗  : Bifunctor C C C
+      unit : Obj
+
+    open Functor ⊗
+
+    _⊗₀_ : Obj → Obj → Obj
+    _⊗₀_ = curry′ F₀
+
+    _⊗₁_ : X ⇒ Y → Z ⇒ W → X ⊗₀ Z ⇒ Y ⊗₀ W
+    f ⊗₁ g = F₁ (f , g)
+
+    field
+      unitorˡ    : unit ⊗₀ X ≅ X
+      unitorʳ    : X ⊗₀ unit ≅ X
+      associator : (X ⊗₀ Y) ⊗₀ Z ≅ X ⊗₀ (Y ⊗₀ Z)
+
+    module unitorˡ {X} = _≅_ (unitorˡ {X = X})
+    module unitorʳ {X} = _≅_ (unitorʳ {X = X})
+    module associator {X} {Y} {Z} = _≅_ (associator {X} {Y} {Z})
+
+    private
+      λ⇒ = unitorˡ.from
+      λ⇐ = unitorˡ.to
+      ρ⇒ = unitorʳ.from
+      ρ⇐ = unitorʳ.to
+      α⇒ = λ {X} {Y} {Z} → associator.from {X} {Y} {Z}
+      α⇐ = λ {X} {Y} {Z} → associator.to {X} {Y} {Z}
+
+    field
+      unitorˡ-commute : CommutativeSquare (C.id ⊗₁ f) λ⇒ λ⇒ f
+      unitorʳ-commute : CommutativeSquare (f ⊗₁ C.id) ρ⇒ ρ⇒ f
+      assoc-commute   : CommutativeSquare ((f ⊗₁ g) ⊗₁ h) α⇒ α⇒ (f ⊗₁ (g ⊗₁ h))
+      triangle        : [ (X ⊗₀ unit) ⊗₀ Y ⇒ X ⊗₀ Y ]⟨
+                          α⇒           ⇒⟨ X ⊗₀ (unit ⊗₀ Y) ⟩
+                          C.id ⊗₁ λ⇒
+                        ≈ ρ⇒ ⊗₁ C.id
+                        ⟩
+      pentagon        : [ ((X ⊗₀ Y) ⊗₀ Z) ⊗₀ W ⇒ X ⊗₀ Y ⊗₀ Z ⊗₀ W ]⟨
+                          α⇒ ⊗₁ C.id       ⇒⟨ (X ⊗₀ Y ⊗₀ Z) ⊗₀ W ⟩
+                          α⇒               ⇒⟨ X ⊗₀ (Y ⊗₀ Z) ⊗₀ W ⟩
+                          C.id ⊗₁ α⇒
+                        ≈ α⇒               ⇒⟨ (X ⊗₀ Y) ⊗₀ Z ⊗₀ W ⟩
+                          α⇒
+                        ⟩
+
+    unitorˡ-commute-to : CommutativeSquare f λ⇐ λ⇐ (C.id ⊗₁ f)
+    unitorˡ-commute-to = conjugate-from unitorˡ unitorˡ (Equiv.sym unitorˡ-commute)
+    unitorʳ-commute-to : CommutativeSquare f ρ⇐ ρ⇐ (f ⊗₁ C.id)
+    unitorʳ-commute-to = conjugate-from unitorʳ unitorʳ (Equiv.sym unitorʳ-commute)
+    assoc-commute-to   : CommutativeSquare (f ⊗₁ (g ⊗₁ h)) α⇐ α⇐ ((f ⊗₁ g) ⊗₁ h)
+    assoc-commute-to   = conjugate-from associator associator (Equiv.sym assoc-commute)
+
+monoidalHelper : Monoidal′ → Monoidal
+monoidalHelper M = record
+  { ⊗ = ⊗
+  ; unit = unit
+  ; unitorˡ = unitorˡ
+  ; unitorʳ = unitorʳ
+  ; associator = associator
+  ; unitorˡ-commute-from = unitorˡ-commute
+  ; unitorˡ-commute-to = unitorˡ-commute-to
+  ; unitorʳ-commute-from = unitorʳ-commute
+  ; unitorʳ-commute-to = unitorʳ-commute-to
+  ; assoc-commute-from = assoc-commute
+  ; assoc-commute-to = assoc-commute-to
+  ; triangle = triangle
+  ; pentagon = pentagon
+  }
+  where open Monoidal′ M
