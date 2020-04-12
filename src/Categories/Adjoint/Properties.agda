@@ -7,7 +7,6 @@ open import Data.Product using (Σ; _,_; -,_; proj₂; uncurry)
 open import Function using (_$_)
 
 open import Categories.Adjoint using (_⊣_; Adjoint; Hom-NI′⇒Adjoint)
-open import Categories.Adjoint.RAPL public
 open import Categories.Category using (Category; _[_,_])
 open import Categories.Category.Product using (_⁂_; _⁂ⁿⁱ_)
 open import Categories.Category.Construction.Comma using (CommaObj; Comma⇒; _↙_)
@@ -36,6 +35,10 @@ import Categories.Diagram.Duality as Duality
 
 import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
+
+-- public export
+open import Categories.Adjoint.RAPL using (rapl) public
+open import Categories.Adjoint.Alternatives using (fromUnit; fromCounit) public
 
 private
   variable

@@ -1,6 +1,7 @@
 import Categories.2-Category
 import Categories.2-Functor
 import Categories.Adjoint
+import Categories.Adjoint.Alternatives
 import Categories.Adjoint.Construction.EilenbergMoore
 import Categories.Adjoint.Construction.Kleisli
 import Categories.Adjoint.Equivalence
