@@ -44,15 +44,15 @@
 
   <a id="Surjection.right-inverse"></a><a id="1401" href="Function.Surjection.html#1401" class="Function">right-inverse</a> <a id="1415" class="Symbol">:</a> <a id="1417" href="Function.LeftInverse.html#2300" class="Function">RightInverse</a> <a id="1430" href="Function.Surjection.html#1204" class="Bound">From</a> <a id="1435" href="Function.Surjection.html#1226" class="Bound">To</a>
   <a id="1440" href="Function.Surjection.html#1401" class="Function">right-inverse</a> <a id="1454" class="Symbol">=</a> <a id="1456" class="Keyword">record</a>
-    <a id="1467" class="Symbol">{</a> <a id="1469" href="Function.LeftInverse.html#1395" class="Field">to</a>              <a id="1485" class="Symbol">=</a> <a id="1487" href="Function.Surjection.html#945" class="Function">from</a>
+    <a id="1467" class="Symbol">{</a> <a id="1469" href="Function.LeftInverse.html#1395" class="Field">to</a>              <a id="1485" class="Symbol">=</a> <a id="1487" href="Function.Surjection.html#945" class="Field">from</a>
     <a id="1496" class="Symbol">;</a> <a id="1498" href="Function.LeftInverse.html#1427" class="Field">from</a>            <a id="1514" class="Symbol">=</a> <a id="1516" href="Function.Surjection.html#1307" class="Field">to</a>
-    <a id="1523" class="Symbol">;</a> <a id="1525" href="Function.LeftInverse.html#1459" class="Field">left-inverse-of</a> <a id="1541" class="Symbol">=</a> <a id="1543" href="Function.Surjection.html#978" class="Function">right-inverse-of</a>
+    <a id="1523" class="Symbol">;</a> <a id="1525" href="Function.LeftInverse.html#1459" class="Field">left-inverse-of</a> <a id="1541" class="Symbol">=</a> <a id="1543" href="Function.Surjection.html#978" class="Field">right-inverse-of</a>
     <a id="1564" class="Symbol">}</a>
 
   <a id="1569" class="Keyword">open</a> <a id="1574" href="Function.LeftInverse.html#1245" class="Module">LeftInverse</a> <a id="1586" href="Function.Surjection.html#1401" class="Function">right-inverse</a> <a id="1600" class="Keyword">public</a>
     <a id="1611" class="Keyword">using</a> <a id="1617" class="Symbol">()</a> <a id="1620" class="Keyword">renaming</a> <a id="1629" class="Symbol">(</a>to-from <a id="1638" class="Symbol">to</a> from-to<a id="1648" class="Symbol">)</a>
 
-  <a id="Surjection.injective"></a><a id="1653" href="Function.Surjection.html#1653" class="Function">injective</a> <a id="1663" class="Symbol">:</a> <a id="1665" href="Function.Injection.html#619" class="Function">Injective</a> <a id="1675" href="Function.Surjection.html#945" class="Function">from</a>
+  <a id="Surjection.injective"></a><a id="1653" href="Function.Surjection.html#1653" class="Function">injective</a> <a id="1663" class="Symbol">:</a> <a id="1665" href="Function.Injection.html#619" class="Function">Injective</a> <a id="1675" href="Function.Surjection.html#945" class="Field">from</a>
   <a id="1682" href="Function.Surjection.html#1653" class="Function">injective</a> <a id="1692" class="Symbol">=</a> <a id="1694" href="Function.LeftInverse.html#1599" class="Function">LeftInverse.injective</a> <a id="1716" href="Function.Surjection.html#1401" class="Function">right-inverse</a>
 
   <a id="Surjection.injection"></a><a id="1733" href="Function.Surjection.html#1733" class="Function">injection</a> <a id="1743" class="Symbol">:</a> <a id="1745" href="Function.Injection.html#994" class="Record">Injection</a> <a id="1755" href="Function.Surjection.html#1226" class="Bound">To</a> <a id="1758" href="Function.Surjection.html#1204" class="Bound">From</a>
@@ -61,7 +61,7 @@
   <a id="Surjection.equivalence"></a><a id="1816" href="Function.Surjection.html#1816" class="Function">equivalence</a> <a id="1828" class="Symbol">:</a> <a id="1830" href="Function.Equivalence.html#596" class="Record">Equivalence</a> <a id="1842" href="Function.Surjection.html#1204" class="Bound">From</a> <a id="1847" href="Function.Surjection.html#1226" class="Bound">To</a>
   <a id="1852" href="Function.Surjection.html#1816" class="Function">equivalence</a> <a id="1864" class="Symbol">=</a> <a id="1866" class="Keyword">record</a>
     <a id="1877" class="Symbol">{</a> <a id="1879" href="Function.Equivalence.html#746" class="Field">to</a>   <a id="1884" class="Symbol">=</a> <a id="1886" href="Function.Surjection.html#1307" class="Field">to</a>
-    <a id="1893" class="Symbol">;</a> <a id="1895" href="Function.Equivalence.html#767" class="Field">from</a> <a id="1900" class="Symbol">=</a> <a id="1902" href="Function.Surjection.html#945" class="Function">from</a>
+    <a id="1893" class="Symbol">;</a> <a id="1895" href="Function.Equivalence.html#767" class="Field">from</a> <a id="1900" class="Symbol">=</a> <a id="1902" href="Function.Surjection.html#945" class="Field">from</a>
     <a id="1911" class="Symbol">}</a>
 
 <a id="1914" class="Comment">-- Right inverses can be turned into surjections.</a>
