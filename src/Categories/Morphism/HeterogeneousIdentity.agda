@@ -9,9 +9,11 @@ open import Level
 open import Relation.Binary.PropositionalEquality
 
 import Categories.Morphism as Morphism
+import Categories.Morphism.Reasoning.Iso as Reasoning
 
 open Category C
 open Morphism C
+open Reasoning C using (switch-tofromʳ)
 
 
 -- If Agda was an extensional type theory, any pair of morphisms
@@ -84,3 +86,13 @@ hid-subst-cod f refl = Equiv.sym identityˡ
 hid-subst₂ : ∀ {A B C D} (p : A ≡ B) (q : C ≡ D) (f : A ⇒ C) →
              subst₂ (_⇒_) p q f ≈ hid q ∘ f ∘ hid (sym p)
 hid-subst₂ refl refl f = Equiv.sym (Equiv.trans identityˡ identityʳ)
+
+hid-square : ∀ {A B C D} {f : A ⇒ B} {p : A ≡ C} {q : B ≡ D} {g : C ⇒ D} →
+             (subst₂ _⇒_ p q f ≈ g) →
+             CommutativeSquare f (hid p) (hid q) g
+hid-square {f = f} {p} {q} {g} eq = switch-tofromʳ (hid-≅ p) (begin
+  (hid q ∘ f) ∘ hid (sym p)     ≈⟨ assoc ⟩
+  hid q ∘ f ∘ hid (sym p)       ≈˘⟨ hid-subst₂ p q f ⟩
+  subst₂ _⇒_ p q f              ≈⟨ eq ⟩
+  g                             ∎)
+  where open HomReasoning hiding (sym)
