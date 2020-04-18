@@ -28,6 +28,12 @@ Mono {A = A} f = ∀ {C} → (g₁ g₂ : C ⇒ A) → f ∘ g₁ ≈ f ∘ g₂
 Epi : ∀ (f : A ⇒ B) → Set (o ⊔ ℓ ⊔ e)
 Epi {B = B} f = ∀ {C} → (g₁ g₂ : B ⇒ C) → g₁ ∘ f ≈ g₂ ∘ f → g₁ ≈ g₂
 
+_SectionOf_ : (g : B ⇒ A) (f : A ⇒ B) → Set e
+g SectionOf f = f ∘ g ≈ id
+
+_RetractOf_ : (g : B ⇒ A) (f : A ⇒ B) → Set e
+g RetractOf f = g ∘ f ≈ id
+
 record Iso (from : A ⇒ B) (to : B ⇒ A) : Set e where
   field
     isoˡ : to ∘ from ≈ id
