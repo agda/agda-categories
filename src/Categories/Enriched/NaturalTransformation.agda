@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category using () renaming (Category to Setoid-Category)
-open import Categories.Category.Monoidal
+open import Categories.Category.Monoidal using (Monoidal)
 
 module Categories.Enriched.NaturalTransformation
   {o ℓ e} {V : Setoid-Category o ℓ e} (M : Monoidal V) where
@@ -11,31 +11,33 @@ open import Level
 open import Categories.Category.Monoidal.Properties M using (module Kelly's)
 open import Categories.Category.Monoidal.Reasoning M
 open import Categories.Category.Monoidal.Utilities M
-open import Categories.Enriched.Category M
-open import Categories.Enriched.Category.Underlying M
-open import Categories.Enriched.Functor M renaming (id to idF)
+open import Categories.Enriched.Category M using (Category; _[_,_])
+open import Categories.Enriched.Category.Underlying M using (Underlying)
+open import Categories.Enriched.Functor M using (Functor; UnderlyingFunctor; _∘F_)
+  renaming (id to idF)
 open import Categories.Morphism.Reasoning V
+  using (pushˡ; pullˡ; cancelʳ; pullʳ; pushʳ; switch-tofromˡ; extendˡ; extendʳ)
 import Categories.Morphism.IsoEquiv V as IsoEquiv
 open import Categories.NaturalTransformation using (ntHelper)
   renaming (NaturalTransformation to Setoid-NT)
 
-open Setoid-Category V renaming (Obj to ObjV; id to idV)
+open Setoid-Category V using (module Commutation; _∘_; _⇒_; _≈_; assoc)
+  renaming (Obj to ObjV; id to idV)
 open Commutation
 open Monoidal M
 open Shorthands
 
-module _ {c d} {C : Category c} {D : Category d} where
+module _ {c d : Level} {C : Category c} {D : Category d} where
 
   private
-    module C = Category C
-    module D = Category D
-    module U = Underlying D
+    module D = Category D using (⊚; id; unitʳ; unitˡ; ⊚-assoc-var)
+    module U = Underlying D using (_⇒_; _∘_)
 
   record NaturalTransformation (F G : Functor C D) : Set (ℓ ⊔ e ⊔ c) where
     eta-equality
     private
-      module F = Functor F
-      module G = Functor G
+      module F = Functor F using (₀; ₁)
+      module G = Functor G using (₀; ₁)
 
     field
       comp    : ∀ X → F.₀ X U.⇒ G.₀ X
@@ -78,7 +80,7 @@ module _ {c d} {C : Category c} {D : Category d} where
       ⊚ ∘ idV ⊗₁ D.id ∘ F.₁ ⊗₁ idV ∘ ρ⇐   ≈˘⟨ refl⟩∘⟨ pushˡ serialize₂₁ ⟩
       ⊚ ∘ F.₁ ⊗₁ D.id ∘ ρ⇐                ∎
     }
-    where module F = Functor F
+    where module F = Functor F using (₁)
 
   infixr 9 _∘ᵥ_
 
@@ -115,9 +117,9 @@ module _ {c d} {C : Category c} {D : Category d} where
       ∎
     }
     where
-      module F = Functor F
-      module G = Functor G
-      module H = Functor H
+      module F = Functor F using (₁)
+      module G = Functor G using (₁)
+      module H = Functor H using (₁)
 
       helper : ∀ {X₁ X₂ X₃ X₄ Y₁ Y₂ Z} (f : X₃ U.⇒ X₄) (g : Y₁ ⇒ D [ X₂ , X₃ ])
                  (h : Y₂ ⇒ D [ X₁ , X₂ ]) (i : Z ⇒ Y₁ ⊗₀ Y₂) →
@@ -143,9 +145,13 @@ module _ {c d} {C : Category c} {D : Category d} where
 
   -- A V-enriched natural transformation induces an ordinary natural
   -- transformation on the underlying functors.
+  -- Note: essentially all of the typechecking time for this file goes
+  -- into Typing.TypeSig for this one function.
 
   UnderlyingNT : {F G : Functor C D} → NaturalTransformation F G →
-                 Setoid-NT (UnderlyingFunctor F) (UnderlyingFunctor G)
+                 Setoid-NT {c} {ℓ} {e} {d} {ℓ} {e}
+                     (UnderlyingFunctor {c} {d} {C} {D} F)
+                     (UnderlyingFunctor {c} {d} {C} {D} G)
   UnderlyingNT {F} {G} α = ntHelper (record
     { η       = comp α
     ; commute = λ {X Y} f →
@@ -159,8 +165,8 @@ module _ {c d} {C : Category c} {D : Category d} where
         ⊚ ∘ (G.₁ ∘ f) ⊗₁ α [ X ] ∘ λ⇐          ∎
     })
     where
-      module F = Functor F
-      module G = Functor G
+      module F = Functor F using (₁)
+      module G = Functor G using (₁)
 
   module UnderlyingNT {F} {G} α = Setoid-NT (UnderlyingNT {F} {G} α)
 
