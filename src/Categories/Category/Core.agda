@@ -4,7 +4,7 @@ module Categories.Category.Core where
 open import Level
 open import Function using (flip)
 
-open import Relation.Binary hiding (_⇒_)
+open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 import Relation.Binary.PropositionalEquality as ≡
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
