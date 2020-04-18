@@ -2,19 +2,19 @@
 
 OTHEROPTS=
 
-RTSARGS = +RTS -H6G -M6G -K64M ${OTHEROPTS} -A64M -RTS
+RTSARGS = +RTS -M6G ${OTHEROPTS} -RTS
 
-test: Everything.agda
-	agda ${RTSARGS} -i. Everything.agda
+test: src/Everything.agda
+	agda ${RTSARGS} -isrc Everything.agda
 
-html: Everything.agda
-	agda ${RTSARGS} --html -i. Everything.agda
+html: src/Everything.agda
+	agda ${RTSARGS} --html -isrc Everything.agda
 
-Everything.agda:
-	find src/ -name '[^\.]*.agda' | sed -e 's|^src/[/]*|import |' -e 's|/|.|g' -e 's/.agda//' -e '/import Everything/d' | LC_COLLATE='C' sort > Everything.agda
+src/Everything.agda:
+	find src/ -name '[^\.]*.agda' | sed -e 's|^src/[/]*|import |' -e 's|/|.|g' -e 's/.agda//' -e '/import Everything/d' | LC_COLLATE='C' sort > src/Everything.agda
 
 clean:
 	find . -name '*.agdai' -exec rm \{\} \;
 
-profile: Everything.agda
-	agda ${RTSARGS} -vprofile:7 Everything.agda
+profile: src/Everything.agda
+	agda ${RTSARGS} -v profile:7 -v profile.definitions:15 src/Everything.agda
