@@ -17,4 +17,4 @@ clean:
 	find . -name '*.agdai' -exec rm \{\} \;
 
 profile: src/Everything.agda
-	agda ${RTSARGS} -v profile:7 -v profile.modules:15 -v profile.definitions:15 src/Everything.agda
+	agda ${RTSARGS} -v profile.definitions:15 src/Everything.agda
