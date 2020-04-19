@@ -129,6 +129,9 @@ module _ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} where
       Hom[-,G-] : Bifunctor C.op D (Setoids ℓ e)
       Hom[-,G-] = Hom[ C ][-,-] ∘F (idF ⁂ G)
 
+    -- The implicits given below are sometimes needed (yellow), sometimes make an enormous difference in
+    -- typechecking time. For example, in yoneda.⇒.commute, "nat-appʳ X F⇐G" is needed, while
+    -- nat-appʳ {F = G} {F} X F⇐G makes a huge difference in checking time.
     yoneda-NI : NaturalIsomorphism Hom[-,F-] Hom[-,G-] → NaturalIsomorphism F G
     yoneda-NI ni = record
       { F⇒G = transform F⇒G
