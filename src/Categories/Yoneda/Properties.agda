@@ -30,13 +30,13 @@ import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
 import Categories.NaturalTransformation.Hom as NT-Hom
 
-open Category C
+open Category C using (module HomReasoning; id; _∘_; identityˡ; identityʳ; Obj; ∘-resp-≈ˡ; ∘-resp-≈ʳ)
 open HomReasoning
-open NaturalTransformation
-open Yoneda C
+open NaturalTransformation using (η; commute)
+open Yoneda C using (embed; yoneda-inverse; module yoneda)
 private
-  module CE = Category.Equiv C
-  module C = Category C
+  module CE = Category.Equiv C using (refl)
+  module C = Category C using (op; id)
 
 YoFull : Full embed
 YoFull {X} {Y} = record
@@ -50,12 +50,16 @@ YoFull {X} {Y} = record
   }
 
 YoFaithful : Faithful embed
-YoFaithful _ _ pres-≈ = ⟺ identityʳ ○ pres-≈ {_} {id} CE.refl ○ identityʳ
+YoFaithful f g pres-≈ = begin
+  f      ≈˘⟨ identityʳ ⟩
+  f ∘ id ≈⟨ pres-≈ CE.refl ⟩
+  g ∘ id ≈⟨ identityʳ ⟩
+  g      ∎
 
 YoFullyFaithful : FullyFaithful embed
 YoFullyFaithful = YoFull , YoFaithful
 
-open Mor C
+open Mor C using (_≅_)
 
 yoneda-iso : ∀ {A B : Obj} → NaturalIsomorphism Hom[ C ][-, A ] Hom[ C ][-, B ] → A ≅ B
 yoneda-iso {A} {B} niso = record
@@ -74,21 +78,22 @@ yoneda-iso {A} {B} niso = record
       id                                   ∎
     }
   }
-  where open NaturalIsomorphism niso
-        A⇒B = yoneda-inverse A (Functor.F₀ embed B)
-        B⇒A = yoneda-inverse B (Functor.F₀ embed A)
-        module A⇒B = Inverse A⇒B
-        module B⇒A = Inverse B⇒A
-        module isoX {X} = Mor.Iso (iso X)
+  where
+  open NaturalIsomorphism niso
+  A⇒B = yoneda-inverse A (Functor.F₀ embed B)
+  B⇒A = yoneda-inverse B (Functor.F₀ embed A)
+  module A⇒B = Inverse A⇒B using (inverseʳ)
+  module B⇒A = Inverse B⇒A using (inverseʳ)
+  module isoX {X} = Mor.Iso (iso X) using (isoʳ; isoˡ)
 
 module _ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} where
   private
-    module D = Category D
+    module D = Category D using (id)
 
     module _ {F G : Functor D C} where
       private
-        module F = Functor F
-        module G = Functor G
+        module F = Functor F using (₀; ₁; identity)
+        module G = Functor G using (₀; ₁; identity)
         Hom[-,F-] : Bifunctor C.op D (Setoids ℓ e)
         Hom[-,F-] = Hom[ C ][-,-] ∘F (idF ⁂ F)
 
@@ -96,7 +101,7 @@ module _ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} where
         Hom[-,G-] = Hom[ C ][-,-] ∘F (idF ⁂ G)
 
       nat-appʳ : ∀ X → NaturalTransformation Hom[-,F-] Hom[-,G-] →
-                       NaturalTransformation Hom[ C ][-, F.F₀ X ] Hom[ C ][-, G.F₀ X ]
+                       NaturalTransformation Hom[ C ][-, F.₀ X ] Hom[ C ][-, G.₀ X ]
       nat-appʳ X α = ntHelper record
         { η       = λ Y → η α (Y , X)
         ; commute = λ {_ Y} f eq → cong (η α (Y , X)) (∘-resp-≈ˡ (⟺ F.identity)) ○ commute α (f , D.id) eq ○ ∘-resp-≈ˡ G.identity
@@ -104,20 +109,20 @@ module _ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} where
 
       transform : NaturalTransformation Hom[-,F-] Hom[-,G-] → NaturalTransformation F G
       transform α = ntHelper record
-        { η       = λ X → η α (F.F₀ X , X) ⟨$⟩ id
+        { η       = λ X → η α (F.₀ X , X) ⟨$⟩ id
         ; commute = λ {X Y} f → begin
-          (η α (F.F₀ Y , Y) ⟨$⟩ id) ∘ F.F₁ f      ≈˘⟨ identityˡ ⟩
-          id ∘ (η α (F.F₀ Y , Y) ⟨$⟩ id) ∘ F.F₁ f ≈˘⟨ lower (yoneda.⇒.commute {Y = Hom[ C ][-, G.F₀ Y ] , _} (idN , F.F₁ f) {nat-appʳ Y α} {nat-appʳ Y α} (cong (η α _))) ⟩
-          η α (F.F₀ X , Y) ⟨$⟩ F.F₁ f ∘ id        ≈⟨ cong (η α (F.F₀ X , Y)) (∘-resp-≈ʳ (⟺ identityˡ)) ⟩
-          η α (F.F₀ X , Y) ⟨$⟩ F.F₁ f ∘ id ∘ id   ≈⟨ commute α (id , f) refl ⟩
-          G.F₁ f ∘ (η α (F.F₀ X , X) ⟨$⟩ id) ∘ id ≈⟨ refl⟩∘⟨ identityʳ ⟩
-          G.F₁ f ∘ (η α (F.F₀ X , X) ⟨$⟩ id)      ∎
+          (η α (F.₀ Y , Y) ⟨$⟩ id) ∘ F.₁ f       ≈˘⟨ identityˡ ⟩
+          id ∘ (η α (F.₀ Y , Y) ⟨$⟩ id) ∘ F.₁ f  ≈˘⟨ lower (yoneda.⇒.commute {Y = Hom[ C ][-, G.₀ Y ] , _} (idN , F.₁ f) {nat-appʳ Y α} {nat-appʳ Y α} (cong (η α _))) ⟩
+          η α (F.₀ X , Y) ⟨$⟩ F.₁ f ∘ id         ≈⟨ cong (η α (F.₀ X , Y)) (∘-resp-≈ʳ (⟺ identityˡ)) ⟩
+          η α (F.₀ X , Y) ⟨$⟩ F.₁ f ∘ id ∘ id    ≈⟨ commute α (id , f) refl ⟩
+          G.₁ f ∘ (η α (F.₀ X , X) ⟨$⟩ id) ∘ id  ≈⟨ refl⟩∘⟨ identityʳ ⟩
+          G.₁ f ∘ (η α (F.₀ X , X) ⟨$⟩ id)      ∎
         }
 
   module _ (F G : Functor D C) where
     private
-      module F = Functor F
-      module G = Functor G
+      module F = Functor F using (₀)
+      module G = Functor G using (₀)
       Hom[-,F-] : Bifunctor C.op D (Setoids ℓ e)
       Hom[-,F-] = Hom[ C ][-,-] ∘F (idF ⁂ F)
 
@@ -130,19 +135,27 @@ module _ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} where
       ; F⇐G = transform F⇐G
       ; iso = λ X → record
         { isoˡ = begin
-          (⇐.η (G.F₀ X , X) ⟨$⟩ id) ∘ (⇒.η (F.F₀ X , X) ⟨$⟩ id)      ≈˘⟨ identityˡ ⟩
-          id ∘ (⇐.η (G.F₀ X , X) ⟨$⟩ id) ∘ (⇒.η (F.F₀ X , X) ⟨$⟩ id) ≈˘⟨ lower (yoneda.⇒.commute {Y = Hom[ C ][-, F.F₀ X ] , _} (idN , (⇒.η (F.F₀ X , X) ⟨$⟩ C.id))
-                                                                                                 {nat-appʳ X F⇐G} {nat-appʳ X F⇐G} (cong (⇐.η _))) ⟩
-          ⇐.η (F.F₀ X , X) ⟨$⟩ (⇒.η (F.F₀ X , X) ⟨$⟩ id) ∘ id        ≈⟨ cong (⇐.η _) identityʳ ⟩
-          ⇐.η (F.F₀ X , X) ⟨$⟩ (⇒.η (F.F₀ X , X) ⟨$⟩ id)             ≈⟨ iso.isoˡ _ refl ⟩
-          id                                                         ∎
+          (⇐.η (G.₀ X , X) ⟨$⟩ id) ∘ (⇒.η (F.₀ X , X) ⟨$⟩ id)      ≈⟨ introˡ CE.refl ⟩
+          id ∘ (⇐.η (G.₀ X , X) ⟨$⟩ id) ∘ (⇒.η (F.₀ X , X) ⟨$⟩ id) ≈˘⟨ lower {e} (yoneda.⇒.commute {Y = Hom[ C ][-, F.₀ X ] , _}
+                                                                                  (idN , (⇒.η (F.₀ X , X) ⟨$⟩ id))
+                                                                                  {nat-appʳ {F = G} {F} X F⇐G}
+                                                                                  {nat-appʳ {F = G} {F} X F⇐G}
+                                                                                  (cong (⇐.η (_ , X) ))) ⟩
+          ⇐.η (F.₀ X , X) ⟨$⟩ (⇒.η (F.₀ X , X) ⟨$⟩ id) ∘ id        ≈⟨ cong (⇐.η _) identityʳ ⟩
+          ⇐.η (F.₀ X , X) ⟨$⟩ (⇒.η (F.₀ X , X) ⟨$⟩ id)             ≈⟨ iso.isoˡ _ refl ⟩
+          id                                                  ∎
         ; isoʳ = begin
-          (⇒.η (F.F₀ X , X) ⟨$⟩ id) ∘ (⇐.η (G.F₀ X , X) ⟨$⟩ id)      ≈˘⟨ identityˡ ⟩
-          id ∘ (⇒.η (F.F₀ X , X) ⟨$⟩ id) ∘ (⇐.η (G.F₀ X , X) ⟨$⟩ id) ≈˘⟨ lower (yoneda.⇒.commute {Y = Hom[ C ][-, G.F₀ X ] , _} (idN , (⇐.η (G.F₀ X , X) ⟨$⟩ C.id))
-                                                                                                 {nat-appʳ X F⇒G} {nat-appʳ X F⇒G} (cong (⇒.η _))) ⟩
-          ⇒.η (G.F₀ X , X) ⟨$⟩ (⇐.η (G.F₀ X , X) ⟨$⟩ id) ∘ id        ≈⟨ cong (⇒.η _) identityʳ ⟩
-          ⇒.η (G.F₀ X , X) ⟨$⟩ (⇐.η (G.F₀ X , X) ⟨$⟩ id)             ≈⟨ iso.isoʳ _ refl ⟩
-          id                                                         ∎
+          (⇒.η (F.₀ X , X) ⟨$⟩ id) ∘ (⇐.η (G.₀ X , X) ⟨$⟩ id)      ≈⟨ introˡ CE.refl ⟩
+          id ∘ (⇒.η (F.₀ X , X) ⟨$⟩ id) ∘ (⇐.η (G.₀ X , X) ⟨$⟩ id) ≈˘⟨ lower {e} (yoneda.⇒.commute {Y = Hom[ C ][-, G.₀ X ] , _}
+                                                                                   (idN , (⇐.η (G.₀ X , X) ⟨$⟩ C.id))
+                                                                                   {nat-appʳ {F = F} {G} X F⇒G}
+                                                                                   {nat-appʳ {F = F} {G} X F⇒G}
+                                                                                   (cong (⇒.η _))) ⟩
+          ⇒.η (G.₀ X , X) ⟨$⟩ (⇐.η (G.₀ X , X) ⟨$⟩ id) ∘ id        ≈⟨ cong (⇒.η _) identityʳ ⟩
+          ⇒.η (G.₀ X , X) ⟨$⟩ (⇐.η (G.₀ X , X) ⟨$⟩ id)             ≈⟨ iso.isoʳ _ refl ⟩
+          id                                                      ∎
         }
       }
-      where open NaturalIsomorphism ni
+      where
+      open NaturalIsomorphism ni using (F⇒G; F⇐G; module ⇐; module ⇒; module iso)
+      open MR C using (introˡ)
