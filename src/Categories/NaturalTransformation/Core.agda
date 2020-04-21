@@ -61,23 +61,27 @@ ntHelper {D = D} α = record
   where open NTHelper α
         open Category D
 
+-- Don't use ntHelper as it produces non-reduction in other places
+-- and be pedantic about arguments too, this helps inference too.
 id : ∀ {F : Functor C D} → NaturalTransformation F F
-id {D = D} = ntHelper record
+id {D = D} {F} = record
   { η = λ _ → D.id
-  ; commute = λ _ → D.identityˡ ○ ⟺ D.identityʳ
+  ; commute = λ f → id-comm-sym {f = Functor.F₁ F f}
+  ; sym-commute = λ f → id-comm {f = Functor.F₁ F f}
   }
   where
   module D = Category D
-  open D.HomReasoning
+  open MR D
 
 infixr 9 _∘ᵥ_ _∘ₕ_ _∘ˡ_ _∘ʳ_
 
 -- "Vertical composition"
 _∘ᵥ_ : ∀ {F G H : Functor C D} →
          NaturalTransformation G H → NaturalTransformation F G → NaturalTransformation F H
-_∘ᵥ_ {C = C} {D = D} {F} {G} {H} X Y = ntHelper record
+_∘ᵥ_ {C = C} {D = D} {F} {G} {H} X Y = record
   { η       = λ q → D [ X.η q ∘ Y.η q ]
   ; commute = λ f → glue (X.commute f) (Y.commute f)
+  ; sym-commute = λ f → Category.Equiv.sym D (glue (X.commute f) (Y.commute f))
   }
   where module X = NaturalTransformation X
         module Y = NaturalTransformation Y
@@ -97,26 +101,36 @@ _∘ₕ_ {E = E} {F} {I = I} Y X = ntHelper record
         open MR E
 
 _∘ˡ_ : ∀ {G H : Functor C D} (F : Functor D E) → NaturalTransformation G H → NaturalTransformation (F ∘F G) (F ∘F H)
-_∘ˡ_ F α = ntHelper record
-  { η       = λ X → F₁ (η X)
-  ; commute = λ f → [ F ]-resp-square (commute f)
+_∘ˡ_ F α = record
+  { η           = λ X → F₁ (η X)
+  ; commute     = λ f → [ F ]-resp-square (commute f)
+  ; sym-commute = λ f → [ F ]-resp-square (sym-commute f)
   }
   where open Functor F
         open NaturalTransformation α
 
 _∘ʳ_ : ∀ {G H : Functor D E} → NaturalTransformation G H → (F : Functor C D) → NaturalTransformation (G ∘F F) (H ∘F F)
-_∘ʳ_ {D = D} {E = E} {G = G} {H = H} α F = ntHelper record
-  { η       = λ X → η (F₀ X)
-  ; commute = λ f → commute (F₁ f)
+_∘ʳ_ {D = D} {E = E} {G = G} {H = H} α F = record
+  { η           = λ X → η (F₀ X)
+  ; commute     = λ f → commute (F₁ f)
+  ; sym-commute = λ f → sym-commute (F₁ f)
   }
   where open Functor F
         open NaturalTransformation α
 
 id∘id⇒id : {C : Category o ℓ e} → NaturalTransformation {C = C} {D = C} (idF ∘F idF) idF
-id∘id⇒id {C = C} = ntHelper record { η = λ _ → Category.id C ; commute = λ f → MR.id-comm-sym C {f = f} }
+id∘id⇒id {C = C} = record
+  { η           = λ _ → Category.id C
+  ; commute     = λ f → MR.id-comm-sym C {f = f}
+  ; sym-commute = λ f → MR.id-comm C {f = f}
+  }
 
 id⇒id∘id : {C : Category o ℓ e} → NaturalTransformation {C = C} {D = C} idF (idF ∘F idF)
-id⇒id∘id {C = C} = ntHelper record { η = λ _ → Category.id C ; commute = λ f → MR.id-comm-sym C {f = f} }
+id⇒id∘id {C = C} = record
+  { η           = λ _ → Category.id C
+  ; commute     = λ f → MR.id-comm-sym C {f = f}
+  ; sym-commute = λ f → MR.id-comm C {f = f}
+  }
 
 module _ {F : Functor C D} where
   open Category.HomReasoning D
@@ -126,13 +140,13 @@ module _ {F : Functor C D} where
   private module D = Category D
 
   F⇒F∘id : NaturalTransformation F (F ∘F idF)
-  F⇒F∘id = ntHelper record { η = λ _ → D.id ; commute = λ _ → id-comm-sym }
+  F⇒F∘id = record { η = λ _ → D.id ; commute = λ _ → id-comm-sym ; sym-commute = λ _ → id-comm }
 
   F⇒id∘F : NaturalTransformation F (idF ∘F F)
-  F⇒id∘F = ntHelper record { η = λ _ → D.id ; commute = λ _ → id-comm-sym }
+  F⇒id∘F = record { η = λ _ → D.id ; commute = λ _ → id-comm-sym ; sym-commute = λ _ → id-comm }
 
   F∘id⇒F : NaturalTransformation (F ∘F idF) F
-  F∘id⇒F = ntHelper record { η = λ _ → D.id ; commute = λ _ → id-comm-sym }
+  F∘id⇒F = record { η = λ _ → D.id ; commute = λ _ → id-comm-sym ; sym-commute = λ _ → id-comm }
 
   id∘F⇒F : NaturalTransformation (idF ∘F F) F
-  id∘F⇒F = ntHelper record { η = λ _ → D.id ; commute = λ _ → id-comm-sym }
+  id∘F⇒F = record { η = λ _ → D.id ; commute = λ _ → id-comm-sym ; sym-commute = λ _ → id-comm }
