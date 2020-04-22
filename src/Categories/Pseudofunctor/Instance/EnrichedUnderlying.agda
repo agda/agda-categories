@@ -18,6 +18,7 @@ open import Categories.Enriched.Category M
 open import Categories.Enriched.Category.Underlying M
 open import Categories.Enriched.Functor M
 open import Categories.Enriched.NaturalTransformation M
+open import Categories.Functor using () renaming (Functor to Setoid-Functor) -- makes some things print more nicely
 import Categories.Morphism.Reasoning as MorphismReasoning
 open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
@@ -47,10 +48,10 @@ private
 EnrichedUnderlying : Pseudofunctor (EnrichedCats v) (Cats v ℓ e)
 EnrichedUnderlying = record
   { P₀ = Underlying
-  ; P₁ = record
+  ; P₁ = λ {x y} → record
     { F₀ = UnderlyingFunctor
     ; F₁ = UnderlyingNT
-    ; identity     = V.Equiv.refl
+    ; identity     = V.Equiv.refl {x = Category.id y}
     ; homomorphism = V.Equiv.refl
     ; F-resp-≈     = λ eq → eq
     }
@@ -59,21 +60,22 @@ EnrichedUnderlying = record
         open UnderlyingReasoning C
     in niHelper record
       { η = λ _ → ntHelper record
-        { η       = λ _ → C.id
+        { η       = λ c → C.id {c}
         ; commute = λ f → begin
             C.id ∘ f              ≈⟨ identityˡ ⟩
             f                     ≈˘⟨ identityʳ ○ V.identityˡ ⟩
             (V.id V.∘ f) ∘ C.id   ∎
         }
       ; η⁻¹ = λ _ → ntHelper record
-        { η       = λ _ → C.id
+        { η       = λ c → C.id {c}
         ; commute = λ f → begin
             C.id ∘ (V.id V.∘ f)   ≈⟨ identityˡ ○ V.identityˡ ⟩
             f                     ≈˘⟨ identityʳ ⟩
             f ∘ C.id              ∎
         }
       ; commute = λ _ → V.Equiv.refl
-      ; iso     = λ _ → record { isoˡ = C.identityˡ ; isoʳ = C.identityʳ }
+      ; iso     = λ _ → record { isoˡ = C.identityˡ {f = Category.id C}
+                               ; isoʳ = C.identityʳ {f = Category.id C} }
       }
   ; P-homomorphism = λ {C D E} →
     let module C = Underlying C
