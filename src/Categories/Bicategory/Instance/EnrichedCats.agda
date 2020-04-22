@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --without-K --allow-unsolved-metas #-}
 
 open import Level
 open import Categories.Category using () renaming (Category to Setoid-Category)
@@ -9,10 +9,11 @@ module Categories.Bicategory.Instance.EnrichedCats
 
 -- The 2-category of V-enriched categories
 
-open import Data.Product as Prod using (_,_)
+open import Data.Product as Prod using (_,_; proj₁)
 
 open import Categories.Bicategory using (Bicategory)
 open import Categories.Category.Construction.EnrichedFunctors M
+import Categories.Morphism.Reasoning as MR
 open import Categories.Enriched.Category M
 open import Categories.Enriched.Category.Underlying M
 open import Categories.Enriched.Functor M renaming (id to idF)
@@ -25,14 +26,17 @@ open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
 private
   module V = Setoid-Category V
   module UnderlyingReasoning {c} (C : Category c) where
-    open Underlying C public hiding (id)
+    private
+      CC = Underlying C
+    open Underlying C using (_∘_; identityʳ; identityˡ; sym-assoc; module HomReasoning) public
     open HomReasoning public
+    open MR CC using (id-comm-sym) public
   open NaturalTransformation
   open NI.NaturalIsomorphism
 
   -- Aliases used to shorten some proof expressions
 
-  module UF = UnderlyingFunctor
+  module UF = UnderlyingFunctor using (F₀; F₁; homomorphism; identity)
   infixr 14 _$₀_ _$₁_
   _$₀_ = UF.F₀
   _$₁_ = UF.F₁
@@ -43,6 +47,7 @@ private
 -- Note that all the equational reasoning happens in the underlying
 -- (ordinary) categories!
 
+-- below, a lot of specification of implicits make things typecheck faster.
 EnrichedCats : Bicategory (ℓ ⊔ e ⊔ v) (ℓ ⊔ e ⊔ v) (e ⊔ v) (o ⊔ ℓ ⊔ e ⊔ suc v)
 EnrichedCats = record
   { enriched = record
@@ -50,7 +55,7 @@ EnrichedCats = record
     ; hom = EnrichedFunctors
     ; id  = const idF
     ; ⊚   = ⊚
-    ; ⊚-assoc = λ {_ _ C D} →
+    ; ⊚-assoc =  λ {_ _ C D} →
       let module C = Underlying C
           module D = Underlying D
           open UnderlyingReasoning D
@@ -58,68 +63,57 @@ EnrichedCats = record
         { η       = λ { ((F , G) , H) → from (NI.associator {F = F} {G} {H}) }
         ; η⁻¹     = λ { ((F , G) , H) → to   (NI.associator {F = F} {G} {H}) }
         ; commute = λ { {(_ , G₁) , H₁} {(F₂ , G₂) , _} ((α , β) , γ) {X} →
-          begin
-            D.id ∘ (F₂ ∘F G₂) $₁ γ [ X ] ∘ F₂ $₁ β [ H₁ $₀ X ] ∘
-            α [ G₁ $₀ H₁ $₀ X ]
-          ≈⟨ identityˡ ○ ⟺ assoc ⟩
-            ((F₂ ∘F G₂) $₁ γ [ X ] ∘ F₂ $₁ β [ H₁ $₀ X ]) ∘ α [ G₁ $₀ H₁ $₀ X ]
-          ≈⟨ V.assoc ⟩∘⟨refl ⟩∘⟨refl ⟩
-            (F₂ $₁ G₂ $₁ γ [ X ] ∘ F₂ $₁ β [ H₁ $₀ X ]) ∘ α [ G₁ $₀ H₁ $₀ X ]
-          ≈˘⟨ UF.homomorphism F₂ ⟩∘⟨refl ⟩
-            F₂ $₁ (G₂ $₁ γ [ X ] C.∘ β [ H₁ $₀ X ]) ∘ α [ G₁ $₀ H₁ $₀ X ]
-          ≈˘⟨ identityʳ ⟩
-            (F₂ $₁ (G₂ $₁ γ [ X ] C.∘ β [ H₁ $₀ X ]) ∘ α [ G₁ $₀ H₁ $₀ X ]) ∘
-            D.id
-          ∎ }
+          -- short hands for terms that never change
+          let α′ = α [ G₁ $₀ H₁ $₀ X ]
+              β′ = β [ H₁ $₀ X ]
+          in begin
+            D.id ∘ (F₂ ∘F G₂) $₁ γ [ X ] ∘ F₂ $₁ β′ ∘ α′ ≈⟨ identityˡ ○ sym-assoc ⟩
+            ((F₂ ∘F G₂) $₁ γ [ X ] ∘ F₂ $₁ β′) ∘ α′      ≈⟨ V.assoc ⟩∘⟨refl ⟩∘⟨refl ⟩
+            (F₂ $₁ G₂ $₁ γ [ X ] ∘ F₂ $₁ β′) ∘ α′        ≈˘⟨ UF.homomorphism F₂ ⟩∘⟨refl ⟩
+            F₂ $₁ (G₂ $₁ γ [ X ] C.∘ β′) ∘ α′            ≈˘⟨ identityʳ ⟩
+            (F₂ $₁ (G₂ $₁ γ [ X ] C.∘ β′) ∘ α′) ∘ D.id   ∎ }
         ; iso = λ{ ((F , G) , H) → iso (NI.associator {F = F} {G} {H}) }
         }
-    ; unitˡ = λ {A B} →
+    ; unitˡ =  λ {A B} →
       let module A = Underlying A
           module B = Underlying B
           open UnderlyingReasoning B
       in niHelper record
-        { η       = λ _ → from NI.unitorˡ
-        ; η⁻¹     = λ _ → to   NI.unitorˡ
+        { η       = λ {(_ , F) → from (NI.unitorˡ {C = A} {B} {F})}
+        ; η⁻¹     = λ {(lift tt , F) → to (NI.unitorˡ {C = A} {B} {F})}
         ; commute = λ { {_ , F} {_ , G} (_ , α) {X} →
           begin
             B.id ∘ (V.id V.∘ α [ X ]) ∘ B.id   ≈⟨ identityˡ ⟩
             (V.id V.∘ α [ X ]) ∘ B.id          ≈⟨ V.identityˡ ⟩∘⟨refl ⟩
             α [ X ] ∘ B.id                     ∎ }
-        ; iso = λ _ → iso NI.unitorˡ
+        ; iso = λ {(_ , F) → iso (NI.unitorˡ {C = A} {B} {F})}
         }
     ; unitʳ = λ {A B} →
-      let module A = Underlying A
+      let module A = Underlying A using (id)
           module B = Underlying B
           open UnderlyingReasoning B
       in niHelper record
-        { η       = λ _ → from NI.unitorʳ
-        ; η⁻¹     = λ _ → to   NI.unitorʳ
-        ; commute = λ{ {_} {G , _} (α , _) {X} →
-          begin
-            B.id ∘ G $₁ A.id ∘ α [ X ]  ≈⟨ identityˡ ⟩
-            G $₁ A.id ∘ α [ X ]         ≈⟨ UF.identity G ⟩∘⟨refl ⟩
-            B.id ∘ α [ X ]              ≈⟨ identityˡ ○ ⟺ identityʳ ⟩
-            α [ X ] ∘ B.id              ∎ }
-        ; iso     = λ _ → iso NI.unitorʳ
+        { η =  λ {(F , lift tt) → from (NI.unitorʳ {C = A} {B} {F}) }
+        ; commute =  λ{ {_} {G , _} (α , _) {X} →
+            begin
+              B.id ∘ G $₁ A.id ∘ α [ X ]  ≈⟨ identityˡ ⟩
+              G $₁ A.id ∘ α [ X ]         ≈⟨ UF.identity G ⟩∘⟨refl ⟩
+              B.id ∘ α [ X ]              ≈⟨ id-comm-sym ⟩
+              α [ X ] ∘ B.id              ∎ }
+        ; η⁻¹  = λ { (F , lift tt) → to (NI.unitorʳ {C = A} {B} {F}) }
+        ; iso  = λ { (F , lift tt) → iso (NI.unitorʳ {C = A} {B} {F}) }
         }
     }
-  ; triangle = λ {_ B C _ G} →
-    let module B = Underlying B
-        module C = Underlying C
-        open UnderlyingReasoning C
-    in begin
-      (G $₁ B.id ∘ C.id) ∘ C.id   ≈⟨ identityʳ ⟩
-      G $₁ B.id ∘ C.id            ∎
+  ; triangle = λ {_ _ C f g X} → UnderlyingReasoning.identityʳ C
   ; pentagon = λ {_ B _ D E _ G H I} →
-    let module B  = Category B
-        module D  = Category D
-        module E  = Category E
+    let module B  = Category B using (id)
+        module D  = Category D using (id)
+        module E  = Category E using (id)
         open UnderlyingReasoning E
     in begin
-      (I $₁ D.id ∘ E.id) ∘ E.id ∘ (I ∘F H ∘F G) $₁ B.id ∘ E.id
-    ≈⟨ identityʳ ⟩∘⟨ (identityˡ ○ identityʳ) ⟩
-      I $₁ D.id ∘ (I ∘F H ∘F G) $₁ B.id
-    ≈⟨ UF.identity I ⟩∘⟨ UF.identity (I ∘F H ∘F G) ⟩
+      (I $₁ D.id ∘ E.id) ∘ E.id ∘ (I ∘F H ∘F G) $₁ B.id ∘ E.id ≈⟨ identityʳ ⟩∘⟨ identityˡ ⟩
+      I $₁ D.id ∘ (I ∘F H ∘F G) $₁ B.id ∘ E.id                 ≈⟨ refl⟩∘⟨ identityʳ ⟩
+      I $₁ D.id ∘ (I ∘F H ∘F G) $₁ B.id                        ≈⟨ UF.identity I ⟩∘⟨ UF.identity (I ∘F H ∘F G) ⟩
       E.id ∘ E.id
     ∎
   }
