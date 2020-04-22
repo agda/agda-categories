@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --allow-unsolved-metas #-}
+{-# OPTIONS --without-K --safe #-}
 
 open import Level
 open import Categories.Category using () renaming (Category to Setoid-Category)
