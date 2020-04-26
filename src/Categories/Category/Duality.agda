@@ -58,3 +58,13 @@ FinitelyCocomplete⇒coFinitelyComplete FC = record
   ; equalizer = λ f g → Coequalizer⇒coEqualizer C (coequalizer f g)
   }
   where open FinitelyCocomplete FC
+
+
+
+module DualityConversionProperties where
+
+  open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+
+  private
+    op-involutive : Category.op C.op ≡ C
+    op-involutive = refl
