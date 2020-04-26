@@ -80,7 +80,7 @@ evalF : ∀ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Category.
 evalF _ _ X = appʳ eval X
 
 -- Currying induces a functor between functor categories -- another
--- part of the proof that Cats is a catesian closed (bi)category.
+-- part of the proof that Cats is a cartesian closed (bi)category.
 
 curry : Functor (Functors (C₁ × C₂) D) (Functors C₁ (Functors C₂ D))
 curry {C₁ = C₁} {C₂ = C₂} {D = D} = record
