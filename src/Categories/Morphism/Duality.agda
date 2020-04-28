@@ -42,10 +42,7 @@ op-Iso⇒Iso iso = record
 ≅⇒op-≅ A≅B = record
   { from = to
   ; to   = from
-  ; iso  = record -- I don't understand why Agda doesn't allow me to apply Iso⇒op-Iso
-    { isoˡ = isoˡ
-    ; isoʳ = isoʳ
-    }
+  ; iso  = Iso⇒op-Iso iso
   }
   where open _≅_ A≅B
 
@@ -53,9 +50,6 @@ op-≅⇒≅ : A Op.≅ B → A ≅ B
 op-≅⇒≅ A≅B = record
   { from = to
   ; to   = from
-  ; iso  = record
-    { isoˡ = isoˡ
-    ; isoʳ = isoʳ
-    }
+  ; iso  = op-Iso⇒Iso iso
   }
   where open Op._≅_ A≅B
