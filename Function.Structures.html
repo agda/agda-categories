@@ -72,11 +72,11 @@
   <a id="1683" class="Keyword">open</a> <a id="1688" href="Function.Structures.html#1179" class="Module">IsInjection</a> <a id="1700" href="Function.Structures.html#1611" class="Field">isInjection</a> <a id="1712" class="Keyword">public</a>
 
   <a id="IsBijection.bijective"></a><a id="1722" href="Function.Structures.html#1722" class="Function">bijective</a> <a id="1732" class="Symbol">:</a> <a id="1734" href="Function.Definitions.html#992" class="Function">Bijective</a> <a id="1744" href="Function.Structures.html#422" class="Bound Operator">_≈₁_</a> <a id="1749" href="Function.Structures.html#440" class="Bound Operator">_≈₂_</a> <a id="1754" href="Function.Structures.html#1558" class="Bound">f</a>
-  <a id="1758" href="Function.Structures.html#1722" class="Function">bijective</a> <a id="1768" class="Symbol">=</a> <a id="1770" href="Function.Structures.html#1277" class="Field">injective</a> <a id="1780" href="Agda.Builtin.Sigma.html#236" class="InductiveConstructor Operator">,</a> <a id="1782" href="Function.Structures.html#1643" class="Field">surjective</a>
+  <a id="1758" href="Function.Structures.html#1722" class="Function">bijective</a> <a id="1768" class="Symbol">=</a> <a id="1770" href="Function.Structures.html#1277" class="Function">injective</a> <a id="1780" href="Agda.Builtin.Sigma.html#236" class="InductiveConstructor Operator">,</a> <a id="1782" href="Function.Structures.html#1643" class="Field">surjective</a>
 
   <a id="IsBijection.isSurjection"></a><a id="1796" href="Function.Structures.html#1796" class="Function">isSurjection</a> <a id="1809" class="Symbol">:</a> <a id="1811" href="Function.Structures.html#1361" class="Record">IsSurjection</a> <a id="1824" href="Function.Structures.html#1558" class="Bound">f</a>
   <a id="1828" href="Function.Structures.html#1796" class="Function">isSurjection</a> <a id="1841" class="Symbol">=</a> <a id="1843" class="Keyword">record</a>
-    <a id="1854" class="Symbol">{</a> <a id="1856" href="Function.Structures.html#1428" class="Field">isCongruent</a> <a id="1868" class="Symbol">=</a> <a id="1870" href="Function.Structures.html#1245" class="Field">isCongruent</a>
+    <a id="1854" class="Symbol">{</a> <a id="1856" href="Function.Structures.html#1428" class="Field">isCongruent</a> <a id="1868" class="Symbol">=</a> <a id="1870" href="Function.Structures.html#1245" class="Function">isCongruent</a>
     <a id="1886" class="Symbol">;</a> <a id="1888" href="Function.Structures.html#1460" class="Field">surjective</a>  <a id="1900" class="Symbol">=</a> <a id="1902" href="Function.Structures.html#1643" class="Field">surjective</a>
     <a id="1917" class="Symbol">}</a>
 
@@ -132,11 +132,11 @@
 
   <a id="IsInverse.isRightInverse"></a><a id="3331" href="Function.Structures.html#3331" class="Function">isRightInverse</a> <a id="3346" class="Symbol">:</a> <a id="3348" href="Function.Structures.html#2197" class="Record">IsRightInverse</a> <a id="3363" href="Function.Structures.html#3143" class="Bound">f</a> <a id="3365" href="Function.Structures.html#3155" class="Bound">g</a>
   <a id="3369" href="Function.Structures.html#3331" class="Function">isRightInverse</a> <a id="3384" class="Symbol">=</a> <a id="3386" class="Keyword">record</a>
-    <a id="3397" class="Symbol">{</a> <a id="3399" href="Function.Structures.html#2278" class="Field">isCongruent</a> <a id="3411" class="Symbol">=</a> <a id="3413" href="Function.Structures.html#2008" class="Field">isCongruent</a>
-    <a id="3429" class="Symbol">;</a> <a id="3431" href="Function.Structures.html#2310" class="Field">cong₂</a>       <a id="3443" class="Symbol">=</a> <a id="3445" href="Function.Structures.html#2041" class="Field">cong₂</a>
+    <a id="3397" class="Symbol">{</a> <a id="3399" href="Function.Structures.html#2278" class="Field">isCongruent</a> <a id="3411" class="Symbol">=</a> <a id="3413" href="Function.Structures.html#2008" class="Function">isCongruent</a>
+    <a id="3429" class="Symbol">;</a> <a id="3431" href="Function.Structures.html#2310" class="Field">cong₂</a>       <a id="3443" class="Symbol">=</a> <a id="3445" href="Function.Structures.html#2041" class="Function">cong₂</a>
     <a id="3455" class="Symbol">;</a> <a id="3457" href="Function.Structures.html#2350" class="Field">inverseʳ</a>    <a id="3469" class="Symbol">=</a> <a id="3471" href="Function.Structures.html#3246" class="Field">inverseʳ</a>
     <a id="3484" class="Symbol">}</a>
 
   <a id="IsInverse.inverse"></a><a id="3489" href="Function.Structures.html#3489" class="Function">inverse</a> <a id="3497" class="Symbol">:</a> <a id="3499" href="Function.Definitions.html#1164" class="Function">Inverseᵇ</a> <a id="3508" href="Function.Structures.html#422" class="Bound Operator">_≈₁_</a> <a id="3513" href="Function.Structures.html#440" class="Bound Operator">_≈₂_</a> <a id="3518" href="Function.Structures.html#3143" class="Bound">f</a> <a id="3520" href="Function.Structures.html#3155" class="Bound">g</a>
-  <a id="3524" href="Function.Structures.html#3489" class="Function">inverse</a> <a id="3532" class="Symbol">=</a> <a id="3534" href="Function.Structures.html#2082" class="Field">inverseˡ</a> <a id="3543" href="Agda.Builtin.Sigma.html#236" class="InductiveConstructor Operator">,</a> <a id="3545" href="Function.Structures.html#3246" class="Field">inverseʳ</a>
+  <a id="3524" href="Function.Structures.html#3489" class="Function">inverse</a> <a id="3532" class="Symbol">=</a> <a id="3534" href="Function.Structures.html#2082" class="Function">inverseˡ</a> <a id="3543" href="Agda.Builtin.Sigma.html#236" class="InductiveConstructor Operator">,</a> <a id="3545" href="Function.Structures.html#3246" class="Field">inverseʳ</a>
 </pre></body></html>
