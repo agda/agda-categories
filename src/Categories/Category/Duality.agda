@@ -19,8 +19,8 @@ private
   module C = Category C
   open C
 
-coCatesian⇒Cocartesian : Cartesian C.op → Cocartesian C
-coCatesian⇒Cocartesian Car = record
+coCartesian⇒Cocartesian : Cartesian C.op → Cocartesian C
+coCartesian⇒Cocartesian Car = record
   { initial     = op⊤⇒⊥ C terminal
   ; coproducts  = record
     { coproduct = coProduct⇒Coproduct C product
@@ -47,7 +47,7 @@ Cocomplete⇒coComplete Coc F = Colimit⇒coLimit C (Coc F.op)
 
 coFinitelyComplete⇒FinitelyCocomplete : FinitelyComplete C.op → FinitelyCocomplete C
 coFinitelyComplete⇒FinitelyCocomplete FC = record
-  { cocartesian = coCatesian⇒Cocartesian cartesian
+  { cocartesian = coCartesian⇒Cocartesian cartesian
   ; coequalizer = λ f g → coEqualizer⇒Coequalizer C (equalizer f g)
   }
   where open FinitelyComplete FC
