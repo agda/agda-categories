@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 
 -- Equalizers in a Category C
 module Categories.Diagram.Equalizer {o ℓ e} (C : Category o ℓ e) where
