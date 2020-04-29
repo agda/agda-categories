@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 
 -- Definition of the Arrow Category of a Category C
 module Categories.Category.Construction.Arrow {o ℓ e} (C : Category o ℓ e) where
@@ -13,7 +13,7 @@ import Categories.Morphism as M
 open M C
 open import Categories.Morphism.Reasoning C
 
-open Category C hiding (dom; cod)
+open Category C
 open HomReasoning
 
 private

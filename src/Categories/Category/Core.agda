@@ -41,12 +41,6 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   open Equiv
 
-  dom : ∀ {A B} → (A ⇒ B) → Obj
-  dom {A} _ = A
-
-  cod : ∀ {A B} → (A ⇒ B) → Obj
-  cod {B = B} _ = B
-
   ∘-resp-≈ˡ : ∀ {A B C} {f h : B ⇒ C} {g : A ⇒ B} → f ≈ h → f ∘ g ≈ h ∘ g
   ∘-resp-≈ˡ pf = ∘-resp-≈ pf refl
 
