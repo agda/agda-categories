@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 
 module Categories.Diagram.Pullback {o ℓ e} (C : Category o ℓ e) where
 
