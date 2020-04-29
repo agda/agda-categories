@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 
 module Categories.Diagram.Pushout {o ℓ e} (C : Category o ℓ e) where
 
@@ -11,8 +11,7 @@ open import Level
 
 private
   variable
-    A B X Y Z : Obj
-    h h₁ h₂ j : A ⇒ B
+    A B E X Y Z : Obj
 
 record Pushout (f : X ⇒ Y) (g : X ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
   field
@@ -22,12 +21,12 @@ record Pushout (f : X ⇒ Y) (g : X ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
 
   field
     commute   : i₁ ∘ f ≈ i₂ ∘ g
-    universal : h₁ ∘ f ≈ h₂ ∘ g → Q ⇒ cod h₁
-    unique    : ∀ {eq : h₁ ∘ f ≈ h₂ ∘ g} →
+    universal : {h₁ : Y ⇒ B} {h₂ : Z ⇒ B} → h₁ ∘ f ≈ h₂ ∘ g → Q ⇒ B
+    unique    : {h₁ : Y ⇒ E} {h₂ : Z ⇒ E} {j : Q ⇒ E} {eq : h₁ ∘ f ≈ h₂ ∘ g} →
                   j ∘ i₁ ≈ h₁ → j ∘ i₂ ≈ h₂ →
                   j ≈ universal eq
 
-    universal∘i₁≈h₁  : ∀ {eq : h₁ ∘ f ≈ h₂ ∘ g} →
+    universal∘i₁≈h₁  : {h₁ : Y ⇒ E} {h₂ : Z ⇒ E} {eq : h₁ ∘ f ≈ h₂ ∘ g} →
                          universal eq ∘ i₁ ≈ h₁
-    universal∘i₂≈h₂  : ∀ {eq : h₁ ∘ f ≈ h₂ ∘ g} →
+    universal∘i₂≈h₂  : {h₁ : Y ⇒ E} {h₂ : Z ⇒ E} {eq : h₁ ∘ f ≈ h₂ ∘ g} →
                          universal eq ∘ i₂ ≈ h₂
