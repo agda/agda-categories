@@ -1,12 +1,13 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 
 module Categories.Diagram.Pullback.Limit {o ℓ e} (C : Category o ℓ e) where
 
 open import Data.Product using (∃₂; _,_)
 open import Function using (_$_)
 
+open import Categories.Category using (_[_≈_])
 open import Categories.Category.Instance.Span
 open import Categories.Functor
 open import Categories.Diagram.Pullback C
@@ -54,7 +55,7 @@ module _ {F : Functor Span.op C} where
     ; p₂∘universal≈h₂ = commute
     }
     where open Limit lim
-          universal : A⇒W ∘ f ≈ B⇒W ∘ g → dom f ⇒ apex
+          universal : {D : Obj} {f : D ⇒ A} {g : D ⇒ B} → A⇒W ∘ f ≈ B⇒W ∘ g → D ⇒ apex
           universal {f = f} {g = g} eq = rep $ record
             { apex = record
               { ψ       = λ { center → B⇒W ∘ g
@@ -85,14 +86,14 @@ module _ {F : Functor Span.op C} where
                           }
             }
 
-module _ (p : Pullback f g) where
+module _ {fA fB gA : Obj} {f : fA ⇒ fB} {g : gA ⇒ fB} (p : Pullback f g) where
   open Pullback p
 
   pullback⇒limit-F : Functor Span.op C
   pullback⇒limit-F = record
-    { F₀           = λ { center → cod f
-                       ; left   → dom f
-                       ; right  → dom g
+    { F₀           = λ { center → fB
+                       ; left   → fA
+                       ; right  → gA
                        }
     ; F₁           = λ { {center} {.center} span-id   → C.id
                        ; {left} {.left} span-id       → C.id
