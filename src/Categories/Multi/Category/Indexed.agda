@@ -28,9 +28,12 @@ pointed x _ = x
 K×⊤↔K : {t k : Level} {K : Set k} → (K × ⊤ {t}) ↔ K
 K×⊤↔K = inverse proj₁ (_, tt) (λ _ → refl) λ _ → refl
 
+⊤×⊤↔⊤ : {t : Level} → (⊤ {t} × ⊤) ↔ ⊤
+⊤×⊤↔⊤ = inverse proj₁ (λ x → x , x) (λ _ → refl) λ _ → refl
+
 Σ-assoc : {a b c : Level} {I : Set a} {J : I → Set b} {K : Σ I J → Set c} →
-  Σ I (λ i → Σ (J i) (curry K i)) ↔ Σ (Σ I J) K
-Σ-assoc {I = I} {J} {K} = inverse f g (λ _ → refl) λ _ → refl
+  Σ (Σ I J) K ↔ Σ I (λ i → Σ (J i) (curry K i))
+Σ-assoc {I = I} {J} {K} = inverse g f (λ _ → refl) λ _ → refl
   where
   f : Σ I (λ i → Σ (J i) (λ j → K (i , j))) → Σ (Σ I J) K
   f (i , j , k) = (i , j) , k
@@ -50,6 +53,10 @@ K×⊤↔K = inverse proj₁ (_, tt) (λ _ → refl) λ _ → refl
 -- The upshot is that this version of MultiCategory makes no finiteness
 -- assumption whatsoever.  The index sets involved could be huge,
 -- without any issues.
+
+-- Note that this still isn't Symmetric Multicategory. The renaming that
+-- happens on indices say nothing about the relation to the contents
+-- of the other Hom set.
 record MultiCategory {o ℓ e ı : Level} : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) where
   infix  4 _≈[_]_
   infixr 9 _∘_
@@ -62,24 +69,30 @@ record MultiCategory {o ℓ e ı : Level} : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) w
           {v : (i : I) → J i → Obj} {b : I → Obj} →
           Hom {I} aₙ a → ((i : I) → Hom (v i) (b i)) → Hom {Σ I J} (uncurry v) a
     _≈[_]_ : {I J : Set ı} {aₙ : I → Obj} {a : Obj} →
-          Hom {I} aₙ a → (σ : J ↔ I) → Hom {J} (aₙ ● ( Inverse.to σ ⟨$⟩_ )) a → Set e
+          Hom {I} aₙ a → (σ : I ↔ J) → Hom {J} (aₙ ● ( Inverse.from σ ⟨$⟩_ )) a → Set e
 
-    identityˡ : {a : Obj} {K : Set ı} {aₖ : K → Obj} {f : Hom aₖ a} →
-              f ≈[ ⊤×K↔K ] id a ∘ pointed f
+    identityˡ : {K : Set ı} {aₖ : K → Obj} {a : Obj} {f : Hom aₖ a} →
+              id a ∘ pointed f ≈[ ⊤×K↔K ]  f
     identityʳ : {K : Set ı} {aₖ : K → Obj} {a : Obj} {f : Hom aₖ a} →
-              f ≈[ K×⊤↔K ] f ∘ (id ● aₖ)
+              f ∘ (id ● aₖ) ≈[ K×⊤↔K ] f
 
-    assoc : {I : Set ı} {a : Obj} {aᵢ : I → Obj} {J : I → Set ı}
-            {K : Σ I J → Set ı}
+    identity² : {a : Obj} → id a ∘ pointed (id a) ≈[ ⊤×⊤↔⊤ ] id a
+
+    assoc : -- the 3 index sets
+            {I : Set ı} {J : I → Set ı} {K : Σ I J → Set ı}
+            -- the 3 sets of (indexed) objects
+            {vh : I → Obj} {bh : Obj}
             {vg : (i : I) → J i → Obj} {bg : I → Obj}
             {vf : (h : Σ I J) → K h → Obj} {bf : Σ I J → Obj}
-            {h : Hom aᵢ a}
+            -- the 3 Homs
+            {h : Hom vh bh}
             {g : (i : I) → Hom (vg i) (bg i)}
             {f : (k : Σ I J) → Hom (vf k) (bf k)} →
+            -- and their relation under composition
             (h ∘ g) ∘ f ≈[ Σ-assoc ] h ∘ (λ i → g i ∘ curry f i)
 
     -- we also need that _≈[_]_ is, in an appropriate sense, an equivalence relation, which in this case
-    -- means that _≈[ id↔ ]_ is.  In other words, we don't care when transport is 'something else'.
+    -- means that _≈[ id↔ ]_ is.  In other words, we don't care when transport is over 'something else'.
     refl≈ : {I : Set ı} {aₙ : I → Obj} {a : Obj} →
             {h : Hom {I} aₙ a} → h ≈[ id↔ ] h
     sym≈ : {I : Set ı} {aₙ : I → Obj} {a : Obj} →
