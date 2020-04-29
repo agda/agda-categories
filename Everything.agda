@@ -226,6 +226,7 @@ import Categories.Morphism.Reasoning
 import Categories.Morphism.Reasoning.Core
 import Categories.Morphism.Reasoning.Iso
 import Categories.Morphism.Universal
+import Categories.Multi.Category.Indexed
 import Categories.NaturalTransformation
 import Categories.NaturalTransformation.Core
 import Categories.NaturalTransformation.Dinatural
