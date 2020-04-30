@@ -1,0 +1,72 @@
+{-# OPTIONS --without-K --safe #-}
+
+-- Multicategories; like the rest, based on Setoids
+module Categories.Multi.Category.Core where
+
+open import Level renaming (suc to ℓsuc)
+open import Data.Empty
+open import Data.Nat using (ℕ; _+_; _<?_; zero; suc; _<_; _≥_; _>_; z≤n; s≤s)
+open import Data.Nat.Properties
+open import Data.Fin as F using (Fin; toℕ; zero; fromℕ<; reduce≥)
+open import Data.Product using (_,_)
+open import Data.Vec.Functional
+import Data.Vec as V
+open import Function using (const) renaming (_∘_ to _●_)
+open import Relation.Nullary
+open import Relation.Binary.PropositionalEquality
+
+-- useful functions
+sum : {n : ℕ} → Vector ℕ n → ℕ
+sum {0}           v = 0
+sum {suc zero}    v = head v
+sum {suc (suc n)} v = head v + sum (v ● F.suc)
+
+-- and a propert
+sum1≡k : {k : ℕ} {v : Vector ℕ k} → sum {k} (const 1) ≡ k
+sum1≡k {ℕ.zero} = refl
+sum1≡k {suc ℕ.zero} = refl
+sum1≡k {suc (suc k)} {v} = cong suc (sum1≡k {suc k} {v = v ● F.suc})
+
+-- The reason the following works is that it proceeds by linear search through the whole thing.
+-- But it turns out that this linear search through a staggered array can be written in a
+-- structurally recursive way! So this code pleases the termination checker.
+module _ {s : Level} {S : Set s} where
+
+  mutual
+    flatten′ : (n k0 : ℕ) (p : n > 0) (k : Vector ℕ n) → (Vector S k0) → ((i : Fin n) → Vector S (k i)) → Vector S (k0 + sum k)
+    flatten′ ℕ.zero k0 () k _ v j
+    flatten′ (suc n) ℕ.zero p k _ v j = flatten v j
+    flatten′ (suc n) (suc k0) p k v₀ v F.zero = v₀ F.zero
+    flatten′ (suc n) (suc k0) p k v₀ v (F.suc j) = flatten′ (suc n) k0 p k (v₀ ● F.suc) v j
+
+    flatten : {n : ℕ} {k : Vector ℕ n} → ((i : Fin n) → Vector S (k i)) → Vector S (sum k)
+    flatten {suc ℕ.zero} {k} v j = v F.zero j
+    flatten {suc (suc n)} {k} v j = flatten′ (suc n) (k F.zero) (s≤s z≤n) (k ● F.suc) (v F.zero) (v ● F.suc) j
+
+    singleton : S → Vector S 1
+    singleton s = s ∷ []
+
+record MultiCategory {o ℓ e : Level} : Set (ℓsuc o ⊔ ℓsuc ℓ ⊔ ℓsuc e) where
+  infix  4 _≈_
+  infixr 9 _∘_
+
+  field
+    Obj : Set o
+    Hom : {n : ℕ} → (Vector Obj n) → Obj → Set ℓ
+    id : (o : Obj) → Hom {1} (const o) o
+    _∘_ : {n : ℕ} {aₙ : Vector Obj n} {a : Obj}
+          {k : Vector ℕ n} {aᵢⱼ : (i : Fin n) → Vector Obj (k i)} {aⱼ : Vector Obj n} →
+          Hom aₙ a → (b : (i : Fin n) → Hom (aᵢⱼ i) (aⱼ i)) → Hom (flatten aᵢⱼ) a
+
+    _≈[_]_ : {n₁ n₂ : ℕ} {aₙ : Vector Obj n₁} {a : Obj} →
+             Hom {n₁} aₙ a → (p : n₁ ≡ n₂) → Hom {n₂} (subst (Vector Obj) p aₙ) a → Set e
+
+  _≈_ : {n : ℕ} {aₙ : Vector Obj n} {a : Obj} → (h₁ : Hom aₙ a) → (h₂ : Hom aₙ a) → Set e
+  h ≈ k = h ≈[ refl ] k
+
+  field
+    identityˡ : {a : Obj} {k : ℕ} {aₖ : Vector Obj k} {f : Hom aₖ a} →
+              id a ∘ (singleton f) ≈ f
+    identityʳ : {k : ℕ}
+                {aₖ : Vector Obj k} {a : Obj} {f : Hom aₖ a} →
+                f ≈[ ? ] (f ∘ (λ (i : Fin k) → id (aₖ i)))
