@@ -7,8 +7,9 @@ open import Data.Unit
 open import Data.Product using (_,_; proj₁; proj₂)
 open import Function.Equality using (Π) renaming (_∘_ to _∙_)
 open import Relation.Binary
+import Relation.Binary.Reasoning.Setoid as SetoidR
 
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 open import Categories.Category.Cartesian
 open import Categories.Category.CartesianClosed
 open import Categories.Category.CartesianClosed.Canonical renaming (CartesianClosed to CCartesianClosed)
@@ -23,23 +24,18 @@ open import Categories.NaturalTransformation
 import Categories.Category.Construction.Properties.Presheaves.Cartesian as Preₚ
 import Categories.Object.Product as Prod
 import Categories.Morphism.Reasoning as MR
-import Relation.Binary.Reasoning.Setoid as SetoidR
 
 open Π using (_⟨$⟩_)
 
 module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesian C) where
   private
     module C = Category C
-    open Preₚ C
-    open C
     P = Presheaves′ o′ ℓ′ C
-    module P = Category P
     S = Setoids o′ ℓ′
-    module S = Category S
-    open Prod C
+    open Prod C using (id×id)
     open Cartesian Car
-  
-  Pres-exp : (F : Presheaf C (Setoids o′ ℓ′)) (X : Obj) → Presheaf C (Setoids o′ ℓ′)
+
+  Pres-exp : (F : Presheaf C S) (X : C.Obj) → Presheaf C S
   Pres-exp F X = record
     { F₀           = λ Y → F.₀ (X × Y)
     ; F₁           = λ f → F.₁ (second f)
@@ -54,9 +50,9 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
       let open Setoid  (F.₀ (X × Y))
           open SetoidR (F.₀ (X × W))
       in begin
-        F.₁ (second (f ∘ g)) ⟨$⟩ x                ≈˘⟨ [ F ]-resp-∘ second∘second (sym eq) ⟩
+        F.₁ (second (f C.∘ g)) ⟨$⟩ x                ≈˘⟨ [ F ]-resp-∘ second∘second (sym eq) ⟩
         F.₁ (second g) ⟨$⟩ (F.₁ (second f) ⟨$⟩ y) ∎
-    ; F-resp-≈     = λ {Y Z} {f g} eq → F.F-resp-≈ (⁂-cong₂ Equiv.refl eq)
+    ; F-resp-≈     = λ {Y Z} {f g} eq → F.F-resp-≈ (⁂-cong₂ C.Equiv.refl eq)
     }
     where module F = Functor F
 
@@ -66,7 +62,7 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
     ; F₁           = λ {A B} f → ntHelper record
       { η       = λ X → F₁ (first f)
       ; commute = λ {X Y} g {x y} eq →
-        [ F ]-resp-square (Equiv.sym first↔second) eq
+        [ F ]-resp-square (C.Equiv.sym first↔second) eq
       }
     ; identity     = λ {A B} {x y} eq →
       let open Setoid  (F₀ (A × B))
@@ -79,9 +75,9 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
       let open Setoid  (F₀ (X × W))
           open SetoidR (F₀ (Z × W))
       in begin
-        F₁ (first (f ∘ g)) ⟨$⟩ x              ≈˘⟨ [ F ]-resp-∘ first∘first (sym eq) ⟩
+        F₁ (first (f C.∘ g)) ⟨$⟩ x              ≈˘⟨ [ F ]-resp-∘ first∘first (sym eq) ⟩
         F₁ (first g) ⟨$⟩ (F₁ (first f) ⟨$⟩ y) ∎
-    ; F-resp-≈     = λ {A B} {f g} eq → F-resp-≈ (⁂-cong₂ eq Equiv.refl)
+    ; F-resp-≈     = λ {A B} {f g} eq → F-resp-≈ (⁂-cong₂ eq C.Equiv.refl)
     }
     where open Functor F
 
@@ -118,21 +114,16 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
       ; homomorphism = λ {X Y Z} eq {W} eq′ →
         let open Setoid  (F.₀ (X × W))
         in Setoid.sym (F.₀ (Z × W)) ([ F ]-resp-∘ first∘first (sym (eq eq′)))
-      ; F-resp-≈     = λ eq eq′ eq″ → F.F-resp-≈ (⁂-cong₂ eq Equiv.refl) (eq′ eq″)
+      ; F-resp-≈     = λ eq eq′ eq″ → F.F-resp-≈ (⁂-cong₂ eq C.Equiv.refl) (eq′ eq″)
       }
 
 module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
   private
-    module C  = Category C
+    module C  = Category C using (identityˡ; id; module HomReasoning)
     module CH = C.HomReasoning
-    open Preₚ C
-    open C
-    open Prod C
     P = Presheaves′ o o C
-    module P = Category P
     open Cartesian Car
-    open IsCartesian o o
-    open FromCartesian o o Car
+    open Preₚ.IsCartesian C o o using () renaming (Presheaves-Cartesian to PC)
 
   CanonicalCCC : CCartesianClosed P
   CanonicalCCC = record
@@ -146,30 +137,30 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
     ; π₁-comp      = λ {_ _ f} {_ g} → PC.project₁ {h = f} {g}
     ; π₂-comp      = λ {_ _ f} {_ g} → PC.project₂ {h = f} {g}
     ; ⟨,⟩-unique   = λ {_ _ _ f g h} → PC.unique {h = h} {i = f} {j = g}
-    ; _^_          = Presheaf^
+    ; _^_          = FromCartesian.Presheaf^ o o Car
     ; eval         = λ {F G} →
-      let module F = Functor F
-          module G = Functor G
+      let module F = Functor F using (₀; ₁)
+          module G = Functor G using (₀; ₁)
       in ntHelper record
         { η       = λ X → record
           { _⟨$⟩_ = λ { (α , x) →
-            let module α = NaturalTransformation α
+            let module α = NaturalTransformation α using (η)
             in F.₁ Δ ⟨$⟩ (α.η X ⟨$⟩ x) }
           ; cong  = λ { (eq , eq′) → Π.cong (F.₁ Δ) (eq eq′) }
           }
         ; commute = λ {X Y} f → λ { {α , x} {β , y} (eq , eq′) →
-          let module α = NaturalTransformation α
-              module β = NaturalTransformation β
-              open Setoid  (F.₀ (X × X))
+          let module α = NaturalTransformation α using (η; commute)
+              module β = NaturalTransformation β using (η)
+              open Setoid  (F.₀ (X × X)) using (sym; refl)
               open SetoidR (F.₀ Y)
           in begin
             F.₁ Δ ⟨$⟩ (F.₁ (first f) ⟨$⟩ (α.η Y ⟨$⟩ (G.₁ f ⟨$⟩ x)))
               ≈⟨ Π.cong (F.₁ Δ ∙ F.₁ (first f)) (α.commute f eq′) ⟩
             F.₁ Δ ∙ F.₁ (first f) ∙ F.₁ (second f) ⟨$⟩ (α.η X ⟨$⟩ y)
               ≈⟨ Π.cong (F.₁ Δ) ([ F ]-resp-∘ second∘first refl) ⟩
-            F.₁ Δ ⟨$⟩ (F.F₁ (f ⁂ f) ⟨$⟩ (α.η X ⟨$⟩ y))
+            F.₁ Δ ⟨$⟩ (F.₁ (f ⁂ f) ⟨$⟩ (α.η X ⟨$⟩ y))
               ≈⟨ [ F ]-resp-∘ ⁂∘Δ refl ⟩
-            F.F₁ ⟨ f , f ⟩ ⟨$⟩ (α.η X ⟨$⟩ y)
+            F.₁ ⟨ f , f ⟩ ⟨$⟩ (α.η X ⟨$⟩ y)
               ≈˘⟨ [ F ]-resp-∘ Δ∘ (sym (eq (Setoid.refl (G.₀ X)))) ⟩
             F.₁ f ⟨$⟩ (F.₁ Δ ⟨$⟩ (β.η X ⟨$⟩ y))
               ∎ }
@@ -190,7 +181,7 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
               let open SetoidR (H.₀ (X × Z))
               in begin
                 α.η (X × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ (G.₁ f ⟨$⟩ y))
-                  ≈˘⟨ Π.cong (α.η (X × Z)) ( [ F ]-resp-∘ (π₁∘⁂ CH.○ identityˡ) (Setoid.refl (F.₀ X))
+                  ≈˘⟨ Π.cong (α.η (X × Z)) ( [ F ]-resp-∘ (π₁∘⁂ CH.○ C.identityˡ) (Setoid.refl (F.₀ X))
                                            , [ G ]-resp-square π₂∘⁂ (Setoid.refl (G.₀ Y))) ⟩
                 α.η (X × Z) ⟨$⟩ (F.₁ (second f) ∙ F.₁ π₁ ⟨$⟩ x , G.₁ (second f) ⟨$⟩ (G.₁ π₂ ⟨$⟩ y))
                   ≈⟨ α.commute (second f) (Setoid.refl (F.₀ (X × Y)) , Π.cong (G.₁ π₂) eq) ⟩
@@ -204,7 +195,7 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
           in begin
             α.η (Y × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ (F.₁ f ⟨$⟩ x) , G.₁ π₂ ⟨$⟩ z)
               ≈˘⟨ Π.cong (α.η _) ( [ F ]-resp-square π₁∘⁂ (Setoid.refl (F.₀ X))
-                                 , [ G ]-resp-∘ (π₂∘⁂ CH.○ identityˡ) (Setoid.refl (G.₀ Z))) ⟩
+                                 , [ G ]-resp-∘ (π₂∘⁂ CH.○ C.identityˡ) (Setoid.refl (G.₀ Z))) ⟩
             α.η (Y × Z) ⟨$⟩ (F.₁ (first f) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x) , G.₁ (first f) ⟨$⟩ (G.₁ π₂ ⟨$⟩ z))
               ≈⟨ α.commute (first f) (Π.cong (F.₁ π₁) eq₁ , Π.cong (G.₁ π₂) eq₂) ⟩
             H.₁ (first f) ⟨$⟩ (α.η (X × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ y , G.₁ π₂ ⟨$⟩ w))
@@ -227,7 +218,7 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
           ≈⟨ Π.cong (α.η X) (H.identity HX.refl , G.identity GX.refl) ⟩
         α.η X ⟨$⟩ (z , w)
           ∎ }
-    ; curry-resp-≈ = λ {F G H} eq eq₁ eq₂ → 
+    ; curry-resp-≈ = λ {F G H} eq eq₁ eq₂ →
       let module G = Functor G
           module H = Functor H
       in eq (Π.cong (G.₁ π₁) eq₁ , Π.cong (H.₁ π₂) eq₂)
@@ -256,9 +247,6 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
         β.η (X × Y) ⟨$⟩ (F.₁ π₁ ⟨$⟩ y , H.₁ π₂ ⟨$⟩ w)
           ∎
     }
-    where module PC = Presheaves-Cartesian
 
   Presheaves-CartesianClosed : CartesianClosed P
   Presheaves-CartesianClosed = Equivalence.fromCanonical P CanonicalCCC
-
-  module Presheaves-CartesianClosed = CartesianClosed Presheaves-CartesianClosed
