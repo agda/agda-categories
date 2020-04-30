@@ -2,6 +2,9 @@
 open import Categories.Category.Core
 open import Categories.Category.Monoidal.Core
 
+-- This module defines the category of monoids internal to a given monoidal
+-- category.
+
 module Categories.Category.Construction.Monoids {o ℓ e} {𝒞 : Category o ℓ e} (C : Monoidal 𝒞) where
 
 open import Level
