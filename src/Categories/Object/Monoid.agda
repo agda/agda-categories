@@ -30,3 +30,9 @@ record Monoid : Set (o ⊔ ℓ ⊔ e) where
   open IsMonoid isMonoid public
 
 open Monoid
+
+record Monoid⇒ (M M′ : Monoid) : Set (ℓ ⊔ e) where
+  field
+    arr : Carrier M ⇒ Carrier M′
+    preserves-μ : arr ∘ μ M ≈ μ M′ ∘ arr ⊗₁ arr
+    preserves-η : arr ∘ η M ≈ η M′
