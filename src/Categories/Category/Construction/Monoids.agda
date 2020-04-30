@@ -7,6 +7,7 @@ module Categories.Category.Construction.Monoids {o ℓ e} {𝒞 : Category o ℓ
 open import Level
 
 open import Categories.Functor using (Functor)
+open import Categories.Morphism.Reasoning 𝒞
 open import Categories.Object.Monoid C
 
 open Category 𝒞
@@ -22,43 +23,21 @@ Monoids = record
   ; _≈_ = λ f g → arr f ≈ arr g
   ; id = λ {A} → record
     { arr = id
-    ; preserves-μ = begin
-      id ∘ μ A
-        ≈⟨ identityˡ ⟩
-      μ A
-        ≈⟨ sym identityʳ ⟩
-      μ A ∘ id
-        ≈⟨ (refl ⟩∘⟨ sym (Functor.identity ⊗)) ⟩
-      μ A ∘ id ⊗₁ id
-        ∎
+    ; preserves-μ = trans identityˡ (introʳ (Functor.identity ⊗))
     ; preserves-η = identityˡ
     }
   ; _∘_ = λ {A B C} f g → record
     { arr = arr f ∘ arr g
     ; preserves-μ = begin
       (arr f ∘ arr g) ∘ μ A
-        ≈⟨ assoc ⟩
-      arr f ∘ (arr g ∘ μ A)
-        ≈⟨ (refl⟩∘⟨ preserves-μ g) ⟩
+        ≈⟨ pullʳ (preserves-μ g) ⟩
       arr f ∘ (μ B ∘ arr g ⊗₁ arr g)
-        ≈⟨ sym assoc ⟩
-      (arr f ∘ μ B) ∘ arr g ⊗₁ arr g
-        ≈⟨ (preserves-μ f ⟩∘⟨refl) ⟩
+        ≈⟨ pullˡ (preserves-μ f) ⟩
       (μ C ∘ arr f ⊗₁ arr f) ∘ arr g ⊗₁ arr g
-        ≈⟨ assoc ⟩
-      μ C ∘ (arr f ⊗₁ arr f ∘ arr g ⊗₁ arr g)
-        ≈⟨ (refl⟩∘⟨ sym (Functor.homomorphism ⊗)) ⟩
+        ≈⟨ pullʳ (sym (Functor.homomorphism ⊗)) ⟩
       μ C ∘ (arr f ∘ arr g) ⊗₁ (arr f ∘ arr g)
         ∎
-    ; preserves-η = begin
-      (arr f ∘ arr g) ∘ η A
-        ≈⟨ assoc ⟩
-      arr f ∘ (arr g ∘ η A)
-        ≈⟨ (refl⟩∘⟨ preserves-η g) ⟩
-      arr f ∘ η B
-        ≈⟨ preserves-η f ⟩
-      η C
-        ∎
+    ; preserves-η = trans (pullʳ (preserves-η g)) (preserves-η f)
     }
   ; assoc = assoc
   ; sym-assoc = sym-assoc
