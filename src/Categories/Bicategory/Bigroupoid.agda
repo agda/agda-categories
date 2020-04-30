@@ -6,8 +6,10 @@ open import Level
 open import Function using (_$_)
 open import Data.Product using (Σ; _,_)
 
+open import Categories.Adjoint.Equivalence using (_⊣⊢_)
 open import Categories.Category
 open import Categories.Category.Equivalence using (WeakInverse)
+import Categories.Category.Equivalence.Properties as EP
 open import Categories.Category.Product
 open import Categories.Category.Groupoid using (IsGroupoid)
 open import Categories.Bicategory
@@ -154,9 +156,8 @@ record IsBigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ 
   hom⁻¹-weakInverse : ∀ {A B} → WeakInverse hom[ A , B ]⁻¹ hom[ B , A ]⁻¹
   hom⁻¹-weakInverse = record { F∘G≈id = hom⁻¹⁻¹≃id ; G∘F≈id = hom⁻¹⁻¹≃id }
 
-  module hom⁻¹-weakInverse {A B} = WeakInverse (hom⁻¹-weakInverse {A} {B})
-
-  open hom⁻¹-weakInverse using () renaming (F⊣⊢G to hom⁻¹-⊣Equivalence) public
+  hom⁻¹-⊣Equivalence : ∀ {A} {B} → hom[ A , B ]⁻¹ ⊣⊢ hom[ B , A ]⁻¹
+  hom⁻¹-⊣Equivalence {A} {B} = EP.F⊣⊢G (hom⁻¹-weakInverse {A} {B})
 
 -- A bigroupoid is a bicategory that has a bigroupoid structure
 

@@ -72,6 +72,7 @@ import Categories.Category.Core
 import Categories.Category.Discrete
 import Categories.Category.Duality
 import Categories.Category.Equivalence
+import Categories.Category.Equivalence.Properties
 import Categories.Category.Finite
 import Categories.Category.Finite.Fin
 import Categories.Category.Finite.Fin.Construction.Discrete
