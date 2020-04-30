@@ -245,6 +245,7 @@ import Categories.Object.Coproduct
 import Categories.Object.Duality
 import Categories.Object.Exponential
 import Categories.Object.Initial
+import Categories.Object.Monoid
 import Categories.Object.Product
 import Categories.Object.Product.Construction
 import Categories.Object.Product.Core
