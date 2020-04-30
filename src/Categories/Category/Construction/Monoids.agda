@@ -43,6 +43,8 @@ Monoids = record
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
   ; identity² = identity²
+  -- We cannot define equiv = equiv here, because _⇒_ of this category is a
+  -- different level to the _⇒_ of 𝒞.
   ; equiv = record
     { refl = refl
     ; sym = sym
