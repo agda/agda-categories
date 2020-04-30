@@ -12,7 +12,7 @@ import Function.Inverse as FI
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
 -- be explicit in imports to 'see' where the information comes from
-open import Categories.Category using (Category)
+open import Categories.Category.Core using (Category)
 open import Categories.Category.Product using (Product; _⁂_)
 open import Categories.Category.Instance.Setoids
 open import Categories.Morphism
@@ -336,7 +336,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
     module R = Functor R
     open Functor
     open Π
-    
+
     Hom[L-,-] : Bifunctor C.op D (Setoids _ _)
     Hom[L-,-] = LiftSetoids ℓ e ∘F Hom[ D ][-,-] ∘F (L.op ⁂ idF)
 
@@ -344,11 +344,11 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
     Hom[-,R-] = LiftSetoids ℓ′ e′ ∘F Hom[ C ][-,-] ∘F (idF ⁂ R)
 
   module _ (Hni : Hom[L-,-] ≃ Hom[-,R-]) where
-    open NaturalIsomorphism Hni
+    open NaturalIsomorphism Hni using (module ⇒; module ⇐; iso)
     private
       unitη : ∀ X → F₀ Hom[L-,-] (X , L.F₀ X) ⟶ F₀ Hom[-,R-] (X , L.F₀ X)
       unitη X = ⇒.η (X , L.F₀ X)
-  
+
       unit : NaturalTransformation idF (R ∘F L)
       unit = ntHelper record
         { η       = λ X → lower (unitη X ⟨$⟩ lift D.id)
@@ -370,7 +370,6 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
         where open C
               open HomReasoning
               open MR C
-  
 
       counitη : ∀ X → F₀ Hom[-,R-] (R.F₀ X , X) ⟶ F₀ Hom[L-,-] (R.F₀ X , X)
       counitη X = ⇐.η (R.F₀ X , X)
@@ -458,22 +457,23 @@ _∘⊣_ {C = C} {D = D} {E = E} {L = L} {R} {M} {S} LR MS = record
   ; zag = λ {B} → zag′ {B}
   }
   where
-    open Functor
-    open NaturalTransformation
-    open NaturalIsomorphism
-    module LR = Adjoint LR renaming (unit to LRη′; counit to LRε′)
-    module MS = Adjoint MS renaming (unit to MSη′; counit to MSε′)
-    module LRη = NaturalTransformation (Adjoint.unit LR) renaming (η to ηLR)
-    module MSη = NaturalTransformation (Adjoint.unit MS) renaming (η to ηMS)
-    module LRε = NaturalTransformation (Adjoint.counit LR) renaming (η to εLR)
-    module MSε = NaturalTransformation (Adjoint.counit MS) renaming (η to εMS)
-    module C = Category C
-    module D = Category D
-    module E = Category E
-    module L = Functor L renaming (F₀ to L₀; F₁ to L₁)
-    module M = Functor M renaming (F₀ to M₀; F₁ to M₁)
-    module R = Functor R renaming (F₀ to R₀; F₁ to R₁)
-    module S = Functor S renaming (F₀ to S₀; F₁ to S₁)
+    open NaturalIsomorphism using (F⇒G; F⇐G)
+    module LR = Adjoint LR using (zig; zag) renaming (unit to LRη′; counit to LRε′)
+    module MS = Adjoint MS using (zig; zag) renaming (unit to MSη′; counit to MSε′)
+    module LRη = NaturalTransformation (Adjoint.unit LR) using () renaming (η to ηLR)
+    module MSη = NaturalTransformation (Adjoint.unit MS) using (commute) renaming (η to ηMS)
+    module LRε = NaturalTransformation (Adjoint.counit LR) using (commute) renaming (η to εLR)
+    module MSε = NaturalTransformation (Adjoint.counit MS) using () renaming (η to εMS)
+    module C = Category C using (Obj; id; _∘_; _≈_; sym-assoc; ∘-resp-≈ˡ; ∘-resp-≈;
+      ∘-resp-≈ʳ; identityˡ; identityʳ; module HomReasoning)
+    module D = Category D using (id; _∘_; ∘-resp-≈ˡ; sym-assoc; ∘-resp-≈ʳ; identityˡ;
+      module HomReasoning; assoc)
+    module E = Category E using (Obj; id; _∘_; _≈_; identityˡ; ∘-resp-≈ʳ; module HomReasoning;
+      assoc; sym-assoc; identityʳ)
+    module L = Functor L using (homomorphism; F-resp-≈) renaming (F₀ to L₀; F₁ to L₁)
+    module M = Functor M using (F-resp-≈; identity; homomorphism) renaming (F₀ to M₀; F₁ to M₁)
+    module R = Functor R using (F-resp-≈; identity; homomorphism) renaming (F₀ to R₀; F₁ to R₁)
+    module S = Functor S using (F-resp-≈; homomorphism) renaming (F₀ to S₀; F₁ to S₁)
     open LR; open MS; open LRη; open LRε; open MSε; open MSη; open L; open M; open R; open S
 
     zig′ : {A : C.Obj} → (εMS (M₀ (L₀ A)) E.∘
