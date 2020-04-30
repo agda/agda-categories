@@ -12,7 +12,8 @@ open import Categories.Category
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)
-open import Categories.Adjoint.Equivalence using (_⊣⊢_; ⊣Equivalence; withZig)
+open import Categories.Adjoint.Equivalence using (⊣Equivalence)
+open import Categories.Adjoint.TwoSided using (_⊣⊢_; withZig)
 import Categories.Morphism as Mor
 import Categories.Category.Instance.Span as Sp
 
@@ -21,7 +22,7 @@ private
     a b c d : Fin 3
 
 -- The diagram is the following:
--- 
+--
 -- 1 <------- 0 -------> 2
 --
 SpanShape : FinCatShape

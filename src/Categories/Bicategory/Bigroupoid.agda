@@ -6,7 +6,7 @@ open import Level
 open import Function using (_$_)
 open import Data.Product using (Σ; _,_)
 
-open import Categories.Adjoint.Equivalence using (_⊣⊢_)
+open import Categories.Adjoint.TwoSided using (_⊣⊢_)
 open import Categories.Category
 open import Categories.Category.Equivalence using (WeakInverse)
 import Categories.Category.Equivalence.Properties as EP

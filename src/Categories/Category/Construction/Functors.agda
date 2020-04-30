@@ -6,7 +6,8 @@ module Categories.Category.Construction.Functors where
 open import Level
 open import Data.Product using (_,_; proj₁; uncurry′)
 
-open import Categories.Adjoint.Equivalence using (⊣Equivalence; withZig)
+open import Categories.Adjoint.Equivalence using (⊣Equivalence)
+open import Categories.Adjoint.TwoSided using (withZig)
 open import Categories.Category using (Category; _[_∘_])
 open import Categories.Category.Product using (_※ⁿ_) renaming (Product to _×_)
 open import Categories.Functor using (Functor; _∘F_)

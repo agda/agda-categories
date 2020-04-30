@@ -4,7 +4,8 @@ module Categories.Category.Equivalence.Properties where
 
 open import Level
 
-open import Categories.Adjoint.Equivalence using (_⊣⊢_; ⊣Equivalence; withZig)
+open import Categories.Adjoint.Equivalence using (⊣Equivalence)
+open import Categories.Adjoint.TwoSided using (_⊣⊢_; withZig)
 open import Categories.Category.Core
 open import Categories.Category.Equivalence using (WeakInverse; StrongEquivalence)
 import Categories.Morphism.Reasoning as MR
