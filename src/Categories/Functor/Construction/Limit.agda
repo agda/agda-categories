@@ -6,6 +6,7 @@ open import Function using (_$_)
 
 open import Categories.Adjoint
 open import Categories.Adjoint.Equivalence
+open import Categories.Adjoint.Compose
 open import Categories.Adjoint.Properties
 open import Categories.Category
 open import Categories.Category.Construction.Cones
