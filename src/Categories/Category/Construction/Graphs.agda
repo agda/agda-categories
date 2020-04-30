@@ -3,6 +3,7 @@
 module Categories.Category.Construction.Graphs where
 
 -- The "Underlying Graph" <-> "Free Category on a Graph" Adjunction.
+--   [It's actually a Multidigraph, or Quiver.  Use the latter.]
 -- Lots of surprises here, of various level of surprisingness
 -- 1. The Free Category rises universe levels of arrows (and equivalences); the Underlying Graph does not
 --   (due to the Transitive Closure "Star" construction)
@@ -28,6 +29,7 @@ import Relation.Binary.Reasoning.Setoid as EqR
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive.Properties hiding (trans)
 open import Data.Product using (proj₁; proj₂; _,_)
+open import Data.Quiver
 
 open import Categories.Category
 open import Categories.Functor using (Functor)
@@ -38,26 +40,6 @@ open import Categories.NaturalTransformation hiding (id)
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans; isEquivalence)
 open import Categories.Adjoint
 import Categories.Morphism.HeterogeneousIdentity as HId
-
--- a graph has vertices Obj and edges _⇒_, where edges form a setoid over _≈_.
-record Graph o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
-  infix 4 _≈_ _⇒_
-
-  field
-    Obj   : Set o
-    _⇒_   : Rel Obj ℓ
-    _≈_   : ∀ {A B} → Rel (A ⇒ B) e
-    equiv : ∀ {A B} → IsEquivalence (_≈_ {A} {B})
-
-  setoid : {A B : Obj} → Setoid _ _
-  setoid {A} {B} = record
-    { Carrier       = A ⇒ B
-    ; _≈_           = _≈_
-    ; isEquivalence = equiv
-    }
-
-  module Equiv {A} {B} = IsEquivalence (equiv {A} {B})
-  module EdgeReasoning {A B : Obj} = EqR (setoid {A} {B})
 
 private
   variable
@@ -112,8 +94,8 @@ module PathEquiv {o ℓ e : Level} {Obj : Set o} {_⇒_ : Obj → Obj → Set �
   module PathEqualityReasoning {A B} where
     open EqR (setoid A B) public
 
-module _ (G : Graph o ℓ e) where
-  open Graph G
+module _ (G : Quiver o ℓ e) where
+  open Quiver G
   private module P = PathEquiv {o} {ℓ} {e} {Obj} {_⇒_} _≈_ equiv
   open P
 
@@ -139,20 +121,20 @@ module _ (G : Graph o ℓ e) where
 
   open P public renaming (_≈*_ to [_]_≈*_)
 
-record GraphMorphism (G : Graph o ℓ e) (G′ : Graph o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
+record GraphMorphism (G : Quiver o ℓ e) (G′ : Quiver o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   private
-    module G  = Graph G
-    module G′ = Graph G′
+    module G  = Quiver G
+    module G′ = Quiver G′
 
   field
     M₀       : G.Obj → G′.Obj
     M₁       : ∀ {A B} → A G.⇒ B → M₀ A G′.⇒ M₀ B
     M-resp-≈ : ∀ {A B} {f g : A G.⇒ B} → f G.≈ g → M₁ f G′.≈ M₁ g
 
-idGHom : {G : Graph o ℓ e} → GraphMorphism G G
+idGHom : {G : Quiver o ℓ e} → GraphMorphism G G
 idGHom = record { M₀ = idFun ; M₁ = idFun ; M-resp-≈ = idFun }
 
-_∘GM_ : {G₁ G₂ G₃ : Graph o ℓ e} (m₁ : GraphMorphism G₂ G₃) (m₂ : GraphMorphism G₁ G₂) → GraphMorphism G₁ G₃
+_∘GM_ : {G₁ G₂ G₃ : Quiver o ℓ e} (m₁ : GraphMorphism G₂ G₃) (m₂ : GraphMorphism G₁ G₂) → GraphMorphism G₁ G₃
 m₁ ∘GM m₂ = record
   { M₀ = M₀ m₁ ⊚ M₀ m₂
   ; M₁ = M₁ m₁ ⊚ M₁ m₂
@@ -160,8 +142,8 @@ m₁ ∘GM m₂ = record
   }
   where open GraphMorphism
 
-module Trsp (G : Graph o ℓ e) where
-  open Graph G
+module Trsp (G : Quiver o ℓ e) where
+  open Quiver G
 
   -- Two shorthands that will be useful for the definition of morphism
   -- equality: transport the domain or codomain of an edge along an
@@ -196,10 +178,10 @@ module Trsp (G : Graph o ℓ e) where
   ▸-resp-≈ : ∀ {A B C} {f g : A ⇒ B} → f ≈ g → (p : B ≡ C) → f ▸ p ≈ g ▸ p
   ▸-resp-≈ f≈g ≡.refl = f≈g
 
-module TrspGM {G : Graph o ℓ e} {H : Graph o′ ℓ′ e′}
+module TrspGM {G : Quiver o ℓ e} {H : Quiver o′ ℓ′ e′}
               (m : GraphMorphism G H) where
-  module G = Graph G
-  module H = Graph H
+  module G = Quiver G
+  module H = Quiver H
   open GraphMorphism m
   open Trsp G
   open Trsp H using () renaming (_◂_ to _◃_; _▸_ to _▹_)
@@ -212,11 +194,11 @@ module TrspGM {G : Graph o ℓ e} {H : Graph o′ ℓ′ e′}
              M₁ (p ◂ f) ≡ ≡.cong M₀ p ◃ M₁ f
   M-resp-◂ ≡.refl f = ≡.refl
 
-record GraphMorphism≈ {G : Graph o ℓ e} {G′ : Graph o′ ℓ′ e′}
+record GraphMorphism≈ {G : Quiver o ℓ e} {G′ : Quiver o′ ℓ′ e′}
                       (M M′ : GraphMorphism G G′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   private
-    module G  = Graph G
-    module G′ = Graph G′
+    module G  = Quiver G
+    module G′ = Quiver G′
     module M  = GraphMorphism M
     module M′ = GraphMorphism M′
   open Trsp G′
@@ -230,7 +212,7 @@ record GraphMorphism≈ {G : Graph o ℓ e} {G′ : Graph o′ ℓ′ e′}
 
 Graphs : ∀ o ℓ e → Category (suc (o ⊔ ℓ ⊔ e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
 Graphs o ℓ e = record
-  { Obj       = Graph o ℓ e
+  { Obj       = Quiver o ℓ e
   ; _⇒_       = GraphMorphism
   ; _≈_       = GraphMorphism≈
   ; id        = idGHom
@@ -312,14 +294,14 @@ Graphs o ℓ e = record
     }
   }
   where
-    open Graph
+    open Quiver
     open GraphMorphism
     open GraphMorphism≈
 
 open _≡F_
 
 -- Put the rest of the Graph stuff here too:
-Underlying₀ : Category o ℓ e → Graph o ℓ e
+Underlying₀ : Category o ℓ e → Quiver o ℓ e
 Underlying₀ C = record { Obj = C.Obj ; _⇒_ = C._⇒_ ; _≈_ = C._≈_ ; equiv = C.equiv }
   where module C = Category C
 
@@ -340,7 +322,7 @@ Underlying = record
           open HId B
           open Trsp (Underlying₀ B)
           open Functor
-          open Graph.EdgeReasoning (Underlying₀ B)
+          open Quiver.EdgeReasoning (Underlying₀ B)
       in begin
         F₁ F f ▸ eq₀ F≈G y         ≈⟨ hid-subst-cod (F₁ F f) (eq₀ F≈G y) ⟩
         hid (eq₀ F≈G y) ∘ F₁ F f   ≈⟨ eq₁ F≈G f ⟩
@@ -354,8 +336,8 @@ Underlying = record
 
 -- Transports on paths
 
-module TrspStar (G : Graph o ℓ e) where
-  open Graph G
+module TrspStar (G : Quiver o ℓ e) where
+  open Quiver G
   open Trsp (Underlying₀ (Free G)) public using () renaming
     ( _◂_ to _◂*_
     ; _▸_ to _▸*_
@@ -380,16 +362,16 @@ module TrspStar (G : Graph o ℓ e) where
   ◅-◂*-▸ f ≡.refl fs = ≡.refl
 
 -- define these ahead of time
-module _ {G₁ G₂ : Graph o ℓ e} (G⇒ : GraphMorphism G₁ G₂) where
-  open Graph G₁ renaming (_⇒_ to _⇒₁_; Obj to Obj₁)
-  open Graph G₂ renaming (_⇒_ to _⇒₂_; Obj to Obj₂; module Equiv to Equiv₂)
+module _ {G₁ G₂ : Quiver o ℓ e} (G⇒ : GraphMorphism G₁ G₂) where
+  open Quiver G₁ renaming (_⇒_ to _⇒₁_; Obj to Obj₁)
+  open Quiver G₂ renaming (_⇒_ to _⇒₂_; Obj to Obj₂; module Equiv to Equiv₂)
   open GraphMorphism G⇒
 
   mapGraph : {A B : Obj₁} → Star _⇒₁_ A B → Star _⇒₂_ (M₀ A) (M₀ B)
   mapGraph ε = ε
   mapGraph (x ◅ y) = M₁ x ◅ mapGraph y
 
-  map-hom : {X Y Z : Graph.Obj G₁} (f : Star _⇒₁_ X Y) {g : Star _⇒₁_ Y Z} →
+  map-hom : {X Y Z : Quiver.Obj G₁} (f : Star _⇒₁_ X Y) {g : Star _⇒₁_ Y Z} →
       [ G₂ ] mapGraph (f ◅◅ g) ≈* (mapGraph f ◅◅ mapGraph g)
   map-hom ε {g} = refl G₂
   map-hom (x ◅ f) {g} = Equiv₂.refl ◅ map-hom f
@@ -400,23 +382,23 @@ module _ {G₁ G₂ : Graph o ℓ e} (G⇒ : GraphMorphism G₁ G₂) where
   map-resp (x ◅ f) (f≈* ◅ eq) = M-resp-≈ f≈* ◅ map-resp f eq
 
 -- don't want a single global GraphMorphism
-module _ {G : Graph o ℓ e} where
-  open Graph G
+module _ {G : Quiver o ℓ e} where
+  open Quiver G
 
   map-id : {A B : Obj} (f : Star _⇒_ A B) → [ G ] mapGraph (idGHom {G = G}) f ≈* f
   map-id ε        = ε
   map-id (fs ◅ f) = Equiv.refl ◅ map-id f
 
-module _ {X Y Z : Graph o ℓ e} {G₁ : GraphMorphism X Y} {G₂ : GraphMorphism Y Z} where
-  open Graph X
+module _ {X Y Z : Quiver o ℓ e} {G₁ : GraphMorphism X Y} {G₂ : GraphMorphism Y Z} where
+  open Quiver X
 
   map-∘ : {A B : Obj} (f : Star _⇒_ A B) → [ Z ] (mapGraph (G₂ ∘GM G₁) f) ≈* mapGraph G₂ (mapGraph G₁ f)
   map-∘ ε        = ε
-  map-∘ (fs ◅ f) = Graph.Equiv.refl Z ◅ map-∘ f
+  map-∘ (fs ◅ f) = Quiver.Equiv.refl Z ◅ map-∘ f
 
-module _ {G H : Graph o ℓ e} {f g : GraphMorphism G H}
+module _ {G H : Quiver o ℓ e} {f g : GraphMorphism G H}
          (f≈g : GraphMorphism≈ f g) where
-  open Graph G
+  open Quiver G
   open GraphMorphism
   open GraphMorphism≈ f≈g
   open TrspStar H
@@ -427,7 +409,7 @@ module _ {G H : Graph o ℓ e} {f g : GraphMorphism G H}
   map-M₁≡ ε        = ≡⇒≈* H (◂*-▸*-ε M₀≡)
   map-M₁≡ (hs ◅ h) = begin
     (M₁ f hs ◅ mapGraph f h) ▸* M₀≡   ≡⟨ ◅-▸* (M₁ f hs) _ M₀≡ ⟩
-    M₁ f hs ◅ (mapGraph f h ▸* M₀≡)   ≈⟨ Graph.Equiv.refl H ◅ map-M₁≡ h ⟩
+    M₁ f hs ◅ (mapGraph f h ▸* M₀≡)   ≈⟨ Quiver.Equiv.refl H ◅ map-M₁≡ h ⟩
     M₁ f hs ◅ (M₀≡ ◂* mapGraph g h)   ≡⟨ ◅-◂*-▸ (M₁ f hs) M₀≡ _ ⟩
     (M₁ f hs ▸ M₀≡) ◅ mapGraph g h    ≈⟨ M₁≡ ◅ (refl H) ⟩
     (M₀≡ ◂ M₁ g hs) ◅ mapGraph g h    ≡˘⟨ ◂*-◅ M₀≡ (M₁ g hs) _ ⟩
@@ -492,7 +474,7 @@ CatF-is-Free : (o ℓ e : Level) → Adjoint (CatF {o} {o ⊔ ℓ} {o ⊔ ℓ �
 CatF-is-Free o ℓ e = record
   { unit = ntHelper record
     { η = GM
-    ; commute = λ {X} {Y} f → record { M₀≡ = ≡.refl ; M₁≡ = Graph.Equiv.refl Y ◅ ε }
+    ; commute = λ {X} {Y} f → record { M₀≡ = ≡.refl ; M₁≡ = Quiver.Equiv.refl Y ◅ ε }
     }
   ; counit = ntHelper record
     { η = λ X → record
@@ -514,7 +496,7 @@ CatF-is-Free o ℓ e = record
   ; zag = λ {B} → record { M₀≡ = ≡.refl ; M₁≡ = Category.identityˡ B  }
   }
   where
-  GM : (X : Graph o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) → GraphMorphism X (Underlying₀ (Free X))
+  GM : (X : Quiver o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) → GraphMorphism X (Underlying₀ (Free X))
   GM _ = record { M₀ = idFun ; M₁ = return ; M-resp-≈ = λ f≈g → f≈g ◅ ε }
   module _ (X : Category o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) where
     open Category X
@@ -529,10 +511,10 @@ CatF-is-Free o ℓ e = record
     unwind-resp-≈ ε = Equiv.refl
     unwind-resp-≈ (x ◅ eq) = ∘-resp-≈ (unwind-resp-≈ eq) x
 
-  zig′ : (X : Graph o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) → {A B : Graph.Obj X} → (f : Star (Graph._⇒_ X) A B) →
+  zig′ : (X : Quiver o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) → {A B : Quiver.Obj X} → (f : Star (Quiver._⇒_ X) A B) →
     [ X ] (unwind (Free X)) (mapGraph (GM X) f) ≈* f
   zig′ A ε        = ε
-  zig′ A (fs ◅ f) = Graph.Equiv.refl A ◅ zig′ A f
+  zig′ A (fs ◅ f) = Quiver.Equiv.refl A ◅ zig′ A f
 
   module _ {X Y : Category o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)} (F : Functor X Y) where
     open Category X renaming (Obj to Obj₁; _⇒_ to _⇒₁_)
