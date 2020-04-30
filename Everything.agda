@@ -16,6 +16,7 @@ import Categories.Adjoint.Mate
 import Categories.Adjoint.Properties
 import Categories.Adjoint.RAPL
 import Categories.Adjoint.TwoSided
+import Categories.Adjoint.TwoSided.Compose
 import Categories.Bicategory
 import Categories.Bicategory.Bigroupoid
 import Categories.Bicategory.Construction.1-Category
