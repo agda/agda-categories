@@ -13,9 +13,3 @@ record BicartesianClosed : Set (levelOfTerm 𝒞) where
   field
     cartesianClosed : CartesianClosed
     cocartesian     : Cocartesian
-
-  -- module cartesianClosed = CartesianClosed cartesianClosed
-  -- module cocartesian     = Cocartesian cocartesian
-
-  -- open cartesianClosed public
-  -- open cocartesian public
