@@ -1,8 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 -- The Underlying category of an Enriched category over a Monoidal category V
 open import Categories.Category.Monoidal using (Monoidal)
-open import Categories.Category
-  using (categoryHelper) renaming (Category to Setoid-Category)
+open import Categories.Category.Core renaming (Category to Setoid-Category)
 
 module Categories.Enriched.Category.Underlying {o ℓ e} {V : Setoid-Category o ℓ e}
                                     (M : Monoidal V) where
@@ -11,6 +10,7 @@ open import Level
 open import Function using (_$_)
 
 open import Categories.Enriched.Category
+open import Categories.Category.Helper
 open import Categories.Category.Monoidal.Properties M using (module Kelly's)
 open import Categories.Category.Monoidal.Reasoning M
 open import Categories.Category.Monoidal.Utilities M using (module Shorthands)

@@ -3,12 +3,13 @@
 module Categories.Category.Instance.FinCatShapes where
 
 open import Data.Nat using (ℕ)
-open import Data.Fin
+open import Data.Fin using (Fin)
 
 open import Relation.Binary using (IsEquivalence)
 open import Relation.Binary.PropositionalEquality as ≡ using (refl; _≡_; module ≡-Reasoning)
 
-open import Categories.Category
+open import Categories.Category.Core using (Category)
+open import Categories.Category.Helper
 open import Categories.Category.Finite.Fin
 
 open import Categories.Utils.EqReasoning
@@ -61,11 +62,11 @@ private
     ; homomorphism = λ {a b c} {z w} → begin
       f.F₁ (g.F₁ (w A.∘ z))           ≡⟨ ≡.cong f.F₁ g.homomorphism ⟩
       f.F₁ (g.F₁ w B.∘ g.F₁ z)        ≡⟨ f.homomorphism ⟩
-      f.F₁ (g.F₁ w) C.∘ f.F₁ (g.F₁ z) ∎ 
+      f.F₁ (g.F₁ w) C.∘ f.F₁ (g.F₁ z) ∎
     }
-    where module A = FinCatShape A
-          module B = FinCatShape B
-          module C = FinCatShape C
+    where module A = FinCatShape A using (id; _∘_)
+          module B = FinCatShape B using (id; _∘_)
+          module C = FinCatShape C using (id; _∘_)
           module f = FinCatShape⇒ f
           module g = FinCatShape⇒ g
 
@@ -88,18 +89,12 @@ private
     { F₀≡ = λ x → refl
     ; F₁≡ = λ w → refl
     }
-    where module A = FinCatShape A
-          module B = FinCatShape B
-          module f = FinCatShape⇒ f
 
   identityʳ : ∀ {A B} {f : FinCatShape⇒ A B} → comp f id ≈ f
   identityʳ {A} {B} {f} = record
     { F₀≡ = λ x → refl
     ; F₁≡ = λ w → refl
     }
-    where module A = FinCatShape A
-          module B = FinCatShape B
-          module f = FinCatShape⇒ f
 
   equiv : ∀ {A B} → IsEquivalence (_≈_ {A} {B})
   equiv {A} {B} = record
