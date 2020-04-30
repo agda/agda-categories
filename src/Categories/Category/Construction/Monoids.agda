@@ -31,7 +31,7 @@ Monoids = record
     ; preserves-μ = begin
       (arr f ∘ arr g) ∘ μ A                    ≈⟨ pullʳ (preserves-μ g) ⟩
       arr f ∘ (μ B ∘ arr g ⊗₁ arr g)           ≈⟨ pullˡ (preserves-μ f) ⟩
-      (μ C ∘ arr f ⊗₁ arr f) ∘ arr g ⊗₁ arr g  ≈⟨ pullʳ (sym (Functor.homomorphism ⊗)) ⟩
+      (μ C ∘ arr f ⊗₁ arr f) ∘ arr g ⊗₁ arr g  ≈˘⟨ pushʳ (Functor.homomorphism ⊗) ⟩
       μ C ∘ (arr f ∘ arr g) ⊗₁ (arr f ∘ arr g) ∎
     ; preserves-η = trans (pullʳ (preserves-η g)) (preserves-η f)
     }
