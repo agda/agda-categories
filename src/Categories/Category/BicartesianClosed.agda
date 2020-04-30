@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 
 module Categories.Category.BicartesianClosed {o ℓ e} (𝒞 : Category o ℓ e) where
 
@@ -14,8 +14,8 @@ record BicartesianClosed : Set (levelOfTerm 𝒞) where
     cartesianClosed : CartesianClosed
     cocartesian     : Cocartesian
 
-  module cartesianClosed = CartesianClosed cartesianClosed
-  module cocartesian     = Cocartesian cocartesian
+  -- module cartesianClosed = CartesianClosed cartesianClosed
+  -- module cocartesian     = Cocartesian cocartesian
 
-  open cartesianClosed public
-  open cocartesian public
+  -- open cartesianClosed public
+  -- open cocartesian public
