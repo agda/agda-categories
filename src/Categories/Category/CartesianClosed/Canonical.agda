@@ -27,7 +27,6 @@ open import Categories.Object.Terminal 𝒞 using (Terminal)
 open import Categories.Morphism.Reasoning 𝒞
 
 private
-  module 𝒞 = Category 𝒞
   open Category 𝒞
   open HomReasoning
 
@@ -80,7 +79,6 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     ; products = record { product = ×-product }
     }
 
-  -- module cartesian = Cartesian isCartesian
   open Cartesian isCartesian public
     hiding (_×_; π₁; π₂; ⟨_,_⟩)
     renaming (⟨⟩-cong₂ to ⟨,⟩-resp-≈)
