@@ -59,6 +59,7 @@ import Categories.Category.Construction.Functors
 import Categories.Category.Construction.Graphs
 import Categories.Category.Construction.Grothendieck
 import Categories.Category.Construction.Kleisli
+import Categories.Category.Construction.Monoids
 import Categories.Category.Construction.Path
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Construction.Properties.Comma
@@ -246,6 +247,7 @@ import Categories.Object.Coproduct
 import Categories.Object.Duality
 import Categories.Object.Exponential
 import Categories.Object.Initial
+import Categories.Object.Monoid
 import Categories.Object.Product
 import Categories.Object.Product.Construction
 import Categories.Object.Product.Core
