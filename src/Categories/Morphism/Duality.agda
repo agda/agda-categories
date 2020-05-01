@@ -4,6 +4,8 @@ open import Categories.Category
 
 module Categories.Morphism.Duality {o ℓ e} (C : Category o ℓ e) where
 
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+
 open Category C
 
 import Categories.Morphism as M
@@ -53,3 +55,12 @@ op-≅⇒≅ A≅B = record
   ; iso  = op-Iso⇒Iso iso
   }
   where open Op._≅_ A≅B
+
+
+module DualityConversionProperties where
+  private
+    Iso⇔op-Iso : ∀(iso : Iso f g) → op-Iso⇒Iso (Iso⇒op-Iso iso) ≡ iso
+    Iso⇔op-Iso _ = refl
+
+    ≅⇔op-≅ : ∀(A′ B′ : Obj) → (A′≅B′ : A′ ≅ B′) -> op-≅⇒≅ (≅⇒op-≅ A′≅B′) ≡ A′≅B′
+    ≅⇔op-≅ _ _ _ = refl
