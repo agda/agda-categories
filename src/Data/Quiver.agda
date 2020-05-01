@@ -6,7 +6,7 @@ module Data.Quiver where
 -- a category.
 
 open import Level
-open import Relation.Binary hiding (_⇒_)
+open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 import Relation.Binary.Reasoning.Setoid as EqR
 
 -- a Quiver has vertices Obj and edges _⇒_, where edges form a setoid over _≈_.

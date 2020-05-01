@@ -30,6 +30,7 @@ open import Relation.Binary.Construct.Closure.ReflexiveTransitive
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive.Properties hiding (trans)
 open import Data.Product using (proj₁; proj₂; _,_)
 open import Data.Quiver
+open import Data.Quiver.Paths
 
 open import Categories.Category
 open import Categories.Functor using (Functor)
@@ -45,58 +46,9 @@ private
   variable
     o o′ ℓ ℓ′ e e′ : Level
 
--- This doesn't belong here... but will do for now
-module PathEquiv {o ℓ e : Level} {Obj : Set o} {_⇒_ : Obj → Obj → Set ℓ} (_≈_ : {A B : Obj} → Rel (A ⇒ B) e)
-  (equiv : {A B : Obj} → IsEquivalence ( _≈_ {A} {B})) where
-
-  private
-    module E {A} {B} = IsEquivalence (equiv {A} {B})
-
-  open E renaming (refl to ≈refl; sym to ≈sym; trans to ≈trans)
-
-  infix 4 _≈*_
-  data _≈*_ : {A B : Obj} (p q : Star _⇒_ A B) → Set (o ⊔ ℓ ⊔ e) where
-      ε : {A : Obj} → _≈*_ {A} ε ε
-      _◅_ : {A B C : Obj} {x y : A ⇒ B} {p q : Star _⇒_ B C} (x≈y : x ≈ y) (p≈q : p ≈* q) → x ◅ p ≈* y ◅ q
-
-  refl : {A B : Obj} {p : Star _⇒_ A B} → p ≈* p
-  refl {p = ε} = ε
-  refl {p = x ◅ p} = ≈refl ◅ refl
-
-  sym : {A B : Obj} {p q : Star _⇒_ A B} → p ≈* q → q ≈* p
-  sym ε = ε
-  sym (x≈y ◅ eq) = ≈sym x≈y ◅ sym eq
-
-  ≡⇒≈* : {A B : Obj} {p q : Star _⇒_ A B} → p ≡ q → p ≈* q
-  ≡⇒≈* ≡.refl = refl
-
-  ≡⇒≈ : {A B : Obj} → {p q : A ⇒ B} → p ≡ q → p ≈ q
-  ≡⇒≈ ≡.refl = ≈refl
-
-  trans : {A B : Obj} {p q r : Star _⇒_ A B} → p ≈* q → q ≈* r → p ≈* r
-  trans ε ε = ε
-  trans (x≈y ◅ ss) (y≈z ◅ tt) = ≈trans x≈y y≈z ◅ trans ss tt
-
-  isEquivalence : {A B : Obj} → IsEquivalence (λ (p q : Star _⇒_ A B) → p ≈* q)
-  isEquivalence = record { refl = refl ; sym = sym ; trans = trans }
-
-  setoid : Obj → Obj → Setoid (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)
-  setoid A B = record { _≈_ = _≈*_ ; isEquivalence = isEquivalence {A} {B} }
-
-  -- convenient to define here
-  --
-  -- FIXME: this should go into the standard library at
-  -- Relation.Binary.Construct.Closure.ReflexiveTransitive.Properties
-  ◅◅-identityʳ : {A B : Obj} → (f : Star _⇒_ A B) → f ◅◅ ε ≈* f
-  ◅◅-identityʳ ε = ε
-  ◅◅-identityʳ (x ◅ f) = ≈refl ◅ ◅◅-identityʳ f
-
-  module PathEqualityReasoning {A B} where
-    open EqR (setoid A B) public
-
 module _ (G : Quiver o ℓ e) where
   open Quiver G
-  private module P = PathEquiv {o} {ℓ} {e} {Obj} {_⇒_} _≈_ equiv
+  private module P = Paths G
   open P
 
   Free : Category o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)
@@ -114,10 +66,11 @@ module _ (G : Quiver o ℓ e) where
     ; equiv     = isEquivalence
     ; ∘-resp-≈  = resp
     }
-    where resp : ∀ {A B C} {f h : Star _⇒_ B C} {g i : Star _⇒_ A B} →
-                   f ≈* h → g ≈* i → (f ▻▻ g) ≈* (h ▻▻ i)
-          resp eq ε = eq
-          resp eq (eq₁ ◅ eq₂) = eq₁ ◅ (resp eq eq₂)
+    where
+    resp : ∀ {A B C} {f h : Star _⇒_ B C} {g i : Star _⇒_ A B} →
+             f ≈* h → g ≈* i → (f ▻▻ g) ≈* (h ▻▻ i)
+    resp eq ε = eq
+    resp eq (eq₁ ◅ eq₂) = eq₁ ◅ (resp eq eq₂)
 
   open P public renaming (_≈*_ to [_]_≈*_)
 
