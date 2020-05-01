@@ -25,8 +25,8 @@ module Paths {o ℓ e : Level} (Q : Quiver o ℓ e) where
 
   infix 4 _≈*_
   data _≈*_ : (p q : Star _⇒_ A B) → Set (o ⊔ ℓ ⊔ e) where
-      ε : {A : Obj} → _≈*_ {A} ε ε
-      _◅_ : {A B C : Obj} {x y : A ⇒ B} {p q : Star _⇒_ B C} (x≈y : x ≈ y) (p≈q : p ≈* q) → x ◅ p ≈* y ◅ q
+    ε : {A : Obj} → _≈*_ {A} ε ε
+    _◅_ : {A B C : Obj} {x y : A ⇒ B} {p q : Star _⇒_ B C} (x≈y : x ≈ y) (p≈q : p ≈* q) → x ◅ p ≈* y ◅ q
 
   refl : {p : Star _⇒_ A B} → p ≈* p
   refl {p = ε} = ε

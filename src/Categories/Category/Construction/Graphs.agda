@@ -31,6 +31,8 @@ open import Relation.Binary.Construct.Closure.ReflexiveTransitive.Properties hid
 open import Data.Product using (proj₁; proj₂; _,_)
 open import Data.Quiver
 open import Data.Quiver.Paths
+import Data.Quiver.Morphism as QM
+open QM using (Morphism)
 
 open import Categories.Category
 open import Categories.Functor using (Functor)
@@ -41,59 +43,11 @@ open import Categories.NaturalTransformation hiding (id)
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (refl; sym; trans; isEquivalence)
 open import Categories.Adjoint
 import Categories.Morphism.HeterogeneousIdentity as HId
+import Categories.Category.Construction.FreeQuiver as FQ
 
 private
   variable
     o o′ ℓ ℓ′ e e′ : Level
-
-module _ (G : Quiver o ℓ e) where
-  open Quiver G
-  private module P = Paths G
-  open P
-
-  Free : Category o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)
-  Free = record
-    { Obj       = Obj
-    ; _⇒_       = Star _⇒_
-    ; _≈_       = _≈*_
-    ; id        = ε
-    ; _∘_       = _▻▻_
-    ; assoc     = λ {_ _ _ _} {f g h} → sym $ ≡⇒≈* $ ◅◅-assoc f g h
-    ; sym-assoc = λ {_ _ _ _} {f g h} → ≡⇒≈* $ ◅◅-assoc f g h
-    ; identityˡ = λ {_ _ f} → ◅◅-identityʳ f
-    ; identityʳ = refl
-    ; identity² = refl
-    ; equiv     = isEquivalence
-    ; ∘-resp-≈  = resp
-    }
-    where
-    resp : ∀ {A B C} {f h : Star _⇒_ B C} {g i : Star _⇒_ A B} →
-             f ≈* h → g ≈* i → (f ▻▻ g) ≈* (h ▻▻ i)
-    resp eq ε = eq
-    resp eq (eq₁ ◅ eq₂) = eq₁ ◅ (resp eq eq₂)
-
-  open P public renaming (_≈*_ to [_]_≈*_)
-
-record GraphMorphism (G : Quiver o ℓ e) (G′ : Quiver o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
-  private
-    module G  = Quiver G
-    module G′ = Quiver G′
-
-  field
-    M₀       : G.Obj → G′.Obj
-    M₁       : ∀ {A B} → A G.⇒ B → M₀ A G′.⇒ M₀ B
-    M-resp-≈ : ∀ {A B} {f g : A G.⇒ B} → f G.≈ g → M₁ f G′.≈ M₁ g
-
-idGHom : {G : Quiver o ℓ e} → GraphMorphism G G
-idGHom = record { M₀ = idFun ; M₁ = idFun ; M-resp-≈ = idFun }
-
-_∘GM_ : {G₁ G₂ G₃ : Quiver o ℓ e} (m₁ : GraphMorphism G₂ G₃) (m₂ : GraphMorphism G₁ G₂) → GraphMorphism G₁ G₃
-m₁ ∘GM m₂ = record
-  { M₀ = M₀ m₁ ⊚ M₀ m₂
-  ; M₁ = M₁ m₁ ⊚ M₁ m₂
-  ; M-resp-≈ = M-resp-≈ m₁ ⊚ M-resp-≈ m₂
-  }
-  where open GraphMorphism
 
 module Trsp (G : Quiver o ℓ e) where
   open Quiver G
@@ -132,10 +86,10 @@ module Trsp (G : Quiver o ℓ e) where
   ▸-resp-≈ f≈g ≡.refl = f≈g
 
 module TrspGM {G : Quiver o ℓ e} {H : Quiver o′ ℓ′ e′}
-              (m : GraphMorphism G H) where
+              (m : Morphism G H) where
   module G = Quiver G
   module H = Quiver H
-  open GraphMorphism m
+  open Morphism m
   open Trsp G
   open Trsp H using () renaming (_◂_ to _◃_; _▸_ to _▹_)
 
@@ -148,12 +102,12 @@ module TrspGM {G : Quiver o ℓ e} {H : Quiver o′ ℓ′ e′}
   M-resp-◂ ≡.refl f = ≡.refl
 
 record GraphMorphism≈ {G : Quiver o ℓ e} {G′ : Quiver o′ ℓ′ e′}
-                      (M M′ : GraphMorphism G G′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
+                      (M M′ : Morphism G G′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   private
     module G  = Quiver G
     module G′ = Quiver G′
-    module M  = GraphMorphism M
-    module M′ = GraphMorphism M′
+    module M  = Morphism M
+    module M′ = Morphism M′
   open Trsp G′
 
   -- Pick a presentation of equivalence for graph morphisms that works
@@ -166,10 +120,10 @@ record GraphMorphism≈ {G : Quiver o ℓ e} {G′ : Quiver o′ ℓ′ e′}
 Graphs : ∀ o ℓ e → Category (suc (o ⊔ ℓ ⊔ e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
 Graphs o ℓ e = record
   { Obj       = Quiver o ℓ e
-  ; _⇒_       = GraphMorphism
+  ; _⇒_       = Morphism
   ; _≈_       = GraphMorphism≈
-  ; id        = idGHom
-  ; _∘_       = _∘GM_
+  ; id        = QM.id
+  ; _∘_       = QM._∘_
   ; assoc     = λ {_ _ _ G} → record { M₀≡ = ≡.refl ; M₁≡ = Equiv.refl G }
   ; sym-assoc = λ {_ _ _ G} → record { M₀≡ = ≡.refl ; M₁≡ = Equiv.refl G }
   ; identityˡ = λ {_ G}     → record { M₀≡ = ≡.refl ; M₁≡ = Equiv.refl G }
@@ -228,7 +182,7 @@ Graphs o ℓ e = record
           open Trsp G using () renaming (_▸_ to _▹_; _◂_ to _◃_)
           open TrspGM
       in begin
-        M₁ (f ∘GM h) j ▸ ≡.trans (≡.cong (M₀ f) (M₀≡ eq′)) (M₀≡ eq)
+        M₁ (f QM.∘ h) j ▸ ≡.trans (≡.cong (M₀ f) (M₀≡ eq′)) (M₀≡ eq)
       ≡˘⟨ ▸-trans (M₁ f (M₁ h j)) (≡.cong (M₀ f) (M₀≡ eq′)) (M₀≡ eq) ⟩
         M₁ f (M₁ h j) ▸ ≡.cong (M₀ f) (M₀≡ eq′) ▸ M₀≡ eq
       ≡˘⟨ ≡.cong (_▸ M₀≡ eq) (M-resp-▸ f (M₁ h j) (M₀≡ eq′)) ⟩
@@ -248,7 +202,7 @@ Graphs o ℓ e = record
   }
   where
     open Quiver
-    open GraphMorphism
+    open Morphism
     open GraphMorphism≈
 
 open _≡F_
@@ -258,7 +212,7 @@ Underlying₀ : Category o ℓ e → Quiver o ℓ e
 Underlying₀ C = record { Obj = C.Obj ; _⇒_ = C._⇒_ ; _≈_ = C._≈_ ; equiv = C.equiv }
   where module C = Category C
 
-Underlying₁ : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} → Functor C D → GraphMorphism (Underlying₀ C) (Underlying₀ D)
+Underlying₁ : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} → Functor C D → Morphism (Underlying₀ C) (Underlying₀ D)
 Underlying₁ F = record { M₀ = F.F₀ ; M₁ = F.F₁ ; M-resp-≈ = F.F-resp-≈ }
   where module F = Functor F
 
@@ -291,7 +245,7 @@ Underlying = record
 
 module TrspStar (G : Quiver o ℓ e) where
   open Quiver G
-  open Trsp (Underlying₀ (Free G)) public using () renaming
+  open Trsp (Underlying₀ (FQ.PathCategory G)) public using () renaming
     ( _◂_ to _◂*_
     ; _▸_ to _▸*_
     )
@@ -315,10 +269,11 @@ module TrspStar (G : Quiver o ℓ e) where
   ◅-◂*-▸ f ≡.refl fs = ≡.refl
 
 -- define these ahead of time
-module _ {G₁ G₂ : Quiver o ℓ e} (G⇒ : GraphMorphism G₁ G₂) where
+module _ {G₁ G₂ : Quiver o ℓ e} (G⇒ : Morphism G₁ G₂) where
   open Quiver G₁ renaming (_⇒_ to _⇒₁_; Obj to Obj₁)
   open Quiver G₂ renaming (_⇒_ to _⇒₂_; Obj to Obj₂; module Equiv to Equiv₂)
-  open GraphMorphism G⇒
+  open FQ
+  open Morphism G⇒
 
   mapGraph : {A B : Obj₁} → Star _⇒₁_ A B → Star _⇒₂_ (M₀ A) (M₀ B)
   mapGraph ε = ε
@@ -334,40 +289,43 @@ module _ {G₁ G₂ : Quiver o ℓ e} (G⇒ : GraphMorphism G₁ G₂) where
   map-resp ε ε = ε
   map-resp (x ◅ f) (f≈* ◅ eq) = M-resp-≈ f≈* ◅ map-resp f eq
 
--- don't want a single global GraphMorphism
+-- don't want a single global Morphism
 module _ {G : Quiver o ℓ e} where
   open Quiver G
+  open Paths G
 
-  map-id : {A B : Obj} (f : Star _⇒_ A B) → [ G ] mapGraph (idGHom {G = G}) f ≈* f
+  map-id : {A B : Obj} (f : Star _⇒_ A B) → FQ.[ G ] mapGraph (QM.id {G = G}) f ≈* f
   map-id ε        = ε
   map-id (fs ◅ f) = Equiv.refl ◅ map-id f
 
-module _ {X Y Z : Quiver o ℓ e} {G₁ : GraphMorphism X Y} {G₂ : GraphMorphism Y Z} where
+module _ {X Y Z : Quiver o ℓ e} {G₁ : Morphism X Y} {G₂ : Morphism Y Z} where
   open Quiver X
+  open Paths Z
 
-  map-∘ : {A B : Obj} (f : Star _⇒_ A B) → [ Z ] (mapGraph (G₂ ∘GM G₁) f) ≈* mapGraph G₂ (mapGraph G₁ f)
+  map-∘ : {A B : Obj} (f : Star _⇒_ A B) → FQ.[ Z ] (mapGraph (G₂ QM.∘ G₁) f) ≈* mapGraph G₂ (mapGraph G₁ f)
   map-∘ ε        = ε
   map-∘ (fs ◅ f) = Quiver.Equiv.refl Z ◅ map-∘ f
 
-module _ {G H : Quiver o ℓ e} {f g : GraphMorphism G H}
+module _ {G H : Quiver o ℓ e} {f g : Morphism G H}
          (f≈g : GraphMorphism≈ f g) where
   open Quiver G
-  open GraphMorphism
+  open Paths H
+  open Morphism
   open GraphMorphism≈ f≈g
   open TrspStar H
   open Trsp H
 
   map-M₁≡ : {A B : Obj} (hs : Star _⇒_ A B) →
-            [ H ] mapGraph f hs ▸* M₀≡ ≈* M₀≡ ◂* mapGraph g hs
-  map-M₁≡ ε        = ≡⇒≈* H (◂*-▸*-ε M₀≡)
+            FQ.[ H ] mapGraph f hs ▸* M₀≡ ≈* M₀≡ ◂* mapGraph g hs
+  map-M₁≡ ε        = FQ.≡⇒≈* H (◂*-▸*-ε M₀≡)
   map-M₁≡ (hs ◅ h) = begin
     (M₁ f hs ◅ mapGraph f h) ▸* M₀≡   ≡⟨ ◅-▸* (M₁ f hs) _ M₀≡ ⟩
     M₁ f hs ◅ (mapGraph f h ▸* M₀≡)   ≈⟨ Quiver.Equiv.refl H ◅ map-M₁≡ h ⟩
     M₁ f hs ◅ (M₀≡ ◂* mapGraph g h)   ≡⟨ ◅-◂*-▸ (M₁ f hs) M₀≡ _ ⟩
-    (M₁ f hs ▸ M₀≡) ◅ mapGraph g h    ≈⟨ M₁≡ ◅ (refl H) ⟩
+    (M₁ f hs ▸ M₀≡) ◅ mapGraph g h    ≈⟨ M₁≡ ◅ (Paths.refl H) ⟩
     (M₀≡ ◂ M₁ g hs) ◅ mapGraph g h    ≡˘⟨ ◂*-◅ M₀≡ (M₁ g hs) _ ⟩
     M₀≡ ◂* (M₁ g hs ◅ mapGraph g h)   ∎
-    where open PathEqualityReasoning H
+    where open Paths.PathEqualityReasoning H
 
 module _ (C : Category o ℓ e) where
   open Category C
@@ -384,27 +342,27 @@ module _ (C : Category o ℓ e) where
 
 CatF : Functor (Graphs o ℓ e) (Cats o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e))
 CatF = record
-  { F₀ = Free
+  { F₀ = FQ.PathCategory
   ; F₁ = λ {G₁} {G₂} G⇒ → record
     { F₀ = M₀ G⇒
     ; F₁ = mapGraph G⇒
-    ; identity = refl G₂
+    ; identity = Paths.refl G₂
     ; homomorphism = λ {_} {_} {_} {f} → map-hom G⇒ f
     ; F-resp-≈ = λ { {f = f} → map-resp G⇒ f}
     }
   ; identity = λ {G} → record
     { eq₀ = λ _ → ≡.refl
-    ; eq₁ = λ f → toSquare (Free G) (map-id f)
+    ; eq₁ = λ f → toSquare (FQ.PathCategory G) (map-id f)
     }
   ; homomorphism = λ {_} {_} {G} → record
     { eq₀ = λ _ → ≡.refl
-    ; eq₁ = λ h → toSquare (Free G) (map-∘ h)
+    ; eq₁ = λ h → toSquare (FQ.PathCategory G) (map-∘ h)
     }
   ; F-resp-≈ = λ {_} {G} {f} {g} f≈g → record
     { eq₀ = λ _ → M₀≡ f≈g
     ; eq₁ = λ h →
-      let open Category (Free G)
-          open HId      (Free G)
+      let open Category (FQ.PathCategory G)
+          open HId      (FQ.PathCategory G)
           open TrspStar G
           open HomReasoning
       in begin
@@ -419,7 +377,7 @@ CatF = record
     }
   }
   where
-  open GraphMorphism
+  open Morphism
   open GraphMorphism≈
 
 -- Because of the Level changes in CatF, sizes must all be same:
@@ -427,7 +385,7 @@ CatF-is-Free : (o ℓ e : Level) → Adjoint (CatF {o} {o ⊔ ℓ} {o ⊔ ℓ �
 CatF-is-Free o ℓ e = record
   { unit = ntHelper record
     { η = GM
-    ; commute = λ {X} {Y} f → record { M₀≡ = ≡.refl ; M₁≡ = Quiver.Equiv.refl Y ◅ ε }
+    ; commute = λ {X} {Y} f → let open Paths Y in record { M₀≡ = ≡.refl ; M₁≡ = Quiver.Equiv.refl Y ◅ ε }
     }
   ; counit = ntHelper record
     { η = λ X → record
@@ -444,13 +402,13 @@ CatF-is-Free o ℓ e = record
     }
   ; zig = λ {G} → record
     { eq₀ = λ _ → ≡.refl
-    ; eq₁ = λ f → toSquare (Free G) (zig′ G f)
+    ; eq₁ = λ f → toSquare (FQ.PathCategory G) (zig′ G f)
     }
   ; zag = λ {B} → record { M₀≡ = ≡.refl ; M₁≡ = Category.identityˡ B  }
   }
   where
-  GM : (X : Quiver o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) → GraphMorphism X (Underlying₀ (Free X))
-  GM _ = record { M₀ = idFun ; M₁ = return ; M-resp-≈ = λ f≈g → f≈g ◅ ε }
+  GM : (X : Quiver o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) → Morphism X (Underlying₀ (FQ.PathCategory X))
+  GM X = let open Paths X in record { M₀ = idFun ; M₁ = return ; M-resp-≈ = λ f≈g → f≈g ◅ ε }
   module _ (X : Category o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) where
     open Category X
     open HomReasoning
@@ -460,14 +418,18 @@ CatF-is-Free o ℓ e = record
                 unwind (f ◅◅ g) ≈ (unwind g) ∘ (unwind f)
     unwind-◅◅ {f = ε} {g} = Equiv.sym identityʳ
     unwind-◅◅ {f = x ◅ f} {g} = ∘-resp-≈ˡ (unwind-◅◅ {f = f} {g}) ○ assoc
-    unwind-resp-≈ : {A B : Obj} {f g : Star _⇒_ A B} → [ Underlying₀ X ] f ≈* g → unwind f ≈ unwind g
-    unwind-resp-≈ ε = Equiv.refl
-    unwind-resp-≈ (x ◅ eq) = ∘-resp-≈ (unwind-resp-≈ eq) x
+    module _ where
+      open Paths (Underlying₀ X)
+      unwind-resp-≈ : {A B : Obj} {f g : Star _⇒_ A B} → FQ.[ Underlying₀ X ] f ≈* g → unwind f ≈ unwind g
+      unwind-resp-≈ ε = Equiv.refl
+      unwind-resp-≈ (x ◅ eq) = ∘-resp-≈ (unwind-resp-≈ eq) x
 
-  zig′ : (X : Quiver o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) → {A B : Quiver.Obj X} → (f : Star (Quiver._⇒_ X) A B) →
-    [ X ] (unwind (Free X)) (mapGraph (GM X) f) ≈* f
-  zig′ A ε        = ε
-  zig′ A (fs ◅ f) = Quiver.Equiv.refl A ◅ zig′ A f
+  module _ (X : Quiver o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) where
+    open Paths X
+    zig′ : {A B : Quiver.Obj X} → (f : Star (Quiver._⇒_ X) A B) →
+      FQ.[ X ] (unwind (FQ.PathCategory X)) (mapGraph (GM X) f) ≈* f
+    zig′ ε        = ε
+    zig′ (fs ◅ f) = Quiver.Equiv.refl X ◅ zig′ f
 
   module _ {X Y : Category o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)} (F : Functor X Y) where
     open Category X renaming (Obj to Obj₁; _⇒_ to _⇒₁_)
