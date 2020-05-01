@@ -29,6 +29,7 @@ open import Level
 open import Data.Product using (_,_)
 
 open import Categories.Adjoint
+open import Categories.Adjoint.Equivalents using (Hom-NI′)
 open import Categories.Adjoint.Mate
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Bifunctor

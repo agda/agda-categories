@@ -6,7 +6,8 @@ open import Level
 open import Data.Product using (Σ; _,_; -,_; proj₂; uncurry)
 open import Function using (_$_)
 
-open import Categories.Adjoint using (_⊣_; Adjoint; Hom-NI′⇒Adjoint)
+open import Categories.Adjoint using (_⊣_; Adjoint)
+open import Categories.Adjoint.Equivalents using (Hom-NI′⇒Adjoint)
 open import Categories.Category using (Category; _[_,_])
 open import Categories.Category.Product using (_⁂_; _⁂ⁿⁱ_)
 open import Categories.Category.Construction.Comma using (CommaObj; Comma⇒; _↙_)
