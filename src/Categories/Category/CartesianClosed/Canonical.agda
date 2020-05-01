@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-open import Categories.Category using (Category)
+open import Categories.Category.Core using (Category)
 
 -- A "canonical" presentation of cartesian closed categories.
 --
@@ -33,7 +33,7 @@ private
 
   variable
     A B C : Obj
-    f g h f₁ f₂ g₁ g₂ : A ⇒ B
+    f g h : A ⇒ B
 
 -- A (canonical) cartesian closed category is a category with all
 -- (canonical) products and exponentials
@@ -80,11 +80,10 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     ; products = record { product = ×-product }
     }
 
-  module cartesian = Cartesian isCartesian
-  open cartesian public
+  -- module cartesian = Cartesian isCartesian
+  open Cartesian isCartesian public
     hiding (_×_; π₁; π₂; ⟨_,_⟩)
     renaming (⟨⟩-cong₂ to ⟨,⟩-resp-≈)
-
 
   field
 
