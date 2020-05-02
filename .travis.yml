@@ -32,12 +32,18 @@ before_install:
 install:
   - cabal update
   - sed -i 's/^jobs:/-- jobs:/' $HOME/.cabal/config
-  # installing agda dev
-  - git clone https://github.com/agda/agda --depth=1
-  - cd agda
-  # checking whether .ghc is still valid
+
+  # installing dependencies
   - cabal install alex-$ALEX_VER happy-$HAPPY_VER cpphs
-  - cabal install --only-dependencies --dry -v > $HOME/installplan.txt
+
+  # installing Agda (only master)
+  - cd ../
+  - git clone https://github.com/agda/agda
+  - cd agda
+  - git checkout 08dd23df8dd894737af98463f0b3f69d616e7b48 &&
+  - cabal install --only-dependencies --dry -v > $HOME/installplan.txt ;
+
+  # checking if .ghc is still valid
   - sed -i -e '1,/^Resolving /d' $HOME/installplan.txt; cat $HOME/installplan.txt
   - touch $HOME/.cabsnap/installplan.txt
   - mkdir -p $HOME/.cabsnap/ghc $HOME/.cabsnap/lib $HOME/.cabsnap/share $HOME/.cabsnap/bin
@@ -52,13 +58,16 @@ install:
       rm -rf $HOME/.cabsnap;
       mkdir -p $HOME/.ghc $HOME/.cabal/lib $HOME/.cabal/share $HOME/.cabal/bin;
     fi
+  # install master
   - cabal install
-  - cd -
+
   # snapshot package-db on cache miss
   - echo "snapshotting package-db to build-cache";
     mkdir $HOME/.cabsnap;
     cp -a $HOME/.ghc $HOME/.cabsnap/ghc;
     cp -a $HOME/.cabal/lib $HOME/.cabal/share $HOME/.cabal/bin $HOME/installplan.txt $HOME/.cabsnap/;
+  - cd ../
+
   # installing agda-stdlib
   - mkdir -p $HOME/.agda
   - cd $HOME/.agda
@@ -66,8 +75,11 @@ install:
   - tar -xzvf v$STDLIB_VER.tar.gz
   - mv agda-stdlib-$STDLIB_VER agda-stdlib
   - echo "~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
-  - cp travis/* .
   - cd -
+
+  # doing things for this library
+  - cd agda-categories
+  - cp travis/* .
 
 script:
   # generating index.agda
