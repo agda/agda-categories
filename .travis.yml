@@ -66,9 +66,12 @@ install:
   - tar -xzvf v$STDLIB_VER.tar.gz
   - mv agda-stdlib-$STDLIB_VER agda-stdlib
   - echo "~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
+  - cp travis/* .
   - cd -
 
 script:
+  # generating index.agda
+  - ./index.sh
   # generating html doc
   - make html
   # moving everything to the main directory
