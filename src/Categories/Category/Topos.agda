@@ -21,8 +21,6 @@ record Topos : Set (levelOfTerm C) where
     subobjectClassifier : SubobjectClassifier
     equalizer           : ∀ {A B} (f g : A ⇒ B) → Equalizer f g
 
-  -- open CartesianClosed cartesianClosed public
-
   finitelyComplete : FinitelyComplete
   finitelyComplete = record
     { cartesian = CartesianClosed.cartesian cartesianClosed
