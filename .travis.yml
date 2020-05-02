@@ -28,6 +28,8 @@ matrix:
 
 before_install:
   - export PATH=/opt/ghc/$GHC_VER/bin:/opt/cabal/$CABAL_VER/bin:/opt/alex/$ALEX_VER/bin:/opt/happy/$HAPPY_VER/bin:~/.cabal/bin/:$PATH;
+  - export RTS_OPTIONS="+RTS -M6G -H6G -A128M -RTS"
+
 
 install:
   - cabal update
@@ -82,10 +84,11 @@ install:
   - cp travis/* .
 
 script:
-  # generating index.agda
-  - ./index.sh
-  # generating html doc
-  - make html
+  - find src/ -name '[^\.]*.agda' | sed -e 's|^src/[/]*|import |' -e 's|/|.|g' -e 's/.agda//' -e '/import Everything/d' | LC_COLLATE='C' sort > Everything.agda
+  - cat Everything.agda >> index.agda
+  - agda $RTS_OPTIONS -i. -i src/ Everything.agda
+  - agda $RTS_OPTIONS -i. -i src/ index.agda
+  - agda $RTS_OPTIONS -i. -i src/ --html index.agda
   # moving everything to the main directory
   - mv html/* .
 
