@@ -106,8 +106,8 @@ record FinCatShape : Set where
     }
 
 private
-  shape-involutie : (shape : FinCatShape) → shape ≡ FinCatShape.op (FinCatShape.op shape)
-  shape-involutie _ = refl
+  shape-involutive : (shape : FinCatShape) → shape ≡ FinCatShape.op (FinCatShape.op shape)
+  shape-involutive _ = refl
 
   record FinCatShape′ : Set where
     field
@@ -120,7 +120,7 @@ private
     field
       id  : ∀ {a} → a ⇒ a
       _∘_ : ∀ {a b c} → b ⇒ c → a ⇒ b → a ⇒ c
-  
+
     field
       assoc     : ∀ {a b c d} {f : a ⇒ b} {g : b ⇒ c} {h : c ⇒ d} → (h ∘ g) ∘ f ≡ h ∘ (g ∘ f)
       identityˡ : ∀ {a b} {f : a ⇒ b} → id ∘ f ≡ f

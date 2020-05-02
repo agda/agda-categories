@@ -2,17 +2,13 @@
 
 module Categories.Category.Finite.Fin.Construction.Discrete where
 
-open import Data.Product using (∃; _,_)
 open import Data.Nat using (ℕ)
 open import Data.Fin
 open import Data.Fin.Patterns
-open import Function using (case_of_)
-
-open import Relation.Nullary using (Dec; yes; no)
-open import Relation.Binary.PropositionalEquality as ≡ using (_≡_ ; refl; ≡-≟-identity; ≢-≟-identity)
+open import Relation.Binary.PropositionalEquality as ≡ using (_≡_ ; refl)
 
 open import Categories.Category.Finite.Fin
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 
 private
   card : ∀ {n} (j k : Fin n) → ℕ
