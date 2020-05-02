@@ -55,10 +55,10 @@ CommutativeIso = IsGroupoid.CommutativeSquare Core-isGroupoid
 ∘ᵢ-tc = MCore.∘-tc
 
 infix 4 _≃⁺_
-_≃⁺_ : Rel (A [ _≅_ ]⁺ B) _
+_≃⁺_ : Rel (A [ _≅_ ]⁺ B) e
 _≃⁺_ = MCore._≈⁺_
 
-TransitiveClosure : Category _ _ _
+TransitiveClosure : Category o (o ⊔ ℓ ⊔ e) e
 TransitiveClosure = MCore.Path
 
 --------------------
