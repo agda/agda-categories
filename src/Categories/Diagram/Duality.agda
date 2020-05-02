@@ -8,6 +8,7 @@ open Category C
 
 open import Level
 open import Function using (_$_)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Categories.Functor
 open import Categories.Functor.Bifunctor
@@ -179,3 +180,50 @@ module _ {F : Bifunctor (Category.op D) D C} where
     ; unique    = unique
     }
     where open Coend.Coend e
+
+
+module DualityConversionProperties where
+  private
+    Coequalizer⇔coEqualizer : ∀ (coequalizer : Coequalizer f g) →
+      coEqualizer⇒Coequalizer (Coequalizer⇒coEqualizer coequalizer)≡ coequalizer
+    Coequalizer⇔coEqualizer _ = refl
+
+
+    coPullback⇔Pushout : ∀ (coPullback : Pullback f g) →
+      Pushout⇒coPullback (coPullback⇒Pushout coPullback) ≡ coPullback
+    coPullback⇔Pushout _ = refl
+
+    module _ {F : Functor J C} where
+      open Functor F renaming (op to Fop)
+
+      private
+        coApex⇔Coapex : ∀ X → (coApex : Apex Fop X) →
+                        Coapex⇒coApex X (coApex⇒Coapex X coApex) ≡ coApex
+        coApex⇔Coapex _ _ = refl
+
+        coCone⇔Cocone : ∀ (coCone : Cone Fop) →
+                        Cocone⇒coCone (coCone⇒Cocone coCone) ≡ coCone
+        coCone⇔Cocone _ = refl
+
+        coCone⇒⇔Cocone⇒ : ∀ {K K′} → (coCone⇒ : Cone⇒ Fop K K′) →
+                        Cocone⇒⇒coCone⇒ (coCone⇒⇒Cocone⇒ coCone⇒) ≡ coCone⇒
+        coCone⇒⇔Cocone⇒ _ = refl
+
+
+        coLimit⇔Colimit : ∀ (coLimit : Limit Fop) →
+                          Colimit⇒coLimit (coLimit⇒Colimit coLimit) ≡ coLimit
+        coLimit⇔Colimit _ = refl
+
+
+    module _ {F : Bifunctor (Category.op D) D C} where
+      open Functor F renaming (op to Fop)
+
+      private
+        coWedge⇔Cowedge : ∀ (coWedge : Wedge Fop) →
+                          Cowedge⇒coWedge (coWedge⇒Cowedge coWedge) ≡ coWedge
+        coWedge⇔Cowedge _ = refl
+
+
+        coEnd⇔Coend : ∀ (coEnd : End Fop) →
+                      Coend⇒coEnd (coEnd⇒Coend coEnd) ≡ coEnd
+        coEnd⇔Coend _ = refl
