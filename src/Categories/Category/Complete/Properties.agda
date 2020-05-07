@@ -163,28 +163,30 @@ module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) whe
       complete = record
         { terminal = record
           { ⊤        = ⊤
-          ; !        = λ {K} →
-            let module K = FCone K
-            in record
-            { arr     = ntHelper record
-              { η       = λ X → rep X (FXcone X K)
-              ; commute = λ {X Y} f →
-                terminal.!-unique₂ Y
-                  {nat-map-Cone (F[-,-].₁ f) (FXcone X K)}
-                  {record { commute = λ {j} →
-                  begin
-                    proj Y j ∘ rep Y (FXcone Y K) ∘ K.N.₁ f ≈⟨ pullˡ (LimFX.commute Y) ⟩
-                    K.ψ.η j Y ∘ K.N.F₁ f                    ≈⟨ K.ψ.commute j f ⟩
-                    F₀.₁ j f ∘ K.ψ.η j X                    ∎ }}
-                  {record { commute = λ {j} →
-                  begin
-                    proj Y j ∘ lim⇒lim.arr f ∘ rep X (FXcone X K) ≈⟨ pullˡ (lim⇒lim.commute f) ⟩
-                    (F₀.₁ j f ∘ proj X j) ∘ rep X (FXcone X K)    ≈⟨ pullʳ (LimFX.commute X) ⟩
-                    F₀.₁ j f ∘ K.ψ.η j X                          ∎ }}
+          ; ⊤-is-terminal = record
+            { !        = λ {K} →
+              let module K = FCone K
+              in record
+              { arr     = ntHelper record
+                { η       = λ X → rep X (FXcone X K)
+                ; commute = λ {X Y} f →
+                  terminal.!-unique₂ Y
+                    {nat-map-Cone (F[-,-].₁ f) (FXcone X K)}
+                    {record { commute = λ {j} →
+                    begin
+                      proj Y j ∘ rep Y (FXcone Y K) ∘ K.N.₁ f ≈⟨ pullˡ (LimFX.commute Y) ⟩
+                      K.ψ.η j Y ∘ K.N.F₁ f                    ≈⟨ K.ψ.commute j f ⟩
+                      F₀.₁ j f ∘ K.ψ.η j X                    ∎ }}
+                    {record { commute = λ {j} →
+                    begin
+                      proj Y j ∘ lim⇒lim.arr f ∘ rep X (FXcone X K) ≈⟨ pullˡ (lim⇒lim.commute f) ⟩
+                      (F₀.₁ j f ∘ proj X j) ∘ rep X (FXcone X K)    ≈⟨ pullʳ (LimFX.commute X) ⟩
+                      F₀.₁ j f ∘ K.ψ.η j X                          ∎ }}
+                }
+              ; commute = λ {_} {X} → LimFX.commute X
               }
-            ; commute = λ {_} {X} → LimFX.commute X
+            ; !-unique = λ K⇒⊤ {X} → terminal.!-unique X (K⇒⊤′ X K⇒⊤)
             }
-          ; !-unique = λ K⇒⊤ {X} → terminal.!-unique X (K⇒⊤′ X K⇒⊤)
           }
         }      
         where open D

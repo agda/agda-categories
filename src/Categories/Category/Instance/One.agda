@@ -22,7 +22,7 @@ module _ {o ℓ e : Level} where
     }
 
   One-⊤ : Terminal
-  One-⊤ = record { ⊤ = One ; ! = record { F₀ = λ _ → lift tt } }
+  One-⊤ = record { ⊤ = One ; ⊤-is-terminal = record { ! = record { F₀ = λ _ → lift tt } } }
 
 -- not only is One terminal, it can be shifted anywhere else. Stronger veersion of !
 shift : {o ℓ e : Level} (o′ ℓ′ e′ : Level) → Functor (One {o} {ℓ} {e}) (One {o′} {ℓ′} {e′})

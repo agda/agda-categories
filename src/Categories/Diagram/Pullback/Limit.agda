@@ -129,8 +129,10 @@ module _ {fA fB gA : Obj} {f : fA ⇒ fB} {g : gA ⇒ fB} (p : Pullback f g) whe
   pullback⇒limit = record
     { terminal = record
       { ⊤        = ⊤
-      ; !        = !
-      ; !-unique = !-unique
+      ; ⊤-is-terminal = record
+        { !        = !
+        ; !-unique = !-unique
+        }
       }
     }
     where ⊤ : Cone

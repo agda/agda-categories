@@ -17,7 +17,7 @@ module _ {o : Level} where
   open Term (Sets o)
 
   SingletonSet-⊤ : Terminal
-  SingletonSet-⊤ = record { ⊤ = Lift o ⊤ ; !-unique = λ _ → refl }
+  SingletonSet-⊤ = record { ⊤ = Lift o ⊤ ; ⊤-is-terminal = record { !-unique = λ _ → refl } }
 
 module _ {c ℓ : Level} where
   open Term (Setoids c ℓ)

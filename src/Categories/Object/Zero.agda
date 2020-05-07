@@ -32,8 +32,10 @@ record Zero : Set (o ⊔ ℓ ⊔ e) where
  terminal : Terminal
  terminal = record
    { ⊤        = zero
-   ; !        = ¡
-   ; !-unique = ¡-unique
+   ; ⊤-is-terminal = record
+     { !        = ¡
+     ; !-unique = ¡-unique
+     }
    }
 
  module initial  = Initial initial

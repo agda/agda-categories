@@ -226,8 +226,10 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
   finiteLimit : Limit
   finiteLimit = record
     { terminal = record
-      { ⊤        = ⊤cone
-      ; !        = !cone
-      ; !-unique = !cone-unique
+      { ⊤             = ⊤cone
+      ; ⊤-is-terminal = record
+        { !        = !cone
+        ; !-unique = !cone-unique
+        }
       }
     }

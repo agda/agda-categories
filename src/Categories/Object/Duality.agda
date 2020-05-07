@@ -19,9 +19,11 @@ open import Categories.Object.Coproduct C
 
 ⊥⇒op⊤ : Initial → Terminal
 ⊥⇒op⊤ i = record
-  { ⊤        = ⊥
-  ; !        = !
-  ; !-unique = !-unique
+  { ⊤             = ⊥
+  ; ⊤-is-terminal = record
+    { !        = !
+    ; !-unique = !-unique
+    }
   }
   where open Initial i
 

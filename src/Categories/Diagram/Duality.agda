@@ -125,9 +125,11 @@ module _ {F : Functor J C} where
   coLimit⇒Colimit : Limit Fop → Colimit F
   coLimit⇒Colimit lim = record
     { initial = op⊤⇒⊥ (Cocones F) $ record
-      { ⊤        = coCone⇒Cocone ⊤
-      ; !        = coCone⇒⇒Cocone⇒ !
-      ; !-unique = λ f → !-unique (Cocone⇒⇒coCone⇒ f)
+      { ⊤             = coCone⇒Cocone ⊤
+      ; ⊤-is-terminal = record
+        { !        = coCone⇒⇒Cocone⇒ !
+        ; !-unique = λ f → !-unique (Cocone⇒⇒coCone⇒ f)
+        }
       }
     }
     where open Limit.Limit lim
@@ -136,9 +138,11 @@ module _ {F : Functor J C} where
   Colimit⇒coLimit : Colimit F → Limit Fop
   Colimit⇒coLimit colim = record
     { terminal = record
-      { ⊤        = Cocone⇒coCone ⊥
-      ; !        = Cocone⇒⇒coCone⇒ !
-      ; !-unique = λ f → !-unique (coCone⇒⇒Cocone⇒ f)
+      { ⊤             = Cocone⇒coCone ⊥
+      ; ⊤-is-terminal = record
+        { !        = Cocone⇒⇒coCone⇒ !
+        ; !-unique = λ f → !-unique (coCone⇒⇒Cocone⇒ f)
+        }
       }
     }
     where open Colimit.Colimit colim

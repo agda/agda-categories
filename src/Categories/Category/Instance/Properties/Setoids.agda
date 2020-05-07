@@ -132,18 +132,20 @@ Setoids-Complete o ℓ e c ℓ′ {J} F =
         ; commute = λ { {X} {Y} X⇒Y {_ , eq} {y} f≈g → F₀.trans Y (eq X⇒Y) (f≈g Y) }
         }
       }
-    ; !        = λ {K} →
-      let module K = Cone K
-      in record
-      { arr     = record
-        { _⟨$⟩_ = λ x → (λ j → K.ψ j ⟨$⟩ x) , λ f → K.commute f (Setoid.refl K.N)
-        ; cong  = λ a≈b j → Π.cong (K.ψ j) a≈b
+    ; ⊤-is-terminal = record
+      { !        = λ {K} →
+        let module K = Cone K
+        in record
+        { arr     = record
+          { _⟨$⟩_ = λ x → (λ j → K.ψ j ⟨$⟩ x) , λ f → K.commute f (Setoid.refl K.N)
+          ; cong  = λ a≈b j → Π.cong (K.ψ j) a≈b
+          }
+        ; commute = λ x≈y → Π.cong (K.ψ _) x≈y
         }
-      ; commute = λ x≈y → Π.cong (K.ψ _) x≈y
+      ; !-unique = λ {K} f x≈y j →
+        let module K = Cone K
+        in F₀.sym j (Cone⇒.commute f (Setoid.sym K.N x≈y))
       }
-    ; !-unique = λ {K} f x≈y j →
-      let module K = Cone K
-      in F₀.sym j (Cone⇒.commute f (Setoid.sym K.N x≈y))
     }
   }
   where open Functor F
