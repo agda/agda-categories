@@ -16,4 +16,4 @@ module _ {o : Level} where
   open Init (Sets o)
 
   EmptySet-⊥ : Initial
-  EmptySet-⊥ = record { ⊥ = Lift o ⊥ ; ! = λ { {A} (lift x) → ⊥-elim x } ; !-unique = λ { f {()} } }
+  EmptySet-⊥ = record { ⊥ = Lift o ⊥ ; ⊥-is-initial = record { ! = λ { {A} (lift x) → ⊥-elim x } ; !-unique = λ { f {()} } } }

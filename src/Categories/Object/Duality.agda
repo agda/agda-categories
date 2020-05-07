@@ -30,8 +30,10 @@ open import Categories.Object.Coproduct C
 op⊤⇒⊥ : Terminal → Initial
 op⊤⇒⊥ t = record
   { ⊥        = ⊤
-  ; !        = !
-  ; !-unique = !-unique
+  ; ⊥-is-initial = record
+    { !        = !
+    ; !-unique = !-unique
+    }
   }
   where open Terminal t
 

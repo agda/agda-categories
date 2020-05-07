@@ -230,15 +230,17 @@ module _ {R : Functor D C} where
   adjoint⇒universalMorphisms {L} L⊣R X = record
     { initial = record
       { ⊥        = record { f = unit.η X }
-      ; !        =
-        let open C.HomReasoning
-        in record { commute = LRadjunct≈id ○ ⟺ C.identityʳ }
-      ; !-unique = λ {A} g →
-        let open D.HomReasoning
-        in -, (begin
-          Radjunct (f A)            ≈⟨ Radjunct-resp-≈ (C.Equiv.sym (C.Equiv.trans (commute g) (C.identityʳ {f = f A}))) ⟩
-          Radjunct (Ladjunct (h g)) ≈⟨ RLadjunct≈id ⟩
-          h g                       ∎)
+      ; ⊥-is-initial = record
+        { !        =
+          let open C.HomReasoning
+          in record { commute = LRadjunct≈id ○ ⟺ C.identityʳ }
+        ; !-unique = λ {A} g →
+          let open D.HomReasoning
+          in -, (begin
+            Radjunct (f A)            ≈⟨ Radjunct-resp-≈ (C.Equiv.sym (C.Equiv.trans (commute g) (C.identityʳ {f = f A}))) ⟩
+            Radjunct (Ladjunct (h g)) ≈⟨ RLadjunct≈id ⟩
+            h g                       ∎)
+        }
       }
     }
     where module L = Functor L

@@ -25,8 +25,10 @@ record Zero : Set (o ⊔ ℓ ⊔ e) where
  initial : Initial
  initial = record
    { ⊥        = zero
-   ; !        = !
-   ; !-unique = !-unique
+   ; ⊥-is-initial = record
+     { !        = !
+     ; !-unique = !-unique
+     }
    }
 
  terminal : Terminal
