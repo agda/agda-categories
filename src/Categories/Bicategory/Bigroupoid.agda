@@ -48,10 +48,9 @@ record IsBigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ 
   _⁻¹′ : ∀ {A B} {f g : A ⇒₁ B} → f ⇒₂ g → f ⁻¹ ⇒₂ g ⁻¹
   _⁻¹′ = hom⁻¹.F₁
 
-  open hom.Commutation
-
   field
     pentagon₁ : ∀ {A B} {f : A ⇒₁ B} →
+                  let open Commutation (hom A B) in
                   [ (f ∘ₕ f ⁻¹) ∘ₕ f ⇒ f ]⟨
                     associator.from      ⇒⟨ f ∘ₕ f ⁻¹ ∘ₕ f ⟩
                     f ▷ cancel.⇒.η f     ⇒⟨ f ∘ₕ id₁ ⟩
@@ -60,6 +59,7 @@ record IsBigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ 
                     unitorˡ.from
                   ⟩
     pentagon₂ : ∀ {A B} {f : A ⇒₁ B} →
+                  let open Commutation (hom B A) in
                   [ (f ⁻¹ ∘ₕ f) ∘ₕ f ⁻¹ ⇒ f ⁻¹ ]⟨
                     associator.from            ⇒⟨ f ⁻¹ ∘ₕ f ∘ₕ f ⁻¹ ⟩
                     f ⁻¹ ▷ cancel′.⇒.η f       ⇒⟨ f ⁻¹ ∘ₕ id₁ ⟩

@@ -27,7 +27,7 @@ record DinaturalTransformation (F G : Bifunctor (Category.op C) C D) : Set (leve
     module G = Functor G
 
   open D hiding (op)
-  open Commutation
+  open Commutation D
 
   field
     α          : ∀ X → D [ F.F₀ (X , X) , G.F₀ (X , X) ]
@@ -68,7 +68,7 @@ record DTHelper (F G : Bifunctor (Category.op C) C D) : Set (levelOfTerm F) wher
     module F = Functor F
     module G = Functor G
   open D hiding (op)
-  open Commutation
+  open Commutation D
 
   field
     α          : ∀ X → D [ F.F₀ (X , X) , G.F₀ (X , X) ]

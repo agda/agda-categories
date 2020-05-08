@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category using () renaming (Category to Setoid-Category)
+open import Categories.Category using (module Commutation) renaming (Category to Setoid-Category)
 open import Categories.Category.Monoidal using (Monoidal)
 
 module Categories.Enriched.NaturalTransformation
@@ -21,9 +21,9 @@ import Categories.Morphism.IsoEquiv V as IsoEquiv
 open import Categories.NaturalTransformation using (ntHelper)
   renaming (NaturalTransformation to Setoid-NT)
 
-open Setoid-Category V using (module Commutation; _∘_; _⇒_; _≈_; assoc)
+open Setoid-Category V using (_∘_; _⇒_; _≈_; assoc)
   renaming (Obj to ObjV; id to idV)
-open Commutation
+open Commutation V
 open Monoidal M
 open Shorthands
 

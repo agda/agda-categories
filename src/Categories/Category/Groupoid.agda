@@ -3,7 +3,7 @@ module Categories.Category.Groupoid where
 
 open import Level using (Level; suc; _⊔_)
 
-open import Categories.Category using (Category; module Definitions)
+open import Categories.Category
 import Categories.Morphism
 
 record IsGroupoid {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where

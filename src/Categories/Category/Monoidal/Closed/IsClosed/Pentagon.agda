@@ -29,7 +29,7 @@ open Closed Cl
 private
   module C = Category C
   open Category C
-  open Commutation
+  open Commutation C
   module ℱ = Functor
   module ⊗ = Functor ⊗
   α⇒ = associator.from

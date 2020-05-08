@@ -25,7 +25,7 @@ record RigCategory {M⊎ M× : Monoidal C} (S⊎ : Symmetric M⊎)
     module C = Category C
 
   open C hiding (_≈_)
-  open Commutation
+  open Commutation C
   module M⊎ = Monoidal M⊎
   module M× = Monoidal M×
   module S⊎ = Symmetric S⊎

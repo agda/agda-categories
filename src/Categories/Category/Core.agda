@@ -2,10 +2,9 @@
 module Categories.Category.Core where
 
 open import Level
-open import Function using (flip)
+open import Function.Base using (flip)
 
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
-import Relation.Binary.PropositionalEquality as ≡
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
 -- Basic definition of a |Category| with a Hom setoid.
@@ -78,21 +77,6 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ⟺ = Equiv.sym
     _○_ : {f g h : A ⇒ B} → f ≈ g → g ≈ h → f ≈ h
     _○_ = Equiv.trans
-
-  -- Combinators for commutative diagram
-  -- The idea is to use the combinators to write commutations in a more readable way.
-  -- It starts with [_⇒_]⟨_≈_⟩, and within the third and fourth places, use _⇒⟨_⟩_ to
-  -- connect morphisms with the intermediate object specified.
-  module Commutation where
-    infix 1 [_⇒_]⟨_≈_⟩
-    [_⇒_]⟨_≈_⟩ : ∀ (A B : Obj) → A ⇒ B → A ⇒ B → Set _
-    [ A ⇒ B ]⟨ f ≈ g ⟩ = f ≈ g
-
-    infixl 2 connect
-    connect : ∀ {A C : Obj} (B : Obj) → A ⇒ B → B ⇒ C → A ⇒ C
-    connect B f g = g ∘ f
-
-    syntax connect B f g = f ⇒⟨ B ⟩ g
 
   op : Category o ℓ e
   op = record

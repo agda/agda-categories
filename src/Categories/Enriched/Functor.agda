@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category using () renaming (Category to Setoid-Category)
+open import Categories.Category using (module Commutation) renaming (Category to Setoid-Category)
 open import Categories.Category.Monoidal using (Monoidal)
 
 module Categories.Enriched.Functor {o ℓ e} {V : Setoid-Category o ℓ e}
@@ -15,7 +15,7 @@ open import Categories.Morphism.Reasoning V
 open import Categories.Category.Monoidal.Reasoning M using (⊗-distrib-over-∘)
 
 open Setoid-Category V renaming (Obj to ObjV; id to idV)
-open Commutation
+open Commutation V
 open HomReasoning
 open Monoidal M
 

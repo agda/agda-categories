@@ -6,7 +6,7 @@ open import Level
 open import Data.Product using (_,_)
 open import Relation.Binary using (Rel)
 
-open import Categories.Category using (Category)
+open import Categories.Category using (Category; module Commutation)
 open import Categories.Category.Monoidal.Instance.Cats using (module Product)
 open import Categories.Enriched.Category using () renaming (Category to Enriched)
 open import Categories.Functor using (module Functor)
@@ -20,6 +20,7 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
 
   open Enriched enriched public
   module hom {A B} = Category (hom A B)
+  module ComHom {A B} = Commutation (hom A B)
 
   infix 4 _⇒₁_ _⇒₂_ _≈_
   infixr 7 _∘ᵥ_ _∘ₕ_
@@ -73,16 +74,16 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
           ((f ⊚₀ g) ⊚₀ h) hom.⇒ (f ⊚₀ (g ⊚₀ h))
     α⇒ {_} {_} {_} {_} {f} {g} {h} = NaturalIsomorphism.⇒.η ⊚-assoc ((f , g) , h)
 
-  open hom.Commutation
-
   field
     triangle : {A B C : Obj} {f : A ⇒₁ B} {g : B ⇒₁ C} →
+                 let open ComHom {A} {C} in
                  [ (g ∘ₕ id₁) ∘ₕ f ⇒ g ∘ₕ f ]⟨
                    α⇒                 ⇒⟨ g ∘ₕ id₁ ∘ₕ f ⟩
                    g ▷ λ⇒
                  ≈ ρ⇒ ◁ f
                  ⟩
     pentagon : {A B C D E : Obj} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                 let open ComHom {A} {E} in
                  [ ((i ∘ₕ h) ∘ₕ g) ∘ₕ f ⇒ i ∘ₕ h ∘ₕ g ∘ₕ f ]⟨
                    α⇒ ◁ f                     ⇒⟨ (i ∘ₕ h ∘ₕ g) ∘ₕ f ⟩
                    α⇒                         ⇒⟨ i ∘ₕ (h ∘ₕ g) ∘ₕ f ⟩

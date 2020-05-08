@@ -30,3 +30,20 @@ module Definitions (𝓒 : Category o ℓ e) where
 
   CommutativeSquare : {A B C D : Obj} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
   CommutativeSquare f g h i = h ∘ f ≈ i ∘ g
+
+-- Combinators for commutative diagram
+-- The idea is to use the combinators to write commutations in a more readable way.
+-- It starts with [_⇒_]⟨_≈_⟩, and within the third and fourth places, use _⇒⟨_⟩_ to
+-- connect morphisms with the intermediate object specified.
+module Commutation (𝓒 : Category o ℓ e) where
+  open Category 𝓒
+
+  infix 1 [_⇒_]⟨_≈_⟩
+  [_⇒_]⟨_≈_⟩ : ∀ (A B : Obj) → A ⇒ B → A ⇒ B → Set _
+  [ A ⇒ B ]⟨ f ≈ g ⟩ = f ≈ g
+
+  infixl 2 connect
+  connect : ∀ {A C : Obj} (B : Obj) → A ⇒ B → B ⇒ C → A ⇒ C
+  connect B f g = g ∘ f
+
+  syntax connect B f g = f ⇒⟨ B ⟩ g

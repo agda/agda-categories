@@ -48,14 +48,14 @@ X ⊗ᵢ- = appˡ ⊗-iso X
 -⊗ᵢ_ : Obj → Functor Core Core
 -⊗ᵢ X = appʳ ⊗-iso X
 
--- Coherence laws due to Mac Lane (1963) the were subsequently proven
+-- Coherence laws due to Mac Lane (1963) that were subsequently proven
 -- admissible by Max Kelly (1964).  See
 -- https://ncatlab.org/nlab/show/monoidal+category#other_coherence_conditions
 -- for more details.
 
 module Kelly's where
   open Functor
-  open IsGroupoid.Commutation Core-isGroupoid
+  open Commutation Core
 
   private
     assoc′ = IsGroupoid.assoc Core-isGroupoid
