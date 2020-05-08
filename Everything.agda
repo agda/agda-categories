@@ -61,6 +61,7 @@ import Categories.Category.Construction.Graphs
 import Categories.Category.Construction.Grothendieck
 import Categories.Category.Construction.Kleisli
 import Categories.Category.Construction.Monoids
+import Categories.Category.Construction.ObjectRestriction
 import Categories.Category.Construction.Path
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Construction.Properties.Comma
@@ -93,6 +94,7 @@ import Categories.Category.Instance.Cats
 import Categories.Category.Instance.EmptySet
 import Categories.Category.Instance.FamilyOfSets
 import Categories.Category.Instance.FinCatShapes
+import Categories.Category.Instance.FinSetoids
 import Categories.Category.Instance.Globe
 import Categories.Category.Instance.Groupoids
 import Categories.Category.Instance.One
@@ -176,6 +178,7 @@ import Categories.Enriched.Functor
 import Categories.Enriched.NaturalTransformation
 import Categories.Enriched.NaturalTransformation.NaturalIsomorphism
 import Categories.Enriched.Over.One
+import Categories.Enriched.Over.Setoids
 import Categories.Functor
 import Categories.Functor.Algebra
 import Categories.Functor.Bifunctor
@@ -187,6 +190,7 @@ import Categories.Functor.Construction.Diagonal
 import Categories.Functor.Construction.FromDiscrete
 import Categories.Functor.Construction.LiftSetoids
 import Categories.Functor.Construction.Limit
+import Categories.Functor.Construction.ObjectRestriction
 import Categories.Functor.Construction.Zero
 import Categories.Functor.Continuous
 import Categories.Functor.Core
@@ -259,6 +263,8 @@ import Categories.Object.Terminal.Limit
 import Categories.Object.Zero
 import Categories.Pseudofunctor
 import Categories.Pseudofunctor.Instance.EnrichedUnderlying
+import Categories.Species
+import Categories.Species.Constructions
 import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda
