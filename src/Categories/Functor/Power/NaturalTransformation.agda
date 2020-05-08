@@ -50,9 +50,10 @@ reduceN′ {I = I} {J} {F} {F′} {G} {G′} H φ γ = ntHelper record
   module H = Functor H
   module L = Functor (reduce′ H F G)
   module R = Functor (reduce′ H F′ G′)
+  open Definitions C
   my-η : ∀ Xs → C [ L.F₀ Xs , R.F₀ Xs ]
   my-η Xs = H.F₁ ((φ.η (Xs ∙ inj₁)) , (γ.η (Xs ∙ inj₂)))
-  my-commute : ∀ Xs Ys fs → C.CommutativeSquare (L.F₁ fs) (my-η Xs) (my-η Ys) (R.F₁ fs)
+  my-commute : ∀ Xs Ys fs → CommutativeSquare (L.F₁ fs) (my-η Xs) (my-η Ys) (R.F₁ fs)
   my-commute Xs Ys fs = begin
       my-η Ys ∘ L.F₁ fs                             ≈˘⟨ H.homomorphism ⟩
       H.F₁ ((φ.η _ ∘ F.F₁ _) , (γ.η _ ∘ G.F₁ _))    ≈⟨ H.F-resp-≈ ((φ.commute _) , (γ.commute _)) ⟩

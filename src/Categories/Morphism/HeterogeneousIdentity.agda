@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-open import Categories.Category using (Category)
+open import Categories.Category using (Category; module Definitions)
 
 -- 'Heterogeneous' identity morphism and some laws about them.
 
@@ -12,6 +12,7 @@ import Categories.Morphism as Morphism
 import Categories.Morphism.Reasoning.Iso as Reasoning
 
 open Category C
+open Definitions C
 open Morphism C
 open Reasoning C using (switch-tofromʳ)
 

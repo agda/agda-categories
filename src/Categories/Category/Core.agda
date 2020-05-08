@@ -78,15 +78,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ⟺ = Equiv.sym
     _○_ : {f g h : A ⇒ B} → f ≈ g → g ≈ h → f ≈ h
     _○_ = Equiv.trans
-{-
-    -- for reasoning in the Strict cases
-    ≡⇒≈ : {f g : A ⇒ B} → f ≡.≡ g → f ≈ g
-    ≡⇒≈ ≡.refl = Equiv.refl
 
-    subst₂≈ : {C D : Obj} {f g : A ⇒ B} → f ≈ g → (eq₁ : A ≡.≡ C) (eq₂ : B ≡.≡ D) →
-      ≡.subst₂ (_⇒_) eq₁ eq₂ f ≈ ≡.subst₂ (_⇒_) eq₁ eq₂ g
-    subst₂≈ f≈g ≡.refl ≡.refl = f≈g
--}
   -- Combinators for commutative diagram
   -- The idea is to use the combinators to write commutations in a more readable way.
   -- It starts with [_⇒_]⟨_≈_⟩, and within the third and fourth places, use _⇒⟨_⟩_ to
@@ -117,7 +109,3 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ; equiv     = equiv
     ; ∘-resp-≈  = flip ∘-resp-≈
     }
-
-  -- Q: Should this really be defined here?
-  CommutativeSquare : ∀ {A B C D} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
-  CommutativeSquare f g h i = h ∘ f ≈ i ∘ g

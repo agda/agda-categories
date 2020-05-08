@@ -9,7 +9,7 @@ open import Relation.Binary.PropositionalEquality as ≡
 open import Relation.Binary using (IsEquivalence)
 open import Function using (_$_) renaming (_∘_ to _⊚_)
 
-open import Categories.Category using (Category; _[_,_]; _[_≈_])
+open import Categories.Category using (Category; _[_,_]; _[_≈_]; module Definitions)
 open import Categories.Category.Product
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor
@@ -45,18 +45,19 @@ record _≡F_ {C : Category o ℓ e}
   open F using (F₀; F₁)
   open G using () renaming (F₀ to G₀; F₁ to G₁)
   open HId D
+  open Definitions D
 
   field
     eq₀ : ∀ X → F₀ X ≡ G₀ X
 
     eq₁ : ∀ {X Y} (f : C [ X , Y ]) →
-          D.CommutativeSquare (F₁ f) (hid $ eq₀ X) (hid $ eq₀ Y) (G₁ f)
+          CommutativeSquare (F₁ f) (hid $ eq₀ X) (hid $ eq₀ Y) (G₁ f)
 
   eq₀⁻¹ : ∀ X → G₀ X ≡ F₀ X
   eq₀⁻¹ X = sym $ eq₀ X
 
   eq₁⁻¹ : ∀ {X Y} (f : C [ X , Y ]) →
-          D.CommutativeSquare (G₁ f) (hid $ eq₀⁻¹ X) (hid $ eq₀⁻¹ Y) (F₁ f)
+          CommutativeSquare (G₁ f) (hid $ eq₀⁻¹ X) (hid $ eq₀⁻¹ Y) (F₁ f)
   eq₁⁻¹ {X} {Y} f = begin
       τ⁻¹ Y ∘   G₁ f                      ≈˘⟨ identityʳ ⟩
      (τ⁻¹ Y ∘   G₁ f) ∘  id               ≈˘⟨ ∘-resp-≈ʳ $ hid-symʳ _ ⟩

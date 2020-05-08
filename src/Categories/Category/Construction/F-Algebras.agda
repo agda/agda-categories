@@ -53,6 +53,7 @@ F-Algebras {𝒞 = 𝒞} F = record
 
 module Lambek {𝒞 : Category o ℓ e} {F : Endofunctor 𝒞} (I : Initial (F-Algebras F)) where
   open Category 𝒞
+  open Definitions 𝒞
   open Functor F
   open F-Algebra using (α)
 

@@ -19,6 +19,7 @@ open import Categories.Morphism.Reasoning.Core C
 open import Relation.Binary hiding (_⇒_)
 
 open Category C
+open Definitions C
 private
   variable
     A B X Y : Obj

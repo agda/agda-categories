@@ -32,6 +32,7 @@ open Path 𝒞
 import Categories.Morphism.Reasoning as MR
 
 open Category 𝒞
+open Definitions 𝒞
 
 private
   module MCore where

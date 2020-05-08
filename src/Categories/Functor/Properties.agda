@@ -47,8 +47,8 @@ module _ (F : Functor C D) where
     where open D
           open D.HomReasoning
 
-  [_]-resp-square : C.CommutativeSquare f g h i →
-                    D.CommutativeSquare (F₁ f) (F₁ g) (F₁ h) (F₁ i)
+  [_]-resp-square : Definitions.CommutativeSquare C f g h i →
+                    Definitions.CommutativeSquare D (F₁ f) (F₁ g) (F₁ h) (F₁ i)
   [_]-resp-square {f = f} {g = g} {h = h} {i = i} sq = begin
     F₁ h ∘ F₁ f      ≈˘⟨ homomorphism ⟩
     F₁ (C [ h ∘ f ]) ≈⟨ F-resp-≈ sq ⟩

@@ -6,6 +6,7 @@ module Categories.Morphism.Properties {o ℓ e} (𝒞 : Category o ℓ e) where
 open import Data.Product using (_,_; _×_)
 
 open Category 𝒞
+open Definitions 𝒞
 open HomReasoning
 
 import Categories.Morphism as M

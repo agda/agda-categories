@@ -19,6 +19,7 @@ open import Function renaming (id to idᶠ; _∘_ to _∙_)
 open import Relation.Binary hiding (_⇒_)
 
 open Category C
+open Definitions C
 
 private
   variable

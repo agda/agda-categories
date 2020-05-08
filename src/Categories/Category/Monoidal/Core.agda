@@ -37,6 +37,7 @@ private
 
 open C hiding (id; identityˡ; identityʳ; assoc)
 open Commutation
+open Definitions C
 
 private
   variable
