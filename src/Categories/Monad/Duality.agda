@@ -43,7 +43,7 @@ Comonad⇒coMonad M = record
         open M using (F; ε; δ)
 
 
-module DualityConversionProperties where
+module MonadDualityConversionProperties where
   private
     coMonad⇔Comonad : ∀ (coMonad : Monad C.op) →
                     Comonad⇒coMonad (coMonad⇒Comonad coMonad) ≡ coMonad

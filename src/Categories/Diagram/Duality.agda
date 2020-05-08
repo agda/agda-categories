@@ -182,10 +182,10 @@ module _ {F : Bifunctor (Category.op D) D C} where
     where open Coend.Coend e
 
 
-module DualityConversionProperties where
+module DiagramDualityConversionProperties where
   private
     Coequalizer⇔coEqualizer : ∀ (coequalizer : Coequalizer f g) →
-      coEqualizer⇒Coequalizer (Coequalizer⇒coEqualizer coequalizer)≡ coequalizer
+      coEqualizer⇒Coequalizer (Coequalizer⇒coEqualizer coequalizer) ≡ coequalizer
     Coequalizer⇔coEqualizer _ = refl
 
 
@@ -196,34 +196,32 @@ module DualityConversionProperties where
     module _ {F : Functor J C} where
       open Functor F renaming (op to Fop)
 
-      private
-        coApex⇔Coapex : ∀ X → (coApex : Apex Fop X) →
+      coApex⇔Coapex : ∀ X → (coApex : Apex Fop X) →
                         Coapex⇒coApex X (coApex⇒Coapex X coApex) ≡ coApex
-        coApex⇔Coapex _ _ = refl
+      coApex⇔Coapex _ _ = refl
 
-        coCone⇔Cocone : ∀ (coCone : Cone Fop) →
+      coCone⇔Cocone : ∀ (coCone : Cone Fop) →
                         Cocone⇒coCone (coCone⇒Cocone coCone) ≡ coCone
-        coCone⇔Cocone _ = refl
+      coCone⇔Cocone _ = refl
 
-        coCone⇒⇔Cocone⇒ : ∀ {K K′} → (coCone⇒ : Cone⇒ Fop K K′) →
+      coCone⇒⇔Cocone⇒ : ∀ {K K′} → (coCone⇒ : Cone⇒ Fop K K′) →
                         Cocone⇒⇒coCone⇒ (coCone⇒⇒Cocone⇒ coCone⇒) ≡ coCone⇒
-        coCone⇒⇔Cocone⇒ _ = refl
+      coCone⇒⇔Cocone⇒ _ = refl
 
 
-        coLimit⇔Colimit : ∀ (coLimit : Limit Fop) →
-                          Colimit⇒coLimit (coLimit⇒Colimit coLimit) ≡ coLimit
-        coLimit⇔Colimit _ = refl
+      coLimit⇔Colimit : ∀ (coLimit : Limit Fop) →
+                        Colimit⇒coLimit (coLimit⇒Colimit coLimit) ≡ coLimit
+      coLimit⇔Colimit _ = refl
 
 
     module _ {F : Bifunctor (Category.op D) D C} where
       open Functor F renaming (op to Fop)
 
-      private
-        coWedge⇔Cowedge : ∀ (coWedge : Wedge Fop) →
-                          Cowedge⇒coWedge (coWedge⇒Cowedge coWedge) ≡ coWedge
-        coWedge⇔Cowedge _ = refl
+      coWedge⇔Cowedge : ∀ (coWedge : Wedge Fop) →
+                        Cowedge⇒coWedge (coWedge⇒Cowedge coWedge) ≡ coWedge
+      coWedge⇔Cowedge _ = refl
 
 
-        coEnd⇔Coend : ∀ (coEnd : End Fop) →
-                      Coend⇒coEnd (coEnd⇒Coend coEnd) ≡ coEnd
-        coEnd⇔Coend _ = refl
+      coEnd⇔Coend : ∀ (coEnd : End Fop) →
+                    Coend⇒coEnd (coEnd⇒Coend coEnd) ≡ coEnd
+      coEnd⇔Coend _ = refl
