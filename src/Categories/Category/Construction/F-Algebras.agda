@@ -22,7 +22,7 @@ F-Algebras {𝒞 = 𝒞} F = record
   ; _⇒_       = F-Algebra-Morphism
   ; _≈_       = λ α₁ α₂ → f α₁ ≈ f α₂
   ; _∘_       = λ α₁ α₂ → record { f = f α₁ ∘ f α₂ ; commutes = commut α₁ α₂ }
-  ; id        = record { f = id ; commutes = identityˡ ○ ⟺ identityʳ ○ ⟺ (∘-resp-≈ʳ identity) }
+  ; id        = record { f = id ; commutes = id-comm-sym ○ ⟺ (∘-resp-≈ʳ identity) }
   ; assoc     = assoc
   ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
@@ -39,6 +39,7 @@ F-Algebras {𝒞 = 𝒞} F = record
     open Category 𝒞
     open MR 𝒞
     open HomReasoning
+    open Equiv
     open Functor F
     open F-Algebra-Morphism
     open F-Algebra

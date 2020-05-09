@@ -31,22 +31,22 @@ open HomReasoning
 
 module Basic where
   id-unique : ∀ {o} {f : o ⇒ o} → (∀ g → g ∘ f ≈ g) → f ≈ id
-  id-unique g∘f≈g = trans (sym identityˡ) (g∘f≈g id)
+  id-unique g∘f≈g = Equiv.trans (Equiv.sym identityˡ) (g∘f≈g id)
 
   id-comm : ∀ {a b} {f : a ⇒ b} → f ∘ id ≈ id ∘ f
-  id-comm = trans identityʳ (sym identityˡ)
+  id-comm = Equiv.trans identityʳ (Equiv.sym identityˡ)
 
   id-comm-sym : ∀ {a b} {f : a ⇒ b} → id ∘ f ≈ f ∘ id
-  id-comm-sym = trans identityˡ (sym identityʳ)
+  id-comm-sym = Equiv.trans identityˡ (Equiv.sym identityʳ)
 
 open Basic public
 
 module Utils where
   assoc² : ((i ∘ h) ∘ g) ∘ f ≈ i ∘ (h ∘ (g ∘ f))
-  assoc² = trans assoc assoc
+  assoc² = Equiv.trans assoc assoc
 
   assoc²' : (i ∘ (h ∘ g)) ∘ f ≈ i ∘ (h ∘ (g ∘ f))
-  assoc²' = trans assoc (∘-resp-≈ʳ assoc)
+  assoc²' = Equiv.trans assoc (∘-resp-≈ʳ assoc)
 
 open Utils public
 

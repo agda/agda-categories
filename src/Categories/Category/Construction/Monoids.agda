@@ -26,7 +26,7 @@ Monoids = record
   ; _≈_ = λ f g → arr f ≈ arr g
   ; id = record
     { arr = id
-    ; preserves-μ = trans identityˡ (introʳ (Functor.identity ⊗))
+    ; preserves-μ = identityˡ ○ introʳ (Functor.identity ⊗)
     ; preserves-η = identityˡ
     }
   ; _∘_ = λ {A B C} f g → record
@@ -36,7 +36,7 @@ Monoids = record
       arr f ∘ (μ B ∘ arr g ⊗₁ arr g)           ≈⟨ pullˡ (preserves-μ f) ⟩
       (μ C ∘ arr f ⊗₁ arr f) ∘ arr g ⊗₁ arr g  ≈˘⟨ pushʳ (Functor.homomorphism ⊗) ⟩
       μ C ∘ (arr f ∘ arr g) ⊗₁ (arr f ∘ arr g) ∎
-    ; preserves-η = trans (pullʳ (preserves-η g)) (preserves-η f)
+    ; preserves-η = pullʳ (preserves-η g) ○ preserves-η f
     }
   ; assoc = assoc
   ; sym-assoc = sym-assoc
@@ -51,4 +51,4 @@ Monoids = record
     ; trans = trans
     }
   ; ∘-resp-≈ = ∘-resp-≈
-  }
+  } where open Equiv

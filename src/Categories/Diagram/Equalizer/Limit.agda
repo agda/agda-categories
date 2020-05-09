@@ -24,6 +24,7 @@ private
   open C
   open MR C
   open HomReasoning
+  open Equiv
 
 module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ Parallel) C} where
   private
@@ -85,7 +86,7 @@ module _ o′ ℓ′ e′ {X Y} {f g : X ⇒ Y} (e : Equalizer f g) where
   open Equalizer e
   private
     F = equalizer⇒limit-F o′ ℓ′ e′ f g
-  
+
   equalizer⇒limit : Limit F
   equalizer⇒limit = record
     { terminal = record

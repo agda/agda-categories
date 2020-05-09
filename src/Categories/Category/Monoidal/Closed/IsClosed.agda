@@ -78,7 +78,7 @@ closed = record
   ; γ-inverseOf-γ⁻¹  = λ {X Y} → record
     { left-inverse-of  = λ f → begin
       [ id , Radjunct f ∘ unitorˡ.to ]₁ ∘ [ id , unitorˡ.from ]₁ ∘ η.η unit
-        ≈⟨ ℱ.homomorphism [ X ,-] ⟩∘⟨ refl ⟩∘⟨ refl ⟩
+        ≈⟨ ℱ.homomorphism [ X ,-] ⟩∘⟨refl ⟩
       ([ id , Radjunct f ]₁ ∘ [ id , unitorˡ.to ]₁) ∘ [ id , unitorˡ.from ]₁ ∘ η.η unit
         ≈⟨ cancelInner (⟺ (ℱ.homomorphism [ X ,-]) ○ ℱ.F-resp-≈ [ X ,-] unitorˡ.isoˡ ○ [-,-].identity) ⟩
       Ladjunct (Radjunct f) ≈⟨ LRadjunct≈id ⟩

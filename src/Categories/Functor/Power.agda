@@ -10,6 +10,7 @@ module Categories.Functor.Power {o ℓ e} (C : Category o ℓ e) where
 
 open Category C
 open HomReasoning
+open Equiv
 
 open import Level using (Level; _⊔_)
 open import Data.Nat using (ℕ; _+_; zero; suc; _<_)

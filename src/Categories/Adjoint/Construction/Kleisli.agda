@@ -1,15 +1,15 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 open import Categories.Monad
 
 module Categories.Adjoint.Construction.Kleisli {o ℓ e} {C : Category o ℓ e} (M : Monad C) where
 
 open import Categories.Category.Construction.Kleisli
 open import Categories.Adjoint
-open import Categories.Functor
+open import Categories.Functor.Core
 open import Categories.Functor.Properties
-open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation.Core
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)
 open import Categories.Morphism.Reasoning C
 
@@ -19,6 +19,7 @@ private
   open M.F
   open C
   open HomReasoning
+  open Equiv
 
 Forgetful : Functor (Kleisli M) C
 Forgetful = record

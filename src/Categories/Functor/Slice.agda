@@ -20,6 +20,7 @@ import Categories.Category.Construction.Pullbacks as Pbs
 
 open Category C
 open HomReasoning
+open Equiv
 
 module _ {A : Obj} where
   open S.SliceObj
@@ -74,7 +75,7 @@ module _ {A : Obj} where
                                                                   (p₂∘universal≈h₂ (arr Z) f ○ ⟺ (p₂∘universal≈h₂ (arr Y) f) ○ ⟺ (pullˡ (p₂∘universal≈h₂ (arr Z) f)))
       ; F-resp-≈     = λ {X Y} eq″ → unique (arr Y) f (p₁∘universal≈h₁ (arr Y) f ○ ∘-resp-≈ˡ eq″) (p₂∘universal≈h₂ (arr Y) f)
       }
-      
+
 
     !⊣* : ∀ {B} (f : B ⇒ A) →  BaseChange! f ⊣ BaseChange* f
     !⊣* f = record
@@ -109,7 +110,7 @@ module _ {A : Obj} where
       where p : ∀ X → Pullback f (arr X)
             p X        = pullbacks f (arr X)
             module p X = Pullback (p X)
-            
+
             p⇒ : ∀ X Y (g : Slice⇒ X Y) → p.P X ⇒ p.P Y
             p⇒ X Y g = Pbs.Pullback⇒.pbarr pX⇒pY
               where pX : Pbs.PullbackObj C A

@@ -27,6 +27,7 @@ open import Categories.Morphism.Reasoning C
 open Cocone
 open Coapex
 open Cocone⇒
+open Equiv
 
 Cocones : Category _ _ _
 Cocones = record

@@ -46,9 +46,9 @@ Cones = record
   ; identityʳ = identityʳ
   ; identity² = identity²
   ; equiv     = record
-    { refl  = refl
-    ; sym   = sym
-    ; trans = trans
+    { refl  = Equiv.refl
+    ; sym   = Equiv.sym
+    ; trans = Equiv.trans
     }
   ; ∘-resp-≈  = ∘-resp-≈
   }
@@ -88,6 +88,7 @@ cone-resp-iso {X = X} κ κ≅X = record
   where open _≅_ κ≅X
         open Cone
         open Apex
+        open Equiv
 
 iso-cone⇒iso-apex : K ⇔ K′ → N K ≅ N K′
 iso-cone⇒iso-apex K⇔K′ = record

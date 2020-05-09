@@ -7,10 +7,11 @@ module Categories.Category.Slice {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open Category 𝒞
 open HomReasoning
+open Equiv
 
 open import Level
-open import Function using (_$_)
-open import Relation.Binary using (Rel)
+open import Function.Base using (_$_)
+open import Relation.Binary.Core using (Rel)
 
 open import Categories.Morphism.Reasoning 𝒞
 

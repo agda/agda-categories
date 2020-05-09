@@ -54,6 +54,7 @@ module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ (Discrete 2)) C
     where open Limit L
 
 module _ o′ ℓ′ e′ A B where
+  open Equiv
 
   product⇒limit-F : Functor (liftC o′ ℓ′ e′ (Discrete 2)) C
   product⇒limit-F = record

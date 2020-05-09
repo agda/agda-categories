@@ -86,7 +86,7 @@ module Kelly's where
                   uλ
                 ⟩
     perimeter = ⟺ (glue◃◽′ triangle-iso
-                             (sym (lift-square′ (Equiv.trans assoc-commute-from
+                             (⟺ (lift-square′ (Equiv.trans assoc-commute-from
                                                              (∘-resp-≈ˡ (F-resp-≈ ⊗ (Equiv.refl , identity ⊗)))))))
       where open MR Core
 
@@ -121,7 +121,7 @@ module Kelly's where
       uλ ∘ᵢ ua ∘ᵢ associator ∘ᵢ aY                    ∎
 
     top-face : uλ ∘ᵢ ua ≃ u[λY]
-    top-face = elim-triangleˡ′ (sym perimeter′) (glue◽◃ (sym sq) tri)
+    top-face = elim-triangleˡ′ (⟺ perimeter′) (glue◽◃ (⟺ sq) tri)
       where open MR Core
 
     coherence-iso₁ : [ (unit ⊗₀ X) ⊗₀ Y ⇒ X ⊗₀ Y ]⟨
@@ -172,7 +172,7 @@ module Kelly's where
                  ≈ ρu                                ⇒⟨ (X ⊗₀ Y) ⊗₀ unit ⟩
                    associator
                  ⟩
-    perimeter″ = glue▹◽ triangle-iso (sym (lift-square′
+    perimeter″ = glue▹◽ triangle-iso (⟺ (lift-square′
         (Equiv.trans (∘-resp-≈ʳ (F-resp-≈ ⊗ (Equiv.sym (identity ⊗) , Equiv.refl)))
                       assoc-commute-from)))
       where open MR Core
@@ -193,7 +193,7 @@ module Kelly's where
        α ∘ᵢ ρu                                                       ∎
 
     top-face′ : [Xρ]u ∘ᵢ au ≃ ρu
-    top-face′ = cut-squareʳ perimeter‴ (sym (glue◃◽′ tri′ (sym (lift-square′ assoc-commute-from))))
+    top-face′ = cut-squareʳ perimeter‴ (⟺ (glue◃◽′ tri′ (⟺ (lift-square′ assoc-commute-from))))
       where open MR Core
             tri′ : [ X ⊗₀ (Y ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ Y ⊗₀ unit ]⟨
                    (≅.refl ⊗ᵢ ≅.refl ⊗ᵢ unitorˡ ∘ᵢ ≅.refl ⊗ᵢ associator)

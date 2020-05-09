@@ -96,4 +96,4 @@ hid-square {f = f} {p} {q} {g} eq = switch-tofromʳ (hid-≅ p) (begin
   hid q ∘ f ∘ hid (sym p)       ≈˘⟨ hid-subst₂ p q f ⟩
   subst₂ _⇒_ p q f              ≈⟨ eq ⟩
   g                             ∎)
-  where open HomReasoning hiding (sym)
+  where open HomReasoning

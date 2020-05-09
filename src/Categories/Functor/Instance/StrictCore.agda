@@ -9,7 +9,7 @@ module Categories.Functor.Instance.StrictCore where
 
 open import Data.Product
 open import Level using (_⊔_)
-open import Function using (_on_; _$_) renaming (id to idf)
+open import Function.Base using (_on_; _$_) renaming (id to idf)
 open import Relation.Binary.PropositionalEquality as ≡ using (cong; cong-id)
 
 open import Categories.Category
@@ -62,7 +62,7 @@ Core {o} {ℓ} {e} = record
          module F = Functor F
          module G = Functor G
          open Category B
-         open HomReasoning hiding (refl)
+         open HomReasoning
          open HId
          open HIdProps
          open _≡F_ F≡G

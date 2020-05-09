@@ -57,7 +57,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   -- Also some useful combinators for doing reasoning on _∘_ chains
   module HomReasoning {A B : Obj} where
     open SetoidR (hom-setoid {A} {B}) public
-    open Equiv {A = A} {B = B} public
+    -- open Equiv {A = A} {B = B} public
 
     infixr 4 _⟩∘⟨_ refl⟩∘⟨_
     infixl 5 _⟩∘⟨refl

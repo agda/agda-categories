@@ -56,10 +56,11 @@ module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (F⊣G : Adjoint F G) w
     }
     where
       open 𝒟.HomReasoning
+      open 𝒟.Equiv
       open MR 𝒟
 
   private
-    L = ComparisonF 
+    L = ComparisonF
     module L = Functor L
     module Gₜ = Functor (Forgetful T)
     module Fₜ = Functor (Free T)
@@ -90,4 +91,3 @@ module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (F⊣G : Adjoint F G) w
     where
       open 𝒟.HomReasoning
       open MR 𝒟
-

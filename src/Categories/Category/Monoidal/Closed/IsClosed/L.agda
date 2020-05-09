@@ -19,6 +19,7 @@ open import Categories.Functor.Bifunctor.Properties
 open Closed Cl
 open Category C
 open HomReasoning
+open Equiv
 
 private
   module ℱ = Functor

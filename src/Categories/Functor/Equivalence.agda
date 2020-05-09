@@ -90,7 +90,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} where
 
   open Functor
   open Category D
-  open HomReasoning hiding (refl; trans)
+  open HomReasoning
   open MorphismReasoning D
   open HId D
   open _≡F_
@@ -133,7 +133,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
 
   open Functor
   open Category E
-  open HomReasoning hiding (refl; trans)
+  open HomReasoning
   open MorphismReasoning E
   open HId
   open HIdProps

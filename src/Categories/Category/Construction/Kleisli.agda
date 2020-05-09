@@ -49,8 +49,8 @@ Kleisli {𝒞 = 𝒞} M = record
         μ.η D ∘ ((F₁ (μ.η D) ∘ F₁ (F₁ h ∘ g)) ∘ f)  ≈⟨ refl⟩∘⟨ assoc ○ sym-assoc ⟩
         (μ.η D ∘ F₁ (μ.η D)) ∘ (F₁ (F₁ h ∘ g) ∘ f)  ≈⟨ M.assoc ⟩∘⟨refl ○ assoc ⟩
         μ.η D ∘ (μ.η (F₀ D) ∘ F₁ (F₁ h ∘ g) ∘ f)    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ homomorphism ⟩∘⟨refl ⟩
-        μ.η D ∘ μ.η (F₀ D) ∘ (F₁ (F₁ h) ∘ F₁ g) ∘ f ≈⟨ refl⟩∘⟨ center⁻¹ (μ.commute h) refl ⟩
-        μ.η D ∘ ((F₁ h ∘ μ.η C) ∘ F₁ g ∘ f)         ≈⟨ refl⟩∘⟨ center refl ⟩
+        μ.η D ∘ μ.η (F₀ D) ∘ (F₁ (F₁ h) ∘ F₁ g) ∘ f ≈⟨ refl⟩∘⟨ center⁻¹ (μ.commute h) Equiv.refl ⟩
+        μ.η D ∘ ((F₁ h ∘ μ.η C) ∘ F₁ g ∘ f)         ≈⟨ refl⟩∘⟨ center Equiv.refl ⟩
         μ.η D ∘ (F₁ h ∘ (μ.η C ∘ F₁ g) ∘ f)         ≈⟨ sym-assoc ⟩
         (μ.η D ∘ F₁ h) ∘ ((μ.η C ∘ F₁ g) ∘ f)       ∎
 

@@ -21,6 +21,7 @@ module _ {A : C.Obj} where
   open SliceObj
   open Slice⇒
   open C.HomReasoning
+  open C.Equiv
 
   product⇒pullback : ∀ {X Y : Obj} → Product (Slice A) X Y → Pullback C (arr X) (arr Y)
   product⇒pullback p = record
@@ -81,6 +82,7 @@ module _ {A B} (f : A C.⇒ B) where
     module C/A = Category C/A
 
     open C.HomReasoning
+    open C.Equiv
 
   slice-slice⇒slice : Functor (S.Slice C/B (S.sliceobj f)) C/A
   slice-slice⇒slice = record

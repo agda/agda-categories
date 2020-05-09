@@ -73,10 +73,10 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   assocˡ∘assocʳ = Iso.isoˡ (_≅_.iso ×-assoc)
 
   ⟨⟩-congʳ : f ≈ f′ → ⟨ f , g ⟩ ≈ ⟨ f′ , g ⟩
-  ⟨⟩-congʳ pf = ⟨⟩-cong₂ pf refl
+  ⟨⟩-congʳ pf = ⟨⟩-cong₂ pf Equiv.refl
 
   ⟨⟩-congˡ : g ≈ g′ → ⟨ f , g ⟩ ≈ ⟨ f , g′ ⟩
-  ⟨⟩-congˡ pf = ⟨⟩-cong₂ refl pf
+  ⟨⟩-congˡ pf = ⟨⟩-cong₂ Equiv.refl pf
 
   swap : A × B ⇒ B × A
   swap = ⟨ π₂ , π₁ ⟩
@@ -156,11 +156,11 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   swap∘⁂ : swap ∘ (f ⁂ g) ≈ (g ⁂ f) ∘ swap
   swap∘⁂ {f = f} {g = g} = begin
     swap ∘ (f ⁂ g)      ≈⟨ swap∘⟨⟩ ⟩
-    ⟨ g ∘ π₂ , f ∘ π₁ ⟩ ≈⟨ sym ⁂∘⟨⟩ ⟩
+    ⟨ g ∘ π₂ , f ∘ π₁ ⟩  ≈˘⟨ ⁂∘⟨⟩ ⟩
     (g ⁂ f) ∘ swap      ∎
 
   swap∘swap : (swap {A}{B}) ∘ (swap {B}{A}) ≈ id
-  swap∘swap = trans swap∘⟨⟩ η
+  swap∘swap = Equiv.trans swap∘⟨⟩ η
 
   assocʳ∘⟨⟩ : assocʳ ∘ ⟨ f , ⟨ g , h ⟩ ⟩ ≈ ⟨ ⟨ f , g ⟩ , h ⟩
   assocʳ∘⟨⟩ {f = f} {g = g} {h = h} = begin
@@ -173,13 +173,13 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
       ⟩
     , π₂ ∘ ⟨ g , h ⟩
     ⟩                          ≈⟨ ⟨⟩-cong₂ (⟨⟩-cong₂ project₁
-                                                     (trans (pullʳ project₂) project₁))
+                                                     (pullʳ project₂ ○ project₁))
                                            project₂ ⟩
     ⟨ ⟨ f , g ⟩ , h ⟩          ∎
 
   assocˡ∘⟨⟩ : assocˡ ∘ ⟨ ⟨ f , g ⟩ , h ⟩ ≈ ⟨ f , ⟨ g , h ⟩ ⟩
   assocˡ∘⟨⟩ {f = f} {g = g} {h = h} = begin
-    assocˡ ∘ ⟨ ⟨ f , g ⟩ , h ⟩          ≈⟨ sym (refl ⟩∘⟨ assocʳ∘⟨⟩) ⟩
+    assocˡ ∘ ⟨ ⟨ f , g ⟩ , h ⟩          ≈˘⟨ refl⟩∘⟨ assocʳ∘⟨⟩ ⟩
     assocˡ ∘ assocʳ ∘ ⟨ f , ⟨ g , h ⟩ ⟩ ≈⟨ cancelˡ assocˡ∘assocʳ ⟩
     ⟨ f , ⟨ g , h ⟩ ⟩                   ∎
 
@@ -235,7 +235,7 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
     { F₀           = uncurry _×_
     ; F₁           = uncurry _⁂_
     ; identity     = id×id product
-    ; homomorphism = sym ⁂∘⁂
+    ; homomorphism = ⟺ ⁂∘⁂
     ; F-resp-≈     = uncurry [ product ⇒ product ]×-cong₂
     }
 
@@ -292,7 +292,7 @@ record Cartesian : Set (levelOfTerm 𝒞) where
       { η       = λ _ → ⟨ ! , id ⟩
       ; commute = λ f → begin
         ⟨ ! , id ⟩ ∘ f                                     ≈⟨ ⟨⟩∘ ⟩
-        ⟨ ! ∘ f , id  ∘ f ⟩                                ≈⟨ ⟨⟩-cong₂ (sym (!-unique _)) identityˡ ⟩
+        ⟨ ! ∘ f , id  ∘ f ⟩                                ≈⟨ ⟨⟩-cong₂ (⟺ (!-unique _)) identityˡ ⟩
         ⟨ ! , f ⟩                                          ≈˘⟨ ⟨⟩-cong₂ identityˡ identityʳ ⟩
         ⟨ id ∘ ! , f ∘ id ⟩                                ≈˘⟨ ⟨⟩-cong₂ (pullʳ project₁) (pullʳ project₂) ⟩
         ⟨ (id ∘ π₁) ∘ ⟨ ! , id ⟩ , (f ∘ π₂) ∘ ⟨ ! , id ⟩ ⟩ ≈˘⟨ ⟨⟩∘ ⟩
@@ -311,7 +311,7 @@ record Cartesian : Set (levelOfTerm 𝒞) where
       { η       = λ _ → ⟨ id , ! ⟩
       ; commute = λ f → begin
         ⟨ id , ! ⟩ ∘ f                                     ≈⟨ ⟨⟩∘ ⟩
-        ⟨ id ∘ f , ! ∘ f ⟩                                 ≈⟨ ⟨⟩-cong₂ identityˡ (sym (!-unique _)) ⟩
+        ⟨ id ∘ f , ! ∘ f ⟩                                 ≈⟨ ⟨⟩-cong₂ identityˡ (⟺ (!-unique _)) ⟩
         ⟨ f , ! ⟩                                          ≈˘⟨ ⟨⟩-cong₂ identityʳ identityˡ ⟩
         ⟨ f ∘ id , id ∘ ! ⟩                                ≈˘⟨ ⟨⟩-cong₂ (pullʳ project₁) (pullʳ project₂) ⟩
         ⟨ (f ∘ π₁) ∘ ⟨ id , ! ⟩ , (id ∘ π₂) ∘ ⟨ id , ! ⟩ ⟩ ≈˘⟨ ⟨⟩∘ ⟩
@@ -389,13 +389,13 @@ record Cartesian : Set (levelOfTerm 𝒞) where
       }
     ; commutative = swap∘swap
     ; hexagon     = begin
-        id ⊗₁ swap ∘ assocˡ ∘ swap ⊗₁ id                          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘ ⟩
+        id ⊗₁ swap ∘ assocˡ ∘ swap ⊗₁ id                        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘ ⟩
         id ⊗₁ swap ∘ assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₁ ∘ π₁ ⟩ , id ∘ π₂ ⟩ ≈⟨ refl⟩∘⟨ assocˡ∘⟨⟩ ⟩
         id ⊗₁ swap ∘ ⟨ π₂ ∘ π₁ , ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩          ≈⟨ ⁂∘⟨⟩ ⟩
         ⟨ id ∘ π₂ ∘ π₁ , swap ∘ ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩           ≈⟨ ⟨⟩-cong₂ identityˡ swap∘⟨⟩ ⟩
         ⟨ π₂ ∘ π₁ , ⟨ id ∘ π₂ , π₁ ∘ π₁ ⟩ ⟩                       ≈⟨ ⟨⟩-congˡ (⟨⟩-congʳ identityˡ) ⟩
         ⟨ π₂ ∘ π₁ , ⟨ π₂ , π₁ ∘ π₁ ⟩ ⟩                            ≈˘⟨ assocˡ∘⟨⟩ ⟩
-        assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ , π₁ ∘ π₁ ⟩                   ≈˘⟨ refl ⟩∘⟨ swap∘⟨⟩ ⟩
+        assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ , π₁ ∘ π₁ ⟩                   ≈˘⟨ refl⟩∘⟨ swap∘⟨⟩ ⟩
         assocˡ ∘ swap ∘ assocˡ                                    ∎
     }
 

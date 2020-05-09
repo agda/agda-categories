@@ -7,10 +7,10 @@ module Categories.Category.Construction.Grothendieck where
 open import Level
 open import Data.Product using (Σ; _,_; proj₁)
 open import Data.Unit using (tt)
-open import Function using (_$_)
-open import Relation.Binary using (IsEquivalence)
+open import Function.Base using (_$_)
+open import Relation.Binary.Structures using (IsEquivalence)
 
-open import Categories.Category
+open import Categories.Category using (Category; _[_,_]; _[_≈_])
 open import Categories.Bicategory using (Bicategory)
 open import Categories.Bicategory.Instance.Cats
 open import Categories.Bicategory.Construction.1-Category
@@ -151,12 +151,12 @@ module _ {C : Category o ℓ e} {b : Level}
           (assoc₄ ∙ Hom₁₃₂ ∙ (P₁H₂₃ ∙ D.id)) ∙ P₁₂₃₂                         ≈˘⟨ (refl⟩∘⟨ refl⟩∘⟨ D.identityʳ) ⟩∘⟨refl ⟩
           (assoc₄ ∙ Hom₁₃₂ ∙ (P₁H₂₃ ∙ D.id) ∙ D.id) ∙ P₁₂₃₂                  ≈˘⟨ (refl⟩∘⟨ P-assoc) ⟩∘⟨refl ⟩
           (assoc₄ ∙ η (P₂ C.sym-assoc) a₄ ∙ Hom₂₁₃ ∙ P₂₁$id ∙
-             Hom₁₂P₃₄) ∙ P₁₂₃₂                                               ≈⟨ pullˡ (sym (homomorphism PF)) ⟩∘⟨refl ⟩
+             Hom₁₂P₃₄) ∙ P₁₂₃₂                                               ≈⟨ pullˡ (⟺ (homomorphism PF)) ⟩∘⟨refl ⟩
           (η (P₂ (C.Equiv.trans C.sym-assoc C.assoc)) a₄
              ∙ Hom₂₁₃ ∙ P₂₁$id ∙ Hom₁₂P₃₄) ∙ P₁₂₃₂                           ≈⟨ P-resp-≈ _ ⟩∘⟨refl ⟩∘⟨refl ⟩
          (η (P₂ C.Equiv.refl) a₄ ∙ Hom₂₁₃ ∙ P₂₁$id ∙ Hom₁₂P₃₄) ∙ P₁₂₃₂       ≈⟨ elimˡ (identity PF) ⟩∘⟨refl ⟩
          (Hom₂₁₃ ∙ P₂₁$id ∙ Hom₁₂P₃₄) ∙ P₁₂₃₂                                ≈⟨ refl⟩∘⟨ homomorphism (P₁ f₁) ⟩
-         (Hom₂₁₃ ∙ P₂₁$id ∙ Hom₁₂P₃₄) ∙ (P₁ f₁ $₁ P₂₃ ∙ P₁₂)                 ≈⟨ D.sym-assoc ⟩∘⟨ refl ⟩
+         (Hom₂₁₃ ∙ P₂₁$id ∙ Hom₁₂P₃₄) ∙ (P₁ f₁ $₁ P₂₃ ∙ P₁₂)                 ≈⟨ D.sym-assoc ⟩∘⟨refl ⟩
          ((Hom₂₁₃ ∙ P₂₁$id) ∙ Hom₁₂P₃₄) ∙ (P₁ f₁ $₁ P₂₃ ∙ P₁₂)               ≈⟨ center (commute (Hom.η (f₁ , f₂)) g₃) ⟩
          (Hom₂₁₃ ∙ P₂₁$id) ∙ (P₂₁₃ ∙ Hom₁₂) ∙ P₁₂                            ≈⟨ elimʳ (identity (P₁ _)) ⟩∘⟨refl ⟩
          Hom₂₁₃ ∙ (P₂₁₃ ∙ Hom₁₂) ∙ P₁₂                                       ≈⟨ pushʳ D.assoc ⟩
@@ -182,7 +182,7 @@ module _ {C : Category o ℓ e} {b : Level}
     identityʳ {x₁ , a₁} {_ , a₂} {f , g} =
       C.identityʳ ,
       (begin
-        P-identityʳ ∙ (Hom-1*f ∙ Pid) ∙ η-unitˡ                  ≈⟨ refl⟩∘⟨ pullʳ (sym $ commute (unitˡ.η _) g) ⟩
+        P-identityʳ ∙ (Hom-1*f ∙ Pid) ∙ η-unitˡ                  ≈⟨ refl⟩∘⟨ pullʳ (⟺ $ commute (unitˡ.η _) g) ⟩
         P-identityʳ ∙ Hom-1*f ∙ η-unitˡ₂ ∙ g                     ≈⟨ pushʳ D.sym-assoc ⟩
         (P-identityʳ ∙ Hom-1*f ∙ η-unitˡ₂) ∙ g                   ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ introˡ (identity (P₁ C.id))) ⟩∘⟨refl ⟩
         (P-identityʳ ∙ Hom-1*f ∙ P₁ C.id $₁ D.id ∙ η-unitˡ₂) ∙ g ≈⟨ elimˡ unitaryˡ ⟩

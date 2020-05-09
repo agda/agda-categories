@@ -1,15 +1,15 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
+open import Categories.Category.Core
 open import Categories.Monad
 
 module Categories.Adjoint.Construction.EilenbergMoore {o ℓ e} {C : Category o ℓ e} (M : Monad C) where
 
 open import Categories.Category.Construction.EilenbergMoore M
 open import Categories.Adjoint
-open import Categories.Functor
+open import Categories.Functor.Core
 open import Categories.Functor.Properties
-open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation.Core
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)
 open import Categories.Morphism.Reasoning C
 
@@ -19,11 +19,12 @@ private
   open M.F
   open C
   open HomReasoning
+  open Equiv
 
 Forgetful : Functor EilenbergMoore C
 Forgetful = record
-  { F₀           = λ X → Module.A X
-  ; F₁           = λ f → Module⇒.arr f
+  { F₀           = Module.A
+  ; F₁           = Module⇒.arr
   ; identity     = refl
   ; homomorphism = refl
   ; F-resp-≈     = λ eq → eq
@@ -49,16 +50,16 @@ Free = record
 FF≃F : Forgetful ∘F Free ≃ M.F
 FF≃F = record
   { F⇒G = record
-    { η           = λ X → F₁ C.id
-    ; commute     = λ f → [ M.F ]-resp-square id-comm-sym
-    ; sym-commute = λ f → [ M.F ]-resp-square id-comm
+    { η           = λ _ → F₁ C.id
+    ; commute     = λ _ → [ M.F ]-resp-square id-comm-sym
+    ; sym-commute = λ _ → [ M.F ]-resp-square id-comm
     }
   ; F⇐G = record
-    { η       = λ X → F₁ C.id
-    ; commute = λ f → [ M.F ]-resp-square id-comm-sym
-    ; sym-commute = λ f → [ M.F ]-resp-square id-comm
+    { η       = λ _ → F₁ C.id
+    ; commute = λ _ → [ M.F ]-resp-square id-comm-sym
+    ; sym-commute = λ _ → [ M.F ]-resp-square id-comm
     }
-  ; iso = λ X → record
+  ; iso = λ _ → record
     { isoˡ = elimˡ identity ○ identity
     ; isoʳ = elimˡ identity ○ identity
     }

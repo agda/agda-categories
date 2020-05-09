@@ -76,6 +76,7 @@ module Extras {o ℓ e t} (Bicat : Bicategory o ℓ e t) where
   ▷id₂ = ⊚.identity
 
   open hom.HomReasoning
+  open hom.Equiv
   private
     module MR′ {A} {B} where
       open MR (hom A B) using (conjugate-to) public
