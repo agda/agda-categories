@@ -55,9 +55,9 @@ _∘Cocone_ {𝒞 = 𝒞} {𝒟 = 𝒟} F {J} C = record
     module 𝒟 = Category 𝒟
     open 𝒟.HomReasoning
 
-module _ {o ℓ e} {o′ ℓ′ e′} {o″ ℓ″ e″}
-         {𝒞 : Category o ℓ e} {𝒟 : Category o′ ℓ′ e′} {ℐ : Category o″ ℓ″ e″}
-         (F : Functor 𝒞 𝒟) (J : Functor ℐ 𝒞) where
+module Whiskering {o ℓ e} {o′ ℓ′ e′} {o″ ℓ″ e″}
+                  {𝒞 : Category o ℓ e} {𝒟 : Category o′ ℓ′ e′} {ℐ : Category o″ ℓ″ e″}
+                  (F : Functor 𝒞 𝒟) (J : Functor ℐ 𝒞) where
 
   PreservesLimits : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′ ⊔ o″ ⊔ ℓ″)
   PreservesLimits = ∀ (C : Cone J) → IsTerminal (Cones J) C → IsTerminal (Cones (F ∘F J)) (F ∘Cone C)
