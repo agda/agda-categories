@@ -4,17 +4,17 @@ open import Categories.Category
 
 module Categories.Monad.Duality {o ℓ e} (C : Category o ℓ e) where
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
 
-open import Categories.Functor
-open import Categories.NaturalTransformation
+open import Categories.Functor.Core using (Functor)
+open import Categories.NaturalTransformation.Core using (NaturalTransformation)
 open import Categories.Monad
 open import Categories.Comonad
 
 private
   module C = Category C
   open C
-  open HomReasoning hiding (refl)
+  open HomReasoning
 
 coMonad⇒Comonad : Monad C.op → Comonad C
 coMonad⇒Comonad M = record

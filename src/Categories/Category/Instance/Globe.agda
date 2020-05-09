@@ -3,10 +3,9 @@ module Categories.Category.Instance.Globe where
 
 open import Level using (Level; zero)
 open import Relation.Binary using (IsEquivalence; module IsEquivalence)
-open import Relation.Binary.PropositionalEquality using (isEquivalence)
-open import Data.Nat using (ℕ; zero; suc; _<_; _≤_; z≤n; s≤s)
+open import Data.Nat.Base using (ℕ; zero; suc; _<_; _≤_; z≤n; s≤s)
 
-open import Categories.Category
+open import Categories.Category.Core
 
 data GlobeHom : (m n : ℕ) → Set where
   I : ∀ {place : ℕ} → GlobeHom place place

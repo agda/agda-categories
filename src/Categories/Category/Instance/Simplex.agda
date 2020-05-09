@@ -6,8 +6,8 @@ module Categories.Category.Instance.Simplex where
 
 open import Level
 open import Data.Product
-open import Data.Fin
-open import Data.Nat using (ℕ)
+open import Data.Fin.Base using (Fin; _≤_)
+open import Data.Nat.Base using (ℕ)
 open import Function renaming (id to idF; _∘_ to _∙_)
 
 open import Relation.Binary

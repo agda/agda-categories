@@ -5,13 +5,14 @@ module Categories.Species.Constructions where
 
 open import Level
 open import Data.Empty
-open import Data.Fin as Fin using (Fin)
+open import Data.Fin.Base as Fin using (Fin)
 open import Data.Fin.Properties using (¬Fin0)
 open import Data.Fin.Permutation using (↔⇒≡)
-open import Data.Nat using (ℕ; suc; zero; _≟_)
+open import Data.Nat.Base using (ℕ; suc; zero)
+open import Data.Nat.Properties using (_≟_)
 open import Data.Product as × using (Σ; proj₁; proj₂; _,_)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent
-open import Data.Sum as ⊎ using (inj₁; inj₂)
+open import Data.Sum.Base as ⊎ using (inj₁; inj₂)
 open import Data.Sum.Relation.Binary.Pointwise using (_⊎ₛ_; inj₁; inj₂)
 open import Data.Unit.Polymorphic using (⊤; tt)
 open import Function.Base using () renaming (id to id→)
