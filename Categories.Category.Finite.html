@@ -4,47 +4,44 @@
 <a id="37" class="Keyword">module</a> <a id="44" href="Categories.Category.Finite.html" class="Module">Categories.Category.Finite</a> <a id="71" class="Keyword">where</a>
 
 <a id="78" class="Keyword">open</a> <a id="83" class="Keyword">import</a> <a id="90" href="Level.html" class="Module">Level</a>
-<a id="96" class="Keyword">open</a> <a id="101" class="Keyword">import</a> <a id="108" href="Data.Nat.html" class="Module">Data.Nat</a> <a id="117" class="Keyword">using</a> <a id="123" class="Symbol">(</a><a id="124" href="Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="125" class="Symbol">)</a>
-<a id="127" class="Keyword">open</a> <a id="132" class="Keyword">import</a> <a id="139" href="Data.Fin.html" class="Module">Data.Fin</a>
 
-<a id="149" class="Keyword">open</a> <a id="154" class="Keyword">import</a> <a id="161" href="Categories.Adjoint.Equivalence.html" class="Module">Categories.Adjoint.Equivalence</a>
-<a id="192" class="Keyword">open</a> <a id="197" class="Keyword">import</a> <a id="204" href="Categories.Category.html" class="Module">Categories.Category</a>
-<a id="224" class="Keyword">open</a> <a id="229" class="Keyword">import</a> <a id="236" href="Categories.Functor.html" class="Module">Categories.Functor</a>
-<a id="255" class="Keyword">open</a> <a id="260" class="Keyword">import</a> <a id="267" href="Categories.Category.Finite.Fin.html" class="Module">Categories.Category.Finite.Fin</a>
+<a id="97" class="Keyword">open</a> <a id="102" class="Keyword">import</a> <a id="109" href="Categories.Adjoint.Equivalence.html" class="Module">Categories.Adjoint.Equivalence</a>
+<a id="140" class="Keyword">open</a> <a id="145" class="Keyword">import</a> <a id="152" href="Categories.Category.Core.html" class="Module">Categories.Category.Core</a>
+<a id="177" class="Keyword">open</a> <a id="182" class="Keyword">import</a> <a id="189" href="Categories.Category.Finite.Fin.html" class="Module">Categories.Category.Finite.Fin</a>
 
-<a id="299" class="Comment">-- definition of a finite category</a>
-<a id="334" class="Comment">-- </a>
-<a id="338" class="Comment">-- the idea is to require a functor from C to a category generated from a finite shape</a>
-<a id="425" class="Comment">-- is the right adjoint.</a>
-<a id="450" class="Comment">--</a>
-<a id="453" class="Comment">-- Question: it seems to me right adjoint is enough, though the original plan is to</a>
-<a id="537" class="Comment">-- use adjoint equivalence. intuitively, the shape category is an &quot;overapproximation&quot;</a>
-<a id="623" class="Comment">-- of C, which is a very strong constraint. so requiring adjoint equivalence sounds an</a>
-<a id="710" class="Comment">-- unnecessarily stronger constraint. is adjoint equivalence necessary?</a>
-<a id="782" class="Comment">--</a>
-<a id="785" class="Comment">-- Answer: probably yes. adjoint equivalence seems necessary as the notion needs to</a>
-<a id="869" class="Comment">-- show that shapes are preserved.</a>
-<a id="904" class="Comment">--</a>
-<a id="907" class="Comment">-- c.f. Categories.Adjoint.Equivalence.Properties.⊣equiv-preserves-diagram</a>
-<a id="982" class="Keyword">record</a> <a id="Finite"></a><a id="989" href="Categories.Category.Finite.html#989" class="Record">Finite</a> <a id="996" class="Symbol">{</a><a id="997" href="Categories.Category.Finite.html#997" class="Bound">o</a> <a id="999" href="Categories.Category.Finite.html#999" class="Bound">ℓ</a> <a id="1001" href="Categories.Category.Finite.html#1001" class="Bound">e</a><a id="1002" class="Symbol">}</a> <a id="1004" class="Symbol">(</a><a id="1005" href="Categories.Category.Finite.html#1005" class="Bound">C</a> <a id="1007" class="Symbol">:</a> <a id="1009" href="Categories.Category.Core.html#375" class="Record">Category</a> <a id="1018" href="Categories.Category.Finite.html#997" class="Bound">o</a> <a id="1020" href="Categories.Category.Finite.html#999" class="Bound">ℓ</a> <a id="1022" href="Categories.Category.Finite.html#1001" class="Bound">e</a><a id="1023" class="Symbol">)</a> <a id="1025" class="Symbol">:</a> <a id="1027" class="PrimitiveType">Set</a> <a id="1031" class="Symbol">(</a><a id="1032" href="Categories.Category.Finite.html#997" class="Bound">o</a> <a id="1034" href="Agda.Primitive.html#636" class="Primitive Operator">⊔</a> <a id="1036" href="Categories.Category.Finite.html#999" class="Bound">ℓ</a> <a id="1038" href="Agda.Primitive.html#636" class="Primitive Operator">⊔</a> <a id="1040" href="Categories.Category.Finite.html#1001" class="Bound">e</a><a id="1041" class="Symbol">)</a> <a id="1043" class="Keyword">where</a>
-  <a id="1051" class="Keyword">field</a>
-    <a id="Finite.shape"></a><a id="1061" href="Categories.Category.Finite.html#1061" class="Field">shape</a> <a id="1067" class="Symbol">:</a> <a id="1069" href="Categories.Category.Finite.Fin.html#2751" class="Record">FinCatShape</a>
+<a id="221" class="Comment">-- definition of a finite category</a>
+<a id="256" class="Comment">--</a>
+<a id="259" class="Comment">-- the idea is to require a functor from C to a category generated from a finite shape</a>
+<a id="346" class="Comment">-- is the right adjoint.</a>
+<a id="371" class="Comment">--</a>
+<a id="374" class="Comment">-- Question: it seems to me right adjoint is enough, though the original plan is to</a>
+<a id="458" class="Comment">-- use adjoint equivalence. intuitively, the shape category is an &quot;overapproximation&quot;</a>
+<a id="544" class="Comment">-- of C, which is a very strong constraint. so requiring adjoint equivalence sounds an</a>
+<a id="631" class="Comment">-- unnecessarily stronger constraint. is adjoint equivalence necessary?</a>
+<a id="703" class="Comment">--</a>
+<a id="706" class="Comment">-- Answer: probably yes. adjoint equivalence seems necessary as the notion needs to</a>
+<a id="790" class="Comment">-- show that shapes are preserved.</a>
+<a id="825" class="Comment">--</a>
+<a id="828" class="Comment">-- c.f. Categories.Adjoint.Equivalence.Properties.⊣equiv-preserves-diagram</a>
+<a id="903" class="Keyword">record</a> <a id="Finite"></a><a id="910" href="Categories.Category.Finite.html#910" class="Record">Finite</a> <a id="917" class="Symbol">{</a><a id="918" href="Categories.Category.Finite.html#918" class="Bound">o</a> <a id="920" href="Categories.Category.Finite.html#920" class="Bound">ℓ</a> <a id="922" href="Categories.Category.Finite.html#922" class="Bound">e</a><a id="923" class="Symbol">}</a> <a id="925" class="Symbol">(</a><a id="926" href="Categories.Category.Finite.html#926" class="Bound">C</a> <a id="928" class="Symbol">:</a> <a id="930" href="Categories.Category.Core.html#375" class="Record">Category</a> <a id="939" href="Categories.Category.Finite.html#918" class="Bound">o</a> <a id="941" href="Categories.Category.Finite.html#920" class="Bound">ℓ</a> <a id="943" href="Categories.Category.Finite.html#922" class="Bound">e</a><a id="944" class="Symbol">)</a> <a id="946" class="Symbol">:</a> <a id="948" class="PrimitiveType">Set</a> <a id="952" class="Symbol">(</a><a id="953" href="Categories.Category.Finite.html#918" class="Bound">o</a> <a id="955" href="Agda.Primitive.html#636" class="Primitive Operator">⊔</a> <a id="957" href="Categories.Category.Finite.html#920" class="Bound">ℓ</a> <a id="959" href="Agda.Primitive.html#636" class="Primitive Operator">⊔</a> <a id="961" href="Categories.Category.Finite.html#922" class="Bound">e</a><a id="962" class="Symbol">)</a> <a id="964" class="Keyword">where</a>
+  <a id="972" class="Keyword">field</a>
+    <a id="Finite.shape"></a><a id="982" href="Categories.Category.Finite.html#982" class="Field">shape</a> <a id="988" class="Symbol">:</a> <a id="990" href="Categories.Category.Finite.Fin.html#2800" class="Record">FinCatShape</a>
 
-  <a id="1084" class="Keyword">open</a> <a id="1089" href="Categories.Category.Finite.Fin.html#2751" class="Module">FinCatShape</a> <a id="1101" class="Keyword">public</a> <a id="1108" class="Keyword">renaming</a> <a id="1117" class="Symbol">(</a><a id="1118" href="Categories.Category.Finite.Fin.html#2804" class="Field">size</a> <a id="1123" class="Symbol">to</a> <a id="Fin.FinCatShape.size"></a><a id="1126" href="Categories.Category.Finite.html#1126" class="Field">∣Obj∣</a><a id="1131" class="Symbol">)</a>
+  <a id="1005" class="Keyword">open</a> <a id="1010" href="Categories.Category.Finite.Fin.html#2800" class="Module">FinCatShape</a> <a id="1022" class="Keyword">public</a> <a id="1029" class="Keyword">renaming</a> <a id="1038" class="Symbol">(</a><a id="1039" href="Categories.Category.Finite.Fin.html#2853" class="Field">size</a> <a id="1044" class="Symbol">to</a> <a id="Fin.FinCatShape.size"></a><a id="1047" href="Categories.Category.Finite.html#1047" class="Field">∣Obj∣</a><a id="1052" class="Symbol">)</a>
 
-  <a id="Finite.shapeCat"></a><a id="1136" href="Categories.Category.Finite.html#1136" class="Function">shapeCat</a> <a id="1145" class="Symbol">:</a> <a id="1147" href="Categories.Category.Core.html#375" class="Record">Category</a> <a id="1156" class="Symbol">_</a> <a id="1158" class="Symbol">_</a> <a id="1160" class="Symbol">_</a>
-  <a id="1164" href="Categories.Category.Finite.html#1136" class="Function">shapeCat</a> <a id="1173" class="Symbol">=</a> <a id="1175" href="Categories.Category.Finite.Fin.html#4242" class="Function">FinCategory</a> <a id="1187" href="Categories.Category.Finite.html#1061" class="Field">shape</a>
+  <a id="Finite.shapeCat"></a><a id="1057" href="Categories.Category.Finite.html#1057" class="Function">shapeCat</a> <a id="1066" class="Symbol">:</a> <a id="1068" href="Categories.Category.Core.html#375" class="Record">Category</a> <a id="1077" class="Symbol">_</a> <a id="1079" class="Symbol">_</a> <a id="1081" class="Symbol">_</a>
+  <a id="1085" href="Categories.Category.Finite.html#1057" class="Function">shapeCat</a> <a id="1094" class="Symbol">=</a> <a id="1096" href="Categories.Category.Finite.Fin.html#4291" class="Function">FinCategory</a> <a id="1108" href="Categories.Category.Finite.html#982" class="Field">shape</a>
 
-  <a id="1196" class="Comment">--</a>
-  <a id="1201" class="Comment">--   /------------\</a>
-  <a id="1223" class="Comment">--  &lt;      -       \</a>
-  <a id="1246" class="Comment">-- C       |        S</a>
-  <a id="1270" class="Comment">--  \      -       ^</a>
-  <a id="1293" class="Comment">--   \------------/</a>
-  <a id="1315" class="Comment">--</a>
-  <a id="1320" class="Keyword">field</a>
-    <a id="Finite.⊣equiv"></a><a id="1330" href="Categories.Category.Finite.html#1330" class="Field">⊣equiv</a> <a id="1337" class="Symbol">:</a> <a id="1339" href="Categories.Adjoint.Equivalence.html#573" class="Record">⊣Equivalence</a> <a id="1352" href="Categories.Category.Finite.html#1136" class="Function">shapeCat</a> <a id="1361" href="Categories.Category.Finite.html#1005" class="Bound">C</a>
+  <a id="1117" class="Comment">--</a>
+  <a id="1122" class="Comment">--   /------------\</a>
+  <a id="1144" class="Comment">--  &lt;      -       \</a>
+  <a id="1167" class="Comment">-- C       |        S</a>
+  <a id="1191" class="Comment">--  \      -       ^</a>
+  <a id="1214" class="Comment">--   \------------/</a>
+  <a id="1236" class="Comment">--</a>
+  <a id="1241" class="Keyword">field</a>
+    <a id="Finite.⊣equiv"></a><a id="1251" href="Categories.Category.Finite.html#1251" class="Field">⊣equiv</a> <a id="1258" class="Symbol">:</a> <a id="1260" href="Categories.Adjoint.Equivalence.html#573" class="Record">⊣Equivalence</a> <a id="1273" href="Categories.Category.Finite.html#1057" class="Function">shapeCat</a> <a id="1282" href="Categories.Category.Finite.html#926" class="Bound">C</a>
 
-  <a id="1366" class="Keyword">module</a> <a id="⊣equiv"></a><a id="1373" href="Categories.Category.Finite.html#1373" class="Module">⊣equiv</a> <a id="1380" class="Symbol">=</a> <a id="1382" href="Categories.Adjoint.Equivalence.html#573" class="Module">⊣Equivalence</a> <a id="1395" href="Categories.Category.Finite.html#1330" class="Field">⊣equiv</a>
-  <a id="1404" class="Keyword">open</a> <a id="1409" href="Categories.Category.Finite.html#1373" class="Module">⊣equiv</a> <a id="1416" class="Keyword">public</a>
+  <a id="1287" class="Keyword">module</a> <a id="⊣equiv"></a><a id="1294" href="Categories.Category.Finite.html#1294" class="Module">⊣equiv</a> <a id="1301" class="Symbol">=</a> <a id="1303" href="Categories.Adjoint.Equivalence.html#573" class="Module">⊣Equivalence</a> <a id="1316" href="Categories.Category.Finite.html#1251" class="Field">⊣equiv</a>
+  <a id="1325" class="Keyword">open</a> <a id="1330" href="Categories.Category.Finite.html#1294" class="Module">⊣equiv</a> <a id="1337" class="Keyword">public</a>
 </pre></body></html>
