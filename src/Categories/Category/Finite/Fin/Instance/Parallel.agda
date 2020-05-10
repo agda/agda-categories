@@ -2,13 +2,13 @@
 
 module Categories.Category.Finite.Fin.Instance.Parallel where
 
-open import Data.Nat using (ℕ)
-open import Data.Fin
+open import Data.Nat.Base using (ℕ)
+open import Data.Fin.Base using (Fin)
 open import Data.Fin.Patterns
-open import Relation.Binary.PropositionalEquality using (_≡_ ; refl)
+open import Relation.Binary.PropositionalEquality.Core using (_≡_ ; refl)
 
 open import Categories.Category.Finite.Fin
-open import Categories.Category
+open import Categories.Category.Core
 
 private
   variable
@@ -34,7 +34,7 @@ ParallelShape = shapeHelper record
         card 0F 1F = 2
         card 1F 0F = 0
         card 1F 1F = 1
-        
+
         id : Fin (card a a)
         id {0F} = 0F
         id {1F} = 0F

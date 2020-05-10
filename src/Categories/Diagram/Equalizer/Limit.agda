@@ -5,8 +5,8 @@ open import Categories.Category
 module Categories.Diagram.Equalizer.Limit {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
-open import Data.Nat using (ℕ)
-open import Data.Fin hiding (lift)
+open import Data.Nat.Base using (ℕ)
+open import Data.Fin.Base hiding (lift)
 open import Data.Fin.Patterns
 
 open import Categories.Category.Lift
@@ -14,7 +14,7 @@ open import Categories.Category.Finite.Fin
 open import Categories.Category.Finite.Fin.Instance.Parallel
 open import Categories.Diagram.Equalizer C
 open import Categories.Diagram.Limit
-open import Categories.Functor
+open import Categories.Functor.Core
 
 import Categories.Category.Construction.Cones as Co
 import Categories.Morphism.Reasoning as MR

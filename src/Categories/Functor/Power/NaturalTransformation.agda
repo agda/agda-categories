@@ -4,11 +4,10 @@ open import Categories.Category
 
 module Categories.Functor.Power.NaturalTransformation {o ℓ e : Level} (C : Category o ℓ e) where
 
-open import Data.Nat using (ℕ)
-open import Data.Fin using (Fin; inject+; raise)
-open import Data.Sum using (_⊎_; [_,_]′; inj₁; inj₂)
-open import Function using () renaming (_∘_ to _∙_)
-open import Function using () renaming (_∘_ to _∙_)
+open import Data.Nat.Base using (ℕ)
+open import Data.Fin.Base using (Fin; inject+; raise)
+open import Data.Sum.Base using (_⊎_; [_,_]′; inj₁; inj₂)
+open import Function.Base using () renaming (_∘_ to _∙_)
 open import Data.Product using (_,_)
 
 import Categories.Functor.Power as Power

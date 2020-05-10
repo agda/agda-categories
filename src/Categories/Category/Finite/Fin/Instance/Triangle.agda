@@ -2,13 +2,13 @@
 
 module Categories.Category.Finite.Fin.Instance.Triangle where
 
-open import Data.Nat using (ℕ)
-open import Data.Fin
+open import Data.Nat.Base using (ℕ)
+open import Data.Fin.Base using (Fin)
 open import Data.Fin.Patterns
-open import Relation.Binary.PropositionalEquality as ≡
+open import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import Categories.Category.Finite.Fin
-open import Categories.Category
+open import Categories.Category.Core
 
 private
   variable
@@ -24,7 +24,7 @@ private
 --  v     v
 --  1 ---> 2
 --
--- all morphisms are 0 (because there is at most one morphism between each pair of objects). 
+-- all morphisms are 0 (because there is at most one morphism between each pair of objects).
 TriangleShape : FinCatShape
 TriangleShape = shapeHelper record
   { size      = 3
