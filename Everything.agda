@@ -142,6 +142,8 @@ import Categories.Category.SetoidDiscrete
 import Categories.Category.Site
 import Categories.Category.Slice
 import Categories.Category.Slice.Properties
+import Categories.Category.Species
+import Categories.Category.Species.Constructions
 import Categories.Category.SubCategory
 import Categories.Category.Topos
 import Categories.Category.WithFamilies
@@ -263,8 +265,6 @@ import Categories.Object.Terminal.Limit
 import Categories.Object.Zero
 import Categories.Pseudofunctor
 import Categories.Pseudofunctor.Instance.EnrichedUnderlying
-import Categories.Species
-import Categories.Species.Constructions
 import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda
