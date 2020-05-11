@@ -12,6 +12,7 @@ private
   module J = Category J
 open C
 open HomReasoning
+open Equiv
 open Functor F
 
 open import Level

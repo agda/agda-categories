@@ -4,6 +4,8 @@ open import Categories.Category
 
 module Categories.Category.Duality {o ℓ e} (C : Category o ℓ e) where
 
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+
 open import Categories.Category.Cartesian
 open import Categories.Category.Cocartesian
 open import Categories.Category.Complete
@@ -58,3 +60,21 @@ FinitelyCocomplete⇒coFinitelyComplete FC = record
   ; equalizer = λ f g → Coequalizer⇒coEqualizer C (coequalizer f g)
   }
   where open FinitelyCocomplete FC
+
+
+
+module DualityConversionProperties where
+
+  private
+    op-involutive : Category.op C.op ≡ C
+    op-involutive = refl
+
+    coCartesian⇔Cocartesian : ∀(coCartesian : Cartesian C.op)
+                            → Cocartesian⇒coCartesian (coCartesian⇒Cocartesian coCartesian)
+                              ≡ coCartesian
+    coCartesian⇔Cocartesian _ = refl
+
+    coFinitelyComplete⇔FinitelyCocomplete : ∀(coFinComplete : FinitelyComplete C.op) →
+      FinitelyCocomplete⇒coFinitelyComplete
+        (coFinitelyComplete⇒FinitelyCocomplete coFinComplete) ≡ coFinComplete
+    coFinitelyComplete⇔FinitelyCocomplete _ = refl

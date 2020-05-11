@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 
 module Categories.Category.CartesianClosed.Locally {o ℓ e} (C : Category o ℓ e) where
 
@@ -26,12 +26,11 @@ record Locally : Set (levelOfTerm C) where
   field
     sliceCCC : ∀ A → CartesianClosed (Slice A)
 
-  module sliceCCC A = CartesianClosed (sliceCCC A)
+  -- only populate this module with some stuff, for space reasons
+  module sliceCCC A = CartesianClosed (sliceCCC A) using (product; products; exp)
 
   pullbacks : ∀ {X A B} (f : A ⇒ X) (g : B ⇒ X) → P.Pullback C f g
-  pullbacks {X} f g = product⇒pullback product
-    where C/X = sliceCCC X
-          open CartesianClosed C/X using (product)
+  pullbacks {X} _ _ = product⇒pullback (sliceCCC.product X)
 
   -- the slice categories also have pullbacks, because slice of slice is slice.
   slice-pullbacks : ∀ {A} {B X Y : SliceObj A} (f : Slice⇒ X B) (g : Slice⇒ Y B) → P.Pullback (Slice A) f g
@@ -46,12 +45,14 @@ record Locally : Set (levelOfTerm C) where
     ; p₂∘universal≈h₂ = p.p₂∘universal≈h₂
     }
     where open HomReasoning
+          open Equiv
           module X = SliceObj X
           module Y = SliceObj Y
           module B = SliceObj B
           module f = Slice⇒ f
           module g = Slice⇒ g
-          module p = P.Pullback (pullbacks f.h g.h)
+          module p = P.Pullback (pullbacks f.h g.h) using (p₁; p₂; commute; universal;
+                                 p₁∘universal≈h₁; p₂∘universal≈h₂; unique)
           open MR C
 
           comm : Y.arr ∘ p.p₂ ≈ X.arr ∘ p.p₁
@@ -65,18 +66,13 @@ module _ (LCCC : Locally) (t : Terminal) where
   open Locally LCCC
   open Terminal t
   open HomReasoning
-  
+  open Equiv
+
   cartesian : Cartesian C
   cartesian = record
     { terminal = t
-    ; products = record
-      { product = λ {A B} → Pₚ.pullback-⊤⇒product t (product⇒pullback product)
-      }
+    ; products = record { product = Pₚ.pullback-⊤⇒product t (product⇒pullback (sliceCCC.product ⊤)) }
     }
-    where open sliceCCC ⊤ using (product)
-
-  private
-    module cartesian = Cartesian cartesian
 
   cartesianClosed : CartesianClosed C
   cartesianClosed = record
@@ -99,11 +95,14 @@ module _ (LCCC : Locally) (t : Terminal) where
            ; ⟨_,_⟩    = λ f g → h ⟨ slicearr {h = f} (⟺ (!-unique _)) , slicearr {h = g} (⟺ (!-unique _)) ⟩
            ; project₁ = project₁
            ; project₂ = project₂
-           ; unique   = λ eq eq′ → unique {h = slicearr (⟺ (!-unique _))} eq eq′
+           ; unique   = unique {h = slicearr (⟺ (!-unique _))}
            }
       ; eval     = h eval
       ; λg       = λ {X} p f → h (λg (pullback⇒product′ t (Pₚ.product⇒pullback-⊤ t p)) (lift t f))
-      ; β        = λ p → ∘-resp-≈ʳ (exp.product.⟨⟩-cong₂ refl refl) ○ β (pullback⇒product′ t (Pₚ.product⇒pullback-⊤ t p))
+                         -- what looks like an identity proof below is not quite, as it is not
+                         -- "proof relevant", the 2 underlying arrows contain different proofs.
+      ; β        = λ p → ∘-resp-≈ʳ (exp.product.⟨⟩-cong₂ refl refl) ○
+                         β (pullback⇒product′ t (Pₚ.product⇒pullback-⊤ t p))
       ; λ-unique = λ p eq → λ-unique (pullback⇒product′ t (Pₚ.product⇒pullback-⊤ t p))
                                      {h = slicearr (⟺ (!-unique _))}
                                      (∘-resp-≈ʳ (exp.product.⟨⟩-cong₂ refl refl) ○ eq)
@@ -116,6 +115,6 @@ module _ (LCCC : Locally) (t : Terminal) where
   finitelyComplete : FinitelyComplete
   finitelyComplete = record
     { cartesian = cartesian
-    ; equalizer = λ f g → prods×pullbacks⇒equalizers cartesian.products
+    ; equalizer = λ f g → prods×pullbacks⇒equalizers (Cartesian.products cartesian)
                                                      (λ {_ _ X} h i → product⇒pullback (sliceCCC.product X))
     }

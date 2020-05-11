@@ -28,16 +28,24 @@ matrix:
 
 before_install:
   - export PATH=/opt/ghc/$GHC_VER/bin:/opt/cabal/$CABAL_VER/bin:/opt/alex/$ALEX_VER/bin:/opt/happy/$HAPPY_VER/bin:~/.cabal/bin/:$PATH;
+  - export RTS_OPTIONS="+RTS -M6G -H6G -A128M -RTS"
+
 
 install:
   - cabal update
   - sed -i 's/^jobs:/-- jobs:/' $HOME/.cabal/config
-  # installing agda dev
-  - git clone https://github.com/agda/agda --depth=1
-  - cd agda
-  # checking whether .ghc is still valid
+
+  # installing dependencies
   - cabal install alex-$ALEX_VER happy-$HAPPY_VER cpphs
-  - cabal install --only-dependencies --dry -v > $HOME/installplan.txt
+
+  # installing Agda (only master)
+  - cd ../
+  - git clone https://github.com/agda/agda
+  - cd agda
+  - git checkout 8eb0d01811a663cf2b27b482b3b18690adfa094b
+  - cabal install --only-dependencies --dry -v > $HOME/installplan.txt ;
+
+  # checking if .ghc is still valid
   - sed -i -e '1,/^Resolving /d' $HOME/installplan.txt; cat $HOME/installplan.txt
   - touch $HOME/.cabsnap/installplan.txt
   - mkdir -p $HOME/.cabsnap/ghc $HOME/.cabsnap/lib $HOME/.cabsnap/share $HOME/.cabsnap/bin
@@ -52,13 +60,16 @@ install:
       rm -rf $HOME/.cabsnap;
       mkdir -p $HOME/.ghc $HOME/.cabal/lib $HOME/.cabal/share $HOME/.cabal/bin;
     fi
+  # install master
   - cabal install
-  - cd -
+
   # snapshot package-db on cache miss
   - echo "snapshotting package-db to build-cache";
     mkdir $HOME/.cabsnap;
     cp -a $HOME/.ghc $HOME/.cabsnap/ghc;
     cp -a $HOME/.cabal/lib $HOME/.cabal/share $HOME/.cabal/bin $HOME/installplan.txt $HOME/.cabsnap/;
+  - cd ../
+
   # installing agda-stdlib
   - mkdir -p $HOME/.agda
   - cd $HOME/.agda
@@ -68,9 +79,16 @@ install:
   - echo "~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
   - cd -
 
+  # doing things for this library
+  - cd agda-categories
+  - cp travis/* .
+
 script:
-  # generating html doc
-  - make html
+  - find src/ -name '[^\.]*.agda' | sed -e 's|^src/[/]*|import |' -e 's|/|.|g' -e 's/.agda//' -e '/import Everything/d' | LC_COLLATE='C' sort > Everything.agda
+  - cat Everything.agda >> index.agda
+  - agda $RTS_OPTIONS -i. -i src/ Everything.agda
+  - agda $RTS_OPTIONS -i. -i src/ index.agda
+  - agda $RTS_OPTIONS -i. -i src/ --html index.agda
   # moving everything to the main directory
   - mv html/* .
 

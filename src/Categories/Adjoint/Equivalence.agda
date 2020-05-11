@@ -18,15 +18,6 @@ private
     o ℓ e o′ ℓ′ e′ : Level
     C D E    : Category o ℓ e
 
-id⊣⊢id : idF {C = C} ⊣⊢ idF
-id⊣⊢id {C = C} = record
-  { unit   = ≃.sym ≃.unitor²
-  ; counit = ≃.unitor²
-  ; zig    = identity²
-  ; zag    = identity²
-  }
-  where open Category C
-
 record ⊣Equivalence (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   field
     L    : Functor C D
@@ -35,9 +26,8 @@ record ⊣Equivalence (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : S
 
   module L    = Functor L
   module R    = Functor R
-  module L⊣⊢R = _⊣⊢_ L⊣⊢R
 
-  open L⊣⊢R public
+  open _⊣⊢_ L⊣⊢R public
 
 refl : ⊣Equivalence C C
 refl = record

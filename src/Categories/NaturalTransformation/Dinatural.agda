@@ -27,7 +27,7 @@ record DinaturalTransformation (F G : Bifunctor (Category.op C) C D) : Set (leve
     module G = Functor G
 
   open D hiding (op)
-  open Commutation
+  open Commutation D
 
   field
     α          : ∀ X → D [ F.F₀ (X , X) , G.F₀ (X , X) ]
@@ -68,7 +68,7 @@ record DTHelper (F G : Bifunctor (Category.op C) C D) : Set (levelOfTerm F) wher
     module F = Functor F
     module G = Functor G
   open D hiding (op)
-  open Commutation
+  open Commutation D
 
   field
     α          : ∀ X → D [ F.F₀ (X , X) , G.F₀ (X , X) ]
@@ -148,11 +148,11 @@ module _ {F G : Bifunctor (Category.op C) C D} where
     { α       = λ X → α (F₀ K X)
     ; commute = λ {X Y} f → begin
       F₁ G (F₁ K E.id , F₁ K f) ∘ α (F₀ K X) ∘ F₁ F (F₁ K f , F₁ K E.id)
-        ≈⟨ F-resp-≈ G (identity K , C.Equiv.refl) ⟩∘⟨ refl ⟩∘⟨ F-resp-≈ F (C.Equiv.refl , identity K) ⟩
+        ≈⟨ F-resp-≈ G (identity K , C.Equiv.refl) ⟩∘⟨ Equiv.refl ⟩∘⟨ F-resp-≈ F (C.Equiv.refl , identity K) ⟩
       F₁ G (C.id , F₁ K f) ∘ α (F₀ K X) ∘ F₁ F (F₁ K f , C.id)
         ≈⟨ commute (F₁ K f) ⟩
       F₁ G (F₁ K f , C.id) ∘ α (F₀ K Y) ∘ F₁ F (C.id , F₁ K f)
-        ≈˘⟨ F-resp-≈ G (C.Equiv.refl , identity K) ⟩∘⟨ refl ⟩∘⟨ F-resp-≈ F (identity K , C.Equiv.refl) ⟩
+        ≈˘⟨ F-resp-≈ G (C.Equiv.refl , identity K) ⟩∘⟨ Equiv.refl ⟩∘⟨ F-resp-≈ F (identity K , C.Equiv.refl) ⟩
       F₁ G (F₁ K f , F₁ K E.id) ∘ α (F₀ K Y) ∘ F₁ F (F₁ K E.id , F₁ K f)
         ∎
     }
@@ -168,9 +168,9 @@ module _ {F G : Bifunctor (Category.op C) C D} where
 
   ≃-isEquivalence : IsEquivalence _≃_
   ≃-isEquivalence = record
-    { refl  = refl
-    ; sym   = λ eq → sym eq
-    ; trans = λ eq eq′ → trans eq eq′
+    { refl  = Equiv.refl
+    ; sym   = λ eq → Equiv.sym eq
+    ; trans = λ eq eq′ → Equiv.trans eq eq′
     }
 
   ≃-setoid : Setoid _ _

@@ -6,7 +6,7 @@ open import Level
 open import Relation.Binary using (Rel)
 
 open import Categories.Category.Instance.One
-open import Categories.Category using (Category; _[_,_]; _[_∘_])
+open import Categories.Category using (Category; _[_,_]; _[_∘_]; module Definitions)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Construction.Constant using (const!)
 import Categories.Morphism.Reasoning as MR
@@ -36,11 +36,12 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
     open CommaObj X₂ renaming (α to α₂; β to β₂; f to f₂)
     open Functor T renaming (F₁ to T₁)
     open Functor S renaming (F₁ to S₁)
+    open Definitions C
 
     field
       g       : A [ α₁ , α₂ ]
       h       : B [ β₁ , β₂ ]
-      commute : C.CommutativeSquare f₁ (T₁ g) (S₁ h) f₂
+      commute : CommutativeSquare f₁ (T₁ g) (S₁ h) f₂
 
   Comma : Functor A C → Functor B C → Category _ _ _
   Comma T S = record

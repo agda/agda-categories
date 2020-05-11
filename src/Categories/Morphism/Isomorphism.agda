@@ -26,12 +26,13 @@ import Categories.Category.Construction.Path as Path
 open Core 𝒞 using (Core; Core-isGroupoid; CoreGroupoid)
 open Morphism 𝒞
 open MorphismProps 𝒞
-open IsoEquiv 𝒞 using (_≃_; ⌞_⌟)
+open IsoEquiv 𝒞 using (_≃_; ⌞_⌟; ≃-sym)
 open Path 𝒞
 
 import Categories.Morphism.Reasoning as MR
 
 open Category 𝒞
+open Definitions 𝒞
 
 private
   module MCore where
@@ -55,10 +56,10 @@ CommutativeIso = IsGroupoid.CommutativeSquare Core-isGroupoid
 ∘ᵢ-tc = MCore.∘-tc
 
 infix 4 _≃⁺_
-_≃⁺_ : Rel (A [ _≅_ ]⁺ B) _
+_≃⁺_ : Rel (A [ _≅_ ]⁺ B) e
 _≃⁺_ = MCore._≈⁺_
 
-TransitiveClosure : Category _ _ _
+TransitiveClosure : Category o (o ⊔ ℓ ⊔ e) e
 TransitiveClosure = MCore.Path
 
 --------------------
@@ -219,7 +220,7 @@ module _ where
     squares×≃⇒≃ glued sq₃ eq
     where
       glued : CommutativeIso (i ∘ᵢ f) g k (i′ ∘ᵢ f′)
-      glued = sym (glue (sym sq₁) (sym sq₂))
+      glued = ≃-sym (glue (≃-sym sq₁) (≃-sym sq₂))
 
   elim-triangleˡ : {f : A ≅ B} {g : C ≅ A} {h : D ≅ C} {i : D ≅ B} {j : D ≅ A} →
                    f ∘ᵢ g ∘ᵢ h ≃ i → f ∘ᵢ j ≃ i → g ∘ᵢ h ≃ j
@@ -236,7 +237,7 @@ module _ where
   cut-squareʳ : {g : A ≅ B} {f : A ≅ C} {h : B ≅ D} {i : C ≅ D} {j : B ≅ C} →
                 CommutativeIso g f h i → i ∘ᵢ j ≃ h → j ∘ᵢ g ≃ f
   cut-squareʳ {g = g} {f = f} {h = h} {i = i} {j = j} sq tri = begin
-    j ∘ᵢ g            ≈⟨ switch-fromtoˡ′ {f = i} {h = j} {k = h} tri ⟩∘⟨ refl ⟩
+    j ∘ᵢ g            ≈⟨ switch-fromtoˡ′ {f = i} {h = j} {k = h} tri ⟩∘⟨refl ⟩
     (i ⁻¹ ∘ᵢ h) ∘ᵢ g  ≈⟨ MCore.assoc ⟩
-    i ⁻¹ ∘ᵢ h ∘ᵢ g    ≈˘⟨ switch-fromtoˡ′ {f = i} {h = f} {k = h ∘ᵢ g} (sym sq) ⟩
+    i ⁻¹ ∘ᵢ h ∘ᵢ g    ≈˘⟨ switch-fromtoˡ′ {f = i} {h = f} {k = h ∘ᵢ g} (≃-sym sq) ⟩
     f                 ∎

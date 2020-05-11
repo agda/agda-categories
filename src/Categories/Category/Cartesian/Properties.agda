@@ -5,20 +5,20 @@ open import Categories.Category
 module Categories.Category.Cartesian.Properties {o ℓ e} (C : Category o ℓ e) where
 
 open import Level using (_⊔_)
-open import Function using (_$_)
-open import Data.Nat using (ℕ; zero; suc)
+open import Function.Base using (_$_)
+open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Product using (Σ; _,_; proj₁) renaming (_×_ to _&_)
 open import Data.Product.Properties
 open import Data.List as List
 open import Data.List.Relation.Unary.Any as Any using (here; there)
 open import Data.List.Relation.Unary.Any.Properties
 open import Data.List.Membership.Propositional
-open import Data.Vec as Vec using (Vec; []; _∷_)
+open import Data.Vec.Base as Vec using (Vec; []; _∷_)
 open import Data.Vec.Relation.Unary.Any as AnyV using (here; there)
 open import Data.Vec.Relation.Unary.Any.Properties
 open import Data.Vec.Membership.Propositional renaming (_∈_ to _∈ᵥ_)
 
-open import Relation.Binary using (Rel)
+open import Relation.Binary.Core using (Rel)
 open import Relation.Binary.PropositionalEquality as ≡ using (refl; _≡_)
 
 import Data.List.Membership.Propositional.Properties as ∈ₚ
@@ -33,6 +33,7 @@ open import Categories.Morphism.Reasoning C
 private
   open Category C
   open HomReasoning
+  open Equiv
   variable
     A B X Y : Obj
     f g : A ⇒ B
@@ -41,7 +42,7 @@ private
 module _ (prods : BinaryProducts) (pullbacks : ∀ {A B X} (f : A ⇒ X) (g : B ⇒ X) → Pullback f g) where
   open BinaryProducts prods
   open HomReasoning
-  
+
   prods×pullbacks⇒equalizers : Equalizer f g
   prods×pullbacks⇒equalizers {f = f} {g = g} = record
     { arr       = pb′.p₁
@@ -115,21 +116,21 @@ module Prods (car : Cartesian) where
   uniqueness* {x} {y ∷ ys} uni = unique′ (uni (here ≡.refl)) (uniqueness* λ y∈ys → sym-assoc ○ uni (there y∈ys) ○ assoc)
 
   module _ {a} {A : Set a} (f : A → Obj) where
-  
+
     uniqueness*′ : ∀ {x ys} {g h : x ⇒ prod (map f ys)} → (∀ {y} (y∈ys : y ∈ ys) → π[ ∈ₚ.∈-map⁺ f y∈ys ] ∘ g ≈ π[ ∈ₚ.∈-map⁺ f y∈ys ] ∘ h) → g ≈ h
     uniqueness*′ {x} {[]} uni = !-unique₂
     uniqueness*′ {x} {y ∷ ys} uni = unique′ (uni (here ≡.refl)) (uniqueness*′ λ y∈ys → sym-assoc ○ uni (there y∈ys) ○ assoc)
 
     module _ {x} (g : ∀ a → x ⇒ f a) where
-  
+
       build-mors : (l : List A) → x ⇒ map f l *
       build-mors []      = _ ~[]
       build-mors (y ∷ l) = g y ∷ build-mors l
-  
+
       build-proj≡ : ∀ {a l} (a∈l : a ∈ l) → g a ≡ ∈⇒mor (build-mors l) (∈ₚ.∈-map⁺ f a∈l)
       build-proj≡ (here refl) = ≡.refl
       build-proj≡ (there a∈l) = build-proj≡ a∈l
-  
+
       build-proj : ∀ {a l} (a∈l : a ∈ l) → g a ≈ π[ ∈ₚ.∈-map⁺ f a∈l ] ∘ ⟨ build-mors l ⟩*
       build-proj {_} {l} a∈l = reflexive (build-proj≡ a∈l) ○ ⟺ (project* (build-mors l) _)
 
@@ -161,7 +162,7 @@ module Prods (car : Cartesian) where
   ⟨_⟩ᵥ* : ∀ {n x ys} (fs : [ suc n ] x ⇒ᵥ ys *) → x ⇒ prodᵥ ys
   ⟨ f ∷ (x ~[]) ⟩ᵥ*  = f
   ⟨ f ∷ (g ∷ fs) ⟩ᵥ* = ⟨ f , ⟨ g ∷ fs ⟩ᵥ* ⟩
-  
+
   ∈⇒morᵥ : ∀ {n x y ys} (fs : [ n ] x ⇒ᵥ ys *) (y∈ys : y ∈ᵥ ys) → x ⇒ y
   ∈⇒morᵥ (x ~[]) ()
   ∈⇒morᵥ (f ∷ fs) (here refl)  = f
@@ -177,23 +178,23 @@ module Prods (car : Cartesian) where
   uniquenessᵥ* {x} {.(suc _)} {y ∷ z ∷ ys} uni = unique′ (uni (here ≡.refl)) (uniquenessᵥ* (λ y∈ys → sym-assoc ○ uni (there y∈ys) ○ assoc))
 
   module _ {a} {A : Set a} (f : A → Obj) where
-  
+
     uniquenessᵥ*′ : ∀ {x n ys} {g h : x ⇒ prodᵥ {n} (Vec.map f ys)} → (∀ {y} (y∈ys : y ∈ᵥ ys) → π[ ∈ᵥₚ.∈-map⁺ f y∈ys ]ᵥ ∘ g ≈ π[ ∈ᵥₚ.∈-map⁺ f y∈ys ]ᵥ ∘ h) → g ≈ h
     uniquenessᵥ*′ {x} {.0} {y ∷ []} uni           = ⟺ identityˡ ○ uni (here ≡.refl) ○ identityˡ
     uniquenessᵥ*′ {x} {.(suc _)} {y ∷ z ∷ ys} uni = unique′ (uni (here ≡.refl)) (uniquenessᵥ*′ (λ y∈ys → sym-assoc ○ uni (there y∈ys) ○ assoc))
 
     module _ {x} (g : ∀ a → x ⇒ f a) where
-  
+
       buildᵥ-mors : ∀ {n} (l : Vec A n) → [ n ] x ⇒ᵥ Vec.map f l *
       buildᵥ-mors []          = _ ~[]
       buildᵥ-mors (y ∷ [])    = g y ∷ _ ~[]
       buildᵥ-mors (y ∷ z ∷ l) = g y ∷ buildᵥ-mors (z ∷ l)
-  
+
       buildᵥ-proj≡ : ∀ {a n} {l : Vec A n} (a∈l : a ∈ᵥ l) → g a ≡ ∈⇒morᵥ (buildᵥ-mors l) (∈ᵥₚ.∈-map⁺ f a∈l)
       buildᵥ-proj≡ {_} {_} {y ∷ []} (here refl)    = ≡.refl
       buildᵥ-proj≡ {_} {_} {y ∷ z ∷ l} (here refl) = ≡.refl
       buildᵥ-proj≡ {_} {_} {y ∷ z ∷ l} (there a∈l) = buildᵥ-proj≡ a∈l
-  
+
       buildᵥ-proj : ∀ {a n} {l : Vec A (suc n)} (a∈l : a ∈ᵥ l) → g a ≈ π[ ∈ᵥₚ.∈-map⁺ f a∈l ]ᵥ ∘ ⟨ buildᵥ-mors l ⟩ᵥ*
       buildᵥ-proj {_} {_} {l} a∈l = reflexive (buildᵥ-proj≡ a∈l) ○ ⟺ (projectᵥ* (buildᵥ-mors l) _)
 

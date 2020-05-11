@@ -10,14 +10,15 @@ module Categories.Functor.Power {o ℓ e} (C : Category o ℓ e) where
 
 open Category C
 open HomReasoning
+open Equiv
 
 open import Level using (Level; _⊔_)
-open import Data.Nat using (ℕ; _+_; zero; suc; _<_)
+open import Data.Nat.Base using (ℕ; _+_; zero; suc; _<_)
 open import Data.Product using (_,_)
-open import Data.Fin using (Fin; inject+; raise; zero; suc; fromℕ<)
+open import Data.Fin.Base using (Fin; inject+; raise; zero; suc; fromℕ<)
 open import Data.Sum using (_⊎_; inj₁; inj₂; map) renaming ([_,_] to ⟦_,_⟧; [_,_]′ to ⟦_,_⟧′)
 open import Data.Vec.N-ary hiding (curryⁿ)
-open import Function as Fun using (flip; _$_) renaming (_∘_ to _∙_; id to idf)
+open import Function.Base as Fun using (flip; _$_) renaming (_∘_ to _∙_; id to idf)
 
 open import Categories.Category.Product using (Product; _⁂_)
 open import Categories.Functor hiding (id)

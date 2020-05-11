@@ -33,9 +33,9 @@ Path = record
   ; identityʳ = identityʳ
   ; identity² = identity²
   ; equiv     = record
-    { refl  = refl
-    ; sym   = sym
-    ; trans = trans
+    { refl  = Equiv.refl
+    ; sym   = Equiv.sym
+    ; trans = Equiv.trans
     }
   ; ∘-resp-≈  = ∘-resp-≈
   }

@@ -2,7 +2,7 @@
 
 -- Enriched category over a Monoidal category V
 
-open import Categories.Category using () renaming (Category to Setoid-Category)
+open import Categories.Category using (module Commutation) renaming (Category to Setoid-Category)
 open import Categories.Category.Monoidal using (Monoidal)
 
 module Categories.Enriched.Category {o ℓ e} {V : Setoid-Category o ℓ e}
@@ -15,8 +15,8 @@ open import Categories.Category.Monoidal.Utilities M using (module Shorthands)
 open import Categories.Morphism.Reasoning V using (pullˡ; pullʳ; pushˡ)
 
 open Setoid-Category V renaming (Obj to ObjV; id to idV)
-  using (module Commutation; _⇒_; _∘_)
-open Commutation
+  using (_⇒_; _∘_)
+open Commutation V
 open Monoidal M using (unit; _⊗₀_; _⊗₁_; module associator; module unitorˡ;
   module unitorʳ; assoc-commute-from)
 open Shorthands
@@ -53,7 +53,7 @@ record Category (v : Level) : Set (o ⊔ ℓ ⊔ e ⊔ suc v) where
   --
   -- In this version of associativity, the generalized variables f, g
   -- and h represent V-morphisms, or rather, morphism-valued maps,
-  -- such as V-natural transofrmations or V-functorial actions.  This
+  -- such as V-natural transformations or V-functorial actions.  This
   -- version is therefore well-suited for proving derived equations,
   -- such as functorial laws or commuting diagrams, that involve such
   -- maps.  For examples, see Underlying.assoc below, or the modules

@@ -71,3 +71,4 @@ Pullbacks W = record
     }
   ; ∘-resp-≈  = λ { (eq₁ , eq₂) (eq₃ , eq₄) → ∘-resp-≈ eq₁ eq₃ , ∘-resp-≈ eq₂ eq₄ }
   }
+  where open Equiv

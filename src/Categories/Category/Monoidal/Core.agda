@@ -36,7 +36,8 @@ private
   module C = Category C
 
 open C hiding (id; identityˡ; identityʳ; assoc)
-open Commutation
+open Commutation C
+open Definitions C
 
 private
   variable

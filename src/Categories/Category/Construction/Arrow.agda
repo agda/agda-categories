@@ -1,19 +1,20 @@
 {-# OPTIONS --without-K --safe #-}
-open import Categories.Category.Core using (Category)
+open import Categories.Category using (Category; module Definitions)
 
 -- Definition of the Arrow Category of a Category C
 module Categories.Category.Construction.Arrow {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
 open import Data.Product using (_,_; _×_; map; zip)
-open import Function using (_$_)
-open import Relation.Binary using (Rel)
+open import Function.Base using (_$_)
+open import Relation.Binary.Core using (Rel)
 
 import Categories.Morphism as M
 open M C
 open import Categories.Morphism.Reasoning C
 
 open Category C
+open Definitions C
 open HomReasoning
 
 private
@@ -56,13 +57,16 @@ Arrow = record
     }
   ; ∘-resp-≈  = zip ∘-resp-≈ ∘-resp-≈
   }
-  where open Morphism⇒
+  where
+  open Morphism⇒
+  open Equiv
 
 private
   module MM = M Arrow
 
 module _ where
   open _≅_
+  open Equiv
 
   lift-iso : ∀ {f h} →
                (iso₁ : A ≅ D) → (iso₂ : B ≅ E) →

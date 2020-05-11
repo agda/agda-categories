@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category using (Category)
+open import Categories.Category using (Category; module Commutation)
 open import Categories.Category.Monoidal.Core using (Monoidal)
 
 module Categories.Category.Monoidal.Utilities {o ℓ e} {C : Category o ℓ e} (M : Monoidal C) where
@@ -28,7 +28,7 @@ private
   module C = Category C
 
 open C hiding (id; identityˡ; identityʳ; assoc)
-open Commutation
+open Commutation C
 
 private
   variable

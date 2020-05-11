@@ -4,7 +4,7 @@
 module Categories.Multi.Category.Indexed where
 
 open import Level
-open import Data.Fin using (Fin)
+open import Data.Fin.Base using (Fin)
 open import Data.Product using (Σ; uncurry; curry; _×_; _,_; proj₁; proj₂)
 open import Data.Product.Properties
 open import Data.Unit.Polymorphic using (⊤; tt)
@@ -13,7 +13,6 @@ open import Function.Base using (const) renaming (_∘_ to _●_; id to id→)
 open import Function.Equality using (_⟨$⟩_)
 -- note how this is Function.Inverse instead of the one from Function.
 open import Function.Inverse as Inv renaming (id to id↔; _∘_ to trans)
-open import Relation.Nullary
 open import Relation.Binary.Core using (Rel)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 

@@ -5,6 +5,7 @@ module Categories.Diagram.Pullback {o ℓ e} (C : Category o ℓ e) where
 
 open Category C
 open HomReasoning
+open Equiv
 
 open import Level
 open import Data.Product using (_,_; ∃)

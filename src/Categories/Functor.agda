@@ -2,44 +2,58 @@
 module Categories.Functor where
 
 open import Level
-open import Data.Product using (_×_; Σ)
-open import Function.Surjection using (Surjective)
-open import Function.Equality using (_⟶_)
-open import Relation.Nullary
+open import Function renaming (id to id→; _∘_ to _●_) using ()
 
 open import Categories.Category
 open import Categories.Functor.Core public
-import Categories.Morphism as Morphism
 
 private
   variable
-    o ℓ e o′ ℓ′ e′ : Level
-    C D : Category o ℓ e
+    o ℓ e o′ ℓ′ e′ o″ ℓ″ e″ : Level
 
-Contravariant : ∀ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Set _
-Contravariant C D = Functor (Category.op C) D
+Endofunctor : Category o ℓ e → Set _
+Endofunctor C = Functor C C
 
-Faithful : Functor C D → Set _
-Faithful {C = C} {D = D} F = ∀ {X Y} → (f g : C [ X , Y ]) → D [ F₁ f ≈ F₁ g ] → C [ f ≈ g ]
-  where open Functor F
+id : ∀ {C : Category o ℓ e} → Functor C C
+id {C = C} = record
+  { F₀           = id→
+  ; F₁           = id→
+  ; identity     = Category.Equiv.refl C
+  ; homomorphism = Category.Equiv.refl C
+  ; F-resp-≈     = id→
+  }
 
-Full : Functor C D → Set _
-Full {C = C} {D = D} F = ∀ {X Y} → Surjective {To = D.hom-setoid {F₀ X} {F₀ Y}} G
+infixr 9 _∘F_
+
+-- note that this definition could be shortened by inlining the definitions for
+-- identity′ and homomorphism′, but the definitions below are simpler to understand.
+_∘F_ : ∀ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {E : Category o″ ℓ″ e″}
+    → Functor D E → Functor C D → Functor C E
+_∘F_ {C = C} {D = D} {E = E} F G = record
+  { F₀ = F.₀ ● G.₀
+  ; F₁ = F.₁ ● G.₁
+  ; identity = identity′
+  ; homomorphism = homomorphism′
+  ; F-resp-≈ =  F.F-resp-≈ ● G.F-resp-≈
+  }
   where
-    module C = Category C
-    module D = Category D
-    open Functor F
-    G : ∀ {X Y} → (C.hom-setoid {X} {Y}) ⟶ D.hom-setoid {F₀ X} {F₀ Y}
-    G = record { _⟨$⟩_ = F₁ ; cong = F-resp-≈ }
+  module C = Category C using (id)
+  module D = Category D using (id)
+  module E = Category E using (id; module HomReasoning)
+  module F = Functor F
+  module G = Functor G
 
-FullyFaithful : Functor C D → Set _
-FullyFaithful F = Full F × Faithful F
+  identity′ : ∀ {A} → E [ F.₁ (G.₁ (C.id {A})) ≈ E.id ]
+  identity′ = begin
+    F.₁ (G.₁ C.id) ≈⟨ F.F-resp-≈ G.identity ⟩
+    F.₁ D.id       ≈⟨ F.identity ⟩
+    E.id           ∎
+    where open E.HomReasoning
 
--- Note that this is a constructive version of Essentially Surjective, which is
--- quite a strong assumption.
-EssentiallySurjective : Functor C D → Set _
-EssentiallySurjective {C = C} {D = D} F = (d : Obj) → Σ C.Obj (λ c → Functor.F₀ F c ≅ d)
-  where
-  open Morphism D
-  open Category D
-  module C = Category C
+  homomorphism′ : ∀ {X Y Z} {f : C [ X , Y ]} {g : C [ Y , Z ]}
+                 → E [ F.₁ (G.₁ (C [ g ∘ f ])) ≈ E [ F.₁ (G.₁ g) ∘ F.₁ (G.₁ f) ] ]
+  homomorphism′ {f = f} {g = g} = begin
+    F.₁ (G.₁ (C [ g ∘ f ]))         ≈⟨ F.F-resp-≈ G.homomorphism ⟩
+    F.₁ (D [ G.₁ g ∘ G.₁ f ])       ≈⟨ F.homomorphism ⟩
+    E [ F.₁ (G.₁ g) ∘ F.₁ (G.₁ f) ] ∎
+    where open E.HomReasoning

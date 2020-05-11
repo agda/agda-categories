@@ -59,7 +59,7 @@ record Limit : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   conify : (f : X ⇒ apex) → unrep f ⇨ limit
   conify f = record
     { arr     = f
-    ; commute = refl
+    ; commute = C.Equiv.refl
     }
 
   commute : proj A ∘ rep K ≈ Cone.ψ K A
@@ -121,11 +121,11 @@ module _ (X : Obj) (apex₁ : Apex X) (apex₂ : Apex X) (L : Limit) where
     module K₂ = Cone K₂
 
   ψ-≈⇒rep-≈ : (∀ A → apex₁.ψ A ≈ apex₂.ψ A) → L.rep K₁ ≈ L.rep K₂
-  ψ-≈⇒rep-≈ ∀eq = trans (L.terminal.!-unique K₁⇒limit) identityʳ
+  ψ-≈⇒rep-≈ ∀eq = (L.terminal.!-unique K₁⇒limit) ○ identityʳ
     where K₁⇒K₂ : K₁ ⇨ K₂
           K₁⇒K₂ = record
             { arr     = id
-            ; commute = λ {X} → trans identityʳ (sym (∀eq X))
+            ; commute = λ {X} → identityʳ ○ ⟺ (∀eq X)
             }
 
           K₁⇒limit : K₁ ⇨ L.limit

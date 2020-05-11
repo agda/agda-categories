@@ -2,7 +2,7 @@
 module Categories.Category.Construction.Properties.EilenbergMoore where
 
 open import Level
-import Relation.Binary.PropositionalEquality as ≡
+import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import Categories.Adjoint
 open import Categories.Adjoint.Properties
@@ -11,7 +11,7 @@ open import Categories.Functor using (Functor; _∘F_)
 open import Categories.Functor.Equivalence
 open import Categories.Monad
 
-open import Categories.NaturalTransformation renaming (id to idN)
+open import Categories.NaturalTransformation.Core renaming (id to idN)
 open import Categories.Morphism.HeterogeneousIdentity
 
 open import Categories.Adjoint.Construction.EilenbergMoore
@@ -66,7 +66,7 @@ module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (F⊣G : Adjoint F G) w
     }
 
   private
-    K = ComparisonF 
+    K = ComparisonF
     module K = Functor K
     module Gᵀ = Functor (Forgetful T)
     module Fᵀ = Functor (Free T)
@@ -77,7 +77,7 @@ module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (F⊣G : Adjoint F G) w
     ; eq₁ = λ {A} {B} f → begin
       Module⇒.arr (𝒞ᵀ [ (hid 𝒞ᵀ ≡.refl) ∘ K.F₁ (F.F₁ f) ]) ≈⟨ hid-refl 𝒞ᵀ {A = K.F₀ (F.F₀ B)} ⟩∘⟨refl ⟩
       Module⇒.arr (𝒞ᵀ [ 𝒞ᵀ.id ∘ K.F₁ (F.F₁ f) ])           ≈⟨ 𝒞.identityˡ {f = Module⇒.arr (K.F₁ (F.F₁ f))} ⟩
-      Module⇒.arr (K.F₁ (F.F₁ f))                           ≈⟨ refl ⟩
+      Module⇒.arr (K.F₁ (F.F₁ f))                          ≈⟨ 𝒞.Equiv.refl ⟩
       Module⇒.arr (Fᵀ.F₁ f)                                 ≈˘⟨ 𝒞ᵀ.identityʳ {f = Fᵀ.F₁ f} ⟩
       Module⇒.arr (𝒞ᵀ [ Fᵀ.F₁ f ∘ 𝒞ᵀ.id ])                 ≈˘⟨ refl⟩∘⟨ hid-refl 𝒞ᵀ {A = Fᵀ.F₀ A} ⟩
       Module⇒.arr (𝒞ᵀ [ Fᵀ.F₁ f ∘ (hid 𝒞ᵀ ≡.refl) ])       ∎
@@ -89,7 +89,7 @@ module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (F⊣G : Adjoint F G) w
     ; eq₁ = λ f → begin
       𝒞 [ (hid 𝒞 ≡.refl) ∘ (Gᵀ.F₁ (K.F₁ f)) ] ≈⟨ hid-refl 𝒞 ⟩∘⟨refl ⟩
       𝒞 [ 𝒞.id ∘ (Gᵀ.F₁ (K.F₁ f)) ]           ≈⟨ 𝒞.identityˡ ⟩
-      (Gᵀ.F₁ (K.F₁ f))                         ≈⟨ refl ⟩
+      (Gᵀ.F₁ (K.F₁ f))                         ≈⟨ 𝒞.Equiv.refl ⟩
       G.F₁ f                                   ≈˘⟨ 𝒞.identityʳ ⟩
       𝒞 [ G.F₁ f ∘ 𝒞.id ]                     ≈˘⟨ refl⟩∘⟨ hid-refl 𝒞 ⟩
       𝒞 [ G.F₁ f ∘ (hid 𝒞 ≡.refl) ]           ∎

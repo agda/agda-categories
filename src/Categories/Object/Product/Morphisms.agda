@@ -49,7 +49,7 @@ id×id p = begin
   where open Product p
 
 repack≡id×id : ∀ (p₁ p₂ : Product A B) → repack p₁ p₂ ≈ [ p₁ ⇒ p₂ ] id × id
-repack≡id×id p₁ p₂ = sym (Product.⟨⟩-cong₂ p₂ identityˡ identityˡ)
+repack≡id×id p₁ p₂ = ⟺ (Product.⟨⟩-cong₂ p₂ identityˡ identityˡ)
 
 [_⇒_]π₁∘× : ∀ (p₁ : Product A C)(p₂ : Product B D) →
               Product.π₁ p₂ ∘ [ p₁ ⇒ p₂ ] f × g ≈ f ∘ Product.π₁ p₁
@@ -63,7 +63,7 @@ repack≡id×id p₁ p₂ = sym (Product.⟨⟩-cong₂ p₂ identityˡ identity
                  f ≈ g → h ≈ i →
                  [ p₁ ⇒ p₂ ] f × h ≈ [ p₁ ⇒ p₂ ] g × i
 [_⇒_]×-cong₂ p₁ p₂ f≈g h≈i =
-    Product.⟨⟩-cong₂ p₂ (∘-resp-≈ f≈g refl) (∘-resp-≈ h≈i refl)
+    Product.⟨⟩-cong₂ p₂ (∘-resp-≈ f≈g Equiv.refl) (∘-resp-≈ h≈i Equiv.refl)
 
 [_⇒_]×∘⟨⟩ : ∀ (p₁ : Product A B) (p₂ : Product C D) →
               ([ p₁ ⇒ p₂ ] f × g) ∘ [ p₁ ]⟨ f′ , g′ ⟩ ≈ [ p₂ ]⟨ f ∘ f′ , g ∘ g′ ⟩
@@ -72,7 +72,7 @@ repack≡id×id p₁ p₂ = sym (Product.⟨⟩-cong₂ p₂ identityˡ identity
   [ p₂ ]⟨ (f ∘ p₁.π₁) ∘ p₁.⟨_,_⟩ f′ g′
         , (g ∘ p₁.π₂) ∘ p₁.⟨_,_⟩ f′ g′ ⟩              ≈⟨ p₂.⟨⟩-cong₂ assoc assoc ⟩
   [ p₂ ]⟨ f ∘ p₁.π₁ ∘ p₁.⟨_,_⟩ f′ g′
-        , g ∘ p₁.π₂ ∘ p₁.⟨_,_⟩ f′ g′ ⟩                ≈⟨ p₂.⟨⟩-cong₂ (∘-resp-≈ refl p₁.project₁) (∘-resp-≈ refl p₁.project₂) ⟩
+        , g ∘ p₁.π₂ ∘ p₁.⟨_,_⟩ f′ g′ ⟩                ≈⟨ p₂.⟨⟩-cong₂ (∘-resp-≈ Equiv.refl p₁.project₁) (∘-resp-≈ Equiv.refl p₁.project₂) ⟩
   [ p₂ ]⟨ f ∘ f′ , g ∘ g′ ⟩                           ∎
   where module p₁ = Product p₁
         module p₂ = Product p₂
@@ -99,7 +99,7 @@ repack∘repack≈id p₁ p₂ = [ p₂ ]⟨⟩∘ ○ p₂.⟨⟩-cong₂ p₁.
 [_⇒_⇒_]repack∘× : ∀ (p₁ : Product A B) (p₂ : Product C D) (p₃ : Product C D) →
                     repack p₂ p₃ ∘ [ p₁ ⇒ p₂ ] f × g ≈ [ p₁ ⇒ p₃ ] f × g
 [_⇒_⇒_]repack∘× {f = f} {g = g} p₁ p₂ p₃ = begin
-  repack p₂ p₃ ∘ [ p₁ ⇒ p₂ ] f × g            ≈⟨ repack≡id×id p₂ p₃ ⟩∘⟨ refl ⟩
+  repack p₂ p₃ ∘ [ p₁ ⇒ p₂ ] f × g            ≈⟨ repack≡id×id p₂ p₃ ⟩∘⟨refl ⟩
   ([ p₂ ⇒ p₃ ] id × id) ∘ ([ p₁ ⇒ p₂ ] f × g) ≈⟨ [ p₁ ⇒ p₂ ⇒ p₃ ]×∘× ⟩
   [ p₁ ⇒ p₃ ] (id ∘ f) × (id ∘ g)             ≈⟨ [ p₁ ⇒ p₃ ]×-cong₂ identityˡ identityˡ ⟩
   [ p₁ ⇒ p₃ ] f × g                           ∎
@@ -123,7 +123,7 @@ second-id = id×id
                   [ p₁ ⇒ p₂ ] f ×id ∘ [ p₁ ]⟨ f′ , g′ ⟩ ≈ [ p₂ ]⟨ f ∘ f′ , g′ ⟩
 [_⇒_]×id∘⟨⟩ {f = f} {f′ = f′} {g′ = g′} p₁ p₂ = begin
   [ p₁ ⇒ p₂ ] f ×id ∘ [ p₁ ]⟨ f′ , g′ ⟩ ≈⟨ [ p₁ ⇒ p₂ ]×∘⟨⟩ ⟩
-  [ p₂ ]⟨ f ∘ f′ , id ∘ g′ ⟩            ≈⟨ p₂.⟨⟩-cong₂ refl identityˡ ⟩
+  [ p₂ ]⟨ f ∘ f′ , id ∘ g′ ⟩            ≈⟨ p₂.⟨⟩-cong₂ Equiv.refl identityˡ ⟩
   [ p₂ ]⟨ f ∘ f′ , g′ ⟩                 ∎
   where module p₂ = Product p₂
 
@@ -131,7 +131,7 @@ second-id = id×id
                    [ p₁ ⇒ p₂ ]id× g ∘ [ p₁ ]⟨ f′ , g′ ⟩ ≈ [ p₂ ]⟨ f′ , g ∘ g′ ⟩
 [_⇒_]id×∘⟨⟩ {g = g} {f′ = f′} {g′ = g′} p₁ p₂ = begin
   [ p₁ ⇒ p₂ ]id× g ∘ [ p₁ ]⟨ f′ , g′ ⟩ ≈⟨ [ p₁ ⇒ p₂ ]×∘⟨⟩ ⟩
-  [ p₂ ]⟨ id ∘ f′ , g ∘ g′ ⟩              ≈⟨ p₂.⟨⟩-cong₂ identityˡ refl ⟩
+  [ p₂ ]⟨ id ∘ f′ , g ∘ g′ ⟩              ≈⟨ p₂.⟨⟩-cong₂ identityˡ Equiv.refl ⟩
   [ p₂ ]⟨ f′ , g ∘ g′ ⟩                   ∎
   where module p₂ = Product p₂
 
@@ -139,14 +139,14 @@ second-id = id×id
                        [ p₂ ⇒ p₃ ] f ×id ∘ [ p₁ ⇒ p₂ ] g ×id ≈ [ p₁ ⇒ p₃ ] f ∘ g ×id
 [_⇒_⇒_]×id∘×id {f = f} {g = g} p₁ p₂ p₃ = begin
   [ p₂ ⇒ p₃ ] f ×id ∘ [ p₁ ⇒ p₂ ] g ×id ≈⟨ [ p₁ ⇒ p₂ ⇒ p₃ ]×∘× ⟩
-  [ p₁ ⇒ p₃ ] (f ∘ g) × (id ∘ id)       ≈⟨ [ p₁ ⇒ p₃ ]×-cong₂ refl identityˡ ⟩
+  [ p₁ ⇒ p₃ ] (f ∘ g) × (id ∘ id)       ≈⟨ [ p₁ ⇒ p₃ ]×-cong₂ Equiv.refl identityˡ ⟩
   [ p₁ ⇒ p₃ ] f ∘ g ×id                 ∎
 
 [_⇒_⇒_]id×∘id× : ∀ (p₁ : Product A B) (p₂ : Product A C) (p₃ : Product A D) →
                          [ p₂ ⇒ p₃ ]id× f ∘ [ p₁ ⇒ p₂ ]id× g ≈ [ p₁ ⇒ p₃ ]id×(f ∘ g)
 [_⇒_⇒_]id×∘id× {f = f} {g = g} p₁ p₂ p₃ = begin
   [ p₂ ⇒ p₃ ]id× f ∘ [ p₁ ⇒ p₂ ]id× g ≈⟨ [ p₁ ⇒ p₂ ⇒ p₃ ]×∘× ⟩
-  [ p₁ ⇒ p₃ ] (id ∘ id) × (f ∘ g)     ≈⟨ [ p₁ ⇒ p₃ ]×-cong₂ identityˡ refl ⟩
+  [ p₁ ⇒ p₃ ] (id ∘ id) × (f ∘ g)     ≈⟨ [ p₁ ⇒ p₃ ]×-cong₂ identityˡ Equiv.refl ⟩
   [ p₁ ⇒ p₃ ]id× (f ∘ g)              ∎
 
 [_⇒_,_⇒_]first↔second : ∀ (p₁ : Product A D) (p₂ : Product B D)
@@ -155,6 +155,6 @@ second-id = id×id
 [_⇒_,_⇒_]first↔second {f = f} {g = g} p₁ p₂ p₃ p₄ = begin
   [ p₁ ⇒ p₂ ] f ×id ∘ [ p₃ ⇒ p₁ ]id× g ≈⟨ [ p₃ ⇒ p₁ ⇒ p₂ ]×∘× ⟩
   [ p₃ ⇒ p₂ ] (f ∘ id) × (id ∘ g)      ≈⟨ [ p₃ ⇒ p₂ ]×-cong₂ identityʳ identityˡ ⟩
-  [ p₃ ⇒ p₂ ] f × g                    ≈⟨ sym ([ p₃ ⇒ p₂ ]×-cong₂ identityˡ identityʳ) ⟩
-  [ p₃ ⇒ p₂ ] (id ∘ f) × (g ∘ id)      ≈⟨ sym ([ p₃ ⇒ p₄ ⇒ p₂ ]×∘×) ⟩
+  [ p₃ ⇒ p₂ ] f × g                    ≈˘⟨ [ p₃ ⇒ p₂ ]×-cong₂ identityˡ identityʳ ⟩
+  [ p₃ ⇒ p₂ ] (id ∘ f) × (g ∘ id)      ≈˘⟨ [ p₃ ⇒ p₄ ⇒ p₂ ]×∘× ⟩
   [ p₄ ⇒ p₂ ]id× g ∘ [ p₃ ⇒ p₄ ] f ×id ∎

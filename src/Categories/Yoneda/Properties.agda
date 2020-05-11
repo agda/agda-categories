@@ -7,9 +7,10 @@ open import Categories.Category using (Category; _[_,_])
 -- over a particular Category C
 module Categories.Yoneda.Properties {o ℓ e : Level} (C : Category o ℓ e) where
 
-open import Function using (_$_; Inverse) -- else there's a conflict with the import below
+open import Function.Base using (_$_)
+open import Function.Bundles using (Inverse)
 open import Function.Equality using (Π; _⟨$⟩_; cong)
-open import Relation.Binary using (module Setoid)
+open import Relation.Binary.Bundles using (module Setoid)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 open import Data.Product using (_,_; Σ)
 
@@ -18,6 +19,7 @@ open import Categories.Category.Construction.Presheaves
 open import Categories.Category.Construction.Functors
 open import Categories.Category.Instance.Setoids
 open import Categories.Functor renaming (id to idF)
+open import Categories.Functor.Properties using (Full; Faithful; FullyFaithful)
 open import Categories.Functor.Hom using (module Hom; Hom[_][-,_]; Hom[_][-,-])
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Presheaf
@@ -68,13 +70,13 @@ yoneda-iso {A} {B} niso = record
   ; iso  = record
     { isoˡ = begin
       (⇐.η B ⟨$⟩ id) ∘ (⇒.η A ⟨$⟩ id)      ≈˘⟨ identityˡ ⟩
-      id ∘ (⇐.η B ⟨$⟩ id) ∘ (⇒.η A ⟨$⟩ id) ≈⟨  B⇒A.inverseʳ F⇐G refl  ⟩
-      ⇐.η A ⟨$⟩ (⇒.η A ⟨$⟩ id)             ≈⟨ isoX.isoˡ refl ⟩
+      id ∘ (⇐.η B ⟨$⟩ id) ∘ (⇒.η A ⟨$⟩ id) ≈⟨  B⇒A.inverseʳ F⇐G CE.refl  ⟩
+      ⇐.η A ⟨$⟩ (⇒.η A ⟨$⟩ id)             ≈⟨ isoX.isoˡ CE.refl ⟩
       id                                   ∎
     ; isoʳ = begin
       (⇒.η A ⟨$⟩ id) ∘ (⇐.η B ⟨$⟩ id)      ≈˘⟨ identityˡ ⟩
-      id ∘ (⇒.η A ⟨$⟩ id) ∘ (⇐.η B ⟨$⟩ id) ≈⟨  A⇒B.inverseʳ F⇒G refl  ⟩
-      ⇒.η B ⟨$⟩ (⇐.η B ⟨$⟩ id)             ≈⟨ isoX.isoʳ refl ⟩
+      id ∘ (⇒.η A ⟨$⟩ id) ∘ (⇐.η B ⟨$⟩ id) ≈⟨  A⇒B.inverseʳ F⇒G CE.refl ⟩
+      ⇒.η B ⟨$⟩ (⇐.η B ⟨$⟩ id)             ≈⟨ isoX.isoʳ CE.refl ⟩
       id                                   ∎
     }
   }
@@ -114,7 +116,7 @@ module _ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} where
           (η α (F.₀ Y , Y) ⟨$⟩ id) ∘ F.₁ f       ≈˘⟨ identityˡ ⟩
           id ∘ (η α (F.₀ Y , Y) ⟨$⟩ id) ∘ F.₁ f  ≈˘⟨ lower (yoneda.⇒.commute {Y = Hom[ C ][-, G.₀ Y ] , _} (idN , F.₁ f) {nat-appʳ Y α} {nat-appʳ Y α} (cong (η α _))) ⟩
           η α (F.₀ X , Y) ⟨$⟩ F.₁ f ∘ id         ≈⟨ cong (η α (F.₀ X , Y)) (∘-resp-≈ʳ (⟺ identityˡ)) ⟩
-          η α (F.₀ X , Y) ⟨$⟩ F.₁ f ∘ id ∘ id    ≈⟨ commute α (id , f) refl ⟩
+          η α (F.₀ X , Y) ⟨$⟩ F.₁ f ∘ id ∘ id    ≈⟨ commute α (id , f) CE.refl ⟩
           G.₁ f ∘ (η α (F.₀ X , X) ⟨$⟩ id) ∘ id  ≈⟨ refl⟩∘⟨ identityʳ ⟩
           G.₁ f ∘ (η α (F.₀ X , X) ⟨$⟩ id)      ∎
         }
@@ -145,7 +147,7 @@ module _ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} where
                                                                                   {nat-appʳ {F = G} {F} X F⇐G}
                                                                                   (cong (⇐.η (_ , X) ))) ⟩
           ⇐.η (F.₀ X , X) ⟨$⟩ (⇒.η (F.₀ X , X) ⟨$⟩ id) ∘ id        ≈⟨ cong (⇐.η _) identityʳ ⟩
-          ⇐.η (F.₀ X , X) ⟨$⟩ (⇒.η (F.₀ X , X) ⟨$⟩ id)             ≈⟨ iso.isoˡ _ refl ⟩
+          ⇐.η (F.₀ X , X) ⟨$⟩ (⇒.η (F.₀ X , X) ⟨$⟩ id)             ≈⟨ iso.isoˡ _ CE.refl ⟩
           id                                                  ∎
         ; isoʳ = begin
           (⇒.η (F.₀ X , X) ⟨$⟩ id) ∘ (⇐.η (G.₀ X , X) ⟨$⟩ id)      ≈⟨ introˡ CE.refl ⟩
@@ -155,7 +157,7 @@ module _ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} where
                                                                                    {nat-appʳ {F = F} {G} X F⇒G}
                                                                                    (cong (⇒.η _))) ⟩
           ⇒.η (G.₀ X , X) ⟨$⟩ (⇐.η (G.₀ X , X) ⟨$⟩ id) ∘ id        ≈⟨ cong (⇒.η _) identityʳ ⟩
-          ⇒.η (G.₀ X , X) ⟨$⟩ (⇐.η (G.₀ X , X) ⟨$⟩ id)             ≈⟨ iso.isoʳ _ refl ⟩
+          ⇒.η (G.₀ X , X) ⟨$⟩ (⇐.η (G.₀ X , X) ⟨$⟩ id)             ≈⟨ iso.isoʳ _ CE.refl ⟩
           id                                                      ∎
         }
       }

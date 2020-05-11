@@ -10,9 +10,10 @@ module Categories.Yoneda where
 --   Hom[ Presheaves C] (Functor.F₀ embed a , F) ≅ Functor.F₀ F a
 --   as Setoids. In addition, Yoneda (yoneda) also says that this isomorphism is natural in a and F.
 open import Level
-open import Function using (_$_; Inverse) -- else there's a conflict with the import below
+open import Function.Base using (_$_)
+open import Function.Bundles using (Inverse)
 open import Function.Equality using (Π; _⟨$⟩_; cong)
-open import Relation.Binary using (module Setoid)
+open import Relation.Binary.Bundles using (module Setoid)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 open import Data.Product using (_,_; Σ)
 

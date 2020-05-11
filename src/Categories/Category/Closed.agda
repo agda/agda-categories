@@ -11,7 +11,7 @@ private
     A B X X′ Y Y′ Z Z′ U V : Obj
     f g : A ⇒ B
 
-  open Commutation
+  open Commutation C
 
 open import Level
 open import Data.Product using (Σ; _,_)
@@ -109,7 +109,7 @@ record Closed : Set (levelOfTerm C) where
              [ identity.⇒.η Y , C.id ]₁
            ≈ [ C.id , identity.⇒.η Z ]₁
            ⟩
-           
+
     pentagon : [ [ U , V ]₀ ⇒ [ [ Y , U ]₀ , [ [ X , Y ]₀ , [ X , V ]₀ ]₀ ]₀ ]⟨
                  L X U V                            ⇒⟨ [ [ X , U ]₀ , [ X , V ]₀ ]₀ ⟩
                  L [ X , Y ]₀ [ X , U ]₀ [ X , V ]₀ ⇒⟨ [ [ [ X , Y ]₀ , [ X , U ]₀ ]₀ , [ [ X , Y ]₀ , [ X , V ]₀ ]₀ ]₀ ⟩

@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Data.Nat using (ℕ)
+open import Data.Nat.Base using (ℕ)
 
 module Categories.Category.Construction.Fin (n : ℕ) where
 

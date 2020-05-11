@@ -4,31 +4,19 @@ open import Categories.Category
 
 module Categories.Object.Terminal.Limit {o ℓ e} (C : Category o ℓ e) where
 
-open import Data.Nat using (ℕ)
-open import Data.Fin
-open import Data.Fin.Patterns
-
 open import Categories.Category.Lift
-open import Categories.Category.Finite.Fin
 open import Categories.Category.Finite.Fin.Construction.Discrete
 open import Categories.Object.Terminal C
 open import Categories.Diagram.Limit
-open import Categories.Functor
+open import Categories.Functor.Core
 
 import Categories.Category.Construction.Cones as Co
-import Categories.Morphism.Reasoning as MR
 
 private
   module C = Category C
   open C
 
 module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C} where
-  private
-    module F = Functor F
-    open F
-    open MR C
-    open HomReasoning
-
   limit⇒⊥ : Limit F → Terminal
   limit⇒⊥ L = record
     { ⊤        = apex

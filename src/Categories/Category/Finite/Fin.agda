@@ -3,15 +3,15 @@
 module Categories.Category.Finite.Fin where
 
 open import Level
-open import Data.Nat using (ℕ)
-open import Data.Vec as Vec using (Vec)
-open import Data.List
-open import Data.Fin
-open import Data.Fin.Properties
+open import Data.Nat.Base using (ℕ)
+open import Data.Vec.Base as Vec using (Vec)
+open import Data.List.Base
+open import Data.Fin.Base using (Fin)
+open import Data.Fin.Properties using (_≟_)
 open import Axiom.UniquenessOfIdentityProofs
 open import Relation.Binary using (Rel ; Decidable)
 open import Relation.Binary.PropositionalEquality as ≡
-open import Function using (flip)
+open import Function.Base using (flip)
 
 open import Categories.Category
 
@@ -106,8 +106,8 @@ record FinCatShape : Set where
     }
 
 private
-  shape-involutie : (shape : FinCatShape) → shape ≡ FinCatShape.op (FinCatShape.op shape)
-  shape-involutie _ = refl
+  shape-involutive : (shape : FinCatShape) → shape ≡ FinCatShape.op (FinCatShape.op shape)
+  shape-involutive _ = refl
 
   record FinCatShape′ : Set where
     field
@@ -120,7 +120,7 @@ private
     field
       id  : ∀ {a} → a ⇒ a
       _∘_ : ∀ {a b c} → b ⇒ c → a ⇒ b → a ⇒ c
-  
+
     field
       assoc     : ∀ {a b c d} {f : a ⇒ b} {g : b ⇒ c} {h : c ⇒ d} → (h ∘ g) ∘ f ≡ h ∘ (g ∘ f)
       identityˡ : ∀ {a b} {f : a ⇒ b} → id ∘ f ≡ f

@@ -123,9 +123,10 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
       module T = Functor T
       open C
       open HomReasoning
+      open Equiv
       open Reas C
-      
-    -- functors between Comma categories along natural transformations  
+
+    -- functors between Comma categories along natural transformations
     along-nat : Functor (S ↓ T) (S′ ↓ T′)
     along-nat = record
       { F₀           = λ X → record
@@ -148,10 +149,10 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
 
   along-natʳ : ∀ {T T′ : Functor A C} (S : Functor B C) (δ : NaturalTransformation T T′) → Functor (S ↓ T) (S ↓ T′)
   along-natʳ S = along-nat idN
-  
+
   along-natˡ : ∀ {S S′ : Functor B C} (γ : NaturalTransformation S′ S) (T : Functor A C) → Functor (S ↓ T) (S′ ↓ T)
   along-natˡ γ T = along-nat γ idN
-  
+
 -- There's an induced functor from Functors category to Functors over Comma categories
 module _ {A : Category o₁ ℓ₁ e₁} {B : Category o₂ ℓ₂ e₂} {C : Category o₃ ℓ₃ e₃} where
   open CommaObj
@@ -204,6 +205,7 @@ module _ {C : Category o ℓ e} where
   open SliceObj
   open Slice⇒
   open HomReasoning
+  open Equiv
   open CommaObj
   open Comma⇒
   open Reas C

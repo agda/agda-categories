@@ -4,11 +4,10 @@ open import Categories.Category
 
 module Categories.Functor.Power.NaturalTransformation {o ℓ e : Level} (C : Category o ℓ e) where
 
-open import Data.Nat using (ℕ)
-open import Data.Fin using (Fin; inject+; raise)
-open import Data.Sum using (_⊎_; [_,_]′; inj₁; inj₂)
-open import Function using () renaming (_∘_ to _∙_)
-open import Function using () renaming (_∘_ to _∙_)
+open import Data.Nat.Base using (ℕ)
+open import Data.Fin.Base using (Fin; inject+; raise)
+open import Data.Sum.Base using (_⊎_; [_,_]′; inj₁; inj₂)
+open import Function.Base using () renaming (_∘_ to _∙_)
 open import Data.Product using (_,_)
 
 import Categories.Functor.Power as Power
@@ -50,9 +49,10 @@ reduceN′ {I = I} {J} {F} {F′} {G} {G′} H φ γ = ntHelper record
   module H = Functor H
   module L = Functor (reduce′ H F G)
   module R = Functor (reduce′ H F′ G′)
+  open Definitions C
   my-η : ∀ Xs → C [ L.F₀ Xs , R.F₀ Xs ]
   my-η Xs = H.F₁ ((φ.η (Xs ∙ inj₁)) , (γ.η (Xs ∙ inj₂)))
-  my-commute : ∀ Xs Ys fs → C.CommutativeSquare (L.F₁ fs) (my-η Xs) (my-η Ys) (R.F₁ fs)
+  my-commute : ∀ Xs Ys fs → CommutativeSquare (L.F₁ fs) (my-η Xs) (my-η Ys) (R.F₁ fs)
   my-commute Xs Ys fs = begin
       my-η Ys ∘ L.F₁ fs                             ≈˘⟨ H.homomorphism ⟩
       H.F₁ ((φ.η _ ∘ F.F₁ _) , (γ.η _ ∘ G.F₁ _))    ≈⟨ H.F-resp-≈ ((φ.commute _) , (γ.commute _)) ⟩

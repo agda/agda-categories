@@ -1,12 +1,12 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
+open import Categories.Category.Core
 
 module Categories.Object.Product.Limit {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
-open import Data.Nat using (ℕ)
-open import Data.Fin hiding (lift)
+open import Data.Nat.Base using (ℕ)
+open import Data.Fin.Base using (Fin)
 open import Data.Fin.Patterns
 
 open import Categories.Category.Lift
@@ -14,7 +14,7 @@ open import Categories.Category.Finite.Fin
 open import Categories.Category.Finite.Fin.Construction.Discrete
 open import Categories.Object.Product C
 open import Categories.Diagram.Limit
-open import Categories.Functor
+open import Categories.Functor.Core
 
 import Categories.Category.Construction.Cones as Co
 import Categories.Morphism.Reasoning as MR
@@ -54,6 +54,7 @@ module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ (Discrete 2)) C
     where open Limit L
 
 module _ o′ ℓ′ e′ A B where
+  open Equiv
 
   product⇒limit-F : Functor (liftC o′ ℓ′ e′ (Discrete 2)) C
   product⇒limit-F = record

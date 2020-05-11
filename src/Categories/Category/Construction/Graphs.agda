@@ -329,6 +329,7 @@ module _ {G H : Quiver o ℓ e} {f g : Morphism G H}
 
 module _ (C : Category o ℓ e) where
   open Category C
+  open Definitions C
   open HomReasoning
 
   -- A helper that should probably go into Categories.Morphism.Reasoning...

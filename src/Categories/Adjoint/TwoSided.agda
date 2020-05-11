@@ -175,3 +175,12 @@ module _ {L : Functor C D} {R : Functor D C} where
     ; zag    = zag
     }
     where open WithZag LR
+
+id⊣⊢id : idF {C = C} ⊣⊢ idF
+id⊣⊢id {C = C} = record
+  { unit   = ≃.sym ≃.unitor²
+  ; counit = ≃.unitor²
+  ; zig    = identity²
+  ; zag    = identity²
+  }
+  where open Category C
