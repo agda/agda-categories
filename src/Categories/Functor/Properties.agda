@@ -3,36 +3,63 @@ module Categories.Functor.Properties where
 
 -- Properties valid of all Functors
 open import Level
-open import Data.Product using (proj₁; proj₂; _,_)
+open import Data.Product using (proj₁; proj₂; _,_; _×_; Σ)
 open import Function.Surjection using (Surjective)
 open import Function.Equivalence using (Equivalence)
-open import Function.Equality hiding (_∘_)
+open import Function.Equality using (Π; _⟶_; _⟨$⟩_; cong)
+open import Relation.Binary using (_Preserves_⟶_)
+open import Relation.Nullary
 
 open import Categories.Category
-open import Categories.Functor.Core
 open import Categories.Functor
-open import Categories.Morphism as Morphism
+import Categories.Morphism as Morphism
 import Categories.Morphism.Reasoning as Reas
 open import Categories.Morphism.IsoEquiv as IsoEquiv
 open import Categories.Morphism.Isomorphism
 
-open import Relation.Binary using (_Preserves_⟶_)
-
 private
   variable
-    o ℓ e : Level
+    o ℓ e o′ ℓ′ e′ : Level
     C D : Category o ℓ e
+
+Contravariant : ∀ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → Set _
+Contravariant C D = Functor (Category.op C) D
+
+Faithful : Functor C D → Set _
+Faithful {C = C} {D = D} F = ∀ {X Y} → (f g : C [ X , Y ]) → D [ F₁ f ≈ F₁ g ] → C [ f ≈ g ]
+  where open Functor F
+
+Full : Functor C D → Set _
+Full {C = C} {D = D} F = ∀ {X Y} → Surjective {To = D.hom-setoid {F₀ X} {F₀ Y}} G
+  where
+    module C = Category C
+    module D = Category D
+    open Functor F
+    G : ∀ {X Y} → (C.hom-setoid {X} {Y}) ⟶ D.hom-setoid {F₀ X} {F₀ Y}
+    G = record { _⟨$⟩_ = F₁ ; cong = F-resp-≈ }
+
+FullyFaithful : Functor C D → Set _
+FullyFaithful F = Full F × Faithful F
+
+-- Note that this is a constructive version of Essentially Surjective, which is
+-- quite a strong assumption.
+EssentiallySurjective : Functor C D → Set _
+EssentiallySurjective {C = C} {D = D} F = (d : Category.Obj D) → Σ C.Obj (λ c → Functor.F₀ F c ≅ d)
+  where
+  open Morphism D
+  module C = Category C
 
 -- a series of [ Functor ]-respects-Thing combinators (with respects -> resp)
 
 module _ (F : Functor C D) where
   private
-    module C = Category C
+    module C = Category C using (Obj; _∘_; _⇒_; id; module HomReasoning)
     module D = Category D
     module IsoC = IsoEquiv C
     module IsoD = IsoEquiv D
   open C hiding (_∘_)
   open Functor F
+  open Morphism
 
   private
     variable
@@ -41,35 +68,32 @@ module _ (F : Functor C D) where
 
   [_]-resp-∘ : C [ C [ f ∘ g ] ≈ h ] → D [ D [ F₁ f ∘ F₁ g ] ≈ F₁ h ]
   [_]-resp-∘ {f = f} {g = g} {h = h} eq = begin
-    F₁ f ∘ F₁ g      ≈˘⟨ homomorphism ⟩
+    F₁ f D.∘ F₁ g    ≈˘⟨ homomorphism ⟩
     F₁ (C [ f ∘ g ]) ≈⟨ F-resp-≈ eq ⟩
     F₁ h             ∎
-    where open D
-          open D.HomReasoning
+    where open D.HomReasoning
 
   [_]-resp-square : Definitions.CommutativeSquare C f g h i →
                     Definitions.CommutativeSquare D (F₁ f) (F₁ g) (F₁ h) (F₁ i)
   [_]-resp-square {f = f} {g = g} {h = h} {i = i} sq = begin
-    F₁ h ∘ F₁ f      ≈˘⟨ homomorphism ⟩
-    F₁ (C [ h ∘ f ]) ≈⟨ F-resp-≈ sq ⟩
-    F₁ (C [ i ∘ g ]) ≈⟨ homomorphism ⟩
-    F₁ i ∘ F₁ g       ∎
-    where open D
-          open D.HomReasoning
+    D [ F₁ h ∘ F₁ f ]  ≈˘⟨ homomorphism ⟩
+    F₁ (C [ h ∘ f ])   ≈⟨ F-resp-≈ sq ⟩
+    F₁ (C [ i ∘ g ])   ≈⟨ homomorphism ⟩
+    D [ F₁ i ∘ F₁ g ]  ∎
+    where open D.HomReasoning
 
   [_]-resp-Iso : Iso C f g → Iso D (F₁ f) (F₁ g)
   [_]-resp-Iso {f = f} {g = g} iso = record
     { isoˡ = begin
-      F₁ g ∘ F₁ f      ≈⟨ [ isoˡ ]-resp-∘ ⟩
+      F₁ g D.∘ F₁ f    ≈⟨ [ isoˡ ]-resp-∘ ⟩
       F₁ C.id          ≈⟨ identity ⟩
       D.id             ∎
     ; isoʳ = begin
-      F₁ f ∘ F₁ g      ≈⟨ [ isoʳ ]-resp-∘ ⟩
+      F₁ f D.∘ F₁ g    ≈⟨ [ isoʳ ]-resp-∘ ⟩
       F₁ C.id          ≈⟨ identity ⟩
       D.id             ∎
     }
     where open Iso iso
-          open D
           open D.HomReasoning
 
   [_]-resp-≅ : F₀ Preserves _≅_ C ⟶ _≅_ D
@@ -96,30 +120,35 @@ module _ (F : Functor C D) where
       let module S = Surjective (full {a} {b}) in
       S.from ⟨$⟩ (_≅_.to sb) ∘ f ∘ (_≅_.from sa)
     ; identity = λ {A} →
-      let (a , sa) = surj A in begin
-      from full ⟨$⟩  _≅_.to sa ∘ D.id ∘ _≅_.from sa ≈⟨ cong (from full) (D.∘-resp-≈ʳ D.identityˡ D.HomReasoning.○ _≅_.isoˡ sa) ⟩
-      from full ⟨$⟩ D.id                            ≈˘⟨ cong (from full) identity ⟩
-      from full ⟨$⟩ F₁ C.id                         ≈⟨ faith _ _ (right-inverse-of full (F₁ C.id)) ⟩
+      let ff = from full
+          (a , sa) = surj A in begin
+      ff ⟨$⟩ _≅_.to sa ∘ D.id ∘ _≅_.from sa ≈⟨ cong ff (E.refl⟩∘⟨ D.identityˡ) ⟩
+      ff ⟨$⟩ _≅_.to sa ∘ _≅_.from sa        ≈⟨ cong ff (_≅_.isoˡ sa) ⟩
+      ff ⟨$⟩ D.id                           ≈˘⟨ cong ff identity ⟩
+      ff ⟨$⟩ F₁ C.id                        ≈⟨ faith _ _ (right-inverse-of full (F₁ C.id)) ⟩
       C.id ∎
     ; homomorphism = λ {X} {Y} {Z} {f} {g} →
-      let (x , sx) = surj X in
-      let (y , sy) = surj Y in
-      let (z , sz) = surj Z in
-      let open Morphism._≅_ in faith _ _ (E.begin
-      F₁ (from full ⟨$⟩ to sz ∘ (g ∘ f) ∘ from sx)                                     E.≈⟨ right-inverse-of full _ ⟩
-      (to sz ∘ (g ∘ f) ∘ from sx)                                                      E.≈⟨ D.∘-resp-≈ʳ (D.∘-resp-≈ˡ (D.∘-resp-≈ʳ (introˡ (isoʳ sy)))) ⟩
-      (to sz ∘ (g ∘ (from sy ∘ to sy) ∘ f) ∘ from sx)                                  E.≈⟨ D.sym-assoc ⟩
-      (to sz ∘ g ∘ ((from sy ∘ to sy) ∘ f)) ∘ from sx                                  E.≈⟨ D.∘-resp-≈ˡ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ D.assoc)) ⟩
-      (to sz ∘ g ∘ (from sy ∘ (to sy ∘ f))) ∘ from sx                                  E.≈⟨ D.∘-resp-≈ˡ D.sym-assoc ⟩
-      ((to sz ∘ g) ∘ (from sy ∘ (to sy ∘ f))) ∘ from sx                                E.≈⟨ D.∘-resp-≈ˡ D.sym-assoc ⟩
-      (((to sz ∘ g) ∘ from sy) ∘ (to sy ∘ f)) ∘ from sx                                E.≈⟨ D.assoc ⟩
-      ((to sz ∘ g) ∘ from sy) ∘ ((to sy ∘ f) ∘ from sx)                                E.≈⟨ D.∘-resp-≈ D.assoc D.assoc  ⟩
-      (to sz ∘ g ∘ from sy) ∘ (to sy ∘ f ∘ from sx)                                    E.≈˘⟨ D.∘-resp-≈ (right-inverse-of full _) (right-inverse-of full _) ⟩
-      F₁ (from full ⟨$⟩ to sz ∘ g ∘ from sy) ∘ F₁ (from full ⟨$⟩ to sy ∘ f ∘ from sx)  E.≈˘⟨ homomorphism ⟩
-      F₁ ((from full ⟨$⟩ to sz ∘ g ∘ from sy) C.∘ (from full ⟨$⟩ to sy ∘ f ∘ from sx)) E.∎)
+      let
+          (x , sx) = surj X
+          (y , sy) = surj Y
+          (z , sz) = surj Z
+          fsx      = from sx
+          tsz      = to sz
+          ff {T₁} {T₂} = from (full {T₁} {T₂}) in
+      faith _ _ (E.begin
+      F₁ (ff ⟨$⟩ tsz ∘ (g ∘ f) ∘ fsx)                             E.≈⟨ right-inverse-of full _ ⟩
+      (tsz ∘ (g ∘ f) ∘ fsx)                                      E.≈⟨ pullˡ (E.refl⟩∘⟨ (E.refl⟩∘⟨ introˡ (isoʳ sy))) ⟩
+      (tsz ∘ g ∘ ((from sy ∘ to sy) ∘ f)) ∘ fsx                  E.≈⟨ pushʳ (E.refl⟩∘⟨ D.assoc) E.⟩∘⟨refl ⟩
+      ((tsz ∘ g) ∘ (from sy ∘ (to sy ∘ f))) ∘ fsx                E.≈⟨ D.sym-assoc E.⟩∘⟨refl ⟩
+      (((tsz ∘ g) ∘ from sy) ∘ (to sy ∘ f)) ∘ fsx                E.≈⟨ D.assoc ⟩
+      ((tsz ∘ g) ∘ from sy) ∘ ((to sy ∘ f) ∘ fsx)                E.≈⟨ D.assoc E.⟩∘⟨ D.assoc  ⟩
+      (tsz ∘ g ∘ from sy) ∘ (to sy ∘ f ∘ fsx)                    E.≈˘⟨ right-inverse-of full _ E.⟩∘⟨ right-inverse-of full _ ⟩
+      F₁ (ff ⟨$⟩ tsz ∘ g ∘ from sy) ∘ F₁ (ff ⟨$⟩ to sy ∘ f ∘ fsx)  E.≈˘⟨ homomorphism ⟩
+      F₁ ((ff ⟨$⟩ tsz ∘ g ∘ from sy) C.∘ (ff ⟨$⟩ to sy ∘ f ∘ fsx)) E.∎)
     ; F-resp-≈ = λ f≈g → cong (from full) (D.∘-resp-≈ʳ (D.∘-resp-≈ˡ f≈g))
     }
     where
+    open Morphism._≅_
     open Morphism D
     open Reas D
     open Category D

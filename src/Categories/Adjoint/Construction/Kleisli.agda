@@ -7,7 +7,7 @@ module Categories.Adjoint.Construction.Kleisli {o ℓ e} {C : Category o ℓ e} 
 
 open import Categories.Category.Construction.Kleisli
 open import Categories.Adjoint
-open import Categories.Functor.Core
+open import Categories.Functor
 open import Categories.Functor.Properties
 open import Categories.NaturalTransformation.Core
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)

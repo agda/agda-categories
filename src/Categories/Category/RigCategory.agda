@@ -9,7 +9,7 @@ open import Level
 open import Data.Fin.Base using () renaming (zero to 0F; suc to sucF)
 open import Data.Product using (_,_)
 
-open import Categories.Functor.Core renaming (id to idF)
+open import Categories.Functor.Core
 open import Categories.Category.Monoidal
 open import Categories.Category.Monoidal.Braided
 open import Categories.Category.Monoidal.Symmetric

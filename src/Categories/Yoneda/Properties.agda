@@ -19,6 +19,7 @@ open import Categories.Category.Construction.Presheaves
 open import Categories.Category.Construction.Functors
 open import Categories.Category.Instance.Setoids
 open import Categories.Functor renaming (id to idF)
+open import Categories.Functor.Properties using (Full; Faithful; FullyFaithful)
 open import Categories.Functor.Hom using (module Hom; Hom[_][-,_]; Hom[_][-,-])
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Presheaf

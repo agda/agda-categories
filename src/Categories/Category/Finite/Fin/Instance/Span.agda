@@ -9,7 +9,7 @@ open import Relation.Binary.PropositionalEquality.Core using (_≡_ ; refl)
 
 open import Categories.Category.Finite.Fin
 open import Categories.Category
-open import Categories.Functor.Core using (Functor; _∘F_) renaming (id to idF)
+open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)
 open import Categories.Adjoint.Equivalence using (⊣Equivalence)
