@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-module Categories.Category.Construction.Graphs where
+module Categories.Category.Construction.Quivers where
 
 -- The "Underlying Graph" <-> "Free Category on a Graph" Adjunction.
 --   [It's actually a Multidigraph, or Quiver.  Use the latter.]
@@ -35,24 +35,26 @@ open import Data.Quiver.Paths
 import Data.Quiver.Morphism as QM
 open QM using (Morphism; _≃_)
 
+open import Categories.Adjoint
 open import Categories.Category
+import Categories.Category.Construction.FreeQuiver as FQ
+open import Categories.Category.Instance.StrictCats
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Equivalence
-open import Categories.Category.Instance.StrictCats
-open import Categories.Utils.EqReasoning
 open import Categories.NaturalTransformation hiding (id)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   hiding (refl; sym; trans; isEquivalence; _≃_)
-open import Categories.Adjoint
 import Categories.Morphism.HeterogeneousIdentity as HId
-import Categories.Category.Construction.FreeQuiver as FQ
+import Categories.Morphism.Reasoning as MR
+open import Categories.Utils.EqReasoning
 
 private
   variable
     o o′ ℓ ℓ′ e e′ : Level
 
-Graphs : ∀ o ℓ e → Category (suc (o ⊔ ℓ ⊔ e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
-Graphs o ℓ e = record
+-- The Category of Quivers
+Quivers : ∀ o ℓ e → Category (suc (o ⊔ ℓ ⊔ e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
+Quivers o ℓ e = record
   { Obj       = Quiver o ℓ e
   ; _⇒_       = Morphism
   ; _≈_       = _≃_
@@ -74,10 +76,10 @@ Graphs o ℓ e = record
             e₁ = F₀≡ eq
         in begin
           F₁ j f ▸ sym e₁                        ≡˘⟨ cong (_◂ (F₁ j f ▸ _)) (trans-symˡ e₁) ⟩
-          trans (sym e₁) e₁ ◂ (F₁ j f ▸ sym e₁)  ≡˘⟨ ◂-trans (sym e₁) e₁ _ ⟩
+          trans (sym e₁) e₁ ◂ (F₁ j f ▸ sym e₁)  ≡˘⟨ ◂-assocˡ (sym e₁) (F₁ j f ▸ sym e₁) ⟩
           sym e₁ ◂ e₁ ◂ (F₁ j f ▸ sym e₁)        ≡⟨ cong (sym e₁ ◂_) (◂-▸-comm e₁ (F₁ j f) (sym e₁)) ⟩
           sym e₁ ◂ ((e₁ ◂ F₁ j f) ▸ sym e₁)      ≈˘⟨ ◂-resp-≈ (sym e₁) (▸-resp-≈ (F₁≡ eq) (sym e₁)) ⟩
-          sym e₁ ◂ (F₁ i f ▸ e₁ ▸ sym e₁)        ≡⟨ cong (sym e₁ ◂_) (▸-trans (F₁ i f) e₁ (sym e₁)) ⟩
+          sym e₁ ◂ (F₁ i f ▸ e₁ ▸ sym e₁)        ≡⟨ cong (sym e₁ ◂_) (▸-assocʳ (F₁ i f) (sym e₁)) ⟩
           sym e₁ ◂ (F₁ i f ▸ trans e₁ (sym e₁))  ≡⟨ cong (λ p → sym e₁ ◂ (F₁ i f ▸ p)) (trans-symʳ e₁) ⟩
           sym e₁ ◂ F₁ i f                        ∎
       }
@@ -88,11 +90,11 @@ Graphs o ℓ e = record
             open Transport (_⇒_ G)
             open TransportOverQ (_⇒_ G) (_≈_ G)
         in begin
-          F₁ i f ▸ trans (F₀≡ eq) (F₀≡ eq′)  ≡˘⟨ ▸-trans (F₁ i f) (F₀≡ eq) (F₀≡ eq′) ⟩
+          F₁ i f ▸ trans (F₀≡ eq) (F₀≡ eq′)  ≡˘⟨ ▸-assocʳ (F₁ i f) (F₀≡ eq′) ⟩
           (F₁ i f ▸ F₀≡ eq) ▸ F₀≡ eq′        ≈⟨ ▸-resp-≈ (F₁≡ eq) (F₀≡ eq′) ⟩
           (F₀≡ eq ◂ F₁ j f) ▸ F₀≡ eq′        ≡˘⟨ ◂-▸-comm (F₀≡ eq) (F₁ j f) (F₀≡ eq′) ⟩
           F₀≡ eq ◂ (F₁ j f ▸ F₀≡ eq′)        ≈⟨ ◂-resp-≈ (F₀≡ eq) (F₁≡ eq′) ⟩
-          F₀≡ eq ◂ (F₀≡ eq′ ◂ F₁ k f)        ≡⟨ ◂-trans (F₀≡ eq) (F₀≡ eq′) (F₁ k f) ⟩
+          F₀≡ eq ◂ (F₀≡ eq′ ◂ F₁ k f)        ≡⟨ ◂-assocˡ (F₀≡ eq) (F₁ k f) ⟩
           trans (F₀≡ eq) (F₀≡ eq′) ◂ F₁ k f  ∎
       }
     }
@@ -104,23 +106,23 @@ Graphs o ℓ e = record
           open TransportOverQ (_⇒_ H) (_≈_ H)
           open Transport (_⇒_ G) using () renaming (_▸_ to _▹_; _◂_ to _◃_)
           open TransportMor (_⇒_ G) (_⇒_ H)
+          e₁ = F₀≡ eq
+          e₂ = F₀≡ eq′
       in begin
-        F₁ (f QM.∘ h) j ▸ trans (cong (F₀ f) (F₀≡ eq′)) (F₀≡ eq) ≡˘⟨ ▸-trans (F₁ f (F₁ h j)) (cong (F₀ f) (F₀≡ eq′)) (F₀≡ eq) ⟩
-        F₁ f (F₁ h j) ▸ cong (F₀ f) (F₀≡ eq′) ▸ F₀≡ eq           ≡˘⟨ cong (_▸ F₀≡ eq) ( M-resp-▸ (F₀ f) (F₁ f) (F₁ h j) (F₀≡ eq′)  ) ⟩
-        F₁ f (F₁ h j ▹ F₀≡ eq′) ▸ F₀≡ eq                         ≈⟨ F₁≡ eq ⟩
-        F₀≡ eq ◂ F₁ g (F₁ h j ▹ F₀≡ eq′)                         ≈⟨ ◂-resp-≈ (F₀≡ eq) (F-resp-≈ g (F₁≡ eq′)) ⟩
-        F₀≡ eq ◂ F₁ g (F₀≡ eq′ ◃ F₁ i j)                         ≡⟨ cong (F₀≡ eq ◂_) ( M-resp-◂ (F₀ g) (F₁ g) (F₀≡ eq′) (F₁ i j) ) ⟩
-        F₀≡ eq ◂ cong (F₀ g) (F₀≡ eq′) ◂ F₁ g (F₁ i j)           ≡⟨ ◂-trans (F₀≡ eq) (cong (F₀ g) (F₀≡ eq′)) (F₁ g (F₁ i j)) ⟩
-        trans (F₀≡ eq) (cong (F₀ g) (F₀≡ eq′)) ◂ F₁ g (F₁ i j)   ≡˘⟨ cong (_◂ F₁ g (F₁ i j)) (naturality (λ _ → F₀≡ eq)) ⟩
-        trans (cong (F₀ f) (F₀≡ eq′)) (F₀≡ eq) ◂ F₁ g (F₁ i j)   ∎
+        F₁ (f QM.∘ h) j ▸ trans (cong (F₀ f) e₂) e₁ ≡˘⟨ ▸-assocʳ (F₁ f (F₁ h j)) e₁ ⟩
+        F₁ f (F₁ h j) ▸ cong (F₀ f) e₂ ▸ e₁         ≡˘⟨ cong (_▸ e₁) ( M-resp-▸ (F₀ f) (F₁ f) (F₁ h j) e₂) ⟩
+        F₁ f (F₁ h j ▹ e₂) ▸ e₁                     ≈⟨ F₁≡ eq ⟩
+        e₁ ◂ F₁ g (F₁ h j ▹ e₂)                     ≈⟨ ◂-resp-≈ e₁ (F-resp-≈ g (F₁≡ eq′)) ⟩
+        e₁ ◂ F₁ g (e₂ ◃ F₁ i j)                     ≡⟨ cong (e₁ ◂_) (M-resp-◂ (F₀ g) (F₁ g) e₂ (F₁ i j) ) ⟩
+        e₁ ◂ cong (F₀ g) e₂ ◂ F₁ g (F₁ i j)         ≡⟨ ◂-assocˡ e₁ (F₁ g (F₁ i j)) ⟩
+        trans e₁ (cong (F₀ g) e₂) ◂ F₁ g (F₁ i j)   ≡˘⟨ cong (_◂ F₁ g (F₁ i j)) (naturality (λ _ → e₁)) ⟩
+        trans (cong (F₀ f) e₂) e₁ ◂ F₁ g (F₁ i j)   ∎
     }
   }
   where
     open Quiver
     open Morphism
     open _≃_
-
-open _≡F_
 
 -- Put the rest of the Graph stuff here too:
 Underlying₀ : Category o ℓ e → Quiver o ℓ e
@@ -129,7 +131,7 @@ Underlying₀ C = record { Category C }
 Underlying₁ : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} → Functor C D → Morphism (Underlying₀ C) (Underlying₀ D)
 Underlying₁ F = record { Functor F }
 
-Underlying : Functor (Cats o ℓ e) (Graphs o ℓ e)
+Underlying : Functor (Cats o ℓ e) (Quivers o ℓ e)
 Underlying = record
   { F₀ = Underlying₀
   ; F₁ = Underlying₁
@@ -154,6 +156,7 @@ Underlying = record
   where
   open NaturalTransformation
   open NaturalIsomorphism
+  open _≡F_
 
 -- define these ahead of time
 module _ {G₁ G₂ : Quiver o ℓ e} (G⇒ : Morphism G₁ G₂) where
@@ -214,21 +217,7 @@ module _ {G H : Quiver o ℓ e} {f g : Morphism G H}
     F₀≡ ◂* (F₁ g hs ◅ mapGraph g h)   ∎
     where open Paths.PathEqualityReasoning H
 
-module _ (C : Category o ℓ e) where
-  open Category C
-  open Definitions C
-  open HomReasoning
-
-  -- A helper that should probably go into Categories.Morphism.Reasoning...
-
-  toSquare : ∀ {A B} {f g : A ⇒ B} → f ≈ g → CommutativeSquare f id id g
-  toSquare {_} {_} {f} {g} f≈g = begin
-        id ∘ f   ≈⟨ identityˡ ⟩
-        f        ≈⟨ f≈g ⟩
-        g        ≈˘⟨ identityʳ ⟩
-        g ∘ id   ∎
-
-CatF : Functor (Graphs o ℓ e) (Cats o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e))
+CatF : Functor (Quivers o ℓ e) (Cats o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e))
 CatF = record
   { F₀ = FQ.PathCategory
   ; F₁ = λ {G₁} {G₂} G⇒ → record
@@ -263,6 +252,7 @@ CatF = record
   where
   open Morphism
   open _≃_
+  open MR
 
 CatF-is-Free : (o ℓ e : Level) → Adjoint (CatF {o} {o ⊔ ℓ} {o ⊔ ℓ ⊔ e}) (Underlying)
 CatF-is-Free o ℓ e = record
@@ -290,6 +280,7 @@ CatF-is-Free o ℓ e = record
   ; zag = λ {B} → record { F₀≡ = refl ; F₁≡ = Category.identityˡ B  }
   }
   where
+  open MR
   GM : (X : Quiver o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) → Morphism X (Underlying₀ (FQ.PathCategory X))
   GM X = let open Paths X in record { F₀ = idFun ; F₁ = return ; F-resp-≈ = λ f≈g → f≈g ◅ ε }
   module _ (X : Category o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) where

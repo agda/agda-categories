@@ -36,13 +36,13 @@ module Transport {O : Set o} (R : Rel O ℓ) where
              (p ◂ (f ▸ q)) ≡ ((p ◂ f) ▸ q)
   ◂-▸-comm refl f refl = refl
 
-  ◂-trans : ∀ {A B C D} (p : A ≡ B) (q : B ≡ C) (f : R C D) →
+  ◂-assocˡ : ∀ {A B C D} (p : A ≡ B) {q : B ≡ C} (f : R C D) →
             p ◂ q ◂ f ≡ (trans p q) ◂ f
-  ◂-trans refl refl f = refl
+  ◂-assocˡ refl {refl} f = refl
 
-  ▸-trans : ∀ {A B C D} (f : R A B) (p : B ≡ C) (q : C ≡ D) →
+  ▸-assocʳ : ∀ {A B C D} (f : R A B) {p : B ≡ C} (q : C ≡ D) →
             f ▸ p ▸ q ≡ f ▸ trans p q
-  ▸-trans f refl refl = refl
+  ▸-assocʳ f {refl} refl = refl
 
 -- If we have a relation Q over a relation R, we can transport over that too
 module TransportOverQ {O : Set o} (R : Rel O ℓ) (Q : {X Y : O} → Rel (R X Y) t)  where
@@ -74,7 +74,6 @@ module TransportMor {O₁ O₂ : Set o}
 
 
 -- Transports on paths
-
 module TransportStar {O : Set o} (R : Rel O ℓ) where
   open Shorthands (Star R) public renaming
     ( _◂_ to _◂*_
