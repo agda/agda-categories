@@ -5,7 +5,7 @@ module Data.Quiver.Morphism where
 open import Level
 open import Function renaming (id to idFun; _∘_ to _⊚_)
 open import Data.Quiver
-open import Relation.Binary.PropositionalEquality.Subst.Properties using (module Transport)
+open import Relation.Binary.PropositionalEquality.Subst.Properties using (module Shorthands)
 open import Relation.Binary.PropositionalEquality.Core using (_≡_)
 
 infix 4 _≃_
@@ -46,7 +46,7 @@ record _≃_ {G : Quiver o ℓ e} {G′ : Quiver o′ ℓ′ e′}
   private
     module M  = Morphism M
     module M′ = Morphism M′
-  open Transport (Quiver._⇒_ G′)
+  open Shorthands (Quiver._⇒_ G′)
 
   -- Pick a presentation of equivalence for graph morphisms that works
   -- well with functor equality.

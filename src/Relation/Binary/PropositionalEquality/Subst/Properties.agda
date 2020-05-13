@@ -2,7 +2,7 @@
 
 module Relation.Binary.PropositionalEquality.Subst.Properties where
 
--- Properties of 'subst'.
+-- Properties of 'subst' onto binary relations.
 
 open import Level
 open import Function using (_$_; flip) renaming (id to idFun; _∘_ to _⊚_)
@@ -10,14 +10,12 @@ open import Relation.Binary
 open import Relation.Binary.PropositionalEquality
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive
 
-
 private
   variable
     ℓ ℓ₁ ℓ₂ t t₁ t₂ o : Level
 
-module Transport {O : Set o} (R : Rel O ℓ) where
 -- Two shorthands:  transport the domain or codomain of a relation along an equality.
-
+module Shorthands {O : Set o} (R : Rel O ℓ) where
   infixr 9 _◂_
   infixl 9 _▸_
 
@@ -28,6 +26,8 @@ module Transport {O : Set o} (R : Rel O ℓ) where
   f ▸ p = subst (R _) p f
 
   -- Some simple properties of transports
+module Transport {O : Set o} (R : Rel O ℓ) where
+  open Shorthands R public
 
   ◂-▸-id : ∀ {A} (f : R A A) → refl ◂ f ≡ f ▸ refl
   ◂-▸-id f = refl
@@ -61,8 +61,8 @@ module TransportMor {O₁ O₂ : Set o}
   (M₀       : O₁ → O₂)
   (M₁       : ∀ {A B} → R₁ A B → R₂ (M₀ A) (M₀ B)) where
 
-  open Transport R₁
-  open Transport R₂ using () renaming (_◂_ to _◃_; _▸_ to _▹_)
+  open Shorthands R₁
+  open Shorthands R₂ renaming (_◂_ to _◃_; _▸_ to _▹_)
 
   M-resp-▸ : ∀ {A B C} (f : R₁ A B) (p : B ≡ C) →
              M₁ (f ▸ p) ≡ M₁ f ▹ cong M₀ p
@@ -76,11 +76,11 @@ module TransportMor {O₁ O₂ : Set o}
 -- Transports on paths
 
 module TransportStar {O : Set o} (R : Rel O ℓ) where
-  open Transport (Star R) public using () renaming
+  open Shorthands (Star R) public renaming
     ( _◂_ to _◂*_
     ; _▸_ to _▸*_
     )
-  open Transport R
+  open Shorthands R
 
   -- Lemmas relating transports to path operations.
 
