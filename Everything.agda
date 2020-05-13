@@ -56,6 +56,7 @@ import Categories.Category.Construction.Elements
 import Categories.Category.Construction.EnrichedFunctors
 import Categories.Category.Construction.F-Algebras
 import Categories.Category.Construction.Fin
+import Categories.Category.Construction.FreeQuiver
 import Categories.Category.Construction.Functors
 import Categories.Category.Construction.Graphs
 import Categories.Category.Construction.Grothendieck
@@ -269,4 +270,8 @@ import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda
 import Categories.Yoneda.Properties
+import Data.Quiver
+import Data.Quiver.Morphism
+import Data.Quiver.Paths
 import Relation.Binary.Construct.Closure.SymmetricTransitive
+import Relation.Binary.PropositionalEquality.Subst.Properties
