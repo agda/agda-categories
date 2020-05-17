@@ -13,6 +13,7 @@ import Categories.Adjoint.Instance.01-Truncation
 import Categories.Adjoint.Instance.Core
 import Categories.Adjoint.Instance.Discrete
 import Categories.Adjoint.Instance.PosetCore
+import Categories.Adjoint.Instance.QuiverCategory
 import Categories.Adjoint.Instance.StrictCore
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Properties
@@ -58,7 +59,6 @@ import Categories.Category.Construction.F-Algebras
 import Categories.Category.Construction.Fin
 import Categories.Category.Construction.FreeQuiver
 import Categories.Category.Construction.Functors
-import Categories.Category.Construction.Graphs
 import Categories.Category.Construction.Grothendieck
 import Categories.Category.Construction.Kleisli
 import Categories.Category.Construction.Monoids
@@ -74,6 +74,7 @@ import Categories.Category.Construction.Properties.Presheaves.CartesianClosed
 import Categories.Category.Construction.Properties.Presheaves.Complete
 import Categories.Category.Construction.Properties.Presheaves.FromCartesianCCC
 import Categories.Category.Construction.Pullbacks
+import Categories.Category.Construction.Quivers
 import Categories.Category.Construction.Thin
 import Categories.Category.Core
 import Categories.Category.Discrete
@@ -188,6 +189,7 @@ import Categories.Functor.Coalgebra
 import Categories.Functor.Cocontinuous
 import Categories.Functor.Construction.Constant
 import Categories.Functor.Construction.Diagonal
+import Categories.Functor.Construction.FreeCategory
 import Categories.Functor.Construction.FromDiscrete
 import Categories.Functor.Construction.LiftSetoids
 import Categories.Functor.Construction.Limit
