@@ -1,0 +1,119 @@
+{-# OPTIONS --without-K --safe #-}
+
+module Categories.Category.Instance.Properties.Setoids.LCCC where
+
+open import Level
+open import Function.Equality as Func using (Π)
+open import Relation.Binary using (Setoid)
+import Relation.Binary.PropositionalEquality as ≡
+
+open import Categories.Category
+open import Categories.Category.Slice
+open import Categories.Category.Slice.Properties
+open import Categories.Category.CartesianClosed
+open import Categories.Category.CartesianClosed.Canonical
+  using (module Equivalence)
+  renaming (CartesianClosed to Canonical)
+open import Categories.Category.CartesianClosed.Locally
+open import Categories.Category.Instance.Span
+open import Categories.Category.Instance.Setoids
+open import Categories.Category.Instance.Properties.Setoids.Complete
+open import Categories.Category.Instance.SingletonSet
+open import Categories.Category.Monoidal.Instance.Setoids
+open import Categories.Functor
+
+open import Categories.Object.Terminal
+open import Categories.Diagram.Pullback
+open import Categories.Diagram.Pullback.Limit
+import Categories.Object.Product as Prod
+
+open Π using (_⟨$⟩_)
+
+module _ {o ℓ} where
+  private
+    S : Category (suc (o ⊔ ℓ)) (o ⊔ ℓ) (o ⊔ ℓ)
+    S = Setoids (o ⊔ ℓ) ℓ
+    
+    module S = Category S
+
+    module _ (A : S.Obj) where
+      private
+        Sl = Slice S A
+        module Sl = Category Sl
+
+      open Setoid A
+      open Prod (Slice S A)
+
+      -- slice-terminal : Terminal Sl
+      -- slice-terminal = record
+      --   { ⊤        = sliceobj {Y = SingletonSetoid} record
+      --     { _⟨$⟩_ = {!!}
+      --     ; cong  = {!!}
+      --     }
+      --   ; !        = λ { {sliceobj f} → slicearr {h = {!!}} (λ eq → {!!}) }
+      --   ; !-unique = {!!}
+      --   }
+
+      slice-product : (X Y : Sl.Obj) → Product X Y
+      slice-product X Y = pullback⇒product S XY-pullback
+        where module X = SliceObj X
+              module Y = SliceObj Y
+
+              F₀ : SpanObj → Setoid (o ⊔ ℓ) ℓ
+              F₀ = λ { center → A
+                     ; left   → X.Y
+                     ; right  → Y.Y
+                     }
+
+              F : Functor (Category.op Span) (Setoids (o ⊔ ℓ) ℓ)
+              F = record
+                { F₀           = F₀
+                ; F₁           = λ { span-id   → Func.id
+                                   ; span-arrˡ → X.arr
+                                   ; span-arrʳ → Y.arr
+                                   }
+                ; identity     = λ {Z} → S.Equiv.refl {F₀ Z} {F₀ Z} {Func.id}
+                ; homomorphism = λ { {_} {_} {_} {span-id}   {span-id}   eq → eq
+                                   ; {_} {_} {_} {span-id}   {span-arrˡ}    → Π.cong X.arr
+                                   ; {_} {_} {_} {span-id}   {span-arrʳ}    → Π.cong Y.arr
+                                   ; {_} {_} {_} {span-arrˡ} {span-id}      → Π.cong X.arr
+                                   ; {_} {_} {_} {span-arrʳ} {span-id}      → Π.cong Y.arr
+                                   }
+                ; F-resp-≈     = λ { {_} {_} {span-id}   ≡.refl eq → eq
+                                   ; {_} {_} {span-arrˡ} ≡.refl    → Π.cong X.arr
+                                   ; {_} {_} {span-arrʳ} ≡.refl    → Π.cong Y.arr
+                                   }
+                }
+              
+              XY-pullback : Pullback S X.arr Y.arr
+              XY-pullback = limit⇒pullback S {F = F} (Setoids-Complete 0ℓ 0ℓ 0ℓ (o ⊔ ℓ) ℓ F)              
+
+      module slice-product X Y = Product (slice-product X Y)
+
+      slice-canonical : Canonical Sl
+      slice-canonical = record
+        { ⊤            = {!!}
+        ; _×_          = slice-product.A×B
+        ; !            = {!!}
+        ; π₁           = slice-product.π₁ _ _
+        ; π₂           = slice-product.π₂ _ _
+        ; ⟨_,_⟩        = slice-product.⟨_,_⟩ _ _
+        ; !-unique     = {!!}
+        ; π₁-comp      = λ {_ _ f _ g} → slice-product.project₁ _ _ {_} {f} {g}
+        ; π₂-comp      = λ {_ _ f _ g} → slice-product.project₂ _ _ {_} {f} {g}
+        ; ⟨,⟩-unique   = λ {_ _ _ f g h} → slice-product.unique _ _ {_} {h} {f} {g}
+        ; _^_          = {!!}
+        ; eval         = {!!}
+        ; curry        = {!!}
+        ; eval-comp    = {!!}
+        ; curry-resp-≈ = {!!}
+        ; curry-unique = {!!}
+        }
+
+  --     Setoids-sliceCCC : CartesianClosed (Slice S A)
+  --     Setoids-sliceCCC = Equivalence.fromCanonical (Slice S A) slice-canonical
+
+  -- Setoids-LCCC : Locally S
+  -- Setoids-LCCC = record
+  --   { sliceCCC = Setoids-sliceCCC
+  --   }
