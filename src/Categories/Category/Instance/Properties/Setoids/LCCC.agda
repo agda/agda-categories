@@ -18,7 +18,6 @@ open import Categories.Category.CartesianClosed.Locally
 open import Categories.Category.Instance.Span
 open import Categories.Category.Instance.Setoids
 open import Categories.Category.Instance.Properties.Setoids.Complete
-open import Categories.Category.Instance.SingletonSet
 open import Categories.Category.Monoidal.Instance.Setoids
 open import Categories.Functor
 
@@ -44,15 +43,17 @@ module _ {o ℓ} where
       open Setoid A
       open Prod (Slice S A)
 
-      -- slice-terminal : Terminal Sl
-      -- slice-terminal = record
-      --   { ⊤        = sliceobj {Y = SingletonSetoid} record
-      --     { _⟨$⟩_ = {!!}
-      --     ; cong  = {!!}
-      --     }
-      --   ; !        = λ { {sliceobj f} → slicearr {h = {!!}} (λ eq → {!!}) }
-      --   ; !-unique = {!!}
-      --   }
+      slice-terminal : Terminal Sl
+      slice-terminal = record
+        { ⊤        = sliceobj {Y = A} record
+          { _⟨$⟩_ = λ x → x
+          ; cong  = λ eq → eq
+          }
+        ; !        = λ { {sliceobj f} → slicearr {h = f} (Π.cong f) }
+        ; !-unique = λ { {X} (slicearr △) eq →
+                         let module X = SliceObj X
+                         in sym (△ (Setoid.sym X.Y eq)) } 
+        }
 
       slice-product : (X Y : Sl.Obj) → Product X Y
       slice-product X Y = pullback⇒product S XY-pullback
@@ -88,32 +89,33 @@ module _ {o ℓ} where
               XY-pullback : Pullback S X.arr Y.arr
               XY-pullback = limit⇒pullback S {F = F} (Setoids-Complete 0ℓ 0ℓ 0ℓ (o ⊔ ℓ) ℓ F)              
 
+      module slice-terminal = Terminal slice-terminal
       module slice-product X Y = Product (slice-product X Y)
 
-      slice-canonical : Canonical Sl
-      slice-canonical = record
-        { ⊤            = {!!}
-        ; _×_          = slice-product.A×B
-        ; !            = {!!}
-        ; π₁           = slice-product.π₁ _ _
-        ; π₂           = slice-product.π₂ _ _
-        ; ⟨_,_⟩        = slice-product.⟨_,_⟩ _ _
-        ; !-unique     = {!!}
-        ; π₁-comp      = λ {_ _ f _ g} → slice-product.project₁ _ _ {_} {f} {g}
-        ; π₂-comp      = λ {_ _ f _ g} → slice-product.project₂ _ _ {_} {f} {g}
-        ; ⟨,⟩-unique   = λ {_ _ _ f g h} → slice-product.unique _ _ {_} {h} {f} {g}
-        ; _^_          = {!!}
-        ; eval         = {!!}
-        ; curry        = {!!}
-        ; eval-comp    = {!!}
-        ; curry-resp-≈ = {!!}
-        ; curry-unique = {!!}
-        }
+  --     slice-canonical : Canonical Sl
+  --     slice-canonical = record
+  --       { ⊤            = slice-terminal.⊤
+  --       ; _×_          = slice-product.A×B
+  --       ; !            = slice-terminal.!
+  --       ; π₁           = slice-product.π₁ _ _
+  --       ; π₂           = slice-product.π₂ _ _
+  --       ; ⟨_,_⟩        = slice-product.⟨_,_⟩ _ _
+  --       ; !-unique     = slice-terminal.!-unique
+  --       ; π₁-comp      = λ {_ _ f _ g} → slice-product.project₁ _ _ {_} {f} {g}
+  --       ; π₂-comp      = λ {_ _ f _ g} → slice-product.project₂ _ _ {_} {f} {g}
+  --       ; ⟨,⟩-unique   = λ {_ _ _ f g h} → slice-product.unique _ _ {_} {h} {f} {g}
+  --       ; _^_          = {!!}
+  --       ; eval         = {!!}
+  --       ; curry        = {!!}
+  --       ; eval-comp    = {!!}
+  --       ; curry-resp-≈ = {!!}
+  --       ; curry-unique = {!!}
+  --       }
 
-  --     Setoids-sliceCCC : CartesianClosed (Slice S A)
-  --     Setoids-sliceCCC = Equivalence.fromCanonical (Slice S A) slice-canonical
+  -- --     Setoids-sliceCCC : CartesianClosed (Slice S A)
+  -- --     Setoids-sliceCCC = Equivalence.fromCanonical (Slice S A) slice-canonical
 
-  -- Setoids-LCCC : Locally S
-  -- Setoids-LCCC = record
-  --   { sliceCCC = Setoids-sliceCCC
-  --   }
+  -- -- Setoids-LCCC : Locally S
+  -- -- Setoids-LCCC = record
+  -- --   { sliceCCC = Setoids-sliceCCC
+  -- --   }
