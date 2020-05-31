@@ -2,6 +2,12 @@
 
 Welcome to what will hopefully become the standard Category Theory library for Agda.
 
+The current library release, v0.1.2, works with Agda-2.6.1 and stdlib-1.3.  The master
+branch should also work with same, but may contain various incompatibilities.
+
+Note that this should be considered pre-beta software, and that backwards compability
+is not assured (although we don't intend to break things whimsically).
+
 ## Origins
 
 This library is a rewrite of [copumpin's version](https://github.com/copumpkin/categories)
