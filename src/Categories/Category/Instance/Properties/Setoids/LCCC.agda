@@ -3,6 +3,7 @@
 module Categories.Category.Instance.Properties.Setoids.LCCC where
 
 open import Level
+open import Data.Product using (Σ; _,_)
 open import Function.Equality as Func using (Π; _⟶_)
 open import Relation.Binary using (Setoid)
 import Relation.Binary.PropositionalEquality as ≡
@@ -200,6 +201,30 @@ module _ {o} where
         where module f = SliceObj f
               module g = SliceObj g
 
+      prod = slice-product.A×B
+
+      eval : {f : Sl.Obj} {g : Sl.Obj} → prod (f ^ g) g Sl.⇒ f
+      eval {f} {g} = slicearr {h = h} λ { {J₁ , arr₁} {J₂ , arr₂} eq →
+        let open SlExp (J₁ left)
+        in trans (InverseImage.fx≈a (f⇒g (pack (J₁ right) _)))
+          (trans (arr₁ span-arrˡ)
+          (trans (eq center)
+                 (sym (arr₂ span-arrʳ))))  }
+        where module f  = SliceObj f
+              module g  = SliceObj g
+              module fY = Setoid f.Y
+
+              h : SliceObj.Y (prod (f ^ g) g) S.⇒ f.Y
+              h = record
+                { _⟨$⟩_ = λ { (J , arr) →
+                  let module exp = SlExp (J left)
+                  in InverseImage.x (exp.f⇒g (pack (J right) (trans (arr span-arrʳ) (sym (arr span-arrˡ))))) }
+                ; cong  = λ { {J₁ , arr₁} {J₂ , arr₂} eq →
+                  let open SlExp≈ (eq left)
+                      open SlExp (J₂ left)
+                  in fY.trans (map≈ _) (cong _ _ (eq right)) }
+                }
+
   --     slice-canonical : Canonical Sl
   --     slice-canonical = record
   --       { ⊤            = slice-terminal.⊤
@@ -213,7 +238,7 @@ module _ {o} where
   --       ; π₂-comp      = λ {_ _ f _ g} → slice-product.project₂ _ _ {_} {f} {g}
   --       ; ⟨,⟩-unique   = λ {_ _ _ f g h} → slice-product.unique _ _ {_} {h} {f} {g}
   --       ; _^_          = _^_
-  --       ; eval         = {!!}
+  --       ; eval         = eval
   --       ; curry        = {!!}
   --       ; eval-comp    = {!!}
   --       ; curry-resp-≈ = {!!}
