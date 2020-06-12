@@ -209,7 +209,7 @@ module _ {o} where
         in trans (InverseImage.fx≈a (f⇒g (pack (J₁ right) _)))
           (trans (arr₁ span-arrˡ)
           (trans (eq center)
-                 (sym (arr₂ span-arrʳ))))  }
+                 (sym (arr₂ span-arrʳ)))) }
         where module f  = SliceObj f
               module g  = SliceObj g
               module fY = Setoid f.Y
@@ -223,6 +223,45 @@ module _ {o} where
                   let open SlExp≈ (eq left)
                       open SlExp (J₂ left)
                   in fY.trans (map≈ _) (cong _ _ (eq right)) }
+                }
+
+      curry : {f : Sl.Obj} {g : Sl.Obj} {h : Sl.Obj} → prod f g Sl.⇒ h → f Sl.⇒ (h ^ g)
+      curry {f} {g} {h} α = slicearr {h = β} {!!}
+        where module f  = SliceObj f
+              module g  = SliceObj g
+              module h  = SliceObj h
+              module α  = Slice⇒ α
+              module fY = Setoid f.Y
+              module gY = Setoid g.Y
+              module hY = Setoid h.Y
+
+              xypb : ∀ x → InverseImage (f.arr ⟨$⟩ x) g.arr → Setoid.Carrier (SliceObj.Y (prod f g))
+              xypb x img = (λ { center           → f.arr ⟨$⟩ x
+                              ; left             → x
+                              ; right            → y })
+                          , λ { {center} span-id → refl
+                              ; {left} span-id   → fY.refl
+                              ; {right} span-id  → gY.refl
+                              ; span-arrˡ        → refl
+                              ; span-arrʳ        → fx≈a }
+                where open InverseImage img renaming (x to y)
+
+              β : f.Y S.⇒ SliceObj.Y (h ^ g)
+              β = record
+                { _⟨$⟩_ = λ x → record
+                  { idx = f.arr ⟨$⟩ x
+                  ; map = record
+                    { f⇒g  = λ img →
+                      let open InverseImage img renaming (x to y)
+                      in pack (α.h ⟨$⟩ xypb x img)
+                              (trans (α.△ {xypb x img} {xypb x img} λ { center → refl
+                                                                      ; left   → fY.refl
+                                                                      ; right  → gY.refl })
+                                     fx≈a)
+                    ; cong = {!!}
+                    }
+                  }
+                ; cong  = {!!}
                 }
 
   --     slice-canonical : Canonical Sl
@@ -239,7 +278,7 @@ module _ {o} where
   --       ; ⟨,⟩-unique   = λ {_ _ _ f g h} → slice-product.unique _ _ {_} {h} {f} {g}
   --       ; _^_          = _^_
   --       ; eval         = eval
-  --       ; curry        = {!!}
+  --       ; curry        = curry
   --       ; eval-comp    = {!!}
   --       ; curry-resp-≈ = {!!}
   --       ; curry-unique = {!!}
