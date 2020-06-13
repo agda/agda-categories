@@ -15,7 +15,8 @@ open import Categories.Category.CartesianClosed
 open import Categories.Category.CartesianClosed.Canonical
   using (module Equivalence)
   renaming (CartesianClosed to Canonical)
-open import Categories.Category.CartesianClosed.Locally
+open import Categories.Category.CartesianClosed.Locally using (Locally)
+open import Categories.Category.Cartesian
 open import Categories.Category.Instance.Span
 open import Categories.Category.Instance.Setoids
 open import Categories.Category.Instance.Properties.Setoids.Complete
@@ -192,6 +193,16 @@ module _ {o} where
       module slice-terminal = Terminal slice-terminal
       module slice-product X Y = Product (slice-product X Y)
 
+      cartesian : Cartesian Sl
+      cartesian = record
+        { terminal = slice-terminal
+        ; products = record
+          { product = slice-product _ _
+          }
+        }
+
+      module cartesian = Cartesian cartesian
+
       _^_ : Sl.Obj → Sl.Obj → Sl.Obj
       f ^ g = sliceobj {Y = SlExp-Setoid g.arr f.arr} record
         { _⟨$⟩_ = SlExp.idx
@@ -300,7 +311,11 @@ module _ {o} where
   --       ; _^_          = _^_
   --       ; eval         = eval
   --       ; curry        = curry
-  --       ; eval-comp    = {!!}
+  --       ; eval-comp    = λ { {_} {_} {_} {α} {J , arr₁} eq →
+  --         let module α = Slice⇒ α
+  --         in Π.cong α.h λ { center → trans (arr₁ span-arrˡ) (eq center)
+  --                         ; left   → eq left
+  --                         ; right  → eq right } }
   --       ; curry-resp-≈ = {!!}
   --       ; curry-unique = {!!}
   --       }
