@@ -213,7 +213,7 @@ module _ {o} where
 
       prod = slice-product.A×B
 
-      eval : {f : Sl.Obj} {g : Sl.Obj} → prod (f ^ g) g Sl.⇒ f
+      eval : {f g : Sl.Obj} → prod (f ^ g) g Sl.⇒ f
       eval {f} {g} = slicearr {h = h} λ { {J₁ , arr₁} {J₂ , arr₂} eq →
         let open SlExp (J₁ left)
         in trans (InverseImage.fx≈a (f⇒g (pack (J₁ right) _)))
@@ -235,7 +235,7 @@ module _ {o} where
                   in fY.trans (map≈ _) (cong _ _ (eq right)) }
                 }
 
-      module _ {f : Sl.Obj} {g : Sl.Obj} {h : Sl.Obj} (α : prod f g Sl.⇒ h) where
+      module _ {f g h : Sl.Obj} (α : prod f g Sl.⇒ h) where
         private
           module f  = SliceObj f
           module g  = SliceObj g
@@ -296,6 +296,39 @@ module _ {o} where
         curry : f Sl.⇒ (h ^ g)
         curry = slicearr {h = β} (Π.cong f.arr)
 
+      module _ {f g h : Sl.Obj} {α β : prod f g Sl.⇒ h} where
+        private
+          module f  = SliceObj f
+          module g  = SliceObj g
+          module gY = Setoid g.Y
+
+        curry-resp-≈ : α Sl.≈ β → curry α Sl.≈ curry β
+        curry-resp-≈ eq eq′ = record
+          { idx≈ = Π.cong f.arr eq′
+          ; map≈ = λ img →
+            let open InverseImage img
+            in eq λ { center → Π.cong f.arr eq′
+                    ; left   → eq′
+                    ; right  → gY.refl }
+          }
+
+      module _ {f g h : Sl.Obj} {α : f Sl.⇒ (g ^ h)} {β : prod f h Sl.⇒ g} where
+        private
+          module f  = SliceObj f
+          module g  = SliceObj g
+          module h  = SliceObj h
+          module α  = Slice⇒ α
+          module β  = Slice⇒ β
+          module fY = Setoid f.Y
+          module gY = Setoid g.Y
+          module hY = Setoid h.Y
+
+        curry-unique : eval Sl.∘ (α cartesian.⁂ Sl.id) Sl.≈ β → α Sl.≈ curry β
+        curry-unique eq eq′ = record
+          { idx≈ = {!eq!}
+          ; map≈ = {!!}
+          }
+
   --     slice-canonical : Canonical Sl
   --     slice-canonical = record
   --       { ⊤            = slice-terminal.⊤
@@ -316,8 +349,8 @@ module _ {o} where
   --         in Π.cong α.h λ { center → trans (arr₁ span-arrˡ) (eq center)
   --                         ; left   → eq left
   --                         ; right  → eq right } }
-  --       ; curry-resp-≈ = {!!}
-  --       ; curry-unique = {!!}
+  --       ; curry-resp-≈ = curry-resp-≈
+  --       ; curry-unique = λ {_ _ _} {α} eq eq′ → curry-unique {_} {_} {_} {α} (λ {w} eq″ → eq {w} eq″) eq′
   --       }
 
   -- --     Setoids-sliceCCC : CartesianClosed (Slice S A)
