@@ -28,8 +28,9 @@ private
 
 record Slice⇒ {A : Obj} (X Y : SliceObj A) : Set (ℓ ⊔ e) where
   constructor slicearr
-  module X = SliceObj X
-  module Y = SliceObj Y
+  private
+    module X = SliceObj X
+    module Y = SliceObj Y
   field
     {h} : X.Y ⇒ Y.Y
     △   : Y.arr ∘ h ≈ X.arr
