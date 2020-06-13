@@ -9,3 +9,7 @@ open import Categories.Category.Instance.Properties.Setoids.Complete
 open import Categories.Category.Instance.Properties.Setoids.Cocomplete
   using (Setoids-Cocomplete)
   public
+
+open import Categories.Category.Instance.Properties.Setoids.LCCC
+  using (Setoids-LCCC)
+  public
