@@ -156,25 +156,24 @@ module _ {o} where
                          in sym (△ (Setoid.sym X.Y eq)) }
         }
 
+      F₀ : Sl.Obj → Sl.Obj → SpanObj → Setoid o o
+      F₀ X Y center = A
+      F₀ X Y left   = SliceObj.Y X
+      F₀ X Y right  = SliceObj.Y Y
+
       slice-product : (X Y : Sl.Obj) → Product X Y
       slice-product X Y = pullback⇒product S XY-pullback
         where module X = SliceObj X
               module Y = SliceObj Y
 
-              F₀ : SpanObj → Setoid o o
-              F₀ = λ { center → A
-                     ; left   → X.Y
-                     ; right  → Y.Y
-                     }
-
               F : Functor (Category.op Span) (Setoids o o)
               F = record
-                { F₀           = F₀
+                { F₀           = F₀ X Y
                 ; F₁           = λ { span-id   → Func.id
                                    ; span-arrˡ → X.arr
                                    ; span-arrʳ → Y.arr
                                    }
-                ; identity     = λ {Z} → S.Equiv.refl {F₀ Z} {F₀ Z} {Func.id}
+                ; identity     = λ {Z} → S.Equiv.refl {F₀ X Y Z} {F₀ X Y Z} {Func.id}
                 ; homomorphism = λ { {_} {_} {_} {span-id}   {span-id}   eq → eq
                                    ; {_} {_} {_} {span-id}   {span-arrˡ}    → Π.cong X.arr
                                    ; {_} {_} {_} {span-id}   {span-arrʳ}    → Π.cong Y.arr
@@ -225,44 +224,66 @@ module _ {o} where
                   in fY.trans (map≈ _) (cong _ _ (eq right)) }
                 }
 
-      curry : {f : Sl.Obj} {g : Sl.Obj} {h : Sl.Obj} → prod f g Sl.⇒ h → f Sl.⇒ (h ^ g)
-      curry {f} {g} {h} α = slicearr {h = β} {!!}
-        where module f  = SliceObj f
-              module g  = SliceObj g
-              module h  = SliceObj h
-              module α  = Slice⇒ α
-              module fY = Setoid f.Y
-              module gY = Setoid g.Y
-              module hY = Setoid h.Y
+      module _ {f : Sl.Obj} {g : Sl.Obj} {h : Sl.Obj} (α : prod f g Sl.⇒ h) where
+        private
+          module f  = SliceObj f
+          module g  = SliceObj g
+          module h  = SliceObj h
+          module α  = Slice⇒ α
+          module fY = Setoid f.Y
+          module gY = Setoid g.Y
+          module hY = Setoid h.Y
 
-              xypb : ∀ x → InverseImage (f.arr ⟨$⟩ x) g.arr → Setoid.Carrier (SliceObj.Y (prod f g))
-              xypb x img = (λ { center           → f.arr ⟨$⟩ x
-                              ; left             → x
-                              ; right            → y })
-                          , λ { {center} span-id → refl
-                              ; {left} span-id   → fY.refl
-                              ; {right} span-id  → gY.refl
-                              ; span-arrˡ        → refl
-                              ; span-arrʳ        → fx≈a }
-                where open InverseImage img renaming (x to y)
+          Jpb : ∀ x → InverseImage (f.arr ⟨$⟩ x) g.arr → ∀ j → Setoid.Carrier (F₀ f g j)
+          Jpb x img center = f.arr ⟨$⟩ x
+          Jpb x img left   = x
+          Jpb x img right  = InverseImage.x img
 
-              β : f.Y S.⇒ SliceObj.Y (h ^ g)
-              β = record
-                { _⟨$⟩_ = λ x → record
-                  { idx = f.arr ⟨$⟩ x
-                  ; map = record
-                    { f⇒g  = λ img →
-                      let open InverseImage img renaming (x to y)
-                      in pack (α.h ⟨$⟩ xypb x img)
-                              (trans (α.△ {xypb x img} {xypb x img} λ { center → refl
-                                                                      ; left   → fY.refl
-                                                                      ; right  → gY.refl })
-                                     fx≈a)
-                    ; cong = {!!}
-                    }
-                  }
-                ; cong  = {!!}
-                }
+          xypb : ∀ x → InverseImage (f.arr ⟨$⟩ x) g.arr → Setoid.Carrier (SliceObj.Y (prod f g))
+          xypb x img = Jpb x img
+                     , λ { {center} span-id → refl
+                         ; {left} span-id   → fY.refl
+                         ; {right} span-id  → gY.refl
+                         ; span-arrˡ        → refl
+                         ; span-arrʳ        → fx≈a }
+            where open InverseImage img renaming (x to y)
+
+          βmap : fY.Carrier → SlExp g.arr h.arr
+          βmap x = record
+            { idx = f.arr ⟨$⟩ x
+            ; map = record
+              { f⇒g  = λ img →
+                let open InverseImage img renaming (x to y)
+                in pack (α.h ⟨$⟩ xypb x img)
+                        (trans (α.△ {xypb x img} {xypb x img} (Setoid.refl (SliceObj.Y (prod f g)) {xypb x img}))
+                               fx≈a)
+              ; cong = λ img img′ eq →
+                let module img  = InverseImage img
+                    module img′ = InverseImage img′
+                in Π.cong α.h λ { center → refl
+                                ; left   → fY.refl
+                                ; right  → eq }
+              }
+            }
+
+          βcong : {i j : fY.Carrier} → i fY.≈ j → SlExp≈ (βmap i) (βmap j)
+          βcong {i} {j} eq = record
+            { idx≈ = Π.cong f.arr eq
+            ; map≈ = λ img →
+              let open InverseImage img
+              in Π.cong α.h λ { center → Π.cong f.arr eq
+                              ; left   → eq
+                              ; right  → gY.refl }
+            }
+
+          β : f.Y S.⇒ SliceObj.Y (h ^ g)
+          β = record
+            { _⟨$⟩_ = βmap
+            ; cong  = βcong
+            }
+
+        curry : f Sl.⇒ (h ^ g)
+        curry = slicearr {h = β} (Π.cong f.arr)
 
   --     slice-canonical : Canonical Sl
   --     slice-canonical = record
