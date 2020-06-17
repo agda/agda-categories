@@ -150,6 +150,7 @@ import Categories.Category.Species.Constructions
 import Categories.Category.SubCategory
 import Categories.Category.Topos
 import Categories.Category.WithFamilies
+import Categories.CoYoneda
 import Categories.Comonad
 import Categories.Diagram.Cocone
 import Categories.Diagram.Cocone.Properties
