@@ -4,6 +4,9 @@ module Categories.Category.Instance.FamilyOfSetoids where
 -- The Category of "Families of Setoids"
 -- This fits into this library much better than the Families of Sets
 
+-- This particular formalization should be considered alpha, i.e. its
+-- names will change once things settle.
+
 open import Level
 open import Relation.Binary
   using (Rel; Setoid; module Setoid; Reflexive; Symmetric; Transitive)
