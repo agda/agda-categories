@@ -16,16 +16,16 @@ open import Categories.Functor.Properties using (Faithful)
 
 private
   variable
-    o ℓ e o′ ℓ′  : Level
+    o ℓ e : Level
 
-record Concrete : Set (suc (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′)) where
+record Concrete (C : Category o ℓ e) (ℓ′ e′ : Level) : Set (o ⊔ ℓ ⊔ e ⊔ suc (ℓ′ ⊔ e′)) where
   field
-    cat : Category o ℓ e
-    concretize : Functor cat (Setoids o′ ℓ′)
+    concretize : Functor C (Setoids ℓ′ e′)
     conc-faithful : Faithful concretize
 
-record RepresentablyConcrete : Set (suc (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′)) where
+-- Because of the use of the Hom functor, some levels collapse
+record RepresentablyConcrete (C : Category o ℓ e) : Set (o ⊔ suc (e ⊔ ℓ)) where
   open Concrete
   field
-    conc : Concrete {o} {ℓ} {e}
+    conc : Concrete C ℓ e
     representable : Representable (concretize conc)

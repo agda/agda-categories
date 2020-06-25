@@ -12,7 +12,7 @@ open import Categories.Functor.Hom
 open import Categories.Functor.Presheaf
 open import Categories.NaturalTransformation.NaturalIsomorphism
 
-record Representable {o ℓ e} {C : Category o ℓ e} (F : Presheaf C (Setoids ℓ e)) : Set (o ⊔ suc ℓ ⊔ suc e ) where
+record Representable {o ℓ e} {C : Category o ℓ e} (F : Presheaf C (Setoids ℓ e)) : Set (o ⊔ suc ℓ ⊔ suc e) where
   open Category C
   open Hom C
   field
