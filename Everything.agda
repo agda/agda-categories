@@ -44,6 +44,8 @@ import Categories.Category.Complete
 import Categories.Category.Complete.Finitely
 import Categories.Category.Complete.Finitely.Properties
 import Categories.Category.Complete.Properties
+import Categories.Category.Concrete
+import Categories.Category.Concrete.Properties
 import Categories.Category.Construction.0-Groupoid
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Cocones
@@ -92,11 +94,13 @@ import Categories.Category.Helper
 import Categories.Category.Indiscrete
 import Categories.Category.Instance.Cats
 import Categories.Category.Instance.EmptySet
+import Categories.Category.Instance.FamilyOfSetoids
 import Categories.Category.Instance.FamilyOfSets
 import Categories.Category.Instance.FinCatShapes
 import Categories.Category.Instance.FinSetoids
 import Categories.Category.Instance.Globe
 import Categories.Category.Instance.Groupoids
+import Categories.Category.Instance.LawvereTheories
 import Categories.Category.Instance.One
 import Categories.Category.Instance.PointedSets
 import Categories.Category.Instance.Posets
@@ -189,6 +193,8 @@ import Categories.Functor
 import Categories.Functor.Algebra
 import Categories.Functor.Bifunctor
 import Categories.Functor.Bifunctor.Properties
+import Categories.Functor.Cartesian
+import Categories.Functor.Cartesian.Properties
 import Categories.Functor.Coalgebra
 import Categories.Functor.Cocontinuous
 import Categories.Functor.Construction.Constant
@@ -269,6 +275,7 @@ import Categories.Object.Terminal.Limit
 import Categories.Object.Zero
 import Categories.Pseudofunctor
 import Categories.Pseudofunctor.Instance.EnrichedUnderlying
+import Categories.Theory.Lawvere
 import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda
