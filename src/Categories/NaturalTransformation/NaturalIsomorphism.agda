@@ -234,3 +234,7 @@ module _ (F : Functor B C) (G : Functor C D) (H : Functor D E) where
 
   associator : (H ∘F G) ∘F F ≃ H ∘F (G ∘F F)
   associator = record { F⇒G = assocʳ ; F⇐G = assocˡ ; iso = iso-id-id }
+
+  -- useful when building functor categories
+  sym-associator : H ∘F (G ∘F F) ≃ (H ∘F G) ∘F F
+  sym-associator = record { F⇒G = assocˡ ; F⇐G = assocʳ ; iso = iso-id-id }
