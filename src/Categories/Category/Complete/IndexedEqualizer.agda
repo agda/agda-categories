@@ -32,3 +32,6 @@ record IndexedEqualizer {i} (I : Set i) : Set (i ⊔ o ⊔ e ⊔ ℓ) where
 
 AllEqualizers : ∀ i → Set (o ⊔ ℓ ⊔ e ⊔ suc i)
 AllEqualizers i = (I : Set i) → IndexedEqualizer I
+
+AllEqualizersOf : ∀ i → Set (o ⊔ ℓ ⊔ e ⊔ suc i)
+AllEqualizersOf i = ∀ {I : Set i} {A B : Obj} (M : I → A ⇒ B) → IndexedEqualizerOf M
