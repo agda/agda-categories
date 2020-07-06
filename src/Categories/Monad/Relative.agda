@@ -30,7 +30,6 @@ record Monad {C : Category o ℓ e} {D : Category o′ ℓ′ e′} (J : Functor
     identityʳ : {x y : C.Obj} { k : J.₀ x ⇒ F₀ y} → extend k ∘ unit ≈ k
     identityˡ : {x : C.Obj} → extend {x} unit ≈ D.id
     assoc : {x y z : C.Obj} {k : J.₀ x ⇒ F₀ y} {l : J.₀ y ⇒ F₀ z} → extend (extend l ∘ k) ≈ extend l ∘ extend k
-    -- we need that extend respects equality, otherwise other things go awry
     extend-≈ : {x y : C.Obj} {k h : J.₀ x ⇒ F₀ y} → k ≈ h → extend k ≈ extend h
 
 -- From a Relative Monad, we can extract a functor
@@ -60,6 +59,5 @@ RMonad⇒Functor {C = C} {D = D} {J = J} r = record
   hom′ {f = f} {g} = begin
     extend (unit ∘ J.₁ (g C.∘ f))                     ≈⟨ extend-≈ (pushʳ J.homomorphism) ⟩
     extend ((unit ∘ J.₁ g) ∘ J.₁ f)                   ≈⟨ extend-≈ (pushˡ (⟺ identityʳ)) ⟩
---    extend ((extend (unit ∘ J.₁ g) ∘ unit) ∘ J.₁ f)   ≈⟨ extend-≈ D.assoc ⟩
     extend (extend (unit ∘ J.₁ g) ∘ (unit ∘ J.F₁ f))  ≈⟨ assoc ⟩
     extend (unit ∘ J.₁ g) ∘ extend (unit ∘ J.F₁ f)    ∎
