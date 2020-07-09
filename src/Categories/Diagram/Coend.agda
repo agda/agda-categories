@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
-open import Categories.Functor.Bifunctor
+open import Categories.Category.Core using (Category)
+open import Categories.Functor.Bifunctor using (Bifunctor)
 
 module Categories.Diagram.Coend {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
   (F : Bifunctor (Category.op C) C D) where
@@ -54,7 +54,7 @@ Cowedge-id : ∀ {W} → Cowedge-Morphism W W
 Cowedge-id {W} = record { u = D.id ; commute = D.identityˡ }
 
 Cowedge-Morphism-∘ : {A B C : Cowedge} → Cowedge-Morphism B C → Cowedge-Morphism A B → Cowedge-Morphism A C
-Cowedge-Morphism-∘ M N = record { u = u M ∘ u N ; commute = assoc ○ {!∘-resp-≈ʳ (commute N) ○ commute M!} }
+Cowedge-Morphism-∘ M N = record { u = u M ∘ u N ; commute = assoc ○ (∘-resp-≈ʳ (commute N) ○ commute M) }
   where
   open Cowedge-Morphism
   open HomReasoning
