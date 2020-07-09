@@ -124,7 +124,9 @@ RA⇒RMonad {C = C} {D} {E} {J} RA = record
       ; commute = λ _ x≈y → Ladjunct-comm x≈y
       }
     ; iso = λ X → record
-      { isoˡ = λ eq → LRadjunct≈id ○ eq ; isoʳ = Equiv.trans RLadjunct≈id }
+      { isoˡ = λ eq → LRadjunct≈id ○ eq
+      ; isoʳ = Equiv.trans RLadjunct≈id
+      }
     }
   }
   where
@@ -134,11 +136,4 @@ RA⇒RMonad {C = C} {D} {E} {J} RA = record
   module L = Functor L
   module R = Functor R
   module J = Functor J
-  open C.HomReasoning {-
-  LRadjunct≈id : ∀ {x y e d} {f g : J.₀ e C.⇒ R.₀ d} → f C.≈ g → Ladjunct (Radjunct f) C.≈ g
-  LRadjunct≈id {f = f} eq = let open C.HomReasoning in begin
-    Ladjunct (Radjunct f)                              ≈⟨ R.homomorphism ⟩∘⟨refl ⟩
-    (R.F₁ (counit.η _) C.∘ R.F₁ (L.F₁ f)) C.∘ unit.η _ ≈˘⟨ MR.pushʳ (unit.commute f) ⟩
-    R.F₁ (counit.η _) C.∘ unit.η _ C.∘ f               ≈⟨ MR.pullˡ ? ⟩
-    C.id C.∘ f                                         ≈⟨ C.identityˡ ⟩
-    f                                                  ∎ -}
+  open C.HomReasoning
