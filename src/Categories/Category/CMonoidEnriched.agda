@@ -62,4 +62,3 @@ record CM-Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
 Underlying : {o ℓ e : Level} → CM-Category o ℓ e → Category o ℓ e
 Underlying C = record { CM-Category C }
---   where open CM-Category C
