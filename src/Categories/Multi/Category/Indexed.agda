@@ -65,8 +65,8 @@ record MultiCategory {o ℓ e ı : Level} : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) w
     Hom : {I : Set ı} → (I → Obj) → Obj → Set ℓ
     id : (o : Obj) → Hom {⊤} (pointed o) o
     _∘_ : {I : Set ı} {aₙ : I → Obj} {a : Obj} {J : I → Set ı}
-          {v : (i : I) → J i → Obj} {b : I → Obj} →
-          Hom {I} aₙ a → ((i : I) → Hom (v i) (b i)) → Hom {Σ I J} (uncurry v) a
+          {v : (i : I) → J i → Obj} →
+          Hom {I} aₙ a → ((i : I) → Hom (v i) (aₙ i)) → Hom {Σ I J} (uncurry v) a
     _≈[_]_ : {I J : Set ı} {aₙ : I → Obj} {a : Obj} →
           Hom {I} aₙ a → (σ : I ↔ J) → Hom {J} (aₙ ● ( Inverse.from σ ⟨$⟩_ )) a → Set e
 
@@ -79,14 +79,14 @@ record MultiCategory {o ℓ e ı : Level} : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) w
 
     assoc : -- the 3 index sets
             {I : Set ı} {J : I → Set ı} {K : Σ I J → Set ı}
-            -- the 3 sets of (indexed) objects
-            {vh : I → Obj} {bh : Obj}
-            {vg : (i : I) → J i → Obj} {bg : I → Obj}
-            {vf : (h : Σ I J) → K h → Obj} {bf : Σ I J → Obj}
+            -- the 4 (increasingly indexed) objects
+            {a : Obj} {aᵢ : I → Obj}
+            {aᵢⱼ : (i : I) → J i → Obj}
+            {aᵢⱼₖ : (h : Σ I J) → K h → Obj}
             -- the 3 Homs
-            {h : Hom vh bh}
-            {g : (i : I) → Hom (vg i) (bg i)}
-            {f : (k : Σ I J) → Hom (vf k) (bf k)} →
+            {h : Hom aᵢ a}
+            {g : (i : I) → Hom (aᵢⱼ i) (aᵢ i)}
+            {f : (k : Σ I J) → Hom (aᵢⱼₖ k) (uncurry aᵢⱼ k)} →
             -- and their relation under composition
             (h ∘ g) ∘ f ≈[ Σ-assoc ] h ∘ (λ i → g i ∘ curry f i)
 
