@@ -45,9 +45,9 @@ import Categories.Category.Cocomplete.Properties
 import Categories.Category.Complete
 import Categories.Category.Complete.Finitely
 import Categories.Category.Complete.Finitely.Properties
-import Categories.Category.Complete.IndexedEqualizer
-import Categories.Category.Complete.IndexedProduct
 import Categories.Category.Complete.Properties
+import Categories.Category.Complete.Properties.Construction
+import Categories.Category.Complete.Properties.SolutionSet
 import Categories.Category.Concrete
 import Categories.Category.Concrete.Properties
 import Categories.Category.Construction.0-Groupoid
@@ -174,6 +174,7 @@ import Categories.Diagram.Duality
 import Categories.Diagram.End
 import Categories.Diagram.End.Properties
 import Categories.Diagram.Equalizer
+import Categories.Diagram.Equalizer.Indexed
 import Categories.Diagram.Equalizer.Limit
 import Categories.Diagram.Finite
 import Categories.Diagram.Limit
@@ -269,6 +270,8 @@ import Categories.Object.Monoid
 import Categories.Object.Product
 import Categories.Object.Product.Construction
 import Categories.Object.Product.Core
+import Categories.Object.Product.Indexed
+import Categories.Object.Product.Indexed.Properties
 import Categories.Object.Product.Limit
 import Categories.Object.Product.Morphisms
 import Categories.Object.Terminal
