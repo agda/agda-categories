@@ -39,7 +39,7 @@ K×⊤↔K = inverse proj₁ (_, tt) (λ _ → refl) λ _ → refl
   g : Σ (Σ I J) K → Σ I (λ i → Σ (J i) (λ j → K (i , j)))
   g ((i , j) , k) = i , j , k
 
--- the ι level is for the 'index' (and to not steal 'i')
+-- the ı level is for the 'index' (and to not steal 'i')
 
 -- The important part is that in _∘_, there is no flattening of the
 -- index set. But also _≈[_]_ builds in an explicit equivalence
@@ -99,4 +99,8 @@ record MultiCategory {o ℓ e ı : Level} : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) w
     trans≈ : {I : Set ı} {aₙ : I → Obj} {a : Obj} →
            {f g h : Hom {I} aₙ a} → f ≈[ id↔ ] g → g ≈[ id↔ ] h → f ≈[ id↔ ] h
 
-    -- we probably need ∘-resp-≈ too.
+    ∘-resp-≈ : {I : Set ı} {J : I → Set ı}
+               {a : Obj} {aᵢ : I → Obj} {aᵢⱼ : (i : I) → J i → Obj}
+               {g g′ : Hom aᵢ a} {f f′ : (i : I) → Hom (aᵢⱼ i) (aᵢ i)} →
+               g ≈[ id↔ ] g′ → (∀ i → f i ≈[ id↔ ] f′ i) →
+               g ∘ f ≈[ id↔ ] g′ ∘ f′
