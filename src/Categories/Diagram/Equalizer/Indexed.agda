@@ -4,7 +4,7 @@ open import Categories.Category
 
 -- this module characterizes a category of all equalizer indexed by I.
 -- this notion formalizes a category with all equalizer up to certain cardinal.
-module Categories.Category.Complete.IndexedEqualizer {o ℓ e} (C : Category o ℓ e) where
+module Categories.Diagram.Equalizer.Indexed {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
 

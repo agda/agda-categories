@@ -4,7 +4,7 @@ open import Categories.Category
 
 -- this module characterizes a category of all products indexed by I.
 -- this notion formalizes a category with all products up to certain cardinal.
-module Categories.Category.Complete.IndexedProduct {o ℓ e} (C : Category o ℓ e) where
+module Categories.Object.Product.Indexed {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
 
