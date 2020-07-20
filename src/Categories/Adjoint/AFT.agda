@@ -4,6 +4,7 @@
 module Categories.Adjoint.AFT where
 
 open import Level
+open import Data.Product using (Σ)
 
 open import Categories.Category
 open import Categories.Category.Complete
@@ -27,27 +28,16 @@ module _ (Com : Complete o ℓ e C) {R : Functor C D} where
     module R = Functor R
     module Com {J} F = Lim.Limit (Com {J = J} F)
 
-    cat-o : ∀ {o ℓ e} → Category o ℓ e → Level
-    cat-o {o} _ = o
-
-    Co : Level
-    Co = cat-o C
-
   open SS R
 
-  module _ {L : Functor D C} i (L⊣R : L ⊣ R) where
+  module _ {L : Functor D C} (L⊣R : L ⊣ R) where
     private
       module L = Functor L
       open Adjoint L⊣R
-      Um : ∀ X → UniversalMorphism X R
-      Um X = adjoint⇒universalMorphisms L⊣R X
-      module Um X = UniversalMorphism (Um X)
 
-    L⊣R⇒SolutionSet : SolutionSet (i ⊔ Co)
-    L⊣R⇒SolutionSet = record
-      { I       = Lift i C.Obj
-      ; S       = lower
-      ; S₀      = λ {_ X} _ → lift (L.₀ X)
+    L⊣R⇒solutionSet′ : SolutionSet′
+    L⊣R⇒solutionSet′ = record
+      { S₀      = λ {_ X} _ → L.₀ X
       ; S₁      = Radjunct
       ; ϕ       = λ _ → unit.η _
       ; commute = λ _ → LRadjunct≈id
