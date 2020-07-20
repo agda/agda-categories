@@ -56,7 +56,7 @@ K×⊤↔K = inverse proj₁ (_, tt) (λ _ → refl) λ _ → refl
 -- Note that this still isn't Symmetric Multicategory. The renaming that
 -- happens on indices say nothing about the relation to the contents
 -- of the other Hom set.
-record MultiCategory {o ℓ e ı : Level} : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) where
+record MultiCategory (o ℓ e ı : Level) : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) where
   infix  4 _≈[_]_
   infixr 9 _∘_
 
