@@ -57,3 +57,36 @@ module _ {C : Category o ℓ e}
             { E         = End.E (end X)
             ; dinatural = F₁ f <∘ dinatural (end X)
             }
+
+module _ {P Q : Functor (Product (Category.op C) C) D} (P⇒Q : NaturalTransformation P Q) where
+  open End renaming (E to end)
+  open Category D
+
+  end-η : {ep : End P} {eq : End Q} → end ep ⇒ end eq
+  end-η {ep} {eq} = factor eq (record
+    { E = End.E ep
+    ; dinatural = dtHelper record
+      { α = λ c → η (c , c) ∘ dinatural.α ep c
+      ; commute = λ {C} {C′} f → begin
+        Q.₁ (C.id , f) ∘ (η (C , C) ∘ αp C) ∘ D.id       ≈⟨ (sym-assoc ○ ∘-resp-≈ˡ sym-assoc) ⟩
+        ((Q.₁ (C.id , f) ∘ η (C , C)) ∘ αp C) ∘ D.id     ≈⟨ (nt.sym-commute (C.id , f) ⟩∘⟨refl ⟩∘⟨refl) ⟩
+        ((η (C , C′) ∘ P.₁ (C.id , f)) ∘ αp C) ∘ D.id    ≈⟨ assoc² ⟩
+        η (C , C′) ∘ (P.₁ (C.id , f) ∘ αp C ∘ D.id)      ≈⟨ (refl⟩∘⟨ αp-comm f) ⟩
+        η (C , C′) ∘ P.₁ (f , C.id) ∘ αp C′ ∘ D.id       ≈˘⟨ assoc² ⟩
+        ((η (C , C′) ∘ P.₁ (f , C.id)) ∘ αp C′) ∘ D.id   ≈⟨ (nt.commute (f , C.id) ⟩∘⟨refl ⟩∘⟨refl) ⟩
+        ((Q.₁ (f , C.id) ∘ η (C′ , C′)) ∘ αp C′) ∘ D.id  ≈⟨ (assoc ⟩∘⟨refl ○ assoc) ⟩
+        Q.₁ (f , C.id) ∘ (η (C′ , C′) ∘ αp C′) ∘ D.id    ∎
+      }
+    })
+    where
+    module nt = NaturalTransformation P⇒Q
+    open nt using (η)
+    open HomReasoning
+    module C = Category C
+    module D = Category D
+    module P = Functor P
+    module Q = Functor Q
+    open DinaturalTransformation (dinatural ep) renaming (α to αp; commute to αp-comm)
+    open DinaturalTransformation (dinatural eq) renaming (α to αq; commute to αq-comm)
+    open Wedge
+    open MR D
