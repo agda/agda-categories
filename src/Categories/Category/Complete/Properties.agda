@@ -47,7 +47,7 @@ module _ (Com : Complete o′ ℓ′ e′ C) where
         { product = λ {A B} → limit⇒product (Com (product⇒limit-F _ _ _ A B))
         }
       }
-    ; equalizer = λ f g → limit⇒equalizer (Com (equalizer⇒limit-F _ _ _ f g))
+    ; equalizer = complete⇒equalizer Com
     }
 
 -- if the base category is complete, then the functor category is complete.
