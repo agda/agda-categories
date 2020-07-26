@@ -30,7 +30,7 @@ module _ {R : Functor C D} where
     module D = Category D
     module R = Functor R
 
-  open SS R
+  open SS R using (SolutionSet′)
 
   module _ {L : Functor D C} (L⊣R : L ⊣ R) where
     private
@@ -48,10 +48,36 @@ module _ {R : Functor C D} where
   module _ (Com : Complete o ℓ e C) (Rcon : Continuous o ℓ e R) (s : SolutionSet′) where
     open SolutionSet′ s
 
-    solutionSet′⇒universalMorphism : ∀ X → UniversalMorphism X R
-    solutionSet′⇒universalMorphism X = record
-      { initial = SolutionSet⇒Initial {o′ = 0ℓ} {0ℓ} {0ℓ} {C = X ↙ R} {!!} {!!}
-      }
+    private
+      module _ X where
+        X↙R : Category (C.o-level ⊔ D.ℓ-level) (C.ℓ-level ⊔ D.e-level) C.e-level
+        X↙R = X ↙ R
+        module X↙R = Category X↙R
+
+        s′ : SolutionSet X↙R 
+        s′ = record
+          { D   = D′
+          ; arr = arr′
+          }
+          where D′ : X↙R.Obj → X↙R.Obj
+                D′ Z = record
+                  { f = ϕ Z.f
+                  }
+                  where module Z = CommaObj Z
+
+                arr′ : ∀ Z → X↙R [ D′ Z , Z ]
+                arr′ Z = record
+                  { h       = S₁ Z.f
+                  ; commute = commute _ ○ ⟺ D.identityʳ
+                  }
+                  where module Z = CommaObj Z
+                        open D.HomReasoning
+
+
+        solutionSet′⇒universalMorphism : UniversalMorphism X R
+        solutionSet′⇒universalMorphism = record
+          { initial = SolutionSet⇒Initial {o′ = 0ℓ} {0ℓ} {0ℓ} {C = X ↙ R} {!!} s′
+          }
 
     solutionSet⇒adjoint : Σ (Functor D C) (λ L → L ⊣ R)
     solutionSet⇒adjoint = universalMophisms⇒adjoint solutionSet′⇒universalMorphism
