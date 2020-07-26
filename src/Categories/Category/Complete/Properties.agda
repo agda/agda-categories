@@ -30,6 +30,7 @@ import Categories.Morphism.Properties as Morₚ
 
 -- exports
 open import Categories.Category.Complete.Properties.Construction public
+open import Categories.Category.Complete.Properties.SolutionSet public
 
 
 private

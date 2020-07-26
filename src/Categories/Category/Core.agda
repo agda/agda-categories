@@ -53,6 +53,18 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ; isEquivalence = equiv
     }
 
+  -- When a category is quatified, it is convenient to refer to the levels from a module,
+  -- so we do not have to explicitly quantify over a category when universe levels do not
+  -- play a big part in a proof (which is the cast probably all the time).
+  o-level : Level
+  o-level = o
+
+  ℓ-level : Level
+  ℓ-level = ℓ
+
+  e-level : Level
+  e-level = e
+
   -- Reasoning combinators.  _≈⟨_⟩_ and _≈˘⟨_⟩_ from SetoidR.
   -- Also some useful combinators for doing reasoning on _∘_ chains
   module HomReasoning {A B : Obj} where
