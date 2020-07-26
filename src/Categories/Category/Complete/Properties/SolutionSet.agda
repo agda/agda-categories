@@ -13,8 +13,10 @@ open import Categories.Object.Product.Indexed
 open import Categories.Object.Product.Indexed.Properties
 open import Categories.Diagram.Equalizer
 open import Categories.Diagram.Equalizer.Limit
+open import Categories.Diagram.Equalizer.Properties
 
 import Categories.Diagram.Limit as Lim
+import Categories.Morphism.Reasoning as MR
 
 private
   variable
@@ -37,6 +39,8 @@ module _ {C : Category o ℓ e} (Com : Complete (o ⊔ ℓ ⊔ o′) (o ⊔ ℓ 
 
     open S
     open Category C
+    open HomReasoning
+    open MR C
 
     W : IndexedProductOf C D
     W = Complete⇒IndexedProductOf C {o′ = ℓ ⊔ o′} {ℓ′ = ℓ ⊔ ℓ′} {e′ = ℓ ⊔ e′} Com D
@@ -59,13 +63,44 @@ module _ {C : Category o ℓ e} (Com : Complete (o ⊔ ℓ ⊔ o′) (o ⊔ ℓ 
     equalizer = complete⇒equalizer C Com Δ Γ
     module equalizer = Equalizer equalizer
 
+    prop : (f : W.X ⇒ W.X) → f ∘ equalizer.arr ≈ equalizer.arr
+    prop f = begin
+      f ∘ equalizer.arr            ≈˘⟨ pullˡ (Warr.commute _ f) ⟩
+      Warr.π f ∘ Γ ∘ equalizer.arr ≈˘⟨ refl⟩∘⟨ equalizer.equality ⟩
+      Warr.π f ∘ Δ ∘ equalizer.arr ≈⟨ cancelˡ (Warr.commute _ f) ⟩
+      equalizer.arr                ∎
+
     ! : ∀ A → equalizer.obj ⇒ A
     ! A = arr A ∘ W.π A ∘ equalizer.arr
 
     module _ {A} (f : equalizer.obj ⇒ A) where
 
+      equalizer′ : Equalizer C (! A) f
+      equalizer′ = complete⇒equalizer C Com (! A) f
+      module equalizer′ = Equalizer equalizer′
+
+      s : W.X ⇒ equalizer′.obj
+      s = arr _ ∘ W.π (equalizer′.obj)
+
+      t : W.X ⇒ W.X
+      t = equalizer.arr ∘ equalizer′.arr ∘ s
+
+      t′ : equalizer.obj ⇒ equalizer.obj
+      t′ = equalizer′.arr ∘ s ∘ equalizer.arr
+
+      t∘eq≈eq∘1 : equalizer.arr ∘ t′ ≈ equalizer.arr ∘ C.id
+      t∘eq≈eq∘1 = begin
+        equalizer.arr ∘ t′                                   ≈⟨ refl⟩∘⟨ sym-assoc ⟩
+        equalizer.arr ∘ (equalizer′.arr ∘ s) ∘ equalizer.arr ≈⟨ sym-assoc ⟩
+        t ∘ equalizer.arr                                    ≈⟨ prop _ ⟩
+        equalizer.arr                                        ≈˘⟨ identityʳ ⟩
+        equalizer.arr ∘ C.id                                 ∎
+
+      t′≈id : t′ ≈ C.id
+      t′≈id = Equalizer⇒Mono C equalizer _ _ t∘eq≈eq∘1
+
       !-unique : ! A ≈ f
-      !-unique = {!!}
+      !-unique = equalizer-≈⇒≈ C equalizer′ t′≈id
 
   SolutionSet⇒Initial : Initial C
   SolutionSet⇒Initial = record
