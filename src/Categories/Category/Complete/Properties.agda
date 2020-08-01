@@ -193,61 +193,96 @@ module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) whe
             ; !-unique = λ K⇒⊤ {X} → terminal.!-unique X (K⇒⊤′ X K⇒⊤)
             }
           }
-        }      
+        }
         where open D
               open D.HomReasoning
               open MR D
 
-      ev : C.Obj → Functor D^C D
-      ev = evalF C D
-
       module _ (L : Limit F) (X : C.Obj) where
-        private
-          module ev = Functor (ev X)
-          open Mor D^C
-          module DM = Mor D
-          open Morₚ D
-          open D.HomReasoning
-          open MR D
+        module LimExpanded (L : Limit F) where
+          private
+            module L = Limit L
+          open L public
+          module apex   = Functor L.apex
+          module proj j = NaturalTransformation (L.proj j)
 
-        L′ : Limit (ev X ∘F F)
-        L′ = Com (ev X ∘F F)
+        module L = LimExpanded L
+        module complete = LimExpanded complete
 
-        Fiso : F[-, X ] ≃ ev X ∘F F
-        Fiso = record
-          { F⇒G = ntHelper record
-            { η       = λ _ → D.id
-            ; commute = λ _ → id-comm-sym ○ D.∘-resp-≈ˡ (introʳ (F₀.identity _))
+        open MR D
+        open D.HomReasoning
+
+        cone-iso :  Mor._≅_ (Co.Cones F) complete.limit L.limit
+        cone-iso = up-to-iso-cone F complete L
+        module cone-iso where
+          open Mor._≅_ cone-iso public
+          module from where
+            open Co.Cone⇒ F from public
+            module arr = NaturalTransformation arr
+          module to where
+            open Co.Cone⇒ F to public
+            module arr = NaturalTransformation arr
+
+          ft-iso : Mor._≅_ D^C complete.apex L.apex
+          ft-iso = Lim.up-to-iso F complete L
+          module ft-iso = Mor._≅_ ft-iso
+
+          apex-iso : ∀ X → Mor._≅_ D (complete.apex.₀ X) (L.apex.₀ X)
+          apex-iso X = record
+            { from = NaturalTransformation.η ft-iso.from X
+            ; to   = NaturalTransformation.η ft-iso.to X
+            ; iso  = record
+              { isoˡ = ft-iso.isoˡ
+              ; isoʳ = ft-iso.isoʳ
+              }
             }
-          ; F⇐G = ntHelper record
-            { η       = λ _ → D.id
-            ; commute = λ _ → D.∘-resp-≈ʳ (elimʳ (F₀.identity _)) ○ id-comm-sym
-            }
-          ; iso = λ _ → record
-            { isoˡ = D.identity²
-            ; isoʳ = D.identity²
-            }
+
+        ! : {K : Co.Cone F[-, X ]} → Co.Cone⇒ F[-, X ] K (F-map-Coneˡ (ev X) L.limit)
+        ! {K} = record
+          { arr     = cone-iso.from.arr.η X D.∘ rep X K
+          ; commute = λ {j} → begin
+            (L.proj.η j X D.∘ L.apex.₁ C.id) D.∘ cone-iso.from.arr.η X D.∘ rep X K
+              ≈⟨ elimʳ L.apex.identity ⟩∘⟨refl ⟩
+            L.proj.η j X D.∘ cone-iso.from.arr.η X D.∘ rep X K
+              ≈⟨ pullˡ cone-iso.from.commute ⟩
+            complete.proj.η j X D.∘ rep X K
+              ≈⟨ LimFX.commute X {_} {K} ⟩
+            ψ j
+              ∎
           }
+          where open Co.Cone _ K
+        module ! K = Co.Cone⇒ _ (! {K})
 
-        apex-iso : Limit.apex L ≅ Limit.apex complete
-        apex-iso = up-to-iso F L complete
+        !-unique : {K : Co.Cone F[-, X ]} (f : Co.Cone⇒ F[-, X ] K (F-map-Coneˡ (ev X) L.limit)) →
+                   !.arr K D.≈ Co.Cone⇒.arr f
+        !-unique {K} f = ⟺ (switch-tofromˡ (cone-iso.apex-iso X) target)
+          where open Co.Cone _ K
+                module f = Co.Cone⇒ _ f
+                target : cone-iso.to.arr.η X D.∘ f.arr D.≈ rep X K
+                target = terminal.!-unique₂ X {K}
+                         {record
+                           { arr     = cone-iso.to.arr.η X D.∘ f.arr
+                           ; commute = λ {j} → begin
+                             proj X j D.∘ cone-iso.to.arr.η X D.∘ f.arr ≈⟨ pullˡ cone-iso.to.commute ⟩
+                             L.proj.η j X D.∘ f.arr                     ≈⟨ introʳ L.apex.identity ⟩∘⟨refl ⟩
+                             (L.proj.η j X D.∘ L.apex.₁ C.id) D.∘ f.arr ≈⟨ f.commute ⟩
+                             ψ j                                        ∎
+                           }}
+                         {record
+                           { arr     = rep X K
+                           ; commute = λ {j} → begin
+                             proj X j D.∘ rep X K                       ≈⟨ LimFX.commute X ⟩
+                             ψ j                                        ∎
+                           }}
 
-        apex-iso′ : Limit.apex (Com F[-, X ]) DM.≅ Limit.apex L′
-        apex-iso′ = ≃⇒lim≅ Fiso (Com F[-, X ]) L′
-
-        project-iso : Functor.F₀ (Limit.apex L) X DM.≅ Limit.apex L′
-        project-iso = record
-          { from = ai.from D.∘ from.η X
-          ; to   = to.η X D.∘ ai.to
-          ; iso  = Iso-∘ (record { isoˡ = isoˡ ; isoʳ = isoʳ }) ai.iso
+        preserves : IsTerminal (Co.Cones F[-, X ]) (F-map-Coneˡ (ev X) L.limit)
+        preserves = record
+          { !        = !
+          ; !-unique = !-unique
           }
-          where open _≅_ apex-iso
-                module from = NaturalTransformation from
-                module to   = NaturalTransformation to
-                module ai   = DM._≅_ apex-iso′
 
   Functors-Complete : Complete o″ ℓ″ e″ D^C
   Functors-Complete F = complete F
 
-  -- evalF-Continuous : ∀ X → Continuous o″ ℓ″ e″ (evalF C D X)
-  -- evalF-Continuous X {J} {F} L = {!Com (evalF C D X ∘F F)!}
+  evalF-Continuous : ∀ X → Continuous o″ ℓ″ e″ (evalF C D X)
+  evalF-Continuous X {J} {F} L = preserves F L X
