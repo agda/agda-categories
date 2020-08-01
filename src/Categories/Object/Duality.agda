@@ -17,23 +17,31 @@ open import Categories.Object.Product op
 open import Categories.Object.Coproduct C
 
 
+IsInitial⇒coIsTerminal : ∀ {X} → IsInitial X → IsTerminal X
+IsInitial⇒coIsTerminal is⊥ = record
+  { !        = !
+  ; !-unique = !-unique
+  }
+  where open IsInitial is⊥
+
 ⊥⇒op⊤ : Initial → Terminal
 ⊥⇒op⊤ i = record
   { ⊤             = ⊥
-  ; ⊤-is-terminal = record
-    { !        = !
-    ; !-unique = !-unique
-    }
+  ; ⊤-is-terminal = IsInitial⇒coIsTerminal ⊥-is-initial
   }
   where open Initial i
 
+coIsTerminal⇒IsInitial : ∀ {X} → IsTerminal X → IsInitial X
+coIsTerminal⇒IsInitial is⊤ = record
+  { !        = !
+  ; !-unique = !-unique
+  }
+  where open IsTerminal is⊤
+
 op⊤⇒⊥ : Terminal → Initial
 op⊤⇒⊥ t = record
-  { ⊥        = ⊤
-  ; ⊥-is-initial = record
-    { !        = !
-    ; !-unique = !-unique
-    }
+  { ⊥            = ⊤
+  ; ⊥-is-initial = coIsTerminal⇒IsInitial ⊤-is-terminal
   }
   where open Terminal t
 

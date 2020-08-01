@@ -18,7 +18,7 @@ open import Categories.Diagram.Cone.Properties
 open import Categories.Object.Product.Limit C
 open import Categories.Object.Terminal.Limit C
 open import Categories.Functor
-open import Categories.Functor.Continuous
+open import Categories.Functor.Limits
 open import Categories.Functor.Properties
 open import Categories.NaturalTransformation
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)
@@ -162,7 +162,7 @@ module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) whe
       complete : Limit F
       complete = record
         { terminal = record
-          { ⊤        = ⊤
+          { ⊤             = ⊤
           ; ⊤-is-terminal = record
             { !        = λ {K} →
               let module K = FCone K
@@ -244,5 +244,5 @@ module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) whe
   Functors-Complete : Complete o″ ℓ″ e″ D^C
   Functors-Complete F = complete F
 
-  evalF-Continuous : ∀ X → Continuous o″ ℓ″ e″ (evalF C D X)
-  evalF-Continuous X {J} {F} L = Com (evalF C D X ∘F F) , project-iso F L X
+  -- evalF-Continuous : ∀ X → Continuous o″ ℓ″ e″ (evalF C D X)
+  -- evalF-Continuous X {J} {F} L = {!Com (evalF C D X ∘F F)!}
