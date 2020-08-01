@@ -34,6 +34,7 @@ private
   module ⊗ = Functor ⊗
 
 open HomReasoning
+open Equiv
 open Π.Π
 open adjoint renaming (unit to η; counit to ε; Ladjunct to 𝕃; Ladjunct-comm′ to 𝕃-comm′;
  Ladjunct-resp-≈ to 𝕃-resp-≈)

@@ -11,6 +11,7 @@ private
   module D = Category D
   open D
   open HomReasoning
+  open Equiv
   variable
     A B : Obj
     f g : A ⇒ B

@@ -3,11 +3,12 @@ module Categories.Category.Groupoid where
 
 open import Level using (Level; suc; _⊔_)
 
-open import Categories.Category using (Category)
+open import Categories.Category
 import Categories.Morphism
 
 record IsGroupoid {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   open Category C public
+  open Definitions C public
 
   open Categories.Morphism C
 

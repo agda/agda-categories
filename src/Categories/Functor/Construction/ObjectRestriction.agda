@@ -11,7 +11,8 @@ open import Function using () renaming (id to id→)
 
 open import Categories.Category.Core
 open import Categories.Category.Construction.ObjectRestriction
-open import Categories.Functor renaming (id to idF)
+open import Categories.Functor.Core
+open import Categories.Functor.Properties using (Faithful; Full)
 
 private
   variable

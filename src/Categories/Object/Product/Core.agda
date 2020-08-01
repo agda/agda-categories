@@ -32,6 +32,8 @@ record Product (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
     project₂ : π₂ ∘ ⟨ h , i ⟩ ≈ i
     unique   : π₁ ∘ h ≈ i → π₂ ∘ h ≈ j → ⟨ i , j ⟩ ≈ h
 
+  open Equiv
+
   g-η : ⟨ π₁ ∘ h , π₂ ∘ h ⟩ ≈ h
   g-η = unique refl refl
 
@@ -132,7 +134,9 @@ Associable p₁ p₂ p₃ = record
     p₃ ⟨ π₁ p₃ ∘ i , π₂ p₃ ∘ i ⟩                        ≈⟨ g-η p₃ ⟩
     i                                                   ∎
   }
-  where open Product renaming (⟨_,_⟩ to _⟨_,_⟩)
+  where
+  open Product renaming (⟨_,_⟩ to _⟨_,_⟩)
+  open Equiv
 
 Associative : ∀ (p₁ : Product X Y) (p₂ : Product Y Z)
                 (p₃ : Product X (Product.A×B p₂)) (p₄ : Product (Product.A×B p₁) Z) →

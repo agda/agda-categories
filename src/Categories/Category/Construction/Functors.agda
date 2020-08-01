@@ -62,11 +62,9 @@ eval {C = C} {D = D} = record
       let open NaturalTransformation
           open Functor
       in begin
-        (η β C ∘ η α C) ∘ F₁ F (g C.∘ f)  ≈⟨ refl ⟩∘⟨ homomorphism F ⟩
-        (η β C ∘ η α C) ∘ F₁ F g ∘ F₁ F f ≈⟨ assoc ⟩
-        η β C ∘ η α C ∘ F₁ F g ∘ F₁ F f   ≈⟨ refl ⟩∘⟨ pullˡ (commute α g) ⟩
-        η β C ∘ (F₁ G g ∘ η α B) ∘ F₁ F f ≈⟨ refl ⟩∘⟨ assoc ⟩
-        η β C ∘ F₁ G g ∘ η α B ∘ F₁ F f   ≈⟨ sym-assoc ⟩
+        (η β C ∘ η α C) ∘ F₁ F (g C.∘ f)  ≈⟨ refl⟩∘⟨ homomorphism F ⟩
+        (η β C ∘ η α C) ∘ F₁ F g ∘ F₁ F f ≈⟨ pullʳ (pullˡ (commute α g)) ⟩
+        η β C ∘ (F₁ G g ∘ η α B) ∘ F₁ F f ≈⟨ pushʳ assoc ⟩
         (η β C ∘ F₁ G g) ∘ η α B ∘ F₁ F f ∎
   ; F-resp-≈     = λ where
     {F , _} (comm , eq) → ∘-resp-≈ comm (Functor.F-resp-≈ F eq)
@@ -100,12 +98,9 @@ curry {C₁ = C₁} {C₂ = C₂} {D = D} = record
       ; F₁ = λ f → F ∘ˡ (constNat f ※ⁿ idN)
       ; identity     = identity
       ; homomorphism = λ {_} {_} {_} {f} {g} → begin
-          F₁ (C₁ [ g ∘ f ] , id C₂)
-        ≈˘⟨ F-resp-≈ (Equiv.refl C₁ , identityˡ C₂) ⟩
-          F₁ (C₁ [ g ∘ f ] , C₂ [ id C₂ ∘ id C₂ ])
-        ≈⟨ homomorphism ⟩
-          D [ F₁ (g , id C₂) ∘ F₁ (f , id C₂) ]
-        ∎
+          F₁ (C₁ [ g ∘ f ] , id C₂)                ≈˘⟨ F-resp-≈ (Equiv.refl C₁ , identityˡ C₂) ⟩
+          F₁ (C₁ [ g ∘ f ] , C₂ [ id C₂ ∘ id C₂ ]) ≈⟨ homomorphism ⟩
+          D [ F₁ (g , id C₂) ∘ F₁ (f , id C₂) ]    ∎
       ; F-resp-≈ = λ f≈g → F-resp-≈ (f≈g , Equiv.refl C₂)
       }
       where
@@ -118,10 +113,10 @@ curry {C₁ = C₁} {C₂ = C₂} {D = D} = record
     curry₁ α = record
       { η = λ c → record
         { η           = λ a → η α (c , a)
-        ; commute     = λ f → commute α (id C₁  , f)
+        ; commute     = λ f →     commute α (id C₁  , f)
         ; sym-commute = λ f → sym-commute α (id C₁  , f)
         }
-      ; commute       = λ f → commute α (f , id C₂)
+      ; commute       = λ f →     commute α (f , id C₂)
       ; sym-commute   = λ f → sym-commute α (f , id C₂)
       }
       where open NaturalTransformation
@@ -169,6 +164,7 @@ product {A = A} {B = B} {C = C} = record
     open Category C
     open MR C
     open HomReasoning
+    open Equiv
     open Functor
     module B = Category B
     open NaturalTransformation

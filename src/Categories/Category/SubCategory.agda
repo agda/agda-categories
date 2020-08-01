@@ -19,7 +19,7 @@ open import Categories.Category
 module Categories.Category.SubCategory {o ℓ e} (C : Category o ℓ e) where
 
 open Category C
-open HomReasoning using (refl; sym; trans)
+open Equiv
 
 open import Level
 open import Data.Product

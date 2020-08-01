@@ -6,6 +6,7 @@ module Categories.Morphism.Properties {o ℓ e} (𝒞 : Category o ℓ e) where
 open import Data.Product using (_,_; _×_)
 
 open Category 𝒞
+open Definitions 𝒞
 open HomReasoning
 
 import Categories.Morphism as M
@@ -69,7 +70,7 @@ Iso-∘ {f = f} {g = g} {h = h} {i = i} iso iso′ = record
 Iso-≈ : f ≈ h → Iso f g → Iso h i → g ≈ i
 Iso-≈ {f = f} {h = h} {g = g} {i = i} eq iso iso′ = begin
   g           ≈⟨ introˡ (isoˡ iso′) ⟩
-  (i ∘ h) ∘ g ≈˘⟨ (refl ⟩∘⟨ eq) ⟩∘⟨refl ⟩
+  (i ∘ h) ∘ g ≈˘⟨ (refl⟩∘⟨ eq) ⟩∘⟨refl ⟩
   (i ∘ f) ∘ g ≈⟨ cancelʳ (isoʳ iso) ⟩
   i           ∎
   where open Iso

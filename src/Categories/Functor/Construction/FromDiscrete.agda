@@ -5,16 +5,13 @@ open import Categories.Category
 -- categories into functors.
 module Categories.Functor.Construction.FromDiscrete {o ℓ e} (𝒞 : Category o ℓ e) where
 
-open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
+open import Relation.Binary.PropositionalEquality.Core as ≡ using (_≡_)
 
-open import Categories.Category.Discrete
-open import Categories.Functor using (Functor)
-
-private
-  module 𝒞 = Category 𝒞
+open import Categories.Category.Discrete using (Discrete)
+open import Categories.Functor.Core using (Functor)
 
 open Category 𝒞
-open 𝒞.HomReasoning
+open Equiv
 
 FromDiscrete : ∀ {o} {A : Set o} → (A → Obj) → Functor (Discrete A) 𝒞
 FromDiscrete {o} {A = A} select = record

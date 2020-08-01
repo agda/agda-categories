@@ -6,10 +6,10 @@ open import Categories.Category
 module Categories.Category.RigCategory {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
-open import Data.Fin renaming (zero to 0F; suc to sucF)
+open import Data.Fin.Base using () renaming (zero to 0F; suc to sucF)
 open import Data.Product using (_,_)
 
-open import Categories.Functor renaming (id to idF)
+open import Categories.Functor.Core
 open import Categories.Category.Monoidal
 open import Categories.Category.Monoidal.Braided
 open import Categories.Category.Monoidal.Symmetric
@@ -25,7 +25,7 @@ record RigCategory {M⊎ M× : Monoidal C} (S⊎ : Symmetric M⊎)
     module C = Category C
 
   open C hiding (_≈_)
-  open Commutation
+  open Commutation C
   module M⊎ = Monoidal M⊎
   module M× = Monoidal M×
   module S⊎ = Symmetric S⊎

@@ -5,7 +5,7 @@ module Categories.Category.CartesianClosed.Properties where
 open import Level
 open import Data.Product using (Σ; _,_; Σ-syntax; proj₁; proj₂)
 
-open import Categories.Category
+open import Categories.Category.Core
 open import Categories.Category.CartesianClosed
 
 import Categories.Morphism.Reasoning as MR
@@ -40,9 +40,8 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝓥 : CartesianClosed 𝒞) where
 
       g-fixed-point : f ∘ (g ∘ x) ≈ g ∘ x
       g-fixed-point = begin
-        f ∘ g ∘ x                        ≈⟨  refl⟩∘⟨ sym g-surjective ⟩
+        f ∘ g ∘ x                       ≈˘⟨  refl⟩∘⟨ g-surjective ⟩
         f ∘ eval′ ∘ first ϕ ∘ ⟨ x , x ⟩  ≈⟨ refl⟩∘⟨ refl⟩∘⟨ lemma ϕ id x ⟩
         f ∘ eval′ ∘ ⟨ ϕ , id ⟩ ∘ x       ≈⟨ ∘-resp-≈ʳ sym-assoc ○ sym-assoc ⟩
         (f ∘ eval′ ∘ ⟨ ϕ , id ⟩) ∘ x     ≡⟨⟩
         g ∘ x                            ∎
-

@@ -62,13 +62,24 @@ record _≃_ (i j : A ≅ B) : Set e where
 
 open _≃_
 
-≃-isEquivalence : IsEquivalence (_≃_ {A} {B})
-≃-isEquivalence = record
-  { refl  = ⌞ refl ⌟
-  ; sym   = λ where ⌞ eq ⌟          → ⌞ sym eq ⌟
-  ; trans = λ where ⌞ eq₁ ⌟ ⌞ eq₂ ⌟ → ⌞ trans eq₁ eq₂ ⌟
-  }
-  where open Equiv
+module _ {A B : Obj} where
+  open Equiv
+
+  ≃-refl : Reflexive (_≃_ {A} {B})
+  ≃-refl = ⌞ refl ⌟
+
+  ≃-sym : Symmetric (_≃_ {A} {B})
+  ≃-sym = λ where ⌞ eq ⌟          → ⌞ sym eq ⌟
+
+  ≃-trans : Transitive (_≃_ {A} {B})
+  ≃-trans = λ where ⌞ eq₁ ⌟ ⌞ eq₂ ⌟ → ⌞ trans eq₁ eq₂ ⌟
+
+  ≃-isEquivalence : IsEquivalence (_≃_ {A} {B})
+  ≃-isEquivalence = record
+    { refl  = ≃-refl
+    ; sym   = ≃-sym
+    ; trans = ≃-trans
+    }
 
 ≃-setoid : ∀ {A B : Obj} → Setoid _ _
 ≃-setoid {A} {B} = record

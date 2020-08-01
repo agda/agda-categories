@@ -2,10 +2,10 @@
 
 module Categories.Category.Finite.Fin.Construction.Discrete where
 
-open import Data.Nat using (ℕ)
-open import Data.Fin
+open import Data.Nat.Base using (ℕ)
+open import Data.Fin.Base using (Fin; suc)
 open import Data.Fin.Patterns
-open import Relation.Binary.PropositionalEquality as ≡ using (_≡_ ; refl)
+open import Relation.Binary.PropositionalEquality.Core as ≡ using (_≡_ ; refl)
 
 open import Categories.Category.Finite.Fin
 open import Categories.Category.Core using (Category)

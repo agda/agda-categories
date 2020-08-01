@@ -1,34 +1,33 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 open import Categories.Category.Complete.Finitely
 
 module Categories.Category.Complete.Finitely.Properties {o ℓ e} {C : Category o ℓ e} (finite : FinitelyComplete C) where
 
 open import Level using (Level)
-open import Data.Nat using (ℕ)
+open import Data.Nat.Base using (ℕ)
 open import Data.Product using (Σ; _,_; proj₁; ∃₂) renaming (_×_ to _&_)
-open import Data.Fin
-open import Data.Fin.Properties
-open import Data.Sum using (inj₁; inj₂)
-open import Data.List hiding ([_])
+open import Data.Fin.Base using (Fin)
+open import Data.Sum.Base using (inj₁; inj₂)
+open import Data.List.Base hiding ([_])
 open import Data.List.Relation.Unary.Any as Any using (here; there)
-open import Data.List.Relation.Unary.Any.Properties
+open import Data.List.Relation.Unary.Any.Properties using (++⁺ˡ; ++⁺ʳ; map⁺)
 open import Data.List.Relation.Unary.Unique.Propositional
 open import Data.List.Membership.Propositional
 open import Relation.Binary.PropositionalEquality as ≡ using (refl; _≡_; cong)
-open import Function renaming (_∘_ to _∙_)
+open import Function.Base renaming (_∘_ to _∙_)
 
 import Data.List.Relation.Unary.Unique.Propositional.Properties as Uₚ
 import Data.List.Membership.Propositional.Properties as ∈ₚ
 import Data.List.Membership.Setoid.Properties as S∈ₚ
 
-open import Categories.Category
+open import Categories.Category using (_[_,_]; _[_≈_])
 open import Categories.Category.Cartesian.Properties C
 open import Categories.Category.Finite.Fin
 open import Categories.Diagram.Equalizer C
 open import Categories.Morphism.Reasoning C
-open import Categories.Functor
+open import Categories.Functor.Core using (Functor)
 
 import Categories.Category.Construction.Cones as Co
 import Categories.Diagram.Limit as Lim
@@ -38,7 +37,7 @@ open FinitelyComplete finite
 module GeneralProperties where
 
   module _ {a} {A : Set a} where
-  
+
     concatMap-∈ : ∀ {b} {B : Set b} (f : A → List B) {l : List A} →
                   ∀ {x y} → x ∈ l → y ∈ f x → y ∈ concatMap f l
     concatMap-∈ f (here refl) y∈fx     = ++⁺ˡ y∈fx
@@ -219,9 +218,9 @@ module _ (shape : FinCatShape) (F : Functor (FinCategory shape) C) where
                     π[ ∈ₚ.∈-map⁺ F.₀ y∈ys ] ∘ arr ∘ f.arr ≈ π[ ∈ₚ.∈-map⁺ F.₀ y∈ys ] ∘ Kmor {K}
               eq′ {y} y∈ys with obj∈-irr y∈ys (∈-objects y)
               ... | refl = eq″ y
-              
+
               eq : Kmor {K} ≈ arr ∘ f.arr
-              eq = sym (uniqueness*′ F.₀ {K.N} {objects} eq′)              
+              eq = ⟺ (uniqueness*′ F.₀ {K.N} {objects} eq′)
 
   finiteLimit : Limit
   finiteLimit = record

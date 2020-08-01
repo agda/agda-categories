@@ -3,16 +3,13 @@
 module Categories.Category.Finite where
 
 open import Level
-open import Data.Nat using (ℕ)
-open import Data.Fin
 
 open import Categories.Adjoint.Equivalence
-open import Categories.Category
-open import Categories.Functor
+open import Categories.Category.Core
 open import Categories.Category.Finite.Fin
 
 -- definition of a finite category
--- 
+--
 -- the idea is to require a functor from C to a category generated from a finite shape
 -- is the right adjoint.
 --

@@ -4,7 +4,7 @@
 module Categories.Multi.Category.Indexed where
 
 open import Level
-open import Data.Fin using (Fin)
+open import Data.Fin.Base using (Fin)
 open import Data.Product using (Σ; uncurry; curry; _×_; _,_; proj₁; proj₂)
 open import Data.Product.Properties
 open import Data.Unit.Polymorphic using (⊤; tt)
@@ -13,7 +13,6 @@ open import Function.Base using (const) renaming (_∘_ to _●_; id to id→)
 open import Function.Equality using (_⟨$⟩_)
 -- note how this is Function.Inverse instead of the one from Function.
 open import Function.Inverse as Inv renaming (id to id↔; _∘_ to trans)
-open import Relation.Nullary
 open import Relation.Binary.Core using (Rel)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
@@ -40,7 +39,7 @@ K×⊤↔K = inverse proj₁ (_, tt) (λ _ → refl) λ _ → refl
   g : Σ (Σ I J) K → Σ I (λ i → Σ (J i) (λ j → K (i , j)))
   g ((i , j) , k) = i , j , k
 
--- the ι level is for the 'index' (and to not steal 'i')
+-- the ı level is for the 'index' (and to not steal 'i')
 
 -- The important part is that in _∘_, there is no flattening of the
 -- index set. But also _≈[_]_ builds in an explicit equivalence
@@ -57,7 +56,7 @@ K×⊤↔K = inverse proj₁ (_, tt) (λ _ → refl) λ _ → refl
 -- Note that this still isn't Symmetric Multicategory. The renaming that
 -- happens on indices say nothing about the relation to the contents
 -- of the other Hom set.
-record MultiCategory {o ℓ e ı : Level} : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) where
+record MultiCategory (o ℓ e ı : Level) : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) where
   infix  4 _≈[_]_
   infixr 9 _∘_
 
@@ -66,8 +65,8 @@ record MultiCategory {o ℓ e ı : Level} : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) w
     Hom : {I : Set ı} → (I → Obj) → Obj → Set ℓ
     id : (o : Obj) → Hom {⊤} (pointed o) o
     _∘_ : {I : Set ı} {aₙ : I → Obj} {a : Obj} {J : I → Set ı}
-          {v : (i : I) → J i → Obj} {b : I → Obj} →
-          Hom {I} aₙ a → ((i : I) → Hom (v i) (b i)) → Hom {Σ I J} (uncurry v) a
+          {v : (i : I) → J i → Obj} →
+          Hom {I} aₙ a → ((i : I) → Hom (v i) (aₙ i)) → Hom {Σ I J} (uncurry v) a
     _≈[_]_ : {I J : Set ı} {aₙ : I → Obj} {a : Obj} →
           Hom {I} aₙ a → (σ : I ↔ J) → Hom {J} (aₙ ● ( Inverse.from σ ⟨$⟩_ )) a → Set e
 
@@ -80,14 +79,14 @@ record MultiCategory {o ℓ e ı : Level} : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) w
 
     assoc : -- the 3 index sets
             {I : Set ı} {J : I → Set ı} {K : Σ I J → Set ı}
-            -- the 3 sets of (indexed) objects
-            {vh : I → Obj} {bh : Obj}
-            {vg : (i : I) → J i → Obj} {bg : I → Obj}
-            {vf : (h : Σ I J) → K h → Obj} {bf : Σ I J → Obj}
+            -- the 4 (increasingly indexed) objects
+            {a : Obj} {aᵢ : I → Obj}
+            {aᵢⱼ : (i : I) → J i → Obj}
+            {aᵢⱼₖ : (h : Σ I J) → K h → Obj}
             -- the 3 Homs
-            {h : Hom vh bh}
-            {g : (i : I) → Hom (vg i) (bg i)}
-            {f : (k : Σ I J) → Hom (vf k) (bf k)} →
+            {h : Hom aᵢ a}
+            {g : (i : I) → Hom (aᵢⱼ i) (aᵢ i)}
+            {f : (k : Σ I J) → Hom (aᵢⱼₖ k) (uncurry aᵢⱼ k)} →
             -- and their relation under composition
             (h ∘ g) ∘ f ≈[ Σ-assoc ] h ∘ (λ i → g i ∘ curry f i)
 
@@ -100,4 +99,8 @@ record MultiCategory {o ℓ e ı : Level} : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) w
     trans≈ : {I : Set ı} {aₙ : I → Obj} {a : Obj} →
            {f g h : Hom {I} aₙ a} → f ≈[ id↔ ] g → g ≈[ id↔ ] h → f ≈[ id↔ ] h
 
-    -- we probably need ∘-resp-≈ too.
+    ∘-resp-≈ : {I : Set ı} {J : I → Set ı}
+               {a : Obj} {aᵢ : I → Obj} {aᵢⱼ : (i : I) → J i → Obj}
+               {g g′ : Hom aᵢ a} {f f′ : (i : I) → Hom (aᵢⱼ i) (aᵢ i)} →
+               g ≈[ id↔ ] g′ → (∀ i → f i ≈[ id↔ ] f′ i) →
+               g ∘ f ≈[ id↔ ] g′ ∘ f′

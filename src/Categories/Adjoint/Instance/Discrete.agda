@@ -12,7 +12,7 @@ module Categories.Adjoint.Instance.Discrete where
 open import Level using (Lift; lift)
 open import Data.Unit using (⊤; tt)
 import Function as Fun
-open import Relation.Binary.PropositionalEquality
+open import Relation.Binary.PropositionalEquality -- lots of stuff from here
 
 open import Categories.Adjoint
 open import Categories.Category using (Category)
@@ -33,7 +33,7 @@ Forgetful {o} {ℓ} {e} = record
   ; F₁ = F₀
   ; identity     = refl
   ; homomorphism = refl
-  ; F-resp-≈     = λ F≡G {X} → eq₀ F≡G X 
+  ; F-resp-≈     = λ F≡G {X} → eq₀ F≡G X
   }
   where
     open Category
@@ -42,7 +42,7 @@ Forgetful {o} {ℓ} {e} = record
 
 -- The discrete functor (strict version)
 
-Discrete : ∀ {o} → Functor (Sets o) (Cats o o o) 
+Discrete : ∀ {o} → Functor (Sets o) (Cats o o o)
 Discrete {o} = record
   { F₀ = D.Discrete
   ; F₁ = λ f → record
@@ -68,7 +68,7 @@ Discrete {o} = record
     }
   ; F-resp-≈ = λ {_ _ f g} f≗g → record
     { eq₀ = λ x → f≗g {x}
-    ; eq₁ = λ {x} {y} p → naturality (λ x → subst (f x ≡_) (f≗g {x}) refl) 
+    ; eq₁ = λ {x} {y} p → naturality (λ x → subst (f x ≡_) (f≗g {x}) refl)
     }
   }
   where
@@ -82,7 +82,7 @@ Discrete {o} = record
 
 -- The codiscrete functor (strict version)
 
-Codiscrete : ∀ {o} ℓ e → Functor (Sets o) (Cats o ℓ e) 
+Codiscrete : ∀ {o} ℓ e → Functor (Sets o) (Cats o ℓ e)
 Codiscrete {o} ℓ e = record
   { F₀ = λ A → record
     { Obj = A
@@ -147,7 +147,7 @@ DiscreteLeftAdj {o} = record
     counitComm {C} {D} F =
       let open Functor F
           open Category D
-          open HomReasoning hiding (refl)
+          open HomReasoning
       in record
       { eq₀ = λ _ → refl
       ; eq₁ = λ {X Y} p → begin

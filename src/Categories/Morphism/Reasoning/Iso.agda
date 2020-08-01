@@ -19,6 +19,7 @@ open import Categories.Morphism.Reasoning.Core C
 open import Relation.Binary hiding (_⇒_)
 
 open Category C
+open Definitions C
 private
   variable
     A B X Y : Obj
@@ -117,7 +118,7 @@ module Switch (i : X ≅ Y) where
   --          A                        A
   --
   flip-iso : {g : X ⇒ A} {h : Y ⇒ A} → g ≈ h ∘ from → g ∘ to ≈ h
-  flip-iso tr₁ = sym (switch-fromtoʳ (sym tr₁))
+  flip-iso tr₁ = Equiv.sym (switch-fromtoʳ (Equiv.sym tr₁))
 
   -- Consider two commuting squares
   --
@@ -155,7 +156,7 @@ module _ (i : A ≅ B) (j : X ≅ Y) where
   conjugate-from {f = f} {g = g} eq = begin
     j.to ∘ f                   ≈⟨ introʳ i.isoʳ ⟩
     (j.to ∘ f) ∘ i.from ∘ i.to ≈⟨ center eq ⟩
-    j.to ∘ (j.from ∘ g) ∘ i.to ≈⟨ center⁻¹ j.isoˡ refl ⟩
+    j.to ∘ (j.from ∘ g) ∘ i.to ≈⟨ center⁻¹ j.isoˡ Equiv.refl ⟩
     id ∘ g ∘ i.to              ≈⟨ identityˡ ⟩
     g ∘ i.to                   ∎
 
@@ -163,7 +164,7 @@ module _ (i : A ≅ B) (j : X ≅ Y) where
   conjugate-to {f = f} {g = g} eq = begin
     f ∘ i.from                   ≈⟨ introˡ j.isoʳ ⟩
     (j.from ∘ j.to) ∘ f ∘ i.from ≈⟨ center eq ⟩
-    j.from ∘ (g ∘ i.to) ∘ i.from ≈⟨ center⁻¹ refl i.isoˡ ⟩
+    j.from ∘ (g ∘ i.to) ∘ i.from ≈⟨ center⁻¹ Equiv.refl i.isoˡ ⟩
     (j.from ∘ g) ∘ id            ≈⟨ identityʳ ⟩
     j.from ∘ g                   ∎
 

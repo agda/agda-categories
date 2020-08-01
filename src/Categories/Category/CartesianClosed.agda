@@ -23,6 +23,7 @@ private
   module 𝒞 = Category 𝒞
   open Category 𝒞
   open HomReasoning
+  open Equiv
   variable
     A B C   : Obj
     f g h i : A ⇒ B
@@ -33,7 +34,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   infixr 9 _^_
   -- an alternative notation for exponential, which emphasizes its internal hom natural
   infixr 5 _⇨_
-  
+
   field
     cartesian : Cartesian
     exp       : Exponential A B
@@ -79,7 +80,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
 
   -- the annoying detail is that B^A×A is NOT the same as B ^ A × A, but they are isomorphic.
   -- make some infra so that the latter (which is more intuitive) can be used.
-  
+
   B^A×A-iso : Product.A×B (B^A×A B A) ≅ B ^ A × A
   B^A×A-iso {B = B} {A = A} = record
     { from = repack exp.product product
@@ -114,7 +115,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   λ-unique′ eq = exp.λ-unique product (⟺ (pullʳ [ product ⇒ product ⇒ exp.product ]repack∘×) ○ eq)
 
   λ-unique₂′ : eval′ ∘ (f ⁂ id) ≈ eval′ ∘ (g ⁂ id) → f ≈ g
-  λ-unique₂′ eq = (λ-unique′ eq) ○ ⟺ (λ-unique′ refl) 
+  λ-unique₂′ eq = (λ-unique′ eq) ○ ⟺ (λ-unique′ refl)
 
   β′ : eval′ ∘ (λg f ⁂ id) ≈ f
   β′ {f = f} = begin
@@ -175,8 +176,8 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   -⇨- = record
     { F₀           = uncurry _⇨_
     ; F₁           = λ where
-      (f , g) → λg (g ∘ eval′ ∘ second f) 
-    ; identity     = λ-cong (identityˡ ○ (elimʳ (id×id product))) ○ η-id′ 
+      (f , g) → λg (g ∘ eval′ ∘ second f)
+    ; identity     = λ-cong (identityˡ ○ (elimʳ (id×id product))) ○ η-id′
     ; homomorphism = λ-unique₂′ helper
     ; F-resp-≈     = λ where
       (eq₁ , eq₂) → λ-cong (∘-resp-≈ eq₂ (∘-resp-≈ʳ (⁂-cong₂ refl eq₁)))
@@ -264,5 +265,5 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
           eval′ ∘ second f                           ∎
         }
       }
-  
+
   module closedMonoidal = Closed closedMonoidal

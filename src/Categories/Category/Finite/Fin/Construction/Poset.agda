@@ -2,16 +2,16 @@
 
 module Categories.Category.Finite.Fin.Construction.Poset where
 
-open import Data.Nat using (ℕ; z≤n; s≤s)
-open import Data.Sum
+open import Data.Nat.Base using (ℕ; z≤n; s≤s)
+open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
 open import Data.Product using (Σ; _,_; _×_)
-open import Data.Fin
+open import Data.Fin.Base using (Fin; zero; suc; _≤_; _<_)
 open import Data.Fin.Patterns
 
-open import Relation.Binary.PropositionalEquality as ≡
+open import Relation.Binary.PropositionalEquality.Core as ≡
 
 open import Categories.Category.Finite.Fin
-open import Categories.Category
+open import Categories.Category.Core
 
 private
   card : ∀ {n} → Fin n → Fin n → ℕ

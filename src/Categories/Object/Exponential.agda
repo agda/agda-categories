@@ -41,11 +41,11 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
                  (eval ∘ [ X×A ⇒ product ] h ×id ≈ g) → (h ≈ λg X×A g)
 
   η : ∀ (X×A : Product X A) {f : X ⇒ B^A } → λg X×A (eval ∘ [ X×A ⇒ product ] f ×id) ≈ f
-  η X×A {f} = sym (λ-unique X×A refl)
+  η X×A {f} = ⟺ (λ-unique X×A Equiv.refl)
 
   λ-cong : ∀ {X : Obj} (X×A : Product X A) {f g} →
              f ≈ g → λg X×A f ≈ λg X×A g
-  λ-cong X×A {f = f} {g = g} f≡g = λ-unique X×A (trans (β X×A) f≡g)
+  λ-cong X×A {f = f} {g = g} f≡g = λ-unique X×A (β X×A ○ f≡g)
 
   subst : ∀ (p₂ : Product C A) (p₃ : Product D A) {f g} →
             λg p₃ f ∘ g ≈ λg p₂ (f ∘ [ p₂ ⇒ p₃ ] g ×id)
@@ -62,10 +62,10 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
     λg product eval ∘ id                             ≈⟨ subst _ _ ⟩
     λg product (eval ∘ [ product ⇒ product ] id ×id) ≈⟨ η product ⟩
     id                                               ∎
-    
+
   λ-unique′ : ∀ (X×A : Product X A) {h i : X ⇒ B^A} →
                 eval ∘ [ X×A ⇒ product ] h ×id ≈ eval ∘ [ X×A ⇒ product ] i ×id → h ≈ i
-  λ-unique′ p eq = trans (λ-unique p eq) (sym (λ-unique p refl))
+  λ-unique′ p eq = λ-unique p eq ○ (⟺ (λ-unique p Equiv.refl))
 
 -- some aliases to make proof signatures less ugly
 [_]eval : ∀{A B}(e₁ : Exponential A B) → Exponential.B^A×A e₁ ⇒ B
@@ -91,7 +91,7 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
               {f} {g : Product.A×B p₄ ⇒ B} →
               [ e₁ ]λ p₃ (g ∘ [ p₃ ⇒ p₄ ]id× f)
               ≈ [ e₁ ]λ p₅ ([ e₂ ]eval ∘ [ p₅ ⇒ Exponential.product e₂ ]id× f) ∘ [ e₂ ]λ p₄ g
-λ-distrib e₁ e₂ p₃ p₄ p₅ {f} {g} = sym $ e₁.λ-unique p₃ $ begin
+λ-distrib e₁ e₂ p₃ p₄ p₅ {f} {g} = ⟺ $ e₁.λ-unique p₃ $ begin
   [ e₁ ]eval ∘ ([ p₃ ⇒ p₁ ] [ e₁ ]λ p₅ ([ e₂ ]eval ∘ [ p₅ ⇒ p₂ ]id× f) ∘ [ e₂ ]λ p₄ g ×id)
                        ≈˘⟨ refl⟩∘⟨ [ p₃ ⇒ p₅ ⇒ p₁ ]×id∘×id ⟩
   [ e₁ ]eval ∘ [ p₅ ⇒ p₁ ] [ e₁ ]λ p₅ ([ e₂ ]eval ∘ [ p₅ ⇒ p₂ ]id× f) ×id
@@ -158,12 +158,12 @@ transport-by-iso {X = X} e e≅X = record
   ; λg              = λ Y×A Y×A⇒B → from ∘ (e.λg Y×A Y×A⇒B)
   ; β               = λ Y×A {h} → begin
     e.eval ∘ [ Y×A ⇒ X×A ] from ∘ e.λg Y×A h ×id ≈⟨ refl⟩∘⟨ e.product.⟨⟩-cong₂ (pullˡ (cancelˡ isoˡ))
-                                                                               (elimˡ refl) ⟩
+                                                                              (elimˡ Equiv.refl) ⟩
     e.eval ∘ [ Y×A ⇒ e.product ] e.λg Y×A h ×id  ≈⟨ e.β Y×A ⟩
     h                                            ∎
   ; λ-unique        = λ Y×A {h} {i} eq →
     switch-tofromˡ e≅X $ e.λ-unique Y×A $ begin
-      e.eval ∘ [ Y×A ⇒ e.product ] to ∘ i ×id    ≈⟨ refl⟩∘⟨ e.product.⟨⟩-cong₂ assoc (introˡ refl) ⟩
+      e.eval ∘ [ Y×A ⇒ e.product ] to ∘ i ×id    ≈⟨ refl⟩∘⟨ e.product.⟨⟩-cong₂ assoc (introˡ Equiv.refl) ⟩
       e.eval ∘ [ Y×A ⇒ X×A ] i ×id               ≈⟨ eq ⟩
       h                                          ∎
   }

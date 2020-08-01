@@ -13,8 +13,8 @@ open import Data.Product using (_,_)
 
 open import Categories.Bicategory.Extras using (module Extras)
 import Categories.Category as Category
-open Category.Category using (Obj; module Commutation)
-open Category using (Category; _[_,_])
+open Category.Category using (Obj)
+open Category using (Category; _[_,_]; module Commutation)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Category.Product using (_⁂_)
 open import Categories.NaturalTransformation using (NaturalTransformation)

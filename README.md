@@ -2,6 +2,12 @@
 
 Welcome to what will hopefully become the standard Category Theory library for Agda.
 
+The current library release, v0.1.2, works with Agda-2.6.1 and stdlib-1.3.  The master
+branch should also work with same, but may contain various incompatibilities.
+
+Note that this should be considered pre-beta software, and that backwards compability
+is not assured (although we don't intend to break things whimsically).
+
 ## Origins
 
 This library is a rewrite of [copumpin's version](https://github.com/copumpkin/categories)
@@ -73,6 +79,41 @@ documented in the proto-contributor's guide.
 We welcome contributions! Please submit PRs, issues, etc. A full-fledged contributor's guide
 will be written, eventually.
 
+### Organization
+
+Right now, one can browse [everything](https://agda.github.io/agda-categories/) in 
+nicely highlighted HTML. The basic layout:
+- All code that shouldn't (eventually) be in stdlib is under Categories.
+- If something is some kind of Category, it should be under Category/
+- Instances, i.e. if you say "X is a category", or "X is a functor", go under Instances/
+- Constructions, i.e. if you say "given W then we can build a Category" (or Functor, etc)
+  got under Constructions/
+- Properties that follow from a definition or concept X go under X.Properties
+- The important concepts of Category Theory have their own directories:
+  - Adjoint
+  - Object
+  - Morphism
+  - Diagram
+  - Functor
+  - Kan
+  - Yoneda
+- There are sub-directories for:
+  - Enriched Categories
+  - Minus2 Categories
+  - Minus1 Categories
+  - Bicategories
+  - Bifunctors
+- To be precise, a lot of the usual definitions about categories are under that
+  directory, namely:
+  - Complete, Cocomplete
+  - Close, Cartesian, CartesianClosed
+  - Discrete, Finite
+  - Monoidal (it has its own rich hierarchy as well)
+  - Product
+  - Slice
+  - Topos
+  - WithFamilies
+
 ### Naming Conventions
 
 (Some conventions are slowly arising, document them)
@@ -92,8 +133,4 @@ will be written, eventually.
 - Components of larger structures use long English names instead of the more usual
   Categorical 1-Greek-letter short-hands.  So unitor<sup>l</sup> rather than
   &lambda; and associator rather than &alpha;.
-
-### Organization
-
-(where to find what)
 

@@ -2,10 +2,9 @@
 module Categories.Category.Core where
 
 open import Level
-open import Function using (flip)
+open import Function.Base using (flip)
 
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
-import Relation.Binary.PropositionalEquality as ≡
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
 -- Basic definition of a |Category| with a Hom setoid.
@@ -58,7 +57,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   -- Also some useful combinators for doing reasoning on _∘_ chains
   module HomReasoning {A B : Obj} where
     open SetoidR (hom-setoid {A} {B}) public
-    open Equiv {A = A} {B = B} public
+    -- open Equiv {A = A} {B = B} public
 
     infixr 4 _⟩∘⟨_ refl⟩∘⟨_
     infixl 5 _⟩∘⟨refl
@@ -79,29 +78,6 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     _○_ : {f g h : A ⇒ B} → f ≈ g → g ≈ h → f ≈ h
     _○_ = Equiv.trans
 
-    -- for reasoning in the Strict cases
-    ≡⇒≈ : {f g : A ⇒ B} → f ≡.≡ g → f ≈ g
-    ≡⇒≈ ≡.refl = Equiv.refl
-
-    subst₂≈ : {C D : Obj} {f g : A ⇒ B} → f ≈ g → (eq₁ : A ≡.≡ C) (eq₂ : B ≡.≡ D) →
-      ≡.subst₂ (_⇒_) eq₁ eq₂ f ≈ ≡.subst₂ (_⇒_) eq₁ eq₂ g
-    subst₂≈ f≈g ≡.refl ≡.refl = f≈g
-
-  -- Combinators for commutative diagram
-  -- The idea is to use the combinators to write commutations in a more readable way.
-  -- It starts with [_⇒_]⟨_≈_⟩, and within the third and fourth places, use _⇒⟨_⟩_ to
-  -- connect morphisms with the intermediate object specified.
-  module Commutation where
-    infix 1 [_⇒_]⟨_≈_⟩
-    [_⇒_]⟨_≈_⟩ : ∀ (A B : Obj) → A ⇒ B → A ⇒ B → Set _
-    [ A ⇒ B ]⟨ f ≈ g ⟩ = f ≈ g
-
-    infixl 2 connect
-    connect : ∀ {A C : Obj} (B : Obj) → A ⇒ B → B ⇒ C → A ⇒ C
-    connect B f g = g ∘ f
-
-    syntax connect B f g = f ⇒⟨ B ⟩ g
-
   op : Category o ℓ e
   op = record
     { Obj       = Obj
@@ -117,7 +93,3 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ; equiv     = equiv
     ; ∘-resp-≈  = flip ∘-resp-≈
     }
-
-  -- Q: Should this really be defined here?
-  CommutativeSquare : ∀ {A B C D} → (f : A ⇒ B) (g : A ⇒ C) (h : B ⇒ D) (i : C ⇒ D) → Set _
-  CommutativeSquare f g h i = h ∘ f ≈ i ∘ g

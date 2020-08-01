@@ -39,7 +39,7 @@ module _  (MC : Monoidal C) (MD : Monoidal D) where
     -- coherence condition
     open D
     open MD
-    open Commutation
+    open Commutation D
 
     field
       associativity : ∀ {X Y Z} →

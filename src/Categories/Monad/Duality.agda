@@ -4,8 +4,10 @@ open import Categories.Category
 
 module Categories.Monad.Duality {o ℓ e} (C : Category o ℓ e) where
 
-open import Categories.Functor
-open import Categories.NaturalTransformation
+open import Relation.Binary.PropositionalEquality.Core using (_≡_; refl)
+
+open import Categories.Functor.Core using (Functor)
+open import Categories.NaturalTransformation.Core using (NaturalTransformation)
 open import Categories.Monad
 open import Categories.Comonad
 
@@ -39,3 +41,10 @@ Comonad⇒coMonad M = record
     }
   where module M = Comonad M
         open M using (F; ε; δ)
+
+
+module MonadDualityConversionProperties where
+  private
+    coMonad⇔Comonad : ∀ (coMonad : Monad C.op) →
+                    Comonad⇒coMonad (coMonad⇒Comonad coMonad) ≡ coMonad
+    coMonad⇔Comonad _ = refl

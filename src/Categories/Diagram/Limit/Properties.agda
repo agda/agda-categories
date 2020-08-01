@@ -44,7 +44,7 @@ module _ (W : Obj) {F : Functor J C} (lim : Lim.Limit F) where
     open lim
     HomF : Functor J (Setoids ℓ e)
     HomF = Hom[ W ,-] ∘F F
-    
+
     module LHomF = Lim HomF
     module CHomF = Con HomF
 
@@ -78,7 +78,7 @@ module _ (W : Obj) {F : Functor J C} (lim : Lim.Limit F) where
             { N    = W
             ; apex = record
               { ψ       = λ X → K.ψ X ⟨$⟩ x
-              ; commute = λ f → sym (∘-resp-≈ʳ identityʳ) ○ K.commute f (Setoid.refl K.N)
+              ; commute = λ f → ⟺ (∘-resp-≈ʳ identityʳ) ○ K.commute f (Setoid.refl K.N)
               }
             }
             where module K = CHomF.Cone K

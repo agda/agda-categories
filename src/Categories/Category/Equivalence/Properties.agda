@@ -48,11 +48,11 @@ module _ {F : Functor C D} {G : Functor D C} (W : WeakInverse F G) where
             F∘G≈id.⇒.η Y ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ Y)) ∘ (F.F₁ (G.F₁ (F.F₁ (G.F₁ f))) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X)))
               ≈˘⟨ refl⟩∘⟨ pushˡ F.homomorphism ⟩
             F∘G≈id.⇒.η Y ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ Y) C.∘ G.F₁ (F.F₁ (G.F₁ f))) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
-              ≈⟨ refl ⟩∘⟨ F.F-resp-≈ (G∘F≈id.⇒.commute (G.F₁ f)) ⟩∘⟨ refl ⟩
+              ≈⟨ refl⟩∘⟨ F.F-resp-≈ (G∘F≈id.⇒.commute (G.F₁ f)) ⟩∘⟨refl ⟩
             F∘G≈id.⇒.η Y ∘ F.F₁ (G.F₁ f C.∘ G∘F≈id.⇒.η (G.F₀ X)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
-              ≈⟨ refl ⟩∘⟨ F.homomorphism ⟩∘⟨ refl ⟩
+              ≈⟨ refl⟩∘⟨ F.homomorphism ⟩∘⟨refl ⟩
             F∘G≈id.⇒.η Y ∘ (F.F₁ (G.F₁ f) ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ X))) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
-              ≈⟨ center⁻¹ (F∘G≈id.⇒.commute f) refl ⟩
+              ≈⟨ center⁻¹ (F∘G≈id.⇒.commute f) Equiv.refl ⟩
             (f ∘ F∘G≈id.⇒.η X) ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ X)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
               ≈⟨ assoc ⟩
             f ∘ F∘G≈id.⇒.η X ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ X)) ∘ F∘G≈id.⇐.η (F.F₀ (G.F₀ X))
@@ -66,13 +66,13 @@ module _ {F : Functor C D} {G : Functor D C} (W : WeakInverse F G) where
             (F∘G≈id.⇒.η (F.F₀ (G.F₀ Y)) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ Y))) ∘ F.F₁ (G.F₁ f) ∘ F∘G≈id.⇐.η X
               ≈⟨ center (⟺ F.homomorphism) ⟩
             F∘G≈id.⇒.η (F.F₀ (G.F₀ Y)) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ Y) C.∘ G.F₁ f) ∘ F∘G≈id.⇐.η X
-              ≈⟨ refl ⟩∘⟨ F.F-resp-≈ (G∘F≈id.⇐.commute (G.F₁ f)) ⟩∘⟨ refl ⟩
+              ≈⟨ refl⟩∘⟨ F.F-resp-≈ (G∘F≈id.⇐.commute (G.F₁ f)) ⟩∘⟨refl ⟩
             F∘G≈id.⇒.η (F.F₀ (G.F₀ Y)) ∘ F.F₁ (G.F₁ (F.F₁ (G.F₁ f)) C.∘ G∘F≈id.⇐.η (G.F₀ X)) ∘ F∘G≈id.⇐.η X
-              ≈⟨ refl ⟩∘⟨ F.homomorphism ⟩∘⟨ refl ⟩
+              ≈⟨ refl⟩∘⟨ F.homomorphism ⟩∘⟨refl ⟩
             F∘G≈id.⇒.η (F.F₀ (G.F₀ Y)) ∘ (F.F₁ (G.F₁ (F.F₁ (G.F₁ f))) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ X))) ∘ F∘G≈id.⇐.η X
-              ≈⟨ center⁻¹ (F∘G≈id.⇒.commute _) refl ⟩
+              ≈⟨ center⁻¹ (F∘G≈id.⇒.commute _) Equiv.refl ⟩
             (F.F₁ (G.F₁ f) ∘ F∘G≈id.⇒.η (F.F₀ (G.F₀ X))) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ X)) ∘ F∘G≈id.⇐.η X
-              ≈⟨ center refl ⟩
+              ≈⟨ center Equiv.refl ⟩
             F.F₁ (G.F₁ f) ∘ (F∘G≈id.⇒.η (F.F₀ (G.F₀ X)) ∘ F.F₁ (G∘F≈id.⇐.η (G.F₀ X))) ∘ F∘G≈id.⇐.η X
               ∎
           }
@@ -91,9 +91,9 @@ module _ {F : Functor C D} {G : Functor D C} (W : WeakInverse F G) where
         F.F₁ (G.F₁ (F.F₁ (G∘F≈id.⇐.η A))) ∘ F∘G≈id.⇐.η (F.F₀ A)
         ≈˘⟨ refl⟩∘⟨ pushˡ F.homomorphism ⟩
       F∘G≈id.⇒.η (F.F₀ A) ∘ F.F₁ (G∘F≈id.⇒.η (G.F₀ (F.F₀ A)) C.∘ G.F₁ (F.F₁ (G∘F≈id.⇐.η A))) ∘ F∘G≈id.⇐.η (F.F₀ A)
-        ≈⟨ refl ⟩∘⟨ F.F-resp-≈ (G∘F≈id.⇒.commute (G∘F≈id.⇐.η A)) ⟩∘⟨ refl ⟩
+        ≈⟨ refl⟩∘⟨ F.F-resp-≈ (G∘F≈id.⇒.commute (G∘F≈id.⇐.η A)) ⟩∘⟨refl ⟩
       F∘G≈id.⇒.η (F.F₀ A) ∘ F.F₁ (G∘F≈id.⇐.η A C.∘ G∘F≈id.⇒.η A) ∘ F∘G≈id.⇐.η (F.F₀ A)
-        ≈⟨ refl ⟩∘⟨ elimˡ ((F.F-resp-≈ (G∘F≈id.iso.isoˡ _)) ○ F.identity) ⟩
+        ≈⟨ refl⟩∘⟨ elimˡ ((F.F-resp-≈ (G∘F≈id.iso.isoˡ _)) ○ F.identity) ⟩
       F∘G≈id.⇒.η (F.F₀ A) ∘ F∘G≈id.⇐.η (F.F₀ A)
         ≈⟨ F∘G≈id.iso.isoʳ _ ⟩
       id

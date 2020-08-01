@@ -45,6 +45,7 @@ record Locally : Set (levelOfTerm C) where
     ; p₂∘universal≈h₂ = p.p₂∘universal≈h₂
     }
     where open HomReasoning
+          open Equiv
           module X = SliceObj X
           module Y = SliceObj Y
           module B = SliceObj B
@@ -65,6 +66,7 @@ module _ (LCCC : Locally) (t : Terminal) where
   open Locally LCCC
   open Terminal t
   open HomReasoning
+  open Equiv
 
   cartesian : Cartesian C
   cartesian = record
@@ -97,7 +99,10 @@ module _ (LCCC : Locally) (t : Terminal) where
            }
       ; eval     = h eval
       ; λg       = λ {X} p f → h (λg (pullback⇒product′ t (Pₚ.product⇒pullback-⊤ t p)) (lift t f))
-      ; β        = λ p → ∘-resp-≈ʳ (exp.product.⟨⟩-cong₂ refl refl) ○ β (pullback⇒product′ t (Pₚ.product⇒pullback-⊤ t p))
+                         -- what looks like an identity proof below is not quite, as it is not
+                         -- "proof relevant", the 2 underlying arrows contain different proofs.
+      ; β        = λ p → ∘-resp-≈ʳ (exp.product.⟨⟩-cong₂ refl refl) ○
+                         β (pullback⇒product′ t (Pₚ.product⇒pullback-⊤ t p))
       ; λ-unique = λ p eq → λ-unique (pullback⇒product′ t (Pₚ.product⇒pullback-⊤ t p))
                                      {h = slicearr (⟺ (!-unique _))}
                                      (∘-resp-≈ʳ (exp.product.⟨⟩-cong₂ refl refl) ○ eq)

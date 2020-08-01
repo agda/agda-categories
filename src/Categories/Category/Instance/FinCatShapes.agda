@@ -2,8 +2,7 @@
 
 module Categories.Category.Instance.FinCatShapes where
 
-open import Data.Nat using (ℕ)
-open import Data.Fin using (Fin)
+open import Data.Fin.Base using (Fin)
 
 open import Relation.Binary using (IsEquivalence)
 open import Relation.Binary.PropositionalEquality as ≡ using (refl; _≡_; module ≡-Reasoning)

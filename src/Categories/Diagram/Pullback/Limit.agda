@@ -5,15 +5,15 @@ open import Categories.Category.Core using (Category)
 module Categories.Diagram.Pullback.Limit {o ℓ e} (C : Category o ℓ e) where
 
 open import Data.Product using (∃₂; _,_)
-open import Function using (_$_)
+open import Function.Base using (_$_)
 
 open import Categories.Category using (_[_≈_])
 open import Categories.Category.Instance.Span
-open import Categories.Functor
+open import Categories.Functor.Core
 open import Categories.Diagram.Pullback C
 open import Categories.Morphism.Reasoning C as MR hiding (center)
 
-import Relation.Binary.PropositionalEquality as ≡
+import Relation.Binary.PropositionalEquality.Core as ≡
 
 import Categories.Category.Construction.Cones as Con
 import Categories.Diagram.Limit as Lim
@@ -55,6 +55,7 @@ module _ {F : Functor Span.op C} where
     ; p₂∘universal≈h₂ = commute
     }
     where open Limit lim
+          open Equiv
           universal : {D : Obj} {f : D ⇒ A} {g : D ⇒ B} → A⇒W ∘ f ≈ B⇒W ∘ g → D ⇒ apex
           universal {f = f} {g = g} eq = rep $ record
             { apex = record
@@ -88,6 +89,7 @@ module _ {F : Functor Span.op C} where
 
 module _ {fA fB gA : Obj} {f : fA ⇒ fB} {g : gA ⇒ fB} (p : Pullback f g) where
   open Pullback p
+  open Equiv
 
   pullback⇒limit-F : Functor Span.op C
   pullback⇒limit-F = record

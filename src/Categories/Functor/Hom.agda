@@ -10,6 +10,7 @@ open import Function using () renaming (_∘_ to _∙_)
 
 open import Categories.Category
 open import Categories.Functor hiding (id)
+open import Categories.Functor.Properties
 open import Categories.Functor.Bifunctor
 open import Categories.Category.Instance.Setoids
 import Categories.Morphism.Reasoning as MR
@@ -76,7 +77,7 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
 
   Hom[_,_] : Obj → Obj → Setoid ℓ e
   Hom[ A , B ] = hom-setoid {A} {B}
-  
+
 -- Notation for when the ambient Category must be specified explicitly.
 module _ {o ℓ e} (C : Category o ℓ e) where
   open Category C

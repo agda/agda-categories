@@ -53,14 +53,16 @@ EilenbergMoore = record
     }
   ; ∘-resp-≈  = ∘-resp-≈
   }
-  where compose : ∀ {X Y Z} → Module⇒ Y Z → Module⇒ X Y → Module⇒ X Z
-        compose {X} {Y} {Z} f g = record
-          { arr     = f.arr ∘ g.arr
-          ; commute = begin
-            (f.arr ∘ g.arr) ∘ Module.action X       ≈⟨ pullʳ g.commute ⟩
-            f.arr ∘ Module.action Y ∘ F₁ g.arr      ≈⟨ pullˡ f.commute ⟩
-            (Module.action Z ∘ F₁ f.arr) ∘ F₁ g.arr ≈˘⟨ pushʳ homomorphism ⟩
-            Module.action Z ∘ F₁ (f.arr ∘ g.arr)    ∎
-          }
-          where module f = Module⇒ f
-                module g = Module⇒ g
+  where
+    open Equiv
+    compose : ∀ {X Y Z} → Module⇒ Y Z → Module⇒ X Y → Module⇒ X Z
+    compose {X} {Y} {Z} f g = record
+      { arr     = f.arr ∘ g.arr
+      ; commute = begin
+        (f.arr ∘ g.arr) ∘ Module.action X       ≈⟨ pullʳ g.commute ⟩
+        f.arr ∘ Module.action Y ∘ F₁ g.arr      ≈⟨ pullˡ f.commute ⟩
+        (Module.action Z ∘ F₁ f.arr) ∘ F₁ g.arr ≈˘⟨ pushʳ homomorphism ⟩
+        Module.action Z ∘ F₁ (f.arr ∘ g.arr)    ∎
+      }
+      where module f = Module⇒ f
+            module g = Module⇒ g

@@ -41,7 +41,7 @@ open C hiding (id)
   }
   where
     open Monoidal (Product.Cats-Monoidal {ℓ} {e} {b})
-    open Category.Commutation (Cats ℓ e b)
+    open Commutation (Cats ℓ e b)
 
     -- Since we are doing Setoid-enriched category theory, we don't
     -- lift homsets to discrete hom-categories, but hom-setoids to

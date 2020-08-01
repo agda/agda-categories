@@ -5,10 +5,10 @@ module Categories.NaturalTransformation.NaturalIsomorphism.Equivalence where
 
 open import Level
 open import Data.Product using (_×_; _,_; map; zip)
-open import Relation.Binary using (IsEquivalence)
+open import Relation.Binary.Structures using (IsEquivalence)
 
-open import Categories.Category
-open import Categories.Functor using (Functor)
+open import Categories.Category.Core
+open import Categories.Functor.Core using (Functor)
 open import Categories.NaturalTransformation.NaturalIsomorphism hiding (_≃_)
 open import Categories.NaturalTransformation.Equivalence
 open NaturalIsomorphism
@@ -28,4 +28,4 @@ _≅_ : ∀ {F G : Functor C D} → (α β : NaturalIsomorphism F G) → Set _
   ; sym   =  map (λ z → H.sym z) (λ z → H.sym z) -- eta expansion needed
   ; trans = zip (λ a b → H.trans a b) λ a b → H.trans a b -- ditto
   }
-  where module H = Category.HomReasoning D
+  where module H = Category.Equiv D

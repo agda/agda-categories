@@ -4,7 +4,7 @@ module Categories.Adjoint.Properties where
 
 open import Level
 open import Data.Product using (Σ; _,_; -,_; proj₂; uncurry)
-open import Function using (_$_)
+open import Function.Base using (_$_)
 
 open import Categories.Adjoint using (_⊣_; Adjoint)
 open import Categories.Adjoint.Equivalents using (Hom-NI′⇒Adjoint)
@@ -67,7 +67,7 @@ module _ {C : Category o ℓ e}
     commute′ : ∀ {A B X} (f : A E.⇒ B) → LR.counit.η A X D.∘ L.F₁ (F′ f D.id , E.id) D.≈ LR.counit.η B X D.∘ L.F₁ (C.id , f)
     commute′ {A} {B} {X} f = begin
       LR.counit.η A X D.∘ L.F₁ (F′ f D.id , E.id) ≈⟨ LR.RLadjunct≈id A ⟩
-      LR.counit.η B X D.∘ L.F₁ (R.F₁ B D.id , f)  ≈⟨ refl ⟩∘⟨ L.F-resp-≈ (R.identity B , E.Equiv.refl) ⟩
+      LR.counit.η B X D.∘ L.F₁ (R.F₁ B D.id , f)  ≈⟨ refl⟩∘⟨ L.F-resp-≈ (R.identity B , E.Equiv.refl) ⟩
       LR.counit.η B X D.∘ L.F₁ (C.id , f)         ∎
       where open D.HomReasoning
 
@@ -106,7 +106,7 @@ module _ {C : Category o ℓ e}
       where open MR D
 
     swap : ∀ {A B X Y} {f : A E.⇒ B} {g : X D.⇒ Y} → R.F₁ A g ∘ F′ f D.id ≈ F′ f D.id ∘ R.F₁ B g
-    swap = trans (⟺ decompose₁) decompose₂
+    swap = ⟺ decompose₁ ○ decompose₂
 
     commute″ : ∀ {X Y Z A} {f : Y E.⇒ Z} {g : X E.⇒ Y} → F′ (f E.∘ g) (D.id {A}) ≈ F′ g D.id ∘ F′ f D.id
     commute″ {X} {Y} {Z} {A} {f} {g} = begin
@@ -125,7 +125,7 @@ module _ {C : Category o ℓ e}
       (R.F₁ X (LR.counit.η Y A D.∘ L.F₁ (C.id , g)) ∘ R.F₁ X (L.F₁ (F′ f D.id , E.id))) ∘ LR.unit.η X (R.F₀ Z A)
         ≈˘⟨ MR.pushʳ C (LR.unit.commute X (F′ f D.id)) ⟩
       R.F₁ X (LR.counit.η Y A D.∘ L.F₁ (C.id , g)) ∘ LR.unit.η X (R.F₀ Y A) ∘ F′ f D.id
-        ≈˘⟨ R.F-resp-≈ X (D.∘-resp-≈ʳ (L.F-resp-≈ (R.identity Y , E.Equiv.refl))) ⟩∘⟨ refl ⟩∘⟨ refl ⟩
+        ≈˘⟨ R.F-resp-≈ X (D.∘-resp-≈ʳ (L.F-resp-≈ (R.identity Y , E.Equiv.refl))) ⟩∘⟨refl ⟩
       R.F₁ X (LR.counit.η Y A D.∘ L.F₁ (R.F₁ Y D.id , g)) ∘ LR.unit.η X (R.F₀ Y A) ∘ F′ f D.id
         ≈⟨ sym-assoc ⟩
       F′ g D.id ∘ F′ f D.id
@@ -140,9 +140,9 @@ module _ {C : Category o ℓ e}
         let open MR D
         in begin
           F′ E.id D.id
-            ≈⟨ R.F-resp-≈ e (D.∘-resp-≈ʳ (L.F-resp-≈ (R.identity e , E.Equiv.refl))) ⟩∘⟨ refl ⟩
+            ≈⟨ R.F-resp-≈ e (D.∘-resp-≈ʳ (L.F-resp-≈ (R.identity e , E.Equiv.refl))) ⟩∘⟨refl ⟩
           R.F₁ e (LR.counit.η e d D.∘ L.F₁ (C.id , E.id)) ∘ LR.unit.η e (R.F₀ e d)
-            ≈⟨ R.F-resp-≈ e (elimʳ L.identity) ⟩∘⟨ refl ⟩
+            ≈⟨ R.F-resp-≈ e (elimʳ L.identity) ⟩∘⟨refl ⟩
           R.F₁ e (LR.counit.η e d) ∘ LR.unit.η e (R.F₀ e d)
             ≈⟨ LR.zag e ⟩
           C.id

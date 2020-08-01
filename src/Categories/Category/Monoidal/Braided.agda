@@ -13,7 +13,7 @@ open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation.NaturalIsomorphism
 
 open Category C
-open Commutation
+open Commutation C
 
 private
   variable

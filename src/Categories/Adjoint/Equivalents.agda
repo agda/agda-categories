@@ -126,6 +126,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
       ; zig    = λ {A} →
         let open D
             open HomReasoning
+            open Equiv
             open MR D
         in begin
           η counit (L.F₀ A) ∘ L.F₁ (η unit A)      ≈˘⟨ identityˡ ⟩
@@ -138,6 +139,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
       ; zag    = λ {B} →
         let open C
             open HomReasoning
+            open Equiv
             open MR C
         in begin
           R.F₁ (η counit B) ∘ η unit (R.F₀ B)      ≈˘⟨ refl⟩∘⟨ identityʳ ⟩
@@ -227,6 +229,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
       ; zig    = λ {A} →
         let open D
             open HomReasoning
+            open Equiv
             open MR D
         in begin
           lower (counitη (L.F₀ A) ⟨$⟩ lift C.id) ∘ L.F₁ (η unit A)
@@ -241,6 +244,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
       ; zag    = λ {B} →
         let open C
             open HomReasoning
+            open Equiv
             open MR C
         in begin
           R.F₁ (lower (⇐.η (R.F₀ B , B) ⟨$⟩ lift id)) ∘ lower (⇒.η (R.F₀ B , L.F₀ (R.F₀ B)) ⟨$⟩ lift D.id)

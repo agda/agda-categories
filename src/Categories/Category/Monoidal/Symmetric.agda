@@ -17,7 +17,7 @@ open import Categories.Morphism C
 open import Categories.Morphism.Properties C
 open import Categories.Category.Monoidal.Braided M
 open Category C
-open Commutation
+open Commutation C
 
 private
   variable
@@ -58,16 +58,16 @@ record Symmetric : Set (levelOfTerm M) where
 private
   record Symmetric′ : Set (levelOfTerm M) where
     open Monoidal M
-  
+
     field
       braiding : NaturalIsomorphism ⊗ (flip-bifunctor ⊗)
-  
+
     module braiding = NaturalIsomorphism braiding
-  
+
     private
       B : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X
       B {X} {Y} = braiding.⇒.η (X , Y)
-  
+
     field
       commutative : B {X} {Y} ∘ B {Y} {X} ≈ id
       hexagon     : [ (X ⊗₀ Y) ⊗₀ Z ⇒ Y ⊗₀ Z ⊗₀ X ]⟨
@@ -78,7 +78,7 @@ private
                       B                           ⇒⟨ (Y ⊗₀ Z) ⊗₀ X ⟩
                       associator.from
                     ⟩
-  
+
     braided-iso : X ⊗₀ Y ≅ Y ⊗₀ X
     braided-iso = record
       { from = B
@@ -88,9 +88,9 @@ private
         ; isoʳ = commutative
         }
       }
-  
+
     module braided-iso {X Y} = _≅_ (braided-iso {X} {Y})
-  
+
     -- we don't define [Symmetric] from [Braided] because we want to avoid asking
     -- [hexagon₂], which can readily be proven using the [hexagon] and [commutative].
     braided : Braided
@@ -104,7 +104,7 @@ private
                            (Iso-∘ (Iso-∘ associator.iso braided-iso.iso)
                                   associator.iso)
       }
-  
+
 
 symmetricHelper : Symmetric′ → Symmetric
 symmetricHelper S = record

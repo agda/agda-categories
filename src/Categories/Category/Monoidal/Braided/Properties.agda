@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category using (Category)
+open import Categories.Category using (Category; module Commutation)
 open import Categories.Category.Monoidal
 open import Categories.Category.Monoidal.Braided using (Braided)
 
@@ -19,7 +19,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
 
 open Category C
 open Braided BM
-open Commutation
+open Commutation C
 
 private
   variable

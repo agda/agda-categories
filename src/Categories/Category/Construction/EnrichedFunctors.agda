@@ -76,6 +76,7 @@ EnrichedFunctors C D = record
     open E hiding (id)
     open MR (Underlying E)
     open HomReasoning
+    open Equiv using (refl)
     open UnderlyingFunctor hiding (F₀; F₁)
     open UnderlyingNT
 
