@@ -15,6 +15,7 @@ open import Categories.Diagram.Limit as Lim
 open import Categories.Diagram.Limit.Properties
 open import Categories.Diagram.Equalizer.Limit C
 open import Categories.Diagram.Cone.Properties
+open import Categories.Object.Terminal
 open import Categories.Object.Product.Limit C
 open import Categories.Object.Terminal.Limit C
 open import Categories.Functor
@@ -26,7 +27,6 @@ open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)
 import Categories.Category.Construction.Cones as Co
 import Categories.Morphism.Reasoning as MR
 import Categories.Morphism as Mor
-import Categories.Morphism.Properties as Morₚ
 
 private
   variable
@@ -60,26 +60,29 @@ module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) whe
         module F₀ j = Functor (F₀ j)
         module F₁ {a b} (f : a J.⇒ b) = NaturalTransformation (F₁ f)
 
+      ev : C.Obj → Functor D^C D
+      ev = evalF C D
+
       F[-,_] : C.Obj → Functor J D
-      F[-, X ] = record
-        { F₀           = λ j → F₀.₀ j X
-        ; F₁           = λ f → F₁.η f X
-        ; identity     = identity
-        ; homomorphism = homomorphism
-        ; F-resp-≈     = λ eq → F-resp-≈ eq -- this application cannot be eta reduced
-        }
+      F[-, X ] = ev X ∘F F
 
       F[-,-] : Functor C (Functors J D)
       F[-,-] = record
         { F₀           = F[-,_]
-        ; F₁           = λ f → ntHelper record
+        ; F₁           = λ {A B} f → ntHelper record
           { η       = λ j → F₀.₁ j f
-          ; commute = λ g → F₁.sym-commute g f
+          ; commute = λ {j k} g → begin
+            F₀.₁ k f D.∘ F₁.η g A D.∘ F₀.₁ j C.id   ≈⟨ pullˡ (F₁.sym-commute g f) ⟩
+            (F₁.η g B D.∘ F₀.₁ j f) D.∘ F₀.₁ j C.id ≈⟨ elimʳ (F₀.identity _) ⟩
+            F₁.η g B D.∘ F₀.₁ j f                   ≈⟨ introʳ (F₀.identity _) ⟩∘⟨refl ⟩
+            (F₁.η g B D.∘ F₀.₁ j C.id) D.∘ F₀.₁ j f ∎
           }
         ; identity     = F₀.identity _
         ; homomorphism = F₀.homomorphism _
         ; F-resp-≈     = λ eq → F₀.F-resp-≈ _ eq
         }
+        where open D.HomReasoning
+              open MR D
 
       module F[-,-] = Functor F[-,-]
 
@@ -108,10 +111,12 @@ module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) whe
         { N    = N.₀ X
         ; apex = record
           { ψ       = λ j → ψ.η j X
-          ; commute = λ f → commute f -- this application cannot be eta reduced
+          ; commute = λ f → D.∘-resp-≈ˡ (elimʳ (F₀.identity _)) ○ commute f
           }
         }
         where open FCone K
+              open D.HomReasoning
+              open MR D
 
       ⊤ : Co.Cone F
       ⊤ = record
@@ -145,7 +150,7 @@ module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) whe
             { η       = λ X → proj X j
             ; commute = λ _ → LimFX.commute _
             }
-          ; commute = λ f {X} → limit-commute X f
+          ; commute = λ f {X} → ∘-resp-≈ˡ (introʳ (F₀.identity _)) ○ limit-commute X f
           }
         }
         where open D
