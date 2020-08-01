@@ -41,16 +41,18 @@ module _ {o ℓ e : Level} where
   Zero-⊥ : Initial
   Zero-⊥ = record
     { ⊥ = Zero
-    ; ! = record
-      { F₀ = λ { (lift x) → ⊥-elim x }
-      ; F₁ = λ { (lift ()) }
-      ; identity = λ { {lift ()} }
-      ; homomorphism = λ { {lift ()} }
-      ; F-resp-≈ = λ { () }
-      }
-    ; !-unique = λ f → record
-      { F⇒G = record { η = λ { () } ; commute = λ { () } ; sym-commute = λ { () } }
-      ; F⇐G = record { η = λ { () } ; commute = λ { () } ; sym-commute = λ { () } }
-      ; iso = λ { (lift ()) }
+    ; ⊥-is-initial = record
+      { ! = record
+        { F₀ = λ { (lift x) → ⊥-elim x }
+        ; F₁ = λ { (lift ()) }
+        ; identity = λ { {lift ()} }
+        ; homomorphism = λ { {lift ()} }
+        ; F-resp-≈ = λ { () }
+        }
+      ; !-unique = λ f → record
+        { F⇒G = record { η = λ { () } ; commute = λ { () } ; sym-commute = λ { () } }
+        ; F⇐G = record { η = λ { () } ; commute = λ { () } ; sym-commute = λ { () } }
+        ; iso = λ { (lift ()) }
+        }
       }
     }

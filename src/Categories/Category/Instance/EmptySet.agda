@@ -22,7 +22,7 @@ module _ {o : Level} where
   open Init (Sets o)
 
   EmptySet-⊥ : Initial
-  EmptySet-⊥ = record { ⊥ = Lift o ⊥ ; ! = λ { {A} (lift x) → ⊥-elim x } ; !-unique = λ { f {()} } }
+  EmptySet-⊥ = record { ⊥ = Lift o ⊥ ; ⊥-is-initial = record { ! = λ { {A} (lift x) → ⊥-elim x } ; !-unique = λ { f {()} } } }
 
 module _ {c ℓ : Level} where
   open Init (Setoids c ℓ)
@@ -35,10 +35,12 @@ module _ {c ℓ : Level} where
 
   EmptySetoid-⊥ : Initial
   EmptySetoid-⊥ = record
-    { ⊥        = EmptySetoid
-    ; !        = record
-      { _⟨$⟩_ = λ { () }
-      ; cong  = λ { {()} }
+    { ⊥            = EmptySetoid
+    ; ⊥-is-initial = record
+      { !        = record
+        { _⟨$⟩_ = λ { () }
+        ; cong  = λ { {()} }
+        }
+      ; !-unique = λ { _ {()} }
       }
-    ; !-unique = λ { _ {()} }
     }

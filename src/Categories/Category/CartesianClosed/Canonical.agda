@@ -67,7 +67,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   -- The above defines canonical finite products, making 𝒞 cartesian.
 
   ⊤-terminal : Terminal
-  ⊤-terminal = record { !-unique = !-unique }
+  ⊤-terminal = record { ⊤-is-terminal = record { !-unique = !-unique } }
 
   ×-product : ∀ {A B} → Product A B
   ×-product {A} {B} =
