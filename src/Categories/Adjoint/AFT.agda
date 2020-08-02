@@ -13,7 +13,8 @@ open import Categories.Category.Complete.Properties
 open import Categories.Category.Construction.Cones
 open import Categories.Category.Construction.Comma
 open import Categories.Functor
-open import Categories.Functor.Continuous
+open import Categories.Functor.Limits
+open import Categories.Functor.Properties
 open import Categories.Adjoint
 open import Categories.Adjoint.Properties
 open import Categories.Diagram.Limit as Lim
@@ -22,6 +23,7 @@ open import Categories.Morphism as Mor
 open import Categories.Morphism.Universal
 
 import Categories.Adjoint.AFT.SolutionSet as SS
+import Categories.Morphism.Reasoning as MR
 
 private
   variable
@@ -64,6 +66,7 @@ module _ {R : Functor C D} where
     open SolutionSet′ s
     open D.Equiv
     open D.HomReasoning
+    open MR D
 
     private
       module _ X where
@@ -95,13 +98,7 @@ module _ {R : Functor C D} where
           module F = Functor F
 
           F′ : Functor J C
-          F′ = record
-            { F₀           = λ j → CommaObj.β (F.₀ j)
-            ; F₁           = λ f → Comma⇒.h (F.₁ f)
-            ; identity     = proj₂ F.identity 
-            ; homomorphism = proj₂ F.homomorphism
-            ; F-resp-≈     = λ eq → proj₂ (F.F-resp-≈ eq)
-            }
+          F′ = Cod _ _ ∘F F
 
           LimF′ : Limit F′
           LimF′ = Com F′
@@ -111,16 +108,14 @@ module _ {R : Functor C D} where
           RLimF′ = F-map-Coneˡ R LimF′.limit
           module RLimF′ = Cone _ RLimF′
 
-          LimRF′₁ : Limit (R ∘F F′)
-          LimRF′₁ = proj₁ (Rcon LimF′)
-          module LimRF′₁ = Limit LimRF′₁
-
-          lim-equiv : _≅_ D (R.₀ LimF′.apex) (LimRF′₁.apex)
-          lim-equiv = proj₂ (Rcon LimF′)
-
-          LimRF′₂ : Limit (R ∘F F′)
-          LimRF′₂ = transport-by-iso _ LimRF′₁ (≅.sym _ lim-equiv)
-          module LimRF′₂ = Limit LimRF′₂
+          LimRF′ : Limit (R ∘F F′)
+          LimRF′ = record
+            { terminal = record
+              { ⊤             = RLimF′
+              ; ⊤-is-terminal = Rcon LimF′
+              }
+            }
+          module LimRF′ = Limit LimRF′
 
           coneF : Cone (R ∘F F′)
           coneF = record
@@ -131,8 +126,8 @@ module _ {R : Functor C D} where
               }
             }
 
-          ⊤-arr : Cone⇒ (R ∘F F′) coneF LimRF′₂.limit
-          ⊤-arr = LimRF′₂.rep-cone coneF
+          ⊤-arr : Cone⇒ (R ∘F F′) coneF RLimF′
+          ⊤-arr = LimRF′.rep-cone coneF
           module ⊤-arr = Cone⇒ (R ∘F F′) ⊤-arr
 
           ⊤ : Cone F
@@ -144,8 +139,7 @@ module _ {R : Functor C D} where
               { ψ       = λ j → record
                 { h       = LimF′.proj j
                 ; commute = begin
-                  R.₁ (LimF′.proj j) D.∘ ⊤-arr.arr ≈⟨ {!!} ⟩∘⟨refl ⟩
-                  LimRF′₂.proj j D.∘ ⊤-arr.arr      ≈⟨ ⊤-arr.commute ⟩
+                  R.₁ (LimF′.proj j) D.∘ ⊤-arr.arr ≈⟨ ⊤-arr.commute ⟩
                   CommaObj.f (F.₀ j)               ≈˘⟨ D.identityʳ ⟩
                   CommaObj.f (F.₀ j) D.∘ D.id      ∎
                 }
@@ -153,19 +147,57 @@ module _ {R : Functor C D} where
               }
             }
 
-    --       complete : Limit F
-    --       complete = record
-    --         { terminal = record
-    --           { ⊤        = ⊤
-    --           ; !        = {!!}
-    --           ; !-unique = {!!}
-    --           }
-    --         }
+          K-conv : Cone F → Cone F′
+          K-conv = F-map-Coneˡ (Cod _ _)
 
-    -- --     solutionSet′⇒universalMorphism : UniversalMorphism X R
-    -- --     solutionSet′⇒universalMorphism = record
-    -- --       { initial = SolutionSet⇒Initial {o′ = 0ℓ} {0ℓ} {0ℓ} {C = X ↙ R} complete s′
-    -- --       }
+          K-conv′ : Cone F → Cone (R ∘F F′)
+          K-conv′ K = F-map-Coneˡ R (K-conv K)
 
-    -- -- solutionSet⇒adjoint : Σ (Functor D C) (λ L → L ⊣ R)
-    -- -- solutionSet⇒adjoint = universalMophisms⇒adjoint solutionSet′⇒universalMorphism
+          ! : (K : Cone F) → Cones F [ K , ⊤ ]
+          ! K = record
+            { arr     = record
+              { h       = LimF′.rep (K-conv K)
+              ; commute = ⟺ (LimRF′.terminal.!-unique (record
+                { arr     = R.₁ (LimF′.rep (K-conv K)) D.∘ CommaObj.f N
+                ; commute = λ {j} → begin
+                  LimRF′.proj j D.∘ R.₁ (LimF′.rep (K-conv K)) D.∘ CommaObj.f N
+                    ≈⟨ pullˡ ([ R ]-resp-∘ LimF′.commute) ⟩
+                  R.₁ (Comma⇒.h (ψ j)) D.∘ CommaObj.f N
+                    ≈⟨ Comma⇒.commute (ψ j) ⟩
+                  CommaObj.f (F.F₀ j) D.∘ D.id
+                    ≈⟨ D.identityʳ ⟩
+                  CommaObj.f (F.₀ j)
+                    ∎
+                })) ○ ⟺ D.identityʳ
+              }
+            ; commute = -, LimF′.commute
+            }
+            where open Cone _ K
+
+          !-unique : {K : Cone F} (f : Cones F [ K , ⊤ ]) → Cones F [ ! K ≈ f ]
+          !-unique f = -, LimF′.terminal.!-unique record
+            { arr     = Comma⇒.h f.arr
+            ; commute = f′.commute
+            }
+            where module f = Cone⇒ _ f
+                  f′ = F-map-Cone⇒ˡ (Cod _ _) f
+                  module f′ = Cone⇒ _ f′
+
+          complete : Limit F
+          complete = record
+            { terminal = record
+              { ⊤             = ⊤
+              ; ⊤-is-terminal = record
+                { !        = ! _
+                ; !-unique = !-unique
+                }
+              }
+            }
+
+        solutionSet′⇒universalMorphism : UniversalMorphism X R
+        solutionSet′⇒universalMorphism = record
+          { initial = SolutionSet⇒Initial {o′ = 0ℓ} {0ℓ} {0ℓ} {C = X ↙ R} complete s′
+          }
+
+    solutionSet⇒adjoint : Σ (Functor D C) (λ L → L ⊣ R)
+    solutionSet⇒adjoint = universalMophisms⇒adjoint solutionSet′⇒universalMorphism

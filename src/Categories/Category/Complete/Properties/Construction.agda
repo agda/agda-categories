@@ -111,8 +111,10 @@ module _ (prods : AllProductsOf (o′ ⊔ ℓ′)) (equalizer : ∀ {A B} (f g :
       complete = record
         { terminal = record
           { ⊤        = ⊤
-          ; !        = !
-          ; !-unique = !-unique
+          ; ⊤-is-terminal = record
+            { !        = !
+            ; !-unique = !-unique
+            }
           }
         }
 
