@@ -1,6 +1,8 @@
 import Categories.2-Category
 import Categories.2-Functor
 import Categories.Adjoint
+import Categories.Adjoint.AFT
+import Categories.Adjoint.AFT.SolutionSet
 import Categories.Adjoint.Alternatives
 import Categories.Adjoint.Compose
 import Categories.Adjoint.Construction.EilenbergMoore
@@ -46,6 +48,8 @@ import Categories.Category.Complete
 import Categories.Category.Complete.Finitely
 import Categories.Category.Complete.Finitely.Properties
 import Categories.Category.Complete.Properties
+import Categories.Category.Complete.Properties.Construction
+import Categories.Category.Complete.Properties.SolutionSet
 import Categories.Category.Concrete
 import Categories.Category.Concrete.Properties
 import Categories.Category.Construction.0-Groupoid
@@ -174,7 +178,9 @@ import Categories.Diagram.Duality
 import Categories.Diagram.End
 import Categories.Diagram.End.Properties
 import Categories.Diagram.Equalizer
+import Categories.Diagram.Equalizer.Indexed
 import Categories.Diagram.Equalizer.Limit
+import Categories.Diagram.Equalizer.Properties
 import Categories.Diagram.Finite
 import Categories.Diagram.Limit
 import Categories.Diagram.Limit.Properties
@@ -271,6 +277,8 @@ import Categories.Object.Monoid
 import Categories.Object.Product
 import Categories.Object.Product.Construction
 import Categories.Object.Product.Core
+import Categories.Object.Product.Indexed
+import Categories.Object.Product.Indexed.Properties
 import Categories.Object.Product.Limit
 import Categories.Object.Product.Morphisms
 import Categories.Object.Terminal

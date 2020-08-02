@@ -28,6 +28,11 @@ import Categories.Category.Construction.Cones as Co
 import Categories.Morphism.Reasoning as MR
 import Categories.Morphism as Mor
 
+-- exports
+open import Categories.Category.Complete.Properties.Construction public
+open import Categories.Category.Complete.Properties.SolutionSet public
+
+
 private
   variable
     o′ ℓ′ e′ o″ ℓ″ e″ : Level
@@ -43,8 +48,14 @@ module _ (Com : Complete o′ ℓ′ e′ C) where
         { product = λ {A B} → limit⇒product (Com (product⇒limit-F _ _ _ A B))
         }
       }
-    ; equalizer = λ f g → limit⇒equalizer (Com (equalizer⇒limit-F _ _ _ f g))
+    ; equalizer = complete⇒equalizer Com
     }
+
+-- if the base category is complete, then the functor category is complete.
+-- in addition, the evaluation functor is continuous.
+--
+--     Functors-Complete : Complete o″ ℓ″ e″ D^C
+--     evalF-Continuous : ∀ X → Continuous o″ ℓ″ e″ (evalF C D X)
 
 module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) where
   private
@@ -282,7 +293,7 @@ module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) whe
           }
 
   Functors-Complete : Complete o″ ℓ″ e″ D^C
-  Functors-Complete F = complete F
+  Functors-Complete = complete
 
   evalF-Continuous : ∀ X → Continuous o″ ℓ″ e″ (evalF C D X)
   evalF-Continuous X {J} {F} L = preserves F L X
