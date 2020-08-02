@@ -15,7 +15,7 @@
 <a id="434" class="Keyword">import</a> <a id="441" href="Categories.Morphism.Reasoning.html" class="Module">Categories.Morphism.Reasoning</a> <a id="471" class="Symbol">as</a> <a id="474" class="Module">Reas</a>
 
 <a id="480" class="Keyword">open</a> <a id="485" href="Categories.Category.Core.html#375" class="Module">Category</a> <a id="494" href="Categories.Category.Construction.Cones.html#221" class="Bound">C</a>
-<a id="496" class="Keyword">open</a> <a id="501" href="Categories.Category.Core.html#2040" class="Module">HomReasoning</a>
+<a id="496" class="Keyword">open</a> <a id="501" href="Categories.Category.Core.html#2394" class="Module">HomReasoning</a>
 <a id="514" class="Keyword">open</a> <a id="519" href="Categories.Morphism.html" class="Module">Mor</a> <a id="523" href="Categories.Category.Construction.Cones.html#221" class="Bound">C</a> <a id="525" class="Keyword">using</a> <a id="531" class="Symbol">(</a>_≅_<a id="535" class="Symbol">)</a>
 <a id="537" class="Keyword">open</a> <a id="542" href="Categories.Morphism.IsoEquiv.html" class="Module">IsoEquiv</a> <a id="551" href="Categories.Category.Construction.Cones.html#221" class="Bound">C</a> <a id="553" class="Keyword">using</a> <a id="559" class="Symbol">(</a>_≃_<a id="563" class="Symbol">;</a> ⌞_⌟<a id="568" class="Symbol">)</a>
 <a id="570" class="Keyword">open</a> <a id="575" href="Categories.Morphism.Reasoning.html" class="Module">Reas</a> <a id="580" href="Categories.Category.Construction.Cones.html#221" class="Bound">C</a>
@@ -106,23 +106,4 @@
 <a id="↮⇒-≃"></a><a id="2235" href="Categories.Category.Construction.Cones.html#2235" class="Function">↮⇒-≃</a> <a id="2240" class="Symbol">:</a> <a id="2242" class="Symbol">∀</a> <a id="2244" class="Symbol">{</a><a id="2245" href="Categories.Category.Construction.Cones.html#2245" class="Bound">i₁</a> <a id="2248" href="Categories.Category.Construction.Cones.html#2248" class="Bound">i₂</a> <a id="2251" class="Symbol">:</a> <a id="2253" href="Categories.Category.Construction.Cones.html#1368" class="Generalizable">K</a> <a id="2255" href="Categories.Category.Construction.Cones.html#1480" class="Record Operator">⇔</a> <a id="2257" href="Categories.Category.Construction.Cones.html#1370" class="Generalizable">K′</a><a id="2259" class="Symbol">}</a> <a id="2261" class="Symbol">→</a> <a id="2263" href="Categories.Category.Construction.Cones.html#2245" class="Bound">i₁</a> <a id="2266" href="Categories.Category.Construction.Cones.html#1519" class="Record Operator">↮</a> <a id="2268" href="Categories.Category.Construction.Cones.html#2248" class="Bound">i₂</a> <a id="2271" class="Symbol">→</a> <a id="2273" href="Categories.Category.Construction.Cones.html#2037" class="Function">iso-cone⇒iso-apex</a> <a id="2291" href="Categories.Category.Construction.Cones.html#2245" class="Bound">i₁</a> <a id="2294" href="Categories.Morphism.IsoEquiv.html#1761" class="Record Operator">≃</a> <a id="2296" href="Categories.Category.Construction.Cones.html#2037" class="Function">iso-cone⇒iso-apex</a> <a id="2314" href="Categories.Category.Construction.Cones.html#2248" class="Bound">i₂</a>
 <a id="2317" href="Categories.Category.Construction.Cones.html#2235" class="Function">↮⇒-≃</a> <a id="2322" href="Categories.Category.Construction.Cones.html#2322" class="Bound">i₁↮i₂</a> <a id="2328" class="Symbol">=</a> <a id="2330" href="Categories.Morphism.IsoEquiv.html#1807" class="InductiveConstructor Operator">⌞</a> <a id="2332" href="Categories.Morphism.IsoEquiv.html#1830" class="Field">from-≈</a> <a id="2339" href="Categories.Morphism.IsoEquiv.html#1807" class="InductiveConstructor Operator">⌟</a>
   <a id="2343" class="Keyword">where</a> <a id="2349" class="Keyword">open</a> <a id="2354" href="Categories.Category.Construction.Cones.html#1519" class="Module Operator">_↮_</a> <a id="2358" href="Categories.Category.Construction.Cones.html#2322" class="Bound">i₁↮i₂</a>
-
-<a id="2365" class="Comment">-- -- .up-to-iso-cone-unique : ∀ L L′ → (i : proj-cone L ⇿ proj-cone L′) → up-to-iso-cone L L′ ≜ⁱ i</a>
-<a id="2465" class="Comment">-- -- up-to-iso-cone-unique L L′ i = T.up-to-iso-unique (Cones F) (terminal L) (terminal L′) i</a>
-
-<a id="2561" class="Comment">-- -- -- XXX probably not true -- what is?  only the above?</a>
-<a id="2621" class="Comment">-- -- -- .up-to-iso-unique : ∀ L L′ → (i : vertex L ≅ vertex L′) → up-to-iso L L′ ≡ⁱ i</a>
-<a id="2708" class="Comment">-- -- -- up-to-iso-unique L L′ i = ≜ⁱ⇒≡ⁱ {!up-to-iso-unique-cone L L′ !}</a>
-
-<a id="2782" class="Comment">-- -- .up-to-iso-cone-invˡ : ∀ {L κ} {i : proj-cone L ⇿ κ} → up-to-iso-cone L (transport-by-iso-cone L i) ≜ⁱ i</a>
-<a id="2893" class="Comment">-- -- up-to-iso-cone-invˡ {L} {i = i} = up-to-iso-cone-unique L (transport-by-iso-cone L i) i</a>
-
-<a id="2988" class="Comment">-- -- .up-to-iso-invˡ : ∀ {L X} {i : vertex L ≅ X} → up-to-iso L (transport-by-iso L i) ≡ⁱ i</a>
-<a id="3081" class="Comment">-- -- up-to-iso-invˡ {L₁} {i = i} = ≜ⁱ⇒≡ⁱ (up-to-iso-cone-invˡ {L₁} {i = proj₂ (cone-resp-iso (proj-cone L₁) i)})</a>
-
-<a id="3196" class="Comment">-- -- up-to-iso-cone-invʳ : ∀ {L L′} → proj-cone (transport-by-iso-cone L (up-to-iso-cone L L′)) ≜ proj-cone L′</a>
-<a id="3308" class="Comment">-- -- up-to-iso-cone-invʳ {L} {L′} = ≜-refl</a>
-
-<a id="3353" class="Comment">-- -- up-to-iso-invʳ : ∀ {L L′} → vertex (transport-by-iso L (up-to-iso L L′)) ≣ vertex L′</a>
-<a id="3444" class="Comment">-- -- up-to-iso-invʳ {t} {t′} = ≣-refl</a>
 </pre></body></html>
