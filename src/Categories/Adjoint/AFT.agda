@@ -177,11 +177,9 @@ module _ {R : Functor C D} where
           !-unique : {K : Cone F} (f : Cones F [ K , ⊤ ]) → Cones F [ ! K ≈ f ]
           !-unique f = -, LimF′.terminal.!-unique record
             { arr     = Comma⇒.h f.arr
-            ; commute = f′.commute
+            ; commute = proj₂ f.commute
             }
             where module f = Cone⇒ _ f
-                  f′ = F-map-Cone⇒ˡ (Cod _ _) f
-                  module f′ = Cone⇒ _ f′
 
           complete : Limit F
           complete = record
