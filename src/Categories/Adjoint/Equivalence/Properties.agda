@@ -102,9 +102,11 @@ module _  (⊣equiv : ⊣Equivalence C D) (F : Functor C E) where
     ⊣equiv-preserves-diagram : Lim.Limit FR
     ⊣equiv-preserves-diagram = record
       { terminal = record
-        { ⊤        = ⊤cone
-        ; !        = !cone
-        ; !-unique = !cone-unique
+        { ⊤             = ⊤cone
+        ; ⊤-is-terminal = record
+          { !        = !cone
+          ; !-unique = !cone-unique
+          }
         }
       }
   

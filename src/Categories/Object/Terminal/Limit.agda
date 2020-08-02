@@ -20,15 +20,17 @@ module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C
   limit⇒⊥ : Limit F → Terminal
   limit⇒⊥ L = record
     { ⊤        = apex
-    ; !        = rep record
-      { apex = record
-        { ψ       = λ ()
+    ; ⊤-is-terminal = record
+      { !        = rep record
+        { apex = record
+          { ψ       = λ ()
+          ; commute = λ { {()} }
+          }
+        }
+      ; !-unique = λ f → terminal.!-unique record
+        { arr     = f
         ; commute = λ { {()} }
         }
-      }
-    ; !-unique = λ f → terminal.!-unique record
-      { arr     = f
-      ; commute = λ { {()} }
       }
     }
     where open Limit L
@@ -54,15 +56,17 @@ module _ o′ ℓ′ e′ where
           ; commute = λ { {()} }
           }
         }
-      ; !        = λ {K} →
-        let open Co.Cone ⊥⇒limit-F K
-        in record
-        { arr     = !
-        ; commute = λ { {()} }
+      ; ⊤-is-terminal = record
+        { !        = λ {K} →
+          let open Co.Cone ⊥⇒limit-F K
+          in record
+          { arr     = !
+          ; commute = λ { {()} }
+          }
+        ; !-unique = λ f →
+          let module f = Co.Cone⇒ ⊥⇒limit-F f
+          in !-unique f.arr
         }
-      ; !-unique = λ f →
-        let module f = Co.Cone⇒ ⊥⇒limit-F f
-        in !-unique f.arr
       }
     }
     where open Terminal t

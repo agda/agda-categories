@@ -102,16 +102,18 @@ module _ o′ ℓ′ e′ {X Y} {f g : X ⇒ Y} (e : Equalizer f g) where
                         ; {lift 1F} {lift 1F} (lift 0F) → identityˡ }
           }
         }
-      ; !        = λ {K} →
-        let open Co.Cone F K
-        in record
-        { arr     = equalize (commute (lift 0F) ○ ⟺ (commute (lift 1F)))
-        ; commute = λ { {lift 0F} → ⟺ universal
-                      ; {lift 1F} → pullʳ (⟺ universal) ○ commute (lift 1F) }
+      ; ⊤-is-terminal = record
+        { !        = λ {K} →
+          let open Co.Cone F K
+          in record
+          { arr     = equalize (commute (lift 0F) ○ ⟺ (commute (lift 1F)))
+          ; commute = λ { {lift 0F} → ⟺ universal
+                        ; {lift 1F} → pullʳ (⟺ universal) ○ commute (lift 1F) }
+          }
+        ; !-unique = λ f →
+          let open Co.Cone⇒ F f
+          in ⟺ (unique (⟺ commute))
         }
-      ; !-unique = λ f →
-        let open Co.Cone⇒ F f
-        in ⟺ (unique (⟺ commute))
       }
     }
 

@@ -8,7 +8,8 @@ open import Categories.Category
 
 module Categories.Category.Cartesian {o ℓ e} (𝒞 : Category o ℓ e) where
 
-open import Level
+open import Level hiding (suc)
+open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (Σ; _,_; uncurry)
 
 open Category 𝒞
@@ -255,6 +256,11 @@ record Cartesian : Set (levelOfTerm 𝒞) where
   module products = BinaryProducts products
   open terminal public
   open products public
+
+  power : Obj → ℕ → Obj
+  power A 0 = ⊤
+  power A 1 = A
+  power A (suc (suc n)) = A × power A (suc n)
 
   ⊤×A≅A : ⊤ × A ≅ A
   ⊤×A≅A = record

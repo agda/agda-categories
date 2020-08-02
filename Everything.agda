@@ -19,6 +19,7 @@ import Categories.Adjoint.Instance.StrictCore
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Properties
 import Categories.Adjoint.RAPL
+import Categories.Adjoint.Relative
 import Categories.Adjoint.TwoSided
 import Categories.Adjoint.TwoSided.Compose
 import Categories.Bicategory
@@ -29,6 +30,7 @@ import Categories.Bicategory.Instance.Cats
 import Categories.Bicategory.Instance.EnrichedCats
 import Categories.Category
 import Categories.Category.BicartesianClosed
+import Categories.Category.CMonoidEnriched
 import Categories.Category.Cartesian
 import Categories.Category.Cartesian.Properties
 import Categories.Category.CartesianClosed
@@ -104,6 +106,7 @@ import Categories.Category.Instance.FinCatShapes
 import Categories.Category.Instance.FinSetoids
 import Categories.Category.Instance.Globe
 import Categories.Category.Instance.Groupoids
+import Categories.Category.Instance.LawvereTheories
 import Categories.Category.Instance.One
 import Categories.Category.Instance.PointedSets
 import Categories.Category.Instance.Posets
@@ -159,6 +162,7 @@ import Categories.Category.Topos
 import Categories.Category.WithFamilies
 import Categories.CoYoneda
 import Categories.Comonad
+import Categories.Comonad.Relative
 import Categories.Diagram.Cocone
 import Categories.Diagram.Cocone.Properties
 import Categories.Diagram.Coend
@@ -176,6 +180,7 @@ import Categories.Diagram.End.Properties
 import Categories.Diagram.Equalizer
 import Categories.Diagram.Equalizer.Indexed
 import Categories.Diagram.Equalizer.Limit
+import Categories.Diagram.Equalizer.Properties
 import Categories.Diagram.Finite
 import Categories.Diagram.Limit
 import Categories.Diagram.Limit.Properties
@@ -197,8 +202,9 @@ import Categories.Functor
 import Categories.Functor.Algebra
 import Categories.Functor.Bifunctor
 import Categories.Functor.Bifunctor.Properties
+import Categories.Functor.Cartesian
+import Categories.Functor.Cartesian.Properties
 import Categories.Functor.Coalgebra
-import Categories.Functor.Cocontinuous
 import Categories.Functor.Construction.Constant
 import Categories.Functor.Construction.Diagonal
 import Categories.Functor.Construction.FromDiscrete
@@ -206,7 +212,6 @@ import Categories.Functor.Construction.LiftSetoids
 import Categories.Functor.Construction.Limit
 import Categories.Functor.Construction.ObjectRestriction
 import Categories.Functor.Construction.Zero
-import Categories.Functor.Continuous
 import Categories.Functor.Core
 import Categories.Functor.Duality
 import Categories.Functor.Equivalence
@@ -219,6 +224,7 @@ import Categories.Functor.Instance.Core
 import Categories.Functor.Instance.Discrete
 import Categories.Functor.Instance.SetoidDiscrete
 import Categories.Functor.Instance.StrictCore
+import Categories.Functor.Limits
 import Categories.Functor.Monoidal
 import Categories.Functor.Power
 import Categories.Functor.Power.Functorial
@@ -238,6 +244,7 @@ import Categories.Minus2-Category.Properties
 import Categories.Monad
 import Categories.Monad.Duality
 import Categories.Monad.Idempotent
+import Categories.Monad.Relative
 import Categories.Monad.Strong
 import Categories.Morphism
 import Categories.Morphism.Cartesian
@@ -279,6 +286,7 @@ import Categories.Object.Terminal.Limit
 import Categories.Object.Zero
 import Categories.Pseudofunctor
 import Categories.Pseudofunctor.Instance.EnrichedUnderlying
+import Categories.Theory.Lawvere
 import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda
