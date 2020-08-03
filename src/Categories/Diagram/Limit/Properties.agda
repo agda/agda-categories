@@ -51,9 +51,11 @@ module _ (W : Obj) {F : Functor J C} (lim : Lim.Limit F) where
   hom-resp-limit : LHomF.Limit
   hom-resp-limit = record
     { terminal = record
-      { ⊤        = ⊤
-      ; !        = !
-      ; !-unique = !-unique
+      { ⊤             = ⊤
+      ; ⊤-is-terminal = record
+        { !        = !
+        ; !-unique = !-unique
+        }
       }
     }
     where ⊤ : CHomF.Cone
@@ -130,16 +132,18 @@ module _ {F G : Functor J C} (F≃G : F ≃ G) where
             ⇒.η Y ∘ proj Y            ∎
           }
         }
-      ; !        = λ {A} → record
-        { arr     = rep (nat-map-Cone F⇐G A)
-        ; commute = λ {j} → assoc ○ ⟺ (switch-tofromˡ (record { iso = iso j }) (⟺ commute))
-        }
-      ; !-unique = λ {K} f →
-        let module f = Con.Cone⇒ G f
-        in terminal.!-unique record
-          { arr     = f.arr
-          ; commute = λ {j} → switch-fromtoˡ (record { iso = iso j }) (sym-assoc ○ f.commute)
+      ; ⊤-is-terminal = record
+        { !        = λ {A} → record
+          { arr     = rep (nat-map-Cone F⇐G A)
+          ; commute = λ {j} → assoc ○ ⟺ (switch-tofromˡ (record { iso = iso j }) (⟺ commute))
           }
+        ; !-unique = λ {K} f →
+          let module f = Con.Cone⇒ G f
+          in terminal.!-unique record
+            { arr     = f.arr
+            ; commute = λ {j} → switch-fromtoˡ (record { iso = iso j }) (sym-assoc ○ f.commute)
+            }
+        }
       }
     }
     where open LF.Limit L

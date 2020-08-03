@@ -13,9 +13,8 @@ open import Categories.Morphism.Reasoning C
 
 open HomReasoning
 
-record Initial : Set (o ⊔ ℓ ⊔ e) where
+record IsInitial (⊥ : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
-    ⊥ : Obj
     ! : {A : Obj} → (⊥ ⇒ A)
     !-unique : ∀ {A} → (f : ⊥ ⇒ A) → ! ≈ f
 
@@ -28,6 +27,13 @@ record Initial : Set (o ⊔ ℓ ⊔ e) where
 
   ⊥-id : (f : ⊥ ⇒ ⊥) → f ≈ id
   ⊥-id f = !-unique₂ f id
+
+record Initial : Set (o ⊔ ℓ ⊔ e) where
+  field
+    ⊥ : Obj
+    ⊥-is-initial : IsInitial ⊥
+
+  open IsInitial ⊥-is-initial public
 
 open Initial
 
@@ -44,11 +50,13 @@ up-to-iso i₁ i₂ = record
 transport-by-iso : (i : Initial) → ∀ {X} → ⊥ i ≅ X → Initial
 transport-by-iso i {X} i≅X = record
   { ⊥        = X
-  ; !        = ! i ∘ to
-  ; !-unique = λ h →  begin
-    ! i ∘ to        ≈⟨ !-unique i (h ∘ from) ⟩∘⟨refl  ⟩
-    (h ∘ from) ∘ to ≈⟨ cancelʳ isoʳ ⟩
-    h              ∎
+  ; ⊥-is-initial = record
+    { !        = ! i ∘ to
+    ; !-unique = λ h →  begin
+      ! i ∘ to        ≈⟨ !-unique i (h ∘ from) ⟩∘⟨refl  ⟩
+      (h ∘ from) ∘ to ≈⟨ cancelʳ isoʳ ⟩
+      h              ∎
+    }
   }
   where open _≅_ i≅X
 

@@ -67,23 +67,25 @@ Setoids-Cocomplete o ℓ e c ℓ′ {J} F = record
         ; commute = λ {X} X⇒Y x≈y → back (-, Π.cong (F₁ X⇒Y) (F₀.sym X x≈y))
         }
       }
-    ; !        = λ {K} →
-      let module K = Cocone K
-      in record
-      { arr     = record
-        { _⟨$⟩_ = to-coapex K
-        ; cong  = minimal (coc c ℓ′ F) K.N (to-coapex K) (coapex-cong K)
+    ; ⊥-is-initial = record
+      { !        = λ {K} →
+        let module K = Cocone K
+        in record
+        { arr     = record
+          { _⟨$⟩_ = to-coapex K
+          ; cong  = minimal (coc c ℓ′ F) K.N (to-coapex K) (coapex-cong K)
+          }
+        ; commute = λ {X} x≈y → Π.cong (Coapex.ψ (Cocone.coapex K) X) x≈y
         }
-      ; commute = λ {X} x≈y → Π.cong (Coapex.ψ (Cocone.coapex K) X) x≈y
+      ; !-unique = λ { {K} f {a , Sa} {b , Sb} eq →
+        let module K = Cocone K
+            module f = Cocone⇒ f
+            open RS K.N
+        in begin
+          K.ψ a ⟨$⟩ Sa       ≈˘⟨ f.commute (F₀.refl a) ⟩
+          f.arr ⟨$⟩ (a , Sa) ≈⟨ Π.cong f.arr eq ⟩
+          f.arr ⟨$⟩ (b , Sb) ∎ }
       }
-    ; !-unique = λ { {K} f {a , Sa} {b , Sb} eq →
-      let module K = Cocone K
-          module f = Cocone⇒ f
-          open RS K.N
-      in begin
-        K.ψ a ⟨$⟩ Sa       ≈˘⟨ f.commute (F₀.refl a) ⟩
-        f.arr ⟨$⟩ (a , Sa) ≈⟨ Π.cong f.arr eq ⟩
-        f.arr ⟨$⟩ (b , Sb) ∎ }
     }
   }
   where open Functor F
@@ -95,7 +97,7 @@ Setoids-Cocomplete o ℓ e c ℓ′ {J} F = record
         -- this is essentially a symmetric transitive closure of coc
         ⇛-Setoid : Setoid (o ⊔ c) (o ⊔ ℓ ⊔ c ⊔ ℓ′)
         ⇛-Setoid = ST.setoid (coc c ℓ′ F) (Preorder.refl (coc-preorder c ℓ′ F))
-        
+
         to-coapex : ∀ K → vertex-carrier c ℓ′ F → Setoid.Carrier (Cocone.N K)
         to-coapex K (j , Sj) = K.ψ j ⟨$⟩ Sj
           where module K = Cocone K
