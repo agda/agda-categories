@@ -218,6 +218,7 @@ import Categories.Functor.Equivalence
 import Categories.Functor.Fibration
 import Categories.Functor.Groupoid
 import Categories.Functor.Hom
+import Categories.Functor.Hom.Properties
 import Categories.Functor.Instance.0-Truncation
 import Categories.Functor.Instance.01-Truncation
 import Categories.Functor.Instance.Core
