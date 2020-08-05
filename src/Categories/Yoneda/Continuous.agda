@@ -5,6 +5,7 @@ open import Categories.Category
 module Categories.Yoneda.Continuous {o ℓ e} (C : Category o ℓ e) where
 
 open import Function.Equality using (Π)
+open import Relation.Binary using (Setoid)
 
 open import Categories.Category.Construction.Cones
 open import Categories.Category.Construction.Presheaves
@@ -76,13 +77,25 @@ module _ {o′ ℓ′ e′} {J : Category o′ ℓ′ e′} {F : Functor J C} (L
         ; commute = λ eq → L.commute ○ Π.cong (K.ψ.η _ _) eq
         }
 
+      module _ (f : Cones yF [ K , ⊤ ]) where
+        private
+          module f where
+            open Cone⇒ _ f public
+            module arr = NaturalTransformation arr
+
+        !-unique : Cones yF [ ! ≈ f ]
+        !-unique {X} {x} {y} eq = L.terminal.!-unique record
+          { arr     = f.arr.η X ⟨$⟩ y
+          ; commute = f.commute (Setoid.sym (K.N.₀ X) eq)
+          }
+
   embed-resp-limit : Limit yF
   embed-resp-limit = record
     { terminal = record
       { ⊤             = ⊤
       ; ⊤-is-terminal = record
         { !        = !
-        ; !-unique = {!!}
+        ; !-unique = !-unique
         }
       }
     }
