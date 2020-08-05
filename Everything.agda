@@ -219,6 +219,8 @@ import Categories.Functor.Fibration
 import Categories.Functor.Groupoid
 import Categories.Functor.Hom
 import Categories.Functor.Hom.Properties
+import Categories.Functor.Hom.Properties.Contra
+import Categories.Functor.Hom.Properties.Covariant
 import Categories.Functor.Instance.0-Truncation
 import Categories.Functor.Instance.01-Truncation
 import Categories.Functor.Instance.Core
@@ -291,5 +293,6 @@ import Categories.Theory.Lawvere
 import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda
+import Categories.Yoneda.Continuous
 import Categories.Yoneda.Properties
 import Relation.Binary.Construct.Closure.SymmetricTransitive
