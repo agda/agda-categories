@@ -17,6 +17,8 @@ open import Categories.Functor.Hom.Properties C
 open import Categories.NaturalTransformation
 open import Categories.Yoneda
 
+import Categories.Morphism.Reasoning as MR
+
 open Hom C
 open Yoneda C
 open Π using (_⟨$⟩_)
@@ -30,6 +32,7 @@ module _ {o′ ℓ′ e′} {J : Category o′ ℓ′ e′} {F : Functor J C} (L
     module F = Functor F
     module L = Limit L
     open C.HomReasoning
+    open MR C
 
     yF = embed ∘F F
 
@@ -60,7 +63,15 @@ module _ {o′ ℓ′ e′} {J : Category o′ ℓ′ e′} {F : Functor J C} (L
       ! = record
         { arr     = ntHelper record
           { η       = λ X → Cone⇒.arr (HomL.terminal.! X {KHF X})
-          ; commute = λ f → {!Cone⇒.commute (HomL.terminal.! X {KHF X})!}
+          ; commute = λ {X Y} f {x y} eq → L.terminal.!-unique record
+            { arr     = C.id C.∘ L.rep _ C.∘ f
+            ; commute = λ {j} → begin
+              L.proj j C.∘ C.id C.∘ L.rep _ C.∘ f ≈⟨ refl⟩∘⟨ C.identityˡ ⟩
+              L.proj j C.∘ L.rep _ C.∘ f          ≈⟨ pullˡ L.commute ⟩
+              (K.ψ.η j X ⟨$⟩ y) C.∘ f             ≈˘⟨ C.identityˡ ⟩
+              C.id C.∘ (K.ψ.η j X ⟨$⟩ y) C.∘ f    ≈˘⟨ K.ψ.commute j f eq ⟩
+              K.ψ.η j Y ⟨$⟩ (K.N.₁ f ⟨$⟩ x)       ∎
+            }
           }
         ; commute = λ eq → L.commute ○ Π.cong (K.ψ.η _ _) eq
         }
