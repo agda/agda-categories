@@ -136,6 +136,7 @@ import Categories.Category.Monoidal.Closed.IsClosed.Dinatural
 import Categories.Category.Monoidal.Closed.IsClosed.Identity
 import Categories.Category.Monoidal.Closed.IsClosed.L
 import Categories.Category.Monoidal.Closed.IsClosed.Pentagon
+import Categories.Category.Monoidal.CompactClosed
 import Categories.Category.Monoidal.Construction.Minus2
 import Categories.Category.Monoidal.Core
 import Categories.Category.Monoidal.Instance.Cats
