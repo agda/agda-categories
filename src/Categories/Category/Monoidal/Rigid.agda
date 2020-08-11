@@ -2,7 +2,6 @@
 
 open import Categories.Category
 open import Categories.Category.Monoidal.Core using (Monoidal)
-open import Categories.Category.Monoidal.Symmetric
 
 module Categories.Category.Monoidal.Rigid {o ℓ e} {C : Category o ℓ e} (M : Monoidal C) where
 
