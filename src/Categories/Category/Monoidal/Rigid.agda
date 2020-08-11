@@ -18,8 +18,8 @@ private
   variable
     X : Obj
 
--- rigid monoidal category
-record Rigid : Set (levelOfTerm M) where
+-- left rigid monoidal category
+record LeftRigid : Set (levelOfTerm M) where
   open Monoidal M public
 
   field
