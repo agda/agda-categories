@@ -23,7 +23,6 @@ record LeftRigid : Set (levelOfTerm M) where
   open Monoidal M public
 
   field
-    symmetric : Symmetric M
     _⁻¹ : Obj → Obj
     η   : ∀ {X} → unit ⇒ X ⊗₀ X ⁻¹
     ε   : ∀ {X} → X ⁻¹ ⊗₀ X  ⇒ unit
@@ -42,5 +41,31 @@ record LeftRigid : Set (levelOfTerm M) where
                associator.to  ⇒⟨ (X ⁻¹ ⊗₀ X) ⊗₀ X ⁻¹ ⟩
                (ε ⊗₁ id) ⇒⟨ unit ⊗₀ X ⁻¹ ⟩
                unitorˡ.from
+             ≈ id
+             ⟩
+
+-- right rigid monoidal category
+record RightRigid : Set (levelOfTerm M) where
+  open Monoidal M public
+
+  field
+    _⁻¹ : Obj → Obj
+    η   : ∀ {X} → unit ⇒ X ⁻¹ ⊗₀ X
+    ε   : ∀ {X} → X ⊗₀ X ⁻¹  ⇒ unit
+
+    snake₁ : [ X ⇒ X ]⟨
+               unitorʳ.to  ⇒⟨ (X ⊗₀ unit) ⟩
+               (id ⊗₁ η)  ⇒⟨ X ⊗₀ (X ⁻¹ ⊗₀ X) ⟩
+               associator.to ⇒⟨ (X ⊗₀ X ⁻¹) ⊗₀ X ⟩
+               (ε ⊗₁ id) ⇒⟨ unit ⊗₀ X ⟩
+               unitorˡ.from
+             ≈ id
+             ⟩
+    snake₂ : [ X ⁻¹ ⇒ X ⁻¹ ]⟨
+               unitorˡ.to  ⇒⟨ unit ⊗₀ X ⁻¹ ⟩
+               (η ⊗₁ id)  ⇒⟨ (X ⁻¹ ⊗₀ X) ⊗₀ X ⁻¹ ⟩
+               associator.from  ⇒⟨ X ⁻¹ ⊗₀ (X ⊗₀ X ⁻¹) ⟩
+               (id ⊗₁ ε) ⇒⟨ X ⁻¹ ⊗₀ unit ⟩
+               unitorʳ.from
              ≈ id
              ⟩
