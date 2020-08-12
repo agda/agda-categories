@@ -41,6 +41,24 @@ Wedge-∘ {A = A} W f = record
   }
   where open Wedge W
 
+record Wedge-Morphism (W₁ W₂ : Wedge) : Set (levelOfTerm F) where
+  private
+    module W₁ = Wedge W₁
+    module W₂ = Wedge W₂
+    open DinaturalTransformation
+  field
+    u : W₁.E ⇒ W₂.E
+    commute : ∀ {C} → W₁.dinatural.α C ≈ W₂.dinatural.α C ∘ u
+
+Wedge-id : ∀ {W} → Wedge-Morphism W W
+Wedge-id {W} = record { u = D.id ; commute = D.Equiv.sym D.identityʳ }
+
+Wedge-Morphism-∘ : {A B C : Wedge} → Wedge-Morphism B C → Wedge-Morphism A B → Wedge-Morphism A C
+Wedge-Morphism-∘ M N = record { u = u M ∘ u N ; commute =  commute N ○ (∘-resp-≈ˡ (commute M) ○ assoc) }
+  where
+  open Wedge-Morphism
+  open HomReasoning
+
 record End : Set (levelOfTerm F) where
   field
     wedge : Wedge
