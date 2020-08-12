@@ -15,12 +15,31 @@ open import Categories.NaturalTransformation
 open import Categories.NaturalTransformation.Dinatural
 open import Categories.Diagram.End as ∫
 
+import Categories.Category.Construction.Wedges as Wedges
+open import Categories.Object.Terminal
+
 import Categories.Morphism.Reasoning as MR
 
 private
   variable
     o ℓ e : Level
     C D E : Category o ℓ e
+
+module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
+  (F : Bifunctor (Category.op C) C D) where
+  open Wedges F
+
+  -- Being an End is the same as being a Terminal object in the category of Wedges
+  End⇒Terminal : End F → Terminal Wedges
+  End⇒Terminal c =  record
+    { ⊤ = wedge
+    ; ⊤-is-terminal = record
+      { ! = λ {A} → record { u = factor A ; commute = universal }
+      ; !-unique = λ {A} f → unique {A} (Wedge-Morphism.commute f)
+      }
+    }
+    where
+    open End c
 
 module _ {C : Category o ℓ e}
          (F : Functor E (Functors (Product (Category.op C) C) D)) where
