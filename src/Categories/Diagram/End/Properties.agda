@@ -41,6 +41,17 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ �
     where
     open End c
 
+  Terminal⇒Coend : Terminal Wedges → End F
+  Terminal⇒Coend i = record
+    { wedge = ⊤
+    ; factor = λ W → u {W₁ = W} !
+    ; universal = commute !
+    ; unique = λ {_} {g} x → !-unique (record { u = g ; commute = x })
+    }
+    where
+    open Terminal i
+    open Wedge-Morphism
+
 module _ {C : Category o ℓ e}
          (F : Functor E (Functors (Product (Category.op C) C) D)) where
   private
