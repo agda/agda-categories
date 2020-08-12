@@ -58,6 +58,8 @@ module _ {C : Category o ℓ e}
             ; dinatural = F₁ f <∘ dinatural (end X)
             }
 
+-- A Natural Transformation between two functors induces an arrow between the
+-- (object part of) the respective ends.
 module _ {P Q : Functor (Product (Category.op C) C) D} (P⇒Q : NaturalTransformation P Q) where
   open End renaming (E to end)
   open Category D
