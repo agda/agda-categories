@@ -105,22 +105,3 @@ iso-cone⇒iso-apex K⇔K′ = record
 ↮⇒-≃ : ∀ {i₁ i₂ : K ⇔ K′} → i₁ ↮ i₂ → iso-cone⇒iso-apex i₁ ≃ iso-cone⇒iso-apex i₂
 ↮⇒-≃ i₁↮i₂ = ⌞ from-≈ ⌟
   where open _↮_ i₁↮i₂
-
--- -- .up-to-iso-cone-unique : ∀ L L′ → (i : proj-cone L ⇿ proj-cone L′) → up-to-iso-cone L L′ ≜ⁱ i
--- -- up-to-iso-cone-unique L L′ i = T.up-to-iso-unique (Cones F) (terminal L) (terminal L′) i
-
--- -- -- XXX probably not true -- what is?  only the above?
--- -- -- .up-to-iso-unique : ∀ L L′ → (i : vertex L ≅ vertex L′) → up-to-iso L L′ ≡ⁱ i
--- -- -- up-to-iso-unique L L′ i = ≜ⁱ⇒≡ⁱ {!up-to-iso-unique-cone L L′ !}
-
--- -- .up-to-iso-cone-invˡ : ∀ {L κ} {i : proj-cone L ⇿ κ} → up-to-iso-cone L (transport-by-iso-cone L i) ≜ⁱ i
--- -- up-to-iso-cone-invˡ {L} {i = i} = up-to-iso-cone-unique L (transport-by-iso-cone L i) i
-
--- -- .up-to-iso-invˡ : ∀ {L X} {i : vertex L ≅ X} → up-to-iso L (transport-by-iso L i) ≡ⁱ i
--- -- up-to-iso-invˡ {L₁} {i = i} = ≜ⁱ⇒≡ⁱ (up-to-iso-cone-invˡ {L₁} {i = proj₂ (cone-resp-iso (proj-cone L₁) i)})
-
--- -- up-to-iso-cone-invʳ : ∀ {L L′} → proj-cone (transport-by-iso-cone L (up-to-iso-cone L L′)) ≜ proj-cone L′
--- -- up-to-iso-cone-invʳ {L} {L′} = ≜-refl
-
--- -- up-to-iso-invʳ : ∀ {L L′} → vertex (transport-by-iso L (up-to-iso L L′)) ≣ vertex L′
--- -- up-to-iso-invʳ {t} {t′} = ≣-refl

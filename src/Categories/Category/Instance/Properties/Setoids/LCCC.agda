@@ -147,14 +147,16 @@ module _ {o} where
 
       slice-terminal : Terminal Sl
       slice-terminal = record
-        { ⊤        = sliceobj {Y = A} record
+        { ⊤             = sliceobj {Y = A} record
           { _⟨$⟩_ = λ x → x
           ; cong  = λ eq → eq
           }
-        ; !        = λ { {sliceobj f} → slicearr {h = f} (Π.cong f) }
-        ; !-unique = λ { {X} (slicearr △) eq →
+        ; ⊤-is-terminal = record
+          { !        = λ { {sliceobj f} → slicearr {h = f} (Π.cong f) }
+          ; !-unique = λ { {X} (slicearr △) eq →
                          let module X = SliceObj X
                          in sym (△ (Setoid.sym X.Y eq)) }
+          }
         }
 
       F₀ : Sl.Obj → Sl.Obj → SpanObj → Setoid o o

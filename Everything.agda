@@ -1,6 +1,8 @@
 import Categories.2-Category
 import Categories.2-Functor
 import Categories.Adjoint
+import Categories.Adjoint.AFT
+import Categories.Adjoint.AFT.SolutionSet
 import Categories.Adjoint.Alternatives
 import Categories.Adjoint.Compose
 import Categories.Adjoint.Construction.EilenbergMoore
@@ -17,6 +19,7 @@ import Categories.Adjoint.Instance.StrictCore
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Properties
 import Categories.Adjoint.RAPL
+import Categories.Adjoint.Relative
 import Categories.Adjoint.TwoSided
 import Categories.Adjoint.TwoSided.Compose
 import Categories.Bicategory
@@ -27,6 +30,7 @@ import Categories.Bicategory.Instance.Cats
 import Categories.Bicategory.Instance.EnrichedCats
 import Categories.Category
 import Categories.Category.BicartesianClosed
+import Categories.Category.CMonoidEnriched
 import Categories.Category.Cartesian
 import Categories.Category.Cartesian.Properties
 import Categories.Category.CartesianClosed
@@ -44,6 +48,8 @@ import Categories.Category.Complete
 import Categories.Category.Complete.Finitely
 import Categories.Category.Complete.Finitely.Properties
 import Categories.Category.Complete.Properties
+import Categories.Category.Complete.Properties.Construction
+import Categories.Category.Complete.Properties.SolutionSet
 import Categories.Category.Concrete
 import Categories.Category.Concrete.Properties
 import Categories.Category.Construction.0-Groupoid
@@ -130,6 +136,7 @@ import Categories.Category.Monoidal.Closed.IsClosed.Dinatural
 import Categories.Category.Monoidal.Closed.IsClosed.Identity
 import Categories.Category.Monoidal.Closed.IsClosed.L
 import Categories.Category.Monoidal.Closed.IsClosed.Pentagon
+import Categories.Category.Monoidal.CompactClosed
 import Categories.Category.Monoidal.Construction.Minus2
 import Categories.Category.Monoidal.Core
 import Categories.Category.Monoidal.Instance.Cats
@@ -139,6 +146,7 @@ import Categories.Category.Monoidal.Instance.Sets
 import Categories.Category.Monoidal.Instance.StrictCats
 import Categories.Category.Monoidal.Properties
 import Categories.Category.Monoidal.Reasoning
+import Categories.Category.Monoidal.Rigid
 import Categories.Category.Monoidal.Symmetric
 import Categories.Category.Monoidal.Traced
 import Categories.Category.Monoidal.Utilities
@@ -156,6 +164,7 @@ import Categories.Category.Topos
 import Categories.Category.WithFamilies
 import Categories.CoYoneda
 import Categories.Comonad
+import Categories.Comonad.Relative
 import Categories.Diagram.Cocone
 import Categories.Diagram.Cocone.Properties
 import Categories.Diagram.Coend
@@ -171,7 +180,9 @@ import Categories.Diagram.Duality
 import Categories.Diagram.End
 import Categories.Diagram.End.Properties
 import Categories.Diagram.Equalizer
+import Categories.Diagram.Equalizer.Indexed
 import Categories.Diagram.Equalizer.Limit
+import Categories.Diagram.Equalizer.Properties
 import Categories.Diagram.Finite
 import Categories.Diagram.Limit
 import Categories.Diagram.Limit.Properties
@@ -196,7 +207,6 @@ import Categories.Functor.Bifunctor.Properties
 import Categories.Functor.Cartesian
 import Categories.Functor.Cartesian.Properties
 import Categories.Functor.Coalgebra
-import Categories.Functor.Cocontinuous
 import Categories.Functor.Construction.Constant
 import Categories.Functor.Construction.Diagonal
 import Categories.Functor.Construction.FromDiscrete
@@ -204,19 +214,22 @@ import Categories.Functor.Construction.LiftSetoids
 import Categories.Functor.Construction.Limit
 import Categories.Functor.Construction.ObjectRestriction
 import Categories.Functor.Construction.Zero
-import Categories.Functor.Continuous
 import Categories.Functor.Core
 import Categories.Functor.Duality
 import Categories.Functor.Equivalence
 import Categories.Functor.Fibration
 import Categories.Functor.Groupoid
 import Categories.Functor.Hom
+import Categories.Functor.Hom.Properties
+import Categories.Functor.Hom.Properties.Contra
+import Categories.Functor.Hom.Properties.Covariant
 import Categories.Functor.Instance.0-Truncation
 import Categories.Functor.Instance.01-Truncation
 import Categories.Functor.Instance.Core
 import Categories.Functor.Instance.Discrete
 import Categories.Functor.Instance.SetoidDiscrete
 import Categories.Functor.Instance.StrictCore
+import Categories.Functor.Limits
 import Categories.Functor.Monoidal
 import Categories.Functor.Power
 import Categories.Functor.Power.Functorial
@@ -236,6 +249,7 @@ import Categories.Minus2-Category.Properties
 import Categories.Monad
 import Categories.Monad.Duality
 import Categories.Monad.Idempotent
+import Categories.Monad.Relative
 import Categories.Monad.Strong
 import Categories.Morphism
 import Categories.Morphism.Cartesian
@@ -268,6 +282,8 @@ import Categories.Object.Monoid
 import Categories.Object.Product
 import Categories.Object.Product.Construction
 import Categories.Object.Product.Core
+import Categories.Object.Product.Indexed
+import Categories.Object.Product.Indexed.Properties
 import Categories.Object.Product.Limit
 import Categories.Object.Product.Morphisms
 import Categories.Object.Terminal
@@ -279,5 +295,6 @@ import Categories.Theory.Lawvere
 import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda
+import Categories.Yoneda.Continuous
 import Categories.Yoneda.Properties
 import Relation.Binary.Construct.Closure.SymmetricTransitive

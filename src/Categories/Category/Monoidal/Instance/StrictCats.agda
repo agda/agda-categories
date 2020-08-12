@@ -79,8 +79,10 @@ module Product {o ℓ e : Level} where
   One-⊤ : Terminal C
   One-⊤ = record
     { ⊤ = One
-    ; ! = const (lift tt)
-    ; !-unique = λ f → record { eq₀ = λ _ → unique-One _ ; eq₁ = λ _ → lift tt }
+    ; ⊤-is-terminal = record 
+      { ! = const (lift tt)
+      ; !-unique = λ f → record { eq₀ = λ _ → unique-One _ ; eq₁ = λ _ → lift tt }
+      }
     }
 
   Cats-is : Cartesian

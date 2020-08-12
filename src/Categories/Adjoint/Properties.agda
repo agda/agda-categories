@@ -11,13 +11,14 @@ open import Categories.Adjoint.Equivalents using (Hom-NI′⇒Adjoint)
 open import Categories.Category using (Category; _[_,_])
 open import Categories.Category.Product using (_⁂_; _⁂ⁿⁱ_)
 open import Categories.Category.Construction.Comma using (CommaObj; Comma⇒; _↙_)
+open import Categories.Diagram.Limit
+open import Categories.Diagram.Colimit
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Hom
 open import Categories.Functor.Construction.Constant
 open import Categories.Functor.Construction.LiftSetoids
 open import Categories.Functor.Properties
-open import Categories.Functor.Continuous
-open import Categories.Functor.Cocontinuous
+open import Categories.Functor.Limits
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.NaturalTransformation
@@ -185,10 +186,12 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
     open Adjoint L⊣R
 
   rapl′ : ∀ {o ℓ e} → Continuous o ℓ e R
-  rapl′ lim = rapl L⊣R _ lim , Mor.≅.refl C
+  rapl′ lim = terminal.⊤-is-terminal
+    where open Limit (rapl L⊣R _ lim)
 
   lapc′ : ∀ {o ℓ e} → Cocontinuous o ℓ e L
-  lapc′ col = lapc L⊣R _ col , Mor.≅.refl D
+  lapc′ col = initial.⊥-is-initial
+    where open Colimit (lapc L⊣R _ col)
 
   adjoint⇒monad : Monad C
   adjoint⇒monad = record
@@ -230,15 +233,17 @@ module _ {R : Functor D C} where
   adjoint⇒universalMorphisms {L} L⊣R X = record
     { initial = record
       { ⊥        = record { f = unit.η X }
-      ; !        =
-        let open C.HomReasoning
-        in record { commute = LRadjunct≈id ○ ⟺ C.identityʳ }
-      ; !-unique = λ {A} g →
-        let open D.HomReasoning
-        in -, (begin
-          Radjunct (f A)            ≈⟨ Radjunct-resp-≈ (C.Equiv.sym (C.Equiv.trans (commute g) (C.identityʳ {f = f A}))) ⟩
-          Radjunct (Ladjunct (h g)) ≈⟨ RLadjunct≈id ⟩
-          h g                       ∎)
+      ; ⊥-is-initial = record
+        { !        =
+          let open C.HomReasoning
+          in record { commute = LRadjunct≈id ○ ⟺ C.identityʳ }
+        ; !-unique = λ {A} g →
+          let open D.HomReasoning
+          in -, (begin
+            Radjunct (f A)            ≈⟨ Radjunct-resp-≈ (C.Equiv.sym (C.Equiv.trans (commute g) (C.identityʳ {f = f A}))) ⟩
+            Radjunct (Ladjunct (h g)) ≈⟨ RLadjunct≈id ⟩
+            h g                       ∎)
+        }
       }
     }
     where module L = Functor L

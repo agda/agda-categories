@@ -65,10 +65,6 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
             f₂ ∘ x ∘ f₁ ≈⟨ f₂≈g₂ ⟩∘⟨ x≈y ⟩∘⟨ f₁≈g₁ ⟩
             g₂ ∘ y ∘ g₁ ∎
 
-  open Functor Hom[-,-]
-  open Equiv
-  open HomReasoning
-
   Hom[_,-] : Obj → Functor C (Setoids ℓ e)
   Hom[_,-] = appˡ Hom[-,-]
 

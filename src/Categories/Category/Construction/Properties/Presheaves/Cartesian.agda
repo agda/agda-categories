@@ -59,8 +59,10 @@ module IsCartesian o′ ℓ′ where
           ; isEquivalence = _
           }
         }
-      ; !        = _
-      ; !-unique = _
+      ; ⊤-is-terminal = record
+        { !        = _
+        ; !-unique = _
+        }
       }
     ; products = record
       { product = λ {A B} →

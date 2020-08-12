@@ -27,32 +27,6 @@ private
     open Hom C
     open HomReasoning
 
--- contravariant hom functor sends colimit of F to its limit.
-module _ (W : Obj) {F : Functor J C} (col : Colimit F) where
-  private
-    module F = Functor F
-
-    HomF : Functor J.op (Setoids ℓ e)
-    HomF = Hom[-, W ] ∘F F.op
-
-  hom-colimit⇒limit : Limit HomF
-  hom-colimit⇒limit = ≃-resp-lim (Hom≃ ⓘʳ F.op) (hom-resp-limit W (Colimit⇒coLimit col))
-    where Hom≃ : Hom[ op ][ W ,-] ≃ Hom[-, W ]
-          Hom≃ = record
-            { F⇒G = ntHelper record
-              { η       = λ _ → idFun
-              ; commute = λ _ eq → C.∘-resp-≈ˡ (C.∘-resp-≈ʳ eq) ○ C.assoc
-              }
-            ; F⇐G = ntHelper record
-              { η       = λ _ → idFun
-              ; commute = λ _ eq → C.sym-assoc ○ C.∘-resp-≈ˡ (C.∘-resp-≈ʳ eq)
-              }
-            ; iso = λ _ → record
-              { isoˡ = λ eq → eq
-              ; isoʳ = λ eq → eq
-              }
-            }
-
 -- natural isomorphisms respects limits
 module _ {F G : Functor J C} (F≃G : F ≃ G) where
   private

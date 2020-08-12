@@ -88,19 +88,21 @@ module _ o′ ℓ′ e′ {A B} (p : Product A B) where
                         ; {lift 1F} {lift 1F} (lift 0F) → identityˡ }
           }
         }
-      ; !        = λ {K} →
-        let open Co.Cone F K
-        in record
-        { arr     = ⟨ ψ (lift 0F) , ψ (lift 1F) ⟩
-        ; commute = λ { {lift 0F} → project₁
-                      ; {lift 1F} → project₂ }
+      ; ⊤-is-terminal = record
+        { !        = λ {K} →
+          let open Co.Cone F K
+          in record
+          { arr     = ⟨ ψ (lift 0F) , ψ (lift 1F) ⟩
+          ; commute = λ { {lift 0F} → project₁
+                        ; {lift 1F} → project₂ }
+          }
+        ; !-unique = λ {K} f →
+          let module K = Co.Cone F K
+              module f = Co.Cone⇒ F f
+          in begin
+            ⟨ K.ψ (lift 0F) , K.ψ (lift 1F) ⟩ ≈˘⟨ ⟨⟩-cong₂ f.commute f.commute ⟩
+            ⟨ π₁ ∘ f.arr , π₂ ∘ f.arr ⟩       ≈⟨ g-η ⟩
+            f.arr                             ∎
         }
-      ; !-unique = λ {K} f →
-        let module K = Co.Cone F K
-            module f = Co.Cone⇒ F f
-        in begin
-          ⟨ K.ψ (lift 0F) , K.ψ (lift 1F) ⟩ ≈˘⟨ ⟨⟩-cong₂ f.commute f.commute ⟩
-          ⟨ π₁ ∘ f.arr , π₂ ∘ f.arr ⟩       ≈⟨ g-η ⟩
-          f.arr                             ∎
       }
     }
