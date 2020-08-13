@@ -9,11 +9,12 @@ open import Function using (_$_)
 open import Categories.Category
 open import Categories.Category.Product
 open import Categories.Category.Construction.Functors
+open import Categories.Diagram.End as ∫
+open import Categories.Diagram.Wedge
 open import Categories.Functor
 open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation
 open import Categories.NaturalTransformation.Dinatural
-open import Categories.Diagram.End as ∫
 
 import Categories.Category.Construction.Wedges as Wedges
 open import Categories.Object.Terminal

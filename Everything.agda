@@ -59,6 +59,7 @@ import Categories.Category.Construction.Comma
 import Categories.Category.Construction.Cones
 import Categories.Category.Construction.Coproduct
 import Categories.Category.Construction.Core
+import Categories.Category.Construction.Cowedges
 import Categories.Category.Construction.EilenbergMoore
 import Categories.Category.Construction.Elements
 import Categories.Category.Construction.EnrichedFunctors
@@ -82,6 +83,8 @@ import Categories.Category.Construction.Properties.Presheaves.Complete
 import Categories.Category.Construction.Properties.Presheaves.FromCartesianCCC
 import Categories.Category.Construction.Pullbacks
 import Categories.Category.Construction.Thin
+import Categories.Category.Construction.TwistedArrow
+import Categories.Category.Construction.Wedges
 import Categories.Category.Core
 import Categories.Category.Discrete
 import Categories.Category.Duality
@@ -168,6 +171,7 @@ import Categories.Comonad.Relative
 import Categories.Diagram.Cocone
 import Categories.Diagram.Cocone.Properties
 import Categories.Diagram.Coend
+import Categories.Diagram.Coend.Properties
 import Categories.Diagram.Coequalizer
 import Categories.Diagram.Coequalizer.Properties
 import Categories.Diagram.Colimit
@@ -193,6 +197,7 @@ import Categories.Diagram.Pullback.Properties
 import Categories.Diagram.Pushout
 import Categories.Diagram.Pushout.Properties
 import Categories.Diagram.SubobjectClassifier
+import Categories.Diagram.Wedge
 import Categories.Enriched.Category
 import Categories.Enriched.Category.Underlying
 import Categories.Enriched.Functor
@@ -229,6 +234,7 @@ import Categories.Functor.Instance.Core
 import Categories.Functor.Instance.Discrete
 import Categories.Functor.Instance.SetoidDiscrete
 import Categories.Functor.Instance.StrictCore
+import Categories.Functor.Instance.Twisted
 import Categories.Functor.Limits
 import Categories.Functor.Monoidal
 import Categories.Functor.Power
@@ -268,6 +274,7 @@ import Categories.NaturalTransformation
 import Categories.NaturalTransformation.Core
 import Categories.NaturalTransformation.Dinatural
 import Categories.NaturalTransformation.Equivalence
+import Categories.NaturalTransformation.Extranatural
 import Categories.NaturalTransformation.Hom
 import Categories.NaturalTransformation.NaturalIsomorphism
 import Categories.NaturalTransformation.NaturalIsomorphism.Equivalence

@@ -9,7 +9,7 @@ module Categories.Category.Construction.Wedges {o ℓ e o′ ℓ′ e′} {C : C
 open import Level
 
 open import Categories.Category.Core using (Category)
-open import Categories.Diagram.End F
+open import Categories.Diagram.Wedge F
 
 Wedges : Category (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) e′
 Wedges =  record
