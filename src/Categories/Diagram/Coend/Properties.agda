@@ -9,6 +9,7 @@ open import Categories.Category.Construction.Functors
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Diagram.Coend
+open import Categories.Diagram.Cowedge
 open import Categories.NaturalTransformation hiding (id)
 open import Categories.NaturalTransformation.Dinatural
 open import Categories.Object.Initial

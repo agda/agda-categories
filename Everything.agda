@@ -180,6 +180,7 @@ import Categories.Diagram.Colimit.Lan
 import Categories.Diagram.Colimit.Properties
 import Categories.Diagram.Cone
 import Categories.Diagram.Cone.Properties
+import Categories.Diagram.Cowedge
 import Categories.Diagram.Duality
 import Categories.Diagram.End
 import Categories.Diagram.End.Properties

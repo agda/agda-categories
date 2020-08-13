@@ -25,6 +25,7 @@ open import Categories.Diagram.Cone as Cone
 open import Categories.Diagram.Cocone as Cocone
 open import Categories.Diagram.End as End
 open import Categories.Diagram.Coend as Coend
+open import Categories.Diagram.Cowedge as Cowedge
 open import Categories.Diagram.Limit as Limit
 open import Categories.Diagram.Colimit as Colimit
 open import Categories.Diagram.Wedge as Wedge
@@ -166,7 +167,7 @@ module _ {F : Bifunctor (Category.op D) D C} where
     { E         = E
     ; dinatural = DinaturalTransformation.op dinatural
     }
-    where open Cowedge W
+    where open Cowedge.Cowedge W
 
   coEnd⇒Coend : End Fop → Coend F
   coEnd⇒Coend e = record

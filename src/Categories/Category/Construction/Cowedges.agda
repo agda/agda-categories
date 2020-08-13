@@ -9,7 +9,7 @@ module Categories.Category.Construction.Cowedges {o ℓ e o′ ℓ′ e′} {C :
 open import Level
 
 open import Categories.Category.Core using (Category)
-open import Categories.Diagram.Coend F
+open import Categories.Diagram.Cowedge F
 
 Cowedges : Category (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) e′
 Cowedges = record
