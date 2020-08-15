@@ -15,9 +15,22 @@ open import Data.Product using (_,_)
 private
   module C = Category 𝒞
 
+Twist : Functor (Product C.op 𝒞) 𝒟 → Functor (TW.TwistedArrow 𝒞) 𝒟
+Twist F = record
+  { F₀ = λ x → F₀ (dom x , cod x)
+  ; F₁ = λ f → F₁ (dom⇐ f , cod⇒ f)
+  ; identity = identity
+  ; homomorphism = homomorphism
+  ; F-resp-≈ = F-resp-≈
+  }
+  where
+  open Functor F
+  open TW.Morphism
+  open TW.Morphism⇒
+
 Twisted : Functor (Functors (Product C.op 𝒞) 𝒟) (Functors (TW.TwistedArrow 𝒞) 𝒟)
 Twisted = record
-  { F₀ = Func
+  { F₀ = Twist
   ; F₁ = Nat
   ; identity = D.Equiv.refl
   ; homomorphism = D.Equiv.refl
@@ -26,18 +39,8 @@ Twisted = record
   where
   open TW.Morphism
   open TW.Morphism⇒
-  open Functor
-  module CC = Category (Product C.op 𝒞)
   module D = Category 𝒟
-  Func : Functor (Product C.op 𝒞) 𝒟 → Functor (TW.TwistedArrow 𝒞) 𝒟
-  Func F = record
-    { F₀ = λ x → F₀ F (dom x , cod x)
-    ; F₁ = λ f → F₁ F (dom⇐ f , cod⇒ f)
-    ; identity = identity F
-    ; homomorphism = homomorphism F
-    ; F-resp-≈ = F-resp-≈ F
-    }
-  Nat : {F G : Functor (Product C.op 𝒞) 𝒟} → NaturalTransformation F G → NaturalTransformation (Func F) (Func G)
+  Nat : {F G : Functor (Product C.op 𝒞) 𝒟} → NaturalTransformation F G → NaturalTransformation (Twist F) (Twist G)
   Nat nt = ntHelper record
     { η = λ x → η nt (dom x , cod x)
     ; commute = λ f → commute nt (dom⇐ f , cod⇒ f)
