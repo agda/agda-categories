@@ -1,5 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
+-- A Categorical WeakInverse induces an Adjoint Equivalence
+
 module Categories.Category.Equivalence.Properties where
 
 open import Level
