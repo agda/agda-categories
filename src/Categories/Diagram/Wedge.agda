@@ -15,7 +15,6 @@ private
     A : Obj
 
 open import Level
--- open import Data.Product using (Σ; _,_)
 
 open import Categories.Functor hiding (id)
 open import Categories.Functor.Construction.Constant
