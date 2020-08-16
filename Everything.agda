@@ -89,6 +89,7 @@ import Categories.Category.Core
 import Categories.Category.Discrete
 import Categories.Category.Duality
 import Categories.Category.Equivalence
+import Categories.Category.Equivalence.Preserves
 import Categories.Category.Equivalence.Properties
 import Categories.Category.Finite
 import Categories.Category.Finite.Fin
@@ -181,6 +182,7 @@ import Categories.Diagram.Colimit.Properties
 import Categories.Diagram.Cone
 import Categories.Diagram.Cone.Properties
 import Categories.Diagram.Cowedge
+import Categories.Diagram.Cowedge.Properties
 import Categories.Diagram.Duality
 import Categories.Diagram.End
 import Categories.Diagram.End.Properties
@@ -199,6 +201,7 @@ import Categories.Diagram.Pushout
 import Categories.Diagram.Pushout.Properties
 import Categories.Diagram.SubobjectClassifier
 import Categories.Diagram.Wedge
+import Categories.Diagram.Wedge.Properties
 import Categories.Enriched.Category
 import Categories.Enriched.Category.Underlying
 import Categories.Enriched.Functor
