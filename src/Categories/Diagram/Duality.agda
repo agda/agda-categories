@@ -38,6 +38,20 @@ private
     A B : Obj
     f g : A ⇒ B
 
+terminal⇒coInitial : IsTerminal C A → IsInitial (Category.op C) A
+terminal⇒coInitial t = record
+  { ! = !
+  ; !-unique = !-unique
+  }
+  where open IsTerminal t
+
+initial⇒coTerminal : IsInitial C A → IsTerminal (Category.op C) A
+initial⇒coTerminal t = record
+  { ! = !
+  ; !-unique = !-unique
+  }
+  where open IsInitial t
+
 Coequalizer⇒coEqualizer : Coequalizer f g → Equalizer f g
 Coequalizer⇒coEqualizer coe = record
   { arr       = arr
