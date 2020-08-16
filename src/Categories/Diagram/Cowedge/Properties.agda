@@ -20,7 +20,6 @@ open import Categories.Diagram.Duality
 open import Categories.Diagram.Wedge.Properties
 open import Categories.Functor
 open import Categories.Functor.Instance.Twisted C D
--- open import Categories.NaturalTransformation.Dinatural
 
 Cowedge-to-Cocone : (W : Cowedge (Functor.op F)) → Cocone (Functor.op (Twist F))
 Cowedge-to-Cocone W = coCone⇒Cocone (Category.op D) (Wedge-to-Cone F (Cowedge⇒coWedge (Category.op D) W))
