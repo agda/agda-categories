@@ -22,6 +22,9 @@ open import Level
 open import Data.Product using (Σ; _,_)
 
 open import Categories.Category.Construction.TwistedArrow
+open import Categories.Category.Equivalence using (StrongEquivalence)
+open import Categories.Category.Construction.Cones using (Cones)
+open import Categories.Category.Construction.Wedges
 open import Categories.Diagram.Cone
 open import Categories.Diagram.Wedge F
 open import Categories.Functor hiding (id)
@@ -31,6 +34,7 @@ open import Categories.Functor.Instance.Twisted C D
 import Categories.Morphism as M
 open import Categories.Morphism.Reasoning D
 open import Categories.NaturalTransformation.Dinatural
+open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
 
 open Functor F
 
@@ -89,3 +93,67 @@ module _ (c : Cone (Twist F)) where
         F₁ (f , C.id) ∘ fam C.id ∘ id ∎
       }
     }
+
+ConesTwist≅Wedges : StrongEquivalence (Cones (Twist F)) (Wedges F)
+ConesTwist≅Wedges = record
+  { F = F⇒
+  ; G = F⇐
+  ; weak-inverse = record
+    { F∘G≈id = niHelper record
+      { η = λ _ → record { u = id ; commute = id-comm ○ (Equiv.sym identity ⟩∘⟨refl) }
+      ; η⁻¹ = λ _ → record { u = id ; commute = assoc ○ identity ⟩∘⟨refl ○ (identityˡ ○ identityʳ) }
+      ; commute = λ _ → id-comm-sym
+      ; iso = λ X → record { isoˡ = identity² ; isoʳ = identity² }
+      }
+    ; G∘F≈id = niHelper record
+      { η = λ Co → record
+        { arr = id
+        ; commute = λ {X} →
+          let m = record { dom⇐ = C.id; cod⇒ = Morphism.arr X; square = (C.∘-resp-≈ʳ C.identity²) C.HomReasoning.○ C.identityʳ}
+              a = record { arr = C.id } in begin
+          ψ (apex Co) X ∘ id                ≈⟨ identityʳ ⟩
+          ψ (apex Co) X                     ≈˘⟨ commute Co m ⟩
+          F₁ (C.id , arr X) ∘ ψ (apex Co) a ∎ --
+        }
+      ; η⁻¹ = λ Co → record
+        { arr = id
+        ; commute = λ {X} →
+        let m = record { dom⇐ = C.id; cod⇒ = Morphism.arr X; square = (C.∘-resp-≈ʳ C.identity²) C.HomReasoning.○ C.identityʳ}
+            a = record { arr = C.id } in begin
+        (F₁ (C.id , arr X) ∘ ψ (apex Co) a) ∘ id ≈⟨ identityʳ ⟩
+        F₁ (C.id , arr X) ∘ ψ (apex Co) a        ≈⟨ commute Co m ⟩
+        ψ (apex Co) X ∎
+        }
+      ; commute = λ f → id-comm-sym
+      ; iso = λ X → record { isoˡ = identity² ; isoʳ = identity² }
+      }
+    }
+  }
+  where
+  open Cone
+  open Apex
+  open Morphism
+  F⇒ : Functor (Cones (Twist F)) (Wedges F)
+  F⇒ = record
+    { F₀ = Cone-to-Wedge
+    ; F₁ = λ c⇒ → record
+      { u = Cone⇒.arr c⇒
+      ; commute = Cone⇒.commute c⇒
+      }
+    ; identity = Equiv.refl
+    ; homomorphism = Equiv.refl
+    ; F-resp-≈ = λ f≈g → f≈g
+    }
+  F⇐ : Functor (Wedges F) (Cones (Twist F))
+  F⇐ = record
+    { F₀ = Wedge-to-Cone
+    ; F₁ = λ {A} {B} f → record
+      { arr = u f
+      ; commute = pullʳ (commute f)
+      }
+    ; identity = Equiv.refl
+    ; homomorphism = Equiv.refl
+    ; F-resp-≈ = λ f≈g → f≈g
+    }
+    where
+    open Wedge-Morphism
