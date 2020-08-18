@@ -9,12 +9,21 @@ open import Function using (_$_)
 open import Categories.Category
 open import Categories.Category.Product
 open import Categories.Category.Construction.Functors
+open import Categories.Category.Construction.TwistedArrow
+open import Categories.Category.Equivalence
+open import Categories.Category.Equivalence.Preserves
+open import Categories.Diagram.Cone
 open import Categories.Diagram.End as ∫
+open import Categories.Diagram.Limit
 open import Categories.Diagram.Wedge
-open import Categories.Functor
+open import Categories.Diagram.Wedge.Properties
+open import Categories.Functor hiding (id)
 open import Categories.Functor.Bifunctor
-open import Categories.NaturalTransformation
+open import Categories.Functor.Instance.Twisted
+import Categories.Morphism as M
+open import Categories.NaturalTransformation hiding (id)
 open import Categories.NaturalTransformation.Dinatural
+open import Categories.Object.Terminal as Terminal
 
 import Categories.Category.Construction.Wedges as Wedges
 open import Categories.Object.Terminal
@@ -42,15 +51,15 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ �
     where
     open End c
 
-  Terminal⇒Coend : Terminal Wedges → End F
-  Terminal⇒Coend i = record
+  Terminal⇒End : Terminal Wedges → End F
+  Terminal⇒End i = record
     { wedge = ⊤
     ; factor = λ W → u {W₁ = W} !
     ; universal = commute !
     ; unique = λ {_} {g} x → !-unique (record { u = g ; commute = x })
     }
     where
-    open Terminal i
+    open Terminal.Terminal i
     open Wedge-Morphism
 
 module _ {C : Category o ℓ e}
@@ -123,3 +132,35 @@ module _ {P Q : Functor (Product (Category.op C) C) D} (P⇒Q : NaturalTransform
     open DinaturalTransformation (dinatural eq) renaming (α to αq; commute to αq-comm)
     open Wedge
     open MR D
+
+-- The real start of the End Calculus. Maybe need to move such properties elsewhere?
+-- This is an unpacking of the lhs of Eq. (25) of Loregian's book.
+module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
+  (F : Bifunctor (Category.op C) C D) where
+  private
+    Eq = ConesTwist≅Wedges F
+    module O = M D
+  open M (Wedges.Wedges F)
+  open Functor
+
+  open StrongEquivalence Eq renaming (F to F⇒)
+
+  -- Ends and Limits are equivalent, in the category Wedge F
+  End-as-Limit : (end : End F) → (l : Limit (Twist C D F)) → End.wedge end ≅ F₀ F⇒ (Limit.terminal.⊤ l)
+  End-as-Limit end l = Terminal.up-to-iso (Wedges.Wedges F) (End⇒Terminal F end) (pres-Terminal Eq terminal)
+    where
+    open Limit l
+
+  -- Which then induces that the objects, in D, are also equivalent.
+  End-as-Limit-on-Obj : (end : End F) → (l : Limit (Twist C D F)) → End.E end O.≅ Wedge.E (F₀ F⇒ (Limit.terminal.⊤ l))
+  End-as-Limit-on-Obj end l = record
+    { from = Wedge-Morphism.u (M._≅_.from X≅Y)
+    ; to = Wedge-Morphism.u (M._≅_.to X≅Y)
+    ; iso = record
+      { isoˡ = M._≅_.isoˡ X≅Y
+      ; isoʳ = M._≅_.isoʳ X≅Y
+      }
+    }
+    where
+      X≅Y = End-as-Limit end l
+      open Category D
