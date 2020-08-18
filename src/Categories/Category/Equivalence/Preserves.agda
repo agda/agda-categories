@@ -61,9 +61,19 @@ module _ (S : StrongEquivalence C D) where
     GF⇐ = G∘F≈id.⇐.η c
     GF⇒ = G∘F≈id.⇒.η (G.F₀ (F.F₀ c))
 
+  pres-Initial : Initial C → Initial D
+  pres-Initial i = record { ⊥ = F.₀ ⊥ ; ⊥-is-initial = pres-initial ⊥-is-initial }
+    where open Initial i
+
 -- We can do the other proof by duality
 pres-terminal : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} (S : StrongEquivalence C D) {c : Category.Obj C} → (t : IsTerminal C c) → IsTerminal D (Functor.F₀ (StrongEquivalence.F S) c)
 pres-terminal {C = C} {D} S {c} t = initial⇒coTerminal (Category.op D) (pres-initial Sop (terminal⇒coInitial C t))
   where
   Sop : StrongEquivalence (Category.op C) (Category.op D)
   Sop = StrongEquivalence.op S
+
+pres-Terminal : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} (S : StrongEquivalence C D) (t : Terminal C) → Terminal D
+pres-Terminal S t = record { ⊤ = Functor.F₀ F ⊤; ⊤-is-terminal = pres-terminal S ⊤-is-terminal}
+  where
+  open Terminal t
+  open StrongEquivalence S
