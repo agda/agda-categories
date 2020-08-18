@@ -94,10 +94,35 @@ module _ (c : Cone (Twist F)) where
       }
     }
 
+ConeTwist⇒WedgeF : Functor (Cones (Twist F)) (Wedges F)
+ConeTwist⇒WedgeF = record
+  { F₀ = Cone-to-Wedge
+  ; F₁ = λ c⇒ → record
+    { u = Cone⇒.arr c⇒
+    ; commute = Cone⇒.commute c⇒
+    }
+  ; identity = Equiv.refl
+  ; homomorphism = Equiv.refl
+  ; F-resp-≈ = λ f≈g → f≈g
+  }
+Wedge⇒ConeTwistF : Functor (Wedges F) (Cones (Twist F))
+Wedge⇒ConeTwistF = record
+  { F₀ = Wedge-to-Cone
+  ; F₁ = λ {A} {B} f → record
+    { arr = u f
+    ; commute = pullʳ (commute f)
+    }
+  ; identity = Equiv.refl
+  ; homomorphism = Equiv.refl
+  ; F-resp-≈ = λ f≈g → f≈g
+  }
+  where
+  open Wedge-Morphism
+
 ConesTwist≅Wedges : StrongEquivalence (Cones (Twist F)) (Wedges F)
 ConesTwist≅Wedges = record
-  { F = F⇒
-  ; G = F⇐
+  { F = ConeTwist⇒WedgeF
+  ; G = Wedge⇒ConeTwistF
   ; weak-inverse = record
     { F∘G≈id = niHelper record
       { η = λ _ → record { u = id ; commute = id-comm ○ (Equiv.sym identity ⟩∘⟨refl) }
@@ -133,27 +158,3 @@ ConesTwist≅Wedges = record
   open Cone
   open Apex
   open Morphism
-  F⇒ : Functor (Cones (Twist F)) (Wedges F)
-  F⇒ = record
-    { F₀ = Cone-to-Wedge
-    ; F₁ = λ c⇒ → record
-      { u = Cone⇒.arr c⇒
-      ; commute = Cone⇒.commute c⇒
-      }
-    ; identity = Equiv.refl
-    ; homomorphism = Equiv.refl
-    ; F-resp-≈ = λ f≈g → f≈g
-    }
-  F⇐ : Functor (Wedges F) (Cones (Twist F))
-  F⇐ = record
-    { F₀ = Wedge-to-Cone
-    ; F₁ = λ {A} {B} f → record
-      { arr = u f
-      ; commute = pullʳ (commute f)
-      }
-    ; identity = Equiv.refl
-    ; homomorphism = Equiv.refl
-    ; F-resp-≈ = λ f≈g → f≈g
-    }
-    where
-    open Wedge-Morphism
