@@ -152,7 +152,7 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ �
     open Limit l
 
   -- Which then induces that the objects, in D, are also equivalent.
-  End-as-Limit-on-Obj : (end : End F) → (l : Limit (Twist C D F)) → End.E end O.≅ Wedge.E (F₀ F⇒ (Limit.terminal.⊤ l))
+  End-as-Limit-on-Obj : (end : End F) → (l : Limit (Twist C D F)) → End.E end O.≅ Limit.apex l -- Wedge.E (F₀ F⇒ (Limit.terminal.⊤ l))
   End-as-Limit-on-Obj end l = record
     { from = Wedge-Morphism.u (M._≅_.from X≅Y)
     ; to = Wedge-Morphism.u (M._≅_.to X≅Y)
