@@ -28,6 +28,19 @@ Twist F = record
   open TW.Morphism
   open TW.Morphism⇒
 
+Twist′ : Functor (Product C.op 𝒞) 𝒟 → Functor (Category.op (TW.TwistedArrow C.op)) 𝒟
+Twist′ F = record
+  { F₀ = λ x → F₀ (dom x , cod x)
+  ; F₁ = λ f → F₁ (dom⇐ f , cod⇒ f)
+  ; identity = identity
+  ; homomorphism = homomorphism
+  ; F-resp-≈ = F-resp-≈
+  }
+  where
+  open Functor F
+  open TW.Morphism
+  open TW.Morphism⇒
+
 Twisted : Functor (Functors (Product C.op 𝒞) 𝒟) (Functors (TW.TwistedArrow 𝒞) 𝒟)
 Twisted = record
   { F₀ = Twist
