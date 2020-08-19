@@ -63,23 +63,23 @@ Cowedge⇒CoconeTwistF = record
   open MR D
 
 -- The duality here is not just 'op', so spell out some of it.  Note how the proofs need the explicit commutations.
-Cowedges≅CoconesTwist : StrongEquivalence (Cowedges F) (Cocones (Twist′ F))
-Cowedges≅CoconesTwist = record
-  { F = Cowedge⇒CoconeTwistF
-  ; G = CooneTwist⇒CowedgeF
+CoconesTwist≅Cowedges : StrongEquivalence (Cocones (Twist′ F)) (Cowedges F)
+CoconesTwist≅Cowedges = record
+  { F = CooneTwist⇒CowedgeF
+  ; G = Cowedge⇒CoconeTwistF
   ; weak-inverse = record
     { F∘G≈id = niHelper (record
-      { η = λ X → record { arr = id ; commute = λ {Y} → identityˡ ○ Coapex.commute (coapex X) (mor⇒ (MR.elimˡ C C.identity²)) }
-      ; η⁻¹ = λ X → record { arr = id ; commute = λ {Y} → identityˡ ○ Equiv.sym (Coapex.commute (coapex X) (mor⇒ (MR.elimˡ C C.identity²))) }
-      ; commute = λ _ → MR.id-comm-sym D
-      ; iso = λ X → record { isoˡ = identity² ; isoʳ = identity² }
-      })
-    ; G∘F≈id = niHelper (record
       { η = λ X → record { u = id ; commute = identityˡ ○ MR.elimʳ D identity }
       ; η⁻¹ = λ X → record { u = id ; commute = MR.id-comm-sym D ○ (refl⟩∘⟨ Equiv.sym identity) }
       ; commute = λ _ → MR.id-comm-sym D
       ; iso = λ _ → record { isoˡ = identity² ; isoʳ = identity² }
       })
+    ; G∘F≈id = niHelper record
+      { η = λ X → record { arr = id ; commute = λ {Y} → identityˡ ○ Coapex.commute (coapex X) (mor⇒ (MR.elimˡ C C.identity²)) }
+      ; η⁻¹ = λ X → record { arr = id ; commute = λ {Y} → identityˡ ○ Equiv.sym (Coapex.commute (coapex X) (mor⇒ (MR.elimˡ C C.identity²))) }
+      ; commute = λ _ → MR.id-comm-sym D
+      ; iso = λ X → record { isoˡ = identity² ; isoʳ = identity² }
+      }
     }
   }
   where

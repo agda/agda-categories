@@ -6,13 +6,19 @@ open import Categories.Category.Core using (Category)
 open import Categories.Category.Product
 import Categories.Category.Construction.Cowedges as Cowedges
 open import Categories.Category.Construction.Functors
+open import Categories.Category.Equivalence
+open import Categories.Category.Equivalence.Preserves
+open import Categories.Diagram.Coend
+open import Categories.Diagram.Colimit
+open import Categories.Diagram.Cowedge
+open import Categories.Diagram.Cowedge.Properties
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor using (Bifunctor)
-open import Categories.Diagram.Coend
-open import Categories.Diagram.Cowedge
+open import Categories.Functor.Instance.Twisted
+import Categories.Morphism as M
 open import Categories.NaturalTransformation hiding (id)
 open import Categories.NaturalTransformation.Dinatural
-open import Categories.Object.Initial
+open import Categories.Object.Initial as Initial
 
 import Categories.Morphism.Reasoning as MR
 
@@ -44,7 +50,7 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ �
     ; unique = λ {_} {g} x → !-unique (record { u = g ; commute = x })
     }
     where
-    open Initial i
+    open Initial.Initial i
     open Cowedge-Morphism
 
 private
@@ -120,3 +126,33 @@ module _ {P Q : Functor (Product (Category.op C) C) D} (P⇒Q : NaturalTransform
     open DinaturalTransformation (dinatural cq) renaming (α to αq; commute to αq-comm)
     open Cowedge
     open MR D
+
+module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
+  (F : Bifunctor (Category.op C) C D) where
+  private
+    Eq = CoconesTwist≅Cowedges F
+    module O = M D
+  open M (Cowedges.Cowedges F)
+  open Functor
+
+  open StrongEquivalence Eq renaming (F to F⇒)
+
+  -- Coends and Colimits are equivalent, in the category Cowedge F
+  Coend-as-Colimit : (coend : Coend F) → (cl : Colimit (Twist′ C D F)) → Coend.cowedge coend ≅ F₀ F⇒ (Colimit.initial.⊥ cl)
+  Coend-as-Colimit coend cl = Initial.up-to-iso (Cowedges.Cowedges F) (Coend⇒Initial F coend) (pres-Initial Eq initial)
+    where
+    open Colimit cl
+
+  -- Which then induces that the objects, in D, are also equivalent.
+  Coend-as-Colimit-on-Obj : (coend : Coend F) → (cl : Colimit (Twist′ C D F)) → Coend.E coend O.≅ Colimit.coapex cl
+  Coend-as-Colimit-on-Obj coend cl = record
+    { from = Cowedge-Morphism.u (M._≅_.from X≅Y)
+    ; to = Cowedge-Morphism.u (M._≅_.to X≅Y)
+    ; iso = record
+      { isoˡ = M._≅_.isoˡ X≅Y
+      ; isoʳ = M._≅_.isoʳ X≅Y
+      }
+    }
+    where
+      X≅Y = Coend-as-Colimit coend cl
+      open Category D
