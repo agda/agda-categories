@@ -19,7 +19,7 @@ open import Categories.Morphism.Reasoning C as Square
 private
   variable
     A B X Y Z : Obj
-    f g h h₁ h₂ i i₁ i₂ j : A ⇒ B
+    f g h h₁ h₂ i i₁ i₂ j k : A ⇒ B
 
 -- Pullback of two arrows with a common codomain
 record Pullback (f : X ⇒ Z) (g : Y ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
@@ -45,6 +45,18 @@ record Pullback (f : X ⇒ Z) (g : Y ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
 
   id-unique : id ≈ universal commute
   id-unique = unique identityʳ identityʳ
+
+  universal-resp-≈ : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} {eq′ : f ∘ i₁ ≈ g ∘ i₂} → h₁ ≈ i₁ → h₂ ≈ i₂ → universal eq ≈ universal eq′
+  universal-resp-≈ h₁≈i₁ h₂≈i₂ = unique (p₁∘universal≈h₁ ○ h₁≈i₁) (p₂∘universal≈h₂ ○ h₂≈i₂)
+
+  universal-resp-≈′ : (eq : f ∘ h₁ ≈ g ∘ h₂) → (eq′ : f ∘ i₁ ≈ g ∘ i₂) →
+    h₁ ≈ i₁ → h₂ ≈ i₂ → j ≈ universal eq → k ≈ universal eq′ → j ≈ k
+  universal-resp-≈′ {j = j} {k = k} eq eq′ h₁≈i₁ h₂≈i₂ eqj eqk = begin
+    j ≈⟨ eqj ⟩
+    universal eq ≈⟨ universal-resp-≈ h₁≈i₁ h₂≈i₂ ⟩
+    universal eq′ ≈˘⟨ eqk ⟩
+    k ∎
+
 
   unique-diagram : p₁ ∘ h ≈ p₁ ∘ i →
                    p₂ ∘ h ≈ p₂ ∘ i →
