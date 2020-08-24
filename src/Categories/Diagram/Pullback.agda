@@ -11,8 +11,8 @@ open import Level
 open import Data.Product using (_,_; ∃)
 open import Function using (flip; _$_) renaming (_∘_ to _●_)
 open import Categories.Morphism C
-open import Categories.Object.Product C
-open import Categories.Diagram.Equalizer C
+open import Categories.Object.Product C hiding (up-to-iso; repack; repack∘; repack-cancel)
+open import Categories.Diagram.Equalizer C hiding (up-to-iso)
 open import Categories.Morphism.Reasoning C as Square
   renaming (glue to glue-square) hiding (id-unique)
 
@@ -66,6 +66,32 @@ record Pullback (f : X ⇒ Z) (g : Y ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
     universal eq ≈˘⟨ unique refl refl ⟩
     i            ∎
     where eq = extendʳ commute
+
+up-to-iso : (pullback pullback′ : Pullback f g) → Pullback.P pullback ≅ Pullback.P pullback′
+up-to-iso pullback pullback′ = record
+  { from = repack pullback pullback′
+  ; to = repack pullback′ pullback
+  ; iso = record
+    { isoˡ = repack-cancel pullback′ pullback
+    ; isoʳ = repack-cancel pullback pullback′
+    }
+  }
+  where
+    open Pullback
+
+    repack : (pullback pullback′ : Pullback f g) → P pullback ⇒ P pullback′
+    repack pullback pullback′ = universal pullback′ (commute pullback)
+
+    repack∘ : (pullback pullback′ pullback″ : Pullback f g) → repack pullback′ pullback″ ∘ repack pullback pullback′ ≈ repack pullback pullback″
+    repack∘ pullback pullback′ pullback″ =
+      unique pullback″
+             (glueTrianglesʳ (p₁∘universal≈h₁ pullback″) (p₁∘universal≈h₁ pullback′))
+             (glueTrianglesʳ (p₂∘universal≈h₂ pullback″) (p₂∘universal≈h₂ pullback′)) 
+
+    repack-cancel : (pullback pullback′ : Pullback f g) → repack pullback pullback′ ∘ repack pullback′ pullback ≈ id
+    repack-cancel pullback pullback′ = repack∘ pullback′ pullback pullback′ ○ ⟺ (id-unique pullback′)
+
+
 
 swap : Pullback f g → Pullback g f
 swap p = record
