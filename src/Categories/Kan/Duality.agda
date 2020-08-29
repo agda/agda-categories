@@ -3,6 +3,7 @@
 module Categories.Kan.Duality where
 
 open import Level
+open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 open import Categories.Category
 open import Categories.Functor
@@ -39,3 +40,14 @@ module _ {F : Functor C D} {G : Functor C E} where
     ; commutes = λ M α → commutes (Functor.op M) (NaturalTransformation.op α)
     }
     where open Ran ran
+
+private
+  module _ {F : Functor C D} {G : Functor C E} where
+    module F = Functor F
+    module G = Functor G
+
+    coLan⟺Ran : (R : Ran F.op G.op) → coLan⇒Ran (coRan⇒Lan R) ≡ R
+    coLan⟺Ran _ = ≡.refl
+
+    coRan⟺Lan : (L : Lan F.op G.op) → coRan⇒Lan (coLan⇒Ran L) ≡ L
+    coRan⟺Lan _ = ≡.refl

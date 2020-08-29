@@ -10,6 +10,8 @@ open import Categories.Functor.Properties
 import Categories.Morphism as Morphism
 import Categories.Morphism.Reasoning as MR
 
+open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
+
 private
   variable
     o ℓ e o′ ℓ′ e′ : Level
@@ -150,3 +152,8 @@ module _ {F : Functor C D} where
 
   id∘F⇒F : NaturalTransformation (idF ∘F F) F
   id∘F⇒F = record { η = λ _ → D.id ; commute = λ _ → id-comm-sym ; sym-commute = λ _ → id-comm }
+
+private
+  op-involutive : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {F G : Functor C D} →
+                  (α : NaturalTransformation F G) → NaturalTransformation.op (NaturalTransformation.op α) ≡ α
+  op-involutive _ = ≡.refl

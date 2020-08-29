@@ -5,6 +5,7 @@ open import Level
 open import Function.Base using (flip)
 
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
+open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
 -- Basic definition of a |Category| with a Hom setoid.

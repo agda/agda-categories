@@ -9,6 +9,7 @@ module Categories.Object.Duality {o ℓ e} (C : Category o ℓ e) where
 open Category C
 
 open import Level
+open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 open import Categories.Morphism C
 open import Categories.Object.Terminal op
@@ -70,3 +71,24 @@ coProduct⇒Coproduct A×B = record
   }
   where
   module A×B = Product A×B
+
+private
+  coIsTerminal⟺IsInitial : ∀ {X} (⊥ : IsInitial X) →
+    coIsTerminal⇒IsInitial (IsInitial⇒coIsTerminal ⊥) ≡ ⊥
+  coIsTerminal⟺IsInitial _ = ≡.refl
+
+  IsInitial⟺coIsTerminal : ∀ {X} (⊤ : IsTerminal X) →
+    IsInitial⇒coIsTerminal (coIsTerminal⇒IsInitial ⊤) ≡ ⊤
+  IsInitial⟺coIsTerminal _ = ≡.refl
+
+  ⊥⟺op⊤ : (⊤ : Terminal) → ⊥⇒op⊤ (op⊤⇒⊥ ⊤) ≡ ⊤
+  ⊥⟺op⊤ _ = ≡.refl
+
+  op⊤⟺⊥ : (⊥ : Initial) → op⊤⇒⊥ (⊥⇒op⊤ ⊥) ≡ ⊥
+  op⊤⟺⊥ _ = ≡.refl
+
+  Coproduct⟺coProduct : ∀ {A B} (p : Product A B) → Coproduct⇒coProduct (coProduct⇒Coproduct p) ≡ p
+  Coproduct⟺coProduct _ = ≡.refl
+
+  coProduct⟺Coproduct : ∀ {A B} (p : Coproduct A B) → coProduct⇒Coproduct (Coproduct⇒coProduct p) ≡ p
+  coProduct⟺Coproduct _ = ≡.refl

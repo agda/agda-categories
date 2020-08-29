@@ -48,3 +48,6 @@ module MonadDualityConversionProperties where
     coMonad⇔Comonad : ∀ (coMonad : Monad C.op) →
                     Comonad⇒coMonad (coMonad⇒Comonad coMonad) ≡ coMonad
     coMonad⇔Comonad _ = refl
+
+    Comonad⇔coMonad : ∀ (M : Comonad C) → coMonad⇒Comonad (Comonad⇒coMonad M) ≡ M
+    Comonad⇔coMonad _ = refl

@@ -5,6 +5,7 @@ open import Categories.Category
 module Categories.Functor.Core where
 
 open import Level
+open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 private
   variable
@@ -36,3 +37,7 @@ record Functor (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o �
     ; homomorphism = homomorphism
     ; F-resp-≈     = F-resp-≈
     }
+
+private
+  op-involutive : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} → (F : Functor C D) → Functor.op (Functor.op F) ≡ F
+  op-involutive _ = ≡.refl
