@@ -5,6 +5,7 @@ open import Level
 open import Function.Base using (flip)
 
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
+open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
 -- Basic definition of a |Category| with a Hom setoid.
@@ -105,3 +106,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ; equiv     = equiv
     ; ∘-resp-≈  = flip ∘-resp-≈
     }
+
+private
+  op-involutive : ∀ {o ℓ e} → (C : Category o ℓ e) → Category.op (Category.op C) ≡ C
+  op-involutive _ = ≡.refl
