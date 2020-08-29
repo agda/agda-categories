@@ -66,9 +66,6 @@ FinitelyCocomplete⇒coFinitelyComplete FC = record
 module DualityConversionProperties where
 
   private
-    op-involutive : Category.op C.op ≡ C
-    op-involutive = refl
-
     coCartesian⇔Cocartesian : ∀(coCartesian : Cartesian C.op)
                             → Cocartesian⇒coCartesian (coCartesian⇒Cocartesian coCartesian)
                               ≡ coCartesian

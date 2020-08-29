@@ -106,7 +106,3 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ; equiv     = equiv
     ; ∘-resp-≈  = flip ∘-resp-≈
     }
-
-private
-  op-involutive : ∀ {o ℓ e} → (C : Category o ℓ e) → Category.op (Category.op C) ≡ C
-  op-involutive _ = ≡.refl
