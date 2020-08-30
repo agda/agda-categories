@@ -33,6 +33,7 @@ import Categories.Category.BicartesianClosed
 import Categories.Category.CMonoidEnriched
 import Categories.Category.Cartesian
 import Categories.Category.Cartesian.Properties
+import Categories.Category.Cartesian.Structure
 import Categories.Category.CartesianClosed
 import Categories.Category.CartesianClosed.Canonical
 import Categories.Category.CartesianClosed.Locally
