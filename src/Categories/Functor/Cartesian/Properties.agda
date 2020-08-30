@@ -24,15 +24,15 @@ module _ (C : CartesianCategory o ℓ e) where
   open CartesianCategory C
   open P U
 
-  idF-IsCartesian : IsCartesianF C C idF
-  idF-IsCartesian = record
+  idF-IsCartesianF : IsCartesianF C C idF
+  idF-IsCartesianF = record
     { F-resp-⊤ = terminal.⊤-is-terminal
     ; F-resp-× = Product⇒IsProduct product
     }
 
-  idF-Cartesian : CartesianF C C
-  idF-Cartesian = record
-    { isCartesian = idF-IsCartesian
+  idF-CartesianF : CartesianF C C
+  idF-CartesianF = record
+    { isCartesian = idF-IsCartesianF
     }
 
 module _ (A : CartesianCategory o ℓ e) (B : CartesianCategory o′ ℓ′ e′) (C : CartesianCategory o″ ℓ″ e″) where
@@ -42,10 +42,10 @@ module _ (A : CartesianCategory o ℓ e) (B : CartesianCategory o′ ℓ′ e′
     module C = CartesianCategory C
     open P C.U
 
-  ∘-IsCartesian : ∀ {F : Functor A.U B.U} {G : Functor B.U C.U} →
+  ∘-IsCartesianF : ∀ {F : Functor A.U B.U} {G : Functor B.U C.U} →
                     IsCartesianF B C G → IsCartesianF A B F →
                     IsCartesianF A C (G ∘F F)
-  ∘-IsCartesian {F} {G} CG CF = record
+  ∘-IsCartesianF {F} {G} CG CF = record
     { F-resp-⊤ = ⊤.Terminal.⊤-is-terminal (⊤.transport-by-iso C.U C.terminal
                                           (M.≅.trans C.U (M.≅.sym C.U CG.⊤-iso) ([ G ]-resp-≅ (M.≅.sym B.U CF.⊤-iso))))
     ; F-resp-× = record
@@ -78,3 +78,7 @@ module _ (A : CartesianCategory o ℓ e) (B : CartesianCategory o′ ℓ′ e′
           module CF = IsCartesianF CF
           open C.HomReasoning
           open MR C.U
+
+∘-CartesianF : {A : CartesianCategory o ℓ e} {B : CartesianCategory o′ ℓ′ e′} {C : CartesianCategory o″ ℓ″ e″} →
+               CartesianF B C → CartesianF A B → CartesianF A C
+∘-CartesianF G F = record { isCartesian = ∘-IsCartesianF _ _ _ (CartesianF.isCartesian G) (CartesianF.isCartesian F) }
