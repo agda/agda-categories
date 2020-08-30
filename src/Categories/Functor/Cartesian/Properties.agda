@@ -3,66 +3,78 @@
 -- Some of the obvious properties of cartesian functors
 module Categories.Functor.Cartesian.Properties where
 
-open import Data.Product using (_,_; proj₁; proj₂)
 open import Level
 
-open import Categories.Category.Core using (Category)
-open import Categories.Category.Cartesian
-open import Categories.Category.Product using (Product; _⁂_)
+open import Categories.Category
+open import Categories.Category.Cartesian.Structure
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
+open import Categories.Functor.Properties
 open import Categories.Functor.Cartesian
-open import Categories.Morphism.Reasoning
-open import Categories.NaturalTransformation hiding (id)
-import Categories.Object.Product as OP
+
+import Categories.Morphism as M
+import Categories.Morphism.Reasoning as MR
+import Categories.Object.Terminal as ⊤
+import Categories.Object.Product as P
 
 private
   variable
     o ℓ e o′ ℓ′ e′ o″ ℓ″ e″ : Level
 
-idF-Cartesian : {A : Category o ℓ e} {CA : Cartesian A} → CartesianF CA CA idF
-idF-Cartesian {A = A} {CA} = record
-  { ε = id
-  ; ⊗-homo = ntHelper record
-    { η = λ _ → id
-    ; commute = λ _ → id-comm-sym A }
-  }
-  where
-  open Category A
+module _ (C : CartesianCategory o ℓ e) where
+  open CartesianCategory C
+  open P U
 
-∘-Cartesian : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} {C : Category o″ ℓ″ e″}
-  {CA : Cartesian A} {CB : Cartesian B} {CC : Cartesian C}
-  {F : Functor B C} {G : Functor A B} (CF : CartesianF CB CC F) (CG : CartesianF CA CB G) → CartesianF CA CC (F ∘F G)
-∘-Cartesian {B = B} {C} {CA} {CB} {CC} {F} {G} CF CG = record
-  { ε = F.₁ CG.ε ∘ CF.ε
-  ; ⊗-homo = ntHelper record
-    { η = λ X → F.₁ (NTG.η X) ∘ NTF.η (Functor.F₀ (G ⁂ G) X)
-    ; commute = λ { {A} {B} f →
-      let GGA = F₀ (G ⁂ G) A in
-      let GGB = F₀ (G ⁂ G) B in
-      let GGf = F₁ (G ⁂ G) f in
-      begin
-      (F.₁ (NTG.η B) ∘ NTF.η GGB) ∘ F₁ (⊗ CC ∘F ((F ∘F G) ⁂ (F ∘F G))) f  ≈⟨ C.assoc ⟩
-      F.₁ (NTG.η B) ∘ NTF.η GGB ∘ F₁ (⊗ CC ∘F ((F ∘F G) ⁂ (F ∘F G))) f    ≈⟨ (refl⟩∘⟨ NTF.commute GGf) ⟩
-      F.₁ (NTG.η B) ∘ (F.₁ (F₁ (⊗ CB) GGf) ∘ NTF.η GGA)                   ≈⟨ C.sym-assoc ⟩
-      (F.₁ (NTG.η B) ∘ F.₁ (F₁ (⊗ CB) GGf)) ∘ NTF.η GGA                   ≈˘⟨ (F.homomorphism ⟩∘⟨refl) ⟩
-      (F.₁ (NTG.η B B.∘ F₁ (⊗ CB) GGf)) ∘ NTF.η GGA                       ≈⟨ (F.F-resp-≈ (NTG.commute f) ⟩∘⟨refl) ⟩
-      F.F₁ (F₁ G (F₁ (⊗ CA) f) B.∘ NTG.η A) ∘ NTF.η GGA                   ≈⟨ (F.homomorphism ⟩∘⟨refl) ⟩
-      (F₁ ((F ∘F G) ∘F ⊗ CA) f ∘ F.₁ (NTG.η A)) ∘ NTF.η GGA               ≈⟨ C.assoc ⟩
-      F₁ ((F ∘F G) ∘F ⊗ CA) f ∘ F.₁ (NTG.η A) ∘ NTF.η GGA ∎}
+  idF-IsCartesian : IsCartesianF C C idF
+  idF-IsCartesian = record
+    { F-resp-⊤ = terminal.⊤-is-terminal
+    ; F-resp-× = Product⇒IsProduct product
     }
-  }
-  where
-  module CF = CartesianF CF
-  module CG = CartesianF CG
-  module NTF = NaturalTransformation CF.⊗-homo
-  module NTG = NaturalTransformation CG.⊗-homo
-  module F = Functor F
-  module B = Category B
-  module C = Category C
-  open C using (_≈_; _∘_)
-  open C.HomReasoning
-  open Cartesian CC using (products)
-  open Functor
-  open OP C using (Product)
-  open Product
-  open Cartesian using (⊗)
+
+  idF-Cartesian : CartesianF C C
+  idF-Cartesian = record
+    { isCartesian = idF-IsCartesian
+    }
+
+module _ (A : CartesianCategory o ℓ e) (B : CartesianCategory o′ ℓ′ e′) (C : CartesianCategory o″ ℓ″ e″) where
+  private
+    module A = CartesianCategory A
+    module B = CartesianCategory B
+    module C = CartesianCategory C
+    open P C.U
+
+  ∘-IsCartesian : ∀ {F : Functor A.U B.U} {G : Functor B.U C.U} →
+                    IsCartesianF B C G → IsCartesianF A B F →
+                    IsCartesianF A C (G ∘F F)
+  ∘-IsCartesian {F} {G} CG CF = record
+    { F-resp-⊤ = ⊤.Terminal.⊤-is-terminal (⊤.transport-by-iso C.U C.terminal
+                                          (M.≅.trans C.U (M.≅.sym C.U CG.⊤-iso) ([ G ]-resp-≅ (M.≅.sym B.U CF.⊤-iso))))
+    ; F-resp-× = record
+      { ⟨_,_⟩    = λ f g → G.₁ (CF.×-iso.to _ _) C.∘ CG.×-iso.to _ _ C.∘ C.⟨ f , g ⟩
+      ; project₁ = λ {_ f g} → begin
+        G.₁ (F.₁ A.π₁) C.∘ G.₁ (CF.×-iso.to _ _) C.∘ CG.×-iso.to _ _ C.∘ C.⟨ f , g ⟩ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ([ CG.F-prod _ _ ]⟨⟩∘ ○ CG.F-prod.⟨⟩-cong₂ _ _ C.project₁ C.project₂) ⟩
+        G.₁ (F.₁ A.π₁) C.∘ G.₁ (CF.×-iso.to _ _) C.∘ CG.F-resp-×.⟨ f , g ⟩           ≈⟨ pullˡ ([ G ]-resp-∘ CF.F-resp-×.project₁) ⟩
+        G.₁ B.π₁ C.∘ CG.F-resp-×.⟨ f , g ⟩                                           ≈⟨ CG.F-resp-×.project₁ ⟩
+        f ∎
+      ; project₂ = λ {_ f g} → begin
+        G.₁ (F.₁ A.π₂) C.∘ G.₁ (CF.×-iso.to _ _) C.∘ CG.×-iso.to _ _ C.∘ C.⟨ f , g ⟩ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ([ CG.F-prod _ _ ]⟨⟩∘ ○ CG.F-prod.⟨⟩-cong₂ _ _ C.project₁ C.project₂) ⟩
+        G.₁ (F.₁ A.π₂) C.∘ G.₁ (CF.×-iso.to _ _) C.∘ CG.F-resp-×.⟨ f , g ⟩           ≈⟨ pullˡ ([ G ]-resp-∘ CF.F-resp-×.project₂) ⟩
+        G.₁ B.π₂ C.∘ CG.F-resp-×.⟨ f , g ⟩                                           ≈⟨ CG.F-resp-×.project₂ ⟩
+        g ∎
+      ; unique   = λ {_ h f g} eq₁ eq₂ → begin
+        G.₁ (CF.×-iso.to _ _) C.∘ CG.×-iso.to _ _ C.∘ C.⟨ f , g ⟩
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ C.unique′ (C.project₁ ○ ⟺ eq₁ ○ pushˡ (⟺ ([ G ]-resp-∘ B.project₁)) ○ pushˡ (⟺ C.project₁))
+                                       (C.project₂ ○ ⟺ eq₂ ○ pushˡ (⟺ ([ G ]-resp-∘ B.project₂)) ○ pushˡ (⟺ C.project₂)) ⟩
+        G.₁ (CF.×-iso.to _ _) C.∘ CG.×-iso.to _ _ C.∘ CG.×-iso.from _ _ C.∘ G.₁ (CF.×-iso.from _ _) C.∘ h
+          ≈⟨ refl⟩∘⟨ cancelˡ (CG.×-iso.isoˡ _ _) ⟩
+        G.₁ (CF.×-iso.to _ _) C.∘ G.₁ (CF.×-iso.from _ _) C.∘ h
+          ≈⟨ cancelˡ (M._≅_.isoˡ ([ G ]-resp-≅ (CF.×-iso _ _))) ⟩
+        h
+          ∎
+      }
+    }
+    where module F  = Functor F
+          module G  = Functor G
+          module CG = IsCartesianF CG
+          module CF = IsCartesianF CF
+          open C.HomReasoning
+          open MR C.U

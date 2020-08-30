@@ -46,6 +46,11 @@ record IsCartesianF (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ 
     D.⟨ F₁ f , F₁ g ⟩                                             ∎
     where open D.HomReasoning
 
+  ⊤-iso : F₀ C.⊤ ≅ D.⊤
+  ⊤-iso = ⊤.up-to-iso D.U (record { ⊤-is-terminal = F-resp-⊤ }) D.terminal
+
+  module ⊤-iso = _≅_ ⊤-iso
+
   ×-iso : ∀ A B → F₀ (A C.× B) ≅ F₀ A D.× F₀ B
   ×-iso A B = record
     { from = D.⟨ F₁ C.π₁ , F₁ C.π₂ ⟩
@@ -65,6 +70,8 @@ record IsCartesianF (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ 
     }
     where open D.HomReasoning
 
+  module ×-iso A B = _≅_ (×-iso A B)
+
 record CartesianF (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   private
     module C = CartesianCategory C
@@ -74,4 +81,5 @@ record CartesianF (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ �
     F           : Functor C.U D.U
     isCartesian : IsCartesianF C D F
 
-  open IsCartesianF isCartesian
+  open Functor F public
+  open IsCartesianF isCartesian public
