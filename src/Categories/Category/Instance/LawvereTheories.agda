@@ -14,11 +14,11 @@ LawvereTheories : (o ℓ e : Level) → Category (suc (o ⊔ ℓ ⊔ e)) (o ⊔ 
 LawvereTheories o ℓ e = record
   { Obj = FiniteProduct o ℓ e
   ; _⇒_ = LT-Hom
-  ; _≈_ = λ H₁ H₂ → F H₁ ≃ F H₂
+  ; _≈_ = λ H₁ H₂ → cartF.F H₁ ≃ cartF.F H₂
   ; id = LT-id
   ; _∘_ = LT-∘
-  ; assoc = λ { {f = f} {g} {h} → associator (F f) (F g) (F h)}
-  ; sym-assoc = λ { {f = f} {g} {h} → sym-associator (F f) (F g) (F h)}
+  ; assoc = λ { {f = f} {g} {h} → associator (cartF.F f) (cartF.F g) (cartF.F h) }
+  ; sym-assoc = λ { {f = f} {g} {h} → sym-associator (cartF.F f) (cartF.F g) (cartF.F h) }
   ; identityˡ = unitorˡ
   ; identityʳ = unitorʳ
   ; identity² = unitor²
