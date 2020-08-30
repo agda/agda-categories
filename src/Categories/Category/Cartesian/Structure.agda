@@ -10,11 +10,11 @@ open import Categories.Category.Cartesian
 
 record CartesianCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
   field
-    𝒞 : Category o ℓ e
-    cartesian : Cartesian 𝒞
+    U : Category o ℓ e          -- U for underlying
+    cartesian : Cartesian U
 
-  module 𝒞 = Category 𝒞
+  module U = Category U
   module cartesian = Cartesian cartesian
 
-  open 𝒞 public
+  open U public
   open cartesian public
