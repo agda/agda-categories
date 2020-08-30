@@ -13,6 +13,7 @@ open import Relation.Binary using (Setoid)
 open import Categories.Category
 open import Categories.Category.Instance.Setoids
 open import Categories.Category.Cartesian
+open import Categories.Category.Cartesian.Structure
 open import Categories.Category.Cocartesian
 open import Categories.Category.Instance.SingletonSet
 open import Categories.Category.Instance.EmptySet
@@ -69,3 +70,9 @@ module _ {o ℓ} where
         }
       }
     }
+
+Setoids-CartesianCategory : ∀ c ℓ → CartesianCategory (suc (c ⊔ ℓ)) (c ⊔ ℓ) (c ⊔ ℓ)
+Setoids-CartesianCategory c ℓ = record
+  { U         = Setoids c ℓ
+  ; cartesian = Setoids-Cartesian
+  }
