@@ -63,8 +63,8 @@ module _ (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′
                  F.₁ C.π₁ D.∘ h D.≈ i →
                  F.₁ C.π₂ D.∘ h D.≈ j →
                  F.⊗-homo.⇒.η (A , B) D.∘ D.product.⟨ i , j ⟩ D.≈ h
-      unique {h = h} {i} {j} eq₁ eq₂ = ⟺ (switch-tofromˡ F.⊗-homo.FX≅GX (⟺ (D.unique (pullˡ (⟺ (switch-fromtoʳ F.⊗-homo.FX≅GX π₁-comm)) ○ eq₁)
-                                                                                     (pullˡ (⟺ (switch-fromtoʳ F.⊗-homo.FX≅GX π₂-comm)) ○ eq₂))))
+      unique  eq₁ eq₂ = ⟺ (switch-tofromˡ F.⊗-homo.FX≅GX (⟺ (D.unique (pullˡ (⟺ (switch-fromtoʳ F.⊗-homo.FX≅GX π₁-comm)) ○ eq₁)
+                                                                      (pullˡ (⟺ (switch-fromtoʳ F.⊗-homo.FX≅GX π₂-comm)) ○ eq₂))))
 
     StrongMonoidal⇒Cartesian : CartesianF C D
     StrongMonoidal⇒Cartesian = record
