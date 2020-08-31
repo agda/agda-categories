@@ -12,6 +12,7 @@ open import Categories.Functor.Properties
 import Categories.Object.Product as P
 import Categories.Object.Terminal as ⊤
 import Categories.Morphism as M
+import Categories.Morphism.Reasoning as MR
 
 private
   variable
@@ -71,6 +72,10 @@ record IsCartesianF (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ 
     where open D.HomReasoning
 
   module ×-iso A B = _≅_ (×-iso A B)
+
+  F-resp-⟨⟩′ : ∀ {A B X} → (f : X C.⇒ A) (g : X C.⇒ B) → F₁ C.⟨ f , g ⟩ D.≈ F-resp-×.⟨ D.π₁ , D.π₂ ⟩ D.∘ D.⟨ F₁ f , F₁ g ⟩
+  F-resp-⟨⟩′ f g = switch-fromtoˡ (×-iso _ _) (F-resp-⟨⟩ f g)
+    where open MR D.U
 
 record CartesianF (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   private

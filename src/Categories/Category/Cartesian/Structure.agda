@@ -7,6 +7,7 @@ open import Level
 
 open import Categories.Category
 open import Categories.Category.Cartesian
+open import Categories.Category.Monoidal
 
 record CartesianCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
   field
@@ -18,3 +19,9 @@ record CartesianCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   open U public
   open cartesian public
+
+  monoidalCategory : MonoidalCategory o ℓ e
+  monoidalCategory = record
+    { U        = U
+    ; monoidal = monoidal
+    }
