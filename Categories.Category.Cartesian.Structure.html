@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="utf-8"><title>Categories.Category.Cartesian.Structure</title><link rel="stylesheet" href="Agda.css"></head><body><pre class="Agda"><a id="1" class="Symbol">{-#</a> <a id="5" class="Keyword">OPTIONS</a> <a id="13" class="Pragma">--without-K</a> <a id="25" class="Pragma">--safe</a> <a id="32" class="Symbol">#-}</a>
+
+<a id="37" class="Comment">-- here we define the structure version of a cartesian category</a>
+<a id="101" class="Keyword">module</a> <a id="108" href="Categories.Category.Cartesian.Structure.html" class="Module">Categories.Category.Cartesian.Structure</a> <a id="148" class="Keyword">where</a>
+
+<a id="155" class="Keyword">open</a> <a id="160" class="Keyword">import</a> <a id="167" href="Level.html" class="Module">Level</a>
+
+<a id="174" class="Keyword">open</a> <a id="179" class="Keyword">import</a> <a id="186" href="Categories.Category.html" class="Module">Categories.Category</a>
+<a id="206" class="Keyword">open</a> <a id="211" class="Keyword">import</a> <a id="218" href="Categories.Category.Cartesian.html" class="Module">Categories.Category.Cartesian</a>
+
+<a id="249" class="Keyword">record</a> <a id="CartesianCategory"></a><a id="256" href="Categories.Category.Cartesian.Structure.html#256" class="Record">CartesianCategory</a> <a id="274" href="Categories.Category.Cartesian.Structure.html#274" class="Bound">o</a> <a id="276" href="Categories.Category.Cartesian.Structure.html#276" class="Bound">ℓ</a> <a id="278" href="Categories.Category.Cartesian.Structure.html#278" class="Bound">e</a> <a id="280" class="Symbol">:</a> <a id="282" class="PrimitiveType">Set</a> <a id="286" class="Symbol">(</a><a id="287" href="Agda.Primitive.html#606" class="Primitive">suc</a> <a id="291" class="Symbol">(</a><a id="292" href="Categories.Category.Cartesian.Structure.html#274" class="Bound">o</a> <a id="294" href="Agda.Primitive.html#636" class="Primitive Operator">⊔</a> <a id="296" href="Categories.Category.Cartesian.Structure.html#276" class="Bound">ℓ</a> <a id="298" href="Agda.Primitive.html#636" class="Primitive Operator">⊔</a> <a id="300" href="Categories.Category.Cartesian.Structure.html#278" class="Bound">e</a><a id="301" class="Symbol">))</a> <a id="304" class="Keyword">where</a>
+  <a id="312" class="Keyword">field</a>
+    <a id="CartesianCategory.U"></a><a id="322" href="Categories.Category.Cartesian.Structure.html#322" class="Field">U</a> <a id="324" class="Symbol">:</a> <a id="326" href="Categories.Category.Core.html#442" class="Record">Category</a> <a id="335" href="Categories.Category.Cartesian.Structure.html#274" class="Bound">o</a> <a id="337" href="Categories.Category.Cartesian.Structure.html#276" class="Bound">ℓ</a> <a id="339" href="Categories.Category.Cartesian.Structure.html#278" class="Bound">e</a>          <a id="350" class="Comment">-- U for underlying</a>
+    <a id="CartesianCategory.cartesian"></a><a id="374" href="Categories.Category.Cartesian.Structure.html#374" class="Field">cartesian</a> <a id="384" class="Symbol">:</a> <a id="386" href="Categories.Category.Cartesian.html#7676" class="Record">Cartesian</a> <a id="396" href="Categories.Category.Cartesian.Structure.html#322" class="Field">U</a>
+
+  <a id="401" class="Keyword">module</a> <a id="U"></a><a id="408" href="Categories.Category.Cartesian.Structure.html#408" class="Module">U</a> <a id="410" class="Symbol">=</a> <a id="412" href="Categories.Category.Core.html#442" class="Module">Category</a> <a id="421" href="Categories.Category.Cartesian.Structure.html#322" class="Field">U</a>
+  <a id="425" class="Keyword">module</a> <a id="cartesian"></a><a id="432" href="Categories.Category.Cartesian.Structure.html#432" class="Module">cartesian</a> <a id="442" class="Symbol">=</a> <a id="444" href="Categories.Category.Cartesian.html#7676" class="Module">Cartesian</a> <a id="454" href="Categories.Category.Cartesian.Structure.html#374" class="Field">cartesian</a>
+
+  <a id="467" class="Keyword">open</a> <a id="472" href="Categories.Category.Cartesian.Structure.html#408" class="Module">U</a> <a id="474" class="Keyword">public</a>
+  <a id="483" class="Keyword">open</a> <a id="488" href="Categories.Category.Cartesian.Structure.html#432" class="Module">cartesian</a> <a id="498" class="Keyword">public</a>
+</pre></body></html>
