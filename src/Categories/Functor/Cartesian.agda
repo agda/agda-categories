@@ -73,9 +73,13 @@ record IsCartesianF (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ 
 
   module ×-iso A B = _≅_ (×-iso A B)
 
-  F-resp-⟨⟩′ : ∀ {A B X} → (f : X C.⇒ A) (g : X C.⇒ B) → F₁ C.⟨ f , g ⟩ D.≈ F-resp-×.⟨ D.π₁ , D.π₂ ⟩ D.∘ D.⟨ F₁ f , F₁ g ⟩
-  F-resp-⟨⟩′ f g = switch-fromtoˡ (×-iso _ _) (F-resp-⟨⟩ f g)
+  F-resp-⟨⟩′ : ∀ {A B X} → (f : X C.⇒ A) (g : X C.⇒ B) → F₁ C.⟨ f , g ⟩ D.≈ F-resp-×.⟨ F₁ f , F₁ g ⟩
+  F-resp-⟨⟩′ f g = begin
+    F₁ C.⟨ f , g ⟩                     ≈⟨ switch-fromtoˡ (×-iso _ _) (F-resp-⟨⟩ f g) ⟩
+    ×-iso.to _ _ D.∘ D.⟨ F₁ f , F₁ g ⟩ ≈⟨ ([ F-prod _ _ ]⟨⟩∘ ○ F-prod.⟨⟩-cong₂ _ _ D.project₁ D.project₂) ⟩
+    F-resp-×.⟨ F₁ f , F₁ g ⟩           ∎
     where open MR D.U
+          open D.HomReasoning
 
 record CartesianF (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   private

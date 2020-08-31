@@ -11,7 +11,7 @@ open import Categories.Category.Monoidal
 
 record CartesianCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
   field
-    U : Category o ℓ e          -- U for underlying
+    U         : Category o ℓ e  -- U for underlying
     cartesian : Cartesian U
 
   module U = Category U
