@@ -138,12 +138,16 @@ module _ {C : CartesianCategory o ℓ e} {D : CartesianCategory o′ ℓ′ e′
           ≈˘⟨ pullˡ [ D.product ⇒ D.product ⇒ F.F-prod _ _ ]repack∘× ⟩
         F.×-iso.to X (Y C.× Z) D.∘ (D.id D.⁂ F.×-iso.to Y Z) D.∘ D.associator.from
           ∎
-      ; unitaryˡ      = {!begin
-        ? ≈⟨ ? ⟩
-        ? ≈⟨ ? ⟩
-        ? ≈⟨ ? ⟩
-        ? ∎!}
-      ; unitaryʳ      = {!!}
+      ; unitaryˡ      = begin
+        F.₁ C.π₂ D.∘ F.F-resp-×.⟨ D.π₁ , D.π₂ ⟩ D.∘ (F.F-resp-⊤.! D.⁂ D.id) ≈⟨ pullˡ F.F-resp-×.project₂ ⟩
+        D.π₂ D.∘ (F.F-resp-⊤.! D.⁂ D.id)                                    ≈⟨ D.project₂ ⟩
+        D.id D.∘ D.π₂                                                       ≈⟨ D.identityˡ ⟩
+        D.π₂                                                                ∎
+      ; unitaryʳ      = begin
+        F.₁ C.π₁ D.∘ F.F-resp-×.⟨ D.π₁ , D.π₂ ⟩ D.∘ (D.id D.⁂ F.F-resp-⊤.!) ≈⟨ pullˡ F.F-resp-×.project₁ ⟩
+        D.π₁ D.∘ (D.id D.⁂ F.F-resp-⊤.!)                                    ≈⟨ D.project₁ ⟩
+        D.id D.∘ D.π₁                                                       ≈⟨ D.identityˡ ⟩
+        D.π₁                                                                ∎
       }
     }
     where module F = CartesianF F
