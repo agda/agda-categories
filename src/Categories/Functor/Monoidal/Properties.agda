@@ -8,18 +8,64 @@ open import Data.Product using (_,_)
 open import Categories.Category
 open import Categories.Category.Monoidal
 open import Categories.Category.Cartesian.Structure
-open import Categories.Functor
+open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
 open import Categories.Functor.Cartesian
 open import Categories.Functor.Monoidal
+open import Categories.NaturalTransformation
 
 import Categories.Object.Terminal as ⊤
 import Categories.Object.Product as P
+import Categories.Morphism as M
 import Categories.Morphism.Reasoning as MR
 
 private
   variable
     o o′ ℓ ℓ′ e e′ : Level
+
+module _ (C : MonoidalCategory o ℓ e) where
+  private
+    module C = MonoidalCategory C
+    open C.HomReasoning
+    open M C.U
+    open MR C.U
+
+  idF-IsStrongMonoidal : IsStrongMonoidalFunctor C C idF
+  idF-IsStrongMonoidal = record
+    { ε             = ≅.refl
+    ; ⊗-homo        = record
+      { F⇒G = record
+        { η           = λ _ → C.id
+        ; commute     = λ _ → id-comm-sym
+        ; sym-commute = λ _ → id-comm
+        }
+      ; F⇐G = record
+        { η           = λ _ → C.id
+        ; commute     = λ _ → id-comm-sym
+        ; sym-commute = λ _ → id-comm
+        }
+      ; iso = λ _ → record
+        { isoˡ = C.identity²
+        ; isoʳ = C.identity²
+        }
+      }
+    ; associativity = begin
+      C.associator.from C.∘ C.id C.∘ Functor.F₁ C.⊗ (C.id , C.id) ≈⟨ refl⟩∘⟨ elimʳ C.⊗.identity ⟩
+      C.associator.from C.∘ C.id ≈⟨ id-comm ⟩
+      C.id C.∘ C.associator.from ≈⟨ refl⟩∘⟨ introˡ C.⊗.identity ⟩
+      C.id C.∘ Functor.F₁ C.⊗ (C.id , C.id) C.∘ C.associator.from ∎
+    ; unitaryˡ      = elimʳ (elimʳ C.⊗.identity)
+    ; unitaryʳ      = elimʳ (elimʳ C.⊗.identity)
+    }
+
+  idF-IsMonoidal : IsMonoidalFunctor C C idF
+  idF-IsMonoidal = IsStrongMonoidalFunctor.isMonoidal idF-IsStrongMonoidal
+
+  idF-StrongMonoidal : StrongMonoidalFunctor C C
+  idF-StrongMonoidal = record { isStrongMonoidal = idF-IsStrongMonoidal }
+
+  idF-Monoidal : MonoidalFunctor C C
+  idF-Monoidal = record { isMonoidal = idF-IsMonoidal }
 
 module _ (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′) where
   private
