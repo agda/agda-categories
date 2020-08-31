@@ -92,6 +92,7 @@ module _ {C : CartesianCategory o ℓ e} {D : CartesianCategory o′ ℓ′ e′
     module D = CartesianCategory D
     open D.HomReasoning
     open MR D.U
+    open M D.U
 
   isMonoidalFunctor : CartesianF C D → MonoidalFunctor C.monoidalCategory D.monoidalCategory
   isMonoidalFunctor F = record
@@ -151,3 +152,32 @@ module _ {C : CartesianCategory o ℓ e} {D : CartesianCategory o′ ℓ′ e′
       }
     }
     where module F = CartesianF F
+
+  isStrongMonoidalFunctor : CartesianF C D → StrongMonoidalFunctor C.monoidalCategory D.monoidalCategory
+  isStrongMonoidalFunctor F = record
+    { F                = F.F
+    ; isStrongMonoidal = record
+      { ε             = ≅.sym F.⊤-iso
+      ; ⊗-homo        = record
+        { F⇒G = MF.⊗-homo
+        ; F⇐G = ntHelper record
+          { η       = λ { (X , Y) → F.×-iso.from X Y }
+          ; commute = λ { {X , Y} {Z , W} (f , g) →
+            begin
+              D.⟨ F.₁ C.π₁ , F.₁ C.π₂ ⟩ D.∘ F.₁ (f C.⁂ g)                   ≈⟨ D.⟨⟩∘ ⟩
+              D.⟨ F.₁ C.π₁ D.∘ F.₁ (f C.⁂ g) , F.₁ C.π₂ D.∘ F.₁ (f C.⁂ g) ⟩ ≈⟨ D.⟨⟩-cong₂ ([ F.F ]-resp-square C.project₁) ([ F.F ]-resp-square C.project₂) ⟩
+              D.⟨ F.₁ f D.∘ F.F₁ C.π₁ , F.₁ g D.∘ F.F₁ C.π₂ ⟩               ≈˘⟨ D.⁂∘⟨⟩ ⟩
+              (F.₁ f D.⁂ F.₁ g) D.∘ D.⟨ F.F₁ C.π₁ , F.F₁ C.π₂ ⟩             ∎ }
+          }
+        ; iso = λ { (X , Y) → record
+          { isoˡ = F.×-iso.isoʳ X Y
+          ; isoʳ = F.×-iso.isoˡ X Y
+          } }
+        }
+      ; associativity = MF.associativity
+      ; unitaryˡ      = MF.unitaryˡ
+      ; unitaryʳ      = MF.unitaryʳ
+      }
+    }
+    where module F  = CartesianF F
+          module MF = MonoidalFunctor (isMonoidalFunctor F)
