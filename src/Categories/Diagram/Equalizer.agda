@@ -66,3 +66,24 @@ Equalizer⇒Mono : (e : Equalizer h i) → Mono (Equalizer.arr e)
 Equalizer⇒Mono e f g eq =
   equalize-resp-≈′ equality-∘ equality-∘ eq (unique refl) (unique refl)
   where open Equalizer e
+
+up-to-iso : (e₁ e₂ : Equalizer h i) → Equalizer.obj e₁ ≅ Equalizer.obj e₂
+up-to-iso e₁ e₂ = record
+  { from = repack e₁ e₂
+  ; to = repack e₂ e₁
+  ; iso = record
+    { isoˡ = repack-cancel e₂ e₁
+    ; isoʳ = repack-cancel e₁ e₂
+    }
+  }
+  where
+    open Equalizer
+
+    repack : (e₁ e₂ : Equalizer h i) → obj e₁ ⇒ obj e₂
+    repack e₁ e₂ = equalize e₂ (equality e₁)
+
+    repack∘ : (e₁ e₂ e₃ : Equalizer h i) → repack e₂ e₃ ∘ repack e₁ e₂ ≈ repack e₁ e₃
+    repack∘ e₁ e₂ e₃ = unique e₃ (⟺ (glueTrianglesʳ (⟺ (universal e₃)) (⟺ (universal e₂))))
+
+    repack-cancel : (e₁ e₂ : Equalizer h i) → repack e₁ e₂ ∘ repack e₂ e₁ ≈ id
+    repack-cancel e₁ e₂ = repack∘ e₂ e₁ e₂ ○ ⟺ (id-equalize e₂)
