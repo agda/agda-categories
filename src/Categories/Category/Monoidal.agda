@@ -16,3 +16,4 @@
 module Categories.Category.Monoidal where
 
 open import Categories.Category.Monoidal.Core public
+open import Categories.Category.Monoidal.Structure public

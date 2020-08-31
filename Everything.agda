@@ -148,6 +148,7 @@ import Categories.Category.Monoidal.Instance.StrictCats
 import Categories.Category.Monoidal.Properties
 import Categories.Category.Monoidal.Reasoning
 import Categories.Category.Monoidal.Rigid
+import Categories.Category.Monoidal.Structure
 import Categories.Category.Monoidal.Symmetric
 import Categories.Category.Monoidal.Traced
 import Categories.Category.Monoidal.Utilities
@@ -232,6 +233,7 @@ import Categories.Functor.Instance.SetoidDiscrete
 import Categories.Functor.Instance.StrictCore
 import Categories.Functor.Limits
 import Categories.Functor.Monoidal
+import Categories.Functor.Monoidal.Properties
 import Categories.Functor.Power
 import Categories.Functor.Power.Functorial
 import Categories.Functor.Power.NaturalTransformation
