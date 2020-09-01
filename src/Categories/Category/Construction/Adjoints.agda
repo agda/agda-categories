@@ -8,10 +8,12 @@ open import Data.Product using (_×_ ; _,_)
 open import Categories.Category
 open import Categories.Category.Helper
 open import Categories.Adjoint
+open import Categories.Adjoint.Compose
 open import Categories.Adjoint.Mate
-open import Categories.Functor
+open import Categories.Functor renaming (id to idF)
 open import Categories.NaturalTransformation renaming (id to idN)
-open import Categories.NaturalTransformation.Equivalence
+open import Categories.NaturalTransformation.NaturalIsomorphism
+open import Categories.NaturalTransformation.Equivalence renaming (_≃_ to _≊_)
 
 import Categories.Morphism.Reasoning as MR
 
@@ -47,10 +49,10 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
 
   private
     _≈_ : ∀ {A B} → Adjoint⇒ A B → Adjoint⇒ A B → Set (o ⊔ e ⊔ o′ ⊔ e′)
-    f ≈ g = Adjoint⇒.α f ≃ Adjoint⇒.α g × Adjoint⇒.β f ≃ Adjoint⇒.β g
+    f ≈ g = Adjoint⇒.α f ≊ Adjoint⇒.α g × Adjoint⇒.β f ≊ Adjoint⇒.β g
 
-    id-Adjoint⇒ : {X : AdjointObj} → Adjoint⇒ X X
-    id-Adjoint⇒ {X} = record
+    id : {X : AdjointObj} → Adjoint⇒ X X
+    id {X} = record
       { mate = record
         { α    = idN
         ; β    = idN
@@ -62,8 +64,8 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
       }
       where open AdjointObj X
 
-    ∘-Adjoint⇒ : ∀ {X Y Z} → Adjoint⇒ Y Z → Adjoint⇒ X Y → Adjoint⇒ X Z
-    ∘-Adjoint⇒ {X} {Y} {Z} f g = record
+    _∘_ : ∀ {X Y Z} → Adjoint⇒ Y Z → Adjoint⇒ X Y → Adjoint⇒ X Z
+    _∘_ {X} {Y} {Z} f g = record
       { mate = record
         { α    = f.α ∘ᵥ g.α
         ; β    = g.β ∘ᵥ f.β
@@ -102,8 +104,8 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
      { Obj       = AdjointObj
      ; _⇒_       = Adjoint⇒
      ; _≈_       = _≈_
-     ; id        = id-Adjoint⇒
-     ; _∘_       = ∘-Adjoint⇒
+     ; id        = id
+     ; _∘_       = _∘_
      ; assoc     = D.assoc , C.sym-assoc
      ; identityˡ = D.identityˡ , C.identityʳ
      ; identityʳ = D.identityʳ , C.identityˡ
@@ -114,3 +116,46 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
        }
      ; ∘-resp-≈  = λ { (eq₁ , eq₂) (eq₃ , eq₄) → D.∘-resp-≈ eq₁ eq₃ , C.∘-resp-≈ eq₄ eq₂ }
      }
+
+
+module _ o ℓ e where
+  private
+    _≈_ : ∀ {A B : Category o ℓ e} → AdjointObj A B → AdjointObj A B → Set (o ⊔ ℓ ⊔ e)
+    f ≈ g = f.L ≃ g.L × f.R ≃ g.R
+      where module f = AdjointObj f
+            module g = AdjointObj g
+
+    id : {A : Category o ℓ e} → AdjointObj A A
+    id = record
+      { L   = idF
+      ; R   = idF
+      ; L⊣R = ⊣-id
+      }
+
+    _∘_ : {A B C : Category o ℓ e} → AdjointObj B C → AdjointObj A B → AdjointObj A C
+    f ∘ g = record
+      { L   = f.L ∘F g.L
+      ; R   = g.R ∘F f.R
+      ; L⊣R = g.L⊣R ∘⊣ f.L⊣R
+      }
+      where module f = AdjointObj f
+            module g = AdjointObj g
+
+  Adjunction : Category (suc (o ⊔ ℓ ⊔ e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
+  Adjunction = categoryHelper record
+    { Obj       = Category o ℓ e
+    ; _⇒_       = AdjointObj
+    ; _≈_       = _≈_
+    ; id        = id
+    ; _∘_       = _∘_
+    ; assoc     = λ {_ _ _ _ f g h} → associator (AdjointObj.L f) (AdjointObj.L g) (AdjointObj.L h)
+                                    , sym-associator (AdjointObj.R h) (AdjointObj.R g) (AdjointObj.R f)
+    ; identityˡ = unitorˡ , unitorʳ
+    ; identityʳ = unitorʳ , unitorˡ
+    ; equiv     = record
+      { refl  = ≃.refl , ≃.refl
+      ; sym   = λ { (α , β) → ≃.sym α , ≃.sym β }
+      ; trans = λ { (α₁ , β₁) (α₂ , β₂) → ≃.trans α₁ α₂ , ≃.trans β₁ β₂ }
+      }
+    ; ∘-resp-≈  = λ { (α₁ , β₁) (α₂ , β₂) → α₁ ⓘₕ α₂ , β₂ ⓘₕ β₁ }
+    }
