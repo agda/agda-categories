@@ -141,8 +141,8 @@ module _ o ℓ e where
       where module f = AdjointObj f
             module g = AdjointObj g
 
-  Adjunction : Category (suc (o ⊔ ℓ ⊔ e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
-  Adjunction = categoryHelper record
+  Adjunctions : Category (suc (o ⊔ ℓ ⊔ e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
+  Adjunctions = categoryHelper record
     { Obj       = Category o ℓ e
     ; _⇒_       = AdjointObj
     ; _≈_       = _≈_
