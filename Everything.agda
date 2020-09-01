@@ -99,6 +99,7 @@ import Categories.Category.Groupoid
 import Categories.Category.Groupoid.Properties
 import Categories.Category.Helper
 import Categories.Category.Indiscrete
+import Categories.Category.Instance.Cartesians
 import Categories.Category.Instance.Cats
 import Categories.Category.Instance.EmptySet
 import Categories.Category.Instance.FamilyOfSetoids
