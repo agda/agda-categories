@@ -13,3 +13,7 @@ open import Categories.Category.Instance.Properties.Setoids.Cocomplete
 open import Categories.Category.Instance.Properties.Setoids.LCCC
   using (Setoids-LCCC)
   public
+
+open import Categories.Category.Instance.Properties.Setoids.CCC
+  using (Setoids-CCC)
+  public
