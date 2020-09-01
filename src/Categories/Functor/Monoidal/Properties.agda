@@ -51,8 +51,8 @@ module _ (C : MonoidalCategory o ℓ e) where
       }
     ; associativity = begin
       C.associator.from C.∘ C.id C.∘ Functor.F₁ C.⊗ (C.id , C.id) ≈⟨ refl⟩∘⟨ elimʳ C.⊗.identity ⟩
-      C.associator.from C.∘ C.id ≈⟨ id-comm ⟩
-      C.id C.∘ C.associator.from ≈⟨ refl⟩∘⟨ introˡ C.⊗.identity ⟩
+      C.associator.from C.∘ C.id                                  ≈⟨ id-comm ⟩
+      C.id C.∘ C.associator.from                                  ≈⟨ refl⟩∘⟨ introˡ C.⊗.identity ⟩
       C.id C.∘ Functor.F₁ C.⊗ (C.id , C.id) C.∘ C.associator.from ∎
     ; unitaryˡ      = elimʳ (elimʳ C.⊗.identity)
     ; unitaryʳ      = elimʳ (elimʳ C.⊗.identity)
