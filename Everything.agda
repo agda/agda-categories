@@ -75,6 +75,7 @@ import Categories.Category.Construction.Path
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Construction.Properties.Comma
 import Categories.Category.Construction.Properties.EilenbergMoore
+import Categories.Category.Construction.Properties.Functors
 import Categories.Category.Construction.Properties.Kleisli
 import Categories.Category.Construction.Properties.Presheaves
 import Categories.Category.Construction.Properties.Presheaves.Cartesian
