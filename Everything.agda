@@ -108,6 +108,7 @@ import Categories.Category.Instance.FinSetoids
 import Categories.Category.Instance.Globe
 import Categories.Category.Instance.Groupoids
 import Categories.Category.Instance.LawvereTheories
+import Categories.Category.Instance.Monoidals
 import Categories.Category.Instance.One
 import Categories.Category.Instance.PointedSets
 import Categories.Category.Instance.Posets
