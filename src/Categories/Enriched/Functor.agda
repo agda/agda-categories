@@ -60,7 +60,6 @@ id {_} {C} = record
   }
   where
   open Category C
-  module ⊗ = Setoid-Functor ⊗
 
 infixr 9 _∘F_
 

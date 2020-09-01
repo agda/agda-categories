@@ -55,8 +55,8 @@ private
     { from = id
     ; to   = id
     ; iso  = record
-      { isoˡ = identityˡ
-      ; isoʳ = identityʳ
+      { isoˡ = identity²
+      ; isoʳ = identity²
       }
     }
 
