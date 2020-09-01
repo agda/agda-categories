@@ -54,6 +54,7 @@ import Categories.Category.Complete.Properties.SolutionSet
 import Categories.Category.Concrete
 import Categories.Category.Concrete.Properties
 import Categories.Category.Construction.0-Groupoid
+import Categories.Category.Construction.Adjoints
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Cocones
 import Categories.Category.Construction.Comma
