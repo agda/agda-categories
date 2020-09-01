@@ -161,6 +161,10 @@ module _ (A : MonoidalCategory o ℓ e) (B : MonoidalCategory o′ ℓ′ e′) 
           module CF = IsStrongMonoidalFunctor CF
           module CG = IsStrongMonoidalFunctor CG
 
+module _ {A : MonoidalCategory o ℓ e} {B : MonoidalCategory o′ ℓ′ e′} {C : MonoidalCategory o″ ℓ″ e″} where
+
+    ∘-StrongMonoidal : StrongMonoidalFunctor B C → StrongMonoidalFunctor A B → StrongMonoidalFunctor A C
+    ∘-StrongMonoidal G F = record { isStrongMonoidal = ∘-IsStrongMonoidal _ _ _ (StrongMonoidalFunctor.isStrongMonoidal G) (StrongMonoidalFunctor.isStrongMonoidal F) }
 
 module _ (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′) where
   private

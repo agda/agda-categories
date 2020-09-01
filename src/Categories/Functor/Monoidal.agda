@@ -129,3 +129,6 @@ module _  (C : MonoidalCategory o ℓ e) (D : MonoidalCategory o′ ℓ′ e′)
 
     open Functor F public
     open IsStrongMonoidalFunctor isStrongMonoidal public
+
+    monoidalFunctor : MonoidalFunctor
+    monoidalFunctor = record { F = F ; isMonoidal = isMonoidal }
