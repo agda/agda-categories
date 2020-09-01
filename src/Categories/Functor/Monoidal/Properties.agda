@@ -21,7 +21,7 @@ import Categories.Morphism.Reasoning as MR
 
 private
   variable
-    o o′ ℓ ℓ′ e e′ : Level
+    o o′ o″ ℓ ℓ′ ℓ″ e e′ e″ : Level
 
 module _ (C : MonoidalCategory o ℓ e) where
   private
@@ -66,6 +66,101 @@ module _ (C : MonoidalCategory o ℓ e) where
 
   idF-Monoidal : MonoidalFunctor C C
   idF-Monoidal = record { isMonoidal = idF-IsMonoidal }
+
+module _ (A : MonoidalCategory o ℓ e) (B : MonoidalCategory o′ ℓ′ e′) (C : MonoidalCategory o″ ℓ″ e″) where
+  private
+    module A = MonoidalCategory A
+    module B = MonoidalCategory B
+    module C = MonoidalCategory C
+    open P C.U
+    open M C.U
+    open C.HomReasoning
+    open MR C.U
+
+  ∘-IsStrongMonoidal : ∀ {F : Functor A.U B.U} {G : Functor B.U C.U} →
+                    IsStrongMonoidalFunctor B C G → IsStrongMonoidalFunctor A B F →
+                    IsStrongMonoidalFunctor A C (G ∘F F)
+  ∘-IsStrongMonoidal {F} {G} CG CF = record
+    { ε             = ≅.trans CG.ε ([ G ]-resp-≅ CF.ε)
+    ; ⊗-homo        = record
+      { F⇒G = ntHelper record
+        { η       = λ { (X , Y) → G.₁ (CF.⊗-homo.⇒.η (X , Y)) C.∘ CG.⊗-homo.⇒.η (F.F₀ X , F.F₀ Y) }
+        ; commute = λ { (f , g) → begin
+          (G.₁ (CF.⊗-homo.⇒.η _) C.∘ CG.⊗-homo.⇒.η _) C.∘ (G.₁ (F.₁ f) C.⊗₁ G.₁ (F.₁ g)) ≈⟨ C.assoc ⟩
+          G.₁ (CF.⊗-homo.⇒.η _) C.∘ CG.⊗-homo.⇒.η _ C.∘ (G.₁ (F.₁ f) C.⊗₁ G.₁ (F.₁ g))   ≈⟨ pushʳ (CG.⊗-homo.⇒.commute _) ⟩
+          (G.₁ (CF.⊗-homo.⇒.η _) C.∘ G.₁ (F.₁ f B.⊗₁ F.₁ g)) C.∘ CG.⊗-homo.⇒.η _         ≈⟨ pushˡ ([ G ]-resp-square (CF.⊗-homo.⇒.commute _)) ⟩
+          G.₁ (F.₁ (f A.⊗₁ g)) C.∘ G.₁ (CF.⊗-homo.⇒.η _) C.∘ CG.⊗-homo.⇒.η _             ∎ }
+        }
+      ; F⇐G = ntHelper record
+        { η       = λ { (X , Y) → CG.⊗-homo.⇐.η (F.F₀ X , F.F₀ Y) C.∘ G.₁ (CF.⊗-homo.⇐.η (X , Y)) }
+        ; commute = λ _ → pullʳ ([ G ]-resp-square (CF.⊗-homo.⇐.commute _)) ○ pullˡ (CG.⊗-homo.⇐.commute _) ○ C.assoc
+        }
+      ; iso = λ _ → record
+        { isoˡ = cancelInner ([ G ]-resp-∘ (CF.⊗-homo.iso.isoˡ _) ○ G.identity) ○ CG.⊗-homo.iso.isoˡ _
+        ; isoʳ = cancelInner (CG.⊗-homo.iso.isoʳ _) ○ [ G ]-resp-∘ (CF.⊗-homo.iso.isoʳ _) ○ G.identity
+        }
+      }
+    ; associativity = begin
+      G.₁ (F.₁ A.associator.from) C.∘ (G.₁ (CF.⊗-homo.⇒.η _) C.∘ CG.⊗-homo.⇒.η _) C.∘ ((G.₁ (CF.⊗-homo.⇒.η _) C.∘ CG.⊗-homo.⇒.η _) C.⊗₁ C.id)
+        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ (Functor.homomorphism (C.-⊗ _) ○ C.∘-resp-≈ˡ (C.⊗.F-resp-≈ (C.Equiv.refl , ⟺ G.identity))) ⟩
+      G.₁ (F.₁ A.associator.from) C.∘ (G.₁ (CF.⊗-homo.⇒.η _) C.∘ CG.⊗-homo.⇒.η _) C.∘ (G.₁ (CF.⊗-homo.⇒.η _) C.⊗₁ G.₁ B.id) C.∘ (CG.⊗-homo.⇒.η _ C.⊗₁ C.id)
+        ≈⟨ refl⟩∘⟨ center (CG.⊗-homo.⇒.commute _) ⟩
+      G.₁ (F.₁ A.associator.from) C.∘ G.₁ (CF.⊗-homo.⇒.η _) C.∘ (G.₁ (CF.⊗-homo.⇒.η _ B.⊗₁ B.id) C.∘ CG.⊗-homo.⇒.η _) C.∘ (CG.⊗-homo.⇒.η _ C.⊗₁ C.id)
+        ≈⟨ C.∘-resp-≈ʳ (center⁻¹ C.Equiv.refl C.Equiv.refl) ○ C.sym-assoc ⟩
+      (G.₁ (F.₁ A.associator.from) C.∘ G.₁ (CF.⊗-homo.⇒.η _) C.∘ G.₁ (CF.⊗-homo.⇒.η _ B.⊗₁ B.id)) C.∘ CG.⊗-homo.⇒.η _ C.∘ (CG.⊗-homo.⇒.η _ C.⊗₁ C.id)
+        ≈⟨ C.∘-resp-≈ʳ (⟺ G.homomorphism) ⟩∘⟨refl ⟩
+      (G.₁ (F.₁ A.associator.from) C.∘ G.₁ (CF.⊗-homo.⇒.η _ B.∘ CF.⊗-homo.⇒.η _ B.⊗₁ B.id)) C.∘ CG.⊗-homo.⇒.η _ C.∘ (CG.⊗-homo.⇒.η _ C.⊗₁ C.id)
+        ≈⟨ [ G ]-resp-square CF.associativity ⟩∘⟨refl ⟩
+      (G.₁ (CF.⊗-homo.⇒.η _) C.∘ G.₁ ((B.id B.⊗₁ CF.⊗-homo.⇒.η _) B.∘ B.associator.from)) C.∘ CG.⊗-homo.⇒.η _ C.∘ (CG.⊗-homo.⇒.η _ C.⊗₁ C.id)
+        ≈⟨ C.∘-resp-≈ʳ G.homomorphism ⟩∘⟨refl ⟩
+      (G.₁ (CF.⊗-homo.⇒.η _) C.∘ G.₁ (B.id B.⊗₁ CF.⊗-homo.⇒.η _) C.∘ G.₁ B.associator.from) C.∘ CG.⊗-homo.⇒.η _ C.∘ (CG.⊗-homo.⇒.η _ C.⊗₁ C.id)
+        ≈⟨ C.∘-resp-≈ˡ C.sym-assoc ○ C.assoc ⟩
+      (G.₁ (CF.⊗-homo.⇒.η _) C.∘ G.₁ (B.id B.⊗₁ CF.⊗-homo.⇒.η _)) C.∘ G.₁ B.associator.from C.∘ CG.⊗-homo.⇒.η _ C.∘ (CG.⊗-homo.⇒.η _ C.⊗₁ C.id)
+        ≈⟨ refl⟩∘⟨ CG.associativity ⟩
+      (G.₁ (CF.⊗-homo.⇒.η _) C.∘ G.₁ (B.id B.⊗₁ CF.⊗-homo.⇒.η _)) C.∘ CG.⊗-homo.⇒.η _ C.∘ (C.id C.⊗₁ CG.⊗-homo.⇒.η _) C.∘ C.associator.from
+        ≈⟨ center (CG.⊗-homo.⇒.sym-commute _) ⟩
+      G.₁ (CF.⊗-homo.⇒.η _) C.∘ (CG.⊗-homo.⇒.η _ C.∘ (G.₁ B.id C.⊗₁ G.₁ (CF.⊗-homo.⇒.η _))) C.∘ (C.id C.⊗₁ CG.⊗-homo.⇒.η _) C.∘ C.associator.from
+        ≈⟨ pull-first C.Equiv.refl ○ C.∘-resp-≈ʳ (C.∘-resp-≈ˡ (C.⊗.F-resp-≈ (G.identity , C.Equiv.refl))) ⟩
+      (G.₁ (CF.⊗-homo.⇒.η _) C.∘ CG.⊗-homo.⇒.η _) C.∘ (C.id C.⊗₁ G.₁ (CF.⊗-homo.⇒.η _)) C.∘ (C.id C.⊗₁ CG.⊗-homo.⇒.η _) C.∘ C.associator.from
+        ≈˘⟨ refl⟩∘⟨ pushˡ (Functor.homomorphism (_ C.⊗-)) ⟩
+      (G.₁ (CF.⊗-homo.⇒.η _) C.∘ CG.⊗-homo.⇒.η _) C.∘ (C.id C.⊗₁ (G.F₁ (CF.⊗-homo.⇒.η _) C.∘ CG.⊗-homo.⇒.η _)) C.∘ C.associator.from
+        ∎
+    ; unitaryˡ      = begin
+      G.₁ (F.₁ A.unitorˡ.from) C.∘ (G.₁ (CF.⊗-homo.⇒.η _) C.∘ CG.⊗-homo.⇒.η _) C.∘ ((G.₁ CF.ε.from C.∘ CG.ε.from) C.⊗₁ C.id)
+        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ (Functor.homomorphism (C.-⊗ _) ○ C.∘-resp-≈ˡ (C.⊗.F-resp-≈ (C.Equiv.refl , ⟺ G.identity))) ⟩
+      G.₁ (F.₁ A.unitorˡ.from) C.∘ (G.₁ (CF.⊗-homo.⇒.η _) C.∘ CG.⊗-homo.⇒.η _) C.∘ (G.₁ CF.ε.from C.⊗₁ G.₁ B.id) C.∘ (CG.ε.from C.⊗₁ C.id)
+        ≈⟨ refl⟩∘⟨ center (CG.⊗-homo.⇒.commute _) ⟩
+      G.₁ (F.₁ A.unitorˡ.from) C.∘ G.₁ (CF.⊗-homo.⇒.η _) C.∘ (G.₁ (CF.ε.from B.⊗₁ B.id) C.∘ CG.⊗-homo.⇒.η _) C.∘ (CG.ε.from C.⊗₁ C.id)
+        ≈⟨ C.∘-resp-≈ʳ (center⁻¹ C.Equiv.refl C.Equiv.refl) ○ C.sym-assoc ⟩
+      (G.₁ (F.₁ A.unitorˡ.from) C.∘ G.₁ (CF.⊗-homo.⇒.η _) C.∘ G.₁ (CF.ε.from B.⊗₁ B.id)) C.∘ CG.⊗-homo.⇒.η _ C.∘ (CG.ε.from C.⊗₁ C.id)
+        ≈⟨ C.∘-resp-≈ʳ (⟺ G.homomorphism) ⟩∘⟨refl ⟩
+      (G.₁ (F.₁ A.unitorˡ.from) C.∘ G.₁ (CF.⊗-homo.⇒.η _ B.∘ CF.ε.from B.⊗₁ B.id)) C.∘ CG.⊗-homo.⇒.η _ C.∘ (CG.ε.from C.⊗₁ C.id)
+        ≈⟨ [ G ]-resp-∘ CF.unitaryˡ ⟩∘⟨refl ⟩
+      G.₁ B.unitorˡ.from C.∘ CG.⊗-homo.⇒.η _ C.∘ (CG.ε.from C.⊗₁ C.id)
+        ≈⟨ CG.unitaryˡ ⟩
+      C.unitorˡ.from
+        ∎
+    ; unitaryʳ      = begin
+      G.₁ (F.₁ A.unitorʳ.from) C.∘ (G.₁ (CF.⊗-homo.⇒.η _) C.∘ CG.⊗-homo.⇒.η _) C.∘ (C.id C.⊗₁ (G.₁ CF.ε.from C.∘ CG.ε.from))
+        ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ (Functor.homomorphism (_ C.⊗-) ○ C.∘-resp-≈ˡ (C.⊗.F-resp-≈ (⟺ G.identity , C.Equiv.refl)))) ⟩
+      G.₁ (F.₁ A.unitorʳ.from) C.∘ (G.₁ (CF.⊗-homo.⇒.η _) C.∘ CG.⊗-homo.⇒.η _) C.∘ (G.₁ B.id C.⊗₁ G.₁ CF.ε.from) C.∘ (C.id C.⊗₁ CG.ε.from)
+        ≈⟨ refl⟩∘⟨ center (CG.⊗-homo.⇒.commute _) ⟩
+      G.₁ (F.₁ A.unitorʳ.from) C.∘ G.₁ (CF.⊗-homo.⇒.η _) C.∘ (G.₁ (B.id B.⊗₁ CF.ε.from) C.∘ CG.⊗-homo.⇒.η _) C.∘ (C.id C.⊗₁ CG.ε.from)
+        ≈⟨ C.∘-resp-≈ʳ (center⁻¹ C.Equiv.refl C.Equiv.refl) ○ C.sym-assoc ⟩
+      (G.₁ (F.₁ A.unitorʳ.from) C.∘ G.₁ (CF.⊗-homo.⇒.η _) C.∘ G.₁ (B.id B.⊗₁ CF.ε.from)) C.∘ CG.⊗-homo.⇒.η _ C.∘ (C.id C.⊗₁ CG.ε.from)
+        ≈⟨ C.∘-resp-≈ʳ (⟺ G.homomorphism) ⟩∘⟨refl ⟩
+      (G.₁ (F.₁ A.unitorʳ.from) C.∘ G.F₁ (CF.⊗-homo.⇒.η _ B.∘ (B.id B.⊗₁ CF.ε.from))) C.∘ CG.⊗-homo.⇒.η _ C.∘ (C.id C.⊗₁ CG.ε.from)
+        ≈⟨ [ G ]-resp-∘ CF.unitaryʳ ⟩∘⟨refl ⟩
+      G.F₁ B.unitorʳ.from C.∘ CG.⊗-homo.⇒.η _ C.∘ C.id C.⊗₁ CG.ε.from
+        ≈⟨ CG.unitaryʳ ⟩
+      C.unitorʳ.from
+        ∎
+    }
+    where module F  = Functor F
+          module G  = Functor G
+          module CF = IsStrongMonoidalFunctor CF
+          module CG = IsStrongMonoidalFunctor CG
+
 
 module _ (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′) where
   private
