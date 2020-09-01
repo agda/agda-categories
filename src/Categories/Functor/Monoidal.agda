@@ -122,7 +122,7 @@ module _  (C : MonoidalCategory o ℓ e) (D : MonoidalCategory o′ ℓ′ e′)
       ; unitaryʳ      = unitaryʳ
       }
 
-  record StrongMonoidalFunctor : Set (levelOfTerm C ⊔ levelOfTerm D) where
+  record StrongMonoidalFunctor : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
     field
       F : Functor C.U D.U
       isStrongMonoidal : IsStrongMonoidalFunctor F

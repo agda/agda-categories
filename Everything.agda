@@ -54,6 +54,7 @@ import Categories.Category.Complete.Properties.SolutionSet
 import Categories.Category.Concrete
 import Categories.Category.Concrete.Properties
 import Categories.Category.Construction.0-Groupoid
+import Categories.Category.Construction.Adjoints
 import Categories.Category.Construction.Arrow
 import Categories.Category.Construction.Cocones
 import Categories.Category.Construction.Comma
@@ -75,6 +76,7 @@ import Categories.Category.Construction.Path
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Construction.Properties.Comma
 import Categories.Category.Construction.Properties.EilenbergMoore
+import Categories.Category.Construction.Properties.Functors
 import Categories.Category.Construction.Properties.Kleisli
 import Categories.Category.Construction.Properties.Presheaves
 import Categories.Category.Construction.Properties.Presheaves.Cartesian
@@ -99,6 +101,7 @@ import Categories.Category.Groupoid
 import Categories.Category.Groupoid.Properties
 import Categories.Category.Helper
 import Categories.Category.Indiscrete
+import Categories.Category.Instance.Cartesians
 import Categories.Category.Instance.Cats
 import Categories.Category.Instance.EmptySet
 import Categories.Category.Instance.FamilyOfSetoids
@@ -108,6 +111,7 @@ import Categories.Category.Instance.FinSetoids
 import Categories.Category.Instance.Globe
 import Categories.Category.Instance.Groupoids
 import Categories.Category.Instance.LawvereTheories
+import Categories.Category.Instance.Monoidals
 import Categories.Category.Instance.One
 import Categories.Category.Instance.PointedSets
 import Categories.Category.Instance.Posets
