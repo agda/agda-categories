@@ -114,6 +114,7 @@ import Categories.Category.Instance.Posets
 import Categories.Category.Instance.Properties.Cats
 import Categories.Category.Instance.Properties.Posets
 import Categories.Category.Instance.Properties.Setoids
+import Categories.Category.Instance.Properties.Setoids.CCC
 import Categories.Category.Instance.Properties.Setoids.Cocomplete
 import Categories.Category.Instance.Properties.Setoids.Complete
 import Categories.Category.Instance.Properties.Setoids.LCCC
