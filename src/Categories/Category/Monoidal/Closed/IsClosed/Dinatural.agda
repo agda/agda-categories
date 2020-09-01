@@ -31,7 +31,6 @@ private
   α⇒ = associator.from
   α⇐ = associator.to
   module ℱ = Functor
-  module ⊗ = Functor ⊗
 
 open HomReasoning
 open Equiv
