@@ -59,6 +59,7 @@ import Categories.Category.Construction.Fin
 import Categories.Category.Construction.Functors
 import Categories.Category.Construction.Graphs
 import Categories.Category.Construction.Grothendieck
+import Categories.Category.Construction.GroupAsCategory
 import Categories.Category.Construction.Kleisli
 import Categories.Category.Construction.MonoidAsCategory
 import Categories.Category.Construction.Monoids
