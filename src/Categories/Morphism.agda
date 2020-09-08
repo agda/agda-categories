@@ -27,8 +27,8 @@ Mono {A = A} f = ∀ {C} → (g₁ g₂ : C ⇒ A) → f ∘ g₁ ≈ f ∘ g₂
 
 record _↣_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
-    mor : A ⇒ B
-    mono  : Mono mor
+    mor  : A ⇒ B
+    mono : Mono mor
 
 Epi : ∀ (f : A ⇒ B) → Set (o ⊔ ℓ ⊔ e)
 Epi {B = B} f = ∀ {C} → (g₁ g₂ : B ⇒ C) → g₁ ∘ f ≈ g₂ ∘ f → g₁ ≈ g₂
@@ -36,7 +36,7 @@ Epi {B = B} f = ∀ {C} → (g₁ g₂ : B ⇒ C) → g₁ ∘ f ≈ g₂ ∘ f 
 record _↠_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
     mor : A ⇒ B
-    epi  : Epi mor
+    epi : Epi mor
 
 _SectionOf_ : (g : B ⇒ A) (f : A ⇒ B) → Set e
 g SectionOf f = f ∘ g ≈ id
