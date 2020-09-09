@@ -1,8 +1,8 @@
 open import Algebra.Bundles using (Monoid)
 
-module Categories.Category.Construction.MonoidAsCategory {c ℓ} (M : Monoid c ℓ) where
+module Categories.Category.Construction.MonoidAsCategory o {c ℓ} (M : Monoid c ℓ) where
 
-open import Data.Unit
+open import Data.Unit.Polymorphic
 open import Level
 
 open import Categories.Category.Core
@@ -10,7 +10,7 @@ open import Categories.Category.Core
 open Monoid M
 
 -- A monoid is a category with one object
-MonoidAsCategory : Category zero c ℓ
+MonoidAsCategory : Category o c ℓ
 MonoidAsCategory = record
   { Obj = ⊤
   ; assoc = assoc _ _ _
