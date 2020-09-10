@@ -31,7 +31,6 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
   private
     module 𝒞 = Category 𝒞
 
-  open 𝒞
   open 𝒞.HomReasoning
   open 𝒞.Equiv
 
@@ -40,7 +39,7 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
   open _↣_
 
   -- The Subobject functor, into the category of posets
-  -- FIXME I should probably tidy up this proof a lot
+  -- FIXME: I should probably tidy up this proof a lot
   -- For starters, we only ever use composition/equality in 𝒞.
   -- Then, it feels like the 'homomorphism' and 'F-resp-≈' cases
   -- are pretty much the same
@@ -141,7 +140,6 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
         }
 
   -- The subobject functor as a presheaf on Setoids.
-  -- This is just Subₚ composedd with the 'Core'
-  -- functor
+  -- This is just Subₚ composed with the 'Core'
   Sub : Presheaf 𝒞 (Setoids (o ⊔ ℓ ⊔ e) (ℓ ⊔ e))
   Sub =  Core ∘F Subₚ
