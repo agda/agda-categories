@@ -14,11 +14,14 @@ open import Relation.Binary.OrderMorphism
 
 open import Categories.Category
 open import Categories.Functor
+open import Categories.Functor.Presheaf
 open import Categories.Category.Construction.Comma
 open import Categories.Object.Subobject
 open import Categories.Diagram.Pullback renaming (glue to glue-pullback)
 open import Categories.Diagram.Pullback.Properties
 open import Categories.Category.Instance.Posets
+open import Categories.Category.Instance.Setoids
+open import Categories.Adjoint.Instance.PosetCore
 import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
 open import Categories.Morphism.Notation
@@ -42,7 +45,7 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
   -- Then, it feels like the 'homomorphism' and 'F-resp-≈' cases
   -- are pretty much the same
   -- We also should probably open Pullback at 𝒞
-  Subₚ : Functor 𝒞.op (Posets (o ⊔ ℓ ⊔ e) (ℓ ⊔ e) (ℓ ⊔ e))
+  Subₚ : Presheaf 𝒞 (Posets (o ⊔ ℓ ⊔ e) (ℓ ⊔ e) (ℓ ⊔ e))
   Subₚ = record
     { F₀ = Subobjects 𝒞
     ; F₁ = λ f → record
@@ -136,3 +139,9 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
           Pullback.p₁ pm ≈˘⟨ Pullback.p₁∘universal≈h₁ pn ⟩
           𝒞 [ Pullback.p₁ pn ∘ Pullback.universal pn _ ] ∎
         }
+
+  -- The subobject functor as a presheaf on Setoids.
+  -- This is just Subₚ composedd with the 'Core'
+  -- functor
+  Sub : Presheaf 𝒞 (Setoids (o ⊔ ℓ ⊔ e) (ℓ ⊔ e))
+  Sub =  Core ∘F Subₚ
