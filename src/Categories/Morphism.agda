@@ -7,7 +7,7 @@
   - Isomorphism
   - (object) equivalence ('spelled' _≅_ ). Exported as the module ≅
 -}
-open import Categories.Category
+open import Categories.Category.Core
 
 module Categories.Morphism {o ℓ e} (𝒞 : Category o ℓ e) where
 
@@ -25,8 +25,18 @@ private
 Mono : ∀ (f : A ⇒ B) → Set (o ⊔ ℓ ⊔ e)
 Mono {A = A} f = ∀ {C} → (g₁ g₂ : C ⇒ A) → f ∘ g₁ ≈ f ∘ g₂ → g₁ ≈ g₂
 
+record _↣_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
+  field
+    mor  : A ⇒ B
+    mono : Mono mor
+
 Epi : ∀ (f : A ⇒ B) → Set (o ⊔ ℓ ⊔ e)
 Epi {B = B} f = ∀ {C} → (g₁ g₂ : B ⇒ C) → g₁ ∘ f ≈ g₂ ∘ f → g₁ ≈ g₂
+
+record _↠_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
+  field
+    mor : A ⇒ B
+    epi : Epi mor
 
 _SectionOf_ : (g : B ⇒ A) (f : A ⇒ B) → Set e
 g SectionOf f = f ∘ g ≈ id
