@@ -296,6 +296,8 @@ import Categories.Object.Product.Indexed
 import Categories.Object.Product.Indexed.Properties
 import Categories.Object.Product.Limit
 import Categories.Object.Product.Morphisms
+import Categories.Object.Subobject
+import Categories.Object.Subobject.Properties
 import Categories.Object.Terminal
 import Categories.Object.Terminal.Limit
 import Categories.Object.Zero
