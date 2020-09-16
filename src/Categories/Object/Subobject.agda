@@ -11,7 +11,7 @@ open import Data.Unit
 open import Relation.Binary using (Poset)
 
 open import Categories.Functor
-open import Categories.Category.Construction.Comma
+open import Categories.Category.Slice
 open import Categories.Category.SubCategory
 open import Categories.Category.Construction.Thin
 import Categories.Morphism as Mor
@@ -22,10 +22,8 @@ private
   module 𝒞 = Category 𝒞
 
 -- The Full Subcategory of the over category 𝒞/c on monomorphisms
-over-mono : 𝒞.Obj → Category _ _ _
-over-mono c = FullSubCategory (𝒞 / c) {I = Σ[ α ∈ 𝒞.Obj ](α ↣ c)} λ (_ , i) → record
-  { f = mor i
-  }
+slice-mono : 𝒞.Obj → Category _ _ _
+slice-mono c = FullSubCategory (Slice 𝒞 c) {I = Σ[ α ∈ 𝒞.Obj ](α ↣ c)} λ (_ , i) → sliceobj (mor i)
   where open Mor 𝒞
         open _↣_
 
@@ -39,25 +37,21 @@ Subobjects c = record
     { isPreorder = record
       { isEquivalence = Mor.≅-isEquivalence 𝒞ᶜ
       ; reflexive = λ iso → Mor._≅_.from iso
-      ; trans = λ {(α , f) (β , g) (γ , h)} i j → record
-        { g = 𝒞 [ Comma⇒.g j ∘ Comma⇒.g i ]
-        ; h = lift tt
-        ; commute =  𝒞.identityˡ ○ ⟺ (chase f g h i j)
-        }
+      ; trans = λ {(α , f) (β , g) (γ , h)} i j → slicearr (chase f g h i j)
       }
     ; antisym = λ {(α , f) (β , g)} h i → record
       { from = h
       ; to = i
       ; iso = record
-        { isoˡ = mono f _ _ (chase f g f h i ○ ⟺ 𝒞.identityʳ) , lift tt
-        ; isoʳ = mono g _ _ (chase g f g i h ○ ⟺ 𝒞.identityʳ) , lift tt
+        { isoˡ = mono f _ _ (chase f g f h i ○ ⟺ 𝒞.identityʳ)
+        ; isoʳ = mono g _ _ (chase g f g i h ○ ⟺ 𝒞.identityʳ)
         }
       }
     }
   }
   where
     𝒞ᶜ : Category _ _ _
-    𝒞ᶜ = over-mono c
+    𝒞ᶜ = slice-mono c
 
     module 𝒞ᶜ = Category 𝒞ᶜ
 
@@ -68,10 +62,8 @@ Subobjects c = record
 
     chase : ∀ {α β γ : 𝒞.Obj} (f : 𝒞 [ α ↣ c ]) (g : 𝒞 [ β ↣ c ]) (h : 𝒞 [ γ ↣ c ])
             → (i : 𝒞ᶜ [ (α , f) , (β , g) ]) → (j : 𝒞ᶜ [ (β , g) , (γ , h) ])
-            → 𝒞 [ 𝒞 [ mor h ∘ 𝒞 [ Comma⇒.g j ∘ Comma⇒.g i ] ] ≈ mor f ]
+            → 𝒞 [ 𝒞 [ mor h ∘ 𝒞 [ Slice⇒.h j ∘ Slice⇒.h i ] ] ≈ mor f ]
     chase f g h i j = begin
-      𝒞 [ mor h ∘ 𝒞 [ Comma⇒.g j ∘ Comma⇒.g i ] ] ≈⟨ pullˡ (⟺ (Comma⇒.commute j)) ⟩
-      𝒞 [ 𝒞 [ 𝒞.id ∘ mor g ] ∘ Comma⇒.g i ]       ≈⟨ 𝒞.identityˡ ⟩∘⟨refl ⟩
-      𝒞 [ mor g ∘ Comma⇒.g i ]                    ≈˘⟨ Comma⇒.commute i ⟩
-      𝒞 [ 𝒞.id ∘ mor f ]                          ≈⟨ 𝒞.identityˡ ⟩
+      𝒞 [ mor h ∘ 𝒞 [ Slice⇒.h j ∘ Slice⇒.h i ] ] ≈⟨ pullˡ (Slice⇒.△ j)  ⟩
+      𝒞 [ mor g ∘ Slice⇒.h i ]                    ≈⟨ Slice⇒.△ i ⟩
       mor f ∎

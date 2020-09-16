@@ -15,7 +15,7 @@ open import Relation.Binary.OrderMorphism
 open import Categories.Category
 open import Categories.Functor
 open import Categories.Functor.Presheaf
-open import Categories.Category.Construction.Comma
+open import Categories.Category.Slice
 open import Categories.Object.Subobject
 open import Categories.Diagram.Pullback renaming (glue to glue-pullback)
 open import Categories.Diagram.Pullback.Properties
@@ -39,11 +39,6 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
   open _↣_
 
   -- The Subobject functor, into the category of posets
-  -- FIXME: I should probably tidy up this proof a lot
-  -- For starters, we only ever use composition/equality in 𝒞.
-  -- Then, it feels like the 'homomorphism' and 'F-resp-≈' cases
-  -- are pretty much the same
-  -- We also should probably open Pullback at 𝒞
   Subₚ : Presheaf 𝒞 (Posets (o ⊔ ℓ ⊔ e) (ℓ ⊔ e) (ℓ ⊔ e))
   Subₚ = record
     { F₀ = Subobjects 𝒞
@@ -55,18 +50,16 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
       let pid = has-pullbacks 𝒞.id (mor m)
       in record
         { from = record
-          { g = Pullback.p₂ pid
-          ; h = lift tt
-          ; commute = Pullback.commute pid
+          { h = Pullback.p₂ pid
+          ; △ = ⟺ (Pullback.commute pid) ○ 𝒞.identityˡ
           }
         ; to = record
-          { g = Pullback.universal pid id-comm-sym
-          ; h = lift tt
-          ; commute = 𝒞.identityˡ ○ ⟺ (Pullback.p₁∘universal≈h₁ pid)
+          { h = Pullback.universal pid id-comm-sym
+          ; △ = Pullback.p₁∘universal≈h₁ pid
           }
         ; iso = record
-          { isoˡ = (pullback-identity 𝒞 pid) , lift tt
-          ; isoʳ = (Pullback.p₂∘universal≈h₂ pid) , lift tt
+          { isoˡ = pullback-identity 𝒞 pid
+          ; isoʳ = Pullback.p₂∘universal≈h₂ pid
           }
         }
     ; homomorphism = λ {X} {Y} {Z} {f} {g} {(α , m)} →
@@ -77,18 +70,16 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
           module iso = _≅_ iso
       in record
         { from = record
-          { g = iso.from
-          ; h = lift tt
-          ; commute = 𝒞.identityˡ ○ ⟺ (Pullback.p₁∘universal≈h₁ pg)
+          { h = iso.from
+          ; △ = Pullback.p₁∘universal≈h₁ pg
           }
         ; to = record
-          { g = iso.to
-          ; h = lift tt
-          ; commute = 𝒞.identityˡ ○ ⟺ (Pullback.p₁∘universal≈h₁ pfg)
+          { h = iso.to
+          ; △ = Pullback.p₁∘universal≈h₁ pfg
           }
         ; iso = record
-          { isoˡ = iso.isoˡ , lift tt
-          ; isoʳ = iso.isoʳ , lift tt
+          { isoˡ = iso.isoˡ
+          ; isoʳ = iso.isoʳ
           }
         }
     ; F-resp-≈ = λ {A B f g} eq {(α , m)} →
@@ -98,18 +89,16 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
           module iso = _≅_ iso
       in record
         { from = record
-          { g = iso.from
-          ; h = lift tt
-          ; commute = 𝒞.identityˡ ○ ⟺ (Pullback.p₁∘universal≈h₁ pg)
+          { h = iso.from
+          ; △ = Pullback.p₁∘universal≈h₁ pg
           }
         ; to = record
-          { g = iso.to
-          ; h = lift tt
-          ; commute = 𝒞.identityˡ ○ ⟺ (Pullback.p₁∘universal≈h₁ pf)
+          { h = iso.to
+          ; △ = Pullback.p₁∘universal≈h₁ pf
           }
         ; iso = record
-          { isoˡ = iso.isoˡ , lift tt
-          ; isoʳ = iso.isoʳ , lift tt
+          { isoˡ = iso.isoˡ
+          ; isoʳ = iso.isoʳ
           }
         }
     }
@@ -127,17 +116,12 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
         let pm = has-pullbacks f (mor m)
             pn = has-pullbacks f (mor n)
         in record
-        { g = Pullback.universal pn $ begin
-          𝒞 [ f ∘ Pullback.p₁ pm ] ≈˘⟨ 𝒞.identityˡ ⟩
-          𝒞 [ 𝒞.id ∘ 𝒞 [ f ∘ Pullback.p₁ pm ] ] ≈⟨ pushʳ (Pullback.commute pm) ⟩
-          𝒞 [ 𝒞 [ 𝒞.id ∘ mor m ] ∘ Pullback.p₂ pm ] ≈⟨ pushˡ (Comma⇒.commute h) ⟩
-          𝒞 [ mor n ∘ 𝒞 [ Comma⇒.g h ∘ Pullback.p₂ pm ] ] ∎
-        ; h = lift tt
-        ; commute = begin
-          𝒞 [ 𝒞.id ∘ Pullback.p₁ pm ] ≈⟨ 𝒞.identityˡ ⟩
-          Pullback.p₁ pm ≈˘⟨ Pullback.p₁∘universal≈h₁ pn ⟩
-          𝒞 [ Pullback.p₁ pn ∘ Pullback.universal pn _ ] ∎
-        }
+          { h = Pullback.universal pn $ begin
+              𝒞 [ f ∘ Pullback.p₁ pm ] ≈⟨ Pullback.commute pm ⟩
+              𝒞 [ mor m ∘ Pullback.p₂ pm ] ≈⟨ pushˡ (⟺ (Slice⇒.△ h)) ⟩
+              𝒞 [ mor n ∘ 𝒞 [ Slice⇒.h h ∘ Pullback.p₂ pm ] ] ∎
+          ; △ = Pullback.p₁∘universal≈h₁ pn
+          }
 
   -- The subobject functor as a presheaf on Setoids.
   -- This is just Subₚ composed with the 'Core'
