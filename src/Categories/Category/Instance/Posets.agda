@@ -53,5 +53,4 @@ Posets c ℓ₁ ℓ₂ = record
   ; equiv     = ≗-isEquivalence
   ; ∘-resp-≈  = λ {_ _ C _ h} f≈h g≈i → Eq.trans C f≈h (fun-resp-≈ h g≈i)
   }
-  where
 
