@@ -16,7 +16,7 @@ matrix:
         CABAL_VER=2.2
         ALEX_VER=3.2.5
         HAPPY_VER=1.19.12
-        STDLIB_VER=1.3
+        STDLIB_VER=1.4
       addons:
         apt:
           packages:
@@ -107,4 +107,3 @@ after_success:
 
 notifications:
   email: false
-
