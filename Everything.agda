@@ -133,6 +133,7 @@ import Categories.Category.Instance.Span
 import Categories.Category.Instance.StrictCats
 import Categories.Category.Instance.StrictGroupoids
 import Categories.Category.Instance.Zero
+import Categories.Category.Inverse
 import Categories.Category.Lift
 import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
