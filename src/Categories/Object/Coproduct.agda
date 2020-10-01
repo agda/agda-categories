@@ -4,6 +4,7 @@ open import Categories.Category
 module Categories.Object.Coproduct {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
+open import Function using (_$_)
 
 open Category 𝒞
 
@@ -14,7 +15,7 @@ open HomReasoning
 
 private
   variable
-    A B C : Obj
+    A B C D : Obj
     f g h : A ⇒ B
 
 record Coproduct (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
@@ -38,3 +39,7 @@ record Coproduct (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
 
   []-cong₂ : ∀ {C} → {f f′ : A ⇒ C} {g g′ : B ⇒ C} → f ≈ f′ → g ≈ g′ → [ f , g ] ≈ [ f′ , g′ ]
   []-cong₂ f≈f′ g≈g′ = unique (inject₁ ○ ⟺ f≈f′) (inject₂ ○ ⟺ g≈g′)
+
+  ∘-distribˡ-[] : ∀ {f : A ⇒ C} {g : B ⇒ C} {q : C ⇒ D} → q ∘ [ f , g ] ≈ [ q ∘ f , q ∘ g ]
+  ∘-distribˡ-[] = ⟺ $ unique (pullʳ inject₁) (pullʳ inject₂)
+
