@@ -43,7 +43,7 @@ module _ (Com : Complete o′ ℓ′ e′ C) where
   Complete⇒FinitelyComplete : FinitelyComplete C
   Complete⇒FinitelyComplete = record
     { cartesian = record
-      { terminal = limit⇒⊥ (Com (⊥⇒limit-F _ _ _))
+      { terminal = limit⇒⊤ (Com (⊤⇒limit-F _ _ _))
       ; products = record
         { product = λ {A B} → limit⇒product (Com (product⇒limit-F _ _ _ A B))
         }

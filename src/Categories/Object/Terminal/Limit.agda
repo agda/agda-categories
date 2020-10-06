@@ -17,8 +17,8 @@ private
   open C
 
 module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C} where
-  limit⇒⊥ : Limit F → Terminal
-  limit⇒⊥ L = record
+  limit⇒⊤ : Limit F → Terminal
+  limit⇒⊤ L = record
     { ⊤        = apex
     ; ⊤-is-terminal = record
       { !        = rep record
@@ -37,8 +37,8 @@ module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C
 
 module _ o′ ℓ′ e′ where
 
-  ⊥⇒limit-F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C
-  ⊥⇒limit-F = record
+  ⊤⇒limit-F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C
+  ⊤⇒limit-F = record
     { F₀           = λ ()
     ; F₁           = λ { {()} }
     ; identity     = λ { {()} }
@@ -46,8 +46,8 @@ module _ o′ ℓ′ e′ where
     ; F-resp-≈     = λ { {()} }
     }
 
-  ⊥⇒limit : Terminal → Limit ⊥⇒limit-F
-  ⊥⇒limit t = record
+  ⊤⇒limit : Terminal → Limit ⊤⇒limit-F
+  ⊤⇒limit t = record
     { terminal = record
       { ⊤        = record
         { N    = ⊤
@@ -58,13 +58,13 @@ module _ o′ ℓ′ e′ where
         }
       ; ⊤-is-terminal = record
         { !        = λ {K} →
-          let open Co.Cone ⊥⇒limit-F K
+          let open Co.Cone ⊤⇒limit-F K
           in record
           { arr     = !
           ; commute = λ { {()} }
           }
         ; !-unique = λ f →
-          let module f = Co.Cone⇒ ⊥⇒limit-F f
+          let module f = Co.Cone⇒ ⊤⇒limit-F f
           in !-unique f.arr
         }
       }
