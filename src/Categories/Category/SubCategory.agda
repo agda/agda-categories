@@ -70,3 +70,46 @@ FullSubCategory {I = I} U = record
   ; equiv     = equiv
   ; ∘-resp-≈  = ∘-resp-≈
   }
+
+
+open import Function using () renaming (id to id→)
+
+open import Categories.Functor using (Functor)
+open import Categories.Functor.Properties
+
+SubCategoryFunctor : ∀ {ℓ′} {I : Set i} (Sub : SubCat {i} {ℓ′} I)
+                   → Functor (SubCategory Sub) C
+SubCategoryFunctor Sub = record
+  { F₀ = U
+  ; F₁ = proj₁
+  ; identity = refl
+  ; homomorphism = refl
+  ; F-resp-≈ = id→
+  } where
+      open SubCat Sub using (U)
+
+SubCategoryFaithful : ∀ {ℓ′} {I : Set i} (Sub : SubCat {i} {ℓ′} I)
+                    → Faithful (SubCategoryFunctor Sub)
+SubCategoryFaithful _ _ _ = id→
+
+
+FullSubCategoryFunctor : ∀ {I : Set i} (U : I → Obj)
+                       → Functor (FullSubCategory U) C
+FullSubCategoryFunctor U = record
+  { F₀ = U
+  ; F₁ = id→
+  ; identity = refl
+  ; homomorphism = refl
+  ; F-resp-≈ = id→
+  }
+
+FullSubCategoryFaithful : ∀ {I : Set i} (U : I → Obj) → Faithful (FullSubCategoryFunctor U)
+FullSubCategoryFaithful _ _ _ = id→
+
+open import Function.Equality using () renaming (id to id⟶) 
+
+FullSubCategoryFull : ∀ {I : Set i} (U : I → Obj)
+                    → Full (FullSubCategoryFunctor U)
+FullSubCategoryFull _ = record { from = id⟶ ; right-inverse-of = λ _ → refl}
+
+-- Is there another name for this record? It's close to id from Function.Surjection.
