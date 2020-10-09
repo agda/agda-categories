@@ -72,12 +72,18 @@ FullSubCategory {I = I} U = record
   }
 
 
-open import Function using () renaming (id to id→)
-
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Properties
 
-SubCategoryFunctor : ∀ {ℓ′} {I : Set i} (Sub : SubCat {i} {ℓ′} I)
+open import Function.Base       renaming (id to id→)
+open import Function.Equality   renaming (id to id⟶) 
+open import Function.Surjection renaming (id to id↠)
+
+private
+  variable
+    I : Set i
+
+SubCategoryFunctor : ∀ {ℓ′} (Sub : SubCat {i} {ℓ′} I)
                    → Functor (SubCategory Sub) C
 SubCategoryFunctor Sub = record
   { F₀ = U
@@ -88,13 +94,12 @@ SubCategoryFunctor Sub = record
   } where
       open SubCat Sub using (U)
 
-SubCategoryFaithful : ∀ {ℓ′} {I : Set i} (Sub : SubCat {i} {ℓ′} I)
+SubCategoryFaithful : ∀ {ℓ′} (Sub : SubCat {i} {ℓ′} I)
                     → Faithful (SubCategoryFunctor Sub)
 SubCategoryFaithful _ _ _ = id→
 
 
-FullSubCategoryFunctor : ∀ {I : Set i} (U : I → Obj)
-                       → Functor (FullSubCategory U) C
+FullSubCategoryFunctor : ∀ (U : I → Obj) → Functor (FullSubCategory U) C
 FullSubCategoryFunctor U = record
   { F₀ = U
   ; F₁ = id→
@@ -103,13 +108,8 @@ FullSubCategoryFunctor U = record
   ; F-resp-≈ = id→
   }
 
-FullSubCategoryFaithful : ∀ {I : Set i} (U : I → Obj) → Faithful (FullSubCategoryFunctor U)
+FullSubCategoryFaithful : ∀ (U : I → Obj) → Faithful (FullSubCategoryFunctor U)
 FullSubCategoryFaithful _ _ _ = id→
 
-open import Function.Equality using () renaming (id to id⟶) 
-
-FullSubCategoryFull : ∀ {I : Set i} (U : I → Obj)
-                    → Full (FullSubCategoryFunctor U)
-FullSubCategoryFull _ = record { from = id⟶ ; right-inverse-of = λ _ → refl}
-
--- Is there another name for this record? It's close to id from Function.Surjection.
+FullSubCategoryFull : ∀ (U : I → Obj) → Full (FullSubCategoryFunctor U)
+FullSubCategoryFull _ = Surjection.surjective id↠
