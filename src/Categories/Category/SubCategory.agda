@@ -23,6 +23,12 @@ open Equiv
 
 open import Level
 open import Data.Product
+open import Function.Base       using () renaming (id to id→)
+open import Function.Equality   using () renaming (id to id⟶) 
+open import Function.Surjection using (Surjection) renaming (id to id↠)
+
+open import Categories.Functor using (Functor)
+open import Categories.Functor.Properties
 
 private
   variable
@@ -72,12 +78,6 @@ FullSubCategory {I = I} U = record
   }
 
 
-open import Categories.Functor using (Functor)
-open import Categories.Functor.Properties
-
-open import Function.Base       renaming (id to id→)
-open import Function.Equality   renaming (id to id⟶) 
-open import Function.Surjection renaming (id to id↠)
 
 private
   variable
