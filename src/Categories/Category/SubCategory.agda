@@ -81,14 +81,13 @@ FullSubCategory {I = I} U = record
 
 SubCategoryFunctor : ∀ {ℓ′} (Sub : SubCat {i} {ℓ′} I)
                    → Functor (SubCategory Sub) C
-SubCategoryFunctor Sub = record
+SubCategoryFunctor (record {U = U}) = record
   { F₀ = U
   ; F₁ = proj₁
   ; identity = refl
   ; homomorphism = refl
   ; F-resp-≈ = id→
-  } where
-      open SubCat Sub using (U)
+  }
 
 SubCategoryFaithful : ∀ {ℓ′} (Sub : SubCat {i} {ℓ′} I)
                     → Faithful (SubCategoryFunctor Sub)
