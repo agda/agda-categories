@@ -33,6 +33,7 @@ open import Categories.Functor.Properties
 private
   variable
     i : Level
+    I : Set i
 
 record SubCat {ℓ′} (I : Set i) : Set (o ⊔ ℓ ⊔ i ⊔ suc ℓ′) where
   field
@@ -41,7 +42,7 @@ record SubCat {ℓ′} (I : Set i) : Set (o ⊔ ℓ ⊔ i ⊔ suc ℓ′) where
     Rid : {a : I} → R (id {U a})
     _∘R_ : {a b c : I} {f : U b ⇒ U c} {g : U a ⇒ U b} → R f → R g → R (f ∘ g)
 
-SubCategory : {ℓ′ : Level} {I : Set i} → SubCat {ℓ′ = ℓ′} I → Category _ _ _
+SubCategory : {ℓ′ : Level} → SubCat {ℓ′ = ℓ′} I → Category _ _ _
 SubCategory {I = I} sc = let open SubCat sc in record
   { Obj       = I
   ; _⇒_       = λ a b → Σ (U a ⇒ U b) R
@@ -61,7 +62,7 @@ SubCategory {I = I} sc = let open SubCat sc in record
   ; ∘-resp-≈  = ∘-resp-≈
   }
 
-FullSubCategory : ∀ {I : Set i} → (U : I → Obj) → Category _ _ _
+FullSubCategory : (U : I → Obj) → Category _ _ _
 FullSubCategory {I = I} U = record
   { Obj       = I
   ; _⇒_       = λ x y → U x ⇒ U y
@@ -77,11 +78,6 @@ FullSubCategory {I = I} U = record
   ; ∘-resp-≈  = ∘-resp-≈
   }
 
-
-
-private
-  variable
-    I : Set i
 
 SubCategoryFunctor : ∀ {ℓ′} (Sub : SubCat {i} {ℓ′} I)
                    → Functor (SubCategory Sub) C
