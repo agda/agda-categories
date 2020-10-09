@@ -10,13 +10,10 @@ open Category C
 open Equiv
 
 open import Level
+open import Function.Base using () renaming (id to id→)
 open import Data.Product
 
-open import Function.Base       using () renaming (id to id→)
-open import Function.Surjection using (Surjection) renaming (id to id↠)
-
 open import Categories.Functor using (Functor)
-open import Categories.Functor.Properties
 
 private
   variable
@@ -33,9 +30,6 @@ Sub (record {U = U}) = record
   ; F-resp-≈ = id→
   }
 
-SubFaithful : ∀ (sub : SubCat {i} {ℓ′} I) → Faithful (Sub sub)
-SubFaithful _ _ _ = id→
-
 FullSub : Functor (FullSubCategory U) C
 FullSub {U = U} = record
   { F₀ = U
@@ -44,9 +38,3 @@ FullSub {U = U} = record
   ; homomorphism = refl
   ; F-resp-≈ = id→
   }
-
-FullSubFaithful : Faithful (FullSub {U = U})
-FullSubFaithful _ _ = id→
-
-FullSubFull : Full (FullSub {U = U})
-FullSubFull = Surjection.surjective id↠
