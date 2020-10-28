@@ -125,6 +125,7 @@ import Categories.Category.Instance.Properties.Setoids.CCC
 import Categories.Category.Instance.Properties.Setoids.Cocomplete
 import Categories.Category.Instance.Properties.Setoids.Complete
 import Categories.Category.Instance.Properties.Setoids.LCCC
+import Categories.Category.Instance.Rels
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
 import Categories.Category.Instance.Simplex
