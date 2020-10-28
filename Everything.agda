@@ -88,6 +88,7 @@ import Categories.Category.Construction.Properties.Presheaves.FromCartesianCCC
 import Categories.Category.Construction.Pullbacks
 import Categories.Category.Construction.Thin
 import Categories.Category.Core
+import Categories.Category.Dagger
 import Categories.Category.Discrete
 import Categories.Category.Duality
 import Categories.Category.Equivalence
