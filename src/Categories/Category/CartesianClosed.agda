@@ -50,6 +50,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   module cartesian = Cartesian cartesian
 
   open cartesian public
+  open CartesianMonoidal cartesian using (A×⊤≅A)
 
   B^A×A : ∀ B A → Product (B ^ A) A
   B^A×A B A = exp.product {A} {B}
@@ -201,69 +202,75 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   -⇨_ : Obj → Functor 𝒞.op 𝒞
   -⇨_ = appʳ -⇨-
 
-  module _ where
-    private
-      A⇨[-×A] : Obj → Endofunctor 𝒞
-      A⇨[-×A] A = A ⇨- ∘F -× A
+-- The cartesian closed structure induces a monoidal closed one:
+-- 𝒞 is cartesian monoidal closed.
 
-      module A⇨[-×A] {A} = Functor (A⇨[-×A] A)
+module CartesianMonoidalClosed (cartesianClosed : CartesianClosed) where
+  open CartesianClosed cartesianClosed
+  open CartesianMonoidal cartesian using (monoidal)
 
-      [A⇨-]×A : Obj → Endofunctor 𝒞
-      [A⇨-]×A A = -× A ∘F A ⇨-
+  private
+    A⇨[-×A] : Obj → Endofunctor 𝒞
+    A⇨[-×A] A = A ⇨- ∘F -× A
 
-      module [A⇨-]×A {A} = Functor ([A⇨-]×A A)
+    module A⇨[-×A] {A} = Functor (A⇨[-×A] A)
 
-    closedMonoidal : Closed monoidal
-    closedMonoidal = record
-      { [-,-]   = -⇨-
-      ; adjoint = λ {A} → record
-        { unit   = ntHelper record
-          { η       = λ _ → λg id
-          ; commute = λ f → λ-unique₂′ $ begin
-            eval′ ∘ first (λg id ∘ f)                     ≈˘⟨ refl⟩∘⟨ first∘first ⟩
-            eval′ ∘ first (λg id) ∘ first f               ≈⟨ cancelˡ β′ ⟩
-            first f                                       ≈˘⟨ cancelʳ β′ ⟩
-            (first f ∘ eval′)  ∘ first (λg id)            ≈˘⟨ ∘-resp-≈ʳ (elimʳ (id×id product)) ⟩∘⟨refl ⟩
-            (first f ∘ eval′ ∘ first id)  ∘ first (λg id) ≈˘⟨ pullˡ β′ ⟩
-            eval′ ∘ first (A⇨[-×A].F₁ f) ∘ first (λg id)  ≈⟨ refl⟩∘⟨ first∘first ⟩
-            eval′ ∘ first (A⇨[-×A].F₁ f ∘ λg id)          ∎
-          }
-        ; counit = ntHelper record
-          { η       = λ _ → eval′
-          ; commute = λ f → begin
-            eval′ ∘ [A⇨-]×A.F₁ f ≈⟨ β′ ⟩
-            f ∘ eval′ ∘ first id ≈⟨ refl⟩∘⟨ elimʳ (id×id product) ⟩
-            f ∘ eval′            ∎
-          }
-        ; zig    = β′
-        ; zag    = λ-unique₂′ $ begin
-          eval′ ∘ first (λg (eval′ ∘ eval′ ∘ second id) ∘ λg id)
-                                          ≈˘⟨ refl⟩∘⟨ first∘first ⟩
-          eval′ ∘ first (λg (eval′ ∘ eval′ ∘ second id)) ∘ first (λg id)
-                                          ≈⟨ pullˡ β′ ⟩
-          (eval′ ∘ eval′ ∘ second id) ∘ first (λg id)
-                                          ≈⟨ ∘-resp-≈ʳ (elimʳ (id×id product)) ⟩∘⟨refl ⟩
-          (eval′ ∘ eval′) ∘ first (λg id) ≈⟨ cancelʳ β′ ⟩
-          eval′                           ≈˘⟨ elimʳ (id×id product) ⟩
-          eval′ ∘ first id                ∎
+    [A⇨-]×A : Obj → Endofunctor 𝒞
+    [A⇨-]×A A = -× A ∘F A ⇨-
+
+    module [A⇨-]×A {A} = Functor ([A⇨-]×A A)
+
+  closedMonoidal : Closed monoidal
+  closedMonoidal = record
+    { [-,-]   = -⇨-
+    ; adjoint = λ {A} → record
+      { unit   = ntHelper record
+        { η       = λ _ → λg id
+        ; commute = λ f → λ-unique₂′ $ begin
+          eval′ ∘ first (λg id ∘ f)                     ≈˘⟨ refl⟩∘⟨ first∘first ⟩
+          eval′ ∘ first (λg id) ∘ first f               ≈⟨ cancelˡ β′ ⟩
+          first f                                       ≈˘⟨ cancelʳ β′ ⟩
+          (first f ∘ eval′)  ∘ first (λg id)            ≈˘⟨ ∘-resp-≈ʳ (elimʳ (id×id product)) ⟩∘⟨refl ⟩
+          (first f ∘ eval′ ∘ first id)  ∘ first (λg id) ≈˘⟨ pullˡ β′ ⟩
+          eval′ ∘ first (A⇨[-×A].F₁ f) ∘ first (λg id)  ≈⟨ refl⟩∘⟨ first∘first ⟩
+          eval′ ∘ first (A⇨[-×A].F₁ f ∘ λg id)          ∎
         }
-      ; mate    = λ {X Y} f → record
-        { commute₁ = λ-unique₂′ $ begin
-          eval′ ∘ first (λg (second f ∘ eval′ ∘ second id) ∘ λg id)         ≈˘⟨ refl⟩∘⟨ first∘first ⟩
-          eval′ ∘ first (λg (second f ∘ eval′ ∘ second id)) ∘ first (λg id) ≈⟨ pullˡ β′ ⟩
-          (second f ∘ eval′ ∘ second id) ∘ first (λg id)                    ≈⟨ ∘-resp-≈ʳ (elimʳ (id×id product)) ⟩∘⟨refl ⟩
-          (second f ∘ eval′) ∘ first (λg id)                                ≈⟨ cancelʳ β′ ⟩
-          second f                                                          ≈˘⟨ cancelˡ β′ ⟩
-          eval′ ∘ first (λg id) ∘ second f                                  ≈⟨ pushʳ first↔second ⟩
-          (eval′ ∘ second f) ∘ first (λg id)                                ≈˘⟨ identityˡ ⟩∘⟨refl ⟩
-          (id ∘ eval′ ∘ second f) ∘ first (λg id)                           ≈˘⟨ pullˡ β′ ⟩
-          eval′ ∘ first (λg (id ∘ eval′ ∘ second f)) ∘ first (λg id)        ≈⟨ refl⟩∘⟨ first∘first ⟩
-          eval′ ∘ first (λg (id ∘ eval′ ∘ second f) ∘ λg id)                ∎
-        ; commute₂ = begin
-          eval′ ∘ first (λg (id ∘ eval′ ∘ second f)) ≈⟨ β′ ⟩
-          id ∘ eval′ ∘ second f                      ≈⟨ identityˡ ⟩
-          eval′ ∘ second f                           ∎
+      ; counit = ntHelper record
+        { η       = λ _ → eval′
+        ; commute = λ f → begin
+          eval′ ∘ [A⇨-]×A.F₁ f ≈⟨ β′ ⟩
+          f ∘ eval′ ∘ first id ≈⟨ refl⟩∘⟨ elimʳ (id×id product) ⟩
+          f ∘ eval′            ∎
         }
+      ; zig    = β′
+      ; zag    = λ-unique₂′ $ begin
+        eval′ ∘ first (λg (eval′ ∘ eval′ ∘ second id) ∘ λg id)
+                                        ≈˘⟨ refl⟩∘⟨ first∘first ⟩
+        eval′ ∘ first (λg (eval′ ∘ eval′ ∘ second id)) ∘ first (λg id)
+                                        ≈⟨ pullˡ β′ ⟩
+        (eval′ ∘ eval′ ∘ second id) ∘ first (λg id)
+                                        ≈⟨ ∘-resp-≈ʳ (elimʳ (id×id product)) ⟩∘⟨refl ⟩
+        (eval′ ∘ eval′) ∘ first (λg id) ≈⟨ cancelʳ β′ ⟩
+        eval′                           ≈˘⟨ elimʳ (id×id product) ⟩
+        eval′ ∘ first id                ∎
       }
+    ; mate    = λ {X Y} f → record
+      { commute₁ = λ-unique₂′ $ begin
+        eval′ ∘ first (λg (second f ∘ eval′ ∘ second id) ∘ λg id)         ≈˘⟨ refl⟩∘⟨ first∘first ⟩
+        eval′ ∘ first (λg (second f ∘ eval′ ∘ second id)) ∘ first (λg id) ≈⟨ pullˡ β′ ⟩
+        (second f ∘ eval′ ∘ second id) ∘ first (λg id)                    ≈⟨ ∘-resp-≈ʳ (elimʳ (id×id product)) ⟩∘⟨refl ⟩
+        (second f ∘ eval′) ∘ first (λg id)                                ≈⟨ cancelʳ β′ ⟩
+        second f                                                          ≈˘⟨ cancelˡ β′ ⟩
+        eval′ ∘ first (λg id) ∘ second f                                  ≈⟨ pushʳ first↔second ⟩
+        (eval′ ∘ second f) ∘ first (λg id)                                ≈˘⟨ identityˡ ⟩∘⟨refl ⟩
+        (id ∘ eval′ ∘ second f) ∘ first (λg id)                           ≈˘⟨ pullˡ β′ ⟩
+        eval′ ∘ first (λg (id ∘ eval′ ∘ second f)) ∘ first (λg id)        ≈⟨ refl⟩∘⟨ first∘first ⟩
+        eval′ ∘ first (λg (id ∘ eval′ ∘ second f) ∘ λg id)                ∎
+      ; commute₂ = begin
+        eval′ ∘ first (λg (id ∘ eval′ ∘ second f)) ≈⟨ β′ ⟩
+        id ∘ eval′ ∘ second f                      ≈⟨ identityˡ ⟩
+        eval′ ∘ second f                           ∎
+      }
+    }
 
-  module closedMonoidal = Closed closedMonoidal
+  open Closed closedMonoidal public

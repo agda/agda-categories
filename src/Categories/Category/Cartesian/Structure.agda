@@ -23,5 +23,5 @@ record CartesianCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
   monoidalCategory : MonoidalCategory o ℓ e
   monoidalCategory = record
     { U        = U
-    ; monoidal = monoidal
+    ; monoidal = CartesianMonoidal.monoidal U cartesian
     }
