@@ -21,7 +21,7 @@ record Arrow (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set where
     cod : Fin n
     arr : Fin ∣ dom ⇒ cod ∣
 
--- a hasShape of a finite catgegory
+-- a hasShape of a finite category
 --
 -- Classically, a finite category has a finite number of objects and a finite number
 -- of morphisms. However, in this library, we cannot conveniently count the number of
