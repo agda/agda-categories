@@ -23,9 +23,6 @@ private
   variable
     a b c d : Fin 2
 
-x : Fin 3
-x = {!   !}
-
 -- The diagram is the following:
 -- 0 ---n--> 1
 -- with n arrows between 0 and 1
