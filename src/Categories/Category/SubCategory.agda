@@ -26,16 +26,17 @@ open import Data.Product
 
 private
   variable
-    i : Level
+    ℓ′ i : Level
+    I : Set i
 
-record SubCat {ℓ′} (I : Set i) : Set (o ⊔ ℓ ⊔ i ⊔ suc ℓ′) where
+record SubCat (I : Set i) : Set (o ⊔ ℓ ⊔ i ⊔ suc ℓ′) where
   field
     U : I → Obj
     R : {a b : I} → U a ⇒ U b → Set ℓ′
     Rid : {a : I} → R (id {U a})
     _∘R_ : {a b c : I} {f : U b ⇒ U c} {g : U a ⇒ U b} → R f → R g → R (f ∘ g)
 
-SubCategory : {ℓ′ : Level} {I : Set i} → SubCat {ℓ′ = ℓ′} I → Category _ _ _
+SubCategory : SubCat {ℓ′ = ℓ′} I → Category _ _ _
 SubCategory {I = I} sc = let open SubCat sc in record
   { Obj       = I
   ; _⇒_       = λ a b → Σ (U a ⇒ U b) R
@@ -55,7 +56,7 @@ SubCategory {I = I} sc = let open SubCat sc in record
   ; ∘-resp-≈  = ∘-resp-≈
   }
 
-FullSubCategory : ∀ {I : Set i} → (U : I → Obj) → Category _ _ _
+FullSubCategory : (U : I → Obj) → Category _ _ _
 FullSubCategory {I = I} U = record
   { Obj       = I
   ; _⇒_       = λ x y → U x ⇒ U y
