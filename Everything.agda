@@ -223,6 +223,8 @@ import Categories.Functor.Construction.FromDiscrete
 import Categories.Functor.Construction.LiftSetoids
 import Categories.Functor.Construction.Limit
 import Categories.Functor.Construction.ObjectRestriction
+import Categories.Functor.Construction.SubCategory
+import Categories.Functor.Construction.SubCategory.Properties
 import Categories.Functor.Construction.Zero
 import Categories.Functor.Core
 import Categories.Functor.Duality
