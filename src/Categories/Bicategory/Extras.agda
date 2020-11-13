@@ -7,11 +7,12 @@ open import Data.Product using (_,_)
 open import Categories.Bicategory using (Bicategory)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor using (appʳ; appˡ)
-open import Categories.Functor.Bifunctor.Properties using ([_]-commute)
+open import Categories.Functor.Bifunctor.Properties using ([_]-commute; [_]-merge)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
 
 import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
+import Categories.Morphism.IsoEquiv as IsoEquiv
 
 module Extras {o ℓ e t} (Bicat : Bicategory o ℓ e t) where
   open Bicategory Bicat
@@ -20,6 +21,10 @@ module Extras {o ℓ e t} (Bicat : Bicategory o ℓ e t) where
       A B C D : Obj
       f g h i : A ⇒₁ B
       α β γ : f ⇒₂ g
+
+  infixr 7 _∘ᵢ_
+  infixr 9 _▷ᵢ_
+  infixl 9 _◁ᵢ_
 
   module ⊚ {A B C}          = Functor (⊚ {A} {B} {C})
   module ⊚-assoc {A B C D}  = NaturalIsomorphism (⊚-assoc {A} {B} {C} {D})
@@ -54,6 +59,18 @@ module Extras {o ℓ e t} (Bicat : Bicategory o ℓ e t) where
 
   module associator {A B C D} {f : C ⇒₁ B} {g : D ⇒₁ C} {h} = Mor._≅_ (associator {A = A} {B = B} {f = f} {g = g} {h = h})
 
+  module Shorthands where
+    λ⇒ = unitorˡ.from
+    λ⇐ = unitorˡ.to
+
+    ρ⇒ = unitorʳ.from
+    ρ⇐ = unitorʳ.to
+
+    α⇒ = associator.from
+    α⇐ = associator.to
+  open Shorthands
+
+
   -⊚_ : C ⇒₁ A → Functor (hom A B) (hom C B)
   -⊚_ = appʳ ⊚
 
@@ -80,8 +97,27 @@ module Extras {o ℓ e t} (Bicat : Bicategory o ℓ e t) where
   private
     module MR′ {A} {B} where
       open MR (hom A B) using (conjugate-to) public
-      open Mor (hom A B) using (module ≅) public
+      open Mor (hom A B) using (_≅_; module ≅) public
+      open IsoEquiv (hom A B) using (⌞_⌟; _≃_) public
     open MR′
+  idᵢ  = λ {A B f} → ≅.refl {A} {B} {f}
+  _∘ᵢ_ = λ {A B f g h} α β → ≅.trans {A} {B} {f} {g} {h} β α
+
+  _⊚ᵢ_ : f ≅ h → g ≅ i → f ⊚₀ g ≅ h ⊚₀ i
+  α ⊚ᵢ β = record
+    { from = from α ⊚₁ from β
+    ; to   = to α ⊚₁ to β
+    ; iso  = record
+      { isoˡ = [ ⊚ ]-merge (isoˡ α) (isoˡ β) ○ ⊚.identity
+      ; isoʳ = [ ⊚ ]-merge (isoʳ α) (isoʳ β) ○ ⊚.identity }
+    }
+    where open _≅_
+
+  _◁ᵢ_ : {g h : B ⇒₁ C} (α : g ≅ h) (f : A ⇒₁ B) → g ∘ₕ f ≅ h ∘ₕ f
+  α ◁ᵢ _ = α ⊚ᵢ idᵢ
+
+  _▷ᵢ_ : {f g : A ⇒₁ B} (h : B ⇒₁ C) (α : f ≅ g) → h ∘ₕ f ≅ h ∘ₕ g
+  _ ▷ᵢ α = idᵢ ⊚ᵢ α
 
   ∘ᵥ-distr-◁ : (α ◁ f) ∘ᵥ (β ◁ f) ≈ (α ∘ᵥ β) ◁ f
   ∘ᵥ-distr-◁ {f = f} = ⟺ (Functor.homomorphism (-⊚ f))
@@ -89,22 +125,22 @@ module Extras {o ℓ e t} (Bicat : Bicategory o ℓ e t) where
   ∘ᵥ-distr-▷ : (f ▷ α) ∘ᵥ (f ▷ β) ≈ f ▷ (α ∘ᵥ β)
   ∘ᵥ-distr-▷ {f = f} = ⟺ (Functor.homomorphism (f ⊚-))
 
-  ρ-∘ᵥ-▷ : unitorˡ.from ∘ᵥ (id₁ ▷ α) ≈ α ∘ᵥ unitorˡ.from
+  ρ-∘ᵥ-▷ : λ⇒ ∘ᵥ (id₁ ▷ α) ≈ α ∘ᵥ λ⇒
   ρ-∘ᵥ-▷ {α = α} = begin
-    unitorˡ.from ∘ᵥ (id₁ ▷ α)    ≈˘⟨ hom.∘-resp-≈ʳ (⊚.F-resp-≈ (id.identity , refl)) ⟩
-    unitorˡ.from ∘ᵥ id.F₁ _ ⊚₁ α ≈⟨ unitˡ.⇒.commute (_ , α) ⟩
-    α ∘ᵥ unitorˡ.from            ∎
+    λ⇒ ∘ᵥ (id₁ ▷ α)    ≈˘⟨ hom.∘-resp-≈ʳ (⊚.F-resp-≈ (id.identity , refl)) ⟩
+    λ⇒ ∘ᵥ id.F₁ _ ⊚₁ α ≈⟨ unitˡ.⇒.commute (_ , α) ⟩
+    α ∘ᵥ λ⇒            ∎
 
-  ▷-∘ᵥ-ρ⁻¹ : (id₁ ▷ α) ∘ᵥ unitorˡ.to ≈ unitorˡ.to ∘ᵥ α
+  ▷-∘ᵥ-ρ⁻¹ : (id₁ ▷ α) ∘ᵥ λ⇐ ≈ λ⇐ ∘ᵥ α
   ▷-∘ᵥ-ρ⁻¹ = conjugate-to (≅.sym unitorˡ) (≅.sym unitorˡ) ρ-∘ᵥ-▷
 
-  λ-∘ᵥ-◁ : unitorʳ.from ∘ᵥ (α ◁ id₁) ≈ α ∘ᵥ unitorʳ.from
+  λ-∘ᵥ-◁ : ρ⇒ ∘ᵥ (α ◁ id₁) ≈ α ∘ᵥ ρ⇒
   λ-∘ᵥ-◁ {α = α} = begin
-    unitorʳ.from ∘ᵥ (α ◁ id₁)      ≈˘⟨ hom.∘-resp-≈ʳ (⊚.F-resp-≈ (refl , id.identity)) ⟩
-    unitorʳ.from ∘ᵥ (α ⊚₁ id.F₁ _) ≈⟨ unitʳ.⇒.commute (α , _) ⟩
-    α ∘ᵥ unitorʳ.from              ∎
+    ρ⇒ ∘ᵥ (α ◁ id₁)      ≈˘⟨ hom.∘-resp-≈ʳ (⊚.F-resp-≈ (refl , id.identity)) ⟩
+    ρ⇒ ∘ᵥ (α ⊚₁ id.F₁ _) ≈⟨ unitʳ.⇒.commute (α , _) ⟩
+    α ∘ᵥ ρ⇒              ∎
 
-  ◁-∘ᵥ-λ⁻¹ : (α ◁ id₁) ∘ᵥ unitorʳ.to ≈ unitorʳ.to ∘ᵥ α
+  ◁-∘ᵥ-λ⁻¹ : (α ◁ id₁) ∘ᵥ ρ⇐ ≈ ρ⇐ ∘ᵥ α
   ◁-∘ᵥ-λ⁻¹ = conjugate-to (≅.sym unitorʳ) (≅.sym unitorʳ) λ-∘ᵥ-◁
 
   assoc⁻¹-◁-∘ₕ : associator.to ∘ᵥ (α ◁ (g ∘ₕ f)) ≈ ((α ◁ g) ◁ f) ∘ᵥ associator.to
@@ -124,3 +160,19 @@ module Extras {o ℓ e t} (Bicat : Bicategory o ℓ e t) where
 
   ◁-▷-exchg : ∀ {α : f ⇒₂ g} {β : h ⇒₂ i} → (i ▷ α) ∘ᵥ (β ◁ f) ≈ (β ◁ g) ∘ᵥ (h ▷ α)
   ◁-▷-exchg = [ ⊚ ]-commute
+
+  triangle-iso : {f : A ⇒₁ B} {g : B ⇒₁ C} →
+                 (g ▷ᵢ unitorˡ ∘ᵢ associator) ≃ (unitorʳ ◁ᵢ f)
+  triangle-iso = ⌞ triangle ⌟
+
+  triangle-inv : {f : A ⇒₁ B} {g : B ⇒₁ C} → α⇐ ∘ᵥ g ▷ λ⇐ ≈ ρ⇐ ◁ f
+  triangle-inv = _≃_.to-≈ triangle-iso
+
+  pentagon-iso : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                 (i ▷ᵢ associator ∘ᵢ associator ∘ᵢ associator ◁ᵢ f) ≃
+                 (associator {f = i} {h} {g ∘ₕ f} ∘ᵢ associator)
+  pentagon-iso = ⌞ pentagon ⌟
+
+  pentagon-inv : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                 (α⇐ ◁ f ∘ᵥ α⇐) ∘ᵥ i ▷ α⇐ ≈ α⇐ ∘ᵥ α⇐ {f = i} {h} {g ∘ₕ f}
+  pentagon-inv = _≃_.to-≈ pentagon-iso

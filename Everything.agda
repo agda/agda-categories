@@ -28,6 +28,7 @@ import Categories.Bicategory.Construction.1-Category
 import Categories.Bicategory.Extras
 import Categories.Bicategory.Instance.Cats
 import Categories.Bicategory.Instance.EnrichedCats
+import Categories.Bicategory.Opposite
 import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.CMonoidEnriched
