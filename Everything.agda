@@ -88,6 +88,8 @@ import Categories.Category.Construction.Properties.Presheaves.FromCartesianCCC
 import Categories.Category.Construction.Pullbacks
 import Categories.Category.Construction.Thin
 import Categories.Category.Core
+import Categories.Category.Dagger
+import Categories.Category.Dagger.Instance.Rels
 import Categories.Category.Discrete
 import Categories.Category.Duality
 import Categories.Category.Equivalence
@@ -124,6 +126,7 @@ import Categories.Category.Instance.Properties.Setoids.CCC
 import Categories.Category.Instance.Properties.Setoids.Cocomplete
 import Categories.Category.Instance.Properties.Setoids.Complete
 import Categories.Category.Instance.Properties.Setoids.LCCC
+import Categories.Category.Instance.Rels
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
 import Categories.Category.Instance.Simplex
