@@ -8,6 +8,7 @@ open import Data.Product using (Σ ; _,_)
 
 open import Categories.Category
 open import Categories.Category.Cartesian.Structure
+open import Categories.Category.Monoidal.Structure using (MonoidalCategory)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Properties
 open import Categories.Functor.Cartesian
@@ -88,8 +89,10 @@ module _ (A : CartesianCategory o ℓ e) (B : CartesianCategory o′ ℓ′ e′
 
 module _ {C : CartesianCategory o ℓ e} {D : CartesianCategory o′ ℓ′ e′} where
   private
-    module C = CartesianCategory C
-    module D = CartesianCategory D
+    module C  = CartesianCategory C
+    module CM = MonoidalCategory C.monoidalCategory
+    module D  = CartesianCategory D
+    module DM = MonoidalCategory D.monoidalCategory using (associator)
     open D.HomReasoning
     open MR D.U
     open M D.U
@@ -118,7 +121,7 @@ module _ {C : CartesianCategory o ℓ e} {D : CartesianCategory o′ ℓ′ e′
           }
         }
       ; associativity = λ {X Y Z} → let open P D.U in begin
-        F.₁ C.associator.from D.∘ F.×-iso.to (X C.× Y) Z D.∘ (F.×-iso.to X Y D.⁂ D.id)
+        F.₁ CM.associator.from D.∘ F.×-iso.to (X C.× Y) Z D.∘ (F.×-iso.to X Y D.⁂ D.id)
           ≈⟨ F.F-resp-⟨⟩′ _ _ ⟩∘⟨ [ D.product ⇒ D.product ⇒ F.F-prod _ _ ]repack∘× ⟩
         F.F-resp-×.⟨ F.₁ (C.π₁ C.∘ C.π₁) , F.₁ C.⟨ C.π₂ C.∘ C.π₁ , C.π₂ ⟩ ⟩ D.∘ F.F-resp-×.⟨ F.×-iso.to X Y D.∘ D.π₁ , D.id D.∘ D.π₂ ⟩
           ≈⟨ F.F-prod.⟨⟩-cong₂ _ _ F.homomorphism (F.F-resp-⟨⟩′ _ _ ○ F.F-prod.⟨⟩-cong₂ _ _ F.homomorphism D.Equiv.refl) ⟩∘⟨refl ⟩
@@ -135,9 +138,9 @@ module _ {C : CartesianCategory o ℓ e} {D : CartesianCategory o′ ℓ′ e′
           ≈˘⟨ F.F-prod.⟨⟩-cong₂ _ _ D.identityˡ ([ F.F-prod _ _ ]⟨⟩∘ ○ (F.F-prod.⟨⟩-cong₂ _ _ D.project₁ D.project₂)) ⟩
         F.F-resp-×.⟨ D.id D.∘ D.π₁ D.∘ D.π₁ , F.×-iso.to Y Z D.∘ D.⟨ D.π₂ D.∘ D.π₁ , D.π₂ ⟩ ⟩
           ≈˘⟨ [ D.product ⇒ (F.F-prod _ _) ]×∘⟨⟩ ⟩
-        F.F-resp-×.⟨ D.id D.∘ D.π₁ , F.×-iso.to Y Z D.∘ D.π₂ ⟩ D.∘ D.associator.from
+        F.F-resp-×.⟨ D.id D.∘ D.π₁ , F.×-iso.to Y Z D.∘ D.π₂ ⟩ D.∘ DM.associator.from
           ≈˘⟨ pullˡ [ D.product ⇒ D.product ⇒ F.F-prod _ _ ]repack∘× ⟩
-        F.×-iso.to X (Y C.× Z) D.∘ (D.id D.⁂ F.×-iso.to Y Z) D.∘ D.associator.from
+        F.×-iso.to X (Y C.× Z) D.∘ (D.id D.⁂ F.×-iso.to Y Z) D.∘ DM.associator.from
           ∎
       ; unitaryˡ      = begin
         F.₁ C.π₂ D.∘ F.F-resp-×.⟨ D.π₁ , D.π₂ ⟩ D.∘ (F.F-resp-⊤.! D.⁂ D.id) ≈⟨ pullˡ F.F-resp-×.project₂ ⟩

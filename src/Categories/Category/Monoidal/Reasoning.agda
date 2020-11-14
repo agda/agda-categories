@@ -59,6 +59,19 @@ _⟩⊗⟨refl = ⊗-resp-≈ˡ
 --                     [f] [g]
 --                      |   |
 
+-- Parallel commutation
+
+parallel : ∀ {X₁ X₂ Y₁ Y₂ Z₁ Z₂ W₁ W₂}
+           {f₁ : Y₁ ⇒ W₁} {f₂ : Z₁ ⇒ W₁} {g₁ : Y₂ ⇒ W₂} {g₂ : Z₂ ⇒ W₂}
+           {h₁ : X₁ ⇒ Y₁} {h₂ : X₁ ⇒ Z₁} {i₁ : X₂ ⇒ Y₂} {i₂ : X₂ ⇒ Z₂} →
+           f₁ ∘ h₁ ≈ f₂ ∘ h₂ → g₁ ∘ i₁ ≈ g₂ ∘ i₂ →
+           f₁ ⊗₁ g₁ ∘ h₁ ⊗₁ i₁ ≈ f₂ ⊗₁ g₂ ∘ h₂ ⊗₁ i₂
+parallel {f₁ = f₁} {f₂} {g₁} {g₂} {h₁} {h₂} {i₁} {i₂} hyp₁ hyp₂ = begin
+  f₁ ⊗₁ g₁ ∘ h₁ ⊗₁ i₁      ≈˘⟨ ⊗-distrib-over-∘ ⟩
+  (f₁ ∘ h₁) ⊗₁ (g₁ ∘ i₁)   ≈⟨ hyp₁ ⟩⊗⟨ hyp₂ ⟩
+  (f₂ ∘ h₂) ⊗₁ (g₂ ∘ i₂)   ≈⟨ ⊗-distrib-over-∘ ⟩
+  f₂ ⊗₁ g₂ ∘ h₂ ⊗₁ i₂      ∎
+
 -- Parallel-to-serial conversions
 --
 --   |   |        |   |       |   |
