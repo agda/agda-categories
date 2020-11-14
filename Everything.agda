@@ -314,6 +314,7 @@ import Categories.Object.Terminal
 import Categories.Object.Terminal.Limit
 import Categories.Object.Zero
 import Categories.Pseudofunctor
+import Categories.Pseudofunctor.Composition
 import Categories.Pseudofunctor.Identity
 import Categories.Pseudofunctor.Instance.EnrichedUnderlying
 import Categories.Theory.Lawvere
