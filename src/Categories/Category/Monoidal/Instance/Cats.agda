@@ -38,8 +38,5 @@ module Product {o ℓ e : Level} where
   Cats-is : Cartesian
   Cats-is = record { terminal = One-⊤ ; products = Cats-has-all }
 
-  private
-    module Cart = Cartesian.Cartesian Cats-is
-
   Cats-Monoidal : Monoidal C
-  Cats-Monoidal = Cart.monoidal
+  Cats-Monoidal = Cartesian.CartesianMonoidal.monoidal C Cats-is

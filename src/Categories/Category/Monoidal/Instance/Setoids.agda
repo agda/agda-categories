@@ -49,7 +49,9 @@ module _ {o ℓ} where
     }
 
   module Setoids-Cartesian = Cartesian Setoids-Cartesian
-  open Setoids-Cartesian renaming (monoidal to Setoids-Monoidal) public
+  open Setoids-Cartesian public
+  module Setoids-CartesianMonoidal = CartesianMonoidal _ Setoids-Cartesian
+  open Setoids-CartesianMonoidal renaming (monoidal to Setoids-Monoidal) public
 
   Setoids-Cocartesian : Cocartesian (Setoids o (o ⊔ ℓ))
   Setoids-Cocartesian = record
