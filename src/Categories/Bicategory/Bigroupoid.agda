@@ -13,7 +13,7 @@ import Categories.Category.Equivalence.Properties as EP
 open import Categories.Category.Product
 open import Categories.Category.Groupoid using (IsGroupoid)
 open import Categories.Bicategory
-open import Categories.Bicategory.Extras
+import Categories.Bicategory.Extras as BicategoryExtras
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
 open import Categories.Functor.Bifunctor.Properties
@@ -27,8 +27,7 @@ import Categories.Morphism.Reasoning as MR
 
 -- https://link.springer.com/article/10.1023/A:1011270417127
 record IsBigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ e ⊔ t) where
-  open Bicategory C public
-  open Extras C
+  open BicategoryExtras C
 
   field
     hom-isGroupoid : ∀ A B → IsGroupoid (hom A B)
@@ -159,6 +158,8 @@ record IsBigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ 
 
   hom⁻¹-⊣Equivalence : ∀ {A} {B} → hom[ A , B ]⁻¹ ⊣⊢ hom[ B , A ]⁻¹
   hom⁻¹-⊣Equivalence {A} {B} = EP.F⊣⊢G (hom⁻¹-weakInverse {A} {B})
+
+  open Bicategory C public
 
 -- A bigroupoid is a bicategory that has a bigroupoid structure
 

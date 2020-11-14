@@ -8,7 +8,7 @@ module Categories.Bicategory.Opposite where
 
 open import Data.Product using (_,_)
 
-open import Categories.Bicategory.Extras using (module Extras)
+import Categories.Bicategory.Extras as BicategoryExtras
 open import Categories.Category using (Category)
 import Categories.Category.Cartesian as Cartesian
 import Categories.Morphism as Morphism
@@ -28,8 +28,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism
 
 module _ {o ℓ e t} (C : Bicategory o ℓ e t) where
 
-  open Bicategory C
-  open Extras C
+  open BicategoryExtras C
   open Shorthands
   private
     module MR {A} {B} where
