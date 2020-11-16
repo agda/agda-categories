@@ -154,6 +154,7 @@ import Categories.Category.Monoidal.Construction.Minus2
 import Categories.Category.Monoidal.Core
 import Categories.Category.Monoidal.Instance.Cats
 import Categories.Category.Monoidal.Instance.One
+import Categories.Category.Monoidal.Instance.Rels
 import Categories.Category.Monoidal.Instance.Setoids
 import Categories.Category.Monoidal.Instance.Sets
 import Categories.Category.Monoidal.Instance.StrictCats
