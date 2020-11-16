@@ -10,7 +10,7 @@ is not assured (although we don't intend to break things whimsically).
 
 ## Origins
 
-This library is a rewrite of [copumpin's version](https://github.com/copumpkin/categories)
+This library is a rewrite of [copumpkin's version](https://github.com/copumpkin/categories)
 of a previous library, which worked very well up to Agda 2.4.3 or so, but began bit-rotting and
 was completely broken by 2.6 (with various stages of 'functioning' in between). That library
 itself has older origins, which are well documented in that project's own documentation.
