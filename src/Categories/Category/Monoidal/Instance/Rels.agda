@@ -45,6 +45,9 @@ module _ {o ℓ} where
       }
     }
 
+  module Rels-CartesianMonoidal = CartesianMonoidal _ Rels-Cartesian
+  open Rels-CartesianMonoidal renaming (monoidal to Rels-Monoidal) public
+
   -- because Rels is dual to itself, the proof that it is cocartesian resembles the proof that it's cartesian
   Rels-Cocartesian : Cocartesian (Rels o ℓ)
   Rels-Cocartesian = record
