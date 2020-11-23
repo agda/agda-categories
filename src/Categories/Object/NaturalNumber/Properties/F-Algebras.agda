@@ -41,28 +41,30 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (�
   Initial⇒NNO : Initial (F-Algebras Maybe) → NaturalNumber
   Initial⇒NNO initial = record
     { N = ⊥.A
-    ; z = ⊥.α ∘ i₁
-    ; s = ⊥.α ∘ i₂
-    ; universal = λ {A} q f →
-      F-Algebra-Morphism.f (initial.! {A = alg q f})
-    ; z-commute = λ {A} {q} {f} → begin
-      q                                                                 ≈⟨ ⟺ inject₁ ⟩
-      [ q , f ] ∘ i₁                                                    ≈⟨ pushʳ (⟺ inject₁) ⟩
-      (([ q , f ] ∘ [ i₁ , i₂ ∘ F-Algebra-Morphism.f initial.! ]) ∘ i₁) ≈⟨ pushˡ (⟺ (F-Algebra-Morphism.commutes (initial.! {A = alg q f}))) ⟩
-      F-Algebra-Morphism.f initial.! ∘ ⊥.α ∘ i₁                         ∎
-    ; s-commute = λ {A} {q} {f} → begin
-      (f ∘ F-Algebra-Morphism.f initial.!) ≈⟨ pushˡ (⟺ inject₂) ⟩
-      [ q , f ] ∘ i₂ ∘ F-Algebra-Morphism.f initial.!                 ≈⟨ pushʳ (⟺ inject₂) ⟩
-      ([ q , f ] ∘ [ i₁ , i₂ ∘ F-Algebra-Morphism.f initial.! ]) ∘ i₂ ≈⟨ pushˡ (⟺ (F-Algebra-Morphism.commutes (initial.! {A = alg q f}))) ⟩
-      F-Algebra-Morphism.f initial.! ∘ ⊥.α ∘ i₂                       ∎
-    ; unique = λ {A} {f} {q} {u} eqᶻ eqˢ → ⟺ $ initial.!-unique record
-        { f = u
-        ; commutes = begin
-          u ∘ ⊥.α ≈⟨ ⟺ +-g-η ⟩
-          [ (u ∘ ⊥.α) ∘ i₁ , (u ∘ ⊥.α) ∘ i₂ ] ≈⟨ []-cong₂ (assoc ○ ⟺ eqᶻ) (assoc ○ ⟺ eqˢ) ⟩
-          [ f , q ∘ u ]                       ≈⟨ +-unique (pullʳ inject₁ ○ inject₁) (pullʳ inject₂ ○ pullˡ inject₂) ⟩
-          [ f , q ] ∘ [ i₁ , i₂ ∘ u ]         ∎
-        }
+    ; isNaturalNumber = record
+      { z = ⊥.α ∘ i₁
+      ; s = ⊥.α ∘ i₂
+      ; universal = λ {A} q f →
+        F-Algebra-Morphism.f (initial.! {A = alg q f})
+      ; z-commute = λ {A} {q} {f} → begin
+        q                                                                 ≈⟨ ⟺ inject₁ ⟩
+        [ q , f ] ∘ i₁                                                    ≈⟨ pushʳ (⟺ inject₁) ⟩
+        (([ q , f ] ∘ [ i₁ , i₂ ∘ F-Algebra-Morphism.f initial.! ]) ∘ i₁) ≈⟨ pushˡ (⟺ (F-Algebra-Morphism.commutes (initial.! {A = alg q f}))) ⟩
+        F-Algebra-Morphism.f initial.! ∘ ⊥.α ∘ i₁                         ∎
+      ; s-commute = λ {A} {q} {f} → begin
+        (f ∘ F-Algebra-Morphism.f initial.!) ≈⟨ pushˡ (⟺ inject₂) ⟩
+        [ q , f ] ∘ i₂ ∘ F-Algebra-Morphism.f initial.!                 ≈⟨ pushʳ (⟺ inject₂) ⟩
+        ([ q , f ] ∘ [ i₁ , i₂ ∘ F-Algebra-Morphism.f initial.! ]) ∘ i₂ ≈⟨ pushˡ (⟺ (F-Algebra-Morphism.commutes (initial.! {A = alg q f}))) ⟩
+        F-Algebra-Morphism.f initial.! ∘ ⊥.α ∘ i₂                       ∎
+      ; unique = λ {A} {f} {q} {u} eqᶻ eqˢ → ⟺ $ initial.!-unique record
+          { f = u
+          ; commutes = begin
+            u ∘ ⊥.α ≈⟨ ⟺ +-g-η ⟩
+            [ (u ∘ ⊥.α) ∘ i₁ , (u ∘ ⊥.α) ∘ i₂ ] ≈⟨ []-cong₂ (assoc ○ ⟺ eqᶻ) (assoc ○ ⟺ eqˢ) ⟩
+            [ f , q ∘ u ]                       ≈⟨ +-unique (pullʳ inject₁ ○ inject₁) (pullʳ inject₂ ○ pullˡ inject₂) ⟩
+            [ f , q ] ∘ [ i₁ , i₂ ∘ u ]         ∎
+          }
+      }
     }
     where
       module initial = Initial initial
@@ -87,7 +89,7 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (�
           universal _ _ ∘ [ z , s ]                                         ≈⟨ ∘-distribˡ-[] ⟩
           [ universal _ _ ∘ z , universal _ _ ∘ s ]                         ≈⟨ []-cong₂ (⟺ z-commute) (⟺ s-commute ○ assoc) ⟩
           [ F-Algebra.α alg ∘ i₁ , F-Algebra.α alg ∘ (i₂ ∘ universal _ _) ] ≈˘⟨ ∘-distribˡ-[] ⟩
-          F-Algebra.α alg ∘ [ i₁ , i₂ ∘ universal _ _ ]                   ∎
+          F-Algebra.α alg ∘ [ i₁ , i₂ ∘ universal _ _ ]                     ∎
         }
       ; !-unique = λ {A} f →
         let z-commutes = begin

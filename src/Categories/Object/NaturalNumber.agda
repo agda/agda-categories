@@ -21,9 +21,8 @@ private
     A B C D X Y Z : Obj
     h i j : A ⇒ B
 
-record NaturalNumber : Set (o ⊔ ℓ ⊔ e) where
+record IsNaturalNumber (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
-    N : Obj
     z : ⊤ ⇒ N
     s : N ⇒ N
     universal : ∀ {A} → ⊤ ⇒ A → A ⇒ A → N ⇒ A
@@ -36,6 +35,13 @@ record NaturalNumber : Set (o ⊔ ℓ ⊔ e) where
 
   universal-cong : ∀ {A} → {f f′ : ⊤ ⇒ A} → {g g′ : A ⇒ A} → f ≈ f′ → g ≈ g′ → universal f g ≈ universal f′ g′
   universal-cong f≈f′ g≈g′ = unique (⟺ f≈f′ ○  z-commute) (∘-resp-≈ˡ (⟺ g≈g′) ○ s-commute)
+
+record NaturalNumber : Set (o ⊔ ℓ ⊔ e) where
+  field
+    N : Obj
+    isNaturalNumber : IsNaturalNumber N
+
+  open IsNaturalNumber isNaturalNumber public
 
 open NaturalNumber
 
