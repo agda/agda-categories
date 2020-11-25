@@ -302,6 +302,8 @@ import Categories.Object.Duality
 import Categories.Object.Exponential
 import Categories.Object.Initial
 import Categories.Object.Monoid
+import Categories.Object.NaturalNumber
+import Categories.Object.NaturalNumber.Properties.F-Algebras
 import Categories.Object.Product
 import Categories.Object.Product.Construction
 import Categories.Object.Product.Core

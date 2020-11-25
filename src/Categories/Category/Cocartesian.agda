@@ -48,7 +48,7 @@ record BinaryCoproducts : Set (levelOfTerm 𝒞) where
   A + B = coproduct.A+B {A} {B}
 
   open coproduct
-    using (i₁; i₂; [_,_]; inject₁; inject₂; []-cong₂)
+    using (i₁; i₂; [_,_]; inject₁; inject₂; []-cong₂; ∘-distribˡ-[])
     renaming (unique to +-unique; η to +-η; g-η to +-g-η)
     public
 

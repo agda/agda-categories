@@ -1,4 +1,4 @@
-{-# OPTIONS --universe-polymorphism #-}
+{-# OPTIONS --without-K --safe #-}
 module Categories.Category.Construction.F-Algebras where
 
 open import Level
