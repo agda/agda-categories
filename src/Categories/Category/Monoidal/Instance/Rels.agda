@@ -1,6 +1,10 @@
 {-# OPTIONS --without-K --safe #-}
 module Categories.Category.Monoidal.Instance.Rels where
 
+-- The category of relations is cartesian and (by self-duality) co-cartesian.
+-- Perhaps slightly counter-intuitavely if you're used to categories which act
+-- like Sets, the product acts on objects as the disjoint union.
+
 open import Data.Empty.Polymorphic
 import Data.Product as ×
 open import Data.Sum
