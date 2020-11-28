@@ -72,11 +72,13 @@ Pushout⇒coPullback : Pushout f g → Pullback f g
 Pushout⇒coPullback p = record
   { p₁              = i₁
   ; p₂              = i₂
-  ; commute         = commute
-  ; universal       = universal
-  ; unique          = unique
-  ; p₁∘universal≈h₁ = universal∘i₁≈h₁
-  ; p₂∘universal≈h₂ = universal∘i₂≈h₂
+  ; isPullback = record
+    { commute         = commute
+    ; universal       = universal
+    ; unique          = unique
+    ; p₁∘universal≈h₁ = universal∘i₁≈h₁
+    ; p₂∘universal≈h₂ = universal∘i₂≈h₂
+    }
   }
   where open Pushout p
 
