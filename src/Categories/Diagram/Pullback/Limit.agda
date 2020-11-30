@@ -48,11 +48,13 @@ module _ {F : Functor Span.op C} where
   limit⇒pullback lim = record
     { p₁              = proj left
     ; p₂              = proj right
-    ; commute         = trans (limit-commute span-arrˡ) (sym (limit-commute span-arrʳ))
-    ; universal       = universal
-    ; unique          = commute′
-    ; p₁∘universal≈h₁ = commute
-    ; p₂∘universal≈h₂ = commute
+    ; isPullback = record
+      { commute         = trans (limit-commute span-arrˡ) (sym (limit-commute span-arrʳ))
+      ; universal       = universal
+      ; unique          = commute′
+      ; p₁∘universal≈h₁ = commute
+      ; p₂∘universal≈h₂ = commute
+      }
     }
     where open Limit lim
           open Equiv

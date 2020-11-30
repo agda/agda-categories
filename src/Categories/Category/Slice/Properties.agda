@@ -27,11 +27,13 @@ module _ {A : C.Obj} where
   product⇒pullback p = record
     { p₁              = h π₁
     ; p₂              = h π₂
-    ; commute         = △ π₁ ○ ⟺ (△ π₂)
-    ; universal       = λ eq → h ⟨ slicearr eq , slicearr refl ⟩
-    ; unique          = λ {_ _ _ _ eq} eq′ eq″ → ⟺ (unique {h = slicearr (pushˡ (⟺ (△ π₁)) ○ C.∘-resp-≈ʳ eq′ ○ eq)} eq′ eq″)
-    ; p₁∘universal≈h₁ = project₁
-    ; p₂∘universal≈h₂ = project₂
+    ; isPullback = record
+      { commute         = △ π₁ ○ ⟺ (△ π₂)
+      ; universal       = λ eq → h ⟨ slicearr eq , slicearr refl ⟩
+      ; unique          = λ {_ _ _ _ eq} eq′ eq″ → ⟺ (unique {h = slicearr (pushˡ (⟺ (△ π₁)) ○ C.∘-resp-≈ʳ eq′ ○ eq)} eq′ eq″)
+      ; p₁∘universal≈h₁ = project₁
+      ; p₂∘universal≈h₂ = project₂
+      }
     }
     where open Product (Slice A) p
 
