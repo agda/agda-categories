@@ -25,11 +25,11 @@ open import Relation.Binary.Structures
 record Star-Autonomous : Set (levelOfTerm M) where
   field
     symmetric : Symmetric M
-    F⁻¹ : Functor Cᵒᵖ C
+    Star : Functor Cᵒᵖ C
 
-  open Functor F⁻¹ renaming (op to F⁻¹ₒₚ ; F₀ to F⁻¹₀)
+  open Functor Star renaming (op to Starₒₚ ; F₀ to Star₀)
 
   field
-    FFF⁻¹ : FullyFaithful F⁻¹
-    A≃A⁻¹⁻¹ : id ≃ (F⁻¹ ∘F F⁻¹ₒₚ)
-    𝒞[A⊗B,C⁻¹]≃𝒞[A,B⊗C⁻¹] : Hom[-,-] ∘F (⊗ₒₚ ⁂ F⁻¹) ≃ Hom[-,-] ∘F (id ⁂ (F⁻¹ ∘F ⊗ₒₚ)) ∘F assocˡ _ _ _
+    FF-Star : FullyFaithful Star
+    A≃A**  : id ≃ (Star ∘F Starₒₚ)
+    𝒞[A⊗B,C*]≃𝒞[A,B⊗C*] : Hom[-,-] ∘F (⊗ₒₚ ⁂ Star) ≃ Hom[-,-] ∘F (id ⁂ (Star ∘F ⊗ₒₚ)) ∘F assocˡ _ _ _
