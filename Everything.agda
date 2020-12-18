@@ -163,6 +163,7 @@ import Categories.Category.Monoidal.Reasoning
 import Categories.Category.Monoidal.Rigid
 import Categories.Category.Monoidal.Structure
 import Categories.Category.Monoidal.Symmetric
+import Categories.Category.Monoidal.Symmetric.Star-Autonomous
 import Categories.Category.Monoidal.Traced
 import Categories.Category.Monoidal.Utilities
 import Categories.Category.Product
