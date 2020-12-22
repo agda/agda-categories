@@ -19,13 +19,10 @@ private
     A B X : Obj
     h i j k : A ⇒ B
 
-record Equalizer (f g : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
+record IsEqualizer {E} (arr : E ⇒ A) (f g : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
   field
-    {obj} : Obj
-    arr   : obj ⇒ A
-
-    equality  : f ∘ arr ≈ g ∘ arr
-    equalize  : ∀ {h : X ⇒ A} → f ∘ h ≈ g ∘ h → X ⇒ obj
+    equality : f ∘ arr ≈ g ∘ arr
+    equalize : ∀ {h : X ⇒ A} → f ∘ h ≈ g ∘ h → X ⇒ E
     universal : ∀ {eq : f ∘ h ≈ g ∘ h} → h ≈ arr ∘ equalize eq
     unique    : ∀ {eq : f ∘ h ≈ g ∘ h} → h ≈ arr ∘ i → i ≈ equalize eq
 
@@ -61,6 +58,14 @@ record Equalizer (f g : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
     h                           ≈⟨ unique (sym eq) ⟩
     equalize (extendʳ equality) ≈˘⟨ unique refl ⟩
     i                           ∎
+
+record Equalizer (f g : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
+  field
+    {obj} : Obj
+    arr   : obj ⇒ A
+    isEqualizer : IsEqualizer arr f g
+
+  open IsEqualizer isEqualizer public
 
 Equalizer⇒Mono : (e : Equalizer h i) → Mono (Equalizer.arr e)
 Equalizer⇒Mono e f g eq =

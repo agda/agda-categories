@@ -39,10 +39,12 @@ private
 Coequalizer⇒coEqualizer : Coequalizer f g → Equalizer f g
 Coequalizer⇒coEqualizer coe = record
   { arr       = arr
-  ; equality  = equality
-  ; equalize  = coequalize
-  ; universal = universal
-  ; unique    = unique
+  ; isEqualizer = record
+    { equality  = equality
+    ; equalize  = coequalize
+    ; universal = universal
+    ; unique    = unique
+    }
   }
   where open Coequalizer coe
 
