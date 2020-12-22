@@ -161,6 +161,7 @@ import Categories.Category.Monoidal.Instance.StrictCats
 import Categories.Category.Monoidal.Properties
 import Categories.Category.Monoidal.Reasoning
 import Categories.Category.Monoidal.Rigid
+import Categories.Category.Monoidal.Star-Autonomous
 import Categories.Category.Monoidal.Structure
 import Categories.Category.Monoidal.Symmetric
 import Categories.Category.Monoidal.Traced
