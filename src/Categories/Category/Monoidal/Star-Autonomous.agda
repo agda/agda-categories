@@ -4,7 +4,7 @@ open import Categories.Category using (Category)
 open import Categories.Category.Monoidal.Core using (Monoidal)
 open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 
-module Categories.Category.Monoidal.Symmetric.Star-Autonomous {o ℓ e} {C : Category o ℓ e} {M : Monoidal C} (S : Symmetric M) where
+module Categories.Category.Monoidal.Star-Autonomous {o ℓ e} {C : Category o ℓ e} (M : Monoidal C) where
 
 open import Level
 
@@ -19,8 +19,9 @@ open Monoidal M
 open Functor ⊗ renaming (op to ⊗ₒₚ)
 open Hom C
 
-record Star-Autonomous : Set (levelOfTerm S) where
+record Star-Autonomous : Set (levelOfTerm M) where
   field
+    symmetric : Symmetric M
     Star : Functor Cᵒᵖ C
 
   open Functor Star renaming (op to Starₒₚ) public
