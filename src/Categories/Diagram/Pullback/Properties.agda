@@ -11,6 +11,7 @@ open import Categories.Diagram.Pullback C
 open import Categories.Diagram.Equalizer C
 open import Categories.Object.Product C
 open import Categories.Object.Terminal C
+open import Categories.Morphism C
 open import Categories.Morphism.Reasoning C
 
 private
@@ -19,6 +20,17 @@ private
     X Y Z : Obj
     f g h i : X ⇒ Y
 open HomReasoning
+open Equiv
+
+-- pullbacks of a monomorphism along itself give us the identity arrow.
+pullback-self-mono : Mono f → IsPullback id id f f
+pullback-self-mono mono = record
+  { commute = refl
+  ; universal = λ {X} {h₁} {h₂} eq → h₁
+  ; unique = λ id∘i≈h₁ _ → ⟺ identityˡ ○ id∘i≈h₁
+  ; p₁∘universal≈h₁ = identityˡ
+  ; p₂∘universal≈h₂ = λ {X} {h₁} {h₂} {eq} → identityˡ ○ mono h₁ h₂ eq
+  }
 
 -- pullback from a terminal object is the same as a product
 module _ (t : Terminal) where
