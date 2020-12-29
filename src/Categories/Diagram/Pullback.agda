@@ -175,18 +175,20 @@ Product×Pullback⇒Equalizer : (p : Product A B) → Pullback f g →
   Equalizer (f ∘ Product.π₁ p) (g ∘ Product.π₂ p)
 Product×Pullback⇒Equalizer {f = f} {g = g} p pu = record
   { arr       = ⟨ p₁ , p₂ ⟩
-  ; equality  = begin
-    (f ∘ π₁) ∘ ⟨ p₁ , p₂ ⟩ ≈⟨ pullʳ project₁ ⟩
-    f ∘ p₁                 ≈⟨ commute ⟩
-    g ∘ p₂                 ≈˘⟨ pullʳ project₂ ⟩
-    (g ∘ π₂) ∘ ⟨ p₁ , p₂ ⟩ ∎
-  ; equalize  = λ eq → pu.universal (sym-assoc ○ eq ○ assoc)
-  ; universal = λ {_ h} → begin
-    h                      ≈˘⟨ p.unique (⟺ p₁∘universal≈h₁) (⟺ p₂∘universal≈h₂) ⟩
-    ⟨ p₁ ∘ _ , p₂ ∘ _ ⟩    ≈⟨ p.unique (pullˡ project₁) (pullˡ project₂) ⟩
-    ⟨ p₁ , p₂ ⟩ ∘ _        ∎
-  ; unique    = λ eq → pu.unique (pushˡ (⟺ project₁) ○ ⟺ (∘-resp-≈ʳ eq))
-                                 (pushˡ (⟺ project₂) ○ ⟺ (∘-resp-≈ʳ eq))
+  ; isEqualizer = record
+    { equality  = begin
+      (f ∘ π₁) ∘ ⟨ p₁ , p₂ ⟩ ≈⟨ pullʳ project₁ ⟩
+      f ∘ p₁                 ≈⟨ commute ⟩
+      g ∘ p₂                 ≈˘⟨ pullʳ project₂ ⟩
+      (g ∘ π₂) ∘ ⟨ p₁ , p₂ ⟩ ∎
+    ; equalize  = λ eq → pu.universal (sym-assoc ○ eq ○ assoc)
+    ; universal = λ {_ h} → begin
+      h                      ≈˘⟨ p.unique (⟺ p₁∘universal≈h₁) (⟺ p₂∘universal≈h₂) ⟩
+      ⟨ p₁ ∘ _ , p₂ ∘ _ ⟩    ≈⟨ p.unique (pullˡ project₁) (pullˡ project₂) ⟩
+      ⟨ p₁ , p₂ ⟩ ∘ _        ∎
+    ; unique    = λ eq → pu.unique (pushˡ (⟺ project₁) ○ ⟺ (∘-resp-≈ʳ eq))
+                                   (pushˡ (⟺ project₂) ○ ⟺ (∘-resp-≈ʳ eq))
+  }
   }
   where module p = Product p
         module pu = Pullback pu

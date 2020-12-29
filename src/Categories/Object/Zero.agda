@@ -10,7 +10,10 @@ open import Level using (_⊔_)
 open import Categories.Object.Terminal C
 open import Categories.Object.Initial C
 
+open import Categories.Morphism C
+
 open Category C
+open HomReasoning
 
 record Zero : Set (o ⊔ ℓ ⊔ e) where
  field
@@ -18,9 +21,19 @@ record Zero : Set (o ⊔ ℓ ⊔ e) where
    !    : ∀ {A} → zero ⇒ A
    ¡    : ∀ {A} → A ⇒ zero
 
+ zero⇒ : ∀ {A B : Obj} → A ⇒ B
+ zero⇒ {A} = ! ∘ ¡
+
  field
    !-unique : ∀ {A} (f : zero ⇒ A) → ! ≈ f
    ¡-unique : ∀ {A} (f : A ⇒ zero) → ¡ ≈ f
+
+ ¡-unique₂ : ∀ {A} (f g : A ⇒ zero) → f ≈ g
+ ¡-unique₂ f g = ⟺ (¡-unique f) ○ ¡-unique g
+
+ !-unique₂ : ∀ {A} (f g : zero ⇒ A) → f ≈ g
+ !-unique₂ f g = ⟺ (!-unique f) ○ !-unique g
+
 
  initial : Initial
  initial = record
@@ -42,3 +55,9 @@ record Zero : Set (o ⊔ ℓ ⊔ e) where
 
  module initial  = Initial initial
  module terminal = Terminal terminal
+
+ !-Mono : ∀ {A} → Mono (! {A})
+ !-Mono = from-⊤-is-Mono {t = terminal} !
+
+ ¡-Epi : ∀ {A} → Epi (¡ {A})
+ ¡-Epi = to-⊥-is-Epi {i = initial} ¡

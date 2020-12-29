@@ -46,19 +46,21 @@ module _ (prods : BinaryProducts) (pullbacks : ∀ {A B X} (f : A ⇒ X) (g : B 
   prods×pullbacks⇒equalizers : Equalizer f g
   prods×pullbacks⇒equalizers {f = f} {g = g} = record
     { arr       = pb′.p₁
-    ; equality  = begin
-      f ∘ pb′.p₁           ≈⟨ refl⟩∘⟨ helper₁ ⟩
-      f ∘ pb.p₁ ∘ pb′.p₂   ≈⟨ pullˡ pb.commute ⟩
-      (g ∘ pb.p₂) ∘ pb′.p₂ ≈˘⟨ pushʳ helper₂ ⟩
-      g ∘ pb′.p₁           ∎
-    ; equalize  = λ {_ i} eq → pb′.universal $ begin
-      ⟨ id , id ⟩ ∘ i                                       ≈⟨ ⟨⟩∘ ⟩
-      ⟨ id ∘ i , id ∘ i ⟩                                   ≈⟨ ⟨⟩-cong₂ identityˡ identityˡ ⟩
-      ⟨ i ,  i ⟩                                            ≈˘⟨ ⟨⟩-cong₂ pb.p₁∘universal≈h₁ pb.p₂∘universal≈h₂ ⟩
-      ⟨ pb.p₁ ∘ pb.universal eq , pb.p₂ ∘ pb.universal eq ⟩ ≈˘⟨ ⟨⟩∘ ⟩
-      h ∘ pb.universal eq                                   ∎
-    ; universal = ⟺ pb′.p₁∘universal≈h₁
-    ; unique    = λ eq → pb′.unique (⟺ eq) (pb.unique (pullˡ (⟺ helper₁) ○ ⟺ eq) (pullˡ (⟺ helper₂) ○ ⟺ eq))
+    ; isEqualizer = record
+      { equality  = begin
+        f ∘ pb′.p₁           ≈⟨ refl⟩∘⟨ helper₁ ⟩
+        f ∘ pb.p₁ ∘ pb′.p₂   ≈⟨ pullˡ pb.commute ⟩
+        (g ∘ pb.p₂) ∘ pb′.p₂ ≈˘⟨ pushʳ helper₂ ⟩
+        g ∘ pb′.p₁           ∎
+      ; equalize  = λ {_ i} eq → pb′.universal $ begin
+        ⟨ id , id ⟩ ∘ i                                       ≈⟨ ⟨⟩∘ ⟩
+        ⟨ id ∘ i , id ∘ i ⟩                                   ≈⟨ ⟨⟩-cong₂ identityˡ identityˡ ⟩
+        ⟨ i ,  i ⟩                                            ≈˘⟨ ⟨⟩-cong₂ pb.p₁∘universal≈h₁ pb.p₂∘universal≈h₂ ⟩
+        ⟨ pb.p₁ ∘ pb.universal eq , pb.p₂ ∘ pb.universal eq ⟩ ≈˘⟨ ⟨⟩∘ ⟩
+        h ∘ pb.universal eq                                   ∎
+      ; universal = ⟺ pb′.p₁∘universal≈h₁
+      ; unique    = λ eq → pb′.unique (⟺ eq) (pb.unique (pullˡ (⟺ helper₁) ○ ⟺ eq) (pullˡ (⟺ helper₂) ○ ⟺ eq))
+      }
     }
     where pb : Pullback f g
           pb         = pullbacks _ _
