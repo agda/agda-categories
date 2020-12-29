@@ -52,3 +52,9 @@ record Kernel {A B} (f : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
      isKernel : IsKernel kernel⇒ f
 
   open IsKernel isKernel public
+
+IsKernel⇒Kernel : IsKernel k f → Kernel f
+IsKernel⇒Kernel {k = k} isKernel = record
+  { kernel⇒ = k
+  ; isKernel = isKernel
+  }
