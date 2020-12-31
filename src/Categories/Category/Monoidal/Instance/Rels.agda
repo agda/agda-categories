@@ -5,16 +5,16 @@ module Categories.Category.Monoidal.Instance.Rels where
 -- Perhaps slightly counter-intuitavely if you're used to categories which act
 -- like Sets, the product acts on objects as the disjoint union.
 
-open import Data.Empty.Polymorphic
+open import Data.Empty.Polymorphic using (⊥; ⊥-elim)
 import Data.Product as ×
-open import Data.Sum
-open import Function
-open import Level
-open import Relation.Binary.PropositionalEquality
+open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]′)
+open import Function using (case_of_)
+open import Level using (Lift; lift)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Categories.Category.Cartesian
-open import Categories.Category.Cocartesian
-open import Categories.Category.Instance.Rels
+open import Categories.Category.Cartesian using (Cartesian; module CartesianMonoidal)
+open import Categories.Category.Cocartesian using (Cocartesian)
+open import Categories.Category.Instance.Rels using (Rels)
 
 module _ {o ℓ} where
 
@@ -30,9 +30,9 @@ module _ {o ℓ} where
     ; products = record
       { product = λ {A} {B} → record
         { A×B = A ⊎ B
-        ; π₁ = [ (λ x y → Lift ℓ (x ≡ y)) , (λ _ _ → ⊥) ]
-        ; π₂ = [ (λ _ _ → ⊥) , (λ x y → Lift ℓ (x ≡ y)) ]
-        ; ⟨_,_⟩ = λ L R c → [ L c , R c ]
+        ; π₁ = [ (λ x y → Lift ℓ (x ≡ y)) , (λ _ _ → ⊥) ]′
+        ; π₂ = [ (λ _ _ → ⊥) , (λ x y → Lift ℓ (x ≡ y)) ]′
+        ; ⟨_,_⟩ = λ L R c → [ L c , R c ]′
         ; project₁ = λ a b →
           (λ { (inj₁ b ×., r ×., lift refl) → r }) ×.,
           (λ r → inj₁ b ×., r ×., lift refl)
@@ -65,8 +65,8 @@ module _ {o ℓ} where
     ; coproducts = record {
       coproduct = λ {A} {B} → record
         { A+B = A ⊎ B
-        ; i₁ = λ x → [ (λ y → Lift ℓ (x ≡ y)) , (λ _ → ⊥) ]
-        ; i₂ = λ x → [ (λ _ → ⊥) , (λ y → Lift ℓ (x ≡ y)) ]
+        ; i₁ = λ x → [ (λ y → Lift ℓ (x ≡ y)) , (λ _ → ⊥) ]′
+        ; i₂ = λ x → [ (λ _ → ⊥) , (λ y → Lift ℓ (x ≡ y)) ]′
         ; [_,_] = [_,_]′
         ; inject₁ = λ a b →
           (λ { (inj₁ .a ×., lift refl ×., r) → r }) ×.,
