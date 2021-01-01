@@ -15,7 +15,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism
 import Categories.Category.Discrete as D
 
 import Relation.Binary.PropositionalEquality as ≡
-open import Function renaming (id to idf; _∘_ to _●_)
+open import Function using () renaming (id to idf; _∘_ to _●_)
 
 Discrete : ∀ {o} → Functor (Sets o) (Cats o o o)
 Discrete {o} = record
