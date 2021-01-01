@@ -62,6 +62,7 @@ import Categories.Category.Construction.Comma
 import Categories.Category.Construction.Cones
 import Categories.Category.Construction.Coproduct
 import Categories.Category.Construction.Core
+import Categories.Category.Construction.Cowedges
 import Categories.Category.Construction.EilenbergMoore
 import Categories.Category.Construction.Elements
 import Categories.Category.Construction.EnrichedFunctors
@@ -88,6 +89,8 @@ import Categories.Category.Construction.Properties.Presheaves.Complete
 import Categories.Category.Construction.Properties.Presheaves.FromCartesianCCC
 import Categories.Category.Construction.Pullbacks
 import Categories.Category.Construction.Thin
+import Categories.Category.Construction.TwistedArrow
+import Categories.Category.Construction.Wedges
 import Categories.Category.Core
 import Categories.Category.Dagger
 import Categories.Category.Dagger.Construction.Discrete
@@ -95,6 +98,7 @@ import Categories.Category.Dagger.Instance.Rels
 import Categories.Category.Discrete
 import Categories.Category.Duality
 import Categories.Category.Equivalence
+import Categories.Category.Equivalence.Preserves
 import Categories.Category.Equivalence.Properties
 import Categories.Category.Finite
 import Categories.Category.Finite.Fin
@@ -184,6 +188,7 @@ import Categories.Comonad.Relative
 import Categories.Diagram.Cocone
 import Categories.Diagram.Cocone.Properties
 import Categories.Diagram.Coend
+import Categories.Diagram.Coend.Properties
 import Categories.Diagram.Coequalizer
 import Categories.Diagram.Coequalizer.Properties
 import Categories.Diagram.Colimit
@@ -192,6 +197,8 @@ import Categories.Diagram.Colimit.Lan
 import Categories.Diagram.Colimit.Properties
 import Categories.Diagram.Cone
 import Categories.Diagram.Cone.Properties
+import Categories.Diagram.Cowedge
+import Categories.Diagram.Cowedge.Properties
 import Categories.Diagram.Duality
 import Categories.Diagram.End
 import Categories.Diagram.End.Properties
@@ -209,6 +216,8 @@ import Categories.Diagram.Pullback.Properties
 import Categories.Diagram.Pushout
 import Categories.Diagram.Pushout.Properties
 import Categories.Diagram.SubobjectClassifier
+import Categories.Diagram.Wedge
+import Categories.Diagram.Wedge.Properties
 import Categories.Enriched.Category
 import Categories.Enriched.Category.Opposite
 import Categories.Enriched.Category.Underlying
@@ -248,6 +257,7 @@ import Categories.Functor.Instance.Core
 import Categories.Functor.Instance.Discrete
 import Categories.Functor.Instance.SetoidDiscrete
 import Categories.Functor.Instance.StrictCore
+import Categories.Functor.Instance.Twisted
 import Categories.Functor.Limits
 import Categories.Functor.Monoidal
 import Categories.Functor.Monoidal.Properties
@@ -290,6 +300,7 @@ import Categories.NaturalTransformation
 import Categories.NaturalTransformation.Core
 import Categories.NaturalTransformation.Dinatural
 import Categories.NaturalTransformation.Equivalence
+import Categories.NaturalTransformation.Extranatural
 import Categories.NaturalTransformation.Hom
 import Categories.NaturalTransformation.Monoidal
 import Categories.NaturalTransformation.NaturalIsomorphism
