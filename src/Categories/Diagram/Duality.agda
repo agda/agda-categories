@@ -38,19 +38,9 @@ private
     A B : Obj
     f g : A ⇒ B
 
-terminal⇒coInitial : IsTerminal C A → IsInitial (Category.op C) A
-terminal⇒coInitial t = record
-  { ! = !
-  ; !-unique = !-unique
-  }
-  where open IsTerminal t
-
-initial⇒coTerminal : IsInitial C A → IsTerminal (Category.op C) A
-initial⇒coTerminal t = record
-  { ! = !
-  ; !-unique = !-unique
-  }
-  where open IsInitial t
+-- note that what would be called
+-- terminal⇒coInitial and initial⇒coTerminal are in
+-- Categories.Object.Duality
 
 Coequalizer⇒coEqualizer : Coequalizer f g → Equalizer f g
 Coequalizer⇒coEqualizer coe = record
