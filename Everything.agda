@@ -308,4 +308,3 @@ import Categories.Utils.Product
 import Categories.Yoneda
 import Categories.Yoneda.Continuous
 import Categories.Yoneda.Properties
-import Relation.Binary.Construct.Closure.SymmetricTransitive
