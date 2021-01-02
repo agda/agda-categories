@@ -49,6 +49,12 @@ EssentiallySurjective {C = C} {D = D} F = (d : Category.Obj D) → Σ C.Obj (λ 
   open Morphism D
   module C = Category C
 
+Conservative : Functor C D → Set _
+Conservative {C = C} {D = D} F = ∀ {A B} → (f : C [ A , B ]) → (g : C [ B , A ]) → Iso D (F₁ f) (F₁ g) → Iso C f g
+  where
+    open Functor F
+    open Morphism
+
 -- a series of [ Functor ]-respects-Thing combinators (with respects -> resp)
 
 module _ (F : Functor C D) where
