@@ -21,6 +21,27 @@ private
     C D : Category o ℓ e
 
 
+module _ {F G : Functor C D} where
+  private
+    module C = Category C
+    module F = Functor F
+    module G = Functor G
+
+  open Category D
+  open Mor D
+  open _≅_
+
+  -- We can construct a natural isomorphism from a pointwise isomorphism, provided that we can show naturality in one direction.
+  pointwise-iso : (iso : ∀ X → F.F₀ X ≅ G.F₀ X) → (∀ {X Y} → (f : C [ X , Y ]) → from (iso Y) ∘ F.F₁ f ≈ G.F₁ f ∘ from (iso X)) → NaturalIsomorphism F G
+  pointwise-iso iso commute = niHelper record
+    { η = λ X → from (iso X)
+    ; η⁻¹ = λ X → to (iso X)
+    ; commute = commute
+    ; iso = λ X → record
+      { isoˡ = isoˡ (iso X)
+      ; isoʳ = isoʳ (iso X)
+      }
+    }
 
 module _ {F G : Functor C D} (α : NaturalIsomorphism F G) where
   private module C = Category C
