@@ -16,6 +16,7 @@ import Categories.Morphism as Morphism
 import Categories.Morphism.Reasoning as Reas
 open import Categories.Morphism.IsoEquiv as IsoEquiv
 open import Categories.Morphism.Isomorphism
+open import Categories.Morphism.Notation
 
 private
   variable
@@ -50,7 +51,7 @@ EssentiallySurjective {C = C} {D = D} F = (d : Category.Obj D) → Σ C.Obj (λ 
   module C = Category C
 
 Conservative : Functor C D → Set _
-Conservative {C = C} {D = D} F = ∀ {A B} → (f : C [ A , B ]) → (g : C [ B , A ]) → Iso D (F₁ f) (F₁ g) → Iso C f g
+Conservative {C = C} {D = D} F = ∀ {A B} {f : C [ A , B ]} {g : D [ F₀ B , F₀ A ]} → Iso D (F₁ f) g → Σ (C [ B , A ]) (λ h → Iso C f h)
   where
     open Functor F
     open Morphism

@@ -79,7 +79,8 @@ module _ (has-coequalizer : (M : Module T) → Coequalizer 𝒟 (L.F₁ (Module.
       open 𝒟.HomReasoning
       open MR 𝒟
 
-  module Comparison⁻¹ = Functor Comparison⁻¹
+  private
+    module Comparison⁻¹ = Functor Comparison⁻¹
 
   Comparison⁻¹⊣Comparison : Comparison⁻¹ ⊣ Comparison
   Adjoint.unit Comparison⁻¹⊣Comparison = ntHelper record
@@ -135,5 +136,3 @@ module _ (has-coequalizer : (M : Module T) → Coequalizer 𝒟 (L.F₁ (Module.
     where
       open 𝒞.HomReasoning
       open MR 𝒞
-
-  module Comparison⁻¹⊣Comparison = Adjoint Comparison⁻¹⊣Comparison
