@@ -6,10 +6,14 @@ module Categories.Category.Equivalence.Properties where
 
 open import Level
 
+open import Data.Product using (Σ-syntax; _,_; proj₁)
+
 open import Categories.Adjoint.Equivalence using (⊣Equivalence)
+open import Categories.Adjoint
 open import Categories.Adjoint.TwoSided using (_⊣⊢_; withZig)
-open import Categories.Category.Core
+open import Categories.Category
 open import Categories.Category.Equivalence using (WeakInverse; StrongEquivalence)
+open import Categories.Morphism
 import Categories.Morphism.Reasoning as MR
 import Categories.Morphism.Properties as MP
 open import Categories.Functor renaming (id to idF)
@@ -115,3 +119,68 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ �
     }
 
   module C≅D = ⊣Equivalence C≅D
+
+module _ {F : Functor C D} {G : Functor D C} (F⊣G : F ⊣ G) where
+  private
+    module C = Category C
+    module D = Category D
+    module F = Functor F
+    module G = Functor G
+
+  open Adjoint F⊣G
+
+  -- If the unit and the counit of an adjuction are pointwise isomorphisms, then they form an equivalence of categories.
+  pointwise-iso-equivalence : (∀ X → Σ[ f ∈ C [  G.F₀ (F.F₀ X) , X ] ] Iso C (unit.η X) f) → (∀ X → Σ[ f ∈ D [ X , F.F₀ (G.F₀ X) ] ] Iso D (counit.η X) f) → WeakInverse F G
+  pointwise-iso-equivalence unit-iso counit-iso = record
+    { F∘G≈id = record
+      { F⇒G = counit
+      ; F⇐G = ntHelper record
+        { η = λ X → proj₁ (counit-iso X)
+        ; commute = λ {X} {Y} f →
+          let open D
+              open HomReasoning
+              open Equiv
+              open MR D
+              (toˣ , isoˣ) = counit-iso X
+              (toʸ , isoʸ) = counit-iso Y
+          in begin
+            toʸ ∘ f                                    ≈⟨ introʳ (isoʳ isoˣ) ⟩
+            (toʸ ∘ f) ∘ (counit.η X ∘ toˣ)             ≈⟨ extend² (counit.sym-commute f) ⟩
+            (toʸ ∘ counit.η Y) ∘ (F.F₁ (G.F₁ f) ∘ toˣ) ≈⟨ elimˡ (isoˡ isoʸ) ⟩
+            F.F₁ (G.F₁ f) ∘ toˣ                        ∎
+        }
+      ; iso = λ X →
+        let (_ , isoˣ) = counit-iso X
+        in record
+          { isoˡ = isoˡ isoˣ
+          ; isoʳ = isoʳ isoˣ
+          }
+      }
+    ; G∘F≈id = record
+      { F⇒G = ntHelper record
+        { η = λ X → proj₁ (unit-iso X)
+        ; commute = λ {X} {Y} f →
+          let open C
+              open HomReasoning
+              open Equiv
+              open MR C
+              (toˣ , isoˣ) = unit-iso X
+              (toʸ , isoʸ) = unit-iso Y
+          in begin
+            toʸ ∘ G.F₁ (F.F₁ f)                   ≈⟨ introʳ (isoʳ isoˣ) ⟩
+            (toʸ ∘ G.F₁ (F.₁ f)) ∘ unit.η X ∘ toˣ ≈⟨ extend² (unit.sym-commute f)  ⟩
+            (toʸ ∘ unit.η Y) ∘ f ∘ toˣ            ≈⟨ elimˡ (isoˡ isoʸ) ⟩
+            f ∘ toˣ                               ∎
+        }
+      ; F⇐G = unit
+      ; iso = λ X →
+        let (_ , isoˣ) = unit-iso X
+        in record
+          { isoˡ = isoʳ isoˣ
+          ; isoʳ = isoˡ isoˣ
+          }
+      }
+    }
+    where
+      open Iso
+
