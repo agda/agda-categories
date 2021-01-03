@@ -21,6 +21,7 @@ open import Categories.Functor.Properties using ([_]-resp-Iso)
 open import Categories.NaturalTransformation using (ntHelper; _∘ᵥ_; _∘ˡ_; _∘ʳ_)
 open import Categories.NaturalTransformation.NaturalIsomorphism as ≃
   using (NaturalIsomorphism ; unitorˡ; unitorʳ; associator; _ⓘᵥ_; _ⓘˡ_; _ⓘʳ_)
+open import Categories.NaturalTransformation.NaturalIsomorphism.Properties using (pointwise-iso)
 
 private
   variable
@@ -130,57 +131,16 @@ module _ {F : Functor C D} {G : Functor D C} (F⊣G : F ⊣ G) where
   open Adjoint F⊣G
 
   -- If the unit and the counit of an adjuction are pointwise isomorphisms, then they form an equivalence of categories.
-  pointwise-iso-equivalence : (∀ X → Σ[ f ∈ C [  G.F₀ (F.F₀ X) , X ] ] Iso C (unit.η X) f) → (∀ X → Σ[ f ∈ D [ X , F.F₀ (G.F₀ X) ] ] Iso D (counit.η X) f) → WeakInverse F G
-  pointwise-iso-equivalence unit-iso counit-iso = record
-    { F∘G≈id = record
-      { F⇒G = counit
-      ; F⇐G = ntHelper record
-        { η = λ X → proj₁ (counit-iso X)
-        ; commute = λ {X} {Y} f →
-          let open D
-              open HomReasoning
-              open Equiv
-              open MR D
-              (toˣ , isoˣ) = counit-iso X
-              (toʸ , isoʸ) = counit-iso Y
-          in begin
-            toʸ ∘ f                                    ≈⟨ introʳ (isoʳ isoˣ) ⟩
-            (toʸ ∘ f) ∘ (counit.η X ∘ toˣ)             ≈⟨ extend² (counit.sym-commute f) ⟩
-            (toʸ ∘ counit.η Y) ∘ (F.F₁ (G.F₁ f) ∘ toˣ) ≈⟨ elimˡ (isoˡ isoʸ) ⟩
-            F.F₁ (G.F₁ f) ∘ toˣ                        ∎
-        }
-      ; iso = λ X →
-        let (_ , isoˣ) = counit-iso X
-        in record
-          { isoˡ = isoˡ isoˣ
-          ; isoʳ = isoʳ isoˣ
-          }
-      }
-    ; G∘F≈id = record
-      { F⇒G = ntHelper record
-        { η = λ X → proj₁ (unit-iso X)
-        ; commute = λ {X} {Y} f →
-          let open C
-              open HomReasoning
-              open Equiv
-              open MR C
-              (toˣ , isoˣ) = unit-iso X
-              (toʸ , isoʸ) = unit-iso Y
-          in begin
-            toʸ ∘ G.F₁ (F.F₁ f)                   ≈⟨ introʳ (isoʳ isoˣ) ⟩
-            (toʸ ∘ G.F₁ (F.₁ f)) ∘ unit.η X ∘ toˣ ≈⟨ extend² (unit.sym-commute f)  ⟩
-            (toʸ ∘ unit.η Y) ∘ f ∘ toˣ            ≈⟨ elimˡ (isoˡ isoʸ) ⟩
-            f ∘ toˣ                               ∎
-        }
-      ; F⇐G = unit
-      ; iso = λ X →
-        let (_ , isoˣ) = unit-iso X
-        in record
-          { isoˡ = isoʳ isoˣ
-          ; isoʳ = isoˡ isoˣ
-          }
-      }
+  pointwise-iso-equivalence : (∀ X → Σ[ f ∈ D [ X , F.F₀ (G.F₀ X) ] ] Iso D (counit.η X) f) → (∀ X → Σ[ f ∈ C [  G.F₀ (F.F₀ X) , X ] ] Iso C (unit.η X) f) → WeakInverse F G
+  pointwise-iso-equivalence counit-iso unit-iso = record
+    { F∘G≈id =
+      let iso X =
+            let (to , is-iso) = counit-iso X
+            in record { from = counit.η X ; to = to ; iso = is-iso }
+      in pointwise-iso iso counit.commute
+    ; G∘F≈id =
+      let iso X =
+            let (to , is-iso) = unit-iso X
+            in record { from = unit.η X ; to = to ; iso = is-iso }
+      in ≃.sym (pointwise-iso iso unit.commute)
     }
-    where
-      open Iso
-
