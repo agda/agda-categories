@@ -46,7 +46,7 @@ private
   module Comparison = Functor Comparison
 
 
--- If we have a coequalizer of the following diagram, then the comparison functor has a left adjoint.
+-- If we have a coequalizer of the following diagram for every T-algabra, then the comparison functor has a left adjoint.
 module _ (has-coequalizer : (M : Module T) → Coequalizer 𝒟 (L.F₁ (Module.action M)) (adjoint.counit.η (L.₀ (Module.A M)))) where
 
   open Coequalizer
@@ -86,16 +86,16 @@ module _ (has-coequalizer : (M : Module T) → Coequalizer 𝒟 (L.F₁ (Module.
     { η = λ M → record
       { arr = 𝒞 [ R.F₁ (arr (has-coequalizer M)) ∘ adjoint.unit.η (Module.A M) ]
       ; commute = begin
-        𝒞 [ 𝒞 [ R.F₁ (arr (has-coequalizer M)) ∘ adjoint.unit.η (Module.A M) ] ∘ Module.action M ]                                          ≈⟨ pullʳ (adjoint.unit.commute (Module.action M)) ⟩
+        𝒞 [ 𝒞 [ R.F₁ (arr (has-coequalizer M)) ∘ adjoint.unit.η (Module.A M) ] ∘ Module.action M ]                                                      ≈⟨ pullʳ (adjoint.unit.commute (Module.action M)) ⟩
         -- It would be nice to have a reasoning combinator doing this "⟺ homomorphism ... homomorphism" pattern
-        𝒞 [ R.F₁ (arr (has-coequalizer M)) ∘ 𝒞 [ R.F₁ (L.F₁ (Module.action M)) ∘ adjoint.unit.η (R.F₀ (L.F₀ (Module.A M))) ] ]              ≈⟨ pullˡ (⟺ R.homomorphism) ⟩
-        𝒞 [ R.F₁ (𝒟 [ arr (has-coequalizer M) ∘ L.F₁ (Module.action M) ]) ∘ adjoint.unit.η (R.F₀ (L.F₀ (Module.A M))) ]                     ≈⟨ (R.F-resp-≈ (equality (has-coequalizer M)) ⟩∘⟨refl) ⟩
-        𝒞 [ R.F₁ (𝒟 [ arr (has-coequalizer M) ∘ adjoint.counit.η (L.F₀ (Module.A M)) ]) ∘ adjoint.unit.η (R.F₀ (L.F₀ (Module.A M))) ]       ≈⟨ (R.homomorphism ⟩∘⟨refl) ⟩
-        𝒞 [ 𝒞 [ R.F₁ (arr (has-coequalizer M)) ∘ R.F₁ (adjoint.counit.η (L.F₀ (Module.A M))) ] ∘ adjoint.unit.η (R.F₀ (L.F₀ (Module.A M))) ] ≈⟨ cancelʳ adjoint.zag ⟩
+        𝒞 [ R.F₁ (arr (has-coequalizer M)) ∘ 𝒞 [ R.F₁ (L.F₁ (Module.action M)) ∘ adjoint.unit.η (R.F₀ (L.F₀ (Module.A M))) ] ]                          ≈⟨ pullˡ (⟺ R.homomorphism) ⟩
+        𝒞 [ R.F₁ (𝒟 [ arr (has-coequalizer M) ∘ L.F₁ (Module.action M) ]) ∘ adjoint.unit.η (R.F₀ (L.F₀ (Module.A M))) ]                                 ≈⟨ (R.F-resp-≈ (equality (has-coequalizer M)) ⟩∘⟨refl) ⟩
+        𝒞 [ R.F₁ (𝒟 [ arr (has-coequalizer M) ∘ adjoint.counit.η (L.F₀ (Module.A M)) ]) ∘ adjoint.unit.η (R.F₀ (L.F₀ (Module.A M))) ]                   ≈⟨ (R.homomorphism ⟩∘⟨refl) ⟩
+        𝒞 [ 𝒞 [ R.F₁ (arr (has-coequalizer M)) ∘ R.F₁ (adjoint.counit.η (L.F₀ (Module.A M))) ] ∘ adjoint.unit.η (R.F₀ (L.F₀ (Module.A M))) ]            ≈⟨ cancelʳ adjoint.zag ⟩
         -- FIXME Use something like cancel here
-        R.F₁ (arr (has-coequalizer M))                                                                                                        ≈˘⟨ R.F-resp-≈ (𝒟.identityʳ) ⟩
-        R.F₁ (𝒟 [ arr (has-coequalizer M) ∘ 𝒟.id ])                                                                                          ≈˘⟨ R.F-resp-≈ (𝒟.∘-resp-≈ʳ adjoint.zig) ⟩
-        R.F₁ (𝒟 [ arr (has-coequalizer M) ∘ 𝒟 [ adjoint.counit.η (L.F₀ (Module.A M)) ∘ L.F₁ (adjoint.unit.η (Module.A M)) ] ])               ≈⟨ R.F-resp-≈ (MR.extendʳ 𝒟 (adjoint.counit.sym-commute (arr (has-coequalizer M)))) ⟩
+        R.F₁ (arr (has-coequalizer M))                                                                                                                  ≈˘⟨ R.F-resp-≈ (𝒟.identityʳ) ⟩
+        R.F₁ (𝒟 [ arr (has-coequalizer M) ∘ 𝒟.id ])                                                                                                     ≈˘⟨ R.F-resp-≈ (𝒟.∘-resp-≈ʳ adjoint.zig) ⟩
+        R.F₁ (𝒟 [ arr (has-coequalizer M) ∘ 𝒟 [ adjoint.counit.η (L.F₀ (Module.A M)) ∘ L.F₁ (adjoint.unit.η (Module.A M)) ] ])                          ≈⟨ R.F-resp-≈ (MR.extendʳ 𝒟 (adjoint.counit.sym-commute (arr (has-coequalizer M)))) ⟩
         R.F₁ (𝒟 [ adjoint.counit.η (obj (has-coequalizer M)) ∘ 𝒟 [ L.F₁ (R.F₁ (arr (has-coequalizer M))) ∘ L.F₁ (adjoint.unit.η (Module.A M)) ] ])      ≈˘⟨ R.F-resp-≈ (𝒟.∘-resp-≈ʳ L.homomorphism) ⟩
         R.F₁ (𝒟 [ adjoint.counit.η (obj (has-coequalizer M)) ∘ L.F₁ (𝒞 [ R.F₁ (arr (has-coequalizer M)) ∘ adjoint.unit.η (Module.A M)])])               ≈⟨ R.homomorphism ⟩
         𝒞 [ R.F₁ (adjoint.counit.η (obj (has-coequalizer M))) ∘ R.F₁ (L.F₁ (𝒞 [ R.F₁ (arr (has-coequalizer M)) ∘ adjoint.unit.η (Module.A M)])) ]       ∎
