@@ -4,6 +4,7 @@ module Categories.Category.Inverse where
 open import Level using (Level; suc; _⊔_)
 
 open import Categories.Category
+open import Data.Product
 import Categories.Morphism
 
 record Inverse {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
@@ -14,6 +15,5 @@ record Inverse {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   infix 10 _⁻¹
 
   field
-    _⁻¹ : ∀ {A B} → A ⇒ B → B ⇒ A
-    pseudo-iso₁ : ∀ {A B} {f : A ⇒ B} →  f ∘ f ⁻¹ ∘ f ≈ f
-    pseudo-iso₂ : ∀ {A B} {f : A ⇒ B} →  f ⁻¹ ∘ f ∘ f ⁻¹ ≈ f ⁻¹
+    _⁻¹ : ∀ {A B} → (f : A ⇒ B)
+        → ∃! _≈_ (λ f⁻¹ → (f ∘ f⁻¹ ∘ f ≈ f) × (f⁻¹ ∘ f ∘ f⁻¹ ≈ f⁻¹))
