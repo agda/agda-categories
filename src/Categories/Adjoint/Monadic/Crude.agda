@@ -16,6 +16,8 @@ open import Data.Product using (Σ-syntax; _,_)
 open import Categories.Adjoint.Properties
 open import Categories.Adjoint.Monadic
 open import Categories.Adjoint.Monadic.Properties
+open import Categories.Category.Equivalence using (StrongEquivalence)
+open import Categories.Category.Equivalence.Properties using (pointwise-iso-equivalence)
 open import Categories.Functor.Properties
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
 open import Categories.NaturalTransformation
@@ -159,3 +161,14 @@ module _ (has-reflexive-coequalizers : ∀ {A B} {f g : 𝒟 [ A , B ]} → Refl
         open 𝒞.HomReasoning
         open 𝒞.Equiv
     in conservative (Iso-resp-≈ 𝒞 coequalizer-iso.iso (⟺ (preserves-coequalizer-unique {R} preserves-reflexive-coeq (reflexive-pair (Comparison.F₀ X)) coequalizerᴷˣ)) refl)
+
+  -- Now, for the final result. Both the unit and counit of the adjunction between the comparison functor and it's inverse are isomorphisms,
+  -- so therefore they form natural isomorphism. Therfore, we have an equivalence of categories.
+  crude-monadicity : PreservesReflexiveCoequalizers R → Conservative R → StrongEquivalence 𝒞ᵀ 𝒟
+  crude-monadicity preserves-reflexlive-coeq conservative = record
+    { F = Comparison⁻¹ adjoint has-coequalizer
+    ; G = Comparison
+    ; weak-inverse = pointwise-iso-equivalence (Comparison⁻¹⊣Comparison adjoint has-coequalizer)
+                                               (counit-iso preserves-reflexlive-coeq conservative)
+                                               (unit-iso preserves-reflexlive-coeq)
+    }
