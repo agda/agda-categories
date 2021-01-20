@@ -102,9 +102,9 @@ module _ (has-coequalizer : (M : Module T) → Coequalizer 𝒟 (L.F₁ (Module.
         𝒞 [ R.F₁ (adjoint.counit.η (obj (has-coequalizer M))) ∘ R.F₁ (L.F₁ (𝒞 [ R.F₁ (arr (has-coequalizer M)) ∘ adjoint.unit.η (Module.A M)])) ]       ∎
       }
     ; commute = λ {M} {N} f → begin
-      𝒞 [ 𝒞 [ R.F₁ (arr (has-coequalizer N)) ∘ adjoint.unit.η (Module.A N) ] ∘ Module⇒.arr f ]               ≈⟨ extendˡ (adjoint.unit.commute (Module⇒.arr f)) ⟩
-      𝒞 [ 𝒞 [ R.F₁ (arr (has-coequalizer N)) ∘ R.F₁ (L.F₁ (Module⇒.arr f)) ] ∘ adjoint.unit.η (Module.A M) ] ≈˘⟨ R.homomorphism ⟩∘⟨refl ⟩
-      𝒞 [ R.F₁ (𝒟 [ arr (has-coequalizer N) ∘ L.F₁ (Module⇒.arr f) ]) ∘ adjoint.unit.η (Module.A M) ]        ≈⟨ R.F-resp-≈ (universal (has-coequalizer M)) ⟩∘⟨refl ⟩
+      𝒞 [ 𝒞 [ R.F₁ (arr (has-coequalizer N)) ∘ adjoint.unit.η (Module.A N) ] ∘ Module⇒.arr f ]                           ≈⟨ extendˡ (adjoint.unit.commute (Module⇒.arr f)) ⟩
+      𝒞 [ 𝒞 [ R.F₁ (arr (has-coequalizer N)) ∘ R.F₁ (L.F₁ (Module⇒.arr f)) ] ∘ adjoint.unit.η (Module.A M) ]             ≈˘⟨ R.homomorphism ⟩∘⟨refl ⟩
+      𝒞 [ R.F₁ (𝒟 [ arr (has-coequalizer N) ∘ L.F₁ (Module⇒.arr f) ]) ∘ adjoint.unit.η (Module.A M) ]                    ≈⟨ R.F-resp-≈ (universal (has-coequalizer M)) ⟩∘⟨refl ⟩
       𝒞 [ R.F₁ (𝒟 [ (coequalize (has-coequalizer M) _) ∘ (arr (has-coequalizer M)) ]) ∘ adjoint.unit.η (Module.A M) ]    ≈⟨ pushˡ R.homomorphism ⟩
       𝒞 [ R.F₁ (coequalize (has-coequalizer M) _) ∘ 𝒞 [ R.F₁ (arr (has-coequalizer M)) ∘ adjoint.unit.η (Module.A M) ] ] ∎
     }
@@ -114,25 +114,25 @@ module _ (has-coequalizer : (M : Module T) → Coequalizer 𝒟 (L.F₁ (Module.
   Adjoint.counit Comparison⁻¹⊣Comparison = ntHelper record
     { η = λ X → coequalize (has-coequalizer (Comparison.F₀ X)) (adjoint.counit.commute (adjoint.counit.η X))
     ; commute = λ {X} {Y} f → begin
-      𝒟 [ coequalize (has-coequalizer (Comparison.F₀ Y)) _ ∘ coequalize (has-coequalizer (Comparison.F₀ X)) _ ]        ≈⟨ unique (has-coequalizer (Comparison.F₀ X)) (adjoint.counit.sym-commute f ○ pushˡ (universal (has-coequalizer (Comparison.F₀ Y))) ○ pushʳ (universal (has-coequalizer (Comparison.F₀ X)))) ⟩
-      coequalize (has-coequalizer (Comparison.F₀ X)) (extendˡ (adjoint.counit.commute (adjoint.counit.η X))) ≈˘⟨ unique (has-coequalizer (Comparison.F₀ X)) (pushʳ (universal (has-coequalizer (Comparison.F₀ X)))) ⟩
-      𝒟 [ f ∘ coequalize (has-coequalizer (Comparison.F₀ X)) _ ]                                            ∎
+      𝒟 [ coequalize (has-coequalizer (Comparison.F₀ Y)) _ ∘ coequalize (has-coequalizer (Comparison.F₀ X)) _ ]  ≈⟨ unique (has-coequalizer (Comparison.F₀ X)) (adjoint.counit.sym-commute f ○ pushˡ (universal (has-coequalizer (Comparison.F₀ Y))) ○ pushʳ (universal (has-coequalizer (Comparison.F₀ X)))) ⟩
+      coequalize (has-coequalizer (Comparison.F₀ X)) (extendˡ (adjoint.counit.commute (adjoint.counit.η X)))     ≈˘⟨ unique (has-coequalizer (Comparison.F₀ X)) (pushʳ (universal (has-coequalizer (Comparison.F₀ X)))) ⟩
+      𝒟 [ f ∘ coequalize (has-coequalizer (Comparison.F₀ X)) _ ]                                                 ∎
     }
     where
       open 𝒟.HomReasoning
       open MR 𝒟
   Adjoint.zig Comparison⁻¹⊣Comparison {X} = begin
     𝒟 [ coequalize (has-coequalizer (Comparison.F₀ (Comparison⁻¹.F₀ X))) _ ∘ coequalize (has-coequalizer X) _ ] ≈⟨ unique (has-coequalizer X) (⟺ adjoint.RLadjunct≈id ○ pushˡ (universal (has-coequalizer (Comparison.F₀ (Comparison⁻¹.F₀ X)))) ○ pushʳ (universal (has-coequalizer X))) ⟩
-    coequalize (has-coequalizer X) {h = arr (has-coequalizer X)} (equality (has-coequalizer X))                             ≈˘⟨ unique (has-coequalizer X) (⟺ 𝒟.identityˡ) ⟩
-    𝒟.id                                                                                  ∎
+    coequalize (has-coequalizer X) {h = arr (has-coequalizer X)} (equality (has-coequalizer X))                 ≈˘⟨ unique (has-coequalizer X) (⟺ 𝒟.identityˡ) ⟩
+    𝒟.id                                                                                                        ∎
     where
       open 𝒟.HomReasoning
       open MR 𝒟
   Adjoint.zag Comparison⁻¹⊣Comparison {A} = begin
     𝒞 [ R.F₁ (coequalize (has-coequalizer (Comparison.F₀ A)) _) ∘  𝒞 [ R.F₁ (arr (has-coequalizer (Comparison.F₀ A))) ∘ adjoint.unit.η (Module.A (Comparison.F₀ A)) ] ] ≈⟨ pullˡ (⟺ R.homomorphism) ⟩
     𝒞 [ R.F₁ (𝒟 [ coequalize (has-coequalizer (Comparison.F₀ A)) _ ∘ arr (has-coequalizer (Comparison.F₀ A)) ]) ∘ adjoint.unit.η (Module.A (Comparison.F₀ A)) ]         ≈˘⟨ R.F-resp-≈ (universal (has-coequalizer (Comparison.F₀ A))) ⟩∘⟨refl ⟩
-    𝒞 [ R.F₁ (adjoint.counit.η A) ∘ adjoint.unit.η (R.F₀ A) ]                                                                                      ≈⟨ adjoint.zag ⟩
-    𝒞.id                                                                                                                                           ∎
+    𝒞 [ R.F₁ (adjoint.counit.η A) ∘ adjoint.unit.η (R.F₀ A) ]                                                                                                           ≈⟨ adjoint.zag ⟩
+    𝒞.id                                                                                                                                                                ∎
     where
       open 𝒞.HomReasoning
       open MR 𝒞
