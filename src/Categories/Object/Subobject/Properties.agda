@@ -10,7 +10,6 @@ open import Function using (_$_)
 
 open import Relation.Binary using (_=[_]⇒_)
 open import Relation.Binary.Bundles
-open import Relation.Binary.OrderMorphism
 
 open import Categories.Category
 open import Categories.Functor
@@ -44,7 +43,10 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
     { F₀ = Subobjects 𝒞
     ; F₁ = λ f → record
       { fun = morphism f
-      ; monotone = λ {(α , m) (β , n)} h → monotone f {(α , m)} {β , n} h
+      ; isOrderHomomorphism = record
+        { cong = {!!}
+        ; mono = λ {(α , m) (β , n)} h → monotone f {α , m} {β , n} h
+        } 
       }
     ; identity = λ {A} {(α , m)} →
       let pid = has-pullbacks 𝒞.id (mor m)

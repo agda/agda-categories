@@ -9,15 +9,14 @@ module Categories.Functor.Instance.01-Truncation where
 
 open import Level using (_⊔_)
 open import Function using (flip)
-open import Data.Product as Prod using (_,_; _×_)
-open import Relation.Binary.OrderMorphism using (_⇒-Poset_)
+open import Data.Product as Prod using (_,_; _×_; map)
 open import Relation.Binary using (Poset)
 
 open import Categories.Category using (Category; _[_≈_])
 open import Categories.Functor hiding (id)
 open import Categories.Category using (Category)
 open import Categories.Category.Instance.Cats using (Cats)
-open import Categories.Category.Instance.Posets using (Posets)
+open import Categories.Category.Instance.Posets using (Posets; _⇒-Poset_)
 import Categories.Morphism as Morphism
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (NaturalIsomorphism; _≃_)
@@ -64,7 +63,13 @@ Trunc {o} {ℓ} {e} = record
        where open Category C
 
      Trunc₁ : ∀ {C D} → Functor C D → Trunc₀ C ⇒-Poset Trunc₀ D
-     Trunc₁ F = record { fun = F₀ F ; monotone = F₁ F }
+     Trunc₁ F = record
+       { fun = F₀ F
+       ; isOrderHomomorphism = record
+         { cong = map (F₁ F) (F₁ F)
+         ; mono = F₁ F
+         }
+       }
 
      TruncRespNI : ∀ {C D : Category o ℓ e} {F G : Functor C D} →
                    F ≃ G → Posets o ℓ ℓ [ Trunc₁ F ≈ Trunc₁ G ]
