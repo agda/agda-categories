@@ -290,6 +290,7 @@ import Categories.Morphism.HeterogeneousIdentity
 import Categories.Morphism.HeterogeneousIdentity.Properties
 import Categories.Morphism.IsoEquiv
 import Categories.Morphism.Isomorphism
+import Categories.Morphism.Normal
 import Categories.Morphism.Notation
 import Categories.Morphism.Properties
 import Categories.Morphism.Reasoning
@@ -314,6 +315,8 @@ import Categories.Object.Coproduct
 import Categories.Object.Duality
 import Categories.Object.Exponential
 import Categories.Object.Initial
+import Categories.Object.Kernel
+import Categories.Object.Kernel.Properties
 import Categories.Object.Monoid
 import Categories.Object.NaturalNumber
 import Categories.Object.NaturalNumber.Properties.F-Algebras

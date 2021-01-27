@@ -2,7 +2,7 @@
 module Categories.Category.Instance.Rels where
 
 open import Data.Product
-open import Function
+open import Function hiding (_⇔_)
 open import Level
 open import Relation.Binary
 open import Relation.Binary.Construct.Composition
@@ -15,26 +15,22 @@ Rels : ∀ o ℓ → Category (suc o) (suc (o ⊔ ℓ)) (o ⊔ ℓ)
 Rels o ℓ = record
   { Obj = Set o
   ; _⇒_ = λ A B → REL A B (o ⊔ ℓ)
-  ; _≈_ = λ _L_ _R_ → ∀ x y → (x L y → x R y) × (x R y → x L y)
+  ; _≈_ = λ L R → L ⇔ R
   ; id = λ x y → Lift ℓ (x ≡ y)
   ; _∘_ = λ L R → R ; L
-  ; assoc = λ x y →
-    (λ { (b , fxb , c , gbc , hcy) → c , (b , fxb , gbc) , hcy }) ,
-    (λ { (c , (b , fxb , gbc) , hcy) → b , fxb , c , gbc , hcy })
-  ; sym-assoc = λ x y →
-    (λ { (c , (b , fxb , gbc) , hcy) → b , fxb , c , gbc , hcy }) ,
-    (λ { (b , fxb , c , gbc , hcy) → c , (b , fxb , gbc) , hcy })
-  ; identityˡ = λ x y → (λ { (.y , fxy , lift refl) → fxy }) , λ fxy → y , fxy , lift refl
-  ; identityʳ = λ x y → (λ { (.x , lift refl , fxy) → fxy }) , λ fxy → x , lift refl , fxy
-  ; identity² = λ x y →
-    (λ { (_ , lift refl , lift refl) → lift refl }) ,
-    (λ { (lift refl) → _ , lift refl , lift refl })
+  ; assoc = (λ { (b , fxb , c , gbc , hcy) → c , ((b , (fxb , gbc)) , hcy)})
+           , λ { (c , (b , fxb , gbc) , hcy) → b , fxb , c , gbc , hcy}
+  ; sym-assoc = (λ { (c , (b , fxb , gbc) , hcy) → b , fxb , c , gbc , hcy})
+              , (λ { (b , fxb , c , gbc , hcy) → c , ((b , (fxb , gbc)) , hcy)})
+  ; identityˡ = (λ { (b , fxb , lift refl) → fxb}) , λ {_} {y} fxy → y , fxy , lift refl
+  ; identityʳ = (λ { (a , lift refl , fxy) → fxy}) , λ {x} {_} fxy → x , lift refl , fxy
+  ; identity² = (λ { (_ , lift p , lift q) → lift (trans p q)}) , λ { (lift refl) → _ , lift refl , lift refl }
   ; equiv = record
-    { refl = λ _ _ → id , id
-    ; sym = λ p x y → swap (p x y)
-    ; trans = λ p q x y → zip (flip _∘′_) _∘′_ (p x y) (q x y)
+    { refl = id , id
+    ; sym = swap
+    ; trans = λ { (p₁ , p₂) (q₁ , q₂) → (q₁ ∘′ p₁) , p₂ ∘′ q₂}
     }
-  ; ∘-resp-≈ = λ p q x y →
-    (λ { (b , gxb , fby) → b , proj₁ (q x b) gxb , proj₁ (p b y) fby }) ,
-    (λ { (b , ixb , hby) → b , proj₂ (q x b) ixb , proj₂ (p b y) hby })
+  ; ∘-resp-≈ = λ f⇔h g⇔i →
+    (λ { (b , gxb , fky) → b , proj₁ g⇔i gxb , proj₁ f⇔h fky }) ,
+     λ { (b , ixb , hby) → b , proj₂ g⇔i ixb , proj₂ f⇔h hby }
   }
