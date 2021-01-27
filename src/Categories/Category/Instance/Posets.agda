@@ -37,14 +37,23 @@ open _⇒-Poset_
   { isOrderHomomorphism = Comp.isOrderHomomorphism (isOrderHomomorphism A⇒B) (isOrderHomomorphism B⇒C)
   }
 
-module _ {a₁ a₂ a₃ b₁ b₂ b₃} {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃} where
+module _ {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃} where
 
   infix 4 _≗_
 
   -- Order morphisms preserve equality.
-  fun-resp-≈ : (f : A ⇒-Poset B) → fun f Preserves ₍ A ₎_≈_ ⟶ ₍ B ₎_≈_
-  fun-resp-≈ f x≈y = antisym B (monotone f (reflexive A x≈y))
-                               (monotone f (reflexive A (Eq.sym A x≈y)))
+  mono⇒cong : ∀ {f} → f Preserves ₍ A ₎_≤_ ⟶ ₍ B ₎_≤_ → f Preserves ₍ A ₎_≈_ ⟶ ₍ B ₎_≈_
+  mono⇒cong {f} monotone x≈y = antisym B
+    (monotone (reflexive A x≈y))
+    (monotone (reflexive A (Eq.sym A x≈y)))
+                               
+  ⇒-Poset-helper : ∀ f → f Preserves ₍ A ₎_≤_ ⟶ ₍ B ₎_≤_ → A ⇒-Poset B
+  ⇒-Poset-helper f mono = record
+    { isOrderHomomorphism = record
+      { cong = mono⇒cong mono
+      ; mono = mono
+      }
+    }
 
   -- Pointwise equality (on order preserving maps).
 
@@ -75,5 +84,5 @@ Posets c ℓ₁ ℓ₂ = record
   ; identityʳ = λ {_ B} → Eq.refl B
   ; identity² = λ {A} → Eq.refl A
   ; equiv     = ≗-isEquivalence
-  ; ∘-resp-≈  = λ {_ _ C _ h} f≈h g≈i → Eq.trans C f≈h (fun-resp-≈ h g≈i)
+  ; ∘-resp-≈  = λ {_ _ C _ h} f≈h g≈i → Eq.trans C f≈h (cong h g≈i)
   }

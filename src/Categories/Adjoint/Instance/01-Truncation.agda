@@ -5,7 +5,7 @@ module Categories.Adjoint.Instance.01-Truncation where
 -- The adjunction between (0,1)-truncation and the inclusion functor
 -- from Posets to Categories.
 
-open import Data.Product using (_,_; uncurry′)
+open import Data.Product using (_,_)
 import Function
 open import Relation.Binary using (Poset)
 
@@ -13,7 +13,7 @@ open import Categories.Adjoint using (_⊣_)
 open import Categories.Category.Construction.Thin using (Thin)
 open import Categories.Category using (Category)
 open import Categories.Category.Instance.Cats using (Cats)
-open import Categories.Category.Instance.Posets using (Posets; _⇒-Poset_)
+open import Categories.Category.Instance.Posets using (Posets; _⇒-Poset_; ⇒-Poset-helper)
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Instance.01-Truncation using (Trunc)
 open import Categories.NaturalTransformation
@@ -59,12 +59,6 @@ TruncAdj {o} {ℓ} {e} = record
 
     counit : NaturalTransformation (Trunc ∘F Inclusion e) idF
     counit = ntHelper record
-      { η       = λ X → record
-        { fun = Function.id
-        ; isOrderHomomorphism = record
-          { cong = uncurry′ (Poset.antisym X)
-          ; mono = Function.id
-          }
-        }
+      { η       = λ X → ⇒-Poset-helper Function.id Function.id
       ; commute = λ {_ D} _ → Poset.Eq.refl D
       }
