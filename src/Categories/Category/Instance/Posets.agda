@@ -16,6 +16,7 @@ open Poset renaming (_≈_ to ₍_₎_≈_; _≤_ to ₍_₎_≤_)
 private
   variable
     a₁ a₂ a₃ b₁ b₂ b₃ : Level
+    A B C : Poset a₁ a₂ a₃
 
 record _⇒-Poset_ (A : Poset a₁ a₂ a₃) (B : Poset b₁ b₂ b₃) : Set (a₁ ⊔ a₂ ⊔ a₃ ⊔ b₁ ⊔ b₂ ⊔ b₃)  where
   field
@@ -27,12 +28,12 @@ record _⇒-Poset_ (A : Poset a₁ a₂ a₃) (B : Poset b₁ b₂ b₃) : Set (
 
 open _⇒-Poset_
 
-⇒-Poset-id : ∀ {A : Poset a₁ a₂ a₃} → A ⇒-Poset A
+⇒-Poset-id : A ⇒-Poset A
 ⇒-Poset-id = record
   { isOrderHomomorphism = Id.isOrderHomomorphism _ _
   }
 
-⇒-Poset-∘ : ∀ {A B C : Poset a₁ a₂ a₃} → B ⇒-Poset C → A ⇒-Poset B → A ⇒-Poset C
+⇒-Poset-∘ : B ⇒-Poset C → A ⇒-Poset B → A ⇒-Poset C
 ⇒-Poset-∘ B⇒C A⇒B = record
   { isOrderHomomorphism = Comp.isOrderHomomorphism (isOrderHomomorphism A⇒B) (isOrderHomomorphism B⇒C)
   }

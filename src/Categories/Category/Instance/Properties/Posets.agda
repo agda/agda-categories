@@ -2,32 +2,37 @@
 
 module Categories.Category.Instance.Properties.Posets where
 
-open import Level using (_⊔_; Lift; lift)
+open import Level using (Level; _⊔_; Lift; lift)
 open import Data.Unit using (⊤; tt)
 open import Data.Product as Prod using (_,_; <_,_>) renaming (_×_ to _|×|_)
 open import Function using (flip)
 open import Relation.Binary using (IsPartialOrder; Poset)
-open import Relation.Binary.OrderMorphism
-  using (id; _∘_) renaming (_⇒-Poset_ to _⇒_)
 open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 open import Categories.Category
 import Categories.Category.CartesianClosed as CCC
 import Categories.Category.CartesianClosed.Canonical as Canonical
 open import Categories.Category.Instance.Posets
+  renaming (_⇒-Poset_ to _⇒_; ⇒-Poset-∘ to _∘_; ⇒-Poset-id to id)
 open import Categories.Functor using (Functor; Endofunctor)
 open import Categories.Utils.Product
 
 open Poset renaming (_≈_ to ₍_₎_≈_; _≤_ to ₍_₎_≤_)
 open _⇒_
 
+private
+  variable
+    a₁ a₂ a₃ : Level
+    b₁ b₂ b₃ : Level
+    c₁ c₂ c₃ : Level
+    d₁ d₂ d₃ : Level
+
 -- The pointwise partial order on order preserving maps.
 --
 -- (See the Exponential module below for the definition of the
 -- exponential/hom object based on this order.)
 
-module Pointwise {a₁ a₂ a₃ b₁ b₂ b₃} {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃}
-  where
+module Pointwise {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃} where
 
   infix 4 _≤°_
 
@@ -56,7 +61,7 @@ module Opposite where
   -- NOTE: we flip the direction of the underlying equality _≈_ as
   -- well, so that |op (op A) ≡ A| definitionally.
 
-  op : ∀ {a₁ a₂ a₃} → Poset a₁ a₂ a₃ → Poset a₁ a₂ a₃
+  op : Poset a₁ a₂ a₃ → Poset a₁ a₂ a₃
   op A = record
     { Carrier           = Carrier A
     ; _≈_               = flip ₍ A ₎_≈_
@@ -75,22 +80,22 @@ module Opposite where
       }
     }
 
-  module _ {a₁ a₂ a₃} {A : Poset a₁ a₂ a₃} where
+  module _ {A : Poset a₁ a₂ a₃} where
 
     op-involutive : op (op A) ≡ A
     op-involutive = ≡.refl
 
-    module _ {b₁ b₂ b₃} {B : Poset b₁ b₂ b₃} where
+    module _ {B : Poset b₁ b₂ b₃} where
 
       op₁ : A ⇒ B → op A ⇒ op B
-      op₁ f = record { fun = fun f ; monotone = monotone f }
+      op₁ f = ⇒-Poset-helper (fun f) (monotone f)
 
       op₂ : {f g : A ⇒ B} → f ≤° g → op₁ g ≤° op₁ f
       op₂ f≤g = f≤g
 
   -- op induces an endofunctor on Posets
 
-  op-functor : ∀ {a₁ a₂ a₃} → Endofunctor (Posets a₁ a₂ a₃)
+  op-functor : Endofunctor (Posets a₁ a₂ a₃)
   op-functor = record
     { F₀           = op
     ; F₁           = op₁
@@ -112,7 +117,7 @@ module Terminals where
     ; _≤_     = λ _ _ → Lift a₃ ⊤
     }
 
-  module _ {a₁ a₂ a₃ b₁ b₂ b₃} {B : Poset b₁ b₂ b₃} where
+  module _ {B : Poset b₁ b₂ b₃} where
 
     ! : B ⇒ unit a₁ a₂ a₃
     ! = _
@@ -128,8 +133,7 @@ module Products where
 
   infixr 2 _×_
 
-  _×_ : ∀ {a₁ a₂ a₃ b₁ b₂ b₃} →
-        Poset a₁ a₂ a₃ → Poset b₁ b₂ b₃ → Poset (a₁ ⊔ b₁) (a₂ ⊔ b₂) (a₃ ⊔ b₃)
+  _×_ : Poset a₁ a₂ a₃ → Poset b₁ b₂ b₃ → Poset (a₁ ⊔ b₁) (a₂ ⊔ b₂) (a₃ ⊔ b₃)
   A × B = record
     { Carrier           = Carrier A |×| Carrier B
     ; _≈_               = ₍ A ₎_≈_ -< _|×|_ >- ₍ B ₎_≈_
@@ -148,23 +152,20 @@ module Products where
       }
     }
 
-  module _ {a₁ a₂ a₃ b₁ b₂ b₃} {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃} where
+  module _ {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃} where
 
     π₁ : (A × B) ⇒ A
-    π₁ = record { fun = Prod.proj₁ ; monotone = Prod.proj₁ }
+    π₁ = ⇒-Poset-helper Prod.proj₁ Prod.proj₁
 
     π₂ : (A × B) ⇒ B
-    π₂ = record { fun = Prod.proj₂ ; monotone = Prod.proj₂ }
+    π₂ = ⇒-Poset-helper Prod.proj₂ Prod.proj₂
 
-    module _ {c₁ c₂ c₃} {C : Poset c₁ c₂ c₃} where
+    module _ {C : Poset c₁ c₂ c₃} where
 
       infix 11 ⟨_,_⟩
 
       ⟨_,_⟩ : C ⇒ A → C ⇒ B → C ⇒ (A × B)
-      ⟨ f , g ⟩ = record
-        { fun      = < fun f , fun g >
-        ; monotone = < monotone f , monotone g >
-        }
+      ⟨ f , g ⟩ = ⇒-Poset-helper < fun f , fun g > < monotone f , monotone g >
 
       π₁-comp  : {f : C ⇒ A} {g : C ⇒ B} → π₁ ∘ ⟨ f , g ⟩ ≗ f
       π₁-comp = Eq.refl A
@@ -178,8 +179,7 @@ module Products where
 
   infixr 2 _×₁_
 
-  _×₁_ : ∀ {a₁ a₂ a₃ b₁ b₂ b₃ c₁ c₂ c₃ d₁ d₂ d₃}
-         {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃}
+  _×₁_ : {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃}
          {C : Poset c₁ c₂ c₃} {D : Poset d₁ d₂ d₃} →
          A ⇒ C → B ⇒ D → (A × B) ⇒ (C × D)
   f ×₁ g = ⟨ f ∘ π₁ , g ∘ π₂ ⟩
@@ -198,8 +198,8 @@ module Exponentials where
 
   infixr 9 _⇨_
 
-  _⇨_ : ∀ {a₁ a₂ a₃ b₁ b₂ b₃} → Poset a₁ a₂ a₃ → Poset b₁ b₂ b₃ →
-        Poset (a₁ ⊔ a₃ ⊔ b₁ ⊔ b₃) (a₁ ⊔ b₂) (a₁ ⊔ b₃)
+  _⇨_ : Poset a₁ a₂ a₃ → Poset b₁ b₂ b₃ →
+        Poset (a₁ ⊔ a₂ ⊔ a₃ ⊔ b₁ ⊔ b₂ ⊔ b₃) (a₁ ⊔ b₂) (a₁ ⊔ b₃)
   A ⇨ B = record
     { Carrier           = A ⇒ B
     ; _≈_               = _≗_
@@ -207,24 +207,21 @@ module Exponentials where
     ; isPartialOrder    = ≤°-isPartialOrder
     }
 
-  module _ {a₁ a₂ a₃ b₁ b₂ b₃} {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃} where
+  module _ {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃} where
 
     eval : (A ⇨ B × A) ⇒ B
-    eval = record
-      { fun      = λ{ (f , x) → fun f x }
-      ; monotone = λ{ {f , _} (f≤g , x≤y) → trans B (monotone f x≤y) f≤g }
-      }
+    eval = ⇒-Poset-helper
+      (λ{ (f , x) → fun f x })
+      (λ{ {f , _} (f≤g , x≤y) → trans B (monotone f x≤y) f≤g })
 
-    module _ {c₁ c₂ c₃} {C : Poset c₁ c₂ c₃} where
+    module _ {C : Poset c₁ c₂ c₃} where
 
       curry : (C × A) ⇒ B → C ⇒ (A ⇨ B)
-      curry f = record
-        { fun        = λ x → record
-          { fun      = Prod.curry (fun f) x
-          ; monotone = Prod.curry (monotone f) (refl C)
-          }
-        ; monotone   = λ x≤y → monotone f (x≤y , refl A)
-        }
+      curry f = ⇒-Poset-helper
+        (λ x → ⇒-Poset-helper
+          (Prod.curry (fun f) x)
+          (Prod.curry (monotone f) (refl C)))
+        (λ x≤y → monotone f (x≤y , refl A))
 
       eval-comp : {f : (C × A) ⇒ B} → eval ∘ (curry f ×₁ id) ≗ f
       eval-comp = Eq.refl B
