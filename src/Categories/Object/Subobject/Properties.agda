@@ -10,7 +10,6 @@ open import Function using (_$_)
 
 open import Relation.Binary using (_=[_]⇒_)
 open import Relation.Binary.Bundles
-open import Relation.Binary.OrderMorphism
 
 open import Categories.Category
 open import Categories.Functor
@@ -42,10 +41,7 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
   Subₚ : Presheaf 𝒞 (Posets (o ⊔ ℓ ⊔ e) (ℓ ⊔ e) (ℓ ⊔ e))
   Subₚ = record
     { F₀ = Subobjects 𝒞
-    ; F₁ = λ f → record
-      { fun = morphism f
-      ; monotone = λ {(α , m) (β , n)} h → monotone f {(α , m)} {β , n} h
-      }
+    ; F₁ = λ f → ⇒-Poset-helper (morphism f) (λ {(α , m) (β , n)} h → monotone f {α , m} {β , n} h)
     ; identity = λ {A} {(α , m)} →
       let pid = has-pullbacks 𝒞.id (mor m)
       in record
