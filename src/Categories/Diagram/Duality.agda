@@ -57,10 +57,12 @@ Coequalizer⇒coEqualizer coe = record
 coEqualizer⇒Coequalizer : Equalizer f g → Coequalizer f g
 coEqualizer⇒Coequalizer e = record
   { arr        = arr
-  ; equality   = equality
-  ; coequalize = equalize
-  ; universal  = universal
-  ; unique     = unique
+  ; isCoequalizer = record
+    { equality   = equality
+    ; coequalize = equalize
+    ; universal  = universal
+    ; unique     = unique
+    }
   }
   where open Equalizer e
 
