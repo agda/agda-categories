@@ -15,7 +15,7 @@ open Equiv
 open import Level using (Level; _⊔_)
 open import Data.Nat.Base using (ℕ; _+_; zero; suc; _<_)
 open import Data.Product using (_,_)
-open import Data.Fin.Base using (Fin; inject+; raise; zero; suc; fromℕ<)
+open import Data.Fin.Base using (Fin; inject+; raise; zero; suc; fromℕ<; splitAt; join)
 open import Data.Sum using (_⊎_; inj₁; inj₂; map) renaming ([_,_] to ⟦_,_⟧; [_,_]′ to ⟦_,_⟧′)
 open import Data.Vec.N-ary hiding (curryⁿ)
 open import Function.Base as Fun using (flip; _$_) renaming (_∘_ to _∙_; id to idf)
@@ -96,41 +96,35 @@ F par G = record
 -- which has the effect of doing from Powerfunctor′ to Powerfunctor
 flattenP : (F : Powerfunctor′ D (Fin n ⊎ Fin m)) → Powerfunctor D (n + m)
 flattenP {n = n} {m = m} F = record
-  { F₀           = λ As → F₀ (As ∙ pack)
-  ; F₁           = λ fs → F₁ (fs ∙ pack)
+  { F₀           = λ As → F₀ (As ∙ join _ _)
+  ; F₁           = λ fs → F₁ (fs ∙ join n m)
   ; identity     = identity
   ; homomorphism = homomorphism
-  ; F-resp-≈     = λ fs≈gs → F-resp-≈ (fs≈gs ∙ pack)
+  ; F-resp-≈     = λ fs≈gs → F-resp-≈ (fs≈gs ∙ join n m)
   }
   where open Functor F
-        pack = ⟦ inject+ m , raise n ⟧′
 
 -- TODO unpackFun (and pack above) should be in stdlib
-private
-  unpackFin : ∀ n → Fin (n + m) → Fin n ⊎ Fin m
-  unpackFin zero f          = inj₂ f
-  unpackFin (suc n) zero    = inj₁ zero
-  unpackFin (suc n) (suc f) = map suc idf (unpackFin n f)
 
 -- needs a better name?
 unflattenP : Powerfunctor D (n + m) → Powerfunctor′ D (Fin n ⊎ Fin m)
 unflattenP {n = n} {m = m} F = record
-  { F₀           = λ As → F₀ (As ∙ unpackFin _)
-  ; F₁           = λ fs → F₁ (fs ∙ unpackFin _)
+  { F₀           = λ As → F₀ (As ∙ splitAt n {m})
+  ; F₁           = λ fs → F₁ (fs ∙ splitAt _)
   ; identity     = identity
   ; homomorphism = homomorphism
-  ; F-resp-≈     = λ fs≈gs → F-resp-≈ (fs≈gs ∙ unpackFin _)
+  ; F-resp-≈     = λ fs≈gs → F-resp-≈ (fs≈gs ∙ splitAt _)
   }
   where open Functor F
 
 -- flatten a Hyperendo′ "on the right" when over a union of Fin
 flattenHʳ : (F : Hyperendo′ I (Fin n ⊎ Fin m)) → Hyperendo′ I (Fin (n + m))
 flattenHʳ {n = n} {m = m} F = record
-  { F₀           = λ As → F₀ As ∙ unpackFin n
-  ; F₁           = λ fs → F₁ fs ∙ unpackFin n
-  ; identity     = identity ∙ unpackFin n
-  ; homomorphism = homomorphism ∙ unpackFin n
-  ; F-resp-≈     = λ fs≈gs → F-resp-≈ fs≈gs ∙ unpackFin n
+  { F₀           = λ As → F₀ As ∙ splitAt n
+  ; F₁           = λ fs → F₁ fs ∙ splitAt n
+  ; identity     = identity ∙ splitAt n
+  ; homomorphism = homomorphism ∙ splitAt n
+  ; F-resp-≈     = λ fs≈gs → F-resp-≈ fs≈gs ∙ splitAt n
   }
   where open Functor F
 
