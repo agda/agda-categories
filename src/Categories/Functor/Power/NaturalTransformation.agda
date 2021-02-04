@@ -5,7 +5,7 @@ open import Categories.Category
 module Categories.Functor.Power.NaturalTransformation {o ℓ e : Level} (C : Category o ℓ e) where
 
 open import Data.Nat.Base using (ℕ)
-open import Data.Fin.Base using (Fin; inject+; raise)
+open import Data.Fin.Base using (Fin; join)
 open import Data.Sum.Base using (_⊎_; [_,_]′; inj₁; inj₂)
 open import Function.Base using () renaming (_∘_ to _∙_)
 open import Data.Product using (_,_)
@@ -23,13 +23,12 @@ open import Categories.Functor using (Functor; module Functor)
 flattenPⁿ : {D : Category o ℓ e} {m n : ℕ} {F G : Powerfunctor′ D (Fin m ⊎ Fin n)} (η : NaturalTransformation F G) →
             NaturalTransformation (flattenP F) (flattenP G)
 flattenPⁿ {m = m} {n} η = record
-  { η           = λ Xs → η.η (Xs ∙ pack)
-  ; commute     = λ fs → η.commute (fs ∙ pack)
-  ; sym-commute = λ fs → η.sym-commute (fs ∙ pack)
+  { η           = λ Xs → η.η (Xs ∙ join _ _)
+  ; commute     = λ fs → η.commute (fs ∙ join _ _)
+  ; sym-commute = λ fs → η.sym-commute (fs ∙ join _ _)
   }
   where
   private module η = NaturalTransformation η
-  pack = [ inject+ n , raise m ]′
 
 reduceN′ : ∀ {i j : Level} {I : Set i} {J : Set j}  {F F′ : Powerendo′ I} {G G′ : Powerendo′ J}
   (H : Bifunctor C C C)
