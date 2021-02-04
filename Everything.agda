@@ -17,6 +17,9 @@ import Categories.Adjoint.Instance.Discrete
 import Categories.Adjoint.Instance.PosetCore
 import Categories.Adjoint.Instance.StrictCore
 import Categories.Adjoint.Mate
+import Categories.Adjoint.Monadic
+import Categories.Adjoint.Monadic.Crude
+import Categories.Adjoint.Monadic.Properties
 import Categories.Adjoint.Properties
 import Categories.Adjoint.RAPL
 import Categories.Adjoint.Relative
@@ -216,6 +219,7 @@ import Categories.Diagram.Pullback.Limit
 import Categories.Diagram.Pullback.Properties
 import Categories.Diagram.Pushout
 import Categories.Diagram.Pushout.Properties
+import Categories.Diagram.ReflexivePair
 import Categories.Diagram.SubobjectClassifier
 import Categories.Diagram.Wedge
 import Categories.Diagram.Wedge.Properties
