@@ -54,7 +54,7 @@ record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
     ; isEquivalence = equiv
     }
 
-  -- When a category is quatified, it is convenient to refer to the levels from a module,
+  -- When a category is quantified, it is convenient to refer to the levels from a module,
   -- so we do not have to explicitly quantify over a category when universe levels do not
   -- play a big part in a proof (which is the case probably all the time).
   o-level : Level
