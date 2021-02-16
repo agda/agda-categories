@@ -32,8 +32,8 @@ record FiberProduct {o ℓ} {X Y Z : Setoid o ℓ} (f : X ⟶ Z) (g : Y ⟶ Z) :
 
 open FiberProduct
 
-pullback : ∀ {o ℓ} {X Y Z : Setoid (o ⊔ ℓ) ℓ} → (f : X ⟶ Z) → (g : Y ⟶ Z) → Pullback (Setoids (o ⊔ ℓ) ℓ) f g 
-pullback {X = X} {Y = Y} {Z = Z} f g = record
+pullback : ∀ (o ℓ : Level) {X Y Z : Setoid (o ⊔ ℓ) ℓ} → (f : X ⟶ Z) → (g : Y ⟶ Z) → Pullback (Setoids (o ⊔ ℓ) ℓ) f g
+pullback _ _ {X = X} {Y = Y} {Z = Z} f g = record
   { P = record
     { Carrier = FiberProduct f g
     ; _≈_ =  λ p q → [ X ][ elem₁ p ≈ elem₁ q ] × [ Y ][ elem₂ p ≈ elem₂ q ]
