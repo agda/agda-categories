@@ -63,6 +63,29 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   _▷_ : {A B C : Obj} {f g : A ⇒₁ B} (h : B ⇒₁ C) (α : f ⇒₂ g) → h ∘ₕ f ⇒₂ h ∘ₕ g
   _ ▷ α = id₂ ⊚₁ α
 
+  -- Coherence morphisms
+  unitˡ⇒ : {A B : Obj} {f : A ⇒₁ B} → id₁ ⊚₀ f ⇒₂ f
+  unitˡ⇒ {_} {_} {f} = NaturalIsomorphism.⇒.η unitˡ (_ , f)
+
+  unitˡ⇐ : {A B : Obj} {f : A ⇒₁ B} → f ⇒₂ id₁ ⊚₀ f
+  unitˡ⇐ {_} {_} {f} = NaturalIsomorphism.⇐.η unitˡ (_ , f)
+
+  unitʳ⇒ : {A B : Obj} {f : A ⇒₁ B} → f ⊚₀ id₁ ⇒₂ f
+  unitʳ⇒ {_} {_} {f} = NaturalIsomorphism.⇒.η unitʳ (f , _)
+
+  unitʳ⇐ : {A B : Obj} {f : A ⇒₁ B} → f ⇒₂ f ⊚₀ id₁
+  unitʳ⇐ {_} {_} {f} = NaturalIsomorphism.⇐.η unitʳ (f , _)
+
+  assoc⇒ : {A B C D : Obj} {f : D ⇒₁ B} {g : C ⇒₁ D} {h : A ⇒₁ C} →
+            ((f ⊚₀ g) ⊚₀ h) ⇒₂ (f ⊚₀ (g ⊚₀ h))
+  assoc⇒ {_} {_} {_} {_} {f} {g} {h} = NaturalIsomorphism.⇒.η ⊚-assoc ((f , g) , h)
+
+  assoc⇐ : {A B C D : Obj} {f : D ⇒₁ B} {g : C ⇒₁ D} {h : A ⇒₁ C} →
+            (f ⊚₀ (g ⊚₀ h)) ⇒₂ ((f ⊚₀ g) ⊚₀ h)
+  assoc⇐ {_} {_} {_} {_} {f} {g} {h} = NaturalIsomorphism.⇐.η ⊚-assoc ((f , g) , h)
+
+
+  -- Abbreviations of some longer names for local use
   private
     λ⇒ : {A B : Obj} {f : A ⇒₁ B} → id₁ ⊚₀ f hom.⇒ f
     λ⇒ {_} {_} {f} = NaturalIsomorphism.⇒.η unitˡ (_ , f)
