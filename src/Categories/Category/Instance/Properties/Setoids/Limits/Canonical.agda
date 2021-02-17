@@ -4,6 +4,7 @@
 --
 -- These limits are obviously isomorphic to those created by
 -- the Completeness proof, but are far less unweildy to work with.
+-- This isomorphism is witnessed by Categories.Diagram.Pullback.up-to-iso
 
 module Categories.Category.Instance.Properties.Setoids.Limits.Canonical where
 
