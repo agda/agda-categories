@@ -14,8 +14,6 @@ import Categories.Morphism.Reasoning as MR
 --------------------------------------------------------------------------------
 -- Bicategorical Monads in Cat are the same as the more elementary
 -- definition of Monads.
---
--- NOTE: 
 
 CatMonad⇒Monad : ∀ {o ℓ e} → (T : BicatMonad.Monad (Cats o ℓ e)) → ElemMonad.Monad (BicatMonad.Monad.C T)
 CatMonad⇒Monad T = record
