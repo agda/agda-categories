@@ -11,6 +11,7 @@ open import Categories.Object.Terminal C
 open import Categories.Object.Initial C
 
 open import Categories.Morphism C
+open import Categories.Morphism.Reasoning C
 
 open Category C
 open HomReasoning
@@ -33,6 +34,12 @@ record Zero : Set (o ⊔ ℓ ⊔ e) where
 
  !-unique₂ : ∀ {A} (f g : zero ⇒ A) → f ≈ g
  !-unique₂ f g = ⟺ (!-unique f) ○ !-unique g
+
+ zero-∘ˡ : ∀ {X Y Z} → (f : Y ⇒ Z) → f ∘ zero⇒ {X} ≈ zero⇒
+ zero-∘ˡ f = pullˡ (⟺ (!-unique (f ∘ !)))
+
+ zero-∘ʳ : ∀ {X Y Z} → (f : X ⇒ Y) → zero⇒ {Y} {Z} ∘ f ≈ zero⇒
+ zero-∘ʳ f = pullʳ (⟺ (¡-unique (¡ ∘ f)))
 
 
  initial : Initial
