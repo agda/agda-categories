@@ -84,10 +84,8 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (preadditive : Preadditive 𝒞) wh
     ; π₂∘i₂≈id = project₂
     ; permute = begin
       ⟨ id , 0H ⟩ ∘ π₁ ∘ ⟨ 0H , id ⟩ ∘ π₂ ≈⟨ pull-center project₁ ⟩
-      ⟨ id , 0H ⟩ ∘ 0H ∘ π₂               ≈⟨ pullˡ 0-resp-∘ʳ ⟩
-      0H ∘ π₂                             ≈⟨ 0-resp-∘ˡ ⟩
-      0H                                  ≈˘⟨ 0-resp-∘ˡ ⟩
-      0H ∘ π₁                             ≈⟨ pushˡ (⟺ 0-resp-∘ʳ) ⟩
+      ⟨ id , 0H ⟩ ∘ 0H ∘ π₂               ≈⟨ 0-resp-∘ ⟩
+      0H                                  ≈˘⟨ 0-resp-∘ ⟩
       ⟨ 0H , id ⟩ ∘ 0H ∘ π₁               ≈⟨ push-center project₂ ⟩
       ⟨ 0H , id ⟩ ∘ π₂ ∘ ⟨ id , 0H ⟩ ∘ π₁ ∎
     }
@@ -143,10 +141,8 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (preadditive : Preadditive 𝒞) wh
     ; π₂∘i₂≈id = inject₂
     ; permute = begin
       i₁ ∘ [ id , 0H ] ∘ i₂ ∘ [ 0H , id ] ≈⟨ pull-center inject₂ ⟩
-      i₁ ∘ 0H ∘ [ 0H , id ]               ≈⟨ pullˡ 0-resp-∘ʳ ⟩
-      0H ∘ [ 0H , id ]                    ≈⟨ 0-resp-∘ˡ ⟩
-      0H                                  ≈˘⟨ 0-resp-∘ˡ ⟩
-      0H ∘ [ id , 0H ]                    ≈⟨ pushˡ (⟺ 0-resp-∘ʳ) ⟩
+      i₁ ∘ 0H ∘ [ 0H , id ]               ≈⟨ 0-resp-∘ ⟩
+      0H                                  ≈˘⟨ 0-resp-∘ ⟩
       i₂ ∘ 0H ∘ [ id , 0H ]               ≈⟨ push-center inject₁ ⟩
       i₂ ∘ [ 0H , id ] ∘ i₁ ∘ [ id , 0H ] ∎
     }
@@ -231,7 +227,7 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (preadditive : Preadditive 𝒞) wh
       p₁∘i₂≈0 = begin
         p₁ ∘ i₂                                                   ≈˘⟨ +-identityʳ (p₁ ∘ i₂) ⟩
         p₁ ∘ i₂ + 0H                                              ≈˘⟨ +-congˡ (-‿inverseʳ (p₁ ∘ i₂)) ⟩
-        p₁ ∘ i₂ + (p₁ ∘ i₂ - p₁ ∘ i₂)                             ≈˘⟨ +-assoc (p₁ ∘ i₂) (p₁ ∘ i₂) (neg (p₁ ∘ i₂)) ⟩
+        p₁ ∘ i₂ + (p₁ ∘ i₂ - p₁ ∘ i₂)                             ≈˘⟨ +-assoc (p₁ ∘ i₂) (p₁ ∘ i₂) (- (p₁ ∘ i₂)) ⟩
         (p₁ ∘ i₂) + (p₁ ∘ i₂) - p₁ ∘ i₂                           ≈⟨ +-congʳ (+-cong (intro-first p₁∘i₁≈id) (intro-last p₂∘i₂≈id)) ⟩
         (p₁ ∘ (i₁ ∘ p₁) ∘ i₂) + (p₁ ∘ (i₂ ∘ p₂) ∘ i₂) - (p₁ ∘ i₂) ≈˘⟨ +-congʳ +-resp-∘ ⟩
         (p₁ ∘ (i₁ ∘ p₁ + i₂ ∘ p₂) ∘ i₂) - (p₁ ∘ i₂)               ≈⟨ +-congʳ (elim-center +-eq) ⟩
@@ -242,7 +238,7 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (preadditive : Preadditive 𝒞) wh
       p₂∘i₁≈0 = begin
         (p₂ ∘ i₁)                                                 ≈˘⟨ +-identityʳ (p₂ ∘ i₁) ⟩
         p₂ ∘ i₁ + 0H                                              ≈˘⟨ +-congˡ (-‿inverseʳ (p₂ ∘ i₁)) ⟩
-        (p₂ ∘ i₁) + (p₂ ∘ i₁ - p₂ ∘ i₁)                           ≈˘⟨ +-assoc (p₂ ∘ i₁) (p₂ ∘ i₁) (neg (p₂ ∘ i₁)) ⟩
+        (p₂ ∘ i₁) + (p₂ ∘ i₁ - p₂ ∘ i₁)                           ≈˘⟨ +-assoc (p₂ ∘ i₁) (p₂ ∘ i₁) (- (p₂ ∘ i₁)) ⟩
         (p₂ ∘ i₁) + (p₂ ∘ i₁) - (p₂ ∘ i₁)                         ≈⟨ +-congʳ (+-cong (intro-last p₁∘i₁≈id) (intro-first p₂∘i₂≈id)) ⟩
         (p₂ ∘ (i₁ ∘ p₁) ∘ i₁) + (p₂ ∘ (i₂ ∘ p₂) ∘ i₁) - (p₂ ∘ i₁) ≈˘⟨ +-congʳ +-resp-∘ ⟩
         (p₂ ∘ (i₁ ∘ p₁ + i₂ ∘ p₂) ∘ i₁) - (p₂ ∘ i₁)               ≈⟨ +-congʳ (elim-center +-eq) ⟩
