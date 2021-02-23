@@ -17,6 +17,7 @@ open import Categories.Object.Initial C
 open import Categories.Object.Product op
 open import Categories.Object.Coproduct C
 
+open import Categories.Object.Zero
 
 IsInitial⇒coIsTerminal : ∀ {X} → IsInitial X → IsTerminal X
 IsInitial⇒coIsTerminal is⊥ = record
@@ -72,6 +73,40 @@ coProduct⇒Coproduct A×B = record
   where
   module A×B = Product A×B
 
+-- Zero objects are autodual
+IsZero⇒coIsZero : ∀ {Z} → IsZero C Z → IsZero op Z
+IsZero⇒coIsZero is-zero = record
+  { isInitial = record { ! = ! ; !-unique = !-unique }
+  ; isTerminal = record { ! = ¡ ; !-unique = ¡-unique }
+  }
+  where
+    open IsZero is-zero
+
+coIsZero⇒IsZero : ∀ {Z} → IsZero op Z → IsZero C Z
+coIsZero⇒IsZero co-is-zero = record
+  { isInitial = record { ! = ! ; !-unique = !-unique }
+  ; isTerminal = record { ! = ¡ ; !-unique = ¡-unique }
+  }
+  where
+    open IsZero co-is-zero
+
+coZero⇒Zero : Zero op → Zero C
+coZero⇒Zero zero = record
+  { 𝟘 = 𝟘
+  ; isZero = coIsZero⇒IsZero isZero
+  }
+  where
+    open Zero zero
+
+Zero⇒coZero : Zero C → Zero op
+Zero⇒coZero zero = record
+  { 𝟘 = 𝟘
+  ; isZero = IsZero⇒coIsZero isZero
+  }
+  where
+    open Zero zero
+
+-- Tests to ensure that dualities are involutive up to definitional equality.
 private
   coIsTerminal⟺IsInitial : ∀ {X} (⊥ : IsInitial X) →
     coIsTerminal⇒IsInitial (IsInitial⇒coIsTerminal ⊥) ≡ ⊥
@@ -92,3 +127,19 @@ private
 
   coProduct⟺Coproduct : ∀ {A B} (p : Coproduct A B) → coProduct⇒Coproduct (Coproduct⇒coProduct p) ≡ p
   coProduct⟺Coproduct _ = ≡.refl
+
+  coIsZero⟺IsZero : ∀ {Z} {zero : IsZero op Z} →
+    IsZero⇒coIsZero (coIsZero⇒IsZero zero) ≡ zero
+  coIsZero⟺IsZero = ≡.refl
+
+  IsZero⟺coIsZero : ∀ {Z} {zero : IsZero C Z} →
+    coIsZero⇒IsZero (IsZero⇒coIsZero zero) ≡ zero
+  IsZero⟺coIsZero = ≡.refl
+
+  coZero⟺Zero : ∀ {zero : Zero op} →
+    Zero⇒coZero (coZero⇒Zero zero) ≡ zero
+  coZero⟺Zero = ≡.refl
+
+  Zero⟺coZero : ∀ {zero : Zero C} →
+    coZero⇒Zero (Zero⇒coZero zero) ≡ zero
+  Zero⟺coZero = ≡.refl
