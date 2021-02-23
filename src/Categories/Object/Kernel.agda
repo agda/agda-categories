@@ -42,7 +42,7 @@ record IsKernel {A B K} (k : K ⇒ A) (f : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) wher
   universal-∘ : f ∘ k ∘ h ≈ zero⇒ 
   universal-∘ {h = h} = begin
     f ∘ k ∘ h ≈⟨ pullˡ commute ⟩
-    zero⇒ ∘ h ≈⟨ pullʳ (⟺ (¡-unique (¡ ∘ h))) ⟩
+    zero⇒ ∘ h ≈⟨ zero-∘ʳ h ⟩
     zero⇒ ∎
 
 record Kernel {A B} (f : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
