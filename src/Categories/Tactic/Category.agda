@@ -23,14 +23,11 @@ open import Reflection.Argument
 open import Reflection.Term using (getName; _⋯⟅∷⟆_)
 open import Reflection.TypeChecking.Monad.Syntax
 
-import Categories.Morphism.Reasoning as MR
-
 module _ {o ℓ e} (𝒞 : Category o ℓ e) where
 
   open Category 𝒞
   open HomReasoning
   open Equiv
-  open MR 𝒞
 
   private
     variable
@@ -70,7 +67,8 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) where
   preserves-≈′ (f ∘′ g) h = begin
     embed (f ∘′ g) id ∘ h         ≡⟨⟩
     embed f (embed g id) ∘ h      ≈˘⟨ preserves-≈′ f (embed g id) ⟩∘⟨refl ⟩
-    (embed f id ∘ embed g id) ∘ h ≈⟨ pullʳ (preserves-≈′ g h) ⟩
+    (embed f id ∘ embed g id) ∘ h ≈⟨ assoc  ⟩
+    embed f id ∘ embed g id ∘ h   ≈⟨ refl⟩∘⟨ preserves-≈′ g h ⟩
     embed f id ∘ embed g h        ≈⟨ preserves-≈′ f (embed g h) ⟩
     embed (f ∘′ g) h              ∎
   
