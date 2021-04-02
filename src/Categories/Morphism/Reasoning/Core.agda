@@ -100,6 +100,12 @@ module IntroElim (a≡id : a ≈ id) where
   introˡ : f ≈ a ∘ f
   introˡ = Equiv.sym elimˡ
 
+  intro-center : f ∘ g ≈ f ∘ a ∘ g
+  intro-center = ∘-resp-≈ʳ introˡ
+
+  elim-center : f ∘ a ∘ g ≈ f ∘ g
+  elim-center = ∘-resp-≈ʳ elimˡ
+
 open IntroElim public
 
 module Extends (s : CommutativeSquare f g h i) where
@@ -194,11 +200,17 @@ module Cancellers (inv : h ∘ i ≈ id) where
     f ∘ id      ≈⟨ identityʳ ⟩
     f           ∎
 
+  insertʳ : f ≈ (f ∘ h) ∘ i
+  insertʳ = Equiv.sym cancelʳ
+
   cancelˡ : h ∘ (i ∘ f) ≈ f
   cancelˡ {f = f} = begin
     h ∘ (i ∘ f) ≈⟨ pullˡ inv ⟩
     id ∘ f      ≈⟨ identityˡ ⟩
     f           ∎
+
+  insertˡ : f ≈ h ∘ (i ∘ f)
+  insertˡ = Equiv.sym cancelˡ
 
   cancelInner : (f ∘ h) ∘ (i ∘ g) ≈ f ∘ g
   cancelInner {f = f} {g = g} = begin
@@ -230,3 +242,23 @@ pull-first {f = f} {g = g} {a = a} {h = h} {i = i} eq = begin
   f ∘ (g ∘ h) ∘ i ≈⟨ refl⟩∘⟨ assoc ⟩
   f ∘ g ∘ h ∘ i   ≈⟨ pullˡ eq ⟩
   a ∘ h ∘ i       ∎
+
+pull-center : g ∘ h ≈ a → f ∘ g ∘ h ∘ i ≈ f ∘ a ∘ i
+pull-center eq = ∘-resp-≈ʳ (pullˡ eq)
+
+push-center : g ∘ h ≈ a → f ∘ a ∘ i ≈ f ∘ g ∘ h ∘ i
+push-center eq = Equiv.sym (pull-center eq)
+
+intro-first : a ∘ b ≈ id → f ∘ g ≈ a ∘ (b ∘ f) ∘ g
+intro-first {a = a} {b = b} {f = f} {g = g} eq = begin
+  f ∘ g           ≈⟨ introˡ eq ⟩
+  (a ∘ b) ∘ f ∘ g ≈⟨ assoc ⟩
+  a ∘ b ∘ f ∘ g   ≈˘⟨ refl⟩∘⟨ assoc ⟩
+  a ∘ (b ∘ f) ∘ g ∎
+
+intro-last : a ∘ b ≈ id → f ∘ g ≈ f ∘ (g ∘ a) ∘ b
+intro-last {a = a} {b = b} {f = f} {g = g} eq = begin
+  f ∘ g           ≈⟨ introʳ eq ⟩
+  (f ∘ g) ∘ a ∘ b ≈⟨ assoc ⟩
+  f ∘ g ∘ a ∘ b   ≈˘⟨ refl⟩∘⟨ assoc ⟩
+  f ∘ (g ∘ a) ∘ b ∎
