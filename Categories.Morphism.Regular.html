@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="utf-8"><title>Categories.Morphism.Regular</title><link rel="stylesheet" href="Agda.css"></head><body><pre class="Agda"><a id="1" class="Symbol">{-#</a> <a id="5" class="Keyword">OPTIONS</a> <a id="13" class="Pragma">--without-K</a> <a id="25" class="Pragma">--safe</a> <a id="32" class="Symbol">#-}</a>
+
+<a id="37" class="Comment">{-
+  Properties regarding Morphisms of a category:
+  - Regular Monomorphism
+  - Regular Epimorphism
+
+  https://ncatlab.org/nlab/show/regular+epimorphism
+
+  These are defined here rather than in Morphism, as this
+  might cause import cycles (and make the dependency graph
+  very odd).
+-}</a>
+<a id="324" class="Keyword">open</a> <a id="329" class="Keyword">import</a> <a id="336" href="Categories.Category.Core.html" class="Module">Categories.Category.Core</a>
+
+<a id="362" class="Keyword">module</a> <a id="369" href="Categories.Morphism.Regular.html" class="Module">Categories.Morphism.Regular</a> <a id="397" class="Symbol">{</a><a id="398" href="Categories.Morphism.Regular.html#398" class="Bound">o</a> <a id="400" href="Categories.Morphism.Regular.html#400" class="Bound">ℓ</a> <a id="402" href="Categories.Morphism.Regular.html#402" class="Bound">e</a><a id="403" class="Symbol">}</a> <a id="405" class="Symbol">(</a><a id="406" href="Categories.Morphism.Regular.html#406" class="Bound">𝒞</a> <a id="408" class="Symbol">:</a> <a id="410" href="Categories.Category.Core.html#442" class="Record">Category</a> <a id="419" href="Categories.Morphism.Regular.html#398" class="Bound">o</a> <a id="421" href="Categories.Morphism.Regular.html#400" class="Bound">ℓ</a> <a id="423" href="Categories.Morphism.Regular.html#402" class="Bound">e</a><a id="424" class="Symbol">)</a> <a id="426" class="Keyword">where</a>
+
+<a id="433" class="Keyword">open</a> <a id="438" class="Keyword">import</a> <a id="445" href="Level.html" class="Module">Level</a>
+<a id="451" class="Keyword">open</a> <a id="456" class="Keyword">import</a> <a id="463" href="Data.Product.html" class="Module">Data.Product</a> <a id="476" class="Keyword">using</a> <a id="482" class="Symbol">(</a><a id="483" href="Agda.Builtin.Sigma.html#166" class="Record">Σ</a><a id="484" class="Symbol">;</a> <a id="486" href="Data.Product.html#1167" class="Function Operator">_×_</a><a id="489" class="Symbol">;</a> <a id="491" href="Agda.Builtin.Sigma.html#236" class="InductiveConstructor Operator">_,_</a><a id="494" class="Symbol">)</a>
+
+<a id="497" class="Keyword">open</a> <a id="502" class="Keyword">import</a> <a id="509" href="Categories.Diagram.Equalizer.html" class="Module">Categories.Diagram.Equalizer</a> <a id="538" href="Categories.Morphism.Regular.html#406" class="Bound">𝒞</a>
+<a id="540" class="Keyword">open</a> <a id="545" class="Keyword">import</a> <a id="552" href="Categories.Diagram.Coequalizer.html" class="Module">Categories.Diagram.Coequalizer</a> <a id="583" href="Categories.Morphism.Regular.html#406" class="Bound">𝒞</a>
+
+<a id="586" class="Keyword">open</a> <a id="591" href="Categories.Category.Core.html#442" class="Module">Category</a> <a id="600" href="Categories.Morphism.Regular.html#406" class="Bound">𝒞</a>
+
+<a id="603" class="Keyword">private</a>
+  <a id="613" class="Keyword">variable</a>
+    <a id="626" href="Categories.Morphism.Regular.html#626" class="Generalizable">A</a> <a id="628" href="Categories.Morphism.Regular.html#628" class="Generalizable">B</a> <a id="630" class="Symbol">:</a> <a id="632" href="Categories.Category.Core.html#559" class="Field">Obj</a>
+
+<a id="637" class="Keyword">record</a> <a id="RegularMono"></a><a id="644" href="Categories.Morphism.Regular.html#644" class="Record">RegularMono</a> <a id="656" class="Symbol">(</a><a id="657" href="Categories.Morphism.Regular.html#657" class="Bound">f</a> <a id="659" class="Symbol">:</a> <a id="661" href="Categories.Morphism.Regular.html#626" class="Generalizable">A</a> <a id="663" href="Categories.Category.Core.html#575" class="Field Operator">⇒</a> <a id="665" href="Categories.Morphism.Regular.html#628" class="Generalizable">B</a><a id="666" class="Symbol">)</a> <a id="668" class="Symbol">:</a> <a id="670" class="PrimitiveType">Set</a> <a id="674" class="Symbol">(</a><a id="675" href="Categories.Morphism.Regular.html#398" class="Bound">o</a> <a id="677" href="Agda.Primitive.html#636" class="Primitive Operator">⊔</a> <a id="679" href="Categories.Morphism.Regular.html#400" class="Bound">ℓ</a> <a id="681" href="Agda.Primitive.html#636" class="Primitive Operator">⊔</a> <a id="683" href="Categories.Morphism.Regular.html#402" class="Bound">e</a><a id="684" class="Symbol">)</a> <a id="686" class="Keyword">where</a>
+  <a id="694" class="Keyword">field</a>
+    <a id="704" class="Symbol">{</a> <a id="RegularMono.C"></a><a id="706" href="Categories.Morphism.Regular.html#706" class="Field">C</a> <a id="708" class="Symbol">}</a> <a id="710" class="Symbol">:</a> <a id="712" href="Categories.Category.Core.html#559" class="Field">Obj</a>
+    <a id="RegularMono.g"></a><a id="720" href="Categories.Morphism.Regular.html#720" class="Field">g</a> <a id="722" class="Symbol">:</a> <a id="724" href="Categories.Morphism.Regular.html#665" class="Bound">B</a> <a id="726" href="Categories.Category.Core.html#575" class="Field Operator">⇒</a> <a id="728" href="Categories.Morphism.Regular.html#706" class="Field">C</a>
+    <a id="RegularMono.h"></a><a id="734" href="Categories.Morphism.Regular.html#734" class="Field">h</a> <a id="736" class="Symbol">:</a> <a id="738" href="Categories.Morphism.Regular.html#665" class="Bound">B</a> <a id="740" href="Categories.Category.Core.html#575" class="Field Operator">⇒</a> <a id="742" href="Categories.Morphism.Regular.html#706" class="Field">C</a>
+    <a id="RegularMono.equalizer"></a><a id="748" href="Categories.Morphism.Regular.html#748" class="Field">equalizer</a> <a id="758" class="Symbol">:</a> <a id="760" href="Categories.Diagram.Equalizer.html#462" class="Record">IsEqualizer</a> <a id="772" href="Categories.Morphism.Regular.html#657" class="Bound">f</a> <a id="774" href="Categories.Morphism.Regular.html#734" class="Field">h</a> <a id="776" href="Categories.Morphism.Regular.html#720" class="Field">g</a>
+
+<a id="779" class="Keyword">record</a> <a id="RegularEpi"></a><a id="786" href="Categories.Morphism.Regular.html#786" class="Record">RegularEpi</a> <a id="797" class="Symbol">(</a><a id="798" href="Categories.Morphism.Regular.html#798" class="Bound">f</a> <a id="800" class="Symbol">:</a> <a id="802" href="Categories.Morphism.Regular.html#626" class="Generalizable">A</a> <a id="804" href="Categories.Category.Core.html#575" class="Field Operator">⇒</a> <a id="806" href="Categories.Morphism.Regular.html#628" class="Generalizable">B</a><a id="807" class="Symbol">)</a> <a id="809" class="Symbol">:</a> <a id="811" class="PrimitiveType">Set</a> <a id="815" class="Symbol">(</a><a id="816" href="Categories.Morphism.Regular.html#398" class="Bound">o</a> <a id="818" href="Agda.Primitive.html#636" class="Primitive Operator">⊔</a> <a id="820" href="Categories.Morphism.Regular.html#400" class="Bound">ℓ</a> <a id="822" href="Agda.Primitive.html#636" class="Primitive Operator">⊔</a> <a id="824" href="Categories.Morphism.Regular.html#402" class="Bound">e</a><a id="825" class="Symbol">)</a> <a id="827" class="Keyword">where</a>
+  <a id="835" class="Keyword">field</a>
+    <a id="845" class="Symbol">{</a> <a id="RegularEpi.C"></a><a id="847" href="Categories.Morphism.Regular.html#847" class="Field">C</a> <a id="849" class="Symbol">}</a> <a id="851" class="Symbol">:</a> <a id="853" href="Categories.Category.Core.html#559" class="Field">Obj</a>
+    <a id="RegularEpi.h"></a><a id="861" href="Categories.Morphism.Regular.html#861" class="Field">h</a> <a id="863" class="Symbol">:</a> <a id="865" href="Categories.Morphism.Regular.html#847" class="Field">C</a> <a id="867" href="Categories.Category.Core.html#575" class="Field Operator">⇒</a> <a id="869" href="Categories.Morphism.Regular.html#802" class="Bound">A</a>
+    <a id="RegularEpi.g"></a><a id="875" href="Categories.Morphism.Regular.html#875" class="Field">g</a> <a id="877" class="Symbol">:</a> <a id="879" href="Categories.Morphism.Regular.html#847" class="Field">C</a> <a id="881" href="Categories.Category.Core.html#575" class="Field Operator">⇒</a> <a id="883" href="Categories.Morphism.Regular.html#802" class="Bound">A</a>
+    <a id="RegularEpi.coequalizer"></a><a id="889" href="Categories.Morphism.Regular.html#889" class="Field">coequalizer</a> <a id="901" class="Symbol">:</a> <a id="903" href="Categories.Diagram.Coequalizer.html#395" class="Record">IsCoequalizer</a> <a id="917" href="Categories.Morphism.Regular.html#861" class="Field">h</a> <a id="919" href="Categories.Morphism.Regular.html#875" class="Field">g</a> <a id="921" href="Categories.Morphism.Regular.html#798" class="Bound">f</a>
+</pre></body></html>
