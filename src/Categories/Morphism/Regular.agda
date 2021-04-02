@@ -27,8 +27,16 @@ private
   variable
     A B : Obj
 
-RegularMono : (f : A ⇒ B) → Set (o ⊔ ℓ ⊔ e)
-RegularMono {B = B} f = Σ Obj (λ C → Σ (B ⇒ C × B ⇒ C) (λ { (h , g ) → IsEqualizer f h g }))
+record RegularMono (f : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
+  field
+    { C } : Obj
+    g : B ⇒ C
+    h : B ⇒ C
+    equalizer : IsEqualizer f h g
 
-RegularEpi : (f : A ⇒ B) → Set (o ⊔ ℓ ⊔ e)
-RegularEpi {A = A} f = Σ Obj (λ C → Σ (C ⇒ A × C ⇒ A) (λ { (h , g) → IsCoequalizer h g f}))
+record RegularEpi (f : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
+  field
+    { C } : Obj
+    h : C ⇒ A
+    g : C ⇒ A
+    coequalizer : IsCoequalizer h g f
