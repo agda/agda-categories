@@ -176,6 +176,7 @@ import Categories.Category.Monoidal.Traced
 import Categories.Category.Monoidal.Utilities
 import Categories.Category.Product
 import Categories.Category.Product.Properties
+import Categories.Category.Regular
 import Categories.Category.RigCategory
 import Categories.Category.SetoidDiscrete
 import Categories.Category.Site
@@ -211,6 +212,7 @@ import Categories.Diagram.Equalizer.Indexed
 import Categories.Diagram.Equalizer.Limit
 import Categories.Diagram.Equalizer.Properties
 import Categories.Diagram.Finite
+import Categories.Diagram.KernelPair
 import Categories.Diagram.Limit
 import Categories.Diagram.Limit.Properties
 import Categories.Diagram.Limit.Ran
@@ -300,6 +302,7 @@ import Categories.Morphism.Properties
 import Categories.Morphism.Reasoning
 import Categories.Morphism.Reasoning.Core
 import Categories.Morphism.Reasoning.Iso
+import Categories.Morphism.Regular
 import Categories.Morphism.Universal
 import Categories.Multi.Category.Indexed
 import Categories.NaturalTransformation
