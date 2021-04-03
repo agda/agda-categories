@@ -23,30 +23,36 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (preadditive : Preadditive 𝒞) wh
 
   Initial⇒Zero : Initial 𝒞 → Zero 𝒞
   Initial⇒Zero initial = record
-    { zero = ⊥
-    ; ! = ! 
-    ; ¡ = 0H
-    ; !-unique = !-unique
-    ; ¡-unique = λ f → begin
-      0H     ≈˘⟨ 0-resp-∘ˡ ⟩
-      0H ∘ f ≈⟨ !-unique₂ 0H id ⟩∘⟨refl ⟩
-      id ∘ f ≈⟨ identityˡ ⟩
-      f ∎
+    { 𝟘 = ⊥
+    ; isZero = record
+      { isInitial = ⊥-is-initial
+      ; isTerminal = record
+        { ! = 0H
+        ; !-unique = λ f → begin
+          0H     ≈˘⟨ 0-resp-∘ˡ ⟩
+          0H ∘ f ≈⟨ !-unique₂ 0H id ⟩∘⟨refl ⟩
+          id ∘ f ≈⟨ identityˡ ⟩
+          f ∎
+        }
+      }
     }
     where
       open Initial initial
 
   Terminal⇒Zero : Terminal 𝒞 → Zero 𝒞
   Terminal⇒Zero terminal = record
-    { zero = ⊤
-    ; ! = 0H
-    ; ¡ = !
-    ; !-unique = λ f → begin
-      0H     ≈˘⟨ 0-resp-∘ʳ ⟩
-      f ∘ 0H ≈⟨ refl⟩∘⟨ !-unique₂ ⟩
-      f ∘ id ≈⟨ identityʳ ⟩
-      f ∎
-    ; ¡-unique = !-unique
+    { 𝟘 = ⊤
+    ; isZero = record
+      { isInitial = record
+        { ! = 0H
+        ; !-unique = λ f → begin
+          0H     ≈˘⟨ 0-resp-∘ʳ ⟩
+          f ∘ 0H ≈⟨ refl⟩∘⟨ !-unique₂ ⟩
+          f ∘ id ≈⟨ identityʳ ⟩
+          f ∎
+        }
+      ; isTerminal = ⊤-is-terminal
+      }
     }
     where
       open Terminal terminal
