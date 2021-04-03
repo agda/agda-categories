@@ -37,9 +37,25 @@ record IsSplitIdempotent {A : Obj} (i : A ⇒ A) : Set (o ⊔ ℓ ⊔ e) where
     (section ∘ retract) ∘ section ≈⟨ cancelʳ retracts ⟩
     section                       ∎
 
+  idempotent : i ∘ i ≈ i
+  idempotent = begin
+    i ∘ i                                     ≈˘⟨ splits ⟩∘⟨ splits ⟩
+    (section ∘ retract) ∘ (section ∘ retract) ≈⟨ cancelInner retracts ⟩
+    section ∘ retract                         ≈⟨ splits ⟩
+    i                                         ∎
+
 record SplitIdempotent (A : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
     idem : A ⇒ A
     isSplitIdempotent : IsSplitIdempotent idem
 
   open IsSplitIdempotent isSplitIdempotent public
+
+-- All split idempotents are idempotent
+SplitIdempotent⇒Idempotent : ∀ {A} → SplitIdempotent A → Idempotent A
+SplitIdempotent⇒Idempotent Split = record
+  { idem = idem
+  ; idempotent = idempotent
+  }
+  where
+    open SplitIdempotent Split
