@@ -13,7 +13,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism
 import Categories.Category.SetoidDiscrete as D
 
 open import Relation.Binary
-open import Function renaming (id to idf; _∘_ to _●_)
+open import Function using () renaming (id to idf; _∘_ to _●_)
 open import Function.Equality renaming (id to id⟶)
 
 Discrete : ∀ {o ℓ e} → Functor (Setoids o ℓ) (Cats o ℓ e)

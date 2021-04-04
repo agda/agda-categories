@@ -45,11 +45,8 @@ module Product {o : Level} where
   Sets-is : Cartesian
   Sets-is = record { terminal = SingletonSet-⊤ ; products = Sets-has-all }
 
-  private
-    module Cart = Cartesian.Cartesian Sets-is
-
   Sets-Monoidal : Monoidal S
-  Sets-Monoidal = Cart.monoidal
+  Sets-Monoidal = Cartesian.CartesianMonoidal.monoidal S Sets-is
 
 module Coproduct {o : Level} where
   private
@@ -70,8 +67,5 @@ module Coproduct {o : Level} where
   Sets-is : Cocartesian
   Sets-is = record { initial = EmptySet-⊥ ; coproducts = Sets-has-all }
 
-  private
-    module Cocart = Cocartesian.Cocartesian Sets-is
-
   Sets-Monoidal : Monoidal S
-  Sets-Monoidal =  Cocart.+-monoidal
+  Sets-Monoidal = Cocartesian.CocartesianMonoidal.+-monoidal S Sets-is

@@ -15,7 +15,6 @@ open import Categories.Category.Cocomplete.Finitely
 open import Categories.Category.Duality
 open import Categories.Category.Construction.Functors
 open import Categories.Functor
-open import Categories.Functor.Cocontinuous
 open import Categories.Functor.Duality
 open import Categories.NaturalTransformation as N
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)

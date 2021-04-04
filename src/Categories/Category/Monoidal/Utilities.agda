@@ -36,7 +36,6 @@ private
     f g h i a b : X ⇒ Y
 
 open Monoidal M
-module ⊗ = Functor ⊗
 
 -- for exporting, it makes sense to use the above long names, but for
 -- internal consumption, the traditional (short!) categorical names are more

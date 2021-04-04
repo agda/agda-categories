@@ -49,6 +49,34 @@ record Product (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   unique′ : π₁ ∘ h ≈ π₁ ∘ i → π₂ ∘ h ≈ π₂ ∘ i → h ≈ i
   unique′ eq₁ eq₂ = trans (sym (unique eq₁ eq₂)) g-η
 
+record IsProduct {A B P} (π₁ : P ⇒ A) (π₂ : P ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
+  infix 10 ⟨_,_⟩
+
+  field
+    ⟨_,_⟩ : C ⇒ A → C ⇒ B → C ⇒ P
+
+    project₁ : π₁ ∘ ⟨ h , i ⟩ ≈ h
+    project₂ : π₂ ∘ ⟨ h , i ⟩ ≈ i
+    unique   : π₁ ∘ h ≈ i → π₂ ∘ h ≈ j → ⟨ i , j ⟩ ≈ h
+
+Product⇒IsProduct : (p : Product A B) → IsProduct (Product.π₁ p) (Product.π₂ p)
+Product⇒IsProduct p = record
+  { ⟨_,_⟩    = ⟨_,_⟩
+  ; project₁ = project₁
+  ; project₂ = project₂
+  ; unique   = unique
+  }
+  where open Product p
+
+IsProduct⇒Product : ∀ {P} {π₁ : P ⇒ A} {π₂ : P ⇒ B} → IsProduct π₁ π₂ → Product A B
+IsProduct⇒Product p = record
+  { ⟨_,_⟩    = ⟨_,_⟩
+  ; project₁ = project₁
+  ; project₂ = project₂
+  ; unique   = unique
+  }
+  where open IsProduct p
+
 module _ {A B : Obj} where
   open Product {A} {B} renaming (⟨_,_⟩ to _⟨_,_⟩)
 

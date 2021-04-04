@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
-open import Categories.Functor.Bifunctor
+open import Categories.Category.Core using (Category)
+open import Categories.Functor.Bifunctor using (Bifunctor)
 
 module Categories.Diagram.Coend {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
   (F : Bifunctor (Category.op C) C D) where
@@ -17,29 +17,14 @@ private
     f g : A ⇒ B
 
 open import Level
-open import Data.Product using (Σ; _,_)
 
+open import Categories.Diagram.Cowedge F
 open import Categories.Functor
 open import Categories.Functor.Construction.Constant
 open import Categories.NaturalTransformation.Dinatural
 open import Categories.Morphism.Reasoning D
 
 open Functor F
-
-record Cowedge : Set (levelOfTerm F) where
-  field
-    E         : Obj
-    dinatural : DinaturalTransformation F (const E)
-
-  module dinatural = DinaturalTransformation dinatural
-
-Cowedge-∘ : (W : Cowedge) → Cowedge.E W ⇒ A → Cowedge
-Cowedge-∘ {A = A} W f = record
-  { E         = A
-  ; dinatural = extranaturalˡ (λ X → f ∘ dinatural.α X)
-                              (assoc ○ ∘-resp-≈ʳ (extranatural-commˡ dinatural) ○ sym-assoc)
-  }
-  where open Cowedge W
 
 record Coend : Set (levelOfTerm F) where
   field

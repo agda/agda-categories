@@ -4,6 +4,7 @@ module Categories.Category.Lift where
 
 open import Level
 open import Categories.Category
+open import Categories.Functor using (Functor)
 
 liftC : ∀ {o ℓ e} o′ ℓ′ e′ → Category o ℓ e → Category (o ⊔ o′) (ℓ ⊔ ℓ′) (e ⊔ e′)
 liftC o′ ℓ′ e′ C = record
@@ -25,3 +26,25 @@ liftC o′ ℓ′ e′ C = record
   ; ∘-resp-≈  = λ eq eq′ → lift (∘-resp-≈ (lower eq) (lower eq′))
   }
   where open Category C
+
+liftF : ∀ {o ℓ e} o′ ℓ′ e′ (C : Category o ℓ e) → Functor C (liftC o′ ℓ′ e′ C)
+liftF  o′ ℓ′ e′ C = record
+  { F₀           = lift
+  ; F₁           = lift
+  ; identity     = lift refl
+  ; homomorphism = lift refl
+  ; F-resp-≈     = lift
+  }
+  where open Category C
+        open Equiv
+
+unliftF : ∀ {o ℓ e} o′ ℓ′ e′ (C : Category o ℓ e) → Functor (liftC o′ ℓ′ e′ C) C
+unliftF o′ ℓ′ e′ C = record
+  { F₀           = lower
+  ; F₁           = lower
+  ; identity     = refl
+  ; homomorphism = refl
+  ; F-resp-≈     = lower
+  }
+  where open Category C
+        open Equiv

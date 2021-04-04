@@ -79,15 +79,14 @@ module Product {o ℓ e : Level} where
   One-⊤ : Terminal C
   One-⊤ = record
     { ⊤ = One
-    ; ! = const (lift tt)
-    ; !-unique = λ f → record { eq₀ = λ _ → unique-One _ ; eq₁ = λ _ → lift tt }
+    ; ⊤-is-terminal = record 
+      { ! = const (lift tt)
+      ; !-unique = λ f → record { eq₀ = λ _ → unique-One _ ; eq₁ = λ _ → lift tt }
+      }
     }
 
   Cats-is : Cartesian
   Cats-is = record { terminal = One-⊤ ; products = Cats-has-all }
 
-  private
-    module Cart = Cartesian.Cartesian Cats-is
-
   Cats-Monoidal : Monoidal C
-  Cats-Monoidal = Cart.monoidal
+  Cats-Monoidal = Cartesian.CartesianMonoidal.monoidal C Cats-is

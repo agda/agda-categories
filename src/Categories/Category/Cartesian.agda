@@ -8,7 +8,8 @@ open import Categories.Category
 
 module Categories.Category.Cartesian {o ℓ e} (𝒞 : Category o ℓ e) where
 
-open import Level
+open import Level hiding (suc)
+open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (Σ; _,_; uncurry)
 
 open Category 𝒞
@@ -256,6 +257,16 @@ record Cartesian : Set (levelOfTerm 𝒞) where
   open terminal public
   open products public
 
+  power : Obj → ℕ → Obj
+  power A 0 = ⊤
+  power A 1 = A
+  power A (suc (suc n)) = A × power A (suc n)
+
+-- The cartesian structure induces a monoidal one: 𝒞 is cartesian monoidal.
+
+module CartesianMonoidal (cartesian : Cartesian) where
+  open Cartesian cartesian
+
   ⊤×A≅A : ⊤ × A ≅ A
   ⊤×A≅A = record
     { from = π₂
@@ -366,9 +377,11 @@ record Cartesian : Set (levelOfTerm 𝒞) where
         ∎
     }
 
-  module monoidal = Monoidal monoidal
-  open monoidal using (_⊗₁_)
+  open Monoidal monoidal public
 
+module CartesianSymmetricMonoidal (cartesian : Cartesian) where
+  open Cartesian cartesian
+  open CartesianMonoidal cartesian
   open Sym monoidal
 
   symmetric : Symmetric
@@ -399,5 +412,4 @@ record Cartesian : Set (levelOfTerm 𝒞) where
         assocˡ ∘ swap ∘ assocˡ                                    ∎
     }
 
-  module symmetric = Symmetric symmetric
-  open symmetric public
+  open Symmetric symmetric public

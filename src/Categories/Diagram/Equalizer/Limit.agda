@@ -12,6 +12,7 @@ open import Data.Fin.Patterns
 open import Categories.Category.Lift
 open import Categories.Category.Finite.Fin
 open import Categories.Category.Finite.Fin.Instance.Parallel
+open import Categories.Category.Complete
 open import Categories.Diagram.Equalizer C
 open import Categories.Diagram.Limit
 open import Categories.Functor.Core
@@ -35,26 +36,28 @@ module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ Parallel) C} wh
   limit⇒equalizer L = record
     { obj       = apex
     ; arr       = proj (lift 0F)
-    ; equality  = limit-commute (lift 0F) ○ ⟺ (limit-commute (lift 1F))
-    ; equalize  = λ {_} {h} eq → rep record
-      { apex = record
-        { ψ       = λ { (lift 0F) → h
-                      ; (lift 1F) → F₁ (lift 1F) ∘ h }
-        ; commute = λ { {lift 0F} {lift 0F} (lift 0F) → elimˡ identity
-                      ; {lift 0F} {lift 1F} (lift 0F) → eq
-                      ; {lift 0F} {lift 1F} (lift 1F) → refl
-                      ; {lift 1F} {lift 1F} (lift 0F) → elimˡ identity }
+    ; isEqualizer = record
+      { equality  = limit-commute (lift 0F) ○ ⟺ (limit-commute (lift 1F))
+      ; equalize  = λ {_} {h} eq → rep record
+        { apex = record
+          { ψ       = λ { (lift 0F) → h
+                        ; (lift 1F) → F₁ (lift 1F) ∘ h }
+          ; commute = λ { {lift 0F} {lift 0F} (lift 0F) → elimˡ identity
+                        ; {lift 0F} {lift 1F} (lift 0F) → eq
+                        ; {lift 0F} {lift 1F} (lift 1F) → refl
+                        ; {lift 1F} {lift 1F} (lift 0F) → elimˡ identity }
+          }
         }
-      }
-    ; universal = ⟺ commute
-    ; unique    = λ {_} {h i} eq → ⟺ (terminal.!-unique record
-      { arr = i
-      ; commute = λ { {lift 0F} → ⟺ eq
-                    ; {lift 1F} → begin
-                      proj (lift 1F) ∘ i                ≈˘⟨ pullˡ (limit-commute (lift 1F)) ⟩
-                      F₁ (lift 1F) ∘ proj (lift 0F) ∘ i ≈˘⟨ refl⟩∘⟨ eq ⟩
-                      F₁ (lift 1F) ∘ h                  ∎ }
-      })
+      ; universal = ⟺ commute
+      ; unique    = λ {_} {h i} eq → ⟺ (terminal.!-unique record
+        { arr = i
+        ; commute = λ { {lift 0F} → ⟺ eq
+                      ; {lift 1F} → begin
+                        proj (lift 1F) ∘ i                ≈˘⟨ pullˡ (limit-commute (lift 1F)) ⟩
+                        F₁ (lift 1F) ∘ proj (lift 0F) ∘ i ≈˘⟨ refl⟩∘⟨ eq ⟩
+                        F₁ (lift 1F) ∘ h                  ∎ }
+        })
+    }
     }
     where open Limit L
 
@@ -101,15 +104,22 @@ module _ o′ ℓ′ e′ {X Y} {f g : X ⇒ Y} (e : Equalizer f g) where
                         ; {lift 1F} {lift 1F} (lift 0F) → identityˡ }
           }
         }
-      ; !        = λ {K} →
-        let open Co.Cone F K
-        in record
-        { arr     = equalize (commute (lift 0F) ○ ⟺ (commute (lift 1F)))
-        ; commute = λ { {lift 0F} → ⟺ universal
-                      ; {lift 1F} → pullʳ (⟺ universal) ○ commute (lift 1F) }
+      ; ⊤-is-terminal = record
+        { !        = λ {K} →
+          let open Co.Cone F K
+          in record
+          { arr     = equalize (commute (lift 0F) ○ ⟺ (commute (lift 1F)))
+          ; commute = λ { {lift 0F} → ⟺ universal
+                        ; {lift 1F} → pullʳ (⟺ universal) ○ commute (lift 1F) }
+          }
+        ; !-unique = λ f →
+          let open Co.Cone⇒ F f
+          in ⟺ (unique (⟺ commute))
         }
-      ; !-unique = λ f →
-        let open Co.Cone⇒ F f
-        in ⟺ (unique (⟺ commute))
       }
     }
+
+module _ {o′ ℓ′ e′} (Com : Complete o′ ℓ′ e′ C) where
+
+  complete⇒equalizer : ∀ {A B} (f g : A ⇒ B) → Equalizer f g
+  complete⇒equalizer f g = limit⇒equalizer (Com (equalizer⇒limit-F _ _ _ f g))

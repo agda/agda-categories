@@ -1,13 +1,19 @@
 {-# OPTIONS --without-K --safe #-}
 
+-- A Categorical WeakInverse induces an Adjoint Equivalence
+
 module Categories.Category.Equivalence.Properties where
 
 open import Level
 
+open import Data.Product using (Σ-syntax; _,_; proj₁)
+
 open import Categories.Adjoint.Equivalence using (⊣Equivalence)
+open import Categories.Adjoint
 open import Categories.Adjoint.TwoSided using (_⊣⊢_; withZig)
-open import Categories.Category.Core
+open import Categories.Category
 open import Categories.Category.Equivalence using (WeakInverse; StrongEquivalence)
+open import Categories.Morphism
 import Categories.Morphism.Reasoning as MR
 import Categories.Morphism.Properties as MP
 open import Categories.Functor renaming (id to idF)
@@ -15,6 +21,7 @@ open import Categories.Functor.Properties using ([_]-resp-Iso)
 open import Categories.NaturalTransformation using (ntHelper; _∘ᵥ_; _∘ˡ_; _∘ʳ_)
 open import Categories.NaturalTransformation.NaturalIsomorphism as ≃
   using (NaturalIsomorphism ; unitorˡ; unitorʳ; associator; _ⓘᵥ_; _ⓘˡ_; _ⓘʳ_)
+open import Categories.NaturalTransformation.NaturalIsomorphism.Properties using (pointwise-iso)
 
 private
   variable
@@ -113,3 +120,27 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ �
     }
 
   module C≅D = ⊣Equivalence C≅D
+
+module _ {F : Functor C D} {G : Functor D C} (F⊣G : F ⊣ G) where
+  private
+    module C = Category C
+    module D = Category D
+    module F = Functor F
+    module G = Functor G
+
+  open Adjoint F⊣G
+
+  -- If the unit and the counit of an adjuction are pointwise isomorphisms, then they form an equivalence of categories.
+  pointwise-iso-equivalence : (∀ X → Σ[ f ∈ D [ X , F.F₀ (G.F₀ X) ] ] Iso D (counit.η X) f) → (∀ X → Σ[ f ∈ C [  G.F₀ (F.F₀ X) , X ] ] Iso C (unit.η X) f) → WeakInverse F G
+  pointwise-iso-equivalence counit-iso unit-iso = record
+    { F∘G≈id =
+      let iso X =
+            let (to , is-iso) = counit-iso X
+            in record { from = counit.η X ; to = to ; iso = is-iso }
+      in pointwise-iso iso counit.commute
+    ; G∘F≈id =
+      let iso X =
+            let (to , is-iso) = unit-iso X
+            in record { from = unit.η X ; to = to ; iso = is-iso }
+      in ≃.sym (pointwise-iso iso unit.commute)
+    }

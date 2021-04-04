@@ -35,6 +35,16 @@ record StrongEquivalence {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (D : 
 
   open WeakInverse weak-inverse public
 
+  op : StrongEquivalence (Category.op C) (Category.op D)
+  op = record
+    { F = Functor.op F
+    ; G = Functor.op G
+    ; weak-inverse = record
+      { F∘G≈id = NaturalIsomorphism.op′ F∘G≈id
+      ; G∘F≈id = NaturalIsomorphism.op′ G∘F≈id
+      }
+    }
+
 refl : StrongEquivalence C C
 refl = record
   { F            = idF
