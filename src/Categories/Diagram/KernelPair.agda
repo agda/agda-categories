@@ -3,7 +3,7 @@
 open import Categories.Category.Core
 
 -- Kernel Pair - a Pullback of a morphism along itself
--- https://ncatlab.org/nlab/show/reflexive+coequalizer
+-- https://ncatlab.org/nlab/show/kernel+pair
 module Categories.Diagram.KernelPair {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
