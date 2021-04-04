@@ -29,9 +29,13 @@ import Categories.Adjoint.TwoSided.Compose
 import Categories.Bicategory
 import Categories.Bicategory.Bigroupoid
 import Categories.Bicategory.Construction.1-Category
+import Categories.Bicategory.Construction.Spans
+import Categories.Bicategory.Construction.Spans.Properties
 import Categories.Bicategory.Extras
 import Categories.Bicategory.Instance.Cats
 import Categories.Bicategory.Instance.EnrichedCats
+import Categories.Bicategory.Monad
+import Categories.Bicategory.Monad.Properties
 import Categories.Bicategory.Opposite
 import Categories.Category
 import Categories.Category.BicartesianClosed
@@ -93,6 +97,7 @@ import Categories.Category.Construction.Properties.Presheaves.Complete
 import Categories.Category.Construction.Properties.Presheaves.FromCartesianCCC
 import Categories.Category.Construction.Pullbacks
 import Categories.Category.Construction.Quivers
+import Categories.Category.Construction.Spans
 import Categories.Category.Construction.Thin
 import Categories.Category.Construction.TwistedArrow
 import Categories.Category.Construction.Wedges
@@ -100,6 +105,7 @@ import Categories.Category.Core
 import Categories.Category.Dagger
 import Categories.Category.Dagger.Construction.Discrete
 import Categories.Category.Dagger.Instance.Rels
+import Categories.Category.Diagram.Span
 import Categories.Category.Discrete
 import Categories.Category.Duality
 import Categories.Category.Equivalence
@@ -137,6 +143,7 @@ import Categories.Category.Instance.Properties.Setoids.CCC
 import Categories.Category.Instance.Properties.Setoids.Cocomplete
 import Categories.Category.Instance.Properties.Setoids.Complete
 import Categories.Category.Instance.Properties.Setoids.LCCC
+import Categories.Category.Instance.Properties.Setoids.Limits.Canonical
 import Categories.Category.Instance.Rels
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
@@ -321,6 +328,8 @@ import Categories.NaturalTransformation.NaturalIsomorphism.Functors
 import Categories.NaturalTransformation.NaturalIsomorphism.Monoidal
 import Categories.NaturalTransformation.NaturalIsomorphism.Properties
 import Categories.NaturalTransformation.Properties
+import Categories.Object.Biproduct
+import Categories.Object.Cokernel
 import Categories.Object.Coproduct
 import Categories.Object.Duality
 import Categories.Object.Exponential
@@ -347,6 +356,7 @@ import Categories.Pseudofunctor.Composition
 import Categories.Pseudofunctor.Hom
 import Categories.Pseudofunctor.Identity
 import Categories.Pseudofunctor.Instance.EnrichedUnderlying
+import Categories.Tactic.Category
 import Categories.Theory.Lawvere
 import Categories.Utils.EqReasoning
 import Categories.Utils.Product
