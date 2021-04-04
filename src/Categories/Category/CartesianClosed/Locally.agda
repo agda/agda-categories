@@ -38,11 +38,13 @@ record Locally : Set (levelOfTerm C) where
     { P               = sliceobj (X.arr ∘ p.p₁)
     ; p₁              = slicearr refl
     ; p₂              = slicearr comm
-    ; commute         = p.commute
-    ; universal       = λ {Z} {h i} eq → slicearr {h = p.universal eq} (pullʳ p.p₁∘universal≈h₁ ○ Slice⇒.△ h)
-    ; unique          = λ eq₁ eq₂ → p.unique eq₁ eq₂
-    ; p₁∘universal≈h₁ = p.p₁∘universal≈h₁
-    ; p₂∘universal≈h₂ = p.p₂∘universal≈h₂
+    ; isPullback = record
+      { commute         = p.commute
+      ; universal       = λ {Z} {h i} eq → slicearr {h = p.universal eq} (pullʳ p.p₁∘universal≈h₁ ○ Slice⇒.△ h)
+      ; unique          = λ eq₁ eq₂ → p.unique eq₁ eq₂
+      ; p₁∘universal≈h₁ = p.p₁∘universal≈h₁
+      ; p₂∘universal≈h₂ = p.p₂∘universal≈h₂
+      }
     }
     where open HomReasoning
           open Equiv

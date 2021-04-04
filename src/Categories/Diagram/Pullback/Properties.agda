@@ -11,6 +11,7 @@ open import Categories.Diagram.Pullback C
 open import Categories.Diagram.Equalizer C
 open import Categories.Object.Product C
 open import Categories.Object.Terminal C
+open import Categories.Morphism C
 open import Categories.Morphism.Reasoning C
 
 private
@@ -19,6 +20,17 @@ private
     X Y Z : Obj
     f g h i : X ⇒ Y
 open HomReasoning
+open Equiv
+
+-- pullbacks of a monomorphism along itself give us the identity arrow.
+pullback-self-mono : Mono f → IsPullback id id f f
+pullback-self-mono mono = record
+  { commute = refl
+  ; universal = λ {X} {h₁} {h₂} eq → h₁
+  ; unique = λ id∘i≈h₁ _ → ⟺ identityˡ ○ id∘i≈h₁
+  ; p₁∘universal≈h₁ = identityˡ
+  ; p₂∘universal≈h₂ = λ {X} {h₁} {h₂} {eq} → identityˡ ○ mono h₁ h₂ eq
+  }
 
 -- pullback from a terminal object is the same as a product
 module _ (t : Terminal) where
@@ -40,11 +52,13 @@ module _ (t : Terminal) where
   product⇒pullback-⊤ p = record
     { p₁              = π₁
     ; p₂              = π₂
-    ; commute         = !-unique₂
-    ; universal       = λ {_ f g} _ → ⟨ f , g ⟩
-    ; unique          = λ eq eq′ → ⟺ (unique eq eq′)
-    ; p₁∘universal≈h₁ = project₁
-    ; p₂∘universal≈h₂ = project₂
+    ; isPullback = record
+      { commute         = !-unique₂
+      ; universal       = λ {_ f g} _ → ⟨ f , g ⟩
+      ; unique          = λ eq eq′ → ⟺ (unique eq eq′)
+      ; p₁∘universal≈h₁ = project₁
+      ; p₂∘universal≈h₂ = project₂
+      }
     }
     where open Product p
 
@@ -56,12 +70,33 @@ module _ (p : Pullback f g) where
   pullback-resp-≈ eq eq′ = record
     { p₁              = p₁
     ; p₂              = p₂
-    ; commute         = ∘-resp-≈ˡ (⟺ eq) ○ commute ○ ∘-resp-≈ˡ eq′
-    ; universal       = λ eq″ → universal (∘-resp-≈ˡ eq ○ eq″ ○ ∘-resp-≈ˡ (⟺ eq′))
-    ; unique          = unique
-    ; p₁∘universal≈h₁ = p₁∘universal≈h₁
-    ; p₂∘universal≈h₂ = p₂∘universal≈h₂
+    ; isPullback = record
+      { commute         = ∘-resp-≈ˡ (⟺ eq) ○ commute ○ ∘-resp-≈ˡ eq′
+      ; universal       = λ eq″ → universal (∘-resp-≈ˡ eq ○ eq″ ○ ∘-resp-≈ˡ (⟺ eq′))
+      ; unique          = unique
+      ; p₁∘universal≈h₁ = p₁∘universal≈h₁
+      ; p₂∘universal≈h₂ = p₂∘universal≈h₂
+      }
     }
+
+-- Some facts about pulling back along identity
+module _ (p : Pullback id f) where
+  open Pullback p
+
+  -- This is a more subtle way of saying that 'p₂ ≈ id', without involving heterogenous equality.
+  pullback-identity : universal id-comm-sym ∘ p₂ ≈ id
+  pullback-identity = begin
+    universal Basic.id-comm-sym ∘ p₂ ≈⟨ unique ( pullˡ p₁∘universal≈h₁ ) (pullˡ p₂∘universal≈h₂)  ⟩
+    universal eq                     ≈⟨ universal-resp-≈ (⟺ commute ○ identityˡ) identityˡ ⟩
+    universal commute                ≈˘⟨ Pullback.id-unique p ⟩
+    id ∎
+    where
+      eq : id ∘ f ∘ p₂ ≈ f ∘ id ∘ p₂
+      eq = begin
+        (id ∘ f ∘ p₂) ≈⟨ elimˡ Equiv.refl ⟩
+        (f ∘ p₂)      ≈˘⟨ refl⟩∘⟨ identityˡ ⟩
+        (f ∘ id ∘ p₂) ∎
+
 
 module _ (pullbacks : ∀ {X Y Z} (f : X ⇒ Z) (g : Y ⇒ Z) → Pullback f g)
          (cartesian : Cartesian) where
@@ -70,15 +105,17 @@ module _ (pullbacks : ∀ {X Y Z} (f : X ⇒ Z) (g : Y ⇒ Z) → Pullback f g)
   pullback×cartesian⇒equalizer : Equalizer f g
   pullback×cartesian⇒equalizer {f = f} {g = g} = record
     { arr       = p.p₁
-    ; equality  = equality
-    ; equalize  = λ {_ h} eq → p.universal $ begin
-      ⟨ f , g ⟩ ∘ h               ≈⟨ ⟨⟩∘ ⟩
-      ⟨ f ∘ h , g ∘ h ⟩           ≈˘⟨ ⟨⟩-cong₂ identityˡ (identityˡ ○ eq) ⟩
-      ⟨ id ∘ f ∘ h , id ∘ f ∘ h ⟩ ≈˘⟨ ⟨⟩∘ ⟩
-      ⟨ id , id ⟩ ∘ f ∘ h         ∎
-    ; universal = ⟺ p.p₁∘universal≈h₁
-    ; unique    = λ eq → p.unique (⟺ eq)
-                                  (⟺ (pullˡ eq′) ○ ⟺ (∘-resp-≈ʳ eq))
+    ; isEqualizer = record
+      { equality  = equality
+      ; equalize  = λ {_ h} eq → p.universal $ begin
+        ⟨ f , g ⟩ ∘ h               ≈⟨ ⟨⟩∘ ⟩
+        ⟨ f ∘ h , g ∘ h ⟩           ≈˘⟨ ⟨⟩-cong₂ identityˡ (identityˡ ○ eq) ⟩
+        ⟨ id ∘ f ∘ h , id ∘ f ∘ h ⟩ ≈˘⟨ ⟨⟩∘ ⟩
+        ⟨ id , id ⟩ ∘ f ∘ h         ∎
+      ; universal = ⟺ p.p₁∘universal≈h₁
+      ; unique    = λ eq → p.unique (⟺ eq)
+                                    (⟺ (pullˡ eq′) ○ ⟺ (∘-resp-≈ʳ eq))
+      }
     }
     where p : Pullback ⟨ f , g ⟩ ⟨ id , id ⟩
           p = pullbacks _ _

@@ -8,13 +8,12 @@ module Categories.Adjoint.Instance.01-Truncation where
 open import Data.Product using (_,_)
 import Function
 open import Relation.Binary using (Poset)
-open import Relation.Binary.OrderMorphism using (_⇒-Poset_)
 
 open import Categories.Adjoint using (_⊣_)
 open import Categories.Category.Construction.Thin using (Thin)
 open import Categories.Category using (Category)
 open import Categories.Category.Instance.Cats using (Cats)
-open import Categories.Category.Instance.Posets using (Posets)
+open import Categories.Category.Instance.Posets using (Posets; _⇒-Poset_; ⇒-Poset-helper)
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Instance.01-Truncation using (Trunc)
 open import Categories.NaturalTransformation
@@ -60,6 +59,6 @@ TruncAdj {o} {ℓ} {e} = record
 
     counit : NaturalTransformation (Trunc ∘F Inclusion e) idF
     counit = ntHelper record
-      { η       = λ _ → record { fun = Function.id ; monotone = Function.id }
+      { η       = λ X → ⇒-Poset-helper Function.id Function.id
       ; commute = λ {_ D} _ → Poset.Eq.refl D
       }

@@ -17,9 +17,9 @@ open import Categories.Morphism.Reasoning C
 open Category C
 open HomReasoning
 
-record Terminal : Set (o ⊔ ℓ ⊔ e) where
+
+record IsTerminal (⊤ : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
-    ⊤ : Obj
     ! : {A : Obj} → (A ⇒ ⊤)
     !-unique : ∀ {A} → (f : A ⇒ ⊤) → ! ≈ f
 
@@ -32,6 +32,13 @@ record Terminal : Set (o ⊔ ℓ ⊔ e) where
 
   ⊤-id : (f : ⊤ ⇒ ⊤) → f ≈ id
   ⊤-id _ = !-unique₂
+
+record Terminal : Set (o ⊔ ℓ ⊔ e) where
+  field
+    ⊤ : Obj
+    ⊤-is-terminal : IsTerminal ⊤
+
+  open IsTerminal ⊤-is-terminal public
 
 open Terminal
 
@@ -48,11 +55,13 @@ up-to-iso t₁ t₂ = record
 transport-by-iso : (t : Terminal) → ∀ {X} → ⊤ t ≅ X → Terminal
 transport-by-iso t {X} t≅X = record
   { ⊤        = X
-  ; !        = from ∘ ! t
-  ; !-unique = λ h → begin
-    from ∘ ! t     ≈⟨ refl⟩∘⟨ !-unique t (to ∘ h)  ⟩
-    from ∘ to ∘ h  ≈⟨ cancelˡ isoʳ ⟩
-    h              ∎
+  ; ⊤-is-terminal = record
+    { !        = from ∘ ! t
+    ; !-unique = λ h → begin
+      from ∘ ! t     ≈⟨ refl⟩∘⟨ !-unique t (to ∘ h)  ⟩
+      from ∘ to ∘ h  ≈⟨ cancelˡ isoʳ ⟩
+      h              ∎
+    }
   }
   where open _≅_ t≅X
 

@@ -25,8 +25,10 @@ open import Categories.Diagram.Cone as Cone
 open import Categories.Diagram.Cocone as Cocone
 open import Categories.Diagram.End as End
 open import Categories.Diagram.Coend as Coend
+open import Categories.Diagram.Cowedge as Cowedge
 open import Categories.Diagram.Limit as Limit
 open import Categories.Diagram.Colimit as Colimit
+open import Categories.Diagram.Wedge as Wedge
 open import Categories.Category.Construction.Cocones using (Cocones)
 
 private
@@ -36,23 +38,31 @@ private
     A B : Obj
     f g : A ⇒ B
 
+-- note that what would be called
+-- terminal⇒coInitial and initial⇒coTerminal are in
+-- Categories.Object.Duality
+
 Coequalizer⇒coEqualizer : Coequalizer f g → Equalizer f g
 Coequalizer⇒coEqualizer coe = record
   { arr       = arr
-  ; equality  = equality
-  ; equalize  = coequalize
-  ; universal = universal
-  ; unique    = unique
+  ; isEqualizer = record
+    { equality  = equality
+    ; equalize  = coequalize
+    ; universal = universal
+    ; unique    = unique
+    }
   }
   where open Coequalizer coe
 
 coEqualizer⇒Coequalizer : Equalizer f g → Coequalizer f g
 coEqualizer⇒Coequalizer e = record
   { arr        = arr
-  ; equality   = equality
-  ; coequalize = equalize
-  ; universal  = universal
-  ; unique     = unique
+  ; isCoequalizer = record
+    { equality   = equality
+    ; coequalize = equalize
+    ; universal  = universal
+    ; unique     = unique
+    }
   }
   where open Equalizer e
 
@@ -72,11 +82,13 @@ Pushout⇒coPullback : Pushout f g → Pullback f g
 Pushout⇒coPullback p = record
   { p₁              = i₁
   ; p₂              = i₂
-  ; commute         = commute
-  ; universal       = universal
-  ; unique          = unique
-  ; p₁∘universal≈h₁ = universal∘i₁≈h₁
-  ; p₂∘universal≈h₂ = universal∘i₂≈h₂
+  ; isPullback = record
+    { commute         = commute
+    ; universal       = universal
+    ; unique          = unique
+    ; p₁∘universal≈h₁ = universal∘i₁≈h₁
+    ; p₂∘universal≈h₂ = universal∘i₂≈h₂
+    }
   }
   where open Pushout p
 
@@ -126,9 +138,11 @@ module _ {F : Functor J C} where
   coLimit⇒Colimit : Limit Fop → Colimit F
   coLimit⇒Colimit lim = record
     { initial = op⊤⇒⊥ (Cocones F) $ record
-      { ⊤        = coCone⇒Cocone ⊤
-      ; !        = coCone⇒⇒Cocone⇒ !
-      ; !-unique = λ f → !-unique (Cocone⇒⇒coCone⇒ f)
+      { ⊤             = coCone⇒Cocone ⊤
+      ; ⊤-is-terminal = record
+        { !        = coCone⇒⇒Cocone⇒ !
+        ; !-unique = λ f → !-unique (Cocone⇒⇒coCone⇒ f)
+        }
       }
     }
     where open Limit.Limit lim
@@ -137,9 +151,11 @@ module _ {F : Functor J C} where
   Colimit⇒coLimit : Colimit F → Limit Fop
   Colimit⇒coLimit colim = record
     { terminal = record
-      { ⊤        = Cocone⇒coCone ⊥
-      ; !        = Cocone⇒⇒coCone⇒ !
-      ; !-unique = λ f → !-unique (coCone⇒⇒Cocone⇒ f)
+      { ⊤             = Cocone⇒coCone ⊥
+      ; ⊤-is-terminal = record
+        { !        = Cocone⇒⇒coCone⇒ !
+        ; !-unique = λ f → !-unique (coCone⇒⇒Cocone⇒ f)
+        }
       }
     }
     where open Colimit.Colimit colim
@@ -154,14 +170,14 @@ module _ {F : Bifunctor (Category.op D) D C} where
     { E         = E
     ; dinatural = DinaturalTransformation.op dinatural
     }
-    where open Wedge W
+    where open Wedge.Wedge W
 
   Cowedge⇒coWedge : Cowedge F → Wedge Fop
   Cowedge⇒coWedge W = record
     { E         = E
     ; dinatural = DinaturalTransformation.op dinatural
     }
-    where open Cowedge W
+    where open Cowedge.Cowedge W
 
   coEnd⇒Coend : End Fop → Coend F
   coEnd⇒Coend e = record

@@ -26,5 +26,5 @@ record SubobjectClassifier : Set (o ⊔ ℓ ⊔ e) where
   field
     true      : ⊤ ⇒ Ω
     universal : ∀ {X Y} {f : X ⇒ Y} → Mono f → Y ⇒ Ω
-    pullback  : ∀ {X Y} {f : X ⇒ Y} {mono : Mono f} → Pullback (universal mono) true
-    unique    : ∀ {X Y} {f : X ⇒ Y} {g} {mono : Mono f} → Pullback g true → universal mono ≈ g
+    pullback  : ∀ {X Y} {f : X ⇒ Y} {mono : Mono f} → IsPullback f ! (universal mono) true
+    unique    : ∀ {X Y} {f : X ⇒ Y} {g} {mono : Mono f} → IsPullback f ! g true → universal mono ≈ g

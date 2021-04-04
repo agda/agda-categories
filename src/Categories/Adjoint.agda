@@ -10,6 +10,7 @@ open import Function using (_$_) renaming (_∘_ to _∙_)
 open import Function.Equality using (Π; _⟶_)
 import Function.Inverse as FI
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
+open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 -- be explicit in imports to 'see' where the information comes from
 open import Categories.Category.Core using (Category)
@@ -219,3 +220,8 @@ _⊣_ = Adjoint
   }
   where open Category C
         open NaturalIsomorphism
+
+private
+  op-involutive : ∀ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) →
+                  Adjoint.op (Adjoint.op L⊣R) ≡ L⊣R
+  op-involutive _ = ≡.refl

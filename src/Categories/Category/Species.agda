@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Species where
+module Categories.Category.Species where
 
 -- The Category of Species, as the Functor category from Core (FinSetoids) to Setoids.
 -- Setoids used here because that's what fits best in this setting.

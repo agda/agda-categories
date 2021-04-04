@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Species.Constructions where
+module Categories.Category.Species.Constructions where
 
 -- Construction of basic species
 
@@ -35,7 +35,7 @@ open import Categories.Functor.Construction.Constant using (const)
 open import Categories.Functor.Hom
 open import Categories.Morphism.IsoEquiv using (_≃_)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
-open import Categories.Species
+open import Categories.Category.Species
 
 import Categories.Morphism as Mor
 

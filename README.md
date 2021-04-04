@@ -2,9 +2,15 @@
 
 Welcome to what will hopefully become the standard Category Theory library for Agda.
 
+The current library release, v0.1.5, works with Agda-2.6.1 (and 2.6.1.1) and stdlib-1.5.  The master
+branch should also work with same, but may contain various incompatibilities.
+
+Note that this should be considered pre-beta software, and that backwards compability
+is not assured (although we don't intend to break things whimsically).
+
 ## Origins
 
-This library is a rewrite of [copumpin's version](https://github.com/copumpkin/categories)
+This library is a rewrite of [copumpkin's version](https://github.com/copumpkin/categories)
 of a previous library, which worked very well up to Agda 2.4.3 or so, but began bit-rotting and
 was completely broken by 2.6 (with various stages of 'functioning' in between). That library
 itself has older origins, which are well documented in that project's own documentation.
@@ -41,13 +47,7 @@ trivial sequences of steps "in the middle" have those done combinator-style too.
 Some of the lower-level design decisions (naming conventions, organization) are (will be) 
 documented in the proto-contributor's guide.
 
-### Places to find more design notes
-- [Category.Discrete](Categories/Category/Discrete.agda)
-- [Category.Monoidal](Categories/Category/Monoidal.agda)
-- (all the stuff about Mates)
-- (bicategory is defined as Enriched over (Monoidal) Cats instead of 'by hand')
-- (definition of Pseudofunctor is in Benabou style rather than 'by hand')
-- (closed) Issue 5 in the github repository contains more discussion.
+### Some design decisions
 - The library relies on eta expansion of records. However, due to a bug in Agda
   2.6.0.1, we need to switch this on in related records. In the next release of Agda,
   hopefully we can remove these switches. See also [this agda
@@ -60,6 +60,14 @@ documented in the proto-contributor's guide.
 - Use (private) modules instead of local renaming to resolve name clashes that
   would occur with opening the same module twice, such as when working with
   two categories, two functors, etc.
+- (bicategory is defined as Enriched over (Monoidal) Cats instead of 'by hand')
+- (definition of Pseudofunctor is in Benabou style rather than 'by hand')
+  
+### Places to find more design notes
+- [Category.Discrete](Categories/Category/Discrete.agda)
+- [Category.Monoidal](Categories/Category/Monoidal.agda)
+- (all the stuff about Mates)
+- (closed) Issue 5 in the github repository contains more discussion.
 
 ### Smaller Design decisions
 - Do not make implicit fields that can rarely be inferred (like what had been done in
@@ -72,6 +80,41 @@ documented in the proto-contributor's guide.
 
 We welcome contributions! Please submit PRs, issues, etc. A full-fledged contributor's guide
 will be written, eventually.
+
+### Organization
+
+Right now, one can browse [everything](https://agda.github.io/agda-categories/) in 
+nicely highlighted HTML. The basic layout:
+- All code that shouldn't (eventually) be in stdlib is under Categories.
+- If something is some kind of Category, it should be under Category/
+- Instances, i.e. if you say "X is a category", or "X is a functor", go under Instances/
+- Constructions, i.e. if you say "given W then we can build a Category" (or Functor, etc)
+  got under Constructions/
+- Properties that follow from a definition or concept X go under X.Properties
+- The important concepts of Category Theory have their own directories:
+  - Adjoint
+  - Object
+  - Morphism
+  - Diagram
+  - Functor
+  - Kan
+  - Yoneda
+- There are sub-directories for:
+  - Enriched Categories
+  - Minus2 Categories
+  - Minus1 Categories
+  - Bicategories
+  - Bifunctors
+- To be precise, a lot of the usual definitions about categories are under that
+  directory, namely:
+  - Complete, Cocomplete
+  - Close, Cartesian, CartesianClosed
+  - Discrete, Finite
+  - Monoidal (it has its own rich hierarchy as well)
+  - Product
+  - Slice
+  - Topos
+  - WithFamilies
 
 ### Naming Conventions
 
@@ -92,8 +135,4 @@ will be written, eventually.
 - Components of larger structures use long English names instead of the more usual
   Categorical 1-Greek-letter short-hands.  So unitor<sup>l</sup> rather than
   &lambda; and associator rather than &alpha;.
-
-### Organization
-
-(where to find what)
 

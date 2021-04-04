@@ -36,9 +36,11 @@ module _ {o″ ℓ″ e″} {J : Category o″ ℓ″ e″} (F : Functor J D) wh
   rapl : LF.Limit → LRF.Limit
   rapl lim = record
     { terminal = record
-      { ⊤        = ⊤
-      ; !        = !
-      ; !-unique = !-unique
+      { ⊤             = ⊤
+      ; ⊤-is-terminal = record
+        { !        = !
+        ; !-unique = !-unique
+        }
       }
     }
     where module lim = LF.Limit lim

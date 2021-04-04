@@ -48,7 +48,7 @@ record BinaryCoproducts : Set (levelOfTerm 𝒞) where
   A + B = coproduct.A+B {A} {B}
 
   open coproduct
-    using (i₁; i₂; [_,_]; inject₁; inject₂; []-cong₂)
+    using (i₁; i₂; [_,_]; inject₁; inject₂; []-cong₂; ∘-distribˡ-[])
     renaming (unique to +-unique; η to +-η; g-η to +-g-η)
     public
 
@@ -134,15 +134,19 @@ record Cocartesian : Set (levelOfTerm 𝒞) where
 
     module op-cartesian = Cartesian op-cartesian
 
-  open Dual
+-- The op-cartesian structure induces a monoidal one.
+
+module CocartesianMonoidal (cocartesian : Cocartesian) where
+  open Cocartesian cocartesian
+  private module op-cartesianMonoidal = CartesianMonoidal Dual.op-cartesian
 
   ⊥+A≅A : ⊥ + A ≅ A
-  ⊥+A≅A = op-≅⇒≅ (op-cartesian.⊤×A≅A)
+  ⊥+A≅A = op-≅⇒≅ (op-cartesianMonoidal.⊤×A≅A)
 
   A+⊥≅A : A + ⊥ ≅ A
-  A+⊥≅A = op-≅⇒≅ (op-cartesian.A×⊤≅A)
+  A+⊥≅A = op-≅⇒≅ (op-cartesianMonoidal.A×⊤≅A)
 
-  open op-cartesian
+  open op-cartesianMonoidal
     using ()
     -- both are natural isomorphism
     renaming (⊤×--id to ⊥+--id; -×⊤-id to -+⊥-id)
@@ -175,11 +179,17 @@ record Cocartesian : Set (levelOfTerm 𝒞) where
                                             ([ -+ W ]-resp-Iso (iso +-assoc))))
                                      (Iso-∘ (iso +-assoc) (iso +-assoc))
     }
-    where op-monoidal = op-cartesian.monoidal
-          open Monoidal op-monoidal
+    where open op-cartesianMonoidal
           open _≅_
 
-  module +-monoidal = Monoidal +-monoidal
+  open Monoidal +-monoidal public
+
+module CocartesianSymmetricMonoidal (cocartesian : Cocartesian) where
+  open Cocartesian cocartesian
+  open CocartesianMonoidal cocartesian
+  private
+    module op-cartesianSymmetricMonoidal =
+      CartesianSymmetricMonoidal Dual.op-cartesian
 
   +-symmetric : Symmetric +-monoidal
   +-symmetric = record
@@ -202,10 +212,7 @@ record Cocartesian : Set (levelOfTerm 𝒞) where
       }
     ; commutative = commutative
     }
-    where op-symmetric = op-cartesian.symmetric
-          open Symmetric op-symmetric
+    where open op-cartesianSymmetricMonoidal
           open _≅_
 
-  -- we don't open this module publicly in order to prevent introducing conflicts
-  -- with Cartesian category
-  module +-symmetric = Symmetric +-symmetric
+  open Symmetric +-symmetric public
