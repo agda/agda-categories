@@ -7,6 +7,7 @@ module Categories.Morphism.Idempotent {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
 
+open import Categories.Morphism 𝒞
 open import Categories.Morphism.Reasoning 𝒞
 
 open Category 𝒞
@@ -19,9 +20,9 @@ record Idempotent (A : Obj) : Set (ℓ ⊔ e) where
 
 record IsSplitIdempotent {A : Obj} (i : A ⇒ A) : Set (o ⊔ ℓ ⊔ e) where
   field
-    {R}      : Obj
-    retract  : A ⇒ R
-    section  : R ⇒ A
+    {obj}    : Obj
+    retract  : A ⇒ obj
+    section  : obj ⇒ A
     retracts : retract ∘ section ≈ id 
     splits   : section ∘ retract ≈ i
 
@@ -59,3 +60,26 @@ SplitIdempotent⇒Idempotent Split = record
   }
   where
     open SplitIdempotent Split
+
+module _ {A} {f : A ⇒ A} (S T : IsSplitIdempotent f) where
+  private
+    module S = IsSplitIdempotent S
+    module T = IsSplitIdempotent T
+
+    split-idempotent-unique : S.obj ≅ T.obj
+    split-idempotent-unique = record
+      { from = T.retract ∘ S.section
+      ; to = S.retract ∘ T.section
+      ; iso = record
+        { isoˡ = begin
+          (S.retract ∘ T.section) ∘ (T.retract ∘ S.section) ≈⟨ center T.splits ⟩
+          S.retract ∘ f ∘ S.section                         ≈⟨ pullˡ S.retract-absorb ⟩
+          S.retract ∘ S.section                             ≈⟨ S.retracts ⟩
+          id                                                ∎
+        ; isoʳ = begin
+          (T.retract ∘ S.section) ∘ (S.retract ∘ T.section) ≈⟨ center S.splits ⟩
+          T.retract ∘ f ∘ T.section                         ≈⟨ pullˡ T.retract-absorb ⟩
+          T.retract ∘ T.section                             ≈⟨ T.retracts ⟩
+          id                                                ∎
+        }
+      }

@@ -64,7 +64,7 @@ idempotent-split : ∀ {A} → Idempotent (KaroubiEnvelope 𝒞) A → SplitIdem
 idempotent-split {A} I = record
   { idem = idem
   ; isSplitIdempotent = record
-    { R = record
+    { obj = record
       { isIdempotent = record
         { idem = idem.hom
         ; idempotent = idempotent
