@@ -173,16 +173,19 @@ module _ where
   record IsKanComplex (X : ΔSet) : Set (o ⊔ ℓ) where
     field
       filler : ∀ {n} {k} → Λ[ n , k ] ⇒ X → Δ[ n ] ⇒ X
+      filler-cong : ∀ {n} {k} → {f g : Λ[ n , k ] ⇒ X} → f ≈ g → filler {n} f ≈ filler g
       is-filler : ∀ {n} {k} → (f : Λ[ n , k ] ⇒ X) → filler f ∘ Λ-inj k ≈ f
 
   record IsWeakKanComplex (X : ΔSet) : Set (o ⊔ ℓ) where
     field
       filler : ∀ {n} {k : Fin (ℕ.suc n)} → 0F < k → k < fromℕ n → Λ[ ℕ.suc n , k ] ⇒ X → Δ[ ℕ.suc n ] ⇒ X
+      filler-cong : ∀ {n} {k} → (0<k : 0F < k) → (k<n : k < fromℕ n) → {f g : Λ[ ℕ.suc n , k ] ⇒ X} → f ≈ g → filler 0<k k<n f ≈ filler 0<k k<n g
       is-filler : ∀ {n} {k : Fin (ℕ.suc n)} → (0<k : 0F < k) → (k<n : k < fromℕ n) → (f : Λ[ ℕ.suc n , k ] ⇒ X) → filler 0<k k<n f ∘ Λ-inj k ≈ f
 
   KanComplex⇒WeakKanComplex : ∀ {X} → IsKanComplex X → IsWeakKanComplex X
   KanComplex⇒WeakKanComplex complex = record
     { filler = λ _ _ f → filler f
+    ; filler-cong = λ _ _ eq x → filler-cong eq x
     ; is-filler = λ { {n} {k} 0<k k<n f {m} {h} {h′} x → is-filler f {m} {h} x }
     }
     where
