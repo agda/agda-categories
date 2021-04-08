@@ -158,6 +158,25 @@ record Horn (m n-1 : ℕ) (k : Fin (ℕ.suc n-1)) : Set where
 module _ where
   open Category (SimplicialSet o ℓ)
 
+  -- Inclusion of boundaries
+  ∂Δ-inj : ∀ {n} → ∂Δ[ n ] ⇒ Δ[ n ]
+  ∂Δ-inj {ℕ.zero} = ntHelper record
+    { η = λ X → record
+      { _⟨$⟩_ = ⊥-elim
+      ; cong = λ { {()} }
+      }
+    ; commute = λ { _ {()} _ }
+    }
+  ∂Δ-inj {ℕ.suc n} = ntHelper record
+    { η = λ X → record
+      { _⟨$⟩_ = λ (lift b) → lift (hom b)
+      ; cong = λ eq → lift (λ x → lower (eq x))
+      }
+    ; commute = λ f eq → lift (λ x → lower (eq (proj₁ f x)))
+    }
+    where
+      open Boundary
+
   -- Inclusion of n-horns into n-simplicies
   Λ-inj : ∀ {n} → (k : Fin n) → Λ[ n , k ] ⇒ Δ[ n ]
   Λ-inj {n = ℕ.suc n} k = ntHelper record
