@@ -16,7 +16,7 @@ matrix:
         CABAL_VER=2.2
         ALEX_VER=3.2.5
         HAPPY_VER=1.19.12
-        STDLIB_VER=1.5
+        STDLIB_VER=1.6
       addons:
         apt:
           packages:
