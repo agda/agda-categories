@@ -13,7 +13,10 @@ open import Categories.Category.Monoidal.Properties M
 open import Categories.Category.Monoidal.Reasoning M
 open import Categories.Category.Monoidal.Utilities M
 open import Categories.Functor using (Functor)
+open import Categories.Morphism C using (module ≅)
+open import Categories.Morphism.IsoEquiv C using (_≃_; ⌞_⌟)
 open import Categories.Morphism.Reasoning C hiding (push-eq)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
   using (push-eq)
 
@@ -90,3 +93,53 @@ braiding-coherence = push-eq unitorʳ-naturalIsomorphism (begin
   (unitorˡ.from ⊗₁ id) ∘ (B ⊗₁ id)   ≈⟨ braiding-coherence⊗unit ⟩
   unitorʳ.from  ⊗₁ id                ∎)
   where open Functor (-⊗ unit)
+
+
+-- Shorthands for working with isomorphisms.
+
+open ≅ using () renaming (refl to idᵢ; sym to _⁻¹)
+infixr 9 _∘ᵢ_
+private
+  _∘ᵢ_ = λ {A B C} f g → ≅.trans {A} {B} {C} g f
+  Bᵢ   = braiding.FX≅GX
+  B⁻¹  = λ {X} {Y} → braiding.⇐.η (X , Y)
+
+-- Variants of the hexagon identities defined on isos.
+
+hexagon₁-iso : idᵢ ⊗ᵢ Bᵢ ∘ᵢ associator ∘ᵢ Bᵢ {X , Y} ⊗ᵢ idᵢ {Z}  ≃
+               associator ∘ᵢ Bᵢ {X , Y ⊗₀ Z} ∘ᵢ associator
+hexagon₁-iso = ⌞ hexagon₁ ⌟
+
+hexagon₂-iso : (Bᵢ ⊗ᵢ idᵢ ∘ᵢ associator ⁻¹) ∘ᵢ idᵢ {X} ⊗ᵢ Bᵢ {Y , Z} ≃
+               (associator ⁻¹ ∘ᵢ Bᵢ {X ⊗₀ Y , Z}) ∘ᵢ associator ⁻¹
+hexagon₂-iso = ⌞ hexagon₂ ⌟
+
+-- A variants of the above coherence law defined on isos.
+
+braiding-coherence-iso : unitorˡ ∘ᵢ Bᵢ ≃ unitorʳ {X}
+braiding-coherence-iso = ⌞ braiding-coherence ⌟
+
+-- The inverse of the braiding is also a braiding on M.
+
+inv-Braided : Braided M
+inv-Braided = record
+  { braiding = niHelper (record
+    { η       = λ _ → B⁻¹
+    ; η⁻¹     = λ _ → B
+    ; commute = λ{ (f , g) → braiding.⇐.commute (g , f) }
+    ; iso     = λ{ (X , Y) → record
+      { isoˡ = braiding.iso.isoʳ (Y , X)
+      ; isoʳ = braiding.iso.isoˡ (Y , X) } }
+    })
+  ; hexagon₁ = _≃_.to-≈ hexagon₂-iso
+  ; hexagon₂ = _≃_.to-≈ hexagon₁-iso
+  }
+
+-- A variant of the above coherence law for the inverse of the braiding.
+
+inv-braiding-coherence : [ unit ⊗₀ X ⇒ X ]⟨
+                           B⁻¹            ⇒⟨ X ⊗₀ unit ⟩
+                           unitorʳ.from
+                         ≈ unitorˡ.from
+                         ⟩
+inv-braiding-coherence = ⟺ (switch-fromtoʳ Bᵢ braiding-coherence)
