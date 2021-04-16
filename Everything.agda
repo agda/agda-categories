@@ -276,6 +276,7 @@ import Categories.Functor.Instance.StrictCore
 import Categories.Functor.Instance.Twisted
 import Categories.Functor.Limits
 import Categories.Functor.Monoidal
+import Categories.Functor.Monoidal.Braided
 import Categories.Functor.Monoidal.Properties
 import Categories.Functor.Monoidal.Symmetric
 import Categories.Functor.Power
