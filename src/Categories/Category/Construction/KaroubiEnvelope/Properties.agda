@@ -12,6 +12,7 @@ open import Categories.Functor.Properties
 open import Categories.Category.Construction.KaroubiEnvelope
 
 open import Categories.Morphism.Idempotent
+open import Categories.Morphism.Idempotent.Bundles
 
 open Category 𝒞
 open Equiv
