@@ -178,6 +178,7 @@ import Categories.Category.Monoidal.Instance.Rels
 import Categories.Category.Monoidal.Instance.Setoids
 import Categories.Category.Monoidal.Instance.Sets
 import Categories.Category.Monoidal.Instance.StrictCats
+import Categories.Category.Monoidal.Interchange
 import Categories.Category.Monoidal.Properties
 import Categories.Category.Monoidal.Reasoning
 import Categories.Category.Monoidal.Rigid
