@@ -1,27 +1,27 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Level
-open import Function using (_$_)
 
 module Categories.Category.Instance.SimplicialSet.Properties (o ℓ : Level) where
 
-open import Data.Empty.Polymorphic
+open import Function using (_$_)
+
+open import Data.Empty.Polymorphic using (⊥; ⊥-elim)
 open import Data.Nat using (ℕ)
-open import Data.Fin using (Fin; _<_; fromℕ)
-open import Data.Fin.Patterns
+open import Data.Fin using (Fin)
 open import Data.Product using (proj₁)
 
 import Relation.Binary.PropositionalEquality as Eq
 
-open import Categories.Category
-open import Categories.Category.Instance.SimplicialSet
-open import Categories.Category.Instance.Simplex
+open import Categories.Category using (Category; _[_,_]; _[_∘_]; _[_≈_])
+open import Categories.Category.Instance.SimplicialSet using (SimplicialSet)
+open import Categories.Category.Instance.Simplex using (Δ; face; degeneracy)
 
-open import Categories.Functor
-open import Categories.Functor.Construction.Constant
-open import Categories.Functor.Construction.LiftSetoids
+open import Categories.Functor using (Functor; _∘F_)
+open import Categories.Functor.Construction.Constant using (const)
+open import Categories.Functor.Construction.LiftSetoids using (LiftSetoids)
 
-open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation using (ntHelper)
 
 open import Categories.Yoneda
 
@@ -46,10 +46,16 @@ private
 -- A 'Boundary m n' represents some set of maps into 'Δ[ ℕ.suc n ]' that factor through
 -- a face map. To make this indexing more obvious, we use the suggestively named variable 'n-1'.
 record Boundary (m n-1 : ℕ) : Set where
+  -- To avoid the (somewhat confusion) pattern of 'ℕ.suc n-1', let's define
+  -- a bit of helpful local notation.
+  private
+    n : ℕ
+    n = ℕ.suc n-1
+
   field
-    hom : Δ [ m , (ℕ.suc n-1) ]
+    hom : Δ [ m , n ]
     factor : Δ [ m , n-1 ]
-    factor-dim : Fin (ℕ.suc n-1)
+    factor-dim : Fin n
     factor-face : Δ [ hom ≈ Δ [ face factor-dim ∘ factor ] ]
 
 -- Lift morphisms in Δ to maps between boundary sets on 'Δ[ n ]'
@@ -149,11 +155,7 @@ record Horn (m n-1 : ℕ) (k : Fin (ℕ.suc n-1)) : Set where
 
 
 --------------------------------------------------------------------------------
--- Kan Complexes
---
--- These are technically "Algebraic" Kan Complexes, as they come with a choice of fillers
--- However, this notion is far easier than the more geometric flavor,
--- as we can sidestep questions about choice.
+-- Morphims between simplicial sets
 
 module _ where
   open Category (SimplicialSet o ℓ)
@@ -188,25 +190,3 @@ module _ where
     }
     where
       open Horn
-  
-  record IsKanComplex (X : ΔSet) : Set (o ⊔ ℓ) where
-    field
-      filler : ∀ {n} {k} → Λ[ n , k ] ⇒ X → Δ[ n ] ⇒ X
-      filler-cong : ∀ {n} {k} → {f g : Λ[ n , k ] ⇒ X} → f ≈ g → filler {n} f ≈ filler g
-      is-filler : ∀ {n} {k} → (f : Λ[ n , k ] ⇒ X) → filler f ∘ Λ-inj k ≈ f
-
-  record IsWeakKanComplex (X : ΔSet) : Set (o ⊔ ℓ) where
-    field
-      filler : ∀ {n} {k : Fin (ℕ.suc n)} → 0F < k → k < fromℕ n → Λ[ ℕ.suc n , k ] ⇒ X → Δ[ ℕ.suc n ] ⇒ X
-      filler-cong : ∀ {n} {k} → (0<k : 0F < k) → (k<n : k < fromℕ n) → {f g : Λ[ ℕ.suc n , k ] ⇒ X} → f ≈ g → filler 0<k k<n f ≈ filler 0<k k<n g
-      is-filler : ∀ {n} {k : Fin (ℕ.suc n)} → (0<k : 0F < k) → (k<n : k < fromℕ n) → (f : Λ[ ℕ.suc n , k ] ⇒ X) → filler 0<k k<n f ∘ Λ-inj k ≈ f
-
-  KanComplex⇒WeakKanComplex : ∀ {X} → IsKanComplex X → IsWeakKanComplex X
-  KanComplex⇒WeakKanComplex complex = record
-    { filler = λ _ _ f → filler f
-    ; filler-cong = λ _ _ eq x → filler-cong eq x
-    ; is-filler = λ { {n} {k} 0<k k<n f {m} {h} {h′} x → is-filler f {m} {h} x }
-    }
-    where
-      open IsKanComplex complex
-  
