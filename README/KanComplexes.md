@@ -10,9 +10,7 @@ distinguished fillers.
 ## Implementation Notes
 * The inequality in the definition of Horn seems like it could become a bit awkward down the line?
   As equality of `Fin` is decidable, it isn't *too* bad, but does pose the potential to be annoying.
-* The proof obligations in WeakKanComplex seem pretty painful. Perhaps there is a more clever way of doing this?
-  Something akin to a clever encoding of the dimension, where we embed some smaller `k : Fin (n - 2)` into the larger dimension set.
-* The unfolded equality in ∂Δ[_] and Λ[_,_] does better than just lifting the equality from Δ, but it still falls on it's face from time to time (See KanComplex⇒WeakKanComplex)
+* The unfolded equality in ∂Δ[_] and Λ[_,_] does better than just lifting the equality from Δ, but it still falls on it's face from time to time
 
 ## References
 * https://ncatlab.org/nlab/show/Kan+complex
