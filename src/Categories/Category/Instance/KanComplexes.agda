@@ -33,13 +33,13 @@ module _ (o ℓ : Level) where
   KanComplexes : Category (suc o ⊔ suc ℓ) (o ⊔ ℓ ⊔ (o ⊔ ℓ)) (o ⊔ ℓ)
   KanComplexes = SubCategory (SimplicialSet o ℓ) {I = Σ ΔSet (IsKanComplex o ℓ)} $ record
     { U = proj₁
-    ; R = λ { {X , X-Kan} {Y , Y-Kan} f → PreservesFiller X-Kan Y-Kan f }
-    ; Rid = λ { {X , X-Kan} i → begin
+    ; R = λ { {_ , X-Kan} {_ , Y-Kan} f → PreservesFiller X-Kan Y-Kan f }
+    ; Rid = λ { {_ , X-Kan} i → begin
         id ∘ filler X-Kan i   ≈⟨ identityˡ {f = filler X-Kan i} ⟩
         filler X-Kan i        ≈˘⟨ filler-cong X-Kan (identityˡ {f = i}) ⟩
         filler X-Kan (id ∘ i) ∎
       }
-    ; _∘R_ = λ { {X , X-Kan} {Y , Y-Kan} {Z , Z-Kan} {f} {g} f-preserves g-preserves i → begin
+    ; _∘R_ = λ { {_ , X-Kan} {_ , Y-Kan} {_ , Z-Kan} {f} {g} f-preserves g-preserves i → begin
         (f ∘ g) ∘ filler X-Kan i ≈⟨ assoc {f = filler X-Kan i} {g = g} {h = f} ⟩
         f ∘ (g ∘ filler X-Kan i) ≈⟨ ∘-resp-≈ʳ {f = (g ∘ filler X-Kan i)} {h = filler Y-Kan (g ∘ i)} {g = f} (g-preserves i) ⟩
         f ∘ filler Y-Kan (g ∘ i) ≈⟨ f-preserves (g ∘ i) ⟩
