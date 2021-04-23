@@ -56,3 +56,12 @@ record IsWeakKanComplex (X : ΔSet) : Set (o ⊔ ℓ) where
     filler      : ∀ {n-2} {k : Fin n-2} → Λ[ ℕ.suc (ℕ.suc n-2) , inner k ] ⇒ X → Δ[ ℕ.suc (ℕ.suc n-2) ] ⇒ X
     filler-cong : ∀ {n-2} {k : Fin n-2} → {f g : Λ[ ℕ.suc (ℕ.suc n-2) , inner k ] ⇒ X} → f ≈ g → filler f ≈ filler g
     is-filler   : ∀ {n-2} {k : Fin n-2} → (f : Λ[ ℕ.suc (ℕ.suc n-2) , inner k ] ⇒ X) → filler f ∘ Λ-inj (inner k) ≈ f
+
+KanComplex⇒WeakKanComplex : ∀ {X} → IsKanComplex X → IsWeakKanComplex X
+KanComplex⇒WeakKanComplex complex = record
+  { filler = filler
+  ; filler-cong = filler-cong
+  ; is-filler = is-filler
+  }
+  where
+    open IsKanComplex complex
