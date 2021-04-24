@@ -12,7 +12,7 @@ open import Categories.Functor.Properties
 open import Categories.Category.Construction.KaroubiEnvelope
 
 open import Categories.Morphism.Idempotent
-open import Categories.Morphism.Idempotent.Bundles
+import Categories.Morphism.Idempotent.Bundles as BundledIdem
 
 open Category 𝒞
 open Equiv
@@ -45,7 +45,7 @@ private
 karoubi-embedding-full : Full KaroubiEmbedding
 karoubi-embedding-full = record
   { from = record
-    { _⟨$⟩_ = λ f → Idempotent⇒.hom f
+    { _⟨$⟩_ = λ f → BundledIdem.Idempotent⇒.hom f
     ; cong = λ eq → eq
     }
   ; right-inverse-of = λ _ → refl
@@ -86,6 +86,6 @@ idempotent-split {A} I = record
     }
   }
   where
-    module A = BundledIdempotent A
+    module A = BundledIdem.Idempotent A
     open Idempotent I
-    module idem = Idempotent⇒ idem
+    module idem = BundledIdem.Idempotent⇒ idem

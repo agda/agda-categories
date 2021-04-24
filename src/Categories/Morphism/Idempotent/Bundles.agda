@@ -1,55 +1,56 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category.Core
+open import Categories.Category using (Category; _[_,_]; _[_∘_]; _[_≈_])
 
--- Bundled versions of Idempotents, as well as maps between idempotents
+-- Bundled versions of Idempotents, as well as maps between idempotents.
 module Categories.Morphism.Idempotent.Bundles {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
 
-open import Categories.Morphism.Idempotent 𝒞
+import Categories.Morphism.Idempotent 𝒞 as Idem
 open import Categories.Morphism.Reasoning 𝒞
 
-open Category 𝒞
-open HomReasoning
-open Equiv
+private
+  module 𝒞 = Category 𝒞
+  open 𝒞.HomReasoning
+  open 𝒞.Equiv
 
 --------------------------------------------------------------------------------
 -- Bundled Idempotents, and maps between them
 
-record BundledIdempotent : Set (o ⊔ ℓ ⊔ e) where
+record Idempotent : Set (o ⊔ ℓ ⊔ e) where
   field
-    {obj} : Obj
-    isIdempotent : Idempotent obj
+    {obj} : 𝒞.Obj
+    isIdempotent : Idem.Idempotent obj
 
-  open Idempotent isIdempotent public
+  open Idem.Idempotent isIdempotent public
 
-open BundledIdempotent
+open Idempotent
 
-record Idempotent⇒ (I J : BundledIdempotent) : Set (ℓ ⊔ e) where
+record Idempotent⇒ (I J : Idempotent) : Set (ℓ ⊔ e) where
   private
-    module I = BundledIdempotent I
-    module J = BundledIdempotent J
+    module I = Idempotent I
+    module J = Idempotent J
   field
-    hom : I.obj ⇒ J.obj
-    absorbˡ : J.idem ∘ hom ≈ hom
-    absorbʳ : hom ∘ I.idem ≈ hom
+    hom     : 𝒞 [ I.obj , J.obj ]
+    absorbˡ : 𝒞 [ 𝒞 [ J.idem ∘ hom ] ≈ hom ]
+    absorbʳ : 𝒞 [ 𝒞 [ hom ∘ I.idem ] ≈ hom ]
 
 open Idempotent⇒
 
 --------------------------------------------------------------------------------
 -- Identity and Composition of maps between Idempotents
 
-idempotent⇒-id : ∀ {I} → Idempotent⇒ I I
-idempotent⇒-id {I} = record
+id : ∀ {I} → Idempotent⇒ I I
+id {I} = record
   { hom = idem I
   ; absorbˡ = idempotent I
   ; absorbʳ = idempotent I
   }
 
-idempotent⇒-∘ : ∀ {I J K} → (f : Idempotent⇒ J K) → (g : Idempotent⇒ I J) → Idempotent⇒ I K
-idempotent⇒-∘ {I} {J} {K} f g = record
-  { hom = f.hom ∘ g.hom
+_∘_ : ∀ {I J K} → (f : Idempotent⇒ J K) → (g : Idempotent⇒ I J) → Idempotent⇒ I K
+_∘_ {I} {J} {K} f g = record
+  { hom = 𝒞 [ f.hom ∘ g.hom ]
   ; absorbˡ = pullˡ f.absorbˡ
   ; absorbʳ = pullʳ g.absorbʳ
   }
