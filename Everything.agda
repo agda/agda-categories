@@ -79,6 +79,7 @@ import Categories.Category.Construction.Functors
 import Categories.Category.Construction.Graphs
 import Categories.Category.Construction.Grothendieck
 import Categories.Category.Construction.GroupAsCategory
+import Categories.Category.Construction.KanComplex
 import Categories.Category.Construction.Kleisli
 import Categories.Category.Construction.MonoidAsCategory
 import Categories.Category.Construction.MonoidalFunctors
@@ -130,6 +131,7 @@ import Categories.Category.Instance.FinCatShapes
 import Categories.Category.Instance.FinSetoids
 import Categories.Category.Instance.Globe
 import Categories.Category.Instance.Groupoids
+import Categories.Category.Instance.KanComplexes
 import Categories.Category.Instance.LawvereTheories
 import Categories.Category.Instance.Monoidals
 import Categories.Category.Instance.One
@@ -148,6 +150,7 @@ import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
 import Categories.Category.Instance.Simplex
 import Categories.Category.Instance.SimplicialSet
+import Categories.Category.Instance.SimplicialSet.Properties
 import Categories.Category.Instance.SingletonSet
 import Categories.Category.Instance.Span
 import Categories.Category.Instance.StrictCats
