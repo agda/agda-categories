@@ -108,11 +108,11 @@ boundary-map {n = n} f b = record
     open Eq
     open ≡-Reasoning
 
--- --------------------------------------------------------------------------------
--- -- Horns
--- -- 
--- -- The idea here is essentially the same as the boundaries, but we exclude the kth
--- -- face map as a possible factor.
+--------------------------------------------------------------------------------
+-- Horns
+-- 
+-- The idea here is essentially the same as the boundaries, but we exclude the kth
+-- face map as a possible factor.
 
 record Horn (m n-1 : ℕ) (k : Fin (ℕ.suc n-1)) : Set where
   field
