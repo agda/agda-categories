@@ -77,9 +77,9 @@ infix  4 _≗_
 record _≗_ {m n} (f g : m Δ⇒ n) : Set where
   constructor Δ-eq
   field
-    pointwise : ∀ {x} → ⟦ f ⟧ x ≡ ⟦ g ⟧ x
+    Δ-pointwise : ∀ {x} → ⟦ f ⟧ x ≡ ⟦ g ⟧ x
 
-open _≗_
+open _≗_ public
 
 -- Now, we get the same benefits of being able to do induction on our input
 -- arguments when trying to prove equalities, as well as being able to define functors
@@ -99,10 +99,10 @@ open _≗_
   ; identity² = Δ-eq refl
   ; equiv = record
     { refl = Δ-eq refl
-    ; sym = λ eq → Δ-eq (sym (pointwise eq))
-    ; trans = λ eq₁ eq₂ → Δ-eq (trans (pointwise eq₁) (pointwise eq₂))
+    ; sym = λ eq → Δ-eq (sym (Δ-pointwise eq))
+    ; trans = λ eq₁ eq₂ → Δ-eq (trans (Δ-pointwise eq₁) (Δ-pointwise eq₂))
     }
-  ; ∘-resp-≈ = λ {_ _ _ f g h i} eq₁ eq₂ → Δ-eq (trans (cong ⟦ f ⟧ (pointwise eq₂)) (pointwise eq₁))
+  ; ∘-resp-≈ = λ {_ _ _ f g h i} eq₁ eq₂ → Δ-eq (trans (cong ⟦ f ⟧ (Δ-pointwise eq₂)) (Δ-pointwise eq₁))
   }
 
 
@@ -113,33 +113,33 @@ open Category Δ
 -- δᵢ ∘ δⱼ = δⱼ₊₁ ∘ δᵢ if i ≤ j
 face-comm : ∀ {n} {i j : Fin (suc n)}  → i ≤ j → δ (inject₁ i) ∘ δ j ≈ δ (suc j) ∘ δ i
 face-comm {_} {zero}  {j}     z≤n      = Δ-eq refl
-face-comm {_} {suc i} {suc j} (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (pointwise (face-comm le)) })
+face-comm {_} {suc i} {suc j} (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (face-comm le)) })
 
 -- σⱼ ∘ σᵢ = σᵢ ∘ σⱼ₊₁ if i ≤ j
 degen-comm : ∀ {n} {i j : Fin n} → i ≤ j → σ j ∘ σ (inject₁ i) ≈ σ i ∘ σ (suc j)
 degen-comm {_} {zero}  {zero}  z≤n      = Δ-eq λ { {zero} → refl ; {suc x} → refl }
 degen-comm {_} {zero}  {suc j} z≤n      = Δ-eq λ { {zero} → refl ; {suc x} → refl }
-degen-comm {_} {suc i} {suc j} (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (pointwise (degen-comm le)) })
+degen-comm {_} {suc i} {suc j} (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-comm le)) })
 
 -- σⱼ ∘ δᵢ = δᵢ ∘ σⱼ₋₁ if i < j
 degen-face-comm : ∀ {n} {i : Fin (suc n)} {j : Fin n} → i < suc j → σ (suc j) ∘ δ (inject₁ i) ≈ δ i ∘ σ j
 degen-face-comm {_} {zero}  {j}     (s≤s le) = Δ-eq refl
-degen-face-comm {_} {suc i} {suc j} (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (pointwise (degen-face-comm le)) })
+degen-face-comm {_} {suc i} {suc j} (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-face-comm le)) })
 
 -- σⱼ ∘ δᵢ = id        if i = j
 degen-face-id : ∀ {n} {i j : Fin n} → i ≡ j → σ j ∘ δ (inject₁ i) ≈ id
 degen-face-id {_} {zero}  {zero}  refl = Δ-eq refl
-degen-face-id {_} {suc i} {suc i} refl = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (pointwise (degen-face-id {i = i} refl)) })
+degen-face-id {_} {suc i} {suc i} refl = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-face-id {i = i} refl)) })
 
 -- σⱼ ∘ δᵢ = id        if i = j + 1
 degen-face-suc-id : ∀ {n} {i : Fin (suc n)} {j : Fin n} → i ≡ suc j → σ j ∘ δ i ≈ id
 degen-face-suc-id {_} {suc zero}    {zero}  refl = Δ-eq λ { {zero} → refl ; {suc x} → refl }
-degen-face-suc-id {_} {suc (suc i)} {suc i} refl = Δ-eq λ { {zero} → refl ; {suc x} → cong suc (pointwise (degen-face-suc-id {i = suc i} refl)) }
+degen-face-suc-id {_} {suc (suc i)} {suc i} refl = Δ-eq λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-face-suc-id {i = suc i} refl)) }
 
 -- σⱼ ∘ δᵢ = δᵢ₋₁ ∘ σⱼ if j + 1 < i
 degen-face-suc-comm : ∀ {n} {i : Fin (suc n)} {j : Fin n} → suc j < i → σ (inject₁ j) ∘ δ (suc i) ≈ δ i ∘ σ j
 degen-face-suc-comm {_} {suc (suc i)} {zero}  (s≤s (s≤s z≤n)) = Δ-eq (λ { {zero} → refl ; {suc x} → refl })
-degen-face-suc-comm {_} {suc (suc i)} {suc j} (s≤s le)        = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (pointwise (degen-face-suc-comm le)) })
+degen-face-suc-comm {_} {suc (suc i)} {suc j} (s≤s le)        = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-face-suc-comm le)) })
 
 -- Further Work:
 -- If we had a means of decomposing any monotone map 'Fin n ⇒ Fin m' into a series of face/boundary
