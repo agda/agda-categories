@@ -15,7 +15,7 @@ import Relation.Binary.PropositionalEquality as Eq
 
 open import Categories.Category using (Category; _[_,_]; _[_∘_]; _[_≈_])
 open import Categories.Category.Instance.SimplicialSet using (SimplicialSet)
-open import Categories.Category.Instance.Simplex using (Δ; face; degeneracy)
+open import Categories.Category.Instance.Simplex using (Δ; δ; σ; ⟦_⟧; Δ-eq; Δ-pointwise)
 
 open import Categories.Functor using (Functor; _∘F_)
 open import Categories.Functor.Construction.Constant using (const)
@@ -27,6 +27,7 @@ open import Categories.Yoneda
 
 private
   module Y = Functor (Yoneda.embed Δ)
+  module Δ = Category Δ
 
 -- Some useful notation for a simplicial set
 ΔSet : Set (suc o ⊔ suc ℓ)
@@ -56,7 +57,7 @@ record Boundary (m n-1 : ℕ) : Set where
     hom : Δ [ m , n ]
     factor : Δ [ m , n-1 ]
     factor-dim : Fin n
-    factor-face : Δ [ hom ≈ Δ [ face factor-dim ∘ factor ] ]
+    factor-face : Δ [ hom ≈ Δ [ δ factor-dim ∘ factor ] ]
 
 -- Lift morphisms in Δ to maps between boundary sets on 'Δ[ n ]'
 boundary-map : ∀ {x y n} → Δ [ x , y ] → Boundary y n → Boundary x n
@@ -64,7 +65,7 @@ boundary-map {n = n} f b = record
   { hom = hom b ∘ f
   ; factor = factor b ∘ f
   ; factor-dim = factor-dim b
-  ; factor-face = λ x → factor-face b (proj₁ f x)
+  ; factor-face = Δ-eq (Δ-pointwise (factor-face b))
   }
   where
     open Category Δ
@@ -84,35 +85,34 @@ boundary-map {n = n} f b = record
 ∂Δ[_] (ℕ.suc n) = record
   { F₀ = λ m → record
     { Carrier = Lift o (Boundary m n)
-    -- Unwinding the equality by hand here leads to less unsolved metavariables down the line
-    ; _≈_ = λ (lift b) (lift b′) → ∀ x → Lift ℓ (proj₁ (hom b) x ≡ proj₁ (hom b′) x)
+    ; _≈_ = λ (lift b) (lift b′) → Lift ℓ (Δ [ hom b ≈ hom b′ ])
     ; isEquivalence = record
-      { refl = λ x → lift refl
-      ; sym = λ eq x → lift (sym (lower (eq x)))
-      ; trans = λ eq₁ eq₂ x → lift (trans (lower (eq₁ x)) (lower (eq₂ x)))
+      { refl = lift Δ.Equiv.refl
+      ; sym = λ (lift eq) → lift (Δ.Equiv.sym eq)
+      ; trans = λ (lift eq₁) (lift eq₂) → lift (Δ.Equiv.trans eq₁ eq₂)
       }
     }
   ; F₁ = λ f → record
     { _⟨$⟩_ = λ (lift b) → lift (boundary-map f b)
-    ; cong = λ eq x → eq (proj₁ f x)
+    ; cong = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
     }
-  ; identity = λ eq → eq
-  ; homomorphism = λ {_} {_} {_} {f} {g} eq x → eq (proj₁ f (proj₁ g x))
-  ; F-resp-≈ = λ {_} {_} {f} {g} f≈g {b} {b′} eq x → lift $ begin
-    proj₁ (hom (lower b)) (proj₁ f x)  ≡⟨ lower (eq (proj₁ f x)) ⟩
-    proj₁ (hom (lower b′)) (proj₁ f x) ≡⟨ cong (proj₁ (hom (lower b′))) (f≈g x) ⟩
-    proj₁ (hom (lower b′)) (proj₁ g x) ∎
-  } 
+  ; identity = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
+  ; homomorphism = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
+  ; F-resp-≈ = λ {_} {_} {f} {g} f≈g {b} {b′} eq → lift $ Δ-eq $ λ {x} → begin
+    ⟦ hom (lower b) ⟧  (⟦ f ⟧ x) ≡⟨ Δ-pointwise (lower eq) ⟩
+    ⟦ hom (lower b′) ⟧ (⟦ f ⟧ x) ≡⟨ cong ⟦ hom (lower b′) ⟧ (Δ-pointwise f≈g) ⟩
+    ⟦ hom (lower b′) ⟧ (⟦ g ⟧ x) ∎
+  }
   where
     open Boundary
     open Eq
     open ≡-Reasoning
 
---------------------------------------------------------------------------------
--- Horns
--- 
--- The idea here is essentially the same as the boundaries, but we exclude the kth
--- face map as a possible factor.
+-- --------------------------------------------------------------------------------
+-- -- Horns
+-- -- 
+-- -- The idea here is essentially the same as the boundaries, but we exclude the kth
+-- -- face map as a possible factor.
 
 record Horn (m n-1 : ℕ) (k : Fin (ℕ.suc n-1)) : Set where
   field
@@ -127,26 +127,26 @@ record Horn (m n-1 : ℕ) (k : Fin (ℕ.suc n-1)) : Set where
 Λ[ ℕ.suc n , k ] = record
   { F₀ = λ m → record
     { Carrier = Lift o (Horn m n k)
-    ; _≈_ = λ (lift b) (lift b′) → ∀ x → Lift ℓ (proj₁ (hom b) x ≡ proj₁ (hom b′) x)
+    ; _≈_ = λ (lift h) (lift h′) → Lift ℓ (Δ [ hom h ≈ hom h′ ])
     ; isEquivalence = record
-      { refl = λ x → lift refl
-      ; sym = λ eq x → lift (sym (lower (eq x)))
-      ; trans = λ eq₁ eq₂ x → lift (trans (lower (eq₁ x)) (lower (eq₂ x)))
+      { refl = lift Δ.Equiv.refl
+      ; sym = λ (lift eq) → lift (Δ.Equiv.sym eq)
+      ; trans = λ (lift eq₁) (lift eq₂) → lift (Δ.Equiv.trans eq₁ eq₂)
       }
     }
   ; F₁ = λ f → record
-    { _⟨$⟩_ = λ (lift h) → lift $ record
+    { _⟨$⟩_ = λ (lift h) → lift record
       { horn = boundary-map f (horn h)
       ; is-horn = is-horn h
       }
-    ; cong = λ eq x → eq (proj₁ f x)
+    ; cong = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
     }
-  ; identity = λ eq → eq
-  ; homomorphism = λ {_} {_} {_} {f} {g} eq x → eq (proj₁ f (proj₁ g x))
-  ; F-resp-≈ = λ {_} {_} {f} {g} f≈g {b} {b′} eq x → lift $ begin
-    proj₁ (hom (lower b)) (proj₁ f x)  ≡⟨ lower (eq (proj₁ f x)) ⟩
-    proj₁ (hom (lower b′)) (proj₁ f x) ≡⟨ cong (proj₁ (hom (lower b′))) (f≈g x) ⟩
-    proj₁ (hom (lower b′)) (proj₁ g x) ∎
+  ; identity = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
+  ; homomorphism = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
+  ; F-resp-≈ = λ {_} {_} {f} {g} f≈g {h} {h′} eq → lift $ Δ-eq $ λ {x} → begin
+    ⟦ hom (lower h) ⟧  (⟦ f ⟧ x) ≡⟨ Δ-pointwise (lower eq) ⟩
+    ⟦ hom (lower h′) ⟧ (⟦ f ⟧ x) ≡⟨ cong ⟦ hom (lower h′) ⟧ (Δ-pointwise f≈g) ⟩
+    ⟦ hom (lower h′) ⟧ (⟦ g ⟧ x) ∎
   }
   where
     open Horn
@@ -172,9 +172,9 @@ module _ where
   ∂Δ-inj {ℕ.suc n} = ntHelper record
     { η = λ X → record
       { _⟨$⟩_ = λ (lift b) → lift (hom b)
-      ; cong = λ eq → lift (λ x → lower (eq x))
+      ; cong = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
       }
-    ; commute = λ f eq → lift (λ x → lower (eq (proj₁ f x)))
+    ; commute = λ f (lift eq) → lift (Δ-eq (Δ-pointwise eq))
     }
     where
       open Boundary
@@ -184,9 +184,9 @@ module _ where
   Λ-inj {n = ℕ.suc n} k = ntHelper record
     { η = λ X → record
       { _⟨$⟩_ = λ (lift h) → lift (hom h)
-      ; cong = λ eq → lift (λ x → lower (eq x))
+      ; cong = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
       }
-    ; commute = λ f eq → lift (λ x → lower (eq (proj₁ f x)))
+    ; commute = λ f (lift eq) → lift (Δ-eq (Δ-pointwise eq))
     }
     where
       open Horn
