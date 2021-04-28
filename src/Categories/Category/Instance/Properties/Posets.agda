@@ -7,18 +7,20 @@ open import Data.Unit using (⊤; tt)
 open import Data.Product as Prod using (_,_; <_,_>) renaming (_×_ to _|×|_)
 open import Function using (flip)
 open import Relation.Binary using (IsPartialOrder; Poset)
+open import Relation.Binary.Morphism.Bundles using (PosetHomomorphism; mkPosetHomo)
+import Relation.Binary.Morphism.Construct.Identity as Id
+import Relation.Binary.Morphism.Construct.Composition as Comp
 open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 open import Categories.Category
 import Categories.Category.CartesianClosed as CCC
 import Categories.Category.CartesianClosed.Canonical as Canonical
 open import Categories.Category.Instance.Posets
-  renaming (_⇒-Poset_ to _⇒_; ⇒-Poset-∘ to _∘_; ⇒-Poset-id to id)
 open import Categories.Functor using (Functor; Endofunctor)
 open import Categories.Utils.Product
 
 open Poset renaming (_≈_ to ₍_₎_≈_; _≤_ to ₍_₎_≤_)
-open _⇒_
+open PosetHomomorphism using (⟦_⟧; mono)
 
 private
   variable
@@ -26,6 +28,21 @@ private
     b₁ b₂ b₃ : Level
     c₁ c₂ c₃ : Level
     d₁ d₂ d₃ : Level
+
+    A B C D : Poset a₁ a₂ a₃
+
+module Shorthands where
+
+  _⇒_ : Poset a₁ a₂ a₃ → Poset b₁ b₂ b₃ → Set _
+  _⇒_ = PosetHomomorphism
+
+  _∘_ : B ⇒ C → A ⇒ B → A ⇒ C
+  f ∘ g = Comp.posetHomomorphism g f
+
+  id : A ⇒ A
+  id {A = A} = Id.posetHomomorphism A
+
+open Shorthands
 
 -- The pointwise partial order on order preserving maps.
 --
@@ -37,7 +54,7 @@ module Pointwise {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃} where
   infix 4 _≤°_
 
   _≤°_ : (f g : A ⇒ B) → Set (a₁ ⊔ b₃)
-  f ≤° g = ∀ {x} → ₍ B ₎ fun f x ≤ fun g x
+  f ≤° g = ∀ {x} → ₍ B ₎ ⟦ f ⟧ x ≤ ⟦ g ⟧ x
 
   ≤°-isPartialOrder : IsPartialOrder _≗_ _≤°_
   ≤°-isPartialOrder = record
@@ -80,18 +97,14 @@ module Opposite where
       }
     }
 
-  module _ {A : Poset a₁ a₂ a₃} where
+  op-involutive : op (op A) ≡ A
+  op-involutive = ≡.refl
 
-    op-involutive : op (op A) ≡ A
-    op-involutive = ≡.refl
+  op₁ : A ⇒ B → op A ⇒ op B
+  op₁ f = mkPosetHomo _ _ ⟦ f ⟧ (mono f)
 
-    module _ {B : Poset b₁ b₂ b₃} where
-
-      op₁ : A ⇒ B → op A ⇒ op B
-      op₁ f = ⇒-Poset-helper (fun f) (monotone f)
-
-      op₂ : {f g : A ⇒ B} → f ≤° g → op₁ g ≤° op₁ f
-      op₂ f≤g = f≤g
+  op₂ : {f g : A ⇒ B} → f ≤° g → op₁ g ≤° op₁ f
+  op₂ f≤g = f≤g
 
   -- op induces an endofunctor on Posets
 
@@ -117,13 +130,11 @@ module Terminals where
     ; _≤_     = λ _ _ → Lift a₃ ⊤
     }
 
-  module _ {B : Poset b₁ b₂ b₃} where
+  ! : B ⇒ unit a₁ a₂ a₃
+  ! = _
 
-    ! : B ⇒ unit a₁ a₂ a₃
-    ! = _
-
-    !-unique : (f : B ⇒ unit a₁ a₂ a₃) → ! ≗ f
-    !-unique f = _
+  !-unique : (f : B ⇒ unit a₁ a₂ a₃) → ! ≗ f
+  !-unique f = _
 
 open Terminals
 
@@ -155,33 +166,29 @@ module Products where
   module _ {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃} where
 
     π₁ : (A × B) ⇒ A
-    π₁ = ⇒-Poset-helper Prod.proj₁ Prod.proj₁
+    π₁ = mkPosetHomo _ _ Prod.proj₁ Prod.proj₁
 
     π₂ : (A × B) ⇒ B
-    π₂ = ⇒-Poset-helper Prod.proj₂ Prod.proj₂
+    π₂ = mkPosetHomo _ _ Prod.proj₂ Prod.proj₂
 
-    module _ {C : Poset c₁ c₂ c₃} where
+    infix 11 ⟨_,_⟩
 
-      infix 11 ⟨_,_⟩
+    ⟨_,_⟩ : C ⇒ A → C ⇒ B → C ⇒ (A × B)
+    ⟨ f , g ⟩ = mkPosetHomo _ _ < ⟦ f ⟧ , ⟦ g ⟧ > < mono f , mono g >
 
-      ⟨_,_⟩ : C ⇒ A → C ⇒ B → C ⇒ (A × B)
-      ⟨ f , g ⟩ = ⇒-Poset-helper < fun f , fun g > < monotone f , monotone g >
+    π₁-comp  : {f : C ⇒ A} {g : C ⇒ B} → π₁ ∘ ⟨ f , g ⟩ ≗ f
+    π₁-comp = Eq.refl A
 
-      π₁-comp  : {f : C ⇒ A} {g : C ⇒ B} → π₁ ∘ ⟨ f , g ⟩ ≗ f
-      π₁-comp = Eq.refl A
+    π₂-comp  : {f : C ⇒ A} {g : C ⇒ B} → π₂ ∘ ⟨ f , g ⟩ ≗ g
+    π₂-comp = Eq.refl B
 
-      π₂-comp  : {f : C ⇒ A} {g : C ⇒ B} → π₂ ∘ ⟨ f , g ⟩ ≗ g
-      π₂-comp = Eq.refl B
-
-      ⟨,⟩-unique : {f : C ⇒ A} {g : C ⇒ B} {h : C ⇒ (A × B)} →
-                   π₁ ∘ h ≗ f → π₂ ∘ h ≗ g → ⟨ f , g ⟩ ≗ h
-      ⟨,⟩-unique hyp₁ hyp₂ {x} = Eq.sym A hyp₁ , Eq.sym B hyp₂
+    ⟨,⟩-unique : {f : C ⇒ A} {g : C ⇒ B} {h : C ⇒ (A × B)} →
+                 π₁ ∘ h ≗ f → π₂ ∘ h ≗ g → ⟨ f , g ⟩ ≗ h
+    ⟨,⟩-unique hyp₁ hyp₂ {x} = Eq.sym A hyp₁ , Eq.sym B hyp₂
 
   infixr 2 _×₁_
 
-  _×₁_ : {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃}
-         {C : Poset c₁ c₂ c₃} {D : Poset d₁ d₂ d₃} →
-         A ⇒ C → B ⇒ D → (A × B) ⇒ (C × D)
+  _×₁_ : A ⇒ C → B ⇒ D → (A × B) ⇒ (C × D)
   f ×₁ g = ⟨ f ∘ π₁ , g ∘ π₂ ⟩
 
 open Products
@@ -210,18 +217,18 @@ module Exponentials where
   module _ {A : Poset a₁ a₂ a₃} {B : Poset b₁ b₂ b₃} where
 
     eval : (A ⇨ B × A) ⇒ B
-    eval = ⇒-Poset-helper
-      (λ{ (f , x) → fun f x })
-      (λ{ {f , _} (f≤g , x≤y) → trans B (monotone f x≤y) f≤g })
+    eval = mkPosetHomo _ _
+      (λ{ (f , x) → ⟦ f ⟧ x })
+      (λ{ {f , _} (f≤g , x≤y) → trans B (mono f x≤y) f≤g })
 
     module _ {C : Poset c₁ c₂ c₃} where
 
       curry : (C × A) ⇒ B → C ⇒ (A ⇨ B)
-      curry f = ⇒-Poset-helper
-        (λ x → ⇒-Poset-helper
-          (Prod.curry (fun f) x)
-          (Prod.curry (monotone f) (refl C)))
-        (λ x≤y → monotone f (x≤y , refl A))
+      curry f = mkPosetHomo _ _
+        (λ x → mkPosetHomo _ _
+          (Prod.curry ⟦ f ⟧ x)
+          (Prod.curry (mono f) (refl C)))
+        (λ x≤y → mono f (x≤y , refl A))
 
       eval-comp : {f : (C × A) ⇒ B} → eval ∘ (curry f ×₁ id) ≗ f
       eval-comp = Eq.refl B
