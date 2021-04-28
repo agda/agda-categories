@@ -6,7 +6,7 @@ module Categories.Category.Instance.Simplex where
 
 open import Level using (0ℓ)
 open import Data.Product
-open import Data.Fin.Base using (Fin; zero; suc; _≤_; _<_; inject₁)
+open import Data.Fin.Base using (Fin; zero; suc; _≤_; _<_; inject₁; punchIn)
 open import Data.Nat.Base using (ℕ; zero; suc; z≤n; s≤s)
 open import Function renaming (id to idF; _∘_ to _∙_)
 
@@ -42,21 +42,20 @@ data _Δ⇒_ : ℕ → ℕ → Set where
   _⊚_ : ∀ {l m n} → m Δ⇒ n → l Δ⇒ m → l Δ⇒ n
 
 -- However, this raises some tricky questions about equality of morphisms. It is tempting
--- to use the Simplical Identities[2]:
+-- to use the Simplical Identities[2] directly as our notion of equality:
 --   * δᵢ ∘ δⱼ = δⱼ₊₁ ∘ δᵢ if i ≤ j
 --   * σⱼ ∘ σᵢ = σᵢ ∘ σⱼ₊₁ if i ≤ j
 --   * σⱼ ∘ δᵢ = δᵢ ∘ σⱼ₋₁ if i < j
 --   * σⱼ ∘ δᵢ = id        if i = j or i = j + 1
 --   * σⱼ ∘ δᵢ = δᵢ₋₁ ∘ σⱼ if j + 1 < i
 --
--- However, we can do better than this. Instead, we appeal to the denotational
--- semantics of our formal chains of morphisms. In this case we interpret
--- our morphisms as maps between finite ordinals:
+-- However, working with these isn't exactly pleasant and will prove these
+-- as theorems later. Instead of quotienting by these identities,
+-- we appeal to the denotational semantics of our formal chains of morphisms.
+-- In this case we interpret our morphisms as maps between finite ordinals:
 
 face : ∀ {n} → Fin (ℕ.suc n) → Fin n → Fin (ℕ.suc n)
-face Fin.zero    k           = Fin.suc k
-face (Fin.suc i) Fin.zero    = Fin.zero
-face (Fin.suc i) (Fin.suc k) = Fin.suc (face i k)
+face = punchIn
 
 degen : ∀ {n} → Fin n → Fin (ℕ.suc n) → Fin n
 degen Fin.zero    Fin.zero    = Fin.zero
@@ -111,35 +110,35 @@ open _≗_ public
 open Category Δ
 
 -- δᵢ ∘ δⱼ = δⱼ₊₁ ∘ δᵢ if i ≤ j
-face-comm : ∀ {n} {i j : Fin (suc n)}  → i ≤ j → δ (inject₁ i) ∘ δ j ≈ δ (suc j) ∘ δ i
-face-comm {_} {zero}  {j}     z≤n      = Δ-eq refl
-face-comm {_} {suc i} {suc j} (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (face-comm le)) })
+face-comm : ∀ {n} (i j : Fin (suc n))  → i ≤ j → δ (inject₁ i) ∘ δ j ≈ δ (suc j) ∘ δ i
+face-comm zero    _       z≤n      = Δ-eq refl
+face-comm (suc i) (suc j) (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (face-comm i j le)) })
 
 -- σⱼ ∘ σᵢ = σᵢ ∘ σⱼ₊₁ if i ≤ j
-degen-comm : ∀ {n} {i j : Fin n} → i ≤ j → σ j ∘ σ (inject₁ i) ≈ σ i ∘ σ (suc j)
-degen-comm {_} {zero}  {zero}  z≤n      = Δ-eq λ { {zero} → refl ; {suc x} → refl }
-degen-comm {_} {zero}  {suc j} z≤n      = Δ-eq λ { {zero} → refl ; {suc x} → refl }
-degen-comm {_} {suc i} {suc j} (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-comm le)) })
+degen-comm : ∀ {n} (i j : Fin n) → i ≤ j → σ j ∘ σ (inject₁ i) ≈ σ i ∘ σ (suc j)
+degen-comm zero    zero    z≤n      = Δ-eq λ { {zero} → refl ; {suc x} → refl }
+degen-comm zero    (suc _) z≤n      = Δ-eq λ { {zero} → refl ; {suc x} → refl }
+degen-comm (suc i) (suc j) (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-comm i j le)) })
 
 -- σⱼ ∘ δᵢ = δᵢ ∘ σⱼ₋₁ if i < j
-degen-face-comm : ∀ {n} {i : Fin (suc n)} {j : Fin n} → i < suc j → σ (suc j) ∘ δ (inject₁ i) ≈ δ i ∘ σ j
-degen-face-comm {_} {zero}  {j}     (s≤s le) = Δ-eq refl
-degen-face-comm {_} {suc i} {suc j} (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-face-comm le)) })
+degen-face-comm : ∀ {n} (i : Fin (suc n)) (j : Fin n) → i < suc j → σ (suc j) ∘ δ (inject₁ i) ≈ δ i ∘ σ j
+degen-face-comm zero    _       (s≤s _)  = Δ-eq refl
+degen-face-comm (suc i) (suc j) (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-face-comm i j le)) })
 
 -- σⱼ ∘ δᵢ = id        if i = j
-degen-face-id : ∀ {n} {i j : Fin n} → i ≡ j → σ j ∘ δ (inject₁ i) ≈ id
-degen-face-id {_} {zero}  {zero}  refl = Δ-eq refl
-degen-face-id {_} {suc i} {suc i} refl = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-face-id {i = i} refl)) })
+degen-face-id : ∀ {n} (i j : Fin n) → i ≡ j → σ j ∘ δ (inject₁ i) ≈ id
+degen-face-id zero    zero    refl = Δ-eq refl
+degen-face-id (suc i) (suc i) refl = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-face-id i i refl)) })
 
 -- σⱼ ∘ δᵢ = id        if i = j + 1
-degen-face-suc-id : ∀ {n} {i : Fin (suc n)} {j : Fin n} → i ≡ suc j → σ j ∘ δ i ≈ id
-degen-face-suc-id {_} {suc zero}    {zero}  refl = Δ-eq λ { {zero} → refl ; {suc x} → refl }
-degen-face-suc-id {_} {suc (suc i)} {suc i} refl = Δ-eq λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-face-suc-id {i = suc i} refl)) }
+degen-face-suc-id : ∀ {n} (i : Fin (suc n)) (j : Fin n) → i ≡ suc j → σ j ∘ δ i ≈ id
+degen-face-suc-id (suc zero)    zero    refl = Δ-eq λ { {zero} → refl ; {suc x} → refl }
+degen-face-suc-id (suc (suc i)) (suc i) refl = Δ-eq λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-face-suc-id (suc i) i refl)) }
 
 -- σⱼ ∘ δᵢ = δᵢ₋₁ ∘ σⱼ if j + 1 < i
-degen-face-suc-comm : ∀ {n} {i : Fin (suc n)} {j : Fin n} → suc j < i → σ (inject₁ j) ∘ δ (suc i) ≈ δ i ∘ σ j
-degen-face-suc-comm {_} {suc (suc i)} {zero}  (s≤s (s≤s z≤n)) = Δ-eq (λ { {zero} → refl ; {suc x} → refl })
-degen-face-suc-comm {_} {suc (suc i)} {suc j} (s≤s le)        = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-face-suc-comm le)) })
+degen-face-suc-comm : ∀ {n} (i : Fin (suc n)) (j : Fin n) → suc j < i → σ (inject₁ j) ∘ δ (suc i) ≈ δ i ∘ σ j
+degen-face-suc-comm (suc (suc i)) zero  (s≤s (s≤s z≤n))   = Δ-eq (λ { {zero} → refl ; {suc x} → refl })
+degen-face-suc-comm (suc (suc i)) (suc j) (s≤s le)        = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-face-suc-comm (suc i) j le)) })
 
 -- Further Work:
 -- If we had a means of decomposing any monotone map 'Fin n ⇒ Fin m' into a series of face/boundary
