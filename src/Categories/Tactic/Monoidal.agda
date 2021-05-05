@@ -19,6 +19,8 @@ open import Categories.Category.Monoidal.Core using (Monoidal)
 import Categories.Category.Monoidal.Reasoning as MonoidalReasoning
 open import Categories.Category.Monoidal.Properties using (module Kelly's)
 
+import Categories.Morphism as Mor
+import Categories.Morphism.IsoEquiv as Iso
 import Categories.Morphism.Reasoning as MR
 
 --------------------------------------------------------------------------------
@@ -39,6 +41,8 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
   open Category 𝒞
   open Monoidal 𝒱
 
+  open Iso 𝒞 using (to-unique)
+  open Mor 𝒞
   open MR 𝒞
   open MonoidalReasoning 𝒱
 
@@ -107,11 +111,50 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
   invert ρ′ = ρ⁻¹′
   invert ρ⁻¹′ = ρ′
 
+  -- Witness the isomorphism between 'f' and 'invert f'.
+  invert-isoˡ : ∀ (f : Expr A B) → [ invert f ↓] ∘ [ f ↓] ≈ id
+  invert-isoˡ id′ = identity²
+  invert-isoˡ (f ∘′ g) = begin
+    ([ invert g ↓] ∘ [ invert f ↓]) ∘ ([ f ↓] ∘ [ g ↓]) ≈⟨ cancelInner (invert-isoˡ f)  ⟩
+    [ invert g ↓] ∘ [ g ↓]                              ≈⟨ invert-isoˡ g ⟩
+    id                                                  ∎
+  invert-isoˡ (f ⊗₁′ g) = begin
+    ([ invert f ↓] ⊗₁ [ invert g ↓]) ∘ ([ f ↓] ⊗₁ [ g ↓]) ≈⟨ ⊗-elim (invert-isoˡ f) (invert-isoˡ g) ⟩
+    id                                                    ∎
+  invert-isoˡ α′   = associator.isoˡ
+  invert-isoˡ α⁻¹′ = associator.isoʳ
+  invert-isoˡ ƛ′   = unitorˡ.isoˡ
+  invert-isoˡ ƛ⁻¹′ = unitorˡ.isoʳ
+  invert-isoˡ ρ′   = unitorʳ.isoˡ
+  invert-isoˡ ρ⁻¹′ = unitorʳ.isoʳ
+
+  invert-isoʳ : ∀ (f : Expr A B) → [ f ↓] ∘ [ invert f ↓] ≈ id
+  invert-isoʳ id′ = identity²
+  invert-isoʳ (f ∘′ g) = begin
+    ([ f ↓] ∘ [ g ↓]) ∘ ([ invert g ↓] ∘ [ invert f ↓]) ≈⟨ cancelInner (invert-isoʳ g) ⟩
+    [ f ↓] ∘ [ invert f ↓]                              ≈⟨ invert-isoʳ f ⟩
+    id                                                  ∎
+  invert-isoʳ (f ⊗₁′ g) = begin
+    ([ f ↓] ⊗₁ [ g ↓]) ∘ ([ invert f ↓] ⊗₁ [ invert g ↓]) ≈⟨ ⊗-elim (invert-isoʳ f) (invert-isoʳ g) ⟩
+    id                                                    ∎
+  invert-isoʳ α′   = associator.isoʳ
+  invert-isoʳ α⁻¹′ = associator.isoˡ
+  invert-isoʳ ƛ′   = unitorˡ.isoʳ
+  invert-isoʳ ƛ⁻¹′ = unitorˡ.isoˡ
+  invert-isoʳ ρ′   = unitorʳ.isoʳ
+  invert-isoʳ ρ⁻¹′ = unitorʳ.isoˡ
+
+  invert-iso : ∀ (f : Expr A B) → Iso [ f ↓] [ invert f ↓]
+  invert-iso f = record
+    { isoˡ = invert-isoˡ f
+    ; isoʳ = invert-isoʳ f
+    }
+
   NfWord : Set o
   NfWord = List Obj
 
   data NfExpr : NfWord → NfWord → Set o where
-    id′ : ∀ {N} → NfExpr N N
+    idⁿ : ∀ {N} → NfExpr N N
 
   -- An embedding of normal forms
 
@@ -120,7 +163,7 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
   ⌞ A ∷ N ⌟ = (A ′) ⊗₀′ ⌞ N ⌟
 
   ⌊_⌋ : ∀ {N M} → NfExpr N M → Expr ⌞ N ⌟ ⌞ M ⌟
-  ⌊ id′ ⌋ = id′
+  ⌊ idⁿ ⌋ = id′
 
   -- The monoidal operations are all admissible on normal forms.
 
@@ -129,20 +172,20 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
 
   _∘ⁿ_ : ∀ {N₁ N₂ N₃} →
          NfExpr N₂ N₃ → NfExpr N₁ N₂ → NfExpr N₁ N₃
-  id′ ∘ⁿ id′ = id′
+  idⁿ ∘ⁿ idⁿ = idⁿ
 
   _⊗ⁿ_ : ∀ {N₁ N₂ M₁ M₂} →
          NfExpr N₁ M₁ → NfExpr N₂ M₂ → NfExpr (N₁ ++ N₂) (M₁ ++ M₂)
-  id′ ⊗ⁿ id′ = id′
+  idⁿ ⊗ⁿ idⁿ = idⁿ
 
   αⁿ : ∀ N₁ N₂ N₃ → NfExpr ((N₁ ++ N₂) ++ N₃) (N₁ ++ (N₂ ++ N₃))
-  αⁿ N₁ N₂ N₃ = subst (NfExpr ((N₁ ++ N₂) ++ N₃)) (++-assoc N₁ N₂ N₃) id′
+  αⁿ N₁ N₂ N₃ = subst (NfExpr ((N₁ ++ N₂) ++ N₃)) (++-assoc N₁ N₂ N₃) idⁿ
 
   ρⁿ : ∀ N → NfExpr (N ++ []) N
-  ρⁿ N = subst (NfExpr (N ++ [])) (++-identityʳ N) id′
+  ρⁿ N = subst (NfExpr (N ++ [])) (++-identityʳ N) idⁿ
 
   invertⁿ : ∀ {N M} → NfExpr N M → NfExpr M N
-  invertⁿ id′ = id′
+  invertⁿ idⁿ = idⁿ
 
   -- The normalization functor
 
@@ -152,24 +195,24 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
   nf₀ (X ′)       = X ∷ []
 
   nf₁ : Expr A B → NfExpr (nf₀ A) (nf₀ B)
-  nf₁ id′                = id′
+  nf₁ id′                = idⁿ
   nf₁ (f ∘′ g)           = nf₁ f ∘ⁿ nf₁ g
   nf₁ (f ⊗₁′ g)          = nf₁ f ⊗ⁿ nf₁ g
   nf₁ (α′ {A} {B} {C})   = αⁿ (nf₀ A) (nf₀ B) (nf₀ C)
   nf₁ (α⁻¹′ {A} {B} {C}) = invertⁿ (αⁿ (nf₀ A) (nf₀ B) (nf₀ C))
-  nf₁ ƛ′                 = id′
-  nf₁ ƛ⁻¹′               = id′
+  nf₁ ƛ′                 = idⁿ
+  nf₁ ƛ⁻¹′               = idⁿ
   nf₁ ρ′                 = ρⁿ _
   nf₁ ρ⁻¹′               = invertⁿ (ρⁿ _)
 
   -- The embedding is a monoidal functor
 
-  ⌊⌋-id : ∀ {N} → ⌊ id′ {N} ⌋ ≈↓ id′
+  ⌊⌋-id : ∀ {N} → ⌊ idⁿ {N} ⌋ ≈↓ id′
   ⌊⌋-id = Equiv.refl
 
   ⌊⌋-∘ : ∀ {N₁ N₂ N₃} (f : NfExpr N₂ N₃) (g : NfExpr N₁ N₂) →
          ⌊ f ∘ⁿ g ⌋ ≈↓ ⌊ f ⌋ ∘′ ⌊ g ⌋
-  ⌊⌋-∘ id′ id′ = ⟺ identity²
+  ⌊⌋-∘ idⁿ idⁿ = ⟺ identity²
 
   ⌞⌟-⊗ : ∀ N M → Expr (⌞ N ⌟ ⊗₀′ ⌞ M ⌟) ⌞ N ++ M ⌟
   ⌞⌟-⊗ [] M      = ƛ′
@@ -177,7 +220,7 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
 
   ⌊⌋-⊗ : ∀ {N₁ N₂ M₁ M₂} (f : NfExpr N₁ M₁) (g : NfExpr N₂ M₂) →
          ⌊ f ⊗ⁿ g ⌋ ∘′ ⌞⌟-⊗ N₁ N₂ ≈↓ ⌞⌟-⊗ M₁ M₂ ∘′ ⌊ f ⌋ ⊗₁′ ⌊ g ⌋
-  ⌊⌋-⊗ {N₁} {N₂} id′ id′ = begin
+  ⌊⌋-⊗ {N₁} {N₂} idⁿ idⁿ = begin
     id ∘ [ ⌞⌟-⊗ N₁ N₂ ↓]         ≈⟨ id-comm-sym ⟩
     [ ⌞⌟-⊗ N₁ N₂ ↓] ∘ id         ≈˘⟨ refl⟩∘⟨ ⊗.identity ⟩
     [ ⌞⌟-⊗ N₁ N₂ ↓] ∘ id ⊗₁ id   ∎
@@ -185,11 +228,11 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
   ⌊⌋-ρ : ∀ N → ⌊ ρⁿ N ⌋ ∘′ ⌞⌟-⊗ N [] ≈↓ ρ′
   ⌊⌋-ρ [] = identityˡ ○ Kelly's.coherence₃ 𝒱
   ⌊⌋-ρ (X ∷ N) = begin
-      [ ⌊ subst (NfExpr (X ∷ N ++ [])) (cong (X ∷_) (++-identityʳ N)) id′ ⌋ ↓] ∘
+      [ ⌊ subst (NfExpr (X ∷ N ++ [])) (cong (X ∷_) (++-identityʳ N)) idⁿ ⌋ ↓] ∘
       id ⊗₁ [ ⌞⌟-⊗ N [] ↓] ∘ associator.from
     ≡⟨ cong (λ f → [ ⌊ f ⌋ ∘′ id′ ⊗₁′ ⌞⌟-⊗ N [] ∘′ α′ ↓])
             (helper₁ (++-identityʳ N)) ⟩
-      [ ⌊ id′ ⊗ⁿ ρⁿ N ⌋ ↓] ∘ id ⊗₁ [ ⌞⌟-⊗ N [] ↓] ∘ associator.from
+      [ ⌊ idⁿ ⊗ⁿ ρⁿ N ⌋ ↓] ∘ id ⊗₁ [ ⌞⌟-⊗ N [] ↓] ∘ associator.from
     ≈⟨ helper₂ (ρⁿ N) ⟩∘⟨refl ⟩
       id ⊗₁ [ ⌊ ρⁿ N ⌋ ↓] ∘ id ⊗₁ [ ⌞⌟-⊗ N [] ↓] ∘ associator.from
     ≈⟨ merge₂ ⌊⌋-ρ N ⟩∘⟨ Equiv.refl ⟩
@@ -203,20 +246,69 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
       -- the hexagon identity (the ⌊⌋-α yet to be written).
 
       helper₁ : ∀ {X N M} (eq : N ≡ M) →
-                subst (NfExpr (X ∷ N)) (cong (X ∷_) eq) (id′ ⊗ⁿ id′ {N}) ≡
-                id′ ⊗ⁿ subst (NfExpr N) eq id′
+                subst (NfExpr (X ∷ N)) (cong (X ∷_) eq) (idⁿ ⊗ⁿ idⁿ {N}) ≡
+                idⁿ ⊗ⁿ subst (NfExpr N) eq idⁿ
       helper₁ refl = refl
 
-      helper₂ : ∀ {X N M} (f : NfExpr N M) → ⌊ id′ ⊗ⁿ f ⌋ ≈↓ id′ {X ′} ⊗₁′ ⌊ f ⌋
-      helper₂ id′ = ⟺ ⊗.identity
+      helper₂ : ∀ {X N M} (f : NfExpr N M) → ⌊ idⁿ ⊗ⁿ f ⌋ ≈↓ id′ {X ′} ⊗₁′ ⌊ f ⌋
+      helper₂ idⁿ = ⟺ ⊗.identity
 
-  invert-resp-≈ : ∀ (f g : Expr A B) → f ≈↓ g → invert f ≈↓ invert g
-  invert-resp-≈ f g eq = {!!}
+  ⌊⌋-α : ∀ N₁ N₂ N₃ → ⌊ αⁿ N₁ N₂ N₃ ⌋ ∘′ ⌞⌟-⊗ (N₁ ++ N₂) N₃ ∘′ ⌞⌟-⊗ N₁ N₂ ⊗₁′ id′ ≈↓ ⌞⌟-⊗ N₁ (N₂ ++ N₃) ∘′ id′ ⊗₁′ (⌞⌟-⊗ N₂ N₃) ∘′ α′
+  ⌊⌋-α [] N₂ N₃ = begin
+    id ∘ [ ⌞⌟-⊗ N₂ N₃ ↓] ∘ (unitorˡ.from ⊗₁ id)              ≈⟨ identityˡ ⟩
+    [ ⌞⌟-⊗ N₂ N₃ ↓] ∘ (unitorˡ.from ⊗₁ id)                   ≈⟨ refl⟩∘⟨ (⟺ (Kelly's.coherence₁ 𝒱)) ⟩
+    [ ⌞⌟-⊗ N₂ N₃ ↓] ∘ (unitorˡ.from ∘ associator.from)       ≈⟨ extendʳ (⟺ unitorˡ-commute-from) ⟩
+    unitorˡ.from ∘ (id ⊗₁ [ ⌞⌟-⊗ N₂ N₃ ↓]) ∘ associator.from ∎
+  ⌊⌋-α (X ∷ N₁) N₂ N₃ = begin
+      [ ⌊ subst (NfExpr (X ∷ (N₁ ++ N₂) ++ N₃)) (cong (_∷_ X) (++-assoc N₁ N₂ N₃)) idⁿ ⌋ ↓] ∘
+      (id ⊗₁ [ ⌞⌟-⊗ (N₁ ++ N₂) N₃ ↓] ∘ associator.from) ∘ (id ⊗₁ [ ⌞⌟-⊗ N₁ N₂ ↓] ∘ associator.from) ⊗₁ id
+    ≡⟨ cong (λ f → [ ⌊ f ⌋ ↓] ∘ (id ⊗₁ [ ⌞⌟-⊗ (N₁ ++ N₂) N₃ ↓] ∘ associator.from) ∘ (id ⊗₁ [ ⌞⌟-⊗ N₁ N₂ ↓] ∘ associator.from) ⊗₁ id) (helper₁ (++-assoc N₁ N₂ N₃)) ⟩
+      [ ⌊ idⁿ ⊗ⁿ subst (NfExpr ((N₁ ++ N₂) ++ N₃)) (++-assoc N₁ N₂ N₃) idⁿ ⌋ ↓] ∘
+      (id ⊗₁ [ ⌞⌟-⊗ (N₁ ++ N₂) N₃ ↓] ∘ associator.from) ∘
+      (id ⊗₁ [ ⌞⌟-⊗ N₁ N₂ ↓] ∘ associator.from) ⊗₁ id
+    ≈⟨ helper₂ (subst (NfExpr ((N₁ ++ N₂) ++ N₃)) (++-assoc N₁ N₂ N₃) idⁿ) ⟩∘⟨refl ⟩
+      (id ⊗₁ [ ⌊ αⁿ N₁ N₂ N₃ ⌋ ↓]) ∘
+      (id ⊗₁ [ ⌞⌟-⊗ (N₁ ++ N₂) N₃ ↓] ∘ associator.from) ∘
+      ((id ⊗₁ [ ⌞⌟-⊗ N₁ N₂ ↓]) ∘ associator.from) ⊗₁ id
+    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ split₁ʳ ⟩
+      (id ⊗₁ [ ⌊ αⁿ N₁ N₂ N₃ ⌋ ↓]) ∘
+      (id ⊗₁ [ ⌞⌟-⊗ (N₁ ++ N₂) N₃ ↓] ∘ associator.from) ∘
+      (id ⊗₁ [ ⌞⌟-⊗ N₁ N₂ ↓]) ⊗₁ id ∘ (associator.from ⊗₁ id)
+    ≈⟨ center⁻¹ (⟺ ⊗.homomorphism ○ identity² ⟩⊗⟨refl) (extendʳ assoc-commute-from) ⟩
+      id ⊗₁ ([ ⌊ αⁿ N₁ N₂ N₃ ⌋ ↓] ∘ [ ⌞⌟-⊗ (N₁ ++ N₂) N₃ ↓]) ∘
+      (id ⊗₁ ([ ⌞⌟-⊗ N₁ N₂ ↓] ⊗₁ id)) ∘ associator.from ∘
+      associator.from ⊗₁ id
+    ≈⟨ merge₂ assoc ○ ⌊⌋-α N₁ N₂ N₃ ⟩∘⟨ Equiv.refl ⟩
+      id ⊗₁ ([ ⌞⌟-⊗ N₁ (N₂ ++ N₃) ↓] ∘ (id ⊗₁ ([ ⌞⌟-⊗ N₂ N₃ ↓]) ∘ associator.from)) ∘
+      associator.from ∘ (associator.from ⊗₁ id)
+    ≈⟨ (pushˡ (split₂ʳ ○ (refl⟩∘⟨ split₂ʳ))) ⟩
+      id ⊗₁ [ ⌞⌟-⊗ N₁ (N₂ ++ N₃) ↓] ∘ (id ⊗₁ (id ⊗₁ [ ⌞⌟-⊗ N₂ N₃ ↓]) ∘ id ⊗₁ associator.from) ∘
+      associator.from ∘ (associator.from ⊗₁ id)
+    ≈⟨ refl⟩∘⟨ pullʳ pentagon ⟩
+      id ⊗₁ [ ⌞⌟-⊗ N₁ (N₂ ++ N₃) ↓] ∘ id ⊗₁ (id ⊗₁ [ ⌞⌟-⊗ N₂ N₃ ↓]) ∘ associator.from ∘ associator.from
+    ≈⟨ pushʳ (extendʳ (⟺ assoc-commute-from)) ⟩
+      (id ⊗₁ [ ⌞⌟-⊗ N₁ (N₂ ++ N₃) ↓] ∘ associator.from) ∘
+      ((id ⊗₁ id) ⊗₁ [ ⌞⌟-⊗ N₂ N₃ ↓] ∘ associator.from)
+    ≈⟨ (refl⟩∘⟨ (⊗.identity ⟩⊗⟨refl) ⟩∘⟨refl) ⟩
+      (id ⊗₁ [ ⌞⌟-⊗ N₁ (N₂ ++ N₃) ↓] ∘ associator.from) ∘
+      (id ⊗₁ [ ⌞⌟-⊗ N₂ N₃ ↓] ∘ associator.from) ∎
+    where
+
+      -- FIXME: give these better names and reuse them in the proof of
+      -- the hexagon identity (the ⌊⌋-α yet to be written).
+
+      helper₁ : ∀ {X N M} (eq : N ≡ M) →
+                subst (NfExpr (X ∷ N)) (cong (X ∷_) eq) (idⁿ ⊗ⁿ idⁿ {N}) ≡
+                idⁿ ⊗ⁿ subst (NfExpr N) eq idⁿ
+      helper₁ refl = refl
+
+      helper₂ : ∀ {X N M} (f : NfExpr N M) → ⌊ idⁿ ⊗ⁿ f ⌋ ≈↓ id′ {X ′} ⊗₁′ ⌊ f ⌋
+      helper₂ idⁿ = ⟺ ⊗.identity
 
   ⌊⌋-invert : ∀ {M} {N O} (f : Expr M ⌞ N ⌟) (g : NfExpr N O) (h : Expr M ⌞ O ⌟) → ⌊ g ⌋ ∘′ f ≈↓ h  → invert f ∘′ ⌊ invertⁿ g ⌋ ≈↓ invert h
-  ⌊⌋-invert f id′ h eq = begin
+  ⌊⌋-invert f idⁿ h eq = begin
     [ invert f ↓] ∘ id ≈⟨ identityʳ ⟩
-    [ invert f ↓]      ≈⟨ invert-resp-≈ f h (⟺ identityˡ ○ eq) ⟩
+    [ invert f ↓]      ≈⟨ to-unique (invert-iso f) (invert-iso h) (⟺ identityˡ ○ eq) ⟩
     [ invert h ↓]      ∎
 
   -- Build a coherence morphism out of some word into it's normal form.
@@ -235,43 +327,6 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
   normalize : Expr A B → Expr A B
   normalize {A = A} {B = B} f = out B ∘′ ⌊ nf₁ f ⌋ ∘′ into A
 
-  -- Witness the isomorphism between 'f' and 'invert f'.
-  invert-isoˡ : ∀ (f : Expr A B) → [ invert f ↓] ∘ [ f ↓] ≈ id
-  invert-isoˡ id′ = identity²
-  invert-isoˡ (f ∘′ g) = begin
-    ([ invert g ↓] ∘ [ invert f ↓]) ∘ ([ f ↓] ∘ [ g ↓]) ≈⟨ cancelInner (invert-isoˡ f)  ⟩
-    [ invert g ↓] ∘ [ g ↓]                              ≈⟨ invert-isoˡ g ⟩
-    id                                                  ∎
-  invert-isoˡ (f ⊗₁′ g) = begin
-    ([ invert f ↓] ⊗₁ [ invert g ↓]) ∘ ([ f ↓] ⊗₁ [ g ↓]) ≈˘⟨ ⊗.homomorphism ⟩
-    ([ invert f ↓] ∘ [ f ↓]) ⊗₁ ([ invert g ↓] ∘ [ g ↓])  ≈⟨ ⊗.F-resp-≈ (invert-isoˡ f , invert-isoˡ g) ⟩
-    id ⊗₁ id                                              ≈⟨ ⊗.identity ⟩
-    id                                                    ∎
-  invert-isoˡ α′   = associator.isoˡ
-  invert-isoˡ α⁻¹′ = associator.isoʳ
-  invert-isoˡ ƛ′   = unitorˡ.isoˡ
-  invert-isoˡ ƛ⁻¹′ = unitorˡ.isoʳ
-  invert-isoˡ ρ′   = unitorʳ.isoˡ
-  invert-isoˡ ρ⁻¹′ = unitorʳ.isoʳ
-
-  -- Witness the isomorphism between 'f' and 'invert f'.
-  invert-isoʳ : ∀ (f : Expr A B) → [ f ↓] ∘ [ invert f ↓] ≈ id
-  invert-isoʳ id′ = identity²
-  invert-isoʳ (f ∘′ g) = begin
-    ([ f ↓] ∘ [ g ↓]) ∘ ([ invert g ↓] ∘ [ invert f ↓]) ≈⟨ cancelInner (invert-isoʳ g) ⟩
-    [ f ↓] ∘ [ invert f ↓]                              ≈⟨ invert-isoʳ f ⟩
-    id                                                  ∎
-  invert-isoʳ (f ⊗₁′ g) = begin
-    ([ f ↓] ⊗₁ [ g ↓]) ∘ ([ invert f ↓] ⊗₁ [ invert g ↓]) ≈˘⟨ ⊗.homomorphism ⟩
-    ([ f ↓] ∘ [ invert f ↓]) ⊗₁ ([ g ↓] ∘ [ invert g ↓])  ≈⟨ ⊗.F-resp-≈ (invert-isoʳ f , invert-isoʳ g) ⟩
-    id ⊗₁ id                                              ≈⟨ ⊗.identity ⟩
-    id                                                    ∎
-  invert-isoʳ α′   = associator.isoʳ
-  invert-isoʳ α⁻¹′ = associator.isoˡ
-  invert-isoʳ ƛ′   = unitorˡ.isoʳ
-  invert-isoʳ ƛ⁻¹′ = unitorˡ.isoˡ
-  invert-isoʳ ρ′   = unitorʳ.isoʳ
-  invert-isoʳ ρ⁻¹′ = unitorʳ.isoˡ
 
   -- Helper lemma for showing that mapping into a normal form then back out
   -- is identity.
@@ -313,8 +368,29 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
     ≈⟨ preserves-≈ f ⟩⊗⟨ preserves-≈ g ⟩
       [ f ↓] ⊗₁ [ g ↓]
     ∎
-  preserves-≈ (α′ {A} {B} {C}) = {!!}
-  preserves-≈ α⁻¹′ = {!!}
+  preserves-≈ (α′ {A} {B} {C}) = begin
+      ([ invert (into A) ↓] ⊗₁ (([ invert (into B) ↓] ⊗₁ [ invert (into C) ↓]) ∘ [ invert (⌞⌟-⊗ (nf₀ B) (nf₀ C)) ↓]) ∘ [ invert (⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C)) ↓]) ∘
+      [ ⌊ αⁿ (nf₀ A) (nf₀ B) (nf₀ C) ⌋ ↓] ∘ [ ⌞⌟-⊗ (nf₀ A ++ nf₀ B) (nf₀ C) ↓] ∘
+      (([ ⌞⌟-⊗ (nf₀ A) (nf₀ B) ↓] ∘ [ into A ↓] ⊗₁ [ into B ↓]) ⊗₁ [ into C ↓])
+    ≈⟨ {!!} ⟩
+      [ invert (into A) ↓] ⊗₁ ([ invert (into B) ↓] ⊗₁ [ invert (into C) ↓]) ∘
+      (id ⊗₁ [ invert (⌞⌟-⊗ (nf₀ B) (nf₀ C)) ↓] ∘  [ invert (⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C)) ↓] ∘ [ ⌊ αⁿ (nf₀ A) (nf₀ B) (nf₀ C) ⌋ ↓] ∘ [ ⌞⌟-⊗ (nf₀ A ++ nf₀ B) (nf₀ C) ↓] ∘ [ ⌞⌟-⊗ (nf₀ A) (nf₀ B) ↓] ⊗₁ id) ∘
+      (([ into A ↓] ⊗₁ [ into B ↓]) ⊗₁ [ into C ↓])
+    ≈⟨ refl⟩∘⟨ ( refl⟩∘⟨ refl⟩∘⟨ (⌊⌋-α (nf₀ A) (nf₀ B) (nf₀ C))) ⟩∘⟨refl ⟩
+      [ invert (into A) ↓] ⊗₁ ([ invert (into B) ↓] ⊗₁ [ invert (into C) ↓]) ∘
+      (id ⊗₁ [ invert (⌞⌟-⊗ (nf₀ B) (nf₀ C)) ↓] ∘ [ invert (⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C)) ↓] ∘ [ ⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C) ↓] ∘ id ⊗₁ [ ⌞⌟-⊗ (nf₀ B) (nf₀ C) ↓] ∘ associator.from) ∘
+      (([ into A ↓] ⊗₁ [ into B ↓]) ⊗₁ [ into C ↓])
+      ≈⟨ refl⟩∘⟨ (refl⟩∘⟨ cancelˡ (invert-isoˡ (⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C)))) ⟩∘⟨refl ⟩
+      [ invert (into A) ↓] ⊗₁ ([ invert (into B) ↓] ⊗₁ [ invert (into C) ↓]) ∘
+      (id ⊗₁ [ invert (⌞⌟-⊗ (nf₀ B) (nf₀ C)) ↓] ∘ id ⊗₁ [ ⌞⌟-⊗ (nf₀ B) (nf₀ C) ↓] ∘ associator.from) ∘
+      (([ into A ↓] ⊗₁ [ into B ↓]) ⊗₁ [ into C ↓])
+    ≈⟨ refl⟩∘⟨ cancelˡ (⊗-elim identity² (invert-isoˡ (⌞⌟-⊗ (nf₀ B) (nf₀ C)))) ⟩∘⟨refl ⟩
+      [ invert (into A) ↓] ⊗₁ ([ invert (into B) ↓] ⊗₁ [ invert (into C) ↓]) ∘ associator.from ∘ (([ into A ↓] ⊗₁ [ into B ↓]) ⊗₁ [ into C ↓])
+    ≈⟨ pushʳ assoc-commute-from ⟩
+      ([ invert (into A) ↓] ⊗₁ ([ invert (into B) ↓] ⊗₁ [ invert (into C) ↓]) ∘ ([ into A ↓] ⊗₁ ([ into B ↓] ⊗₁ [ into C ↓]))) ∘ associator.from
+    ≈⟨ elimˡ (⊗-elim (invert-isoˡ (into A)) (⊗-elim (invert-isoˡ (into B)) (invert-isoˡ (into C)))) ⟩
+      associator.from ∎
+  preserves-≈ (α⁻¹′ {A} {B} {C}) = {!!}
   preserves-≈ (ƛ′ {A}) = begin
     [ out A ↓] ∘ id ∘ unitorˡ.from ∘ id ⊗₁ [ into A ↓] ≈⟨ refl⟩∘⟨ refl⟩∘⟨ unitorˡ-commute-from ⟩
     [ out A ↓] ∘ id ∘ [ into A ↓] ∘ unitorˡ.from       ≈˘⟨ assoc²' ⟩
@@ -339,9 +415,5 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
       [ out A ↓] ⊗₁ id ∘ unitorʳ.to ∘ [ into A ↓]
     ≈⟨ refl⟩∘⟨ unitorʳ-commute-to ⟩
       [ out A ↓] ⊗₁ id ∘ [ into A ↓] ⊗₁ id ∘ unitorʳ.to
-    ≈⟨ pullˡ (⟺ ⊗.homomorphism) ⟩
-      ([ out A ↓] ∘ [ into A ↓]) ⊗₁ (id ∘ id) ∘ unitorʳ.to
-    ≈⟨ (invert-isoˡ (into A) ⟩⊗⟨ identity²) ⟩∘⟨refl ⟩
-      id ⊗₁ id ∘ unitorʳ.to
-    ≈⟨ elimˡ ⊗.identity ⟩
+    ≈⟨ cancelˡ (⊗-elim (invert-isoˡ (into A)) identity²) ⟩
       unitorʳ.to ∎
