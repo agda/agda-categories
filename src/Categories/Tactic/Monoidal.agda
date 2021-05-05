@@ -210,6 +210,15 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
       helper₂ : ∀ {X N M} (f : NfExpr N M) → ⌊ id′ ⊗ⁿ f ⌋ ≈↓ id′ {X ′} ⊗₁′ ⌊ f ⌋
       helper₂ id′ = ⟺ ⊗.identity
 
+  invert-resp-≈ : ∀ (f g : Expr A B) → f ≈↓ g → invert f ≈↓ invert g
+  invert-resp-≈ f g eq = {!!}
+
+  ⌊⌋-invert : ∀ {M} {N O} (f : Expr M ⌞ N ⌟) (g : NfExpr N O) (h : Expr M ⌞ O ⌟) → ⌊ g ⌋ ∘′ f ≈↓ h  → invert f ∘′ ⌊ invertⁿ g ⌋ ≈↓ invert h
+  ⌊⌋-invert f id′ h eq = begin
+    [ invert f ↓] ∘ id ≈⟨ identityʳ ⟩
+    [ invert f ↓]      ≈⟨ invert-resp-≈ f h (⟺ identityˡ ○ eq) ⟩
+    [ invert h ↓]      ∎
+
   -- Build a coherence morphism out of some word into it's normal form.
   into : ∀ (A : Word) → Expr A ⌞ nf₀ A ⌟
   into (A ⊗₀′ B) = ⌞⌟-⊗ (nf₀ A) (nf₀ B) ∘′ (into A ⊗₁′ into B)
@@ -324,4 +333,15 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
     ≈⟨ cancelˡ (invert-isoˡ (into A)) ⟩
       unitorʳ.from
     ∎
-  preserves-≈ (ρ⁻¹′ {A}) = {!!}
+  preserves-≈ (ρ⁻¹′ {A}) = begin
+      ([ out A ↓] ⊗₁ id ∘ [ invert (⌞⌟-⊗ (nf₀ A) []) ↓]) ∘ ([ ⌊ invertⁿ (ρⁿ (nf₀ A)) ⌋ ↓] ∘ [ into A ↓])
+    ≈⟨ center (⌊⌋-invert (⌞⌟-⊗ (nf₀ A) []) (ρⁿ (nf₀ A)) ρ′ (⌊⌋-ρ (nf₀ A))) ⟩
+      [ out A ↓] ⊗₁ id ∘ unitorʳ.to ∘ [ into A ↓]
+    ≈⟨ refl⟩∘⟨ unitorʳ-commute-to ⟩
+      [ out A ↓] ⊗₁ id ∘ [ into A ↓] ⊗₁ id ∘ unitorʳ.to
+    ≈⟨ pullˡ (⟺ ⊗.homomorphism) ⟩
+      ([ out A ↓] ∘ [ into A ↓]) ⊗₁ (id ∘ id) ∘ unitorʳ.to
+    ≈⟨ (invert-isoˡ (into A) ⟩⊗⟨ identity²) ⟩∘⟨refl ⟩
+      id ⊗₁ id ∘ unitorʳ.to
+    ≈⟨ elimˡ ⊗.identity ⟩
+      unitorʳ.to ∎
