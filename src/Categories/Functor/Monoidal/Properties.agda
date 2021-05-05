@@ -12,6 +12,8 @@ open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
 open import Categories.Functor.Cartesian
 open import Categories.Functor.Monoidal
+open import Categories.Functor.Monoidal.Braided as Braided
+open import Categories.Functor.Monoidal.Symmetric as Symmetric
 open import Categories.NaturalTransformation
 
 import Categories.Object.Terminal as ⊤
@@ -22,6 +24,8 @@ import Categories.Morphism.Reasoning as MR
 private
   variable
     o o′ o″ ℓ ℓ′ ℓ″ e e′ e″ : Level
+
+-- The identity functor is monoidal
 
 module _ (C : MonoidalCategory o ℓ e) where
   private
@@ -66,6 +70,44 @@ module _ (C : MonoidalCategory o ℓ e) where
 
   idF-Monoidal : MonoidalFunctor C C
   idF-Monoidal = record { isMonoidal = idF-IsMonoidal }
+
+-- The identity functor is braided monoidal
+
+module _ (C : BraidedMonoidalCategory o ℓ e) where
+  open Braided
+
+  idF-IsStrongBraidedMonoidal : Strong.IsBraidedMonoidalFunctor C C idF
+  idF-IsStrongBraidedMonoidal = record
+    { isStrongMonoidal = idF-IsStrongMonoidal monoidalCategory
+    ; braiding-compat  = MR.id-comm U
+    }
+    where open BraidedMonoidalCategory C
+
+  idF-IsBraidedMonoidal : Lax.IsBraidedMonoidalFunctor C C idF
+  idF-IsBraidedMonoidal =
+    Strong.IsBraidedMonoidalFunctor.isLaxBraidedMonoidal idF-IsStrongBraidedMonoidal
+
+  idF-StrongBraidedMonoidal : Strong.BraidedMonoidalFunctor C C
+  idF-StrongBraidedMonoidal = record { isBraidedMonoidal = idF-IsStrongBraidedMonoidal }
+
+  idF-BraidedMonoidal : Lax.BraidedMonoidalFunctor C C
+  idF-BraidedMonoidal = record { isBraidedMonoidal = idF-IsBraidedMonoidal }
+
+-- The identity functor is symmetric monoidal
+
+module _ (C : SymmetricMonoidalCategory o ℓ e) where
+  open Symmetric
+  open SymmetricMonoidalCategory C using (braidedMonoidalCategory)
+
+  idF-StrongSymmetricMonoidal : Strong.SymmetricMonoidalFunctor C C
+  idF-StrongSymmetricMonoidal = record
+    { isBraidedMonoidal = idF-IsStrongBraidedMonoidal braidedMonoidalCategory }
+
+  idF-SymmetricMonoidal : Lax.SymmetricMonoidalFunctor C C
+  idF-SymmetricMonoidal = record
+    { isBraidedMonoidal = idF-IsBraidedMonoidal braidedMonoidalCategory }
+
+-- Functor composition preserves monoidality
 
 module _ (A : MonoidalCategory o ℓ e) (B : MonoidalCategory o′ ℓ′ e′) (C : MonoidalCategory o″ ℓ″ e″) where
   private
@@ -185,6 +227,102 @@ module _ {A : MonoidalCategory o ℓ e} {B : MonoidalCategory o′ ℓ′ e′} 
 
     ∘-Monoidal : MonoidalFunctor B C → MonoidalFunctor A B → MonoidalFunctor A C
     ∘-Monoidal G F = record { isMonoidal = ∘-IsMonoidal _ _ _ (MonoidalFunctor.isMonoidal G) (MonoidalFunctor.isMonoidal F) }
+
+-- Functor composition preserves braided monoidality
+
+module _ {A : BraidedMonoidalCategory o ℓ e}
+         {B : BraidedMonoidalCategory o′ ℓ′ e′}
+         {C : BraidedMonoidalCategory o″ ℓ″ e″} where
+
+  private
+    module A = BraidedMonoidalCategory A
+    module B = BraidedMonoidalCategory B
+    module C = BraidedMonoidalCategory C
+  open Braided
+
+  ∘-IsBraidedMonoidal : ∀ {G : Functor B.U C.U} {F : Functor A.U B.U} →
+                        Lax.IsBraidedMonoidalFunctor B C G →
+                        Lax.IsBraidedMonoidalFunctor A B F →
+                        Lax.IsBraidedMonoidalFunctor A C (G ∘F F)
+  ∘-IsBraidedMonoidal {G} {F} GB FB = record
+    { isMonoidal      = ∘-IsMonoidal _ _ _ (isMonoidal GB) (isMonoidal FB)
+    ; braiding-compat = begin
+        G₁ (F₁ AB) ∘ G₁ FH ∘ GH   ≈˘⟨ pushˡ (homomorphism G) ⟩
+        G₁ (F₁ AB B.∘ FH) ∘ GH    ≈⟨ F-resp-≈ G (braiding-compat FB) ⟩∘⟨refl ⟩
+        G₁ (FH B.∘ BB) ∘ GH       ≈⟨ pushˡ (homomorphism G) ⟩
+        G₁ FH ∘ G₁ BB ∘ GH        ≈⟨ pushʳ (braiding-compat GB) ⟩
+        (G₁ FH ∘ GH) ∘ CB         ∎
+    }
+    where
+      open C
+      open HomReasoning
+      open MR C.U
+      open Functor hiding (F₁)
+      open Functor F using (F₁)
+      open Functor G using () renaming (F₁ to G₁)
+      open Lax.IsBraidedMonoidalFunctor
+
+      FH  = λ {X Y} → ⊗-homo.η FB (X , Y)
+      GH  = λ {X Y} → ⊗-homo.η GB (X , Y)
+      AB = λ {X Y} → A.braiding.⇒.η (X , Y)
+      BB = λ {X Y} → B.braiding.⇒.η (X , Y)
+      CB = λ {X Y} → C.braiding.⇒.η (X , Y)
+
+  ∘-IsStrongBraidedMonoidal : ∀ {G : Functor B.U C.U} {F : Functor A.U B.U} →
+                              Strong.IsBraidedMonoidalFunctor B C G →
+                              Strong.IsBraidedMonoidalFunctor A B F →
+                              Strong.IsBraidedMonoidalFunctor A C (G ∘F F)
+  ∘-IsStrongBraidedMonoidal {G} {F} GB FB = record
+    { isStrongMonoidal =
+      ∘-IsStrongMonoidal _ _ _ (isStrongMonoidal GB) (isStrongMonoidal FB)
+    ; braiding-compat =
+      Lax.IsBraidedMonoidalFunctor.braiding-compat
+        (∘-IsBraidedMonoidal (isLaxBraidedMonoidal GB) (isLaxBraidedMonoidal FB))
+    }
+    where open Strong.IsBraidedMonoidalFunctor
+
+  ∘-BraidedMonoidal : Lax.BraidedMonoidalFunctor B C →
+                      Lax.BraidedMonoidalFunctor A B →
+                      Lax.BraidedMonoidalFunctor A C
+  ∘-BraidedMonoidal G F = record
+    { isBraidedMonoidal =
+      ∘-IsBraidedMonoidal (isBraidedMonoidal G) (isBraidedMonoidal F)
+    }
+    where open Lax.BraidedMonoidalFunctor hiding (F)
+
+  ∘-StrongBraidedMonoidal : Strong.BraidedMonoidalFunctor B C →
+                            Strong.BraidedMonoidalFunctor A B →
+                            Strong.BraidedMonoidalFunctor A C
+  ∘-StrongBraidedMonoidal G F = record
+    { isBraidedMonoidal =
+      ∘-IsStrongBraidedMonoidal (isBraidedMonoidal G) (isBraidedMonoidal F)
+    }
+    where open Strong.BraidedMonoidalFunctor hiding (F)
+
+-- Functor composition preserves symmetric monoidality
+
+module _ {A : SymmetricMonoidalCategory o ℓ e}
+         {B : SymmetricMonoidalCategory o′ ℓ′ e′}
+         {C : SymmetricMonoidalCategory o″ ℓ″ e″} where
+  open Symmetric
+
+  ∘-SymmetricMonoidal : Lax.SymmetricMonoidalFunctor B C →
+                        Lax.SymmetricMonoidalFunctor A B →
+                        Lax.SymmetricMonoidalFunctor A C
+  ∘-SymmetricMonoidal G F = record
+    { isBraidedMonoidal =
+      ∘-IsBraidedMonoidal (isBraidedMonoidal G) (isBraidedMonoidal F)
+    }
+    where open Lax.SymmetricMonoidalFunctor hiding (F)
+
+  ∘-StrongSymmetricMonoidal : Strong.SymmetricMonoidalFunctor B C →
+                              Strong.SymmetricMonoidalFunctor A B →
+                              Strong.SymmetricMonoidalFunctor A C
+  ∘-StrongSymmetricMonoidal G F = record
+    { isBraidedMonoidal =
+      ∘-IsStrongBraidedMonoidal (isBraidedMonoidal G) (isBraidedMonoidal F)
+    }
+    where open Strong.SymmetricMonoidalFunctor hiding (F)
 
 module _ (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′) where
   private

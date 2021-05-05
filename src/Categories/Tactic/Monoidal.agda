@@ -7,11 +7,17 @@ module Categories.Tactic.Monoidal where
 
 open import Level
 open import Data.Product using (_,_)
+open import Data.List
+open import Data.List.Properties using (++-assoc; ++-identityʳ)
 
 open import Relation.Binary.PropositionalEquality
+open import Relation.Binary.PropositionalEquality.Properties
+  using (subst-application)
 
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Monoidal.Core using (Monoidal)
+import Categories.Category.Monoidal.Reasoning as MonoidalReasoning
+open import Categories.Category.Monoidal.Properties using (module Kelly's)
 
 import Categories.Morphism.Reasoning as MR
 
@@ -33,8 +39,8 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
   open Category 𝒞
   open Monoidal 𝒱
 
-  open HomReasoning
   open MR 𝒞
+  open MonoidalReasoning 𝒱
 
   --------------------------------------------------------------------------------
   -- A 'Word' reifies all the parenthesis/tensors/units of some object
@@ -43,7 +49,7 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
   data Word : Set o where
     _⊗₀′_ : Word → Word → Word
     unit′ : Word
-    _′    : Obj → Word
+    _′    : (X : Obj) → Word
 
   reify : Word → Obj
   reify (w₁ ⊗₀′ w₂) = reify w₁ ⊗₀ reify w₂
@@ -55,21 +61,21 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
       X Y Z   : Obj
       A B C D : Word
 
-  -------------------------------------------------------------------------------- 
+  --------------------------------------------------------------------------------
   -- An 'Expr' reifies all unitors, associators and their compositions
   -- into a data structure.
-  -------------------------------------------------------------------------------- 
-  data Expr : Word → Word → Set (o ⊔ ℓ) where
+  --------------------------------------------------------------------------------
+  data Expr : Word → Word → Set o where
     id′  : Expr A A
     _∘′_ : Expr B C → Expr A B → Expr A C
     _⊗₁′_ : Expr A C → Expr B D → Expr (A ⊗₀′ B) (C ⊗₀′ D)
     α′   : Expr ((A ⊗₀′ B) ⊗₀′ C) (A ⊗₀′ (B ⊗₀′ C))
-    α⁻¹′ : Expr (A ⊗₀′ (B ⊗₀′ C)) ((A ⊗₀′ B) ⊗₀′ C) 
+    α⁻¹′ : Expr (A ⊗₀′ (B ⊗₀′ C)) ((A ⊗₀′ B) ⊗₀′ C)
     ƛ′   : Expr (unit′ ⊗₀′ A) A
     ƛ⁻¹′ : Expr A (unit′ ⊗₀′ A)
     ρ′   : Expr (A ⊗₀′ unit′) A
     ρ⁻¹′ : Expr A (A ⊗₀′ unit′)
-    
+
   -- Embed a morphism in 'Expr' back into '𝒞' without normalizing.
   [_↓] : Expr A B → (reify A) ⇒ (reify B)
   [ id′ ↓]    = id
@@ -81,6 +87,13 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
   [ ƛ⁻¹′ ↓]   = unitorˡ.to
   [ ρ′ ↓]     = unitorʳ.from
   [ ρ⁻¹′ ↓]   = unitorʳ.to
+
+  infix 4 _≈↓_
+
+  -- TODO: is this sufficient or should we define an equality directly
+  -- on Expr?
+  _≈↓_ : (f g : Expr A B) → Set e
+  f ≈↓ g = [ f ↓] ≈ [ g ↓]
 
   -- Invert a composition of coherence morphisms
   invert : Expr A B → Expr B A
@@ -94,68 +107,124 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
   invert ρ′ = ρ⁻¹′
   invert ρ⁻¹′ = ρ′
 
-  -- Reassociate all the tensors to the right.
-  -- 
-  -- Note [reassoc + lists]:
-  -- We could use a list here, but this version is somewhat nicer,
-  -- as we can get things like right-identity for free.
-  reassoc : Word → (Word → Word)
-  reassoc (w₁ ⊗₀′ w₂) rest = reassoc w₁ (reassoc w₂ rest)
-  reassoc unit′ rest = rest
-  reassoc (x ′) rest = (x ′) ⊗₀′ rest
+  NfWord : Set o
+  NfWord = List Obj
 
-  -- This is the key proof of the entire tactic.
-  -- 'coherence e' proves that all of our coherence morphisms
-  -- in 'e' are not required after reassociation, as they are on-the-nose equal.
-  coherence : Expr A B → (X : Word) → reassoc A X ≡ reassoc B X
-  coherence id′                         X = refl
-  coherence (f ∘′ g)                    X = trans (coherence g X) (coherence f X)
-  coherence (_⊗₁′_ {A} {B} {C} {D} f g) X = trans (cong (reassoc A) (coherence g X)) (coherence f (reassoc D X))
-  coherence α′                          X = refl
-  coherence α⁻¹′                        X = refl
-  coherence ƛ′                          X = refl
-  coherence ƛ⁻¹′                        X = refl
-  coherence ρ′                          X = refl
-  coherence ρ⁻¹′                        X = refl
+  data NfExpr : NfWord → NfWord → Set o where
+    id′ : ∀ {N} → NfExpr N N
 
-  -- Place every word into a normal form
-  -- > nf ((W ′ ⊗₀′ X ′) ⊗₀′ (Y ′ ⊗₀′ Z ′))
-  --   W ′ ⊗₀ X ′ ⊗₀ Y ′ ⊗₀ Z ′ ⊗₀ unit′
-  nf : Word → Word
-  nf w = reassoc w unit′
+  -- An embedding of normal forms
 
-  -- Given some coherence morphism, build a morphisms between
-  -- the normal forms of it's domain and codomain.
-  -- This will be equal to the identity morphism.
-  strict : Expr A B → Expr (nf A) (nf B)
-  strict {A = A} {B = B} e = subst (λ X → Expr (reassoc A unit′) X) (coherence e unit′) id′
+  ⌞_⌟ : NfWord → Word
+  ⌞ [] ⌟    = unit′
+  ⌞ A ∷ N ⌟ = (A ′) ⊗₀′ ⌞ N ⌟
 
-  -- If we reassociate and tensor after that, we can find some coherence
-  -- morphism that removes the pointless unit.
-  slurp : ∀ (A B : Word) → Expr (reassoc A unit′ ⊗₀′ B) (reassoc A B)
-  slurp (A ⊗₀′ B) C = slurp A (reassoc B C) ∘′ (id′ ⊗₁′ slurp B C) ∘′ α′ ∘′ (invert (slurp A (reassoc B unit′) ⊗₁′ id′))
-  slurp unit′     B = ƛ′
-  slurp (x ′)     B = ρ′ ⊗₁′ id′
+  ⌊_⌋ : ∀ {N M} → NfExpr N M → Expr ⌞ N ⌟ ⌞ M ⌟
+  ⌊ id′ ⌋ = id′
 
-  -- Coherence morphism witnessing the concatentation of normal forms.
-  nf-homo : ∀ (A B : Word) → Expr (nf A ⊗₀′ nf B) (nf (A ⊗₀′ B))
-  nf-homo A B = slurp A (reassoc B unit′)
+  -- The monoidal operations are all admissible on normal forms.
+
+  infixr 9 _∘ⁿ_
+  infixr 10  _⊗ⁿ_
+
+  _∘ⁿ_ : ∀ {N₁ N₂ N₃} →
+         NfExpr N₂ N₃ → NfExpr N₁ N₂ → NfExpr N₁ N₃
+  id′ ∘ⁿ id′ = id′
+
+  _⊗ⁿ_ : ∀ {N₁ N₂ M₁ M₂} →
+         NfExpr N₁ M₁ → NfExpr N₂ M₂ → NfExpr (N₁ ++ N₂) (M₁ ++ M₂)
+  id′ ⊗ⁿ id′ = id′
+
+  αⁿ : ∀ N₁ N₂ N₃ → NfExpr ((N₁ ++ N₂) ++ N₃) (N₁ ++ (N₂ ++ N₃))
+  αⁿ N₁ N₂ N₃ = subst (NfExpr ((N₁ ++ N₂) ++ N₃)) (++-assoc N₁ N₂ N₃) id′
+
+  ρⁿ : ∀ N → NfExpr (N ++ []) N
+  ρⁿ N = subst (NfExpr (N ++ [])) (++-identityʳ N) id′
+
+  invertⁿ : ∀ {N M} → NfExpr N M → NfExpr M N
+  invertⁿ id′ = id′
+
+  -- The normalization functor
+
+  nf₀ : Word → NfWord
+  nf₀ (A₁ ⊗₀′ A₂) = nf₀ A₁ ++ nf₀ A₂
+  nf₀ unit′       = []
+  nf₀ (X ′)       = X ∷ []
+
+  nf₁ : Expr A B → NfExpr (nf₀ A) (nf₀ B)
+  nf₁ id′                = id′
+  nf₁ (f ∘′ g)           = nf₁ f ∘ⁿ nf₁ g
+  nf₁ (f ⊗₁′ g)          = nf₁ f ⊗ⁿ nf₁ g
+  nf₁ (α′ {A} {B} {C})   = αⁿ (nf₀ A) (nf₀ B) (nf₀ C)
+  nf₁ (α⁻¹′ {A} {B} {C}) = invertⁿ (αⁿ (nf₀ A) (nf₀ B) (nf₀ C))
+  nf₁ ƛ′                 = id′
+  nf₁ ƛ⁻¹′               = id′
+  nf₁ ρ′                 = ρⁿ _
+  nf₁ ρ⁻¹′               = invertⁿ (ρⁿ _)
+
+  -- The embedding is a monoidal functor
+
+  ⌊⌋-id : ∀ {N} → ⌊ id′ {N} ⌋ ≈↓ id′
+  ⌊⌋-id = Equiv.refl
+
+  ⌊⌋-∘ : ∀ {N₁ N₂ N₃} (f : NfExpr N₂ N₃) (g : NfExpr N₁ N₂) →
+         ⌊ f ∘ⁿ g ⌋ ≈↓ ⌊ f ⌋ ∘′ ⌊ g ⌋
+  ⌊⌋-∘ id′ id′ = ⟺ identity²
+
+  ⌞⌟-⊗ : ∀ N M → Expr (⌞ N ⌟ ⊗₀′ ⌞ M ⌟) ⌞ N ++ M ⌟
+  ⌞⌟-⊗ [] M      = ƛ′
+  ⌞⌟-⊗ (X ∷ N) M = id′ ⊗₁′ ⌞⌟-⊗ N M ∘′ α′
+
+  ⌊⌋-⊗ : ∀ {N₁ N₂ M₁ M₂} (f : NfExpr N₁ M₁) (g : NfExpr N₂ M₂) →
+         ⌊ f ⊗ⁿ g ⌋ ∘′ ⌞⌟-⊗ N₁ N₂ ≈↓ ⌞⌟-⊗ M₁ M₂ ∘′ ⌊ f ⌋ ⊗₁′ ⌊ g ⌋
+  ⌊⌋-⊗ {N₁} {N₂} id′ id′ = begin
+    id ∘ [ ⌞⌟-⊗ N₁ N₂ ↓]         ≈⟨ id-comm-sym ⟩
+    [ ⌞⌟-⊗ N₁ N₂ ↓] ∘ id         ≈˘⟨ refl⟩∘⟨ ⊗.identity ⟩
+    [ ⌞⌟-⊗ N₁ N₂ ↓] ∘ id ⊗₁ id   ∎
+
+  ⌊⌋-ρ : ∀ N → ⌊ ρⁿ N ⌋ ∘′ ⌞⌟-⊗ N [] ≈↓ ρ′
+  ⌊⌋-ρ [] = identityˡ ○ Kelly's.coherence₃ 𝒱
+  ⌊⌋-ρ (X ∷ N) = begin
+      [ ⌊ subst (NfExpr (X ∷ N ++ [])) (cong (X ∷_) (++-identityʳ N)) id′ ⌋ ↓] ∘
+      id ⊗₁ [ ⌞⌟-⊗ N [] ↓] ∘ associator.from
+    ≡⟨ cong (λ f → [ ⌊ f ⌋ ∘′ id′ ⊗₁′ ⌞⌟-⊗ N [] ∘′ α′ ↓])
+            (helper₁ (++-identityʳ N)) ⟩
+      [ ⌊ id′ ⊗ⁿ ρⁿ N ⌋ ↓] ∘ id ⊗₁ [ ⌞⌟-⊗ N [] ↓] ∘ associator.from
+    ≈⟨ helper₂ (ρⁿ N) ⟩∘⟨refl ⟩
+      id ⊗₁ [ ⌊ ρⁿ N ⌋ ↓] ∘ id ⊗₁ [ ⌞⌟-⊗ N [] ↓] ∘ associator.from
+    ≈⟨ merge₂ ⌊⌋-ρ N ⟩∘⟨ Equiv.refl ⟩
+      id ⊗₁ unitorʳ.from ∘ associator.from
+    ≈⟨ Kelly's.coherence₂ 𝒱 ⟩
+      unitorʳ.from
+    ∎
+    where
+
+      -- FIXME: give these better names and reuse them in the proof of
+      -- the hexagon identity (the ⌊⌋-α yet to be written).
+
+      helper₁ : ∀ {X N M} (eq : N ≡ M) →
+                subst (NfExpr (X ∷ N)) (cong (X ∷_) eq) (id′ ⊗ⁿ id′ {N}) ≡
+                id′ ⊗ⁿ subst (NfExpr N) eq id′
+      helper₁ refl = refl
+
+      helper₂ : ∀ {X N M} (f : NfExpr N M) → ⌊ id′ ⊗ⁿ f ⌋ ≈↓ id′ {X ′} ⊗₁′ ⌊ f ⌋
+      helper₂ id′ = ⟺ ⊗.identity
 
   -- Build a coherence morphism out of some word into it's normal form.
-  into : ∀ (A : Word) → Expr A (nf A)
-  into (A ⊗₀′ B) = nf-homo A B ∘′ (into A ⊗₁′ into B)
-  into unit′ = id′
-  into (x ′) = ρ⁻¹′
+  into : ∀ (A : Word) → Expr A ⌞ nf₀ A ⌟
+  into (A ⊗₀′ B) = ⌞⌟-⊗ (nf₀ A) (nf₀ B) ∘′ (into A ⊗₁′ into B)
+  into unit′     = id′
+  into (x ′)     = ρ⁻¹′
 
   -- Build a coherence morphism into a word from it's normal form.
-  out : ∀ (A : Word) → Expr (nf A) A
+  out : ∀ (A : Word) → Expr ⌞ nf₀ A ⌟ A
   out A = invert (into A)
 
   -- Normalize an expression.
   -- We do this by building maps into and out of the normal forms of the
   -- domain/codomain, then using our 'strict' coherence morphism to link them together.
   normalize : Expr A B → Expr A B
-  normalize {A = A} {B = B} f = out B ∘′ strict f ∘′ into A
+  normalize {A = A} {B = B} f = out B ∘′ ⌊ nf₁ f ⌋ ∘′ into A
 
   -- Witness the isomorphism between 'f' and 'invert f'.
   invert-isoˡ : ∀ (f : Expr A B) → [ invert f ↓] ∘ [ f ↓] ≈ id
@@ -203,43 +272,39 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
     [ out A ↓] ∘ [ into A ↓]      ≈⟨ invert-isoˡ (into A) ⟩
     id ∎
 
-  -- Slurping on a unit is the same as removing the redundant unit by using
-  -- the right associator.
-  slurp-unit : ∀ (A : Word) → [ slurp A unit′ ↓] ≈ [ ρ′ {reassoc A unit′} ↓]
-  slurp-unit (A ⊗₀′ A₁) = {!!}
-  slurp-unit unit′ = {!!}
-  slurp-unit (x ′) = {!!}
-
-  -- The strict coherence morphism of a composition is the composition of the strict morphisms.
-  strict-∘ : ∀ (f : Expr B C) (g : Expr A B) → [ strict (f ∘′ g) ↓] ≈ [ strict f ↓] ∘ [ strict g ↓]
-  strict-∘ f g rewrite (coherence g unit′) | (coherence f unit′) = Equiv.sym identity²
-
-  -- For whatever reason this is HARD TO PROVE.
-  -- We run into all sorts of crazy issues when we try to rewrite any of the 'coherence f' proofs.
-  strict-⊗ : ∀ (f : Expr A C) (g : Expr B D) → [ strict (f ⊗₁′ g) ↓] ≈ [ (nf-homo C D) ↓] ∘ [ strict f ↓] ⊗₁ [ strict g ↓] ∘ [ invert (nf-homo A B) ↓]
-  strict-⊗ {A} {C} {B} {D} f g = {!!}
-
   -- Normalization preserves equality.
-  preserves-≈ : ∀ (f : Expr A B) → [ normalize f ↓] ≈ [ f ↓]
+  preserves-≈ : ∀ (f : Expr A B) → normalize f ≈↓ f
   preserves-≈ (id′ {A}) = into-out A
   preserves-≈ (_∘′_ {B} {C} {A} f g) = begin
-    [ out C ↓] ∘ [ strict (f ∘′ g) ↓] ∘ [ into A ↓]                                           ≈⟨ refl⟩∘⟨ strict-∘ f g ⟩∘⟨refl ⟩
-    [ out C ↓] ∘ ([ strict f ↓] ∘ [ strict g ↓]) ∘ [ into A ↓]                                ≈˘⟨ refl⟩∘⟨ cancelInner (invert-isoʳ (into B)) ⟩∘⟨refl ⟩
-    [ out C ↓] ∘ (([ strict f ↓] ∘ [ into B ↓]) ∘ ([ out B ↓] ∘ [ strict g ↓])) ∘ [ into A ↓] ≈⟨ center⁻¹ (preserves-≈ f) (assoc ○ preserves-≈ g) ⟩
-    [ f ↓] ∘ [ g ↓]                                                                           ∎
+      [ out C ↓] ∘ [ ⌊ nf₁ (f ∘′ g) ⌋ ↓] ∘ [ into A ↓]
+    ≈⟨ refl⟩∘⟨ ⌊⌋-∘ (nf₁ f) (nf₁ g) ⟩∘⟨refl ⟩
+      [ out C ↓] ∘ ([ ⌊ nf₁ f ⌋ ↓] ∘ [ ⌊ nf₁ g ⌋ ↓]) ∘ [ into A ↓]
+    ≈˘⟨ refl⟩∘⟨ cancelInner (invert-isoʳ (into B)) ⟩∘⟨refl ⟩
+      [ out C ↓] ∘
+      (([ ⌊ nf₁ f ⌋ ↓] ∘ [ into B ↓]) ∘ ([ out B ↓] ∘ [ ⌊ nf₁ g ⌋ ↓])) ∘
+      [ into A ↓]
+    ≈⟨ center⁻¹ (preserves-≈ f) (assoc ○ preserves-≈ g) ⟩
+      [ f ↓] ∘ [ g ↓]
+    ∎
   preserves-≈ (_⊗₁′_ {A} {C} {B} {D} f g) = begin
-    ([ out C ↓] ⊗₁ [ out D ↓] ∘ [ invert (nf-homo C D) ↓]) ∘ [ strict (f ⊗₁′ g) ↓] ∘ [ nf-homo A B ↓] ∘ [ into A ↓] ⊗₁ [ into B ↓]
-      ≈⟨ refl⟩∘⟨ strict-⊗ f g ⟩∘⟨refl ⟩
-    ([ out C ↓] ⊗₁ [ out D ↓] ∘ [ invert (nf-homo C D) ↓]) ∘ ([ (nf-homo C D) ↓] ∘ [ strict f ↓] ⊗₁ [ strict g ↓] ∘ [ invert (nf-homo A B) ↓]) ∘ [ nf-homo A B ↓] ∘ [ into A ↓] ⊗₁ [ into B ↓]
-      ≈⟨ {!!} ⟩
-    [ out C ↓] ⊗₁ [ out D ↓] ∘ [ strict f ↓] ⊗₁ [ strict g ↓] ∘ [ into A ↓] ⊗₁ [ into B ↓]
-      ≈⟨ {!!} ⟩
-    ([ out C ↓] ∘ [ strict f ↓] ∘ [ into A ↓]) ⊗₁ ([ out D ↓] ∘ [ strict g ↓] ∘ [ into B ↓])
-      ≈⟨ ⊗.F-resp-≈ (preserves-≈ f , preserves-≈ g) ⟩
-    [ f ↓] ⊗₁ [ g ↓] ∎
-  preserves-≈ (α′ {A} {B} {C}) = begin
-    ([ invert (into A) ↓] ⊗₁ ([ invert (into B) ↓] ⊗₁ [ invert (into C) ↓] ∘ [ invert (nf-homo B C) ↓]) ∘ [ invert (nf-homo A (B ⊗₀′ C)) ↓]) ∘ id ∘ ([ slurp A (reassoc B (reassoc C unit′)) ↓] ∘ id ⊗₁ [ slurp B (reassoc C unit′) ↓] ∘ associator.from ∘ [ invert (slurp A (reassoc B unit′)) ↓] ⊗₁ id) ∘ ([ nf-homo A B ↓] ∘ [ into A ↓] ⊗₁ [ into B ↓]) ⊗₁ [ into C ↓] ≈⟨ {!!} ⟩
-    associator.from ∎
+      ([ out C ↓] ⊗₁ [ out D ↓] ∘ [ invert (⌞⌟-⊗ (nf₀ C) (nf₀ D)) ↓]) ∘
+      [ ⌊ nf₁ (f ⊗₁′ g) ⌋ ↓] ∘
+      [ ⌞⌟-⊗ (nf₀ A) (nf₀ B) ↓] ∘ [ into A ↓] ⊗₁ [ into B ↓]
+    ≈⟨ (refl⟩∘⟨ pullˡ (⌊⌋-⊗ (nf₁ f) (nf₁ g))) ⟩
+      ([ out C ↓] ⊗₁ [ out D ↓] ∘ [ invert (⌞⌟-⊗ (nf₀ C) (nf₀ D)) ↓]) ∘
+      ([ ⌞⌟-⊗ (nf₀ C) (nf₀ D) ↓] ∘ [ ⌊ nf₁ f ⌋ ⊗₁′ ⌊ nf₁ g ⌋ ↓]) ∘
+      [ into A ↓] ⊗₁ [ into B ↓]
+    ≈⟨ pullˡ (cancelInner (invert-isoˡ (⌞⌟-⊗ (nf₀ C) (nf₀ D)))) ⟩
+      ([ out C ⊗₁′ out D ↓] ∘ [ ⌊ nf₁ f ⌋ ⊗₁′ ⌊ nf₁ g ⌋ ↓]) ∘
+      [ into A ⊗₁′ into B ↓]
+    ≈˘⟨ pushʳ ⊗.homomorphism ⟩
+      ([ out C ⊗₁′ out D ↓] ∘ [ (⌊ nf₁ f ⌋ ∘′ into A) ⊗₁′ (⌊ nf₁ g ⌋ ∘′ into B) ↓])
+    ≈˘⟨ ⊗.homomorphism ⟩
+      ([ out C ∘′ ⌊ nf₁ f ⌋ ∘′ into A ↓] ⊗₁ [ out D ∘′ ⌊ nf₁ g ⌋ ∘′ into B ↓])
+    ≈⟨ preserves-≈ f ⟩⊗⟨ preserves-≈ g ⟩
+      [ f ↓] ⊗₁ [ g ↓]
+    ∎
+  preserves-≈ (α′ {A} {B} {C}) = {!!}
   preserves-≈ α⁻¹′ = {!!}
   preserves-≈ (ƛ′ {A}) = begin
     [ out A ↓] ∘ id ∘ unitorˡ.from ∘ id ⊗₁ [ into A ↓] ≈⟨ refl⟩∘⟨ refl⟩∘⟨ unitorˡ-commute-from ⟩
@@ -251,10 +316,12 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
     (unitorˡ.to ∘ [ out A ↓]) ∘ id ∘ [ into A ↓]       ≈⟨ cancelʳ (into-out A) ⟩
     unitorˡ.to                                                   ∎
   preserves-≈ (ρ′ {A}) = begin
-    [ out A ↓] ∘ id ∘ [ slurp A unit′ ↓] ∘ ([ into A ↓] ⊗₁ id) ≈⟨ refl⟩∘⟨ refl⟩∘⟨ (slurp-unit A ⟩∘⟨refl) ⟩
-    [ out A ↓] ∘ id ∘ unitorʳ.from ∘ ([ into A ↓] ⊗₁ id)       ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ unitorʳ-commute-from) ⟩
-    [ out A ↓] ∘ id ∘ [ into A ↓] ∘ unitorʳ.from               ≈˘⟨ assoc²' ⟩
-    ([ out A ↓] ∘ id ∘ [ into A ↓]) ∘ unitorʳ.from             ≈⟨ elimˡ (into-out A)  ⟩
-    unitorʳ.from                                               ∎
+      [ out A ↓] ∘ [ ⌊ ρⁿ (nf₀ A) ⌋ ↓] ∘ [ ⌞⌟-⊗ (nf₀ A) [] ↓] ∘ [ into A ↓] ⊗₁ id
+    ≈⟨ refl⟩∘⟨ pullˡ (⌊⌋-ρ (nf₀ A)) ⟩
+      [ out A ↓] ∘ unitorʳ.from ∘ ([ into A ↓] ⊗₁ id)
+    ≈⟨ refl⟩∘⟨ unitorʳ-commute-from ⟩
+      [ out A ↓] ∘ [ into A ↓] ∘ unitorʳ.from
+    ≈⟨ cancelˡ (invert-isoˡ (into A)) ⟩
+      unitorʳ.from
+    ∎
   preserves-≈ (ρ⁻¹′ {A}) = {!!}
-
