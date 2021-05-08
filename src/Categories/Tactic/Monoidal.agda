@@ -218,6 +218,14 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
   ⌞⌟-⊗ [] M      = ƛ′
   ⌞⌟-⊗ (X ∷ N) M = id′ ⊗₁′ ⌞⌟-⊗ N M ∘′ α′
 
+  subst-∷-⊗ : ∀ {X N M} (eq : N ≡ M) →
+            subst (NfExpr (X ∷ N)) (cong (X ∷_) eq) (idⁿ ⊗ⁿ idⁿ {N}) ≡
+            idⁿ ⊗ⁿ subst (NfExpr N) eq idⁿ
+  subst-∷-⊗ refl = refl
+
+  ⌊⌋-identityˡ : ∀ {X N M} (f : NfExpr N M) → ⌊ idⁿ ⊗ⁿ f ⌋ ≈↓ id′ {X ′} ⊗₁′ ⌊ f ⌋
+  ⌊⌋-identityˡ idⁿ = ⟺ ⊗.identity
+
   ⌊⌋-⊗ : ∀ {N₁ N₂ M₁ M₂} (f : NfExpr N₁ M₁) (g : NfExpr N₂ M₂) →
          ⌊ f ⊗ⁿ g ⌋ ∘′ ⌞⌟-⊗ N₁ N₂ ≈↓ ⌞⌟-⊗ M₁ M₂ ∘′ ⌊ f ⌋ ⊗₁′ ⌊ g ⌋
   ⌊⌋-⊗ {N₁} {N₂} idⁿ idⁿ = begin
@@ -230,28 +238,15 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
   ⌊⌋-ρ (X ∷ N) = begin
       [ ⌊ subst (NfExpr (X ∷ N ++ [])) (cong (X ∷_) (++-identityʳ N)) idⁿ ⌋ ↓] ∘
       id ⊗₁ [ ⌞⌟-⊗ N [] ↓] ∘ associator.from
-    ≡⟨ cong (λ f → [ ⌊ f ⌋ ∘′ id′ ⊗₁′ ⌞⌟-⊗ N [] ∘′ α′ ↓])
-            (helper₁ (++-identityʳ N)) ⟩
+    ≡⟨ cong (λ f → [ ⌊ f ⌋ ∘′ id′ ⊗₁′ ⌞⌟-⊗ N [] ∘′ α′ ↓]) (subst-∷-⊗ (++-identityʳ N)) ⟩
       [ ⌊ idⁿ ⊗ⁿ ρⁿ N ⌋ ↓] ∘ id ⊗₁ [ ⌞⌟-⊗ N [] ↓] ∘ associator.from
-    ≈⟨ helper₂ (ρⁿ N) ⟩∘⟨refl ⟩
+    ≈⟨ ⌊⌋-identityˡ (ρⁿ N) ⟩∘⟨refl ⟩
       id ⊗₁ [ ⌊ ρⁿ N ⌋ ↓] ∘ id ⊗₁ [ ⌞⌟-⊗ N [] ↓] ∘ associator.from
     ≈⟨ merge₂ ⌊⌋-ρ N ⟩∘⟨ Equiv.refl ⟩
       id ⊗₁ unitorʳ.from ∘ associator.from
     ≈⟨ Kelly's.coherence₂ 𝒱 ⟩
       unitorʳ.from
     ∎
-    where
-
-      -- FIXME: give these better names and reuse them in the proof of
-      -- the hexagon identity (the ⌊⌋-α yet to be written).
-
-      helper₁ : ∀ {X N M} (eq : N ≡ M) →
-                subst (NfExpr (X ∷ N)) (cong (X ∷_) eq) (idⁿ ⊗ⁿ idⁿ {N}) ≡
-                idⁿ ⊗ⁿ subst (NfExpr N) eq idⁿ
-      helper₁ refl = refl
-
-      helper₂ : ∀ {X N M} (f : NfExpr N M) → ⌊ idⁿ ⊗ⁿ f ⌋ ≈↓ id′ {X ′} ⊗₁′ ⌊ f ⌋
-      helper₂ idⁿ = ⟺ ⊗.identity
 
   ⌊⌋-α : ∀ N₁ N₂ N₃ → ⌊ αⁿ N₁ N₂ N₃ ⌋ ∘′ ⌞⌟-⊗ (N₁ ++ N₂) N₃ ∘′ ⌞⌟-⊗ N₁ N₂ ⊗₁′ id′ ≈↓ ⌞⌟-⊗ N₁ (N₂ ++ N₃) ∘′ id′ ⊗₁′ (⌞⌟-⊗ N₂ N₃) ∘′ α′
   ⌊⌋-α [] N₂ N₃ = begin
@@ -262,11 +257,11 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
   ⌊⌋-α (X ∷ N₁) N₂ N₃ = begin
       [ ⌊ subst (NfExpr (X ∷ (N₁ ++ N₂) ++ N₃)) (cong (_∷_ X) (++-assoc N₁ N₂ N₃)) idⁿ ⌋ ↓] ∘
       (id ⊗₁ [ ⌞⌟-⊗ (N₁ ++ N₂) N₃ ↓] ∘ associator.from) ∘ (id ⊗₁ [ ⌞⌟-⊗ N₁ N₂ ↓] ∘ associator.from) ⊗₁ id
-    ≡⟨ cong (λ f → [ ⌊ f ⌋ ↓] ∘ (id ⊗₁ [ ⌞⌟-⊗ (N₁ ++ N₂) N₃ ↓] ∘ associator.from) ∘ (id ⊗₁ [ ⌞⌟-⊗ N₁ N₂ ↓] ∘ associator.from) ⊗₁ id) (helper₁ (++-assoc N₁ N₂ N₃)) ⟩
+    ≡⟨ cong (λ f → [ ⌊ f ⌋ ↓] ∘ (id ⊗₁ [ ⌞⌟-⊗ (N₁ ++ N₂) N₃ ↓] ∘ associator.from) ∘ (id ⊗₁ [ ⌞⌟-⊗ N₁ N₂ ↓] ∘ associator.from) ⊗₁ id) (subst-∷-⊗ (++-assoc N₁ N₂ N₃)) ⟩
       [ ⌊ idⁿ ⊗ⁿ subst (NfExpr ((N₁ ++ N₂) ++ N₃)) (++-assoc N₁ N₂ N₃) idⁿ ⌋ ↓] ∘
       (id ⊗₁ [ ⌞⌟-⊗ (N₁ ++ N₂) N₃ ↓] ∘ associator.from) ∘
       (id ⊗₁ [ ⌞⌟-⊗ N₁ N₂ ↓] ∘ associator.from) ⊗₁ id
-    ≈⟨ helper₂ (subst (NfExpr ((N₁ ++ N₂) ++ N₃)) (++-assoc N₁ N₂ N₃) idⁿ) ⟩∘⟨refl ⟩
+    ≈⟨ ⌊⌋-identityˡ (subst (NfExpr ((N₁ ++ N₂) ++ N₃)) (++-assoc N₁ N₂ N₃) idⁿ) ⟩∘⟨refl ⟩
       (id ⊗₁ [ ⌊ αⁿ N₁ N₂ N₃ ⌋ ↓]) ∘
       (id ⊗₁ [ ⌞⌟-⊗ (N₁ ++ N₂) N₃ ↓] ∘ associator.from) ∘
       ((id ⊗₁ [ ⌞⌟-⊗ N₁ N₂ ↓]) ∘ associator.from) ⊗₁ id
@@ -292,18 +287,6 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
     ≈⟨ (refl⟩∘⟨ (⊗.identity ⟩⊗⟨refl) ⟩∘⟨refl) ⟩
       (id ⊗₁ [ ⌞⌟-⊗ N₁ (N₂ ++ N₃) ↓] ∘ associator.from) ∘
       (id ⊗₁ [ ⌞⌟-⊗ N₂ N₃ ↓] ∘ associator.from) ∎
-    where
-
-      -- FIXME: give these better names and reuse them in the proof of
-      -- the hexagon identity (the ⌊⌋-α yet to be written).
-
-      helper₁ : ∀ {X N M} (eq : N ≡ M) →
-                subst (NfExpr (X ∷ N)) (cong (X ∷_) eq) (idⁿ ⊗ⁿ idⁿ {N}) ≡
-                idⁿ ⊗ⁿ subst (NfExpr N) eq idⁿ
-      helper₁ refl = refl
-
-      helper₂ : ∀ {X N M} (f : NfExpr N M) → ⌊ idⁿ ⊗ⁿ f ⌋ ≈↓ id′ {X ′} ⊗₁′ ⌊ f ⌋
-      helper₂ idⁿ = ⟺ ⊗.identity
 
   ⌊⌋-invert : ∀ {M} {N O} (f : Expr M ⌞ N ⌟) (g : NfExpr N O) (h : Expr M ⌞ O ⌟) → ⌊ g ⌋ ∘′ f ≈↓ h  → invert f ∘′ ⌊ invertⁿ g ⌋ ≈↓ invert h
   ⌊⌋-invert f idⁿ h eq = begin
