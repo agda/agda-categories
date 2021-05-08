@@ -372,7 +372,17 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
       ([ invert (into A) ↓] ⊗₁ (([ invert (into B) ↓] ⊗₁ [ invert (into C) ↓]) ∘ [ invert (⌞⌟-⊗ (nf₀ B) (nf₀ C)) ↓]) ∘ [ invert (⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C)) ↓]) ∘
       [ ⌊ αⁿ (nf₀ A) (nf₀ B) (nf₀ C) ⌋ ↓] ∘ [ ⌞⌟-⊗ (nf₀ A ++ nf₀ B) (nf₀ C) ↓] ∘
       (([ ⌞⌟-⊗ (nf₀ A) (nf₀ B) ↓] ∘ [ into A ↓] ⊗₁ [ into B ↓]) ⊗₁ [ into C ↓])
-    ≈⟨ {!!} ⟩
+    ≈⟨ pushˡ split₂ʳ ⟩∘⟨refl ⟩
+      ([ invert (into A) ↓] ⊗₁ [ invert (into B) ↓] ⊗₁ [ invert (into C) ↓] ∘ id ⊗₁ [ invert (⌞⌟-⊗ (nf₀ B) (nf₀ C)) ↓] ∘ [ invert (⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C)) ↓]) ∘
+      [ ⌊ αⁿ (nf₀ A) (nf₀ B) (nf₀ C) ⌋ ↓] ∘
+      [ ⌞⌟-⊗ (nf₀ A ++ nf₀ B) (nf₀ C) ↓] ∘
+      ([ ⌞⌟-⊗ (nf₀ A) (nf₀ B) ↓] ∘ [ into A ↓] ⊗₁ [ into B ↓]) ⊗₁ [ into C ↓]
+    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ pushʳ split₁ˡ ⟩
+      ([ invert (into A) ↓] ⊗₁ [ invert (into B) ↓] ⊗₁ [ invert (into C) ↓] ∘ id ⊗₁ [ invert (⌞⌟-⊗ (nf₀ B) (nf₀ C)) ↓] ∘ [ invert (⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C)) ↓]) ∘
+      [ ⌊ αⁿ (nf₀ A) (nf₀ B) (nf₀ C) ⌋ ↓] ∘
+      ([ ⌞⌟-⊗ (nf₀ A ++ nf₀ B) (nf₀ C) ↓] ∘ [ ⌞⌟-⊗ (nf₀ A) (nf₀ B) ↓] ⊗₁ id) ∘
+      ([ into A ↓] ⊗₁ [ into B ↓]) ⊗₁ [ into C ↓]
+    ≈⟨ assoc²' ○ (refl⟩∘⟨ (⟺ assoc²' ○ pullˡ assoc²')) ⟩
       [ invert (into A) ↓] ⊗₁ ([ invert (into B) ↓] ⊗₁ [ invert (into C) ↓]) ∘
       (id ⊗₁ [ invert (⌞⌟-⊗ (nf₀ B) (nf₀ C)) ↓] ∘  [ invert (⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C)) ↓] ∘ [ ⌊ αⁿ (nf₀ A) (nf₀ B) (nf₀ C) ⌋ ↓] ∘ [ ⌞⌟-⊗ (nf₀ A ++ nf₀ B) (nf₀ C) ↓] ∘ [ ⌞⌟-⊗ (nf₀ A) (nf₀ B) ↓] ⊗₁ id) ∘
       (([ into A ↓] ⊗₁ [ into B ↓]) ⊗₁ [ into C ↓])
@@ -390,16 +400,49 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
       ([ invert (into A) ↓] ⊗₁ ([ invert (into B) ↓] ⊗₁ [ invert (into C) ↓]) ∘ ([ into A ↓] ⊗₁ ([ into B ↓] ⊗₁ [ into C ↓]))) ∘ associator.from
     ≈⟨ elimˡ (⊗-elim (invert-isoˡ (into A)) (⊗-elim (invert-isoˡ (into B)) (invert-isoˡ (into C)))) ⟩
       associator.from ∎
-  preserves-≈ (α⁻¹′ {A} {B} {C}) = {!!}
+  preserves-≈ (α⁻¹′ {A} {B} {C}) = begin
+      ((([ invert (into A) ↓] ⊗₁ [ invert (into B) ↓] ∘ [ invert (⌞⌟-⊗ (nf₀ A) (nf₀ B)) ↓]) ⊗₁ [ invert (into C) ↓]) ∘ [ invert (⌞⌟-⊗ (nf₀ A ++ nf₀ B) (nf₀ C)) ↓]) ∘
+      [ ⌊ invertⁿ (αⁿ (nf₀ A) (nf₀ B) (nf₀ C)) ⌋ ↓] ∘
+      [ ⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C) ↓] ∘
+      [ into A ↓] ⊗₁ ([ ⌞⌟-⊗ (nf₀ B) (nf₀ C) ↓] ∘ [ into B ↓] ⊗₁ [ into C ↓])
+    ≈⟨ (pushˡ split₁ʳ) ⟩∘⟨ (refl⟩∘⟨ pushʳ split₂ˡ) ⟩
+      (([ invert (into A) ↓] ⊗₁ [ invert (into B) ↓]) ⊗₁ [ invert (into C) ↓] ∘ [ invert (⌞⌟-⊗ (nf₀ A) (nf₀ B)) ↓] ⊗₁ id ∘ [ invert (⌞⌟-⊗ (nf₀ A ++ nf₀ B) (nf₀ C)) ↓]) ∘
+      [ ⌊ invertⁿ (αⁿ (nf₀ A) (nf₀ B) (nf₀ C)) ⌋ ↓] ∘
+      ([ ⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C) ↓] ∘ id ⊗₁ [ ⌞⌟-⊗ (nf₀ B) (nf₀ C) ↓]) ∘
+      [ into A ↓] ⊗₁ [ into B ↓] ⊗₁ [ into C ↓]
+    ≈⟨ assoc ○ (refl⟩∘⟨ (⟺ assoc)) ⟩
+      ([ invert (into A) ↓] ⊗₁ [ invert (into B) ↓]) ⊗₁ [ invert (into C) ↓] ∘
+      (([ invert (⌞⌟-⊗ (nf₀ A) (nf₀ B)) ↓] ⊗₁ id ∘ [ invert (⌞⌟-⊗ (nf₀ A ++ nf₀ B) (nf₀ C)) ↓]) ∘ [ ⌊ invertⁿ (αⁿ (nf₀ A) (nf₀ B) (nf₀ C)) ⌋ ↓]) ∘
+      ([ ⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C) ↓] ∘ id ⊗₁ [ ⌞⌟-⊗ (nf₀ B) (nf₀ C) ↓]) ∘
+      [ into A ↓] ⊗₁ ([ into B ↓] ⊗₁ [ into C ↓])
+    ≈⟨ (refl⟩∘⟨ ⌊⌋-invert (⌞⌟-⊗ (nf₀ A ++ nf₀ B) (nf₀ C) ∘′ ⌞⌟-⊗ (nf₀ A) (nf₀ B) ⊗₁′ id′) (αⁿ (nf₀ A) (nf₀ B) (nf₀ C)) (⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C) ∘′ id′ ⊗₁′ ⌞⌟-⊗ (nf₀ B) (nf₀ C) ∘′ α′) (⌊⌋-α (nf₀ A) (nf₀ B) (nf₀ C)) ⟩∘⟨refl) ⟩
+      ([ invert (into A) ↓] ⊗₁ [ invert (into B) ↓]) ⊗₁ [ invert (into C) ↓] ∘
+      ((associator.to ∘ (id ⊗₁ [ invert (⌞⌟-⊗ (nf₀ B) (nf₀ C)) ↓])) ∘ [ invert (⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C)) ↓]) ∘
+      ([ ⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C) ↓] ∘ id ⊗₁ [ ⌞⌟-⊗ (nf₀ B) (nf₀ C) ↓]) ∘ [ into A ↓] ⊗₁ ([ into B ↓] ⊗₁ [ into C ↓])
+    ≈⟨ refl⟩∘⟨ pullˡ (pullˡ (cancelʳ (invert-isoˡ (⌞⌟-⊗ (nf₀ A) (nf₀ B ++ nf₀ C))))) ⟩
+      ([ invert (into A) ↓] ⊗₁ [ invert (into B) ↓]) ⊗₁ [ invert (into C) ↓] ∘
+      ((associator.to ∘ id ⊗₁ [ invert (⌞⌟-⊗ (nf₀ B) (nf₀ C)) ↓]) ∘ id ⊗₁ [ ⌞⌟-⊗ (nf₀ B) (nf₀ C) ↓]) ∘
+      [ into A ↓] ⊗₁ [ into B ↓] ⊗₁ [ into C ↓]
+    ≈⟨ refl⟩∘⟨ cancelʳ (⊗-elim identity² (invert-isoˡ (⌞⌟-⊗ (nf₀ B) (nf₀ C)))) ⟩∘⟨refl ⟩
+      ([ invert (into A) ↓] ⊗₁ [ invert (into B) ↓]) ⊗₁ [ invert (into C) ↓] ∘ associator.to ∘ [ into A ↓] ⊗₁ [ into B ↓] ⊗₁ [ into C ↓]
+    ≈⟨ pushʳ assoc-commute-to ⟩
+      (([ invert (into A) ↓] ⊗₁ [ invert (into B) ↓]) ⊗₁ [ invert (into C) ↓] ∘ ([ into A ↓] ⊗₁ [ into B ↓]) ⊗₁ [ into C ↓]) ∘ associator.to
+    ≈⟨ elimˡ (⊗-elim (⊗-elim (invert-isoˡ (into A)) (invert-isoˡ (into B))) (invert-isoˡ (into C))) ⟩
+      associator.to ∎
   preserves-≈ (ƛ′ {A}) = begin
-    [ out A ↓] ∘ id ∘ unitorˡ.from ∘ id ⊗₁ [ into A ↓] ≈⟨ refl⟩∘⟨ refl⟩∘⟨ unitorˡ-commute-from ⟩
-    [ out A ↓] ∘ id ∘ [ into A ↓] ∘ unitorˡ.from       ≈˘⟨ assoc²' ⟩
-    ([ out A ↓] ∘ id ∘ [ into A ↓]) ∘ unitorˡ.from     ≈⟨ elimˡ (into-out A)  ⟩
-    unitorˡ.from                                       ∎
+      [ out A ↓] ∘ id ∘ unitorˡ.from ∘ id ⊗₁ [ into A ↓]
+    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ unitorˡ-commute-from ⟩
+      [ out A ↓] ∘ id ∘ [ into A ↓] ∘ unitorˡ.from
+    ≈˘⟨ assoc²' ⟩
+      ([ out A ↓] ∘ id ∘ [ into A ↓]) ∘ unitorˡ.from
+    ≈⟨ elimˡ (into-out A)  ⟩
+      unitorˡ.from ∎
   preserves-≈ (ƛ⁻¹′ {A}) = begin
-    (id ⊗₁ [ out A ↓] ∘ unitorˡ.to) ∘ id ∘ [ into A ↓] ≈˘⟨ unitorˡ-commute-to ⟩∘⟨refl ⟩
-    (unitorˡ.to ∘ [ out A ↓]) ∘ id ∘ [ into A ↓]       ≈⟨ cancelʳ (into-out A) ⟩
-    unitorˡ.to                                                   ∎
+      (id ⊗₁ [ out A ↓] ∘ unitorˡ.to) ∘ id ∘ [ into A ↓]
+    ≈˘⟨ unitorˡ-commute-to ⟩∘⟨refl ⟩
+      (unitorˡ.to ∘ [ out A ↓]) ∘ id ∘ [ into A ↓]
+    ≈⟨ cancelʳ (into-out A) ⟩
+      unitorˡ.to ∎
   preserves-≈ (ρ′ {A}) = begin
       [ out A ↓] ∘ [ ⌊ ρⁿ (nf₀ A) ⌋ ↓] ∘ [ ⌞⌟-⊗ (nf₀ A) [] ↓] ∘ [ into A ↓] ⊗₁ id
     ≈⟨ refl⟩∘⟨ pullˡ (⌊⌋-ρ (nf₀ A)) ⟩
@@ -407,8 +450,7 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝒱 : Monoidal 𝒞) where
     ≈⟨ refl⟩∘⟨ unitorʳ-commute-from ⟩
       [ out A ↓] ∘ [ into A ↓] ∘ unitorʳ.from
     ≈⟨ cancelˡ (invert-isoˡ (into A)) ⟩
-      unitorʳ.from
-    ∎
+      unitorʳ.from ∎
   preserves-≈ (ρ⁻¹′ {A}) = begin
       ([ out A ↓] ⊗₁ id ∘ [ invert (⌞⌟-⊗ (nf₀ A) []) ↓]) ∘ ([ ⌊ invertⁿ (ρⁿ (nf₀ A)) ⌋ ↓] ∘ [ into A ↓])
     ≈⟨ center (⌊⌋-invert (⌞⌟-⊗ (nf₀ A) []) (ρⁿ (nf₀ A)) ρ′ (⌊⌋-ρ (nf₀ A))) ⟩
