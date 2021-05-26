@@ -52,3 +52,7 @@ module Strong where
 
     monoidalFunctor : StrongMonoidalFunctor C.monoidalCategory D.monoidalCategory
     monoidalFunctor = record { isStrongMonoidal = isStrongMonoidal }
+
+    laxSymmetricMonoidalFunctor : Lax.SymmetricMonoidalFunctor
+    laxSymmetricMonoidalFunctor = record
+      { isBraidedMonoidal = isLaxBraidedMonoidal }
