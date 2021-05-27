@@ -50,7 +50,7 @@ module Lax where
 
   record BraidedMonoidalFunctor : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
     field
-      F                   : Functor C.U D.U
+      F                 : Functor C.U D.U
       isBraidedMonoidal : IsBraidedMonoidalFunctor F
 
     open Functor F public
@@ -94,7 +94,7 @@ module Strong where
 
   record BraidedMonoidalFunctor : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
     field
-      F                   : Functor C.U D.U
+      F                 : Functor C.U D.U
       isBraidedMonoidal : IsBraidedMonoidalFunctor F
 
     open Functor F public
