@@ -328,10 +328,14 @@ import Categories.NaturalTransformation.Equivalence
 import Categories.NaturalTransformation.Extranatural
 import Categories.NaturalTransformation.Hom
 import Categories.NaturalTransformation.Monoidal
+import Categories.NaturalTransformation.Monoidal.Braided
+import Categories.NaturalTransformation.Monoidal.Symmetric
 import Categories.NaturalTransformation.NaturalIsomorphism
 import Categories.NaturalTransformation.NaturalIsomorphism.Equivalence
 import Categories.NaturalTransformation.NaturalIsomorphism.Functors
 import Categories.NaturalTransformation.NaturalIsomorphism.Monoidal
+import Categories.NaturalTransformation.NaturalIsomorphism.Monoidal.Braided
+import Categories.NaturalTransformation.NaturalIsomorphism.Monoidal.Symmetric
 import Categories.NaturalTransformation.NaturalIsomorphism.Properties
 import Categories.NaturalTransformation.Properties
 import Categories.Object.Biproduct
