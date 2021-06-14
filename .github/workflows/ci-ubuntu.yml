@@ -1,0 +1,104 @@
+name: Ubuntu build
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+########################################################################
+## CONFIGURATION
+########################################################################
+
+env:
+  GHC_VERSION: 8.6.5
+  CABAL_VERSION: 3.2.0.0
+  CABAL_INSTALL: cabal install --overwrite-policy=always --ghc-options='-O1 +RTS -M6G -RTS'
+  AGDA_COMMIT: 8eb0d01811a663cf2b27b482b3b18690adfa094b
+  STDLIB_VERSION: 1.6
+  AGDA: agda -Werror +RTS -M3.5G -H3.5G -A128M -RTS -i. -i src/
+
+jobs:
+  test-categories:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Initialise variables
+        run: |
+          # Only deploy if the build follows from pushing to master
+          if [[ '${{ github.ref }}' == 'refs/heads/master' ]]; then
+             echo "AGDA_DEPLOY=true" >> $GITHUB_ENV
+          fi
+
+      # This caching step allows us to save a lot of building time by only
+      # downloading ghc and cabal and rebuilding Agda if absolutely necessary
+      - name: Cache cabal packages
+        uses: actions/cache@v2
+        id: cache-cabal
+        with:
+          path: |
+            ~/.cabal/packages
+            ~/.cabal/store
+            ~/.cabal/bin
+          key: ${{ runner.os }}-${{ env.GHC_VERSION }}-${{ env.CABAL_VERSION }}-${{ env.AGDA_COMMIT }}
+
+      - name: Install ghc and cabal
+        if: steps.cache-cabal.outputs.cache-hit != 'true'
+        uses: actions/setup-haskell@v1.1.3
+        with:
+          ghc-version: ${{ env.GHC_VERSION }}
+          cabal-version: ${{ env.CABAL_VERSION }}
+
+      - name: Put cabal programs in PATH
+        run: echo "~/.cabal/bin" >> $GITHUB_PATH
+
+      - name: Cabal update
+        if: steps.cache-cabal.outputs.cache-hit != 'true'
+        run: cabal update
+
+      - name: Download and install Agda from github
+        if: steps.cache-cabal.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/agda/agda
+          cd agda
+          git checkout ${{ env.AGDA_COMMIT }}
+          mkdir -p doc
+          touch doc/user-manual.pdf
+          ${{ env.CABAL_INSTALL }}
+          cd ..
+
+      - name: Install stdlib
+        run: |
+          mkdir -p $HOME/.agda
+          cd $HOME/.agda
+          wget https://github.com/agda/agda-stdlib/archive/v${{ env.STDLIB_VERSION }}.tar.gz
+          tar -xzvf v${{ env.STDLIB_VERSION }}.tar.gz
+          mv agda-stdlib-${{ env.STDLIB_VERSION }} agda-stdlib
+          echo "~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
+          cd -
+
+      - name: Checkout agda-categories
+        uses: actions/checkout@v2
+
+      - name: Test agda-categories
+        run: |
+          cp travis/* .
+          ./everything.sh
+          ${{ env.AGDA }} Everything.agda
+          ${{ env.AGDA }} index.agda
+
+      # Note that if you want to deploy html for different versions like the
+      # standard library does, you will need to be a bit more subtle in this
+      # step.
+      - name: Generate HTML
+        run: |
+          ${{ env.AGDA }} --html --html-dir html index.agda
+
+      - name: Deploy HTML
+        uses: JamesIves/github-pages-deploy-action@4.1.3
+        if: ${{ success() && env.AGDA_DEPLOY }}
+
+        with:
+          branch: gh-pages
+          folder: html
