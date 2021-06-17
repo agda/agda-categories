@@ -96,9 +96,6 @@ jobs:
 ## INSTALLATION STEPS
 ########################################################################
 
-      # Note that we do not install ghc if the cache hit is successful.
-      # This is because we are not compiling any of the modules. If we were
-      # we could need to change this to install ghc unconditionally.
       - name: Install ghc and cabal
         if: steps.cache-cabal.outputs.cache-hit != 'true'
         uses: actions/setup-haskell@v1.1.3
