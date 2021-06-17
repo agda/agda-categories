@@ -9,20 +9,58 @@ on:
 
 ########################################################################
 ## CONFIGURATION
+##
+## Key variables:
+##
+## AGDA_COMMIT picks the version of Agda to use to build the library.
+## It can either be a hash of a specific commit (to target a bugfix for
+## instance) or a tag e.g. tags/v2.6.1.3 (to target a released version).
+##
+## STDLIB_VERSION picks the version of the stdlib to pull. The current
+## design requires that the number corresponds to a released version
+## but we could change that to a commit-based approach if you need to.
+##
+## The rest:
+##
+## Basically do not touch GHC_VERSION and CABAL_VERSION as long as
+## they aren't a problem in the build. If you have time to waste, it
+## could be worth investigating whether newer versions of ghc produce
+## more efficient Agda executable and could cut down the build time.
+## Just be aware that actions are flaky and small variations are to be
+## expected.
+##
+## The CABAL_INSTALL variable only passes `-O1` optimisations to ghc
+## because github actions cannot currently handle a build using `-O2`.
+## To be experimented with again in the future to see if things have
+## gotten better.
+##
+## The AGDA variable specifies the command to use to build the library.
+## It currently passes the flag `-Werror` to ensure maximal compliance
+## with e.g. not relying on deprecated definitions.
+## The rest are some arbitrary runtime arguments that shape the way Agda
+## allocates and garbage collects memory. It should make things faster.
+## Limits can be bumped if the builds start erroring with out of memory
+## errors.
+##
 ########################################################################
 
 env:
+  AGDA_COMMIT: 8eb0d01811a663cf2b27b482b3b18690adfa094b
+  STDLIB_VERSION: 1.6
+
   GHC_VERSION: 8.6.5
   CABAL_VERSION: 3.2.0.0
   CABAL_INSTALL: cabal install --overwrite-policy=always --ghc-options='-O1 +RTS -M6G -RTS'
-  AGDA_COMMIT: 8eb0d01811a663cf2b27b482b3b18690adfa094b
-  STDLIB_VERSION: 1.6
   AGDA: agda -Werror +RTS -M3.5G -H3.5G -A128M -RTS -i. -i src/
 
 jobs:
   test-categories:
     runs-on: ubuntu-latest
     steps:
+
+########################################################################
+## SETTINGS
+########################################################################
 
       - name: Initialise variables
         run: |
@@ -31,8 +69,19 @@ jobs:
              echo "AGDA_DEPLOY=true" >> $GITHUB_ENV
           fi
 
+      # The script won't be able to find Agda if we don't tell it to look at the
+      # content of ~/.cabal/bin
+      - name: Put cabal programs in PATH
+        run: echo "~/.cabal/bin" >> $GITHUB_PATH
+
+########################################################################
+## CACHING
+########################################################################
+
       # This caching step allows us to save a lot of building time by only
       # downloading ghc and cabal and rebuilding Agda if absolutely necessary
+      # i.e. if we change either the version of Agda, ghc, or cabal that we want
+      # to use for the build.
       - name: Cache cabal packages
         uses: actions/cache@v2
         id: cache-cabal
@@ -43,15 +92,19 @@ jobs:
             ~/.cabal/bin
           key: ${{ runner.os }}-${{ env.GHC_VERSION }}-${{ env.CABAL_VERSION }}-${{ env.AGDA_COMMIT }}
 
+########################################################################
+## INSTALLATION STEPS
+########################################################################
+
+      # Note that we do not install ghc if the cache hit is successful.
+      # This is because we are not compiling any of the modules. If we were
+      # we could need to change this to install ghc unconditionally.
       - name: Install ghc and cabal
         if: steps.cache-cabal.outputs.cache-hit != 'true'
         uses: actions/setup-haskell@v1.1.3
         with:
           ghc-version: ${{ env.GHC_VERSION }}
           cabal-version: ${{ env.CABAL_VERSION }}
-
-      - name: Put cabal programs in PATH
-        run: echo "~/.cabal/bin" >> $GITHUB_PATH
 
       - name: Cabal update
         if: steps.cache-cabal.outputs.cache-hit != 'true'
@@ -78,9 +131,15 @@ jobs:
           echo "~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
           cd -
 
+########################################################################
+## TESTING AND DEPLOYMENT
+########################################################################
+
+      # By default github actions do not pull the repo
       - name: Checkout agda-categories
         uses: actions/checkout@v2
 
+      # Generate a fresh Everything.agda & index.agda and start building!
       - name: Test agda-categories
         run: |
           cp travis/* .
