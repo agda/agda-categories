@@ -38,7 +38,7 @@ record Morphism⇒ (f g : Morphism) : Set (ℓ ⊔ e) where
     {cod⇒} : f.cod ⇒ g.cod
     square : CommutativeSquare f.arr dom⇒ cod⇒ g.arr
 
-Arrow : Category _ _ _
+Arrow : Category (o ⊔ ℓ) (ℓ ⊔ e) e
 Arrow = record
   { Obj       = Morphism
   ; _⇒_       = Morphism⇒
