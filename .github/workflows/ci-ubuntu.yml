@@ -45,7 +45,7 @@ on:
 ########################################################################
 
 env:
-  AGDA_COMMIT: 246a229faea2ef2fa53caf491ff8a2d72dd7510c
+  AGDA_COMMIT: tags/v2.6.2
   STDLIB_VERSION: 1.7
 
   GHC_VERSION: 8.6.5
