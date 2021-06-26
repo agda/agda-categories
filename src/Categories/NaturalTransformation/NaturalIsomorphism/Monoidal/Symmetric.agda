@@ -239,7 +239,6 @@ module Strong where
         }
       ; trans = λ α β → β ⓘᵥ α
       }
-      where
 
   open SymmetricMonoidalNaturalIsomorphism
 
