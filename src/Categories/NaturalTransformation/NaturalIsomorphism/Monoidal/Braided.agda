@@ -83,7 +83,6 @@ module Lax where
         }
       ; trans = λ α β → β ⓘᵥ α
       }
-      where
 
   open BraidedMonoidalNaturalIsomorphism
 
@@ -238,7 +237,6 @@ module Strong where
         }
       ; trans = λ α β → β ⓘᵥ α
       }
-      where
 
   open BraidedMonoidalNaturalIsomorphism
 
