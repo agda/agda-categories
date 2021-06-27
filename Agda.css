@@ -9,6 +9,7 @@
 .Agda .PrimitiveType { color: #0000CD }
 .Agda .Pragma        { color: black   }
 .Agda .Operator      {}
+.Agda .Hole          { background: #B4EEB4 }
 
 /* NameKinds. */
 .Agda .Bound                  { color: black   }
@@ -37,3 +38,4 @@
 /* Standard attributes. */
 .Agda a { text-decoration: none }
 .Agda a[href]:hover { background-color: #B4EEB4 }
+.Agda [href].hover-highlight { background-color: #B4EEB4; }
