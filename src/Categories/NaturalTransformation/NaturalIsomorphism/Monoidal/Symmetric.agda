@@ -84,7 +84,6 @@ module Lax where
         }
       ; trans = λ α β → β ⓘᵥ α
       }
-      where
 
   open SymmetricMonoidalNaturalIsomorphism
 
@@ -240,7 +239,6 @@ module Strong where
         }
       ; trans = λ α β → β ⓘᵥ α
       }
-      where
 
   open SymmetricMonoidalNaturalIsomorphism
 
