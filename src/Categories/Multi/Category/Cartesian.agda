@@ -4,9 +4,12 @@
 -- Whereas ordinary multicategories are based around the notion of substitution
 -- from noncommutative linear (Lambek) logic, Cartesian multicategories are
 -- based around the notion of substitution from intuitionistic logic, which is
--- a lot simpler. A representable Cartesian multicategory should be exactly a
+-- a lot simpler. A representable Cartesian multicategory is exactly a
 -- Cartesian category.
--- https://ncatlab.org/nlab/show/cartesian+multicategory
+--
+-- See https://ncatlab.org/nlab/show/cartesian+multicategory, particularly the
+-- section “Alternative presentation”
+-- (https://ncatlab.org/nlab/show/cartesian+multicategory#alternative_presentation).
 
 module Categories.Multi.Category.Cartesian where
 
@@ -14,8 +17,17 @@ open import Data.List hiding ([_])
 open import Data.List.Membership.Propositional
 open import Data.Wrap
 open import Level
-open import Relation.Binary using (Setoid; IsEquivalence)
+open import Relation.Binary using (Rel; Setoid; IsEquivalence)
 import Relation.Binary.Reasoning.Setoid as SetoidR
+
+infix 4 [_]_≈ᵉ_
+
+Env : ∀ {o ℓ} {X : Set o} (V : X → Set ℓ) (Δ : List X) → Set (o ⊔ ℓ)
+Env V Δ = ∀ {y} → y ∈ Δ → V y
+
+[_]_≈ᵉ_ : ∀ {o ℓ e} {X : Set o} {V : X → Set ℓ} {Δ} →
+  (∀ {x} → Rel (V x) e) → Rel (Env V Δ) (o ⊔ e)
+[_]_≈ᵉ_ = Wrap λ _≈_ ρ σ → ∀ {y} (i : y ∈ _) → ρ i ≈ σ i
 
 record CartesianMultiCategory (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   infix 4 _≈_ _≈ˢ_ _⇒_ _⇒ˢ_
@@ -26,12 +38,11 @@ record CartesianMultiCategory (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) wh
     _⇒_ : List Obj → Obj → Set ℓ
     _≈_ : ∀ {Γ A} (f g : Γ ⇒ A) → Set e
 
-  -- TODO: bug report for when `Set ?` is written here.
   _⇒ˢ_ : List Obj → List Obj → Set (o ⊔ ℓ)
-  Γ ⇒ˢ Δ = ∀ {X} → X ∈ Δ → Γ ⇒ X
+  Γ ⇒ˢ Δ = Env (Γ ⇒_) Δ
 
   _≈ˢ_ : ∀ {Γ Δ} (σ τ : Γ ⇒ˢ Δ) → Set (o ⊔ e)
-  _≈ˢ_ {Γ} {Δ} = Wrap λ σ τ → ∀ {X} (i : X ∈ _) → σ i ≈ τ i
+  _≈ˢ_ = [ _≈_ ]_≈ᵉ_
 
   field
     id : ∀ {Γ A} → A ∈ Γ → Γ ⇒ A
@@ -41,7 +52,7 @@ record CartesianMultiCategory (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) wh
   idˢ = id
 
   _∘ˢ_ : ∀ {Γ Δ Θ} → Δ ⇒ˢ Θ → Γ ⇒ˢ Δ → Γ ⇒ˢ Θ
-  σ ∘ˢ τ = λ i → σ i ∘ τ
+  (σ ∘ˢ τ) i = σ i ∘ τ
 
   field
     equiv : ∀ {Γ A} → IsEquivalence (_≈_ {Γ} {A})
