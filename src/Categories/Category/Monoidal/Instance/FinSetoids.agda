@@ -23,13 +23,10 @@ module _ {c ℓ} where
   FinSetoids-Cartesian : Cartesian (FinSetoids c ℓ)
   FinSetoids-Cartesian = record
     { terminal = record
-      { ⊤ = record
-        { fst = SingletonSetoid
-        ; snd = 1 , record
-          { cong₁ = λ _ → refl
-          ; inverse = record
-            { fst = λ { zero → refl }
-            }
+      { ⊤ = SingletonSetoid , 1 , record
+        { cong₁ = λ _ → refl
+        ; inverse = record
+          { fst = λ { zero → refl }
           }
         }
       }
