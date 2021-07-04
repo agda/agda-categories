@@ -9,7 +9,7 @@ open import Data.Product
 open import Data.Product.Relation.Binary.Pointwise.NonDependent
 open import Data.Unit.Polymorphic
 open import Function
-open import Function.Equality using (Π)
+open import Function.Equality using (Π; _⟨$⟩_)
 open import Level using (Lift)
 open import Relation.Binary
 open import Relation.Binary.Reasoning.MultiSetoid
@@ -40,47 +40,49 @@ module _ {c ℓ} where
     ; products = record
       { product = λ {A} {B} →
         let
-          module A = Σ A
-          module B = Σ B
+          A-Setoid , ∣A∣ , A-Finite = A
+          module A-Setoid = Setoid A-Setoid
+          module A-Finite = Inverse A-Finite
+          B-Setoid , ∣B∣ , B-Finite = B
+          module B-Setoid = Setoid B-Setoid
+          module B-Finite = Inverse B-Finite
         in record
-        { A×B = record
-          { fst = ×-setoid A.proj₁ B.proj₁
-          ; snd = proj₁ A.proj₂ ℕ.* proj₁ B.proj₂ , record
-            { f = uncurry combine ∘ map (Inverse.f (proj₂ A.proj₂)) (Inverse.f (proj₂ B.proj₂))
-            ; f⁻¹ = map (Inverse.f⁻¹ (proj₂ A.proj₂)) (Inverse.f⁻¹ (proj₂ B.proj₂)) ∘ remQuot (proj₁ B.proj₂)
-            ; cong₁ = λ { (p , q) → cong₂ combine (Inverse.cong₁ (proj₂ A.proj₂) p) (Inverse.cong₁ (proj₂ B.proj₂) q) }
-            ; cong₂ = λ { refl → Setoid.refl (×-setoid A.proj₁ B.proj₁) }
-            ; inverse = record
-              { fst = λ x → begin⟨ setoid (Fin (proj₁ A.proj₂ ℕ.* proj₁ B.proj₂)) ⟩
-                uncurry combine (map (Inverse.f (proj₂ A.proj₂) ∘ Inverse.f⁻¹ (proj₂ A.proj₂)) (Inverse.f (proj₂ B.proj₂) ∘ Inverse.f⁻¹ (proj₂ B.proj₂)) (remQuot (proj₁ B.proj₂) x))
-                  ≡⟨ cong (uncurry combine) (map-cong₂ (proj₁ (Inverse.inverse (proj₂ A.proj₂))) (proj₁ (Inverse.inverse (proj₂ B.proj₂))) (remQuot (proj₁ B.proj₂) x)) ⟩
-                uncurry (combine {proj₁ A.proj₂} {proj₁ B.proj₂}) (remQuot (proj₁ B.proj₂) x)
-                  ≡⟨ combine-remQuot {proj₁ A.proj₂} (proj₁ B.proj₂) x ⟩
-                x ∎
-              ; snd = λ x → begin⟨ ×-setoid A.proj₁ B.proj₁ ⟩
-                map (Inverse.f⁻¹ (proj₂ A.proj₂)) (Inverse.f⁻¹ (proj₂ B.proj₂)) (remQuot (proj₁ B.proj₂) (uncurry combine (map (Inverse.f (proj₂ A.proj₂)) (Inverse.f (proj₂ B.proj₂)) x)))
-                  ≈⟨ Setoid.reflexive (×-setoid A.proj₁ B.proj₁) (cong (map (Inverse.f⁻¹ (proj₂ A.proj₂)) (Inverse.f⁻¹ (proj₂ B.proj₂))) (uncurry remQuot-combine (map (Inverse.f (proj₂ A.proj₂)) (Inverse.f (proj₂ B.proj₂)) x))) ⟩
-                map (Inverse.f⁻¹ (proj₂ A.proj₂) ∘ Inverse.f (proj₂ A.proj₂)) (Inverse.f⁻¹ (proj₂ B.proj₂) ∘ Inverse.f (proj₂ B.proj₂)) x
-                  ≈⟨ proj₂ (Inverse.inverse (proj₂ A.proj₂)) (proj₁ x) , proj₂ (Inverse.inverse (proj₂ B.proj₂)) (proj₂ x) ⟩
-                x ∎
-              }
+        { A×B = ×-setoid A-Setoid B-Setoid , ∣A∣ ℕ.* ∣B∣ , record
+          { f = uncurry combine ∘ map A-Finite.f B-Finite.f
+          ; f⁻¹ = map A-Finite.f⁻¹ B-Finite.f⁻¹ ∘ remQuot ∣B∣
+          ; cong₁ = λ { (p , q) → cong₂ combine (A-Finite.cong₁ p) (B-Finite.cong₁ q) }
+          ; cong₂ = λ { refl → Setoid.refl (×-setoid A-Setoid B-Setoid) }
+          ; inverse = record
+            { fst = λ x → begin⟨ setoid _ ⟩
+              uncurry combine (map (A-Finite.f ∘ A-Finite.f⁻¹) (B-Finite.f ∘ B-Finite.f⁻¹) (remQuot ∣B∣ x))
+                ≡⟨ cong (uncurry combine) (map-cong₂ (proj₁ A-Finite.inverse) (proj₁ B-Finite.inverse) (remQuot ∣B∣ x)) ⟩
+              uncurry (combine {∣A∣}) (remQuot ∣B∣ x)
+                ≡⟨ combine-remQuot {∣A∣} ∣B∣ x ⟩
+              x ∎
+            ; snd = λ x → begin⟨ ×-setoid A-Setoid B-Setoid ⟩
+              map A-Finite.f⁻¹ B-Finite.f⁻¹ (remQuot ∣B∣ (uncurry combine (map A-Finite.f B-Finite.f x)))
+                ≡⟨ cong (map A-Finite.f⁻¹ B-Finite.f⁻¹) (uncurry remQuot-combine (map A-Finite.f B-Finite.f x)) ⟩
+              map (A-Finite.f⁻¹ ∘ A-Finite.f) (B-Finite.f⁻¹ ∘ B-Finite.f) x
+                ≈⟨ proj₂ A-Finite.inverse (proj₁ x) , proj₂ B-Finite.inverse (proj₂ x) ⟩
+              x ∎
             }
           }
         ; π₁ = record
           { _⟨$⟩_ = proj₁
-          ; cong = proj₁
+          ; cong  = proj₁
           }
         ; π₂ = record
           { _⟨$⟩_ = proj₂
-          ; cong = proj₂
+          ; cong  = proj₂
           }
         ; ⟨_,_⟩ = λ f g → record
-          { _⟨$⟩_ = < f Π.⟨$⟩_ , g Π.⟨$⟩_ >
+          { _⟨$⟩_ = λ x → f ⟨$⟩ x , g ⟨$⟩ x
           ; cong = < Π.cong f , Π.cong g >
           }
-        ; project₁ = λ {X} {h} {i} → Π.cong h
-        ; project₂ = λ {X} {h} {i} → Π.cong i
-        ; unique = λ {X} π₁∘h≈i π₂∘h≈j x≈y → Setoid.sym A.proj₁ (π₁∘h≈i (Setoid.sym (proj₁ X) x≈y)) , Setoid.sym B.proj₁ (π₂∘h≈j (Setoid.sym (proj₁ X) x≈y))
+        ; project₁ = λ {X h i} → Π.cong h
+        ; project₂ = λ {X h i} → Π.cong i
+        ; unique = λ {X} π₁∘h≈i π₂∘h≈j x≈y →
+            < A-Setoid.sym ∘ π₁∘h≈i , B-Setoid.sym ∘ π₂∘h≈j > (Setoid.sym (proj₁ X) x≈y)
         }
       }
     }
