@@ -19,10 +19,6 @@ open import Categories.Category.Cartesian
 open import Categories.Category.Instance.FinSetoids
 open import Categories.Category.Instance.SingletonSet
 
-map-cong₂ : ∀ {a b c d} {A : Set a} {B : Set b} {C : Set c} {D : Set d} {f g : A → B} {h i : C → D} →
-  f ≗ g → h ≗ i → map f h ≗ map g i
-map-cong₂ p q (x , y) = cong₂ _,_ (p x) (q y)
-
 module _ {c ℓ} where
   FinSetoids-Cartesian : Cartesian (FinSetoids c ℓ)
   FinSetoids-Cartesian = record
@@ -86,3 +82,8 @@ module _ {c ℓ} where
         }
       }
     }
+    where
+      -- this should be in the next release of stdlib
+      map-cong₂ : ∀ {a b c d} {A : Set a} {B : Set b} {C : Set c} {D : Set d} {f g : A → B} {h i : C → D} →
+        f ≗ g → h ≗ i → map f h ≗ map g i
+      map-cong₂ p q (x , y) = cong₂ _,_ (p x) (q y)
