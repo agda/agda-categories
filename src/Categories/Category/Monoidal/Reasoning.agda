@@ -134,6 +134,13 @@ split₂ˡ {f = f} {g} {h} = begin
   (id ∘ f) ⊗₁ (g ∘ h)   ≈⟨ ⊗-distrib-over-∘ ⟩
   id ⊗₁ g ∘ f ⊗₁ h      ∎
 
+⊗-elim : ∀ {X₁ Y₁ X₂ Y₂} {f : Y₁ ⇒ X₁} {g : X₁ ⇒ Y₁} {h : Y₂ ⇒ X₂} {i : X₂ ⇒ Y₂} → f ∘ g ≈ id → h ∘ i ≈ id → f ⊗₁ h ∘ g ⊗₁ i ≈ id
+⊗-elim {f = f} {g = g} {h = h} {i = i} f∘g≈id h∘i≈id = begin
+  f ⊗₁ h ∘ g ⊗₁ i    ≈˘⟨ ⊗-distrib-over-∘ ⟩
+  (f ∘ g) ⊗₁ (h ∘ i) ≈⟨ f∘g≈id ⟩⊗⟨ h∘i≈id  ⟩
+  id ⊗₁ id           ≈⟨ ⊗.identity ⟩
+  id                 ∎
+
 -- Combined splitting and re-association.
 
 module _ {X Y Z} {f : X ⇒ Z} {g : Y ⇒ Z} {h : X ⇒ Y} (f≈gh : f ≈ g ∘ h) where
