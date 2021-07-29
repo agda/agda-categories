@@ -1,24 +1,22 @@
 {-# OPTIONS --without-K --safe #-}
 
-module Categories.Category.Monoidal.Structure where
+-- Bundled version of Monoidal Category
+module Categories.Category.Monoidal.Bundle where
 
 open import Level
 
-open import Categories.Category
-open import Categories.Category.Monoidal.Core
-open import Categories.Category.Monoidal.Braided
-open import Categories.Category.Monoidal.Symmetric
+open import Categories.Category.Core using (Category)
+open import Categories.Category.Monoidal.Core using (Monoidal)
+open import Categories.Category.Monoidal.Braided using (Braided)
+open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 
 record MonoidalCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
   field
     U        : Category o ℓ e
     monoidal : Monoidal U
 
-  module U        = Category U
-  module monoidal = Monoidal monoidal
-
-  open U public
-  open monoidal public
+  open Category U public
+  open Monoidal monoidal public
 
 record BraidedMonoidalCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
   field
@@ -26,15 +24,11 @@ record BraidedMonoidalCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
     monoidal  : Monoidal U
     braided   : Braided monoidal
 
-  module U        = Category U
-  module monoidal = Monoidal monoidal
-  module braided  = Braided braided
-
   monoidalCategory : MonoidalCategory o ℓ e
   monoidalCategory = record { U = U ; monoidal = monoidal }
 
-  open U public
-  open braided public
+  open Category U public
+  open Braided braided public
 
 record SymmetricMonoidalCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
   field
@@ -42,18 +36,15 @@ record SymmetricMonoidalCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
     monoidal  : Monoidal U
     symmetric : Symmetric monoidal
 
-  module U         = Category U
-  module monoidal  = Monoidal monoidal
-  module symmetric = Symmetric symmetric
+  open Category U public
+  open Symmetric symmetric public
 
   braidedMonoidalCategory : BraidedMonoidalCategory o ℓ e
   braidedMonoidalCategory = record
     { U        = U
     ; monoidal = monoidal
-    ; braided  = symmetric.braided
+    ; braided  = braided
     }
 
-  open U public
-  open symmetric public
   open BraidedMonoidalCategory braidedMonoidalCategory public
     using (monoidalCategory)

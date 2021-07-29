@@ -80,6 +80,8 @@ import Categories.Category.Construction.Graphs
 import Categories.Category.Construction.Grothendieck
 import Categories.Category.Construction.GroupAsCategory
 import Categories.Category.Construction.KanComplex
+import Categories.Category.Construction.KaroubiEnvelope
+import Categories.Category.Construction.KaroubiEnvelope.Properties
 import Categories.Category.Construction.Kleisli
 import Categories.Category.Construction.MonoidAsCategory
 import Categories.Category.Construction.MonoidalFunctors
@@ -310,6 +312,8 @@ import Categories.Morphism.Cartesian
 import Categories.Morphism.Duality
 import Categories.Morphism.HeterogeneousIdentity
 import Categories.Morphism.HeterogeneousIdentity.Properties
+import Categories.Morphism.Idempotent
+import Categories.Morphism.Idempotent.Bundles
 import Categories.Morphism.IsoEquiv
 import Categories.Morphism.Isomorphism
 import Categories.Morphism.Normal
