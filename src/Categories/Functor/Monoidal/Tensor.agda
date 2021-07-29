@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category using (Category)
+open import Categories.Category.Core using (Category)
 open import Categories.Category.Monoidal.Core using (Monoidal)
 
 -- The tensor product of certain monoidal categories is a monoidal functor.
@@ -12,10 +12,10 @@ open import Data.Product using (_,_)
 
 open import Categories.Category.Product using (Product)
 open import Categories.Category.Monoidal.Braided using (Braided)
+open import Categories.Category.Monoidal.Bundle using (MonoidalCategory; SymmetricMonoidalCategory)
 open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 open import Categories.Category.Monoidal.Construction.Product hiding (⊗)
 open import Categories.Category.Monoidal.Interchange
-open import Categories.Category.Monoidal.Structure
 open import Categories.Morphism using (module ≅)
 open import Categories.Functor.Monoidal
 import Categories.Functor.Monoidal.Braided as BMF

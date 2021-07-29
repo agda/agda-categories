@@ -40,8 +40,8 @@ import Categories.Category
 import Categories.Category.BicartesianClosed
 import Categories.Category.CMonoidEnriched
 import Categories.Category.Cartesian
+import Categories.Category.Cartesian.Bundle
 import Categories.Category.Cartesian.Properties
-import Categories.Category.Cartesian.Structure
 import Categories.Category.CartesianClosed
 import Categories.Category.CartesianClosed.Canonical
 import Categories.Category.CartesianClosed.Locally
@@ -163,6 +163,7 @@ import Categories.Category.Lift
 import Categories.Category.Monoidal
 import Categories.Category.Monoidal.Braided
 import Categories.Category.Monoidal.Braided.Properties
+import Categories.Category.Monoidal.Bundle
 import Categories.Category.Monoidal.Closed
 import Categories.Category.Monoidal.Closed.IsClosed
 import Categories.Category.Monoidal.Closed.IsClosed.Diagonal
@@ -185,7 +186,6 @@ import Categories.Category.Monoidal.Properties
 import Categories.Category.Monoidal.Reasoning
 import Categories.Category.Monoidal.Rigid
 import Categories.Category.Monoidal.Star-Autonomous
-import Categories.Category.Monoidal.Structure
 import Categories.Category.Monoidal.Symmetric
 import Categories.Category.Monoidal.Traced
 import Categories.Category.Monoidal.Utilities

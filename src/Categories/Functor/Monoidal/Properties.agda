@@ -5,9 +5,10 @@ module Categories.Functor.Monoidal.Properties where
 open import Level
 open import Data.Product using (_,_)
 
-open import Categories.Category
-open import Categories.Category.Monoidal
-open import Categories.Category.Cartesian.Structure
+open import Categories.Category.Core using (Category)
+open import Categories.Category.Monoidal.Bundle
+  using (MonoidalCategory; BraidedMonoidalCategory; SymmetricMonoidalCategory)
+open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
 open import Categories.Functor.Cartesian

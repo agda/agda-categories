@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category.Monoidal.Structure
+open import Categories.Category.Monoidal.Bundle
   using (SymmetricMonoidalCategory)
 
 module Categories.Functor.Monoidal.Symmetric {o o′ ℓ ℓ′ e e′}

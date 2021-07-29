@@ -7,8 +7,8 @@ open import Level
 open import Data.Product using (Σ ; _,_)
 
 open import Categories.Category
-open import Categories.Category.Cartesian.Structure
-open import Categories.Category.Monoidal.Structure using (MonoidalCategory)
+open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
+open import Categories.Category.Monoidal.Bundle using (MonoidalCategory)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Properties
 open import Categories.Functor.Cartesian

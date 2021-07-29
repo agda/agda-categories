@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category.Monoidal.Structure
+open import Categories.Category.Monoidal.Bundle
   using (BraidedMonoidalCategory)
 
 module Categories.Functor.Monoidal.Braided {o o′ ℓ ℓ′ e e′}

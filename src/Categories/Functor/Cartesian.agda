@@ -5,7 +5,7 @@ module Categories.Functor.Cartesian where
 
 open import Level
 
-open import Categories.Category.Cartesian.Structure
+open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
 open import Categories.Functor using (Functor; _∘F_)
 open import Categories.Functor.Properties
 
