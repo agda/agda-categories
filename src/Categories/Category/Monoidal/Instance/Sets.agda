@@ -8,15 +8,16 @@ open import Level
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂; uncurry; map; <_,_>)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]′)
 open import Data.Unit using (⊤)
-open import Relation.Binary.PropositionalEquality
+open import Relation.Binary.PropositionalEquality.Core
 open import Function.Inverse using (module Inverse; _↔_)
 open import Function.Related.TypeIsomorphisms
 open import Function.Equality using () renaming (_⟨$⟩_ to fun)
 open import Function using (_$_)
 
 open import Categories.Category.Instance.Sets
-open import Categories.Category.Monoidal
-open import Categories.Functor.Bifunctor
+open import Categories.Category.BinaryProducts using (BinaryProducts)
+open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Category.Instance.SingletonSet
 open import Categories.Category.Instance.EmptySet
 import Categories.Morphism as Morphism
@@ -31,7 +32,7 @@ module Product {o : Level} where
     S = Sets o
     open Cartesian S
 
-  Sets-has-all : BinaryProducts
+  Sets-has-all : BinaryProducts S
   Sets-has-all = record { product = λ {A} {B} → record
     { A×B = A × B
     ; π₁ = proj₁

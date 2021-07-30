@@ -22,7 +22,8 @@ private
 open import Categories.Object.Initial 𝒞
 open import Categories.Object.Coproduct 𝒞
 open import Categories.Object.Duality 𝒞
-open import Categories.Category.Monoidal
+open import Categories.Category.BinaryProducts
+open import Categories.Category.Monoidal using (Monoidal)
 open import Categories.Category.Monoidal.Symmetric
 open import Categories.Category.Cartesian 𝒞.op
 open import Categories.Morphism 𝒞
@@ -53,9 +54,9 @@ record BinaryCoproducts : Set (levelOfTerm 𝒞) where
     public
 
   module Dual where
-    op-binaryProducts : BinaryProducts
+    op-binaryProducts : BinaryProducts op
     op-binaryProducts = record { product = Coproduct⇒coProduct coproduct }
-    
+
     module op-binaryProducts = BinaryProducts op-binaryProducts
 
   open Dual
@@ -125,7 +126,7 @@ record Cocartesian : Set (levelOfTerm 𝒞) where
 
   module Dual where
     open coproducts.Dual public
-    
+
     op-cartesian : Cartesian
     op-cartesian = record
       { terminal = ⊥⇒op⊤ initial

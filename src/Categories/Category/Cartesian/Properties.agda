@@ -24,7 +24,8 @@ open import Relation.Binary.PropositionalEquality as ≡ using (refl; _≡_)
 import Data.List.Membership.Propositional.Properties as ∈ₚ
 import Data.Vec.Membership.Propositional.Properties as ∈ᵥₚ
 
-open import Categories.Category.Cartesian C
+open import Categories.Category.BinaryProducts C using (BinaryProducts)
+open import Categories.Category.Cartesian C using (Cartesian)
 
 open import Categories.Diagram.Pullback C
 open import Categories.Diagram.Equalizer C
