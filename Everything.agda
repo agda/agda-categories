@@ -38,6 +38,7 @@ import Categories.Bicategory.Monad.Properties
 import Categories.Bicategory.Opposite
 import Categories.Category
 import Categories.Category.BicartesianClosed
+import Categories.Category.BinaryProducts
 import Categories.Category.CMonoidEnriched
 import Categories.Category.Cartesian
 import Categories.Category.Cartesian.Bundle
