@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category.Core using (Category)
+open import Categories.Category using (Category; module Commutation)
 
 -- Defines the following properties of a Category:
 -- Cartesian -- a Cartesian category is a category with all products
@@ -27,7 +27,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIs
 
 private
   variable
-    A B C D X Y Z : Obj
+    A B C D W X Y Z : Obj
     f f′ g g′ h i : A ⇒ B
 
 -- Cartesian monoidal category
@@ -49,6 +49,7 @@ record Cartesian : Set (levelOfTerm 𝒞) where
 -- The cartesian structure induces a monoidal one: 𝒞 is cartesian monoidal.
 
 module CartesianMonoidal (cartesian : Cartesian) where
+  open Commutation 𝒞
   open Cartesian cartesian
 
   ⊤×A≅A : ⊤ × A ≅ A
@@ -114,25 +115,23 @@ module CartesianMonoidal (cartesian : Cartesian) where
       }
     ; iso = λ _ → _≅_.iso A×⊤≅A
     }
+  private
+    infixr 7 _⊗₀_
+    infixr 8 _⊗₁_
 
-  monoidal : Monoidal 𝒞
-  monoidal = record
-    { ⊗                    = -×-
-    ; unit                 = ⊤
-    ; unitorˡ              = ⊤×A≅A
-    ; unitorʳ              = A×⊤≅A
-    ; associator           = ≅.sym ×-assoc
-    ; unitorˡ-commute-from = project₂
-    ; unitorˡ-commute-to   = let open NaturalIsomorphism ⊤×--id in ⇐.commute _
-    ; unitorʳ-commute-from = project₁
-    ; unitorʳ-commute-to   = let open NaturalIsomorphism -×⊤-id in ⇐.commute _
-    ; assoc-commute-from   = assocˡ∘⁂
-    ; assoc-commute-to     = assocʳ∘⁂
-    ; triangle             = begin
-      (id ⁂ π₂) ∘ assocˡ                       ≈⟨ ⁂∘⟨⟩ ⟩
-      ⟨ id ∘ π₁ ∘ π₁ , π₂ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ≈⟨ ⟨⟩-cong₂ (pullˡ identityˡ) (project₂ ○ (⟺ identityˡ)) ⟩
-      π₁ ⁂ id                                  ∎
-    ; pentagon             = begin
+    _⊗₀_ = _×_
+    _⊗₁_ = _⁂_
+    α⇒   = assocˡ
+
+  private
+   pentagon :  [ ((X ⊗₀ Y) ⊗₀ Z) ⊗₀ W ⇒ X ⊗₀ Y ⊗₀ Z ⊗₀ W ]⟨
+                 α⇒ ⊗₁ id         ⇒⟨ (X ⊗₀ Y ⊗₀ Z) ⊗₀ W ⟩
+                 α⇒               ⇒⟨ X ⊗₀ (Y ⊗₀ Z) ⊗₀ W ⟩
+                 id ⊗₁ α⇒
+               ≈ α⇒               ⇒⟨ (X ⊗₀ Y) ⊗₀ Z ⊗₀ W ⟩
+                 α⇒
+               ⟩
+   pentagon             = begin
       (id ⁂ assocˡ) ∘ assocˡ ∘ (assocˡ ⁂ id)
         ≈⟨ pullˡ [ product ⇒ product ]id×∘⟨⟩ ⟩
       ⟨ π₁ ∘ π₁ , assocˡ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ∘ (assocˡ ⁂ id)
@@ -159,6 +158,25 @@ module CartesianMonoidal (cartesian : Cartesian) where
         ≈˘⟨ ⟨⟩∘ ⟩
       assocˡ ∘ assocˡ
         ∎
+
+  monoidal : Monoidal 𝒞
+  monoidal = record
+    { ⊗                    = -×-
+    ; unit                 = ⊤
+    ; unitorˡ              = ⊤×A≅A
+    ; unitorʳ              = A×⊤≅A
+    ; associator           = ≅.sym ×-assoc
+    ; unitorˡ-commute-from = project₂
+    ; unitorˡ-commute-to   = let open NaturalIsomorphism ⊤×--id in ⇐.commute _
+    ; unitorʳ-commute-from = project₁
+    ; unitorʳ-commute-to   = let open NaturalIsomorphism -×⊤-id in ⇐.commute _
+    ; assoc-commute-from   = assocˡ∘⁂
+    ; assoc-commute-to     = assocʳ∘⁂
+    ; triangle             = begin
+      (id ⁂ π₂) ∘ assocˡ                       ≈⟨ ⁂∘⟨⟩ ⟩
+      ⟨ id ∘ π₁ ∘ π₁ , π₂ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ≈⟨ ⟨⟩-cong₂ (pullˡ identityˡ) (project₂ ○ (⟺ identityˡ)) ⟩
+      π₁ ⁂ id                                  ∎
+    ; pentagon             = pentagon
     }
 
   open Monoidal monoidal public
