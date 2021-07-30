@@ -128,7 +128,6 @@ import Categories.Category.Instance.Cartesians
 import Categories.Category.Instance.Cats
 import Categories.Category.Instance.EmptySet
 import Categories.Category.Instance.FamilyOfSetoids
-import Categories.Category.Instance.FamilyOfSets
 import Categories.Category.Instance.FinCatShapes
 import Categories.Category.Instance.FinSetoids
 import Categories.Category.Instance.Globe
@@ -201,7 +200,6 @@ import Categories.Category.Species
 import Categories.Category.Species.Constructions
 import Categories.Category.SubCategory
 import Categories.Category.Topos
-import Categories.Category.WithFamilies
 import Categories.CoYoneda
 import Categories.Comonad
 import Categories.Comonad.Relative
