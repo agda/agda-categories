@@ -5,11 +5,12 @@ module Categories.Category.Instance.Properties.Cats where
 open import Data.Product using (_,_)
 
 open import Categories.Category
-open import Categories.Category.Construction.Functors
-  using (Functors; eval; module curry)
+open import Categories.Category.BinaryProducts using (BinaryProducts)
 open import Categories.Category.Cartesian using (Cartesian)
 import Categories.Category.CartesianClosed as CCC
 import Categories.Category.CartesianClosed.Canonical as Canonical
+open import Categories.Category.Construction.Functors
+  using (Functors; eval; module curry)
 open import Categories.Category.Instance.Cats using (Cats)
 open import Categories.Category.Monoidal.Instance.Cats
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
@@ -30,7 +31,8 @@ module CanonicallyCartesianClosed {l} where
     module Cats = Category (Cats l l l)
     module Cart = Cartesian (Product.Cats-is {l} {l} {l})
   open Cats using (_⇒_) renaming (Obj to Cat)
-  open Cart hiding (η)
+  open Cart
+  open BinaryProducts products using (_⁂_; project₁; project₂; unique)
 
   infixr 9 _^_
 

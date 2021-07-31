@@ -6,7 +6,8 @@ module Categories.Functor.Cartesian.Properties where
 open import Level
 open import Data.Product using (Σ ; _,_)
 
-open import Categories.Category
+open import Categories.Category.BinaryProducts
+open import Categories.Category.Core using (Category)
 open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
 open import Categories.Category.Monoidal.Bundle using (MonoidalCategory)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
@@ -30,7 +31,7 @@ module _ (C : CartesianCategory o ℓ e) where
 
   idF-IsCartesianF : IsCartesianF C C idF
   idF-IsCartesianF = record
-    { F-resp-⊤ = terminal.⊤-is-terminal
+    { F-resp-⊤ = ⊤-is-terminal
     ; F-resp-× = Product⇒IsProduct product
     }
 
@@ -44,6 +45,8 @@ module _ (A : CartesianCategory o ℓ e) (B : CartesianCategory o′ ℓ′ e′
     module A = CartesianCategory A
     module B = CartesianCategory B
     module C = CartesianCategory C
+    module BP = BinaryProducts B.products
+    module CP = BinaryProducts C.products
     open P C.U
 
   ∘-IsCartesianF : ∀ {F : Functor A.U B.U} {G : Functor B.U C.U} →
@@ -55,19 +58,19 @@ module _ (A : CartesianCategory o ℓ e) (B : CartesianCategory o′ ℓ′ e′
     ; F-resp-× = record
       { ⟨_,_⟩    = λ f g → G.₁ (CF.×-iso.to _ _) C.∘ CG.×-iso.to _ _ C.∘ C.⟨ f , g ⟩
       ; project₁ = λ {_ f g} → begin
-        G.₁ (F.₁ A.π₁) C.∘ G.₁ (CF.×-iso.to _ _) C.∘ CG.×-iso.to _ _ C.∘ C.⟨ f , g ⟩ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ([ CG.F-prod _ _ ]⟨⟩∘ ○ CG.F-prod.⟨⟩-cong₂ _ _ C.project₁ C.project₂) ⟩
+        G.₁ (F.₁ A.π₁) C.∘ G.₁ (CF.×-iso.to _ _) C.∘ CG.×-iso.to _ _ C.∘ C.⟨ f , g ⟩ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ([ CG.F-prod _ _ ]⟨⟩∘ ○ CG.F-prod.⟨⟩-cong₂ _ _ CP.project₁ CP.project₂) ⟩
         G.₁ (F.₁ A.π₁) C.∘ G.₁ (CF.×-iso.to _ _) C.∘ CG.F-resp-×.⟨ f , g ⟩           ≈⟨ pullˡ ([ G ]-resp-∘ CF.F-resp-×.project₁) ⟩
         G.₁ B.π₁ C.∘ CG.F-resp-×.⟨ f , g ⟩                                           ≈⟨ CG.F-resp-×.project₁ ⟩
         f ∎
       ; project₂ = λ {_ f g} → begin
-        G.₁ (F.₁ A.π₂) C.∘ G.₁ (CF.×-iso.to _ _) C.∘ CG.×-iso.to _ _ C.∘ C.⟨ f , g ⟩ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ([ CG.F-prod _ _ ]⟨⟩∘ ○ CG.F-prod.⟨⟩-cong₂ _ _ C.project₁ C.project₂) ⟩
+        G.₁ (F.₁ A.π₂) C.∘ G.₁ (CF.×-iso.to _ _) C.∘ CG.×-iso.to _ _ C.∘ C.⟨ f , g ⟩ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ([ CG.F-prod _ _ ]⟨⟩∘ ○ CG.F-prod.⟨⟩-cong₂ _ _ CP.project₁ CP.project₂) ⟩
         G.₁ (F.₁ A.π₂) C.∘ G.₁ (CF.×-iso.to _ _) C.∘ CG.F-resp-×.⟨ f , g ⟩           ≈⟨ pullˡ ([ G ]-resp-∘ CF.F-resp-×.project₂) ⟩
         G.₁ B.π₂ C.∘ CG.F-resp-×.⟨ f , g ⟩                                           ≈⟨ CG.F-resp-×.project₂ ⟩
         g ∎
       ; unique   = λ {_ h f g} eq₁ eq₂ → begin
         G.₁ (CF.×-iso.to _ _) C.∘ CG.×-iso.to _ _ C.∘ C.⟨ f , g ⟩
-          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ C.unique′ (C.project₁ ○ ⟺ eq₁ ○ pushˡ (⟺ ([ G ]-resp-∘ B.project₁)) ○ pushˡ (⟺ C.project₁))
-                                       (C.project₂ ○ ⟺ eq₂ ○ pushˡ (⟺ ([ G ]-resp-∘ B.project₂)) ○ pushˡ (⟺ C.project₂)) ⟩
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ CP.unique′ (CP.project₁ ○ ⟺ eq₁ ○ pushˡ (⟺ ([ G ]-resp-∘ BP.project₁)) ○ pushˡ (⟺ CP.project₁))
+                                       (CP.project₂ ○ ⟺ eq₂ ○ pushˡ (⟺ ([ G ]-resp-∘ BP.project₂)) ○ pushˡ (⟺ CP.project₂)) ⟩
         G.₁ (CF.×-iso.to _ _) C.∘ CG.×-iso.to _ _ C.∘ CG.×-iso.from _ _ C.∘ G.₁ (CF.×-iso.from _ _) C.∘ h
           ≈⟨ refl⟩∘⟨ cancelˡ (CG.×-iso.isoˡ _ _) ⟩
         G.₁ (CF.×-iso.to _ _) C.∘ G.₁ (CF.×-iso.from _ _) C.∘ h
@@ -90,8 +93,10 @@ module _ (A : CartesianCategory o ℓ e) (B : CartesianCategory o′ ℓ′ e′
 module _ {C : CartesianCategory o ℓ e} {D : CartesianCategory o′ ℓ′ e′} where
   private
     module C  = CartesianCategory C
+    module CP = BinaryProducts C.products
     module CM = MonoidalCategory C.monoidalCategory
     module D  = CartesianCategory D
+    module DP = BinaryProducts D.products
     module DM = MonoidalCategory D.monoidalCategory using (associator)
     open D.HomReasoning
     open MR D.U
@@ -107,21 +112,21 @@ module _ {C : CartesianCategory o ℓ e} {D : CartesianCategory o′ ℓ′ e′
         ; commute = λ { {X , Y} {Z , W} (f , g) →
           F.F-prod.unique′ _ _
             (begin
-              F.₁ C.π₁ D.∘ F.×-iso.to Z W D.∘ (F.₁ f D.⁂ F.₁ g) ≈⟨ pullˡ F.F-resp-×.project₁ ⟩
-              D.π₁ D.∘ (F.₁ f D.⁂ F.₁ g)                        ≈⟨ D.project₁ ⟩
-              F.₁ f D.∘ D.π₁                                    ≈˘⟨ pullʳ F.F-resp-×.project₁ ⟩
-              (F.₁ f D.∘ F.₁ C.π₁) D.∘ F.×-iso.to X Y           ≈˘⟨ pullˡ ([ F.F ]-resp-square C.project₁) ⟩
-              F.₁ C.π₁ D.∘ F.₁ (f C.⁂ g) D.∘ F.×-iso.to X Y     ∎)
+              F.₁ C.π₁ D.∘ F.×-iso.to Z W D.∘ (F.₁ f DP.⁂ F.₁ g) ≈⟨ pullˡ F.F-resp-×.project₁ ⟩
+              D.π₁ D.∘ (F.₁ f DP.⁂ F.₁ g)                        ≈⟨ DP.project₁ ⟩
+              F.₁ f D.∘ D.π₁                                     ≈˘⟨ pullʳ F.F-resp-×.project₁ ⟩
+              (F.₁ f D.∘ F.₁ C.π₁) D.∘ F.×-iso.to X Y            ≈˘⟨ pullˡ ([ F.F ]-resp-square CP.project₁) ⟩
+              F.₁ C.π₁ D.∘ F.₁ (f CP.⁂ g) D.∘ F.×-iso.to X Y     ∎)
             (begin
-              F.₁ C.π₂ D.∘ F.×-iso.to Z W D.∘ (F.₁ f D.⁂ F.₁ g) ≈⟨ pullˡ F.F-resp-×.project₂ ⟩
-              D.π₂ D.∘ (F.₁ f D.⁂ F.₁ g)                        ≈⟨ D.project₂ ⟩
+              F.₁ C.π₂ D.∘ F.×-iso.to Z W D.∘ (F.₁ f DP.⁂ F.₁ g) ≈⟨ pullˡ F.F-resp-×.project₂ ⟩
+              D.π₂ D.∘ (F.₁ f DP.⁂ F.₁ g)                        ≈⟨ DP.project₂ ⟩
               F.₁ g D.∘ D.π₂                                    ≈˘⟨ pullʳ F.F-resp-×.project₂ ⟩
-              (F.₁ g D.∘ F.₁ C.π₂) D.∘ F.×-iso.to X Y           ≈˘⟨ pullˡ ([ F.F ]-resp-square C.project₂) ⟩
-              F.₁ C.π₂ D.∘ F.₁ (f C.⁂ g) D.∘ F.×-iso.to X Y     ∎)
+              (F.₁ g D.∘ F.₁ C.π₂) D.∘ F.×-iso.to X Y           ≈˘⟨ pullˡ ([ F.F ]-resp-square CP.project₂) ⟩
+              F.₁ C.π₂ D.∘ F.₁ (f CP.⁂ g) D.∘ F.×-iso.to X Y     ∎)
           }
         }
       ; associativity = λ {X Y Z} → let open P D.U in begin
-        F.₁ CM.associator.from D.∘ F.×-iso.to (X C.× Y) Z D.∘ (F.×-iso.to X Y D.⁂ D.id)
+        F.₁ CM.associator.from D.∘ F.×-iso.to (X C.× Y) Z D.∘ (F.×-iso.to X Y DP.⁂ D.id)
           ≈⟨ F.F-resp-⟨⟩′ _ _ ⟩∘⟨ [ D.product ⇒ D.product ⇒ F.F-prod _ _ ]repack∘× ⟩
         F.F-resp-×.⟨ F.₁ (C.π₁ C.∘ C.π₁) , F.₁ C.⟨ C.π₂ C.∘ C.π₁ , C.π₂ ⟩ ⟩ D.∘ F.F-resp-×.⟨ F.×-iso.to X Y D.∘ D.π₁ , D.id D.∘ D.π₂ ⟩
           ≈⟨ F.F-prod.⟨⟩-cong₂ _ _ F.homomorphism (F.F-resp-⟨⟩′ _ _ ○ F.F-prod.⟨⟩-cong₂ _ _ F.homomorphism D.Equiv.refl) ⟩∘⟨refl ⟩
@@ -135,21 +140,21 @@ module _ {C : CartesianCategory o ℓ e} {D : CartesianCategory o′ ℓ′ e′
             (F.F-prod.⟨⟩-cong₂ _ _ (pullʳ F.F-resp-×.project₁ ○ pullˡ F.F-resp-×.project₂)
                                    (F.F-resp-×.project₂ ○ D.identityˡ)) ⟩
         F.F-resp-×.⟨ D.π₁ D.∘ D.π₁ , F.F-resp-×.⟨ D.π₂ D.∘ D.π₁ , D.π₂ ⟩ ⟩
-          ≈˘⟨ F.F-prod.⟨⟩-cong₂ _ _ D.identityˡ ([ F.F-prod _ _ ]⟨⟩∘ ○ (F.F-prod.⟨⟩-cong₂ _ _ D.project₁ D.project₂)) ⟩
+          ≈˘⟨ F.F-prod.⟨⟩-cong₂ _ _ D.identityˡ ([ F.F-prod _ _ ]⟨⟩∘ ○ (F.F-prod.⟨⟩-cong₂ _ _ DP.project₁ DP.project₂)) ⟩
         F.F-resp-×.⟨ D.id D.∘ D.π₁ D.∘ D.π₁ , F.×-iso.to Y Z D.∘ D.⟨ D.π₂ D.∘ D.π₁ , D.π₂ ⟩ ⟩
           ≈˘⟨ [ D.product ⇒ (F.F-prod _ _) ]×∘⟨⟩ ⟩
         F.F-resp-×.⟨ D.id D.∘ D.π₁ , F.×-iso.to Y Z D.∘ D.π₂ ⟩ D.∘ DM.associator.from
           ≈˘⟨ pullˡ [ D.product ⇒ D.product ⇒ F.F-prod _ _ ]repack∘× ⟩
-        F.×-iso.to X (Y C.× Z) D.∘ (D.id D.⁂ F.×-iso.to Y Z) D.∘ DM.associator.from
+        F.×-iso.to X (Y C.× Z) D.∘ (D.id DP.⁂ F.×-iso.to Y Z) D.∘ DM.associator.from
           ∎
       ; unitaryˡ      = begin
-        F.₁ C.π₂ D.∘ F.F-resp-×.⟨ D.π₁ , D.π₂ ⟩ D.∘ (F.F-resp-⊤.! D.⁂ D.id) ≈⟨ pullˡ F.F-resp-×.project₂ ⟩
-        D.π₂ D.∘ (F.F-resp-⊤.! D.⁂ D.id)                                    ≈⟨ D.project₂ ⟩
+        F.₁ C.π₂ D.∘ F.F-resp-×.⟨ D.π₁ , D.π₂ ⟩ D.∘ (F.F-resp-⊤.! DP.⁂ D.id) ≈⟨ pullˡ F.F-resp-×.project₂ ⟩
+        D.π₂ D.∘ (F.F-resp-⊤.! DP.⁂ D.id)                                    ≈⟨ DP.project₂ ⟩
         D.id D.∘ D.π₂                                                       ≈⟨ D.identityˡ ⟩
         D.π₂                                                                ∎
       ; unitaryʳ      = begin
-        F.₁ C.π₁ D.∘ F.F-resp-×.⟨ D.π₁ , D.π₂ ⟩ D.∘ (D.id D.⁂ F.F-resp-⊤.!) ≈⟨ pullˡ F.F-resp-×.project₁ ⟩
-        D.π₁ D.∘ (D.id D.⁂ F.F-resp-⊤.!)                                    ≈⟨ D.project₁ ⟩
+        F.₁ C.π₁ D.∘ F.F-resp-×.⟨ D.π₁ , D.π₂ ⟩ D.∘ (D.id DP.⁂ F.F-resp-⊤.!) ≈⟨ pullˡ F.F-resp-×.project₁ ⟩
+        D.π₁ D.∘ (D.id DP.⁂ F.F-resp-⊤.!)                                    ≈⟨ DP.project₁ ⟩
         D.id D.∘ D.π₁                                                       ≈⟨ D.identityˡ ⟩
         D.π₁                                                                ∎
       }
@@ -167,10 +172,10 @@ module _ {C : CartesianCategory o ℓ e} {D : CartesianCategory o′ ℓ′ e′
           { η       = λ { (X , Y) → F.×-iso.from X Y }
           ; commute = λ { {X , Y} {Z , W} (f , g) →
             begin
-              D.⟨ F.₁ C.π₁ , F.₁ C.π₂ ⟩ D.∘ F.₁ (f C.⁂ g)                   ≈⟨ D.⟨⟩∘ ⟩
-              D.⟨ F.₁ C.π₁ D.∘ F.₁ (f C.⁂ g) , F.₁ C.π₂ D.∘ F.₁ (f C.⁂ g) ⟩ ≈⟨ D.⟨⟩-cong₂ ([ F.F ]-resp-square C.project₁) ([ F.F ]-resp-square C.project₂) ⟩
-              D.⟨ F.₁ f D.∘ F.F₁ C.π₁ , F.₁ g D.∘ F.F₁ C.π₂ ⟩               ≈˘⟨ D.⁂∘⟨⟩ ⟩
-              (F.₁ f D.⁂ F.₁ g) D.∘ D.⟨ F.F₁ C.π₁ , F.F₁ C.π₂ ⟩             ∎ }
+              D.⟨ F.₁ C.π₁ , F.₁ C.π₂ ⟩ D.∘ F.₁ (f CP.⁂ g)                   ≈⟨ DP.⟨⟩∘ ⟩
+              D.⟨ F.₁ C.π₁ D.∘ F.₁ (f CP.⁂ g) , F.₁ C.π₂ D.∘ F.₁ (f CP.⁂ g) ⟩ ≈⟨ DP.⟨⟩-cong₂ ([ F.F ]-resp-square CP.project₁) ([ F.F ]-resp-square CP.project₂) ⟩
+              D.⟨ F.₁ f D.∘ F.F₁ C.π₁ , F.₁ g D.∘ F.F₁ C.π₂ ⟩               ≈˘⟨ DP.⁂∘⟨⟩ ⟩
+              (F.₁ f DP.⁂ F.₁ g) D.∘ D.⟨ F.F₁ C.π₁ , F.F₁ C.π₂ ⟩             ∎ }
           }
         ; iso = λ { (X , Y) → record
           { isoˡ = F.×-iso.isoʳ X Y

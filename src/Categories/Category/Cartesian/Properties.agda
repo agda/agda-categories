@@ -86,6 +86,7 @@ module _ (prods : BinaryProducts) (pullbacks : ∀ {A B X} (f : A ⇒ X) (g : B 
 
 module Prods (car : Cartesian) where
   open Cartesian car
+  open BinaryProducts products hiding (_×_; ⟨_,_⟩; π₁; π₂)
 
   -- for lists
 

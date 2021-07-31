@@ -148,10 +148,13 @@ module CocartesianMonoidal (cocartesian : Cocartesian) where
   A+⊥≅A = op-≅⇒≅ (op-cartesianMonoidal.A×⊤≅A)
 
   open op-cartesianMonoidal
-    using ()
+    using (monoidal)
     -- both are natural isomorphism
     renaming (⊤×--id to ⊥+--id; -×⊤-id to -+⊥-id)
     public
+
+  open Monoidal monoidal using (unit; unitorˡ-commute-to; unitorˡ-commute-from; unitorʳ-commute-to;
+    unitorʳ-commute-from; assoc-commute-to; assoc-commute-from; triangle; pentagon)
 
   +-monoidal : Monoidal 𝒞
   +-monoidal = record
@@ -208,12 +211,13 @@ module CocartesianSymmetricMonoidal (cocartesian : Cocartesian) where
           }
         ; iso = λ _ → iso +-comm
         }
-      ; hexagon₁ = braided.hexagon₂
-      ; hexagon₂ = braided.hexagon₁
+      ; hexagon₁ = hexagon₂
+      ; hexagon₂ = hexagon₁
       }
     ; commutative = commutative
     }
     where open op-cartesianSymmetricMonoidal
           open _≅_
+          open Symmetric symmetric using (commutative; hexagon₁; hexagon₂)
 
   open Symmetric +-symmetric public

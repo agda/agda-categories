@@ -13,9 +13,9 @@ open import Data.Nat using (ℕ; zero; suc)
 open Category 𝒞
 open HomReasoning
 
-open import Categories.Category.BinaryProducts 𝒞 using (BinaryProducts)
+open import Categories.Category.BinaryProducts 𝒞 using (BinaryProducts; module BinaryProducts)
 open import Categories.Object.Terminal 𝒞 using (Terminal)
-open import Categories.Object.Product 𝒞
+open import Categories.Object.Product.Core 𝒞 using (module Product)
 open import Categories.Morphism 𝒞 using (_≅_; module ≅)
 open import Categories.Morphism.Reasoning 𝒞 using (cancelˡ; pullʳ; pullˡ)
 open import Categories.Category.Monoidal using (Monoidal)
@@ -36,10 +36,10 @@ record Cartesian : Set (levelOfTerm 𝒞) where
     terminal : Terminal
     products : BinaryProducts
 
-  module terminal = Terminal terminal
-  module products = BinaryProducts products
-  open terminal public
-  open products public
+  private
+    module products = BinaryProducts products
+  open Terminal terminal public
+  open products using (_×_; π₁; π₂; ⟨_,_⟩; product) public
 
   power : Obj → ℕ → Obj
   power A 0 = ⊤
@@ -50,7 +50,12 @@ record Cartesian : Set (levelOfTerm 𝒞) where
 
 module CartesianMonoidal (cartesian : Cartesian) where
   open Commutation 𝒞
-  open Cartesian cartesian
+  open Cartesian cartesian using (⊤; !; !-unique; !-unique₂; products; π₁; π₂; ⟨_,_⟩)
+  open BinaryProducts products using (_×_; _⁂_;
+    _×-; -×_; ⟨⟩∘; ⟨⟩-cong₂; -×-; ×-assoc; assocˡ∘⁂; assocʳ∘⁂; ⁂∘⟨⟩;
+    first∘⟨⟩; second∘⟨⟩; ⟨⟩-congˡ; ⟨⟩-congʳ; π₁∘⁂; π₂∘⁂; assocˡ∘⟨⟩;
+    assocˡ; assocʳ;
+    η; unique; project₁; project₂)
 
   ⊤×A≅A : ⊤ × A ≅ A
   ⊤×A≅A = record
@@ -132,32 +137,19 @@ module CartesianMonoidal (cartesian : Cartesian) where
                  α⇒
                ⟩
    pentagon             = begin
-      (id ⁂ assocˡ) ∘ assocˡ ∘ (assocˡ ⁂ id)
-        ≈⟨ pullˡ [ product ⇒ product ]id×∘⟨⟩ ⟩
-      ⟨ π₁ ∘ π₁ , assocˡ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ∘ (assocˡ ⁂ id)
-        ≈⟨ ⟨⟩∘ ⟩
-      ⟨ (π₁ ∘ π₁) ∘ (assocˡ ⁂ id) , (assocˡ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩) ∘ (assocˡ ⁂ id) ⟩
-        ≈⟨ ⟨⟩-cong₂ (pullʳ project₁) (pullʳ ⟨⟩∘) ⟩
-      ⟨ π₁ ∘ assocˡ ∘ π₁ , assocˡ ∘ ⟨ (π₂ ∘ π₁) ∘ (assocˡ ⁂ id) , π₂ ∘ (assocˡ ⁂ id) ⟩ ⟩
-        ≈⟨ ⟨⟩-cong₂ (pullˡ project₁) (∘-resp-≈ʳ (⟨⟩-cong₂ (pullʳ project₁) project₂)) ⟩
-      ⟨ (π₁ ∘ π₁) ∘ π₁ , assocˡ ∘ ⟨ π₂ ∘ assocˡ ∘ π₁ , id ∘ π₂ ⟩ ⟩
-        ≈⟨ ⟨⟩-cong₂ assoc (∘-resp-≈ʳ (⟨⟩-cong₂ (pullˡ project₂) identityˡ)) ⟩
-      ⟨ π₁ ∘ π₁ ∘ π₁ , assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ ⟩
-        ≈⟨ ⟨⟩-congˡ ⟨⟩∘ ⟩
-      ⟨ π₁ ∘ π₁ ∘ π₁ , ⟨ (π₁ ∘ π₁) ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ , ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ ⟩ ⟩
-        ≈⟨ ⟨⟩-congˡ (⟨⟩-cong₂ (pullʳ project₁) ⟨⟩∘) ⟩
-      ⟨ π₁ ∘ π₁ ∘ π₁ , ⟨ π₁ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , ⟨ (π₂ ∘ π₁) ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ , π₂ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ ⟩ ⟩ ⟩
-        ≈⟨ ⟨⟩-congˡ (⟨⟩-cong₂ (pullˡ project₁) (⟨⟩-cong₂ (pullʳ project₁) project₂)) ⟩
-      ⟨ π₁ ∘ π₁ ∘ π₁ , ⟨ (π₂ ∘ π₁) ∘ π₁ , ⟨ π₂ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ ⟩ ⟩
-        ≈⟨ ⟨⟩-congˡ (⟨⟩-cong₂ assoc (⟨⟩-congʳ (pullˡ project₂))) ⟩
-      ⟨ π₁ ∘ π₁ ∘ π₁ , ⟨ π₂ ∘ π₁ ∘ π₁ , ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ⟩
-        ≈˘⟨ ⟨⟩-congˡ (⟨⟩-cong₂ (pullʳ project₁) project₂) ⟩
-      ⟨ π₁ ∘ π₁ ∘ π₁ , ⟨ (π₂ ∘ π₁) ∘ assocˡ , π₂ ∘ assocˡ ⟩ ⟩
-        ≈˘⟨ ⟨⟩-cong₂ (pullʳ project₁) ⟨⟩∘ ⟩
-      ⟨ (π₁ ∘ π₁) ∘ assocˡ , ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ assocˡ ⟩
-        ≈˘⟨ ⟨⟩∘ ⟩
-      assocˡ ∘ assocˡ
-        ∎
+      (id ⁂ α⇒) ∘ α⇒ ∘ (α⇒ ⁂ id)                                        ≈⟨ pullˡ second∘⟨⟩ ⟩
+      ⟨ π₁ ∘ π₁ , α⇒ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ∘ (α⇒ ⁂ id)                     ≈⟨ ⟨⟩∘ ⟩
+      ⟨ (π₁ ∘ π₁) ∘ (α⇒ ⁂ id) , (α⇒ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩) ∘ (α⇒ ⁂ id) ⟩     ≈⟨ ⟨⟩-cong₂ (pullʳ π₁∘⁂) (pullʳ ⟨⟩∘) ⟩
+      ⟨ π₁ ∘ α⇒ ∘ π₁ , α⇒ ∘ ⟨ (π₂ ∘ π₁) ∘ (α⇒ ⁂ id) , π₂ ∘ (α⇒ ⁂ id) ⟩ ⟩  ≈⟨ ⟨⟩-cong₂ (pullˡ project₁) ( refl⟩∘⟨ ⟨⟩-cong₂ (pullʳ π₁∘⁂) π₂∘⁂) ⟩
+      ⟨ (π₁ ∘ π₁) ∘ π₁ , α⇒ ∘ ⟨ π₂ ∘ α⇒ ∘ π₁ , id ∘ π₂ ⟩ ⟩                ≈⟨ ⟨⟩-cong₂ assoc (refl⟩∘⟨ ⟨⟩-cong₂ (pullˡ project₂) identityˡ) ⟩
+      ⟨ π₁₁₁ , α⇒ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ ⟩                       ≈⟨ ⟨⟩-congˡ (refl⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘) ⟩
+      ⟨ π₁₁₁ , α⇒ ∘ ⟨ ⟨ (π₂ ∘ π₁) ∘ π₁ , π₂ ∘ π₁ ⟩ , π₂ ⟩ ⟩                ≈⟨ ⟨⟩-congˡ assocˡ∘⟨⟩ ⟩
+      ⟨ π₁₁₁ , ⟨ (π₂ ∘ π₁) ∘ π₁ , ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ⟩                      ≈˘⟨ ⟨⟩-congˡ (⟨⟩-cong₂ (Equiv.trans (pullʳ project₁) sym-assoc) project₂) ⟩
+      ⟨ π₁₁₁ , ⟨ (π₂ ∘ π₁) ∘ α⇒ , π₂ ∘ α⇒ ⟩ ⟩                             ≈˘⟨ ⟨⟩-cong₂ (pullʳ project₁) ⟨⟩∘ ⟩
+      ⟨ (π₁ ∘ π₁) ∘ α⇒ , ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ α⇒ ⟩                          ≈˘⟨ ⟨⟩∘ ⟩
+      α⇒ ∘ α⇒                                                           ∎
+      where
+        π₁₁₁ = π₁ ∘ π₁ ∘ π₁
 
   monoidal : Monoidal 𝒞
   monoidal = record
@@ -179,12 +171,12 @@ module CartesianMonoidal (cartesian : Cartesian) where
     ; pentagon             = pentagon
     }
 
-  open Monoidal monoidal public
-
 module CartesianSymmetricMonoidal (cartesian : Cartesian) where
-  open Cartesian cartesian
-  open CartesianMonoidal cartesian
-  open Sym monoidal
+  open Cartesian cartesian using (products; π₁; π₂; ⟨_,_⟩)
+  open CartesianMonoidal cartesian using (monoidal)
+  open Sym monoidal using (Symmetric; symmetricHelper)
+  open Monoidal monoidal using (_⊗₁_)
+  open BinaryProducts products hiding (⟨_,_⟩; π₁; π₂)
 
   symmetric : Symmetric
   symmetric = symmetricHelper record
@@ -213,5 +205,3 @@ module CartesianSymmetricMonoidal (cartesian : Cartesian) where
         assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ , π₁ ∘ π₁ ⟩                   ≈˘⟨ refl⟩∘⟨ swap∘⟨⟩ ⟩
         assocˡ ∘ swap ∘ assocˡ                                    ∎
     }
-
-  open Symmetric symmetric public

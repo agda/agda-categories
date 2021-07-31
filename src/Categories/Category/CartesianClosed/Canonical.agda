@@ -19,6 +19,7 @@ module Categories.Category.CartesianClosed.Canonical {o ℓ e} (𝒞 : Category 
 open import Level using (levelOfTerm)
 open import Function using (flip)
 
+open import Categories.Category.BinaryProducts 𝒞
 open import Categories.Category.Cartesian 𝒞 using (Cartesian)
 import Categories.Category.CartesianClosed 𝒞 as 𝒞-CC
 open import Categories.Object.Exponential 𝒞 using (Exponential)
@@ -79,9 +80,8 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     ; products = record { product = ×-product }
     }
 
-  open Cartesian isCartesian public
-    hiding (_×_; π₁; π₂; ⟨_,_⟩)
-    renaming (⟨⟩-cong₂ to ⟨,⟩-resp-≈)
+  open Cartesian isCartesian  hiding (_×_; ⟨_,_⟩) public
+  open BinaryProducts products using (_⁂_)
 
   field
 
@@ -156,4 +156,6 @@ module Equivalence where
     ; curry-resp-≈ = λ-cong
     ; curry-unique = λ-unique′
     }
-    where open CartesianClosed′ cc
+    where
+      open CartesianClosed′ cc
+      open BinaryProducts products using (project₁; project₂; unique)

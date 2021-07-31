@@ -8,6 +8,7 @@ open import Data.Product using (_,_; proj₁; proj₂)
 open import Function.Equality using (Π) renaming (_∘_ to _∙_)
 open import Relation.Binary
 
+open import Categories.Category.BinaryProducts
 open import Categories.Category.Core using (Category)
 open import Categories.Category.CartesianClosed
 open import Categories.Category.CartesianClosed.Canonical renaming (CartesianClosed to CCartesianClosed)
@@ -72,16 +73,16 @@ module IsCartesianClosed {o} (C : Category o o o) where
 
   CanonicalCCC : CCartesianClosed P
   CanonicalCCC = record
-    { ⊤            = PC.terminal.⊤
+    { ⊤            = PC.⊤
     ; _×_          = PC._×_
     ; !            = PC.!
     ; π₁           = PC.π₁
     ; π₂           = PC.π₂
     ; ⟨_,_⟩        = PC.⟨_,_⟩
     ; !-unique     = PC.!-unique
-    ; π₁-comp      = λ {_ _ f} {_ g} → PC.project₁ {h = f} {g}
-    ; π₂-comp      = λ {_ _ f} {_ g} → PC.project₂ {h = f} {g}
-    ; ⟨,⟩-unique   = λ {_ _ _ f g h} → PC.unique {h = h} {i = f} {j = g}
+    ; π₁-comp      = λ {_ _ f} {_ g} → PCP.project₁ {h = f} {g}
+    ; π₂-comp      = λ {_ _ f} {_ g} → PCP.project₂ {h = f} {g}
+    ; ⟨,⟩-unique   = λ {_ _ _ f g h} → PCP.unique {h = h} {i = f} {j = g}
     ; _^_          = Presheaf^
     ; eval         = λ {F G} →
       let module F = Functor F
@@ -165,7 +166,9 @@ module IsCartesianClosed {o} (C : Category o o o) where
         β.η Y ⟨$⟩ (F.F₁ g ⟨$⟩ y , w)
           ∎ }
     }
-    where module PC = Presheaves-Cartesian
+    where
+      module PC = Presheaves-Cartesian
+      module PCP = BinaryProducts PC.products
 
   Presheaves-CartesianClosed : CartesianClosed P
   Presheaves-CartesianClosed = Equivalence.fromCanonical P CanonicalCCC

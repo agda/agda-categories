@@ -7,12 +7,13 @@ open import Level
 open import Function using (_$_; flip)
 open import Data.Product using (Σ; _,_; uncurry)
 
+open import Categories.Category.BinaryProducts 𝒞
+open import Categories.Category.Cartesian 𝒞
+open import Categories.Category.Monoidal.Closed
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation hiding (id)
 open import Categories.NaturalTransformation.Properties
-open import Categories.Category.Cartesian 𝒞
-open import Categories.Category.Monoidal.Closed
 open import Categories.Object.Product 𝒞
   hiding (repack≡id; repack∘; repack-cancel; up-to-iso; transport-by-iso)
 open import Categories.Object.Exponential 𝒞 hiding (repack)
@@ -47,10 +48,13 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   _⇨_ : Obj → Obj → Obj
   _⇨_ = flip _^_
 
-  module cartesian = Cartesian cartesian
+  private
+    module cartesian = Cartesian cartesian
 
   open cartesian public
   open CartesianMonoidal cartesian using (A×⊤≅A)
+  open BinaryProducts products using (project₁; project₂; η; ⟨⟩-cong₂; ⟨⟩∘; _⁂_; ⟨⟩-congˡ;
+    first∘first; firstid; first; second; first↔second; second∘second; ⁂-cong₂; -×_)
 
   B^A×A : ∀ B A → Product (B ^ A) A
   B^A×A B A = exp.product {A} {B}
@@ -208,6 +212,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
 module CartesianMonoidalClosed (cartesianClosed : CartesianClosed) where
   open CartesianClosed cartesianClosed
   open CartesianMonoidal cartesian using (monoidal)
+  open BinaryProducts products using (-×_; first; first∘first; second; first↔second)
 
   private
     A⇨[-×A] : Obj → Endofunctor 𝒞

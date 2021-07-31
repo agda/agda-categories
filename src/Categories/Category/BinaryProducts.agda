@@ -34,7 +34,8 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   field
     product : ∀ {A B} → Product A B
 
-  module product {A} {B} = Product (product {A} {B})
+  private
+    module product {A} {B} = Product (product {A} {B})
 
   _×_ : Obj → Obj → Obj
   A × B = Product.A×B (product {A} {B})

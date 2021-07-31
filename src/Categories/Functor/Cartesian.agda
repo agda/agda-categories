@@ -5,6 +5,7 @@ module Categories.Functor.Cartesian where
 
 open import Level
 
+open import Categories.Category.BinaryProducts
 open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
 open import Categories.Functor using (Functor; _∘F_)
 open import Categories.Functor.Properties
@@ -27,6 +28,8 @@ record IsCartesianF (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ 
     open ⊤ D.U
     open M D.U
     open Functor F
+    module PC = BinaryProducts C.products
+    module PD = BinaryProducts D.products
 
   field
     F-resp-⊤ : IsTerminal (F₀ C.⊤)
@@ -42,8 +45,8 @@ record IsCartesianF (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ 
 
   F-resp-⟨⟩ : ∀ {A B X} → (f : X C.⇒ A) (g : X C.⇒ B) → D.⟨ F₁ C.π₁ , F₁ C.π₂ ⟩ D.∘ F₁ C.⟨ f , g ⟩ D.≈ D.⟨ F₁ f , F₁ g ⟩
   F-resp-⟨⟩ f g = begin
-    D.⟨ F₁ C.π₁ , F₁ C.π₂ ⟩ D.∘ F₁ C.⟨ f , g ⟩                    ≈⟨ D.⟨⟩∘ ⟩
-    D.⟨ F₁ C.π₁ D.∘ F₁ C.⟨ f , g ⟩ , F₁ C.π₂ D.∘ F₁ C.⟨ f , g ⟩ ⟩ ≈⟨ D.⟨⟩-cong₂ ([ F ]-resp-∘ C.project₁) ([ F ]-resp-∘ C.project₂) ⟩
+    D.⟨ F₁ C.π₁ , F₁ C.π₂ ⟩ D.∘ F₁ C.⟨ f , g ⟩                    ≈⟨ PD.⟨⟩∘ ⟩
+    D.⟨ F₁ C.π₁ D.∘ F₁ C.⟨ f , g ⟩ , F₁ C.π₂ D.∘ F₁ C.⟨ f , g ⟩ ⟩ ≈⟨ PD.⟨⟩-cong₂ ([ F ]-resp-∘ PC.project₁) ([ F ]-resp-∘ PC.project₂) ⟩
     D.⟨ F₁ f , F₁ g ⟩                                             ∎
     where open D.HomReasoning
 
@@ -59,13 +62,13 @@ record IsCartesianF (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ 
     ; iso  = record
       { isoˡ = begin
         F-resp-×.⟨ D.π₁ , D.π₂ ⟩ D.∘ D.⟨ F₁ C.π₁ , F₁ C.π₂ ⟩ ≈⟨ [ F-prod A B ]⟨⟩∘ ⟩
-        F-resp-×.⟨ D.π₁ D.∘ _ , D.π₂ D.∘ _ ⟩                 ≈⟨ F-prod.⟨⟩-cong₂ A B D.project₁ D.project₂ ⟩
+        F-resp-×.⟨ D.π₁ D.∘ _ , D.π₂ D.∘ _ ⟩                 ≈⟨ F-prod.⟨⟩-cong₂ A B PD.project₁ PD.project₂ ⟩
         F-resp-×.⟨ F₁ C.π₁ , F₁ C.π₂ ⟩                       ≈⟨ F-prod.η A B ⟩
         D.id                                                 ∎
       ; isoʳ = begin
-        D.⟨ F₁ C.π₁ , F₁ C.π₂ ⟩ D.∘ F-resp-×.⟨ D.π₁ , D.π₂ ⟩ ≈⟨ D.⟨⟩∘ ⟩
-        D.⟨ F₁ C.π₁ D.∘ _ , F₁ C.π₂ D.∘ _ ⟩                  ≈⟨ D.⟨⟩-cong₂ (F-prod.project₁ A B) (F-prod.project₂ A B) ⟩
-        D.⟨ D.π₁ , D.π₂ ⟩                                    ≈⟨ D.η ⟩
+        D.⟨ F₁ C.π₁ , F₁ C.π₂ ⟩ D.∘ F-resp-×.⟨ D.π₁ , D.π₂ ⟩ ≈⟨ PD.⟨⟩∘ ⟩
+        D.⟨ F₁ C.π₁ D.∘ _ , F₁ C.π₂ D.∘ _ ⟩                  ≈⟨ PD.⟨⟩-cong₂ (F-prod.project₁ A B) (F-prod.project₂ A B) ⟩
+        D.⟨ D.π₁ , D.π₂ ⟩                                    ≈⟨ PD.η ⟩
         D.id                                                 ∎
       }
     }
@@ -76,7 +79,7 @@ record IsCartesianF (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ 
   F-resp-⟨⟩′ : ∀ {A B X} → (f : X C.⇒ A) (g : X C.⇒ B) → F₁ C.⟨ f , g ⟩ D.≈ F-resp-×.⟨ F₁ f , F₁ g ⟩
   F-resp-⟨⟩′ f g = begin
     F₁ C.⟨ f , g ⟩                     ≈⟨ switch-fromtoˡ (×-iso _ _) (F-resp-⟨⟩ f g) ⟩
-    ×-iso.to _ _ D.∘ D.⟨ F₁ f , F₁ g ⟩ ≈⟨ ([ F-prod _ _ ]⟨⟩∘ ○ F-prod.⟨⟩-cong₂ _ _ D.project₁ D.project₂) ⟩
+    ×-iso.to _ _ D.∘ D.⟨ F₁ f , F₁ g ⟩ ≈⟨ ([ F-prod _ _ ]⟨⟩∘ ○ F-prod.⟨⟩-cong₂ _ _ PD.project₁ PD.project₂) ⟩
     F-resp-×.⟨ F₁ f , F₁ g ⟩           ∎
     where open MR D.U
           open D.HomReasoning

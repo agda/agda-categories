@@ -9,8 +9,7 @@ open import Relation.Binary using (Setoid)
 import Relation.Binary.PropositionalEquality as ≡
 
 open import Categories.Category
-open import Categories.Category.Slice
-open import Categories.Category.Slice.Properties
+open import Categories.Category.BinaryProducts
 open import Categories.Category.CartesianClosed
 open import Categories.Category.CartesianClosed.Canonical
   using (module Equivalence)
@@ -21,6 +20,8 @@ open import Categories.Category.Instance.Span
 open import Categories.Category.Instance.Setoids
 open import Categories.Category.Instance.Properties.Setoids.Complete
 open import Categories.Category.Monoidal.Instance.Setoids
+open import Categories.Category.Slice
+open import Categories.Category.Slice.Properties
 open import Categories.Functor
 
 open import Categories.Object.Terminal
@@ -134,7 +135,7 @@ module _ {o} where
   private
     S : Category (suc o) o o
     S = Setoids o o
-    
+
     module S = Category S
 
     module _ (A : S.Obj) where
@@ -188,7 +189,7 @@ module _ {o} where
                                    ; {_} {_} {span-arrʳ} ≡.refl    → Π.cong Y.arr
                                    }
                 }
-              
+
               XY-pullback : Pullback S X.arr Y.arr
               XY-pullback = limit⇒pullback S {F = F} (Setoids-Complete 0ℓ 0ℓ 0ℓ o o F)
 
@@ -204,6 +205,7 @@ module _ {o} where
         }
 
       module cartesian = Cartesian cartesian
+      module products = BinaryProducts cartesian.products
 
       _^_ : Sl.Obj → Sl.Obj → Sl.Obj
       f ^ g = sliceobj {Y = SlExp-Setoid g.arr f.arr} record
@@ -328,7 +330,7 @@ module _ {o} where
           module gY = Setoid g.Y
           module hY = Setoid h.Y
 
-        curry-unique : eval Sl.∘ (α cartesian.⁂ Sl.id) Sl.≈ β → α Sl.≈ curry β
+        curry-unique : eval Sl.∘ (α products.⁂ Sl.id) Sl.≈ β → α Sl.≈ curry β
         curry-unique eq {z} {w} eq′ = record
           { idx≈ = α.△ eq′
           ; map≈ = λ img →

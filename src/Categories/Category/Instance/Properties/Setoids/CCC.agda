@@ -8,9 +8,10 @@ open import Function.Equality as ⟶ using (Π; _⟶_)
 open import Relation.Binary using (Setoid)
 
 open import Categories.Category
-open import Categories.Category.Monoidal.Instance.Setoids
+open import Categories.Category.BinaryProducts
 open import Categories.Category.CartesianClosed
 open import Categories.Category.CartesianClosed.Canonical renaming (CartesianClosed to CCartesianClosed)
+open import Categories.Category.Monoidal.Instance.Setoids
 open import Categories.Category.Instance.Setoids
 
 open Π
@@ -48,7 +49,9 @@ module _ ℓ where
     ; curry-resp-≈ = λ eq₁ eq₂ eq → eq₁ (eq₂ , eq)
     ; curry-unique = λ eq₁ eq₂ eq → eq₁ (eq₂ , eq)
     }
-    where open Setoids-Cartesian
+    where
+      open Setoids-Cartesian
+      open BinaryProducts products using (project₁; project₂; unique)
 
   Setoids-CCC : CartesianClosed S
   Setoids-CCC = Equivalence.fromCanonical S Setoids-Canonical
