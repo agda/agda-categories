@@ -19,7 +19,6 @@ open import Categories.Object.Product.Core 𝒞 using (module Product)
 open import Categories.Morphism 𝒞 using (_≅_; module ≅)
 open import Categories.Morphism.Reasoning 𝒞 using (cancelˡ; pullʳ; pullˡ)
 open import Categories.Category.Monoidal using (Monoidal)
-import Categories.Category.Monoidal.Symmetric as Sym
 
 open import Categories.Functor using (Functor) renaming (id to idF)
 open import Categories.NaturalTransformation using (ntHelper)
@@ -169,39 +168,4 @@ module CartesianMonoidal (cartesian : Cartesian) where
       ⟨ id ∘ π₁ ∘ π₁ , π₂ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ≈⟨ ⟨⟩-cong₂ (pullˡ identityˡ) (project₂ ○ (⟺ identityˡ)) ⟩
       π₁ ⁂ id                                  ∎
     ; pentagon             = pentagon
-    }
-
-module CartesianSymmetricMonoidal (cartesian : Cartesian) where
-  open Cartesian cartesian using (products; π₁; π₂; ⟨_,_⟩)
-  open CartesianMonoidal cartesian using (monoidal)
-  open Sym monoidal using (Symmetric; symmetricHelper)
-  open Monoidal monoidal using (_⊗₁_)
-  open BinaryProducts products hiding (⟨_,_⟩; π₁; π₂)
-
-  symmetric : Symmetric
-  symmetric = symmetricHelper record
-    { braiding    = record
-      { F⇒G = ntHelper record
-        { η       = λ _ → swap
-        ; commute = λ _ → swap∘⁂
-        }
-      ; F⇐G = ntHelper record
-        { η       = λ _ → swap
-        ; commute = λ _ → swap∘⁂
-        }
-      ; iso = λ _ → record
-        { isoˡ = swap∘swap
-        ; isoʳ = swap∘swap
-        }
-      }
-    ; commutative = swap∘swap
-    ; hexagon     = begin
-        id ⊗₁ swap ∘ assocˡ ∘ swap ⊗₁ id                        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘ ⟩
-        id ⊗₁ swap ∘ assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₁ ∘ π₁ ⟩ , id ∘ π₂ ⟩ ≈⟨ refl⟩∘⟨ assocˡ∘⟨⟩ ⟩
-        id ⊗₁ swap ∘ ⟨ π₂ ∘ π₁ , ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩          ≈⟨ ⁂∘⟨⟩ ⟩
-        ⟨ id ∘ π₂ ∘ π₁ , swap ∘ ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩           ≈⟨ ⟨⟩-cong₂ identityˡ swap∘⟨⟩ ⟩
-        ⟨ π₂ ∘ π₁ , ⟨ id ∘ π₂ , π₁ ∘ π₁ ⟩ ⟩                       ≈⟨ ⟨⟩-congˡ (⟨⟩-congʳ identityˡ) ⟩
-        ⟨ π₂ ∘ π₁ , ⟨ π₂ , π₁ ∘ π₁ ⟩ ⟩                            ≈˘⟨ assocˡ∘⟨⟩ ⟩
-        assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ , π₁ ∘ π₁ ⟩                   ≈˘⟨ refl⟩∘⟨ swap∘⟨⟩ ⟩
-        assocˡ ∘ swap ∘ assocˡ                                    ∎
     }

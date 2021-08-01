@@ -9,25 +9,17 @@ open import Categories.Category.Cartesian using (Cartesian; module CartesianMono
 
 module Categories.Category.Cartesian.SymmetricMonoidal {o ℓ e} (𝒞 : Category o ℓ e) (cartesian : Cartesian 𝒞) where
 
--- open import Level hiding (suc)
--- open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (_,_)
 
 open Category 𝒞
 open Commutation 𝒞
 open HomReasoning
 
-open import Categories.Category.BinaryProducts 𝒞 using (BinaryProducts; module BinaryProducts)
-open import Categories.Object.Terminal 𝒞 using (Terminal)
-open import Categories.Object.Product.Core 𝒞 using (module Product)
-open import Categories.Morphism 𝒞 using (_≅_; module ≅)
-open import Categories.Morphism.Reasoning 𝒞 using (cancelˡ; pullʳ; pullˡ)
+open import Categories.Category.BinaryProducts 𝒞 using (module BinaryProducts)
 open import Categories.Category.Monoidal using (Monoidal)
 import Categories.Category.Monoidal.Symmetric as Sym
 
-open import Categories.Functor using (Functor) renaming (id to idF)
 open import Categories.NaturalTransformation using (ntHelper)
-open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
 
 private
   variable

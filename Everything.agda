@@ -43,6 +43,7 @@ import Categories.Category.CMonoidEnriched
 import Categories.Category.Cartesian
 import Categories.Category.Cartesian.Bundle
 import Categories.Category.Cartesian.Properties
+import Categories.Category.Cartesian.SymmetricMonoidal
 import Categories.Category.CartesianClosed
 import Categories.Category.CartesianClosed.Canonical
 import Categories.Category.CartesianClosed.Locally
