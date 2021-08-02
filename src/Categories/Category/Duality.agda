@@ -6,11 +6,12 @@ module Categories.Category.Duality {o ℓ e} (C : Category o ℓ e) where
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Categories.Category.Cartesian
-open import Categories.Category.Cocartesian
-open import Categories.Category.Complete
+open import Categories.Category.BinaryProducts using (BinaryProducts)
+open import Categories.Category.Cartesian using (Cartesian)
+open import Categories.Category.Cocartesian using (Cocartesian)
+open import Categories.Category.Complete using (Complete)
 open import Categories.Category.Complete.Finitely
-open import Categories.Category.Cocomplete
+open import Categories.Category.Cocomplete using (Cocomplete)
 open import Categories.Category.Cocomplete.Finitely
 
 open import Categories.Object.Duality
@@ -28,7 +29,9 @@ coCartesian⇒Cocartesian Car = record
     { coproduct = coProduct⇒Coproduct C product
     }
   }
-  where open Cartesian Car
+  where
+    open Cartesian Car using (products; terminal)
+    open BinaryProducts (products) using (product)
 
 Cocartesian⇒coCartesian : Cocartesian C → Cartesian C.op
 Cocartesian⇒coCartesian Co = record

@@ -21,6 +21,7 @@ open import Categories.NaturalTransformation
   using (NaturalTransformation; _∘ˡ_) renaming (id to idNT)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (NaturalIsomorphism; _≃_; module LeftRightId)
+open import Categories.Object.Terminal using (Terminal)
 
 -- It's easier to define exponentials with respect to the *canonical*
 -- product.  The more generic version can then be given by appealing
@@ -31,8 +32,9 @@ module CanonicallyCartesianClosed {l} where
     module Cats = Category (Cats l l l)
     module Cart = Cartesian (Product.Cats-is {l} {l} {l})
   open Cats using (_⇒_) renaming (Obj to Cat)
-  open Cart
-  open BinaryProducts products using (_⁂_; project₁; project₂; unique)
+  open Cart using (products; terminal)
+  open Terminal terminal
+  open BinaryProducts products using (_×_; _⁂_; π₁; π₂; ⟨_,_⟩; project₁; project₂; unique)
 
   infixr 9 _^_
 

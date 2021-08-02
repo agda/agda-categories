@@ -6,9 +6,6 @@ open import Categories.Category using (Category; module Commutation)
 
 module Categories.Category.Cartesian.Monoidal {o ℓ e} {𝒞 : Category o ℓ e} where
 
-open import Level hiding (suc)
-open import Data.Nat using (ℕ; zero; suc)
-
 open Category 𝒞
 open HomReasoning
 

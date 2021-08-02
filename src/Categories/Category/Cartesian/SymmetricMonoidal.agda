@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category using (Category; module Commutation)
-open import Categories.Category.Cartesian using (Cartesian; module CartesianMonoidal)
+open import Categories.Category.Cartesian using (Cartesian)
 
 -- Defines the following properties of a Category:
 -- Cartesian.SymmetricMonoidal
@@ -16,6 +16,7 @@ open Commutation 𝒞
 open HomReasoning
 
 open import Categories.Category.BinaryProducts 𝒞 using (module BinaryProducts)
+open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
 open import Categories.Category.Monoidal using (Monoidal)
 import Categories.Category.Monoidal.Symmetric as Sym
 
@@ -25,11 +26,11 @@ private
   variable
     W X Y Z : Obj
 
-open Cartesian cartesian using (products; π₁; π₂; ⟨_,_⟩)
-open CartesianMonoidal 𝒞 cartesian using (monoidal)
+open Cartesian cartesian using (products)
+open CartesianMonoidal cartesian using (monoidal)
 open Sym monoidal using (Symmetric; symmetricHelper)
 open Monoidal monoidal using (_⊗₀_; _⊗₁_; module associator)
-open BinaryProducts products hiding (⟨_,_⟩; π₁; π₂)
+open BinaryProducts products
 
 private
   B : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X

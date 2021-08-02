@@ -6,7 +6,8 @@ module Categories.Category.Cartesian.Bundle where
 open import Level
 
 open import Categories.Category.Core using (Category)
-open import Categories.Category.Cartesian using (Cartesian; module CartesianMonoidal)
+open import Categories.Category.Cartesian using (Cartesian)
+open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
 open import Categories.Category.Monoidal using (MonoidalCategory)
 
 record CartesianCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
@@ -20,5 +21,5 @@ record CartesianCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
   monoidalCategory : MonoidalCategory o ℓ e
   monoidalCategory = record
     { U        = U
-    ; monoidal = CartesianMonoidal.monoidal U cartesian
+    ; monoidal = CartesianMonoidal.monoidal cartesian
     }

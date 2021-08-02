@@ -12,8 +12,10 @@ open import Categories.Category.Monoidal.Bundle
 open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
-open import Categories.Functor.Cartesian
+open import Categories.Functor.Cartesian using (CartesianF)
 open import Categories.Functor.Monoidal
+  using (IsMonoidalFunctor; IsStrongMonoidalFunctor; StrongMonoidalFunctor;
+    MonoidalFunctor)
 open import Categories.Functor.Monoidal.Braided as Braided
 open import Categories.Functor.Monoidal.Symmetric as Symmetric
 open import Categories.NaturalTransformation
@@ -332,6 +334,8 @@ module _ (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′
     module D = CartesianCategory D
     module PC = BinaryProducts C.products
     module PD = BinaryProducts D.products
+    module TC = ⊤.Terminal C.terminal
+    module TD = ⊤.Terminal D.terminal
     open D.HomReasoning
     open MR D.U
 
@@ -339,36 +343,36 @@ module _ (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′
     private
       module F = StrongMonoidalFunctor F
 
-      F-resp-⊤ : ⊤.IsTerminal D.U (F.F₀ C.⊤)
+      F-resp-⊤ : ⊤.IsTerminal D.U (F.F₀ TC.⊤)
       F-resp-⊤ = ⊤.Terminal.⊤-is-terminal (⊤.transport-by-iso D.U D.terminal F.ε)
       module F-resp-⊤ = ⊤.IsTerminal F-resp-⊤
 
-      lemma₁ : ∀ {X} → F.ε.from D.∘ D.! {F.₀ X} D.≈ F.₁ (C.! {X})
+      lemma₁ : ∀ {X} → F.ε.from D.∘ TD.! {F.₀ X} D.≈ F.₁ (TC.! {X})
       lemma₁ = F-resp-⊤.!-unique _
 
-      π₁-comm : ∀ {X Y} → F.F₁ C.π₁ D.∘ F.⊗-homo.⇒.η (X , Y) D.≈ D.π₁
+      π₁-comm : ∀ {X Y} → F.F₁ PC.π₁ D.∘ F.⊗-homo.⇒.η (X , Y) D.≈ PD.π₁
       π₁-comm {X} {Y} = begin
-        F.F₁ C.π₁ D.∘ F.⊗-homo.⇒.η (X , Y)                                                 ≈˘⟨ [ F.F ]-resp-∘ (C.Equiv.trans PC.project₁ C.identityˡ) ⟩∘⟨refl ⟩
-        (F.F₁ C.π₁ D.∘ F.F₁ (C.id PC.⁂ C.!)) D.∘ F.⊗-homo.⇒.η (X , Y)                      ≈⟨ pullʳ (F.⊗-homo.⇒.sym-commute _) ⟩
-        F.F₁ C.π₁ D.∘ F.⊗-homo.⇒.η (X , C.⊤) D.∘ (F.F₁ C.id PD.⁂ F.F₁ C.!)                 ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ ([ F.₀ X PD.×- ]-resp-∘ lemma₁ ○ Functor.F-resp-≈ PD.-×- (⟺ F.identity , D.Equiv.refl)) ⟩
-        F.F₁ C.π₁ D.∘ F.⊗-homo.⇒.η (X , C.⊤) D.∘ (D.id PD.⁂ F.ε.from) D.∘ (D.id PD.⁂ D.!)   ≈⟨ D.∘-resp-≈ʳ D.sym-assoc ○ D.sym-assoc ⟩
-        (F.F₁ C.π₁ D.∘ F.⊗-homo.⇒.η (X , C.⊤) D.∘ (D.id PD.⁂ F.ε.from)) D.∘ (D.id PD.⁂ D.!) ≈⟨ F.unitaryʳ ⟩∘⟨refl ⟩
-        D.π₁ D.∘ (D.id PD.⁂ D.!)                                                            ≈⟨ PD.project₁ ○ D.identityˡ ⟩
-        D.π₁                                                                               ∎
+        F.F₁ PC.π₁ D.∘ F.⊗-homo.⇒.η (X , Y)                                                    ≈˘⟨ [ F.F ]-resp-∘ (C.Equiv.trans PC.project₁ C.identityˡ) ⟩∘⟨refl ⟩
+        (F.F₁ PC.π₁ D.∘ F.F₁ (C.id PC.⁂ TC.!)) D.∘ F.⊗-homo.⇒.η (X , Y)                        ≈⟨ pullʳ (F.⊗-homo.⇒.sym-commute _) ⟩
+        F.F₁ PC.π₁ D.∘ F.⊗-homo.⇒.η (X , TC.⊤) D.∘ (F.F₁ C.id PD.⁂ F.F₁ TC.!)                  ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ ([ F.₀ X PD.×- ]-resp-∘ lemma₁ ○ Functor.F-resp-≈ PD.-×- (⟺ F.identity , D.Equiv.refl)) ⟩
+        F.F₁ PC.π₁ D.∘ F.⊗-homo.⇒.η (X , TC.⊤) D.∘ (D.id PD.⁂ F.ε.from) D.∘ (D.id PD.⁂ TD.!)   ≈⟨ D.∘-resp-≈ʳ D.sym-assoc ○ D.sym-assoc ⟩
+        (F.F₁ PC.π₁ D.∘ F.⊗-homo.⇒.η (X , TC.⊤) D.∘ (D.id PD.⁂ F.ε.from)) D.∘ (D.id PD.⁂ TD.!) ≈⟨ F.unitaryʳ ⟩∘⟨refl ⟩
+        PD.π₁ D.∘ (D.id PD.⁂ TD.!)                                                              ≈⟨ PD.project₁ ○ D.identityˡ ⟩
+        PD.π₁                                                                                   ∎
 
-      π₂-comm : ∀ {X Y} → F.F₁ C.π₂ D.∘ F.⊗-homo.⇒.η (X , Y) D.≈ D.π₂
+      π₂-comm : ∀ {X Y} → F.F₁ PC.π₂ D.∘ F.⊗-homo.⇒.η (X , Y) D.≈ PD.π₂
       π₂-comm {X} {Y} = begin
-        F.F₁ C.π₂ D.∘ F.⊗-homo.⇒.η (X , Y)                                                ≈˘⟨ [ F.F ]-resp-∘ (C.Equiv.trans PC.project₂ C.identityˡ) ⟩∘⟨refl ⟩
-        (F.F₁ C.π₂ D.∘ F.F₁ (C.! PC.⁂ C.id)) D.∘ F.⊗-homo.⇒.η (X , Y)                      ≈⟨ pullʳ (F.⊗-homo.⇒.sym-commute _) ⟩
-        F.F₁ C.π₂ D.∘ F.⊗-homo.⇒.η (C.⊤ , Y) D.∘ (F.F₁ C.! PD.⁂ F.F₁ C.id)                 ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ ([ PD.-× F.₀ Y ]-resp-∘ lemma₁ ○ Functor.F-resp-≈ PD.-×- (D.Equiv.refl , ⟺ F.identity)) ⟩
-        F.F₁ C.π₂ D.∘ F.⊗-homo.⇒.η (C.⊤ , Y) D.∘ (F.ε.from PD.⁂ D.id) D.∘ (D.! PD.⁂ D.id)   ≈⟨ D.∘-resp-≈ʳ D.sym-assoc ○ D.sym-assoc ⟩
-        (F.F₁ C.π₂ D.∘ F.⊗-homo.⇒.η (C.⊤ , Y) D.∘ (F.ε.from PD.⁂ D.id)) D.∘ (D.! PD.⁂ D.id) ≈⟨ F.unitaryˡ ⟩∘⟨refl ⟩
-        D.π₂ D.∘ (D.! PD.⁂ D.id)                                                           ≈⟨ PD.project₂ ○ D.identityˡ ⟩
-        D.π₂                                                                              ∎
+        F.F₁ PC.π₂ D.∘ F.⊗-homo.⇒.η (X , Y)                                                ≈˘⟨ [ F.F ]-resp-∘ (C.Equiv.trans PC.project₂ C.identityˡ) ⟩∘⟨refl ⟩
+        (F.F₁ PC.π₂ D.∘ F.F₁ (TC.! PC.⁂ C.id)) D.∘ F.⊗-homo.⇒.η (X , Y)                      ≈⟨ pullʳ (F.⊗-homo.⇒.sym-commute _) ⟩
+        F.F₁ PC.π₂ D.∘ F.⊗-homo.⇒.η (TC.⊤ , Y) D.∘ (F.F₁ TC.! PD.⁂ F.F₁ C.id)                 ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ ([ PD.-× F.₀ Y ]-resp-∘ lemma₁ ○ Functor.F-resp-≈ PD.-×- (D.Equiv.refl , ⟺ F.identity)) ⟩
+        F.F₁ PC.π₂ D.∘ F.⊗-homo.⇒.η (TC.⊤ , Y) D.∘ (F.ε.from PD.⁂ D.id) D.∘ (TD.! PD.⁂ D.id)   ≈⟨ D.∘-resp-≈ʳ D.sym-assoc ○ D.sym-assoc ⟩
+        (F.F₁ PC.π₂ D.∘ F.⊗-homo.⇒.η (TC.⊤ , Y) D.∘ (F.ε.from PD.⁂ D.id)) D.∘ (TD.! PD.⁂ D.id) ≈⟨ F.unitaryˡ ⟩∘⟨refl ⟩
+        PD.π₂ D.∘ (TD.! PD.⁂ D.id)                                                           ≈⟨ PD.project₂ ○ D.identityˡ ⟩
+        PD.π₂                                                                              ∎
 
-      unique : ∀ {X A B} {h : X D.⇒ F.₀ (A C.× B)} {i : X D.⇒ F.₀ A} {j : X D.⇒ F.₀ B} →
-                 F.₁ C.π₁ D.∘ h D.≈ i →
-                 F.₁ C.π₂ D.∘ h D.≈ j →
+      unique : ∀ {X A B} {h : X D.⇒ F.₀ (A PC.× B)} {i : X D.⇒ F.₀ A} {j : X D.⇒ F.₀ B} →
+                 F.₁ PC.π₁ D.∘ h D.≈ i →
+                 F.₁ PC.π₂ D.∘ h D.≈ j →
                  F.⊗-homo.⇒.η (A , B) D.∘ PD.⟨ i , j ⟩ D.≈ h
       unique  eq₁ eq₂ = ⟺ (switch-tofromˡ F.⊗-homo.FX≅GX (⟺ (PD.unique (pullˡ (⟺ (switch-fromtoʳ F.⊗-homo.FX≅GX π₁-comm)) ○ eq₁)
                                                                       (pullˡ (⟺ (switch-fromtoʳ F.⊗-homo.FX≅GX π₂-comm)) ○ eq₂))))
@@ -379,14 +383,14 @@ module _ (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′
       ; isCartesian = record
         { F-resp-⊤ = F-resp-⊤
         ; F-resp-× = λ {A B} → record
-          { ⟨_,_⟩    = λ f g → F.⊗-homo.⇒.η _ D.∘ D.⟨ f , g ⟩
+          { ⟨_,_⟩    = λ f g → F.⊗-homo.⇒.η _ D.∘ PD.⟨ f , g ⟩
           ; project₁ = λ {_ h i} → begin
-            F.₁ C.π₁ D.∘ F.⊗-homo.⇒.η _ D.∘ PD.⟨ h , i ⟩ ≈⟨ pullˡ π₁-comm ⟩
-            D.π₁ D.∘ PD.⟨ h , i ⟩                         ≈⟨ PD.project₁ ⟩
+            F.₁ PC.π₁ D.∘ F.⊗-homo.⇒.η _ D.∘ PD.⟨ h , i ⟩ ≈⟨ pullˡ π₁-comm ⟩
+            PD.π₁ D.∘ PD.⟨ h , i ⟩                         ≈⟨ PD.project₁ ⟩
             h                                            ∎
           ; project₂ = λ {_ h i} → begin
-            F.₁ C.π₂ D.∘ F.⊗-homo.⇒.η _ D.∘ D.⟨ h , i ⟩ ≈⟨ pullˡ π₂-comm ⟩
-            D.π₂ D.∘ D.⟨ h , i ⟩                        ≈⟨ PD.project₂ ⟩
+            F.₁ PC.π₂ D.∘ F.⊗-homo.⇒.η _ D.∘ PD.⟨ h , i ⟩ ≈⟨ pullˡ π₂-comm ⟩
+            PD.π₂ D.∘ PD.⟨ h , i ⟩                        ≈⟨ PD.project₂ ⟩
             i                                           ∎
           ; unique   = unique
           }

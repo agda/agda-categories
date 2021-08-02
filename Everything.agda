@@ -42,6 +42,7 @@ import Categories.Category.BinaryProducts
 import Categories.Category.CMonoidEnriched
 import Categories.Category.Cartesian
 import Categories.Category.Cartesian.Bundle
+import Categories.Category.Cartesian.Monoidal
 import Categories.Category.Cartesian.Properties
 import Categories.Category.Cartesian.SymmetricMonoidal
 import Categories.Category.CartesianClosed

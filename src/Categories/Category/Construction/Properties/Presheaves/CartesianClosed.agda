@@ -8,17 +8,18 @@ open import Data.Product using (_,_; proj₁; proj₂)
 open import Function.Equality using (Π) renaming (_∘_ to _∙_)
 open import Relation.Binary
 
-open import Categories.Category.BinaryProducts
+open import Categories.Category.BinaryProducts using (BinaryProducts)
 open import Categories.Category.Core using (Category)
-open import Categories.Category.CartesianClosed
+open import Categories.Category.CartesianClosed using (CartesianClosed)
 open import Categories.Category.CartesianClosed.Canonical renaming (CartesianClosed to CCartesianClosed)
 open import Categories.Category.Construction.Presheaves
 open import Categories.Category.Instance.Setoids
-open import Categories.Functor
+open import Categories.Functor using (Functor)
 open import Categories.Functor.Hom
 open import Categories.Functor.Properties
 open import Categories.Functor.Presheaf
-open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
+open import Categories.Object.Terminal using (Terminal)
 
 import Categories.Category.Construction.Properties.Presheaves.Cartesian as Preₚ
 import Categories.Morphism.Reasoning as MR
@@ -73,16 +74,16 @@ module IsCartesianClosed {o} (C : Category o o o) where
 
   CanonicalCCC : CCartesianClosed P
   CanonicalCCC = record
-    { ⊤            = PC.⊤
-    ; _×_          = PC._×_
-    ; !            = PC.!
-    ; π₁           = PC.π₁
-    ; π₂           = PC.π₂
-    ; ⟨_,_⟩        = PC.⟨_,_⟩
-    ; !-unique     = PC.!-unique
-    ; π₁-comp      = λ {_ _ f} {_ g} → PCP.project₁ {h = f} {g}
-    ; π₂-comp      = λ {_ _ f} {_ g} → PCP.project₂ {h = f} {g}
-    ; ⟨,⟩-unique   = λ {_ _ _ f g h} → PCP.unique {h = h} {i = f} {j = g}
+    { ⊤            = TPC.⊤
+    ; _×_          = PPC._×_
+    ; !            = TPC.!
+    ; π₁           = PPC.π₁
+    ; π₂           = PPC.π₂
+    ; ⟨_,_⟩        = PPC.⟨_,_⟩
+    ; !-unique     = TPC.!-unique
+    ; π₁-comp      = λ {_ _ f} {_ g} → PPC.project₁ {h = f} {g}
+    ; π₂-comp      = λ {_ _ f} {_ g} → PPC.project₂ {h = f} {g}
+    ; ⟨,⟩-unique   = λ {_ _ _ f g h} → PPC.unique {h = h} {i = f} {j = g}
     ; _^_          = Presheaf^
     ; eval         = λ {F G} →
       let module F = Functor F
@@ -168,7 +169,8 @@ module IsCartesianClosed {o} (C : Category o o o) where
     }
     where
       module PC = Presheaves-Cartesian
-      module PCP = BinaryProducts PC.products
+      module PPC = BinaryProducts PC.products using (π₁; π₂; _×_; project₁; project₂; ⟨_,_⟩; unique)
+      module TPC = Terminal PC.terminal using (⊤; !; !-unique)
 
   Presheaves-CartesianClosed : CartesianClosed P
   Presheaves-CartesianClosed = Equivalence.fromCanonical P CanonicalCCC

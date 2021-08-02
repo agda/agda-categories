@@ -80,7 +80,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     ; products = record { product = ×-product }
     }
 
-  open Cartesian isCartesian  hiding (_×_; ⟨_,_⟩) public
+  open Cartesian isCartesian
   open BinaryProducts products using (_⁂_)
 
   field
@@ -158,4 +158,5 @@ module Equivalence where
     }
     where
       open CartesianClosed′ cc
-      open BinaryProducts products using (project₁; project₂; unique)
+      open BinaryProducts (Cartesian.products cartesian)
+      open Terminal (Cartesian.terminal cartesian)

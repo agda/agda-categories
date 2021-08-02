@@ -14,15 +14,16 @@ open import Function.Related.TypeIsomorphisms
 open import Function.Equality using () renaming (_⟨$⟩_ to fun)
 open import Function using (_$_)
 
-open import Categories.Category.Instance.Sets
 open import Categories.Category.BinaryProducts using (BinaryProducts)
+import Categories.Category.Cartesian as Cartesian
+open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
+import Categories.Category.Cocartesian as Cocartesian
+open import Categories.Category.Instance.EmptySet
+open import Categories.Category.Instance.Sets
+open import Categories.Category.Instance.SingletonSet
+import Categories.Morphism as Morphism
 open import Categories.Category.Monoidal using (Monoidal)
 open import Categories.Functor.Bifunctor using (Bifunctor)
-open import Categories.Category.Instance.SingletonSet
-open import Categories.Category.Instance.EmptySet
-import Categories.Morphism as Morphism
-import Categories.Category.Cartesian as Cartesian
-import Categories.Category.Cocartesian as Cocartesian
 
 open import Data.Sum.Properties
 
@@ -47,7 +48,7 @@ module Product {o : Level} where
   Sets-is = record { terminal = SingletonSet-⊤ ; products = Sets-has-all }
 
   Sets-Monoidal : Monoidal S
-  Sets-Monoidal = Cartesian.CartesianMonoidal.monoidal S Sets-is
+  Sets-Monoidal = CartesianMonoidal.monoidal Sets-is
 
 module Coproduct {o : Level} where
   private

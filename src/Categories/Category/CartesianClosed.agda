@@ -9,7 +9,8 @@ open import Data.Product using (Σ; _,_; uncurry)
 
 open import Categories.Category.BinaryProducts 𝒞
 open import Categories.Category.Cartesian 𝒞
-open import Categories.Category.Monoidal.Closed
+open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
+open import Categories.Category.Monoidal.Closed using (Closed)
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Bifunctor
 open import Categories.NaturalTransformation hiding (id)
@@ -17,6 +18,7 @@ open import Categories.NaturalTransformation.Properties
 open import Categories.Object.Product 𝒞
   hiding (repack≡id; repack∘; repack-cancel; up-to-iso; transport-by-iso)
 open import Categories.Object.Exponential 𝒞 hiding (repack)
+open import Categories.Object.Terminal using (Terminal)
 open import Categories.Morphism 𝒞
 open import Categories.Morphism.Reasoning 𝒞
 
@@ -51,10 +53,11 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   private
     module cartesian = Cartesian cartesian
 
-  open cartesian public
   open CartesianMonoidal cartesian using (A×⊤≅A)
-  open BinaryProducts products using (project₁; project₂; η; ⟨⟩-cong₂; ⟨⟩∘; _⁂_; ⟨⟩-congˡ;
+  open BinaryProducts cartesian.products using (_×_; product; π₁; π₂; ⟨_,_⟩;
+    project₁; project₂; η; ⟨⟩-cong₂; ⟨⟩∘; _⁂_; ⟨⟩-congˡ;
     first∘first; firstid; first; second; first↔second; second∘second; ⁂-cong₂; -×_)
+  open Terminal cartesian.terminal using (⊤; !; !-unique₂; ⊤-id)
 
   B^A×A : ∀ B A → Product (B ^ A) A
   B^A×A B A = exp.product {A} {B}
@@ -212,7 +215,8 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
 module CartesianMonoidalClosed (cartesianClosed : CartesianClosed) where
   open CartesianClosed cartesianClosed
   open CartesianMonoidal cartesian using (monoidal)
-  open BinaryProducts products using (-×_; first; first∘first; second; first↔second)
+  open BinaryProducts (Cartesian.products cartesian)
+    using (-×_; first; first∘first; second; first↔second; product)
 
   private
     A⇨[-×A] : Obj → Endofunctor 𝒞

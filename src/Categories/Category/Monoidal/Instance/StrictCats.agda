@@ -12,17 +12,18 @@ open import Function using (_$_)
 open import Data.Unit using (⊤; tt)
 
 open import Categories.Category.BinaryProducts using (BinaryProducts)
+open import Categories.Category.Cartesian using (Cartesian)
+open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
 open import Categories.Category.Core using (Category)
-open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Category.Instance.StrictCats
 open import Categories.Category.Instance.One using (One)
 open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Category.Product
+open import Categories.Category.Product.Properties
+open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Functor.Construction.Constant
 open import Categories.Functor.Equivalence
-open import Categories.Category.Product
-open import Categories.Category.Product.Properties
-open import Categories.Category.Cartesian using (Cartesian; module CartesianMonoidal)
 import Categories.Morphism.HeterogeneousIdentity as HId
 import Categories.Morphism.HeterogeneousIdentity.Properties as HIdProps
 import Categories.Morphism.Reasoning as MR
@@ -34,7 +35,6 @@ open import Categories.Utils.EqReasoning
 module Product {o ℓ e : Level} where
   private
     C = Cats o ℓ e
-    -- open Cartesian C
     open _≡F_
 
   Cats-has-all : BinaryProducts C
@@ -90,4 +90,4 @@ module Product {o ℓ e : Level} where
   Cats-is = record { terminal = One-⊤ ; products = Cats-has-all }
 
   Cats-Monoidal : Monoidal C
-  Cats-Monoidal = CartesianMonoidal.monoidal C Cats-is
+  Cats-Monoidal = CartesianMonoidal.monoidal Cats-is

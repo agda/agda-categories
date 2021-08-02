@@ -102,7 +102,7 @@ module _ (p : Pullback id f) where
 module _ (pullbacks : ∀ {X Y Z} (f : X ⇒ Z) (g : Y ⇒ Z) → Pullback f g)
          (cartesian : Cartesian) where
   open Cartesian cartesian
-  open BinaryProducts products using (⟨⟩-cong₂; ⟨⟩∘; project₁; project₂)
+  open BinaryProducts products using (⟨_,_⟩; π₁; π₂; ⟨⟩-cong₂; ⟨⟩∘; project₁; project₂)
 
   pullback×cartesian⇒equalizer : Equalizer f g
   pullback×cartesian⇒equalizer {f = f} {g = g} = record
