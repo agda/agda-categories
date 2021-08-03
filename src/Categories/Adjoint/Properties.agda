@@ -8,39 +8,33 @@ open import Function.Base using (_$_)
 
 open import Categories.Adjoint using (_⊣_; Adjoint)
 open import Categories.Adjoint.Equivalents using (Hom-NI′⇒Adjoint)
-open import Categories.Category using (Category; _[_,_])
+open import Categories.Adjoint.RAPL using (rapl)
+open import Categories.Category using (Category; _[_,_]; _[_≈_]; _[_∘_])
 open import Categories.Category.Product using (_⁂_; _⁂ⁿⁱ_)
 open import Categories.Category.Construction.Comma using (CommaObj; Comma⇒; _↙_)
-open import Categories.Diagram.Limit
-open import Categories.Diagram.Colimit
-open import Categories.Functor renaming (id to idF)
-open import Categories.Functor.Hom
-open import Categories.Functor.Construction.Constant
-open import Categories.Functor.Construction.LiftSetoids
-open import Categories.Functor.Properties
-open import Categories.Functor.Limits
-open import Categories.Functor.Bifunctor
-open import Categories.Functor.Bifunctor.Properties
-open import Categories.NaturalTransformation
-open import Categories.NaturalTransformation.Properties
+open import Categories.Diagram.Limit using (Limit)
+open import Categories.Diagram.Colimit using (Colimit)
+open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
+open import Categories.Functor.Hom using (Hom[_][-,-])
+open import Categories.Functor.Construction.Constant using (const!)
+open import Categories.Functor.Construction.LiftSetoids using (LiftSetoids)
+open import Categories.Functor.Properties using ([_]-resp-square; [_]-resp-∘)
+open import Categories.Functor.Limits using (Continuous; Cocontinuous)
+open import Categories.Functor.Bifunctor using (Bifunctor; appʳ; appˡ)
+open import Categories.Functor.Bifunctor.Properties using ([_]-decompose₁; [_]-decompose₂; [_]-commute)
+open import Categories.NaturalTransformation using (NaturalTransformation; _∘ˡ_; _∘ʳ_; ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; _≃_; _ⓘₕ_; _ⓘˡ_; module ≃)
-open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
-open import Categories.Monad
-open import Categories.Monad.Duality
-open import Categories.Comonad
-open import Categories.Morphism.Universal
-open import Categories.Yoneda
-import Categories.Yoneda.Properties as YP
+open import Categories.NaturalTransformation.NaturalIsomorphism.Properties using (unlift-≃)
+open import Categories.Monad using (Monad)
+open import Categories.Monad.Duality using (coMonad⇒Comonad)
+open import Categories.Comonad using (Comonad)
+open import Categories.Morphism.Universal using (UniversalMorphism)
+import Categories.Yoneda.Properties as YP using (yoneda-NI)
 
-import Categories.Diagram.Colimit as Col
-import Categories.Diagram.Duality as Duality
+import Categories.Diagram.Duality as Duality using (coLimit⇒Colimit; Colimit⇒coLimit)
 
-import Categories.Morphism as Mor
-import Categories.Morphism.Reasoning as MR
-
--- public export
-open import Categories.Adjoint.RAPL using (rapl) public
-open import Categories.Adjoint.Alternatives using (fromUnit; fromCounit) public
+import Categories.Morphism.Reasoning as MR using (pushʳ; pullˡ; pushˡ; elimʳ; center; center⁻¹;
+  elimˡ; cancelˡ; pullʳ; cancelʳ; id-comm-sym)
 
 private
   variable
@@ -53,13 +47,13 @@ module _ {C : Category o ℓ e}
          (L : Bifunctor C E D) {R : ∀ (X : Category.Obj E) → Functor D C}
          (LR : ∀ (X : Category.Obj E) → appʳ L X ⊣ R X) where
   private
-    module C    = Category C
-    module D    = Category D
-    module E    = Category E
-    module L    = Functor L
-    module R X  = Functor (R X)
-    module LR X = Adjoint (LR X)
-    open C
+    module C    = Category C using (id; _⇒_; _≈_; _∘_; assoc; sym-assoc; ∘-resp-≈ˡ; module HomReasoning)
+    module D    = Category D using (_∘_; id; _≈_; _⇒_; module HomReasoning; ∘-resp-≈ʳ; sym-assoc)
+    module E    = Category E using (_⇒_; id; module Equiv; _∘_; op)
+    module L    = Functor L using (F₁; F-resp-≈; identity)
+    module R X  = Functor (R X) using (F₀; F₁; identity; homomorphism; F-resp-≈)
+    module LR X = Adjoint (LR X) using (Ladjunct; module unit; module counit; RLadjunct≈id; zag)
+    open C using (assoc; sym-assoc; _⇒_; _∘_; _≈_; ∘-resp-≈ˡ)
 
     F′ : ∀ {A X B Y} f g → R.F₀ A X ⇒ R.F₀ B Y
     F′ {A} {X} {B} {Y} f g = LR.Ladjunct B (LR.counit.η A Y D.∘ L.F₁ (R.F₁ A g , f))
@@ -72,7 +66,7 @@ module _ {C : Category o ℓ e}
       LR.counit.η B X D.∘ L.F₁ (C.id , f)         ∎
       where open D.HomReasoning
 
-    open HomReasoning
+    open C.HomReasoning
 
     decompose₁ : ∀ {A B X Y} {f : A E.⇒ B} {g : X D.⇒ Y} → F′ f g ≈ R.F₁ A g ∘ F′ f D.id
     decompose₁ {A} {B} {X} {Y} {f} {g} = begin
@@ -171,7 +165,6 @@ module _ {C : Category o ℓ e}
 module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) (F : Functor J C) where
   private
     module F = Functor F
-    open Col
 
   lapc : Colimit F → Colimit (L ∘F F)
   lapc col = Duality.coLimit⇒Colimit D (rapl (Adjoint.op L⊣R) F.op (Duality.Colimit⇒coLimit C col))
@@ -179,19 +172,19 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) (F : Functor J C)
 -- adjoint functors induce monads and comonads
 module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
   private
-    module C = Category C
-    module D = Category D
-    module L = Functor L
-    module R = Functor R
-    open Adjoint L⊣R
+    module C = Category C using (id; _∘_; module HomReasoning)
+    module D = Category D using (id)
+    module L = Functor L using (F₁)
+    module R = Functor R using (F₁; identity)
+    open Adjoint L⊣R using (unit; counit; zig; zag)
 
   rapl′ : ∀ {o ℓ e} → Continuous o ℓ e R
   rapl′ lim = terminal.⊤-is-terminal
-    where open Limit (rapl L⊣R _ lim)
+    where open Limit (rapl L⊣R _ lim) using (module terminal)
 
   lapc′ : ∀ {o ℓ e} → Cocontinuous o ℓ e L
   lapc′ col = initial.⊥-is-initial
-    where open Colimit (lapc L⊣R _ col)
+    where open Colimit (lapc L⊣R _ col) using (module initial)
 
   adjoint⇒monad : Monad C
   adjoint⇒monad = record
@@ -205,29 +198,26 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
     ; assoc     = [ R ]-resp-square (counit.commute _)
     ; sym-assoc = [ R ]-resp-square (counit.sym-commute _)
     ; identityˡ = λ {X} → begin
-      μ′.η X ∘ R.F₁ (L.F₁ (unit.η X)) ≈⟨ [ R ]-resp-∘ zig ⟩
-      R.F₁ D.id                       ≈⟨ R.identity ⟩
-      C.id                            ∎
+      μ′.η X C.∘ R.F₁ (L.F₁ (unit.η X)) ≈⟨ [ R ]-resp-∘ zig ⟩
+      R.F₁ D.id                         ≈⟨ R.identity ⟩
+      C.id                              ∎
     ; identityʳ = zag
     }
-    where open C
-          open HomReasoning
+    where open C.HomReasoning
           μ′ : NaturalTransformation (R ∘F (L ∘F R) ∘F L) (R ∘F Categories.Functor.id ∘F L)
           μ′ = R ∘ˡ counit ∘ʳ L
-          module μ′ = NaturalTransformation μ′
+          module μ′ = NaturalTransformation μ′ using (η; commute; sym-commute)
 
 module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
-  open Adjoint L⊣R
-
   adjoint⇒comonad : Comonad D
-  adjoint⇒comonad = coMonad⇒Comonad D (adjoint⇒monad op)
+  adjoint⇒comonad = coMonad⇒Comonad D (adjoint⇒monad (Adjoint.op L⊣R))
 
 -- adjoint functors are the same as universal morphisms
 module _ {R : Functor D C} where
   private
-    module C = Category C
-    module D = Category D
-    module R = Functor R
+    module C = Category C -- all of the structure is needed
+    module D = Category D using (Obj; _⇒_; _∘_; id; module HomReasoning)
+    module R = Functor R using (F₀; F₁; identity; homomorphism)
 
   adjoint⇒universalMorphisms : ∀ {L : Functor C D} → L ⊣ R → ∀ (X : C.Obj) → UniversalMorphism X R
   adjoint⇒universalMorphisms {L} L⊣R X = record
@@ -246,10 +236,9 @@ module _ {R : Functor D C} where
         }
       }
     }
-    where module L = Functor L
-          open Adjoint L⊣R
-          open Comma⇒
-          open CommaObj
+    where open Adjoint L⊣R using (Radjunct; Ladjunct; LRadjunct≈id; RLadjunct≈id; Radjunct-resp-≈; module unit)
+          open Comma⇒ using (h; commute)
+          open CommaObj using (f)
 
   universalMophisms⇒adjoint : (∀ (X : C.Obj) → UniversalMorphism X R) → Σ (Functor C D) (λ L → L ⊣ R)
   universalMophisms⇒adjoint umors = L , record
@@ -261,7 +250,7 @@ module _ {R : Functor D C} where
       { η       = ε
       ; commute = λ {X Y} i →
         let open C.HomReasoning
-            open MR C
+            open MR C using (pullʳ; cancelˡ; cancelʳ)
         in proj₂ $ umors.!-unique₂ (R.F₀ X)
            {record { f = R.F₁ i }}
            (record
@@ -284,7 +273,7 @@ module _ {R : Functor D C} where
       }
     ; zig    = λ {c} →
       let open C.HomReasoning
-          open MR C
+          open MR C using (pullʳ; cancelˡ; id-comm-sym)
           α = f (umors.⊥ c)
       in proj₂ $ umors.!-unique₂ c
          {record { f = α }}
@@ -317,13 +306,8 @@ module _ {R : Functor D C} where
           L₀ X         = β (umors.⊥ X)
           L₁ : ∀ {X Y} → X C.⇒ Y → β (umors.⊥ X) D.⇒ β (umors.⊥ Y)
           L₁ {X} {Y} g = h (⊥X⇒⊥Y g)
-          L : Functor C D
-          L            = record
-            { F₀           = L₀
-            ; F₁           = L₁
-            ; identity     = λ {X} → proj₂ $ umors.!-unique X $
-              record { commute = elimˡ R.identity ○ ⟺ C.identityʳ ○ ⟺ C.identityʳ }
-            ; homomorphism = λ {X Y Z} {i j} → proj₂ $ umors.!-unique₂ X (umors.! X) $
+          L-Hom : ∀ {X Y Z} {i : X C.⇒ Y} {j : Y C.⇒ Z} → D [ L₁ (C [ j ∘ i ]) ≈ (D [ L₁ j ∘ L₁ i ]) ]
+          L-Hom {X} {Y} {Z} {i} {j} = proj₂ $ umors.!-unique₂ X (umors.! X) $
               record { commute = begin
                 R.F₁ (h (umors.! Y) D.∘ h (umors.! X)) C.∘ f (umors.⊥ X)
                   ≈⟨ (C.∘-resp-≈ˡ R.homomorphism) ○ C.assoc ⟩
@@ -335,12 +319,20 @@ module _ {R : Functor D C} where
                   ≈˘⟨ C.identityʳ ⟩
                 (f (umors.⊥ Z) C.∘ j C.∘ i) C.∘ C.id
                   ∎ }
+              where open C.HomReasoning
+                    open MR C using (pushˡ)
+          L : Functor C D
+          L            = record
+            { F₀           = L₀
+            ; F₁           = L₁
+            ; identity     = λ {X} → proj₂ $ umors.!-unique X $
+              record { commute = elimˡ R.identity ○ ⟺ C.identityʳ ○ ⟺ C.identityʳ }
+            ; homomorphism = L-Hom
             ; F-resp-≈     = λ {X} eq → proj₂ $ umors.!-unique₂ X (umors.! X) $
               record { commute = commute (umors.! X) ○ C.∘-resp-≈ˡ (C.∘-resp-≈ʳ (⟺ eq)) }
             }
-            where open C.HomReasoning
-                  open MR C
-          module L = Functor L
+            where open C.HomReasoning using (_○_; ⟺)
+                  open MR C using (elimˡ)
 
           ⊥Rd    : (d : D.Obj) → CommaObj (const! (R.F₀ d)) R
           ⊥Rd d    = umors.⊥ (R.F₀ d)
@@ -351,39 +343,28 @@ module _ {R : Functor D C} where
 
 -- adjoint functors of a functor are isomorphic
 module _ (L : Functor C D) where
-  open YP C
-
   R≃R′ : ∀ {R R′} → L ⊣ R → L ⊣ R′ → R ≃ R′
-  R≃R′ {R} {R′} L⊣R L⊣R′ = yoneda-NI R R′ (unlift-≃ Hom[-,R-]≃Hom[-,R′-])
-    where module ⊣₁ = Adjoint L⊣R
-          module ⊣₂ = Adjoint L⊣R′
+  R≃R′ {R} {R′} L⊣R L⊣R′ = YP.yoneda-NI C R R′ (unlift-≃ Hom[-,R-]≃Hom[-,R′-])
+    where module ⊣₁ = Adjoint L⊣R using (Hom[-,R-]′; Hom-NI)
+          module ⊣₂ = Adjoint L⊣R′ using (Hom[-,R-]′; Hom-NI)
           Hom[-,R-]≃Hom[-,R′-] : ⊣₁.Hom[-,R-]′ ≃ ⊣₂.Hom[-,R-]′
           Hom[-,R-]≃Hom[-,R′-] = ≃.trans (≃.sym ⊣₁.Hom-NI) ⊣₂.Hom-NI
 
 module _ {R : Functor D C} where
 
   L≃L′ : ∀ {L L′} → L ⊣ R → L′ ⊣ R → L ≃ L′
-  L≃L′ L⊣R L′⊣R = NaturalIsomorphism.op L′≃Lᵒᵖ
-    where module ⊣₁ = Adjoint L⊣R
-          module ⊣₂ = Adjoint L′⊣R
-          L′≃Lᵒᵖ = R≃R′ (Functor.op R) ⊣₂.op ⊣₁.op
+  L≃L′ L⊣R L′⊣R = NaturalIsomorphism.op (R≃R′ (Functor.op R) ⊣₂.op ⊣₁.op)
+    where module ⊣₁ = Adjoint L⊣R using (op)
+          module ⊣₂ = Adjoint L′⊣R using (op)
 
 -- adjoint functors are preserved by natural isomorphisms
 module _ {L L′ : Functor C D} {R R′ : Functor D C} where
-  private
-    module C  = Category C
-    module D  = Category D
-    module L  = Functor L
-    module L′ = Functor L′
-    module R  = Functor R
-    module R′ = Functor R′
 
   ⊣×≃⇒⊣ : L ⊣ R → L ≃ L′ → R ≃ R′ → L′ ⊣ R′
   ⊣×≃⇒⊣ L⊣R L≃L′ R≃R′ = Hom-NI′⇒Adjoint (≃.trans (LiftSetoids _ _  ⓘˡ Hom[L′-,-]≃Hom[L-,-])
-                                        (≃.trans Hom-NI
+                                        (≃.trans (Adjoint.Hom-NI L⊣R)
                                                  (LiftSetoids _ _  ⓘˡ Hom[-,R-]≃Hom[-,R′-])))
-    where open Adjoint L⊣R
-          Hom[L′-,-]≃Hom[L-,-] : Hom[ D ][-,-] ∘F (L′.op ⁂ idF) ≃ Hom[ D ][-,-] ∘F (L.op ⁂ idF)
+    where Hom[L′-,-]≃Hom[L-,-] : Hom[ D ][-,-] ∘F (Functor.op L′ ⁂ idF) ≃ Hom[ D ][-,-] ∘F (Functor.op L ⁂ idF)
           Hom[L′-,-]≃Hom[L-,-] = Hom[ D ][-,-] ⓘˡ (NaturalIsomorphism.op L≃L′ ⁂ⁿⁱ ≃.refl)
           Hom[-,R-]≃Hom[-,R′-] : Hom[ C ][-,-] ∘F (idF ⁂ R) ≃ Hom[ C ][-,-] ∘F (idF ⁂ R′)
           Hom[-,R-]≃Hom[-,R′-] = Hom[ C ][-,-] ⓘˡ (≃.refl ⁂ⁿⁱ R≃R′)
