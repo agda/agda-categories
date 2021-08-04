@@ -134,6 +134,15 @@ split₂ˡ {f = f} {g} {h} = begin
   (id ∘ f) ⊗₁ (g ∘ h)   ≈⟨ ⊗-distrib-over-∘ ⟩
   id ⊗₁ g ∘ f ⊗₁ h      ∎
 
+-- The opposite, i.e. merge
+merge₂ʳ :  ∀ {X₁ Y₁ X₂ Y₂ Z₂} {f : X₁ ⇒ Y₁} {g : Y₂ ⇒ Z₂} {h : X₂ ⇒ Y₂} →
+          f ⊗₁ g ∘ id ⊗₁ h ≈ f ⊗₁ (g ∘ h)
+merge₂ʳ = Equiv.sym split₂ʳ
+
+merge₂ˡ : ∀ {X₁ Y₁ X₂ Y₂ Z₂} {f : X₁ ⇒ Y₁} {g : Y₂ ⇒ Z₂} {h : X₂ ⇒ Y₂} →
+          id ⊗₁ g ∘ f ⊗₁ h ≈ f ⊗₁ (g ∘ h)
+merge₂ˡ = Equiv.sym split₂ˡ
+
 -- Combined splitting and re-association.
 
 module _ {X Y Z} {f : X ⇒ Z} {g : Y ⇒ Z} {h : X ⇒ Y} (f≈gh : f ≈ g ∘ h) where
