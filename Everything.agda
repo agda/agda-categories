@@ -79,7 +79,6 @@ import Categories.Category.Construction.Elements
 import Categories.Category.Construction.EnrichedFunctors
 import Categories.Category.Construction.F-Algebras
 import Categories.Category.Construction.Fin
-import Categories.Category.Construction.FreeQuiver
 import Categories.Category.Construction.Functors
 import Categories.Category.Construction.Grothendieck
 import Categories.Category.Construction.GroupAsCategory
@@ -92,6 +91,7 @@ import Categories.Category.Construction.MonoidalFunctors
 import Categories.Category.Construction.Monoids
 import Categories.Category.Construction.ObjectRestriction
 import Categories.Category.Construction.Path
+import Categories.Category.Construction.PathCategory
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Construction.Properties.Comma
 import Categories.Category.Construction.Properties.EilenbergMoore
