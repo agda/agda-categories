@@ -4,8 +4,7 @@ open import Level
 open import Data.Quiver using (Quiver)
 
 -- The Category of (free) paths over a Quiver
-module Categories.Category.Construction.FreeQuiver {o ℓ e}
-  (G : Quiver o ℓ e) where
+module Categories.Category.Construction.PathCategory {o ℓ e} (G : Quiver o ℓ e) where
 
 open import Function.Base using (_$_)
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive
@@ -38,5 +37,3 @@ PathCategory = record
            f ≈* h → g ≈* i → (f ▻▻ g) ≈* (h ▻▻ i)
   resp eq ε = eq
   resp eq (eq₁ ◅ eq₂) = eq₁ ◅ (resp eq eq₂)
-
-open P public renaming (_≈*_ to [_]_≈*_)

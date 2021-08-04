@@ -33,7 +33,7 @@ import Data.Quiver.Morphism as QM
 open QM using (Morphism; _≃_)
 
 open import Categories.Category
-import Categories.Category.Construction.FreeQuiver as FQ
+import Categories.Category.Construction.PathCategory as PC
 open import Categories.Category.Instance.StrictCats
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Equivalence using (_≡F_)
@@ -156,8 +156,9 @@ Underlying = record
 module _ {G₁ G₂ : Quiver o ℓ e} (G⇒ : Morphism G₁ G₂) where
   open Quiver G₁ renaming (_⇒_ to _⇒₁_; Obj to Obj₁)
   open Quiver G₂ renaming (_⇒_ to _⇒₂_; Obj to Obj₂; module Equiv to Equiv₂)
-  open FQ
+  open PC
   open Morphism G⇒
+  open Paths renaming (_≈*_ to [_]_≈*_)
 
   qmap : {A B : Obj₁} → Star _⇒₁_ A B → Star _⇒₂_ (F₀ A) (F₀ B)
   qmap = gmap F₀ F₁
@@ -172,15 +173,15 @@ module _ {G₁ G₂ : Quiver o ℓ e} (G⇒ : Morphism G₁ G₂) where
 module _ {G H : Quiver o ℓ e} {f g : Morphism G H}
          (f≈g : f ≃ g) where
   open Quiver G
-  open Paths H
+  open Paths H using (_≈*_; _◅_)
   open Morphism
   open _≃_ f≈g
   open Transport (Quiver._⇒_ H)
   open TransportStar (Quiver._⇒_ H)
 
   map-F₁≡ : {A B : Obj} (hs : Star _⇒_ A B) →
-            FQ.[ H ] qmap f hs ▸* F₀≡ ≈* F₀≡ ◂* qmap g hs
-  map-F₁≡ ε        = FQ.≡⇒≈* H (◂*-▸*-ε F₀≡)
+            qmap f hs ▸* F₀≡ ≈* F₀≡ ◂* qmap g hs
+  map-F₁≡ ε        = Paths.≡⇒≈* H (◂*-▸*-ε F₀≡)
   map-F₁≡ (hs ◅ h) = begin
     (F₁ f hs ◅ qmap f h) ▸* F₀≡   ≡⟨ ◅-▸* (F₁ f hs) _ F₀≡ ⟩
     F₁ f hs ◅ (qmap f h ▸* F₀≡)   ≈⟨ Quiver.Equiv.refl H ◅ map-F₁≡ h ⟩
