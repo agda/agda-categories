@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-module Categories.Category.Construction.Quivers where
+module Categories.Category.Instance.Quivers where
 
 -- The "Underlying Graph" <-> "Free Category on a Graph" Adjunction.
 --   [It's actually a Multidigraph, or Quiver.  Use the latter.]

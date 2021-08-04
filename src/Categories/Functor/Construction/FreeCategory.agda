@@ -17,7 +17,7 @@ open QM using (Morphism; _≃_)
 
 open import Categories.Category
 import Categories.Category.Construction.PathCategory as PC
-open import Categories.Category.Construction.Quivers
+open import Categories.Category.Instance.Quivers
 open import Categories.Category.Instance.StrictCats
 open import Categories.Functor using (Functor)
 import Categories.Morphism.HeterogeneousIdentity as HId
