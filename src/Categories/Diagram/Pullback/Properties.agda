@@ -6,6 +6,7 @@ module Categories.Diagram.Pullback.Properties {o ℓ e} (C : Category o ℓ e) w
 
 open import Function using (_$_)
 
+open import Categories.Category.BinaryProducts C
 open import Categories.Category.Cartesian C
 open import Categories.Diagram.Pullback C
 open import Categories.Diagram.Equalizer C
@@ -101,6 +102,7 @@ module _ (p : Pullback id f) where
 module _ (pullbacks : ∀ {X Y Z} (f : X ⇒ Z) (g : Y ⇒ Z) → Pullback f g)
          (cartesian : Cartesian) where
   open Cartesian cartesian
+  open BinaryProducts products using (⟨_,_⟩; π₁; π₂; ⟨⟩-cong₂; ⟨⟩∘; project₁; project₂)
 
   pullback×cartesian⇒equalizer : Equalizer f g
   pullback×cartesian⇒equalizer {f = f} {g = g} = record

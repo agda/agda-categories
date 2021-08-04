@@ -24,7 +24,9 @@ open import Relation.Binary.PropositionalEquality as ≡ using (refl; _≡_)
 import Data.List.Membership.Propositional.Properties as ∈ₚ
 import Data.Vec.Membership.Propositional.Properties as ∈ᵥₚ
 
-open import Categories.Category.Cartesian C
+open import Categories.Category.BinaryProducts C using (BinaryProducts)
+open import Categories.Category.Cartesian C using (Cartesian)
+open import Categories.Object.Terminal using (Terminal)
 
 open import Categories.Diagram.Pullback C
 open import Categories.Diagram.Equalizer C
@@ -85,6 +87,8 @@ module _ (prods : BinaryProducts) (pullbacks : ∀ {A B X} (f : A ⇒ X) (g : B 
 
 module Prods (car : Cartesian) where
   open Cartesian car
+  open BinaryProducts products
+  open Terminal terminal
 
   -- for lists
 

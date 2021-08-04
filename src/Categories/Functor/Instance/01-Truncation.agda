@@ -11,12 +11,13 @@ open import Level using (_⊔_)
 open import Function using (flip)
 open import Data.Product as Prod using (_,_; _×_)
 open import Relation.Binary using (Poset)
+open import Relation.Binary.Morphism.Bundles using (PosetHomomorphism; mkPosetHomo)
 
 open import Categories.Category using (Category; _[_≈_])
 open import Categories.Functor hiding (id)
 open import Categories.Category using (Category)
 open import Categories.Category.Instance.Cats using (Cats)
-open import Categories.Category.Instance.Posets using (Posets; _⇒-Poset_; ⇒-Poset-helper)
+open import Categories.Category.Instance.Posets using (Posets)
 import Categories.Morphism as Morphism
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (NaturalIsomorphism; _≃_)
@@ -62,8 +63,8 @@ Trunc {o} {ℓ} {e} = record
        }
        where open Category C
 
-     Trunc₁ : ∀ {C D} → Functor C D → Trunc₀ C ⇒-Poset Trunc₀ D
-     Trunc₁ F = ⇒-Poset-helper (F₀ F) (F₁ F)
+     Trunc₁ : ∀ {C D} → Functor C D → PosetHomomorphism (Trunc₀ C) (Trunc₀ D)
+     Trunc₁ F = mkPosetHomo _ _ (F₀ F) (F₁ F)
 
      TruncRespNI : ∀ {C D : Category o ℓ e} {F G : Functor C D} →
                    F ≃ G → Posets o ℓ ℓ [ Trunc₁ F ≈ Trunc₁ G ]

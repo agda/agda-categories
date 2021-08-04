@@ -9,7 +9,7 @@ open import Data.Nat using (ℕ)
 open import Data.Product using (Σ; _,_)
 open import Level
 
-open import Categories.Category.Cartesian.Structure
+open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
 open import Categories.Category using (Category; _[_,_])
 open import Categories.Category.Instance.Setoids
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-CartesianCategory)

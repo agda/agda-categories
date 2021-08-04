@@ -4,9 +4,9 @@ module Categories.Category.Instance.Cartesians where
 
 open import Level
 
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 open import Categories.Category.Helper
-open import Categories.Category.Cartesian.Structure
+open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
 open import Categories.Functor.Cartesian
 open import Categories.Functor.Cartesian.Properties
 open import Categories.NaturalTransformation.NaturalIsomorphism

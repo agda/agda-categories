@@ -18,7 +18,7 @@ private
   open Locally LCCC
   variable
     A B : Obj
-            
+
 module _ (f : A ⇒ B) where
   open CartesianClosed (sliceCCC B)
 
@@ -30,8 +30,8 @@ module _ (f : A ⇒ B) where
     fObj : SliceObj C B
     fObj = sliceobj f
 
-    i : Slice⇒ C ⊤ (fObj ^ fObj)
-    i = λg π₂
+    i : Slice⇒ C (sliceTerm.⊤ B) (fObj ^ fObj)
+    i = λg (sliceProd.π₂ B)
 
     J : Functor C/A C/B/f
     J = slice⇒slice-slice C f

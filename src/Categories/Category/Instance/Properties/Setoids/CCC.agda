@@ -7,11 +7,13 @@ open import Data.Product using (Σ ; _,_)
 open import Function.Equality as ⟶ using (Π; _⟶_)
 open import Relation.Binary using (Setoid)
 
-open import Categories.Category
-open import Categories.Category.Monoidal.Instance.Setoids
-open import Categories.Category.CartesianClosed
+open import Categories.Category.Core using (Category)
+open import Categories.Category.BinaryProducts using (BinaryProducts)
+open import Categories.Category.CartesianClosed using (CartesianClosed)
 open import Categories.Category.CartesianClosed.Canonical renaming (CartesianClosed to CCartesianClosed)
-open import Categories.Category.Instance.Setoids
+open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-Cartesian)
+open import Categories.Category.Instance.Setoids using (Setoids)
+open import Categories.Object.Terminal using (Terminal)
 
 open Π
 
@@ -48,7 +50,10 @@ module _ ℓ where
     ; curry-resp-≈ = λ eq₁ eq₂ eq → eq₁ (eq₂ , eq)
     ; curry-unique = λ eq₁ eq₂ eq → eq₁ (eq₂ , eq)
     }
-    where open Setoids-Cartesian
+    where
+      open Setoids-Cartesian
+      open BinaryProducts products using (_×_; π₁; π₂; ⟨_,_⟩; project₁; project₂; unique)
+      open Terminal terminal using (⊤; !; !-unique)
 
   Setoids-CCC : CartesianClosed S
   Setoids-CCC = Equivalence.fromCanonical S Setoids-Canonical

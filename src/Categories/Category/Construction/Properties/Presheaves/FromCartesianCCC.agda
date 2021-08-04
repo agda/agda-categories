@@ -9,9 +9,10 @@ open import Function.Equality using (Π) renaming (_∘_ to _∙_)
 open import Relation.Binary
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
+open import Categories.Category.BinaryProducts
 open import Categories.Category.Core using (Category)
-open import Categories.Category.Cartesian
-open import Categories.Category.CartesianClosed
+open import Categories.Category.Cartesian using (Cartesian)
+open import Categories.Category.CartesianClosed using (CartesianClosed)
 open import Categories.Category.CartesianClosed.Canonical renaming (CartesianClosed to CCartesianClosed)
 open import Categories.Category.Construction.Presheaves
 open import Categories.Category.Instance.Setoids
@@ -19,7 +20,8 @@ open import Categories.Functor
 open import Categories.Functor.Hom
 open import Categories.Functor.Properties
 open import Categories.Functor.Presheaf
-open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
+open import Categories.Object.Terminal using (Terminal)
 
 import Categories.Category.Construction.Properties.Presheaves.Cartesian as Preₚ
 import Categories.Object.Product as Prod
@@ -34,6 +36,7 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
     S = Setoids o′ ℓ′
     open Prod C using (id×id)
     open Cartesian Car
+    open BinaryProducts products
 
   Pres-exp : (F : Presheaf C S) (X : C.Obj) → Presheaf C S
   Pres-exp F X = record
@@ -122,21 +125,26 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
     module C  = Category C using (identityˡ; id; module HomReasoning)
     module CH = C.HomReasoning
     P = Presheaves′ o o C
-    open Cartesian Car
+    -- open Cartesian Car
+    open BinaryProducts (Cartesian.products Car) using (_×_; π₁; π₂; ⟨_,_⟩; Δ; first; second; _⁂_; Δ∘; ⁂∘Δ; second∘first;
+      π₁∘⁂; π₂∘⁂; project₁; project₂; η)
+    -- module CarP = BinaryProducts products
     open Preₚ.IsCartesian C o o using () renaming (Presheaves-Cartesian to PC)
+    module PPC = BinaryProducts PC.products using (π₁; π₂; _×_; project₁; project₂; ⟨_,_⟩; unique)
+    module TPC = Terminal PC.terminal using (⊤; !; !-unique)
 
   CanonicalCCC : CCartesianClosed P
   CanonicalCCC = record
-    { ⊤            = PC.terminal.⊤
-    ; _×_          = PC._×_
-    ; !            = PC.!
-    ; π₁           = PC.π₁
-    ; π₂           = PC.π₂
-    ; ⟨_,_⟩        = PC.⟨_,_⟩
-    ; !-unique     = PC.!-unique
-    ; π₁-comp      = λ {_ _ f} {_ g} → PC.project₁ {h = f} {g}
-    ; π₂-comp      = λ {_ _ f} {_ g} → PC.project₂ {h = f} {g}
-    ; ⟨,⟩-unique   = λ {_ _ _ f g h} → PC.unique {h = h} {i = f} {j = g}
+    { ⊤            = TPC.⊤
+    ; _×_          = PPC._×_
+    ; !            = TPC.!
+    ; π₁           = PPC.π₁
+    ; π₂           = PPC.π₂
+    ; ⟨_,_⟩        = PPC.⟨_,_⟩
+    ; !-unique     = TPC.!-unique
+    ; π₁-comp      = λ {_ _ f} {_ g} → PPC.project₁ {h = f} {g}
+    ; π₂-comp      = λ {_ _ f} {_ g} → PPC.project₂ {h = f} {g}
+    ; ⟨,⟩-unique   = λ {_ _ _ f g h} → PPC.unique {h = h} {i = f} {j = g}
     ; _^_          = FromCartesian.Presheaf^ o o Car
     ; eval         = λ {F G} →
       let module F = Functor F using (₀; ₁)
@@ -153,15 +161,11 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
               module β = NaturalTransformation β using (η)
               open Setoid  (F.₀ (X × X)) using (sym; refl)
               open SetoidR (F.₀ Y)
-          in begin
-            F.₁ Δ ⟨$⟩ (F.₁ (first f) ⟨$⟩ (α.η Y ⟨$⟩ (G.₁ f ⟨$⟩ x)))
-              ≈⟨ Π.cong (F.₁ Δ ∙ F.₁ (first f)) (α.commute f eq′) ⟩
-            F.₁ Δ ∙ F.₁ (first f) ∙ F.₁ (second f) ⟨$⟩ (α.η X ⟨$⟩ y)
-              ≈⟨ Π.cong (F.₁ Δ) ([ F ]-resp-∘ second∘first refl) ⟩
-            F.₁ Δ ⟨$⟩ (F.₁ (f ⁂ f) ⟨$⟩ (α.η X ⟨$⟩ y))
-              ≈⟨ [ F ]-resp-∘ ⁂∘Δ refl ⟩
-            F.₁ ⟨ f , f ⟩ ⟨$⟩ (α.η X ⟨$⟩ y)
-              ≈˘⟨ [ F ]-resp-∘ Δ∘ (sym (eq (Setoid.refl (G.₀ X)))) ⟩
+          in  begin
+            F.₁ Δ ⟨$⟩ (F.₁ (first f) ⟨$⟩ (α.η Y ⟨$⟩ (G.₁ f ⟨$⟩ x)))    ≈⟨ Π.cong (F.₁ Δ ∙ F.₁ (first f)) (α.commute f eq′) ⟩
+            F.₁ Δ ∙ F.₁ (first f) ∙ F.₁ (second f) ⟨$⟩ (α.η X ⟨$⟩ y) ≈⟨ Π.cong (F.₁ Δ) ([ F ]-resp-∘ second∘first refl) ⟩
+            F.₁ Δ ⟨$⟩ (F.₁ (f ⁂ f) ⟨$⟩ (α.η X ⟨$⟩ y))                 ≈⟨ [ F ]-resp-∘ ⁂∘Δ refl ⟩
+            F.₁ ⟨ f , f ⟩ ⟨$⟩ (α.η X ⟨$⟩ y)                           ≈˘⟨ [ F ]-resp-∘ Δ∘ (sym (eq (Setoid.refl (G.₀ X)))) ⟩
             F.₁ f ⟨$⟩ (F.₁ Δ ⟨$⟩ (β.η X ⟨$⟩ y))
               ∎ }
         }

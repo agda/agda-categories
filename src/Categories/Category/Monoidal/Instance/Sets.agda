@@ -8,20 +8,22 @@ open import Level
 open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂; uncurry; map; <_,_>)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]′)
 open import Data.Unit using (⊤)
-open import Relation.Binary.PropositionalEquality
+open import Relation.Binary.PropositionalEquality.Core
 open import Function.Inverse using (module Inverse; _↔_)
 open import Function.Related.TypeIsomorphisms
 open import Function.Equality using () renaming (_⟨$⟩_ to fun)
 open import Function using (_$_)
 
-open import Categories.Category.Instance.Sets
-open import Categories.Category.Monoidal
-open import Categories.Functor.Bifunctor
-open import Categories.Category.Instance.SingletonSet
-open import Categories.Category.Instance.EmptySet
-import Categories.Morphism as Morphism
+open import Categories.Category.BinaryProducts using (BinaryProducts)
 import Categories.Category.Cartesian as Cartesian
+open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
 import Categories.Category.Cocartesian as Cocartesian
+open import Categories.Category.Instance.EmptySet
+open import Categories.Category.Instance.Sets
+open import Categories.Category.Instance.SingletonSet
+import Categories.Morphism as Morphism
+open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Functor.Bifunctor using (Bifunctor)
 
 open import Data.Sum.Properties
 
@@ -31,7 +33,7 @@ module Product {o : Level} where
     S = Sets o
     open Cartesian S
 
-  Sets-has-all : BinaryProducts
+  Sets-has-all : BinaryProducts S
   Sets-has-all = record { product = λ {A} {B} → record
     { A×B = A × B
     ; π₁ = proj₁
@@ -46,7 +48,7 @@ module Product {o : Level} where
   Sets-is = record { terminal = SingletonSet-⊤ ; products = Sets-has-all }
 
   Sets-Monoidal : Monoidal S
-  Sets-Monoidal = Cartesian.CartesianMonoidal.monoidal S Sets-is
+  Sets-Monoidal = CartesianMonoidal.monoidal Sets-is
 
 module Coproduct {o : Level} where
   private

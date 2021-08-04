@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 
 -- BinaryCoproducts -- a category with all binary coproducts
 -- Cocartesian -- a category with all coproducts
@@ -19,16 +19,19 @@ private
     A B C D : Obj
     f g h i : A ⇒ B
 
-open import Categories.Object.Initial 𝒞
-open import Categories.Object.Coproduct 𝒞
-open import Categories.Object.Duality 𝒞
-open import Categories.Category.Monoidal
-open import Categories.Category.Monoidal.Symmetric
+open import Categories.Category.BinaryProducts using (BinaryProducts)
 open import Categories.Category.Cartesian 𝒞.op
+open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
+import Categories.Category.Cartesian.SymmetricMonoidal as CSM
+open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Category.Monoidal.Symmetric
 open import Categories.Morphism 𝒞
 open import Categories.Morphism.Properties 𝒞
 open import Categories.Morphism.Duality 𝒞
 open import Categories.Morphism.Reasoning 𝒞
+open import Categories.Object.Initial 𝒞 using (Initial)
+open import Categories.Object.Coproduct 𝒞
+open import Categories.Object.Duality 𝒞
 
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
@@ -53,9 +56,9 @@ record BinaryCoproducts : Set (levelOfTerm 𝒞) where
     public
 
   module Dual where
-    op-binaryProducts : BinaryProducts
+    op-binaryProducts : BinaryProducts op
     op-binaryProducts = record { product = Coproduct⇒coProduct coproduct }
-    
+
     module op-binaryProducts = BinaryProducts op-binaryProducts
 
   open Dual
@@ -125,7 +128,7 @@ record Cocartesian : Set (levelOfTerm 𝒞) where
 
   module Dual where
     open coproducts.Dual public
-    
+
     op-cartesian : Cartesian
     op-cartesian = record
       { terminal = ⊥⇒op⊤ initial
@@ -147,10 +150,13 @@ module CocartesianMonoidal (cocartesian : Cocartesian) where
   A+⊥≅A = op-≅⇒≅ (op-cartesianMonoidal.A×⊤≅A)
 
   open op-cartesianMonoidal
-    using ()
+    using (monoidal)
     -- both are natural isomorphism
     renaming (⊤×--id to ⊥+--id; -×⊤-id to -+⊥-id)
     public
+
+  open Monoidal monoidal using (unit; unitorˡ-commute-to; unitorˡ-commute-from; unitorʳ-commute-to;
+    unitorʳ-commute-from; assoc-commute-to; assoc-commute-from; triangle; pentagon)
 
   +-monoidal : Monoidal 𝒞
   +-monoidal = record
@@ -188,8 +194,7 @@ module CocartesianSymmetricMonoidal (cocartesian : Cocartesian) where
   open Cocartesian cocartesian
   open CocartesianMonoidal cocartesian
   private
-    module op-cartesianSymmetricMonoidal =
-      CartesianSymmetricMonoidal Dual.op-cartesian
+    module op-cartesianSymmetricMonoidal = CSM 𝒞.op Dual.op-cartesian
 
   +-symmetric : Symmetric +-monoidal
   +-symmetric = record
@@ -207,12 +212,13 @@ module CocartesianSymmetricMonoidal (cocartesian : Cocartesian) where
           }
         ; iso = λ _ → iso +-comm
         }
-      ; hexagon₁ = braided.hexagon₂
-      ; hexagon₂ = braided.hexagon₁
+      ; hexagon₁ = hexagon₂
+      ; hexagon₂ = hexagon₁
       }
     ; commutative = commutative
     }
     where open op-cartesianSymmetricMonoidal
           open _≅_
+          open Symmetric symmetric using (commutative; hexagon₁; hexagon₂)
 
   open Symmetric +-symmetric public

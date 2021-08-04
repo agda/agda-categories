@@ -24,8 +24,8 @@ private
 -- category of adjunctions between two fixed categories
 module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
   private
-    module C = Category C
-    module D = Category D
+    module C = Category C using (_∘_; ∘-resp-≈ˡ; ∘-resp-≈; sym-assoc; identityʳ; identityˡ; module Equiv; module HomReasoning)
+    module D = Category D using (_∘_; ∘-resp-≈ʳ; ∘-resp-≈; assoc; identityˡ; identityʳ; module Equiv; module HomReasoning)
 
   record AdjointObj : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
     field
@@ -35,17 +35,13 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
 
     module L = Functor L
     module R = Functor R
-    module L⊣R = Adjoint L⊣R
+    module L⊣R = Adjoint L⊣R using (module unit; module counit)
 
   record Adjoint⇒ (X Y : AdjointObj) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
-    private
-      module X = AdjointObj X
-      module Y = AdjointObj Y
-
     field
-      mate : HaveMate X.L⊣R Y.L⊣R
+      mate : HaveMate (AdjointObj.L⊣R X) (AdjointObj.L⊣R Y)
 
-    open HaveMate mate public
+    open HaveMate mate using (α; β; commute₁; commute₂) public
 
   private
     _≈_ : ∀ {A B} → Adjoint⇒ A B → Adjoint⇒ A B → Set (o ⊔ e ⊔ o′ ⊔ e′)
@@ -62,7 +58,7 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
           }
         }
       }
-      where open AdjointObj X
+      where open AdjointObj X using (L; R)
 
     _∘_ : ∀ {X Y Z} → Adjoint⇒ Y Z → Adjoint⇒ X Y → Adjoint⇒ X Z
     _∘_ {X} {Y} {Z} f g = record
@@ -72,7 +68,7 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
         ; mate = record
           { commute₁ = λ {W} →
             let open C.HomReasoning
-                open MR C
+                open MR C using (pullʳ; pullˡ)
             in begin
             X.R.F₁ (f.α.η W D.∘ g.α.η W) C.∘ X.L⊣R.unit.η W            ≈⟨ X.R.homomorphism ⟩∘⟨refl ⟩
             (X.R.F₁ (f.α.η W) C.∘ X.R.F₁ (g.α.η W)) C.∘ X.L⊣R.unit.η W ≈⟨ pullʳ g.commute₁ ⟩
@@ -82,7 +78,7 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
             (g.β.η (Z.L.F₀ W) C.∘ f.β.η (Z.L.F₀ W)) C.∘ Z.L⊣R.unit.η W ∎
           ; commute₂ = λ {W} →
             let open D.HomReasoning
-                open MR D
+                open MR D using (pullʳ; pullˡ)
             in begin
               X.L⊣R.counit.η W D.∘ X.L.F₁ (g.β.η W C.∘ f.β.η W)            ≈⟨ refl⟩∘⟨ X.L.homomorphism ⟩
               X.L⊣R.counit.η W D.∘ X.L.F₁ (g.β.η W) D.∘ X.L.F₁ (f.β.η W)   ≈⟨ pullˡ g.commute₂ ⟩
@@ -93,11 +89,11 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
           }
         }
       }
-      where module X = AdjointObj X
-            module Y = AdjointObj Y
-            module Z = AdjointObj Z
-            module f = Adjoint⇒ f
-            module g = Adjoint⇒ g
+      where module X = AdjointObj X using (module L⊣R; module R; module L)
+            module Y = AdjointObj Y using (module L⊣R; module R; module L)
+            module Z = AdjointObj Z using (module L⊣R; module R; module L)
+            module f = Adjoint⇒ f using (α; β; commute₁; commute₂)
+            module g = Adjoint⇒ g using (α; β; commute₁; commute₂)
 
   Adjoints : Category (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) (o ⊔ e ⊔ o′ ⊔ e′)
   Adjoints = categoryHelper record
@@ -122,8 +118,8 @@ module _ o ℓ e where
   private
     _≈_ : ∀ {A B : Category o ℓ e} → AdjointObj A B → AdjointObj A B → Set (o ⊔ ℓ ⊔ e)
     f ≈ g = f.L ≃ g.L × f.R ≃ g.R
-      where module f = AdjointObj f
-            module g = AdjointObj g
+      where module f = AdjointObj f using (L;R)
+            module g = AdjointObj g using (L;R)
 
     id : {A : Category o ℓ e} → AdjointObj A A
     id = record
@@ -138,8 +134,8 @@ module _ o ℓ e where
       ; R   = g.R ∘F f.R
       ; L⊣R = g.L⊣R ∘⊣ f.L⊣R
       }
-      where module f = AdjointObj f
-            module g = AdjointObj g
+      where module f = AdjointObj f using (L; R; L⊣R)
+            module g = AdjointObj g using (L; R; L⊣R)
 
   Adjunctions : Category (suc (o ⊔ ℓ ⊔ e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
   Adjunctions = categoryHelper record

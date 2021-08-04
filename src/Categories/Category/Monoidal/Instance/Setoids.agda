@@ -12,8 +12,9 @@ open import Relation.Binary using (Setoid)
 
 open import Categories.Category
 open import Categories.Category.Instance.Setoids
-open import Categories.Category.Cartesian
-open import Categories.Category.Cartesian.Structure
+open import Categories.Category.Cartesian using (Cartesian)
+open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
+open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
 open import Categories.Category.Cocartesian
 open import Categories.Category.Instance.SingletonSet
 open import Categories.Category.Instance.EmptySet
@@ -50,7 +51,7 @@ module _ {o ℓ} where
 
   module Setoids-Cartesian = Cartesian Setoids-Cartesian
   open Setoids-Cartesian public
-  module Setoids-CartesianMonoidal = CartesianMonoidal _ Setoids-Cartesian
+  module Setoids-CartesianMonoidal = CartesianMonoidal Setoids-Cartesian
   open Setoids-CartesianMonoidal renaming (monoidal to Setoids-Monoidal) public
 
   Setoids-Cocartesian : Cocartesian (Setoids o (o ⊔ ℓ))

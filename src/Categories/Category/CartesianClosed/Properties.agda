@@ -5,14 +5,20 @@ module Categories.Category.CartesianClosed.Properties where
 open import Level
 open import Data.Product using (Σ; _,_; Σ-syntax; proj₁; proj₂)
 
-open import Categories.Category.Core
-open import Categories.Category.CartesianClosed
+open import Categories.Category.BinaryProducts using (BinaryProducts)
+open import Categories.Category.Cartesian using (Cartesian)
+open import Categories.Category.CartesianClosed using (CartesianClosed)
+open import Categories.Category.Core using (Category)
+open import Categories.Object.Terminal
 
 import Categories.Morphism.Reasoning as MR
 
 module _ {o ℓ e} {𝒞 : Category o ℓ e} (𝓥 : CartesianClosed 𝒞) where
   open Category 𝒞
-  open CartesianClosed 𝓥
+  open CartesianClosed 𝓥 using (_^_; eval′; cartesian)
+  open Cartesian cartesian using (products; terminal)
+  open BinaryProducts products
+  open Terminal terminal using (⊤)
   open HomReasoning
   open MR 𝒞
 

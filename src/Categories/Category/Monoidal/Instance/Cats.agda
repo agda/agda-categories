@@ -5,26 +5,22 @@
 module Categories.Category.Monoidal.Instance.Cats where
 
 open import Level
-open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂; uncurry)
 
-open import Categories.Category
-open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
-open import Categories.Category.Instance.Cats
-open import Categories.Category.Monoidal
-open import Categories.Functor.Bifunctor
-open import Categories.Category.Instance.One
-open import Categories.Category.Product
-open import Categories.Category.Product.Properties
-import Categories.Category.Cartesian as Cartesian
-open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
+open import Categories.Category.BinaryProducts using (BinaryProducts)
+open import Categories.Category.Cartesian using (Cartesian)
+open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
+open import Categories.Category.Instance.Cats using (Cats)
+open import Categories.Category.Instance.One using (One-⊤)
+open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Category.Product using (Product; πˡ; πʳ; _※_)
+open import Categories.Category.Product.Properties using (project₁; project₂; unique)
 
 -- Cats is a Monoidal Category with Product as Bifunctor
 module Product {o ℓ e : Level} where
   private
     C = Cats o ℓ e
-    open Cartesian C
 
-  Cats-has-all : BinaryProducts
+  Cats-has-all : BinaryProducts C
   Cats-has-all = record { product = λ {A} {B} → record
     { A×B = Product A B
     ; π₁ = πˡ
@@ -35,8 +31,8 @@ module Product {o ℓ e : Level} where
     ; unique = unique
     } }
 
-  Cats-is : Cartesian
+  Cats-is : Cartesian C
   Cats-is = record { terminal = One-⊤ ; products = Cats-has-all }
 
   Cats-Monoidal : Monoidal C
-  Cats-Monoidal = Cartesian.CartesianMonoidal.monoidal C Cats-is
+  Cats-Monoidal = CartesianMonoidal.monoidal Cats-is

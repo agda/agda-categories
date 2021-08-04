@@ -11,17 +11,19 @@ open import Relation.Binary.PropositionalEquality as ≡
 open import Function using (_$_)
 open import Data.Unit using (⊤; tt)
 
-open import Categories.Category
-open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
+open import Categories.Category.BinaryProducts using (BinaryProducts)
+open import Categories.Category.Cartesian using (Cartesian)
+open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
+open import Categories.Category.Core using (Category)
 open import Categories.Category.Instance.StrictCats
 open import Categories.Category.Instance.One using (One)
-open import Categories.Category.Monoidal
-open import Categories.Functor.Bifunctor
-open import Categories.Functor.Construction.Constant
-open import Categories.Functor.Equivalence
+open import Categories.Category.Monoidal using (Monoidal)
 open import Categories.Category.Product
 open import Categories.Category.Product.Properties
-import Categories.Category.Cartesian as Cartesian
+open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
+open import Categories.Functor.Bifunctor using (Bifunctor)
+open import Categories.Functor.Construction.Constant
+open import Categories.Functor.Equivalence
 import Categories.Morphism.HeterogeneousIdentity as HId
 import Categories.Morphism.HeterogeneousIdentity.Properties as HIdProps
 import Categories.Morphism.Reasoning as MR
@@ -33,10 +35,9 @@ open import Categories.Utils.EqReasoning
 module Product {o ℓ e : Level} where
   private
     C = Cats o ℓ e
-    open Cartesian C
     open _≡F_
 
-  Cats-has-all : BinaryProducts
+  Cats-has-all : BinaryProducts C
   Cats-has-all = record { product = λ {A} {B} → record
     { A×B = Product A B
     ; π₁ = πˡ
@@ -79,14 +80,14 @@ module Product {o ℓ e : Level} where
   One-⊤ : Terminal C
   One-⊤ = record
     { ⊤ = One
-    ; ⊤-is-terminal = record 
+    ; ⊤-is-terminal = record
       { ! = const (lift tt)
       ; !-unique = λ f → record { eq₀ = λ _ → unique-One _ ; eq₁ = λ _ → lift tt }
       }
     }
 
-  Cats-is : Cartesian
+  Cats-is : Cartesian C
   Cats-is = record { terminal = One-⊤ ; products = Cats-has-all }
 
   Cats-Monoidal : Monoidal C
-  Cats-Monoidal = Cartesian.CartesianMonoidal.monoidal C Cats-is
+  Cats-Monoidal = CartesianMonoidal.monoidal Cats-is

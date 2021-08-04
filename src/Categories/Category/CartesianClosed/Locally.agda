@@ -6,6 +6,7 @@ module Categories.Category.CartesianClosed.Locally {o ℓ e} (C : Category o ℓ
 
 open import Level using (levelOfTerm)
 
+open import Categories.Category.BinaryProducts using (BinaryProducts)
 open import Categories.Category.CartesianClosed
 open import Categories.Category.Cartesian
 open import Categories.Category.Cartesian.Properties C
@@ -15,7 +16,7 @@ open import Categories.Category.Slice.Properties C
 
 open import Categories.Object.Product
 open import Categories.Object.Exponential
-open import Categories.Object.Terminal C
+open import Categories.Object.Terminal
 import Categories.Diagram.Pullback as P
 import Categories.Diagram.Pullback.Properties C as Pₚ
 import Categories.Morphism.Reasoning as MR
@@ -24,13 +25,15 @@ open Category C
 
 record Locally : Set (levelOfTerm C) where
   field
-    sliceCCC : ∀ A → CartesianClosed (Slice A)
+    sliceCCC : (A : Obj) → CartesianClosed (Slice A)
 
   -- only populate this module with some stuff, for space reasons
-  module sliceCCC A = CartesianClosed (sliceCCC A) using (product; products; exp)
+  module sliceCCC A = CartesianClosed (sliceCCC A) using (exp; cartesian)
+  module sliceProd A = BinaryProducts (Cartesian.products (sliceCCC.cartesian A))
+  module sliceTerm A = Terminal (Cartesian.terminal (sliceCCC.cartesian A))
 
   pullbacks : ∀ {X A B} (f : A ⇒ X) (g : B ⇒ X) → P.Pullback C f g
-  pullbacks {X} _ _ = product⇒pullback (sliceCCC.product X)
+  pullbacks {X} _ _ = product⇒pullback (sliceProd.product X)
 
   -- the slice categories also have pullbacks, because slice of slice is slice.
   slice-pullbacks : ∀ {A} {B X Y : SliceObj A} (f : Slice⇒ X B) (g : Slice⇒ Y B) → P.Pullback (Slice A) f g
@@ -64,7 +67,7 @@ record Locally : Set (levelOfTerm C) where
             B.arr ∘ f.h ∘ p.p₁   ≈⟨ pullˡ f.△ ⟩
             X.arr ∘ p.p₁         ∎
 
-module _ (LCCC : Locally) (t : Terminal) where
+module _ (LCCC : Locally) (t : Terminal C) where
   open Locally LCCC
   open Terminal t
   open HomReasoning
@@ -73,7 +76,7 @@ module _ (LCCC : Locally) (t : Terminal) where
   cartesian : Cartesian C
   cartesian = record
     { terminal = t
-    ; products = record { product = Pₚ.pullback-⊤⇒product t (product⇒pullback (sliceCCC.product ⊤)) }
+    ; products = record { product = Pₚ.pullback-⊤⇒product t (product⇒pullback (sliceProd.product ⊤)) }
     }
 
   cartesianClosed : CartesianClosed C
@@ -118,5 +121,5 @@ module _ (LCCC : Locally) (t : Terminal) where
   finitelyComplete = record
     { cartesian = cartesian
     ; equalizer = λ f g → prods×pullbacks⇒equalizers (Cartesian.products cartesian)
-                                                     (λ {_ _ X} h i → product⇒pullback (sliceCCC.product X))
+                                                     (λ {_ _ X} h i → product⇒pullback (sliceProd.product X))
     }

@@ -9,7 +9,8 @@ open import Data.Unit
 open import Function using (_$_)
 
 open import Relation.Binary using (_=[_]⇒_)
-open import Relation.Binary.Bundles
+open import Relation.Binary.Bundles using (Poset)
+open import Relation.Binary.Morphism.Bundles using (mkPosetHomo)
 
 open import Categories.Category
 open import Categories.Functor
@@ -18,9 +19,9 @@ open import Categories.Category.Slice
 open import Categories.Object.Subobject
 open import Categories.Diagram.Pullback renaming (glue to glue-pullback)
 open import Categories.Diagram.Pullback.Properties
-open import Categories.Category.Instance.Posets
-open import Categories.Category.Instance.Setoids
-open import Categories.Adjoint.Instance.PosetCore
+open import Categories.Category.Instance.Posets using (Posets)
+open import Categories.Category.Instance.Setoids using (Setoids)
+open import Categories.Adjoint.Instance.PosetCore using (Core)
 import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
 open import Categories.Morphism.Notation
@@ -41,7 +42,7 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
   Subₚ : Presheaf 𝒞 (Posets (o ⊔ ℓ ⊔ e) (ℓ ⊔ e) (ℓ ⊔ e))
   Subₚ = record
     { F₀ = Subobjects 𝒞
-    ; F₁ = λ f → ⇒-Poset-helper (morphism f) (λ {(α , m) (β , n)} h → monotone f {α , m} {β , n} h)
+    ; F₁ = λ f → mkPosetHomo _ _ (morphism f) (λ {(α , m) (β , n)} h → monotone f {α , m} {β , n} h)
     ; identity = λ {A} {(α , m)} →
       let pid = has-pullbacks 𝒞.id (mor m)
       in record

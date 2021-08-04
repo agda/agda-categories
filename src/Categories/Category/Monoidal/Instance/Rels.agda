@@ -13,7 +13,8 @@ open import Function using (case_of_; flip)
 open import Level using (Lift; lift)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Categories.Category.Cartesian using (Cartesian; module CartesianMonoidal)
+open import Categories.Category.Cartesian using (Cartesian)
+open import Categories.Category.Cartesian.Monoidal using( module CartesianMonoidal)
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Cocartesian using (Cocartesian)
 open import Categories.Category.Instance.Rels using (Rels)
@@ -48,7 +49,7 @@ module _ {o ℓ} where
       }
     }
 
-  module Rels-CartesianMonoidal = CartesianMonoidal _ Rels-Cartesian
+  module Rels-CartesianMonoidal = CartesianMonoidal Rels-Cartesian
   open Rels-CartesianMonoidal renaming (monoidal to Rels-Monoidal) public
 
   -- because Rels is dual to itself, the proof that it is cocartesian resembles the proof that it's cartesian
