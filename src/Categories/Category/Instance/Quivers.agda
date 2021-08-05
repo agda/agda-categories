@@ -17,9 +17,6 @@ open QM using (Morphism; _≃_; ≃-Equivalence; ≃-resp-∘)
 
 open import Categories.Category
 import Categories.Category.Construction.PathCategory as PC
-open import Categories.Category.Instance.StrictCats
-open import Categories.Functor using (Functor)
-open import Categories.Functor.Equivalence using (_≡F_)
 open import Categories.NaturalTransformation hiding (id)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   hiding (refl; sym; trans; isEquivalence; _≃_)
@@ -44,44 +41,7 @@ Quivers o ℓ e = record
   ; equiv     = ≃-Equivalence
   ; ∘-resp-≈  = QM.≃-resp-∘
   }
-  where
-    open Quiver
-    open Morphism
-    open _≃_
-
--- We can now build a forgetful (underlying) functor from categories to quivers
-Underlying₀ : Category o ℓ e → Quiver o ℓ e
-Underlying₀ C = record { Category C }
-
-Underlying₁ : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} → Functor C D → Morphism (Underlying₀ C) (Underlying₀ D)
-Underlying₁ F = record { Functor F }
-
-Underlying : Functor (Cats o ℓ e) (Quivers o ℓ e)
-Underlying = record
-  { F₀ = Underlying₀
-  ; F₁ = Underlying₁
-  ; identity = λ {A} → record { F₀≡ = refl ; F₁≡ = Category.Equiv.refl A }
-  ; homomorphism = λ where {Z = Z} → record { F₀≡ = refl ; F₁≡ = Category.Equiv.refl Z }
-  ; F-resp-≈ = λ {A} {B} {F} {G} F≈G → record
-    { F₀≡ = λ {X} → eq₀ F≈G X
-    ; F₁≡ = λ {x} {y} {f} →
-      let open Category B
-          open HId B
-          UB = Underlying₀ B
-          open Transport (Quiver._⇒_ UB)
-          open Functor
-          open Quiver.EdgeReasoning (Underlying₀ B)
-      in begin
-        F₁ F f ▸ eq₀ F≈G y         ≈⟨ hid-subst-cod (F₁ F f) (eq₀ F≈G y) ⟩
-        hid (eq₀ F≈G y) ∘ F₁ F f   ≈⟨ eq₁ F≈G f ⟩
-        F₁ G f ∘ hid (eq₀ F≈G x)   ≈˘⟨ hid-subst-dom (eq₀ F≈G x) (F₁ G f) ⟩
-        eq₀ F≈G x ◂ F₁ G f         ∎
-    }
-  }
-  where
-  open NaturalTransformation
-  open NaturalIsomorphism
-  open _≡F_
+  where open Quiver
 
 -- define these ahead of time
 module _ {G₁ G₂ : Quiver o ℓ e} (G⇒ : Morphism G₁ G₂) where
