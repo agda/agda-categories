@@ -34,6 +34,7 @@ import Categories.Category.Construction.PathCategory as PC
 open import Categories.Category.Instance.Quivers
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Construction.FreeCategory
+open import Categories.Functor.Instance.UnderlyingQuiver using (Underlying₀; Underlying₁; Underlying)
 open import Categories.NaturalTransformation hiding (id)
 import Categories.Morphism.Reasoning as MR
 

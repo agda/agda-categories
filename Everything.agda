@@ -284,6 +284,7 @@ import Categories.Functor.Instance.Discrete
 import Categories.Functor.Instance.SetoidDiscrete
 import Categories.Functor.Instance.StrictCore
 import Categories.Functor.Instance.Twisted
+import Categories.Functor.Instance.UnderlyingQuiver
 import Categories.Functor.Limits
 import Categories.Functor.Monoidal
 import Categories.Functor.Monoidal.Braided
