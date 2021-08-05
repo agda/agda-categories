@@ -14,8 +14,8 @@ import Categories.Adjoint.Instance.0-Truncation
 import Categories.Adjoint.Instance.01-Truncation
 import Categories.Adjoint.Instance.Core
 import Categories.Adjoint.Instance.Discrete
+import Categories.Adjoint.Instance.PathsOf
 import Categories.Adjoint.Instance.PosetCore
-import Categories.Adjoint.Instance.QuiverCategory
 import Categories.Adjoint.Instance.StrictCore
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Monadic

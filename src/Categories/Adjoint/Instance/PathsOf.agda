@@ -1,8 +1,8 @@
 {-# OPTIONS --without-K --safe #-}
 
-module Categories.Adjoint.Instance.QuiverCategory where
+module Categories.Adjoint.Instance.PathsOf where
 
--- "Free Category on a Quiver" is adjoint to Underlying Quiver Function, i.e.
+-- PathsOf is adjoint to Underlying Quiver, i.e.
 -- The "Underlying Graph" (of a Category) <-> "Path Category on a Quiver" Adjunction.
 
 -- Lots of surprises here, of various level of surprisingness
@@ -14,28 +14,30 @@ module Categories.Adjoint.Instance.QuiverCategory where
 --   that, for example, the 2-point Groupoid is contractible
 --   (thus equivalent to the 1-point Category), and yet those two "Graphs" shouldn't be considered to
 --   be the same!  This is because there isn't an equivalently natural notion of equivalence of
---   Graph (Quiver) Homomorphism. So things end up somewhat unsatisfactory.
+--   Graph (Quiver) Homomorphism.
 --   Interestingly, this only shows up when trying to prove that the Underlying Functor respects
 --   _≈_, which is not traditionally a requirement of a Functor! This requirement is usually left
 --   implicit.  (See Categories.Function.Construction.FreeCategory for the details)
+--
+-- In other words, the adjunction doesn't involve Cats, but StrictCats as one of the endpoints.
 
 open import Level
 open import Function using (_$_; flip) renaming (id to id→; _∘_ to _⊚_)
-open import Relation.Binary.PropositionalEquality as ≡
+import Relation.Binary.PropositionalEquality as ≡
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive
 open import Data.Quiver using (Quiver)
 open import Data.Quiver.Paths
 import Data.Quiver.Morphism as QM
 open QM using (Morphism; _≃_)
 
-open import Categories.Adjoint
-open import Categories.Category
+open import Categories.Adjoint using (Adjoint)
+open import Categories.Category.Core using (Category)
 import Categories.Category.Construction.PathCategory as PC
 open import Categories.Category.Instance.Quivers
 open import Categories.Functor using (Functor)
-open import Categories.Functor.Construction.PathsOf
+open import Categories.Functor.Construction.PathsOf using (PathsOf)
 open import Categories.Functor.Instance.UnderlyingQuiver using (Underlying₀; Underlying₁; Underlying)
-open import Categories.NaturalTransformation hiding (id)
+open import Categories.NaturalTransformation using (ntHelper)
 import Categories.Morphism.Reasoning as MR
 
 module _ (o ℓ e : Level) where
@@ -62,6 +64,15 @@ module _ (o ℓ e : Level) where
     unwind-resp-≈ ε = Equiv.refl
     unwind-resp-≈ (x ◅ eq) = ∘-resp-≈ (unwind-resp-≈ eq) x
 
+    unwindF : Functor (PC.PathCategory (Underlying₀ X)) X
+    unwindF = record
+        { F₀ = id→
+        ; F₁ = unwind
+        ; identity = Category.Equiv.refl X
+        ; homomorphism = λ { {f = f} {g} → unwind-◅◅ {f = f} {g} }
+        ; F-resp-≈ = unwind-resp-≈
+        }
+
   module _ (X : Quiver o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e)) where
     open Paths X
 
@@ -86,23 +97,17 @@ module _ (o ℓ e : Level) where
       ; commute = λ {X} {Y} f → let open Paths Y in record { F₀≡ = ≡.refl ; F₁≡ = Quiver.Equiv.refl Y ◅ ε }
       }
     ; counit = ntHelper record
-      { η = λ X → record
-        { F₀ = id→
-        ; F₁ = unwind X
-        ; identity = Category.Equiv.refl X
-        ; homomorphism = λ { {f = f} {g} → unwind-◅◅ X {f = f} {g} }
-        ; F-resp-≈ = unwind-resp-≈ X
-        }
+      { η = unwindF
       ; commute = λ {_} {Y} F → record
-        { eq₀ = λ _ → refl
+        { eq₀ = λ _ → ≡.refl
         ; eq₁ = λ f → toSquare Y (unwind-natural F f)
         }
       }
     ; zig = λ {G} → record
-      { eq₀ = λ _ → refl
+      { eq₀ = λ _ → ≡.refl
       ; eq₁ = λ f → toSquare (PC.PathCategory G) (zig′ G f)
       }
-    ; zag = λ {B} → record { F₀≡ = refl ; F₁≡ = Category.identityˡ B  }
+    ; zag = λ {B} → record { F₀≡ = ≡.refl ; F₁≡ = Category.identityˡ B  }
     }
     where
-    open MR
+    open MR using (toSquare)
