@@ -66,7 +66,7 @@ module _ (o ℓ e : Level) where
     open Paths X
 
     zig′ : {A B : Quiver.Obj X} → (f : Star (Quiver._⇒_ X) A B) →
-      unwind (PC.PathCategory X) (qmap (unit X) f) ≈* f
+      unwind (PC.PathCategory X) (QM.qmap (unit X) f) ≈* f
     zig′ ε        = ε
     zig′ (fs ◅ f) = Quiver.Equiv.refl X ◅ zig′ f
 
@@ -75,7 +75,7 @@ module _ (o ℓ e : Level) where
     module Y = Category Y
     open Category.HomReasoning Y
     open Functor F
-    unwind-natural : {A B : X.Obj} (f : Star X._⇒_ A B) → unwind Y (qmap (Underlying₁ F) f) Y.≈ F₁ (unwind X f)
+    unwind-natural : {A B : X.Obj} (f : Star X._⇒_ A B) → unwind Y (QM.qmap (Underlying₁ F) f) Y.≈ F₁ (unwind X f)
     unwind-natural ε = Y.Equiv.sym identity
     unwind-natural (x ◅ f) = Y.Equiv.sym (homomorphism ○ Category.∘-resp-≈ˡ Y (Y.Equiv.sym (unwind-natural f)))
 

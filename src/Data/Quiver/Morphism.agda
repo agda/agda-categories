@@ -3,17 +3,23 @@
 module Data.Quiver.Morphism where
 
 -- Morphism of Quivers, as well as some useful kit (identity, composition, equivalence)
+-- also define map on paths, and that it behaves well wrt morphisms and morphism equivalence.
+
+-- See the further comments around the definition of equivalence, as that is quite the
+-- mine field.
 
 open import Level
 open import Function using () renaming (id to idFun; _∘_ to _⊚_)
 open import Data.Quiver
+open import Data.Quiver.Paths using (module Paths)
 open import Relation.Binary using (IsEquivalence; Reflexive; Symmetric; Transitive)
+open import Relation.Binary.Construct.Closure.ReflexiveTransitive using (Star; gmap; ε; _◅_)
 open import Relation.Binary.PropositionalEquality
   using (_≡_; refl; sym; trans; cong; naturality)
 open import Relation.Binary.PropositionalEquality.Properties
   using (trans-symʳ; trans-symˡ)
 open import Relation.Binary.PropositionalEquality.Subst.Properties
-  using (module Shorthands; module Transport; module TransportOverQ; module TransportMor)
+  using (module Shorthands; module Transport; module TransportOverQ; module TransportMor; module TransportStar)
 
 infix 4 _≃_
 
@@ -44,8 +50,16 @@ m₁ ∘ m₂ = record
   }
   where open Morphism
 
--- Define Morphism equivalence here as well.  Note how it is mixed, with
+-- Morphism equivalence.  Note how it is mixed, with
 -- propositional equivalence mixed with edge-setoid equivalence.
+
+-- Ideally, we'd like something weaker, aking to natural isomorphism  here.
+-- However, there is no notion of composition (nor identity) for edges, so that
+-- doesn't work (no commuting squares in quivers, so the naturality condition cannot
+-- be written down).  So one choice that works is to be strict. Note that introducing
+-- node equality might work too, but that would be even further from the notion of
+-- category used here, so that we could not reasonably end up with an adjoint.
+
 record _≃_ {G : Quiver o ℓ e} {G′ : Quiver o′ ℓ′ e′}
     (M M′ : Morphism G G′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   open Quiver G using (_⇒_)
@@ -62,12 +76,13 @@ record _≃_ {G : Quiver o ℓ e} {G′ : Quiver o′ ℓ′ e′}
     F₀≡ : ∀ {X} → M.F₀ X ≡ M′.F₀ X
     F₁≡ : ∀ {A B} {f : A ⇒ B} → M.F₁ f ▸ F₀≡ ≈ F₀≡ ◂ M′.F₁ f
 
--- make the items from Quiver, Morphism and equivalences visible
-open Quiver
-open Morphism
-open _≃_
 
+-- Prove that ≃ is an equivalence relation
 module _ {G : Quiver o ℓ e} {G′ : Quiver o′ ℓ′ e′} where
+  open Quiver
+  open Morphism
+  open _≃_
+
   private
     ≃-refl : Reflexive {A = Morphism G G′} _≃_
     ≃-refl = record { F₀≡ = refl ; F₁≡ = Equiv.refl G′}
@@ -113,6 +128,7 @@ module _ {G : Quiver o ℓ e} {G′ : Quiver o′ ℓ′ e′} where
       ; trans = ≃-trans {- λ {G i j k} eq eq′ →  -}
       }
 
+-- Furthermore, it respects morphism composition
 ≃-resp-∘ : {A B C : Quiver o ℓ e} {f g : Morphism B C} {h i : Morphism A B} →
   f ≃ g → h ≃ i → (f ∘ h) ≃ (g ∘ i)
 ≃-resp-∘ {B = G} {H} {f} {g} {h} {i} eq eq′ = record
@@ -135,3 +151,45 @@ module _ {G : Quiver o ℓ e} {G′ : Quiver o′ ℓ′ e′} where
       trans e₁ (cong (F₀ g) e₂) ◂ F₁ g (F₁ i j)   ≡˘⟨ cong (_◂ F₁ g (F₁ i j)) (naturality (λ _ → e₁)) ⟩
       trans (cong (F₀ f) e₂) e₁ ◂ F₁ g (F₁ i j)   ∎
   }
+  where
+    open Quiver using (_⇒_; _≈_; module EdgeReasoning)
+    open Morphism
+    open _≃_
+
+-- We can induce a map from paths in on quiver to the in the target
+module _ {G₁ G₂ : Quiver o ℓ e} (G⇒ : Morphism G₁ G₂) where
+  open Quiver G₁ renaming (_⇒_ to _⇒₁_; Obj to Obj₁)
+  open Quiver G₂ renaming (_⇒_ to _⇒₂_; Obj to Obj₂; module Equiv to Equiv₂)
+  open Morphism G⇒ using (F₀; F₁; F-resp-≈)
+  open Paths renaming (_≈*_ to [_]_≈*_)
+
+  qmap : {A B : Obj₁} → Star _⇒₁_ A B → Star _⇒₂_ (F₀ A) (F₀ B)
+  qmap = gmap F₀ F₁
+
+  -- this is needed, because this uses F-resp-≈ and not ≡
+  -- unlike gmap-cong
+  map-resp : {A B : Obj₁} (f : Star _⇒₁_ A B) {g : Star _⇒₁_ A B} →
+      [ G₁ ] f ≈* g → [ G₂ ] qmap f ≈* qmap g
+  map-resp ε ε = ε
+  map-resp (x ◅ f) (f≈* ◅ eq) = F-resp-≈ f≈* ◅ map-resp f eq
+
+module _ {G H : Quiver o ℓ e} {f g : Morphism G H}
+         (f≈g : f ≃ g) where
+  open Quiver G
+  open Paths H using (_≈*_; _◅_)
+  open Morphism
+  open _≃_ f≈g
+  open Transport (Quiver._⇒_ H)
+  open TransportStar (Quiver._⇒_ H)
+
+  map-F₁≡ : {A B : Obj} (hs : Star _⇒_ A B) →
+            qmap f hs ▸* F₀≡ ≈* F₀≡ ◂* qmap g hs
+  map-F₁≡ ε        = Paths.≡⇒≈* H (◂*-▸*-ε F₀≡)
+  map-F₁≡ (hs ◅ h) = begin
+    (F₁ f hs ◅ qmap f h) ▸* F₀≡   ≡⟨ ◅-▸* (F₁ f hs) _ F₀≡ ⟩
+    F₁ f hs ◅ (qmap f h ▸* F₀≡)   ≈⟨ Quiver.Equiv.refl H ◅ map-F₁≡ h ⟩
+    F₁ f hs ◅ (F₀≡ ◂* qmap g h)   ≡⟨ ◅-◂*-▸ (F₁ f hs) F₀≡ _ ⟩
+    (F₁ f hs ▸ F₀≡) ◅ qmap g h    ≈⟨ F₁≡ ◅ (Paths.refl H) ⟩
+    (F₀≡ ◂ F₁ g hs) ◅ qmap g h    ≡˘⟨ ◂*-◅ F₀≡ (F₁ g hs) _ ⟩
+    F₀≡ ◂* (F₁ g hs ◅ qmap g h)   ∎
+    where open Paths.PathEqualityReasoning H

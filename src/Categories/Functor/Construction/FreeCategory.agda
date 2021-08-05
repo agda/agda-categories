@@ -14,9 +14,8 @@ open import Relation.Binary.PropositionalEquality.Subst.Properties using (module
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive.Properties
 open import Data.Quiver
+open import Data.Quiver.Morphism
 open import Data.Quiver.Paths as Paths
-import Data.Quiver.Morphism as QM
-open QM using (Morphism; _≃_)
 
 open import Categories.Category
 import Categories.Category.Construction.PathCategory as PC
