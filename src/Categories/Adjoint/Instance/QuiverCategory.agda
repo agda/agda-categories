@@ -33,7 +33,7 @@ open import Categories.Category
 import Categories.Category.Construction.PathCategory as PC
 open import Categories.Category.Instance.Quivers
 open import Categories.Functor using (Functor)
-open import Categories.Functor.Construction.FreeCategory
+open import Categories.Functor.Construction.PathsOf
 open import Categories.Functor.Instance.UnderlyingQuiver using (Underlying₀; Underlying₁; Underlying)
 open import Categories.NaturalTransformation hiding (id)
 import Categories.Morphism.Reasoning as MR
@@ -79,7 +79,7 @@ module _ (o ℓ e : Level) where
     unwind-natural ε = Y.Equiv.sym identity
     unwind-natural (x ◅ f) = Y.Equiv.sym (homomorphism ○ Category.∘-resp-≈ˡ Y (Y.Equiv.sym (unwind-natural f)))
 
-  Free⊣Underlying : Adjoint (FreeCategory {o} {o ⊔ ℓ} {o ⊔ ℓ ⊔ e}) Underlying
+  Free⊣Underlying : Adjoint (PathsOf {o} {o ⊔ ℓ} {o ⊔ ℓ ⊔ e}) Underlying
   Free⊣Underlying = record
     { unit = ntHelper record
       { η = unit
