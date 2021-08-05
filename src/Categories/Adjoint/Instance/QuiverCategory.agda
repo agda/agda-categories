@@ -2,13 +2,28 @@
 
 module Categories.Adjoint.Instance.QuiverCategory where
 
--- "Free Category on a Quiver" is adjoint to Underlying Quiver
+-- "Free Category on a Quiver" is adjoint to Underlying Quiver Function, i.e.
+-- The "Underlying Graph" (of a Category) <-> "Path Category on a Quiver" Adjunction.
+
+-- Lots of surprises here, of various level of surprisingness
+-- 1. The PathCategory rises universe levels of arrows (and equivalences); the Underlying Quiver does not
+--   (due to the Transitive Closure "Star" construction)
+-- 2. As a consequence of (1), the eventual Adjunction will be for all Levels being the same
+-- 3. To build a Functor from Categories to Quivers, then the object/hom levels are straightforward,
+--   but "Categories" has NaturalIsomorphism as the notion of equivalence of Functors. This means
+--   that, for example, the 2-point Groupoid is contractible
+--   (thus equivalent to the 1-point Category), and yet those two "Graphs" shouldn't be considered to
+--   be the same!  This is because there isn't an equivalently natural notion of equivalence of
+--   Graph (Quiver) Homomorphism. So things end up somewhat unsatisfactory.
+--   Interestingly, this only shows up when trying to prove that the Underlying Functor respects
+--   _≈_, which is not traditionally a requirement of a Functor! This requirement is usually left
+--   implicit.  (See Categories.Function.Construction.FreeCategory for the details)
 
 open import Level
 open import Function using (_$_; flip) renaming (id to id→; _∘_ to _⊚_)
 open import Relation.Binary.PropositionalEquality as ≡
 open import Relation.Binary.Construct.Closure.ReflexiveTransitive
-open import Data.Quiver
+open import Data.Quiver using (Quiver)
 open import Data.Quiver.Paths
 import Data.Quiver.Morphism as QM
 open QM using (Morphism; _≃_)
@@ -16,7 +31,7 @@ open QM using (Morphism; _≃_)
 open import Categories.Adjoint
 open import Categories.Category
 import Categories.Category.Construction.PathCategory as PC
-open import Categories.Category.Construction.Quivers
+open import Categories.Category.Instance.Quivers
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Construction.FreeCategory
 open import Categories.NaturalTransformation hiding (id)

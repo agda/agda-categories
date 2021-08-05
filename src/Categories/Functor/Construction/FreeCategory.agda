@@ -4,6 +4,9 @@ module Categories.Functor.Construction.FreeCategory where
 
 -- "Free Category on a Quiver" Construction.
 
+-- Note the use of Categories.Morphism.HeterogeneousIdentity as well as
+-- Relation.Binary.PropositionalEquality.Subst.Properties which are needed
+-- for F-resp-≈.
 open import Level
 open import Function using (_$_)
 open import Relation.Binary.PropositionalEquality using (refl; sym)

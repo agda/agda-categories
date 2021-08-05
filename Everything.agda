@@ -103,7 +103,6 @@ import Categories.Category.Construction.Properties.Presheaves.CartesianClosed
 import Categories.Category.Construction.Properties.Presheaves.Complete
 import Categories.Category.Construction.Properties.Presheaves.FromCartesianCCC
 import Categories.Category.Construction.Pullbacks
-import Categories.Category.Construction.Quivers
 import Categories.Category.Construction.Spans
 import Categories.Category.Construction.Thin
 import Categories.Category.Construction.TwistedArrow
@@ -151,6 +150,7 @@ import Categories.Category.Instance.Properties.Setoids.Cocomplete
 import Categories.Category.Instance.Properties.Setoids.Complete
 import Categories.Category.Instance.Properties.Setoids.LCCC
 import Categories.Category.Instance.Properties.Setoids.Limits.Canonical
+import Categories.Category.Instance.Quivers
 import Categories.Category.Instance.Rels
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets

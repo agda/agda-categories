@@ -3,7 +3,7 @@
 module Data.Quiver where
 
 -- A Quiver, also known as a multidigraph, is the "underlying graph" of
--- a category.
+-- a category. Note how a Quiver has a *setoid* of edges.
 
 open import Level
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
