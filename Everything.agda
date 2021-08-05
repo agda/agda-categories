@@ -260,11 +260,11 @@ import Categories.Functor.Cartesian.Properties
 import Categories.Functor.Coalgebra
 import Categories.Functor.Construction.Constant
 import Categories.Functor.Construction.Diagonal
-import Categories.Functor.Construction.FreeCategory
 import Categories.Functor.Construction.FromDiscrete
 import Categories.Functor.Construction.LiftSetoids
 import Categories.Functor.Construction.Limit
 import Categories.Functor.Construction.ObjectRestriction
+import Categories.Functor.Construction.PathsOf
 import Categories.Functor.Construction.SubCategory
 import Categories.Functor.Construction.SubCategory.Properties
 import Categories.Functor.Construction.Zero

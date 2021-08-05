@@ -20,7 +20,7 @@ open import Data.Quiver.Paths using (module Paths)
 open import Categories.Category
 import Categories.Category.Construction.PathCategory as PC
 open import Categories.Category.Instance.Quivers
-open import Categories.Category.Instance.StrictCats
+open import Categories.Category.Instance.StrictCats renaming (Cats to StrictCats)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Equivalence using (_≡F_)
 import Categories.Morphism.HeterogeneousIdentity as HId
@@ -57,7 +57,7 @@ private
   where
     open _≃_ f≈g
 
-PathsOf : Functor (Quivers o ℓ e) (Cats o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e))
+PathsOf : Functor (Quivers o ℓ e) (StrictCats o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e))
 PathsOf = record
   { F₀ = PC.PathCategory
   ; F₁ = ⇒toPathF
