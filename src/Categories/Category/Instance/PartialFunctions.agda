@@ -5,9 +5,8 @@ module Categories.Category.Instance.PartialFunctions where
 -- Note that unlike for basic categories, this is named after the morphisms instead of the objects.
 
 open import Data.Maybe using (Maybe; nothing; just; _>>=_; maybe)
-open import Data.Maybe.Properties
 open import Level
-open import Relation.Binary
+open import Relation.Binary using (Setoid)
 open import Relation.Binary.PropositionalEquality as ≡
   using (_≗_; refl)
 
