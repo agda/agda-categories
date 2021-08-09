@@ -87,3 +87,11 @@ module _ where
     to iso₂ ∘ h ∘ from iso₁ ≈⟨ refl⟩∘⟨ (eq ⟩∘⟨refl ) ⟩
     to iso₂ ∘ i ∘ from iso₁ ≈˘⟨ switch-fromtoˡ iso₂ sq₂ ⟩
     g ∎
+
+-- This might be trivial, but it also shouldn't be proved more than once!
+Mono-id : Mono {A = A} id
+Mono-id g₁ g₂ eq = begin
+  g₁      ≈˘⟨ identityˡ ⟩
+  id ∘ g₁ ≈⟨ eq ⟩
+  id ∘ g₂ ≈⟨ identityˡ ⟩
+  g₂ ∎
