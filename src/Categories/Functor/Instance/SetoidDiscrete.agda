@@ -4,13 +4,13 @@ module Categories.Functor.Instance.SetoidDiscrete where
 -- Discrete Functor
 --   from Setoids to Cats.
 
-open import Categories.Category
-open import Categories.Functor
+open import Categories.Category using (Category; _[_,_])
+open import Categories.Functor using (Functor; id; _∘F_)
 open import Categories.Category.Instance.Setoids
 open import Categories.Category.Instance.Cats
 open import Categories.NaturalTransformation.NaturalIsomorphism
   hiding (refl)
-import Categories.Category.SetoidDiscrete as D
+import Categories.Category.Construction.SetoidDiscrete as D
 
 open import Relation.Binary
 open import Function using () renaming (id to idf; _∘_ to _●_)

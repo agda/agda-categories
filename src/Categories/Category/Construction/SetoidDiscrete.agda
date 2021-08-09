@@ -1,12 +1,12 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Category.SetoidDiscrete where
+module Categories.Category.Construction.SetoidDiscrete where
 
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 
-open import Level
+open import Level using (Lift)
 open import Relation.Binary using (Setoid)
-open import Function
-open import Data.Unit
+open import Function using (flip)
+open import Data.Unit using (⊤)
 
 {-
  This is a better version of Discrete, which is more in line with

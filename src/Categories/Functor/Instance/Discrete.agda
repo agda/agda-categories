@@ -6,8 +6,8 @@ module Categories.Functor.Instance.Discrete where
 --   because the equality in Cats is properly NaturalIsomorphism instead of something stricter,
 --   no need for that pesky Heterogeneous anything.
 
-open import Categories.Category
-open import Categories.Functor
+open import Categories.Category using (Category; _[_,_])
+open import Categories.Functor using (Functor; id; _∘F_)
 open import Categories.Category.Instance.Sets
 open import Categories.Category.Instance.Cats
 open import Categories.NaturalTransformation using (ntHelper)
