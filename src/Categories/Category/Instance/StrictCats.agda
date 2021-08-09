@@ -15,8 +15,8 @@ private
   variable
     o ℓ e : Level
 
-Cats : ∀ o ℓ e → Category (suc (o ⊔ ℓ ⊔  e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
-Cats o ℓ e = record
+StrictCats : ∀ o ℓ e → Category (suc (o ⊔ ℓ ⊔  e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
+StrictCats o ℓ e = record
   { Obj       = Category o ℓ e
   ; _⇒_       = Functor
   ; _≈_       = _≡F_

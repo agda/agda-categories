@@ -34,7 +34,7 @@ open import Categories.Utils.EqReasoning
 -- (Strict) Cats is a (strict) Monoidal Category with Product as Bifunctor
 module Product {o ℓ e : Level} where
   private
-    C = Cats o ℓ e
+    C = StrictCats o ℓ e
     open _≡F_
 
   Cats-has-all : BinaryProducts C

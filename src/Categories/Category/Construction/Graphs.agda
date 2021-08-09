@@ -327,7 +327,7 @@ Underlying₁ : {C : Category o ℓ e} {D : Category o′ ℓ′ e′} → Funct
 Underlying₁ F = record { M₀ = F.F₀ ; M₁ = F.F₁ ; M-resp-≈ = F.F-resp-≈ }
   where module F = Functor F
 
-Underlying : Functor (Cats o ℓ e) (Graphs o ℓ e)
+Underlying : Functor (StrictCats o ℓ e) (Graphs o ℓ e)
 Underlying = record
   { F₀ = Underlying₀
   ; F₁ = Underlying₁
@@ -448,7 +448,7 @@ module _ (C : Category o ℓ e) where
         g        ≈˘⟨ identityʳ ⟩
         g ∘ id   ∎
 
-CatF : Functor (Graphs o ℓ e) (Cats o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e))
+CatF : Functor (Graphs o ℓ e) (StrictCats o (o ⊔ ℓ) (o ⊔ ℓ ⊔ e))
 CatF = record
   { F₀ = Free
   ; F₁ = λ {G₁} {G₂} G⇒ → record
