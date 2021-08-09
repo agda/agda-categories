@@ -104,6 +104,7 @@ import Categories.Category.Construction.Properties.Presheaves.FromCartesianCCC
 import Categories.Category.Construction.Pullbacks
 import Categories.Category.Construction.SetoidDiscrete
 import Categories.Category.Construction.Spans
+import Categories.Category.Construction.StrictDiscrete
 import Categories.Category.Construction.Thin
 import Categories.Category.Construction.TwistedArrow
 import Categories.Category.Construction.Wedges
@@ -112,7 +113,6 @@ import Categories.Category.Dagger
 import Categories.Category.Dagger.Construction.Discrete
 import Categories.Category.Dagger.Instance.Rels
 import Categories.Category.Diagram.Span
-import Categories.Category.Discrete
 import Categories.Category.Duality
 import Categories.Category.Equivalence
 import Categories.Category.Equivalence.Preserves

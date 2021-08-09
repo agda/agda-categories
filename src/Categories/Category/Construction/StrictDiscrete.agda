@@ -1,6 +1,9 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Category.Discrete where
+module Categories.Category.Construction.StrictDiscrete where
 
+-- This is not 'the' Discrete Category construction, but one of them.
+-- In this case, what is built is a Category, but it's actually Strict (thus
+-- the name).
 open import Level
 open import Data.Unit
 open import Function
