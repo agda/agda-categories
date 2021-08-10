@@ -13,9 +13,9 @@ import Categories.Adjoint.Equivalents
 import Categories.Adjoint.Instance.0-Truncation
 import Categories.Adjoint.Instance.01-Truncation
 import Categories.Adjoint.Instance.Core
-import Categories.Adjoint.Instance.Discrete
 import Categories.Adjoint.Instance.PosetCore
 import Categories.Adjoint.Instance.StrictCore
+import Categories.Adjoint.Instance.StrictDiscrete
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Monadic
 import Categories.Adjoint.Monadic.Crude
@@ -113,6 +113,7 @@ import Categories.Category.Dagger
 import Categories.Category.Dagger.Construction.Discrete
 import Categories.Category.Dagger.Instance.Rels
 import Categories.Category.Diagram.Span
+import Categories.Category.Discrete
 import Categories.Category.Duality
 import Categories.Category.Equivalence
 import Categories.Category.Equivalence.Preserves

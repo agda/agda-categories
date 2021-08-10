@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-module Categories.Adjoint.Instance.Discrete where
+module Categories.Adjoint.Instance.StrictDiscrete where
 
 -- The Discrete/Forgetful/Codiscrete adjoint triple between Sets and
 -- StrictCats.

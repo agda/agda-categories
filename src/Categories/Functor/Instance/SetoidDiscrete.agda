@@ -5,9 +5,10 @@ module Categories.Functor.Instance.SetoidDiscrete where
 --   from Setoids to Cats.
 
 open import Categories.Category using (Category; _[_,_])
-open import Categories.Functor using (Functor; id; _∘F_)
+open import Categories.Category.Discrete
 open import Categories.Category.Instance.Setoids
 open import Categories.Category.Instance.Cats
+open import Categories.Functor using (Functor; id; _∘F_)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   hiding (refl)
 import Categories.Category.Construction.SetoidDiscrete as D
@@ -18,14 +19,15 @@ open import Function.Equality using (_⟨$⟩_; _⟶_; cong; _∘_) renaming (id
 
 Discrete : ∀ {o ℓ e} → Functor (Setoids o ℓ) (Cats o ℓ e)
 Discrete {o} {ℓ} {e} = record
-   { F₀ = D.Discrete
+   { F₀ = category ● D.Discrete
    ; F₁ = DiscreteFunctor
    ; identity = λ {A} → DiscreteId {A}
    ; homomorphism = λ {X} {Y} {Z} {g} {h} → PointwiseHom {X} {Y} {Z} {g} {h}
    ; F-resp-≈ = λ {A} {B} {f} {g} → ExtensionalityNI {A} {B} {f} {g}
    }
    where
-     DiscreteFunctor : {A B : Setoid o ℓ} → (A ⟶ B) → Cats o ℓ e [ D.Discrete A , D.Discrete B ]
+     open DiscreteCategory
+     DiscreteFunctor : {A B : Setoid o ℓ} → (A ⟶ B) → Cats o ℓ e [ category (D.Discrete A) , category (D.Discrete B) ]
      DiscreteFunctor f = record
        { F₀ = f ⟨$⟩_
        ; F₁ = cong f
