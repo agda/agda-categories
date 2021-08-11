@@ -16,13 +16,13 @@ private
   variable
     o ℓ e : Level
 
-  to : Category o ℓ e → Σ (Set o) (λ Obj → Unb-Cat Obj ℓ e)
-  to C = C.Obj , record { C }
-    where module C = Category C
+unpack : Category o ℓ e → Σ (Set o) (λ Obj → Unb-Cat Obj ℓ e)
+unpack C = C.Obj , record { C }
+  where module C = Category C
 
-  from :  Σ (Set o) (λ Obj → Unb-Cat Obj ℓ e) → Category o ℓ e
-  from (o , uc)  = record { Obj = o; UC }
-    where module UC = Unb-Cat uc
+pack :  Σ (Set o) (λ Obj → Unb-Cat Obj ℓ e) → Category o ℓ e
+pack (o , uc)  = record { Obj = o; UC }
+  where module UC = Unb-Cat uc
 
 equiv : (Category o ℓ e) ↔ (Σ (Set o) (λ Obj → Unb-Cat Obj ℓ e))
-equiv = mk↔′ to from (λ _ → refl) λ _ → refl
+equiv = mk↔′ unpack pack (λ _ → refl) λ _ → refl
