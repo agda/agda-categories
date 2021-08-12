@@ -10,7 +10,7 @@ open import Function using () renaming (id to id→)
 open import Level
 
 open import Categories.Category.Unbundled using (Category)
-open import Categories.Category.Unbundled.Properties using (pack)
+open import Categories.Category.Unbundled.Properties using (pack′)
 open import Categories.Functor.Core using (Functor)
 
 private
@@ -31,6 +31,6 @@ record IdentityOnObjects {Obj : Set o} (C : Category Obj ℓ e) (D : Category Ob
     F-resp-≈     : ∀ {A B} {f g : A C.⇒ B} → f C.≈ g → F₁ f D.≈ F₁ g
 
 IOO⇒Functor : {Ob : Set o} {C : Category Ob ℓ e} {D : Category Ob ℓ′ e′} →
-  (F : IdentityOnObjects C D) → Functor (pack (Ob , C)) (pack (Ob , D))
+  (F : IdentityOnObjects C D) → Functor (pack′ C) (pack′ D)
 IOO⇒Functor F = record { F₀ = id→; IOO }
   where module IOO = IdentityOnObjects F

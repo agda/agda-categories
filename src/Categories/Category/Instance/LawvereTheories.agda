@@ -5,14 +5,15 @@ module Categories.Category.Instance.LawvereTheories where
 
 open import Level
 
-open import Categories.Category
-open import Categories.Functor.Cartesian.Properties
+open import Categories.Category.Core using (Category)
+open import Categories.Functor.Cartesian using (CartesianF)
 open import Categories.NaturalTransformation.NaturalIsomorphism
-open import Categories.Theory.Lawvere
+ using (_≃_; associator; sym-associator; unitorˡ; unitorʳ; unitor²; refl; sym; trans; _ⓘₕ_)
+open import Categories.Theory.Lawvere using (LawvereTheory; LT-Hom; LT-id; LT-∘; T-Algebra)
 
-LawvereTheories : (o ℓ e : Level) → Category (suc (o ⊔ ℓ ⊔ e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
-LawvereTheories o ℓ e = record
-  { Obj = FiniteProduct o ℓ e
+LawvereTheories : (ℓ e : Level) → Category (suc (ℓ ⊔ e)) (ℓ ⊔ e) (ℓ ⊔ e)
+LawvereTheories ℓ e = record
+  { Obj = LawvereTheory ℓ e
   ; _⇒_ = LT-Hom
   ; _≈_ = λ H₁ H₂ → cartF.F H₁ ≃ cartF.F H₂
   ; id = LT-id

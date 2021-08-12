@@ -14,7 +14,11 @@ open import Relation.Binary.PropositionalEquality
   using (_≗_; _≡_; refl; sym; trans; cong; module ≡-Reasoning; inspect; [_])
 open import Function using (id; _∘′_)
 
+open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
+open import Categories.Category.Cocartesian using (Cocartesian)
+open import Categories.Category.Cocartesian.Bundle using (CocartesianCategory)
 open import Categories.Category.Core using (Category)
+open import Categories.Category.Duality using (Cocartesian⇒coCartesian)
 open import Categories.Object.Coproduct
 
 Nat : Category 0ℓ 0ℓ 0ℓ
@@ -58,3 +62,21 @@ Coprod m n = record
       [ h ∘′ inject+ n , h ∘′ raise m ]′ (splitAt m w) ≡˘⟨ [,]-∘-distr h (splitAt m w) ⟩
       h ([ inject+ n , raise m ]′ (splitAt m w))       ≡⟨ cong h (join-splitAt m n w) ⟩
       h w                                              ∎
+
+Nat-Cocartesian : Cocartesian Nat
+Nat-Cocartesian = record
+  { initial = record
+    { ⊥ = 0
+    ; ⊥-is-initial = record
+      { ! = λ ()
+      ; !-unique = λ _ ()
+      }
+    }
+  ; coproducts = record { coproduct = λ {m} {n} → Coprod m n }
+  }
+
+Natop-Cartesian : CartesianCategory 0ℓ 0ℓ 0ℓ
+Natop-Cartesian = record
+  { U = Category.op Nat
+  ; cartesian = Cocartesian⇒coCartesian Nat Nat-Cocartesian
+  }

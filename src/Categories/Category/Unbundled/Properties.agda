@@ -20,8 +20,12 @@ unpack : Category o ℓ e → Σ (Set o) (λ Obj → Unb-Cat Obj ℓ e)
 unpack C = C.Obj , record { C }
   where module C = Category C
 
-pack :  Σ (Set o) (λ Obj → Unb-Cat Obj ℓ e) → Category o ℓ e
+pack : Σ (Set o) (λ Obj → Unb-Cat Obj ℓ e) → Category o ℓ e
 pack (o , uc)  = record { Obj = o; UC }
+  where module UC = Unb-Cat uc
+
+pack′ :  {Obj : Set o} → Unb-Cat Obj ℓ e → Category o ℓ e
+pack′ {Obj = o} uc  = record { Obj = o; UC }
   where module UC = Unb-Cat uc
 
 equiv : (Category o ℓ e) ↔ (Σ (Set o) (λ Obj → Unb-Cat Obj ℓ e))
