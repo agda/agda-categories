@@ -5,14 +5,13 @@ module Categories.Adjoint.Instance.StrictCore where
 -- The adjunction between the forgetful functor from (strict) Cats to
 -- (strict) Groupoids and the (strict) Core functor.
 
-open import Data.Product
 open import Level using (_⊔_)
 import Function
 open import Relation.Binary using (IsEquivalence)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Categories.Adjoint
-open import Categories.Category using (Category)
+open import Categories.Adjoint using (_⊣_)
+open import Categories.Category.Core using (Category)
 open import Categories.Category.Groupoid using (Groupoid)
 import Categories.Category.Construction.Core as C
 open import Categories.Category.Instance.StrictCats
@@ -26,7 +25,7 @@ open import Categories.Morphism.IsoEquiv using (⌞_⌟; _≃_)
 
 -- The forgetful functor from StrictGroupoids to StrictCats
 
-Forgetful : ∀ {o ℓ e} → Functor (Groupoids o ℓ e) (Cats o ℓ e)
+Forgetful : ∀ {o ℓ e} → Functor (StrictGroupoids o ℓ e) (StrictCats o ℓ e)
 Forgetful {o} {ℓ} {e} = record
   { F₀ = Groupoid.category
   ; F₁ = Function.id
@@ -35,7 +34,7 @@ Forgetful {o} {ℓ} {e} = record
   ; F-resp-≈     = Function.id
   }
   where
-    module Groupoids = Category (Groupoids o ℓ e)
+    module Groupoids = Category (StrictGroupoids o ℓ e)
 
 -- Core is right-adjoint to the forgetful functor from Groupoids to
 -- Cats
@@ -93,7 +92,7 @@ CoreAdj = record
       { eq₀ = λ _ → refl
       ; eq₁ = λ _ → MR.id-comm-sym D
       }
-      
+
     counit-sym-commute : ∀ {C D} (F : Functor C D) →
                          F ∘F counit C ≡F counit D ∘F Core.F₁ F
     counit-sym-commute {C} {D} F = record

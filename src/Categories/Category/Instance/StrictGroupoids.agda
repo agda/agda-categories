@@ -19,8 +19,8 @@ private
 
 open Groupoid using (category)
 
-Groupoids : ∀ o ℓ e → Category (suc (o ⊔ ℓ ⊔  e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
-Groupoids o ℓ e = record
+StrictGroupoids : ∀ o ℓ e → Category (suc (o ⊔ ℓ ⊔  e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
+StrictGroupoids o ℓ e = record
   { Obj       = Groupoid o ℓ e
   ; _⇒_       = λ G H → Functor (category G) (category H)
   ; _≈_       = _≡F_

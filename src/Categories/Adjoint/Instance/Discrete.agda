@@ -27,7 +27,7 @@ open import Categories.NaturalTransformation as NT using (NaturalTransformation;
 
 -- The forgetful functor from StrictCats to Sets.
 
-Forgetful : ∀ {o ℓ e} → Functor (Cats o ℓ e) (Sets o)
+Forgetful : ∀ {o ℓ e} → Functor (StrictCats o ℓ e) (Sets o)
 Forgetful {o} {ℓ} {e} = record
   { F₀ = Obj
   ; F₁ = F₀
@@ -42,7 +42,7 @@ Forgetful {o} {ℓ} {e} = record
 
 -- The discrete functor (strict version)
 
-Discrete : ∀ {o} → Functor (Sets o) (Cats o o o)
+Discrete : ∀ {o} → Functor (Sets o) (StrictCats o o o)
 Discrete {o} = record
   { F₀ = D.Discrete
   ; F₁ = λ f → record
@@ -82,7 +82,7 @@ Discrete {o} = record
 
 -- The codiscrete functor (strict version)
 
-Codiscrete : ∀ {o} ℓ e → Functor (Sets o) (Cats o ℓ e)
+Codiscrete : ∀ {o} ℓ e → Functor (Sets o) (StrictCats o ℓ e)
 Codiscrete {o} ℓ e = record
   { F₀ = λ A → record
     { Obj = A
@@ -114,7 +114,7 @@ Codiscrete {o} ℓ e = record
     ; eq₁ = λ _ → lift tt
     }
   }
-  where open Category (Cats o ℓ e)
+  where open Category (StrictCats o ℓ e)
 
 
 -- Discrete is left-adjoint to the forgetful functor from StrictCats to Sets

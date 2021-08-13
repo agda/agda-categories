@@ -140,6 +140,7 @@ import Categories.Category.Instance.KanComplexes
 import Categories.Category.Instance.LawvereTheories
 import Categories.Category.Instance.Monoidals
 import Categories.Category.Instance.One
+import Categories.Category.Instance.PartialFunctions
 import Categories.Category.Instance.PointedSets
 import Categories.Category.Instance.Posets
 import Categories.Category.Instance.Properties.Cats
@@ -196,6 +197,10 @@ import Categories.Category.Monoidal.Utilities
 import Categories.Category.Product
 import Categories.Category.Product.Properties
 import Categories.Category.Regular
+import Categories.Category.Restriction
+import Categories.Category.Restriction.Construction.Trivial
+import Categories.Category.Restriction.Instance.PartialFunctions
+import Categories.Category.Restriction.Properties
 import Categories.Category.RigCategory
 import Categories.Category.SetoidDiscrete
 import Categories.Category.Site
@@ -299,6 +304,7 @@ import Categories.Functor.Presheaf
 import Categories.Functor.Profunctor
 import Categories.Functor.Properties
 import Categories.Functor.Representable
+import Categories.Functor.Restriction
 import Categories.Functor.Slice
 import Categories.GlobularSet
 import Categories.Kan
