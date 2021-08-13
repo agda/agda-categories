@@ -11,6 +11,7 @@ open import Level
 
 open import Categories.Category.Unbundled using (Category)
 open import Categories.Category.Unbundled.Properties using (pack′)
+open import Categories.Category.Unbundled.Utilities using (module Equiv)
 open import Categories.Functor.Core using (Functor)
 
 private
@@ -34,3 +35,7 @@ IOO⇒Functor : {Ob : Set o} {C : Category Ob ℓ e} {D : Category Ob ℓ′ e�
   (F : IdentityOnObjects C D) → Functor (pack′ C) (pack′ D)
 IOO⇒Functor F = record { F₀ = id→; IOO }
   where module IOO = IdentityOnObjects F
+
+id-IOO : {Obj : Set o} {C : Category Obj ℓ e} → IdentityOnObjects C C
+id-IOO {C = C} = record { F₁ = id→ ; identity = refl ; homomorphism = refl ; F-resp-≈ = id→ }
+  where open Equiv C

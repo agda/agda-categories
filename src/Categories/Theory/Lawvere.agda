@@ -9,7 +9,6 @@
 module Categories.Theory.Lawvere where
 
 open import Data.Nat using (ℕ)
-open import Data.Product using (proj₂)
 open import Level
 
 open import Categories.Category.Cartesian using (Cartesian)
@@ -19,7 +18,7 @@ open import Categories.Category.Instance.Nat using (Nat; Natop-Cartesian)
 open import Categories.Category.Instance.Setoids
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-CartesianCategory)
 open import Categories.Category.Unbundled using (Category)
-open import Categories.Category.Unbundled.Properties using (pack′; unpack)
+open import Categories.Category.Unbundled.Properties using (pack′; unpack′)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Cartesian
 open import Categories.Functor.Cartesian.Properties
@@ -27,7 +26,7 @@ open import Categories.Functor.IdentityOnObjects
 
 private
   variable
-    o ℓ e o′ ℓ′ e′ o″ ℓ″ e″ : Level
+    ℓ e ℓ′ e′ ℓ″ e″ : Level
 
 record LawvereTheory (ℓ e : Level) : Set (suc (ℓ ⊔ e)) where
   private
@@ -41,7 +40,7 @@ record LawvereTheory (ℓ e : Level) : Set (suc (ℓ ⊔ e)) where
   CartT : CartesianCategory 0ℓ ℓ e
   CartT = record { U = L′ ; cartesian = T }
   field
-    I : IdentityOnObjects (proj₂ (unpack 𝒩)) L
+    I : IdentityOnObjects (unpack′ 𝒩) L
     CartF : IsCartesianF Natop-Cartesian CartT (IOO⇒Functor I)
 
 record LT-Hom (T₁ : LawvereTheory ℓ e) (T₂ : LawvereTheory ℓ′ e′) : Set (ℓ ⊔ e ⊔ ℓ′ ⊔ e′) where
@@ -62,7 +61,7 @@ LT-∘ : {A : LawvereTheory ℓ e} {B : LawvereTheory ℓ′ e′} {C : LawvereT
 LT-∘ G H = record { cartF = ∘-CartesianF (cartF G) (cartF H) }
   where open LT-Hom
 
-record T-Algebra (LT : LawvereTheory ℓ e) : Set (o ⊔ ℓ ⊔ e ⊔ suc (ℓ′ ⊔ e′)) where
+record T-Algebra (LT : LawvereTheory ℓ e) : Set (ℓ ⊔ e ⊔ suc (ℓ′ ⊔ e′)) where
   private
     module LT = LawvereTheory LT
   field

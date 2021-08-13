@@ -20,6 +20,8 @@ open import Categories.Category.Cocartesian.Bundle using (CocartesianCategory)
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Duality using (Cocartesian⇒coCartesian)
 open import Categories.Object.Coproduct
+open import Categories.Object.Duality using (Coproduct⇒coProduct)
+open import Categories.Object.Product
 
 Nat : Category 0ℓ 0ℓ 0ℓ
 Nat = record
@@ -75,8 +77,15 @@ Nat-Cocartesian = record
   ; coproducts = record { coproduct = λ {m} {n} → Coprod m n }
   }
 
+-- And Natop is what is used a lot, so record some things here too
+Natop : Category 0ℓ 0ℓ 0ℓ
+Natop = Category.op Nat
+
+Natop-Product : (m n : ℕ) → Product Natop m n
+Natop-Product m n = Coproduct⇒coProduct Nat (Coprod m n)
+
 Natop-Cartesian : CartesianCategory 0ℓ 0ℓ 0ℓ
 Natop-Cartesian = record
-  { U = Category.op Nat
+  { U = Natop
   ; cartesian = Cocartesian⇒coCartesian Nat Nat-Cocartesian
   }
