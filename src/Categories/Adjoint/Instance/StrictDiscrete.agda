@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-module Categories.Adjoint.Instance.Discrete where
+module Categories.Adjoint.Instance.StrictDiscrete where
 
 -- The Discrete/Forgetful/Codiscrete adjoint triple between Sets and
 -- StrictCats.
@@ -20,7 +20,7 @@ open import Categories.Category.Instance.StrictCats
 open import Categories.Category.Instance.Sets
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Equivalence
-import Categories.Category.Discrete as D
+import Categories.Category.Construction.StrictDiscrete as D
 open import Categories.Morphism.HeterogeneousIdentity
 open import Categories.Morphism.HeterogeneousIdentity.Properties
 open import Categories.NaturalTransformation as NT using (NaturalTransformation; ntHelper)

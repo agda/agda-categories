@@ -17,6 +17,7 @@ import Categories.Adjoint.Instance.Discrete
 import Categories.Adjoint.Instance.PathsOf
 import Categories.Adjoint.Instance.PosetCore
 import Categories.Adjoint.Instance.StrictCore
+import Categories.Adjoint.Instance.StrictDiscrete
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Monadic
 import Categories.Adjoint.Monadic.Crude
@@ -103,7 +104,9 @@ import Categories.Category.Construction.Properties.Presheaves.CartesianClosed
 import Categories.Category.Construction.Properties.Presheaves.Complete
 import Categories.Category.Construction.Properties.Presheaves.FromCartesianCCC
 import Categories.Category.Construction.Pullbacks
+import Categories.Category.Construction.SetoidDiscrete
 import Categories.Category.Construction.Spans
+import Categories.Category.Construction.StrictDiscrete
 import Categories.Category.Construction.Thin
 import Categories.Category.Construction.TwistedArrow
 import Categories.Category.Construction.Wedges
@@ -202,7 +205,6 @@ import Categories.Category.Restriction.Construction.Trivial
 import Categories.Category.Restriction.Instance.PartialFunctions
 import Categories.Category.Restriction.Properties
 import Categories.Category.RigCategory
-import Categories.Category.SetoidDiscrete
 import Categories.Category.Site
 import Categories.Category.Slice
 import Categories.Category.Slice.Properties

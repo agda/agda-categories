@@ -6,7 +6,7 @@ module Categories.Object.Product.Indexed.Properties {o â„“ e} (C : Category o â„
 
 open import Level
 
-open import Categories.Category.Discrete
+open import Categories.Category.Construction.StrictDiscrete
 open import Categories.Category.Complete
 open import Categories.Category.Construction.Cones
 open import Categories.Category.Lift

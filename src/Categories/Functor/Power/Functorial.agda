@@ -8,7 +8,7 @@ module Categories.Functor.Power.Functorial {o ℓ e : Level} (C : Category o ℓ
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; trans)
 
 open import Categories.Functor renaming (id to idF)
-open import Categories.Category.Discrete
+open import Categories.Category.Construction.StrictDiscrete
 open import Categories.Category.Equivalence
 open import Categories.Category.Construction.Functors
 open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
