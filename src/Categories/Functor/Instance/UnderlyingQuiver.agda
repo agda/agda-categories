@@ -18,7 +18,7 @@ open import Data.Quiver.Morphism using (Morphism; _≃_)
 
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Instance.Quivers using (Quivers)
-open import Categories.Category.Instance.StrictCats renaming (Cats to StrictCats)
+open import Categories.Category.Instance.StrictCats
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Equivalence using (_≡F_)
 import Categories.Morphism.HeterogeneousIdentity as HId
