@@ -15,7 +15,9 @@ open import Categories.Category.Monoidal.Braided using (Braided)
 open import Categories.Category.Monoidal.Bundle using (MonoidalCategory; SymmetricMonoidalCategory)
 open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 open import Categories.Category.Monoidal.Construction.Product hiding (⊗)
-open import Categories.Category.Monoidal.Interchange
+open import Categories.Category.Monoidal.Interchange using (HasInterchange)
+import Categories.Category.Monoidal.Interchange.Braided as BraidedInterchange
+import Categories.Category.Monoidal.Interchange.Symmetric as SymmetricInterchange
 open import Categories.Morphism using (module ≅)
 open import Categories.Functor.Monoidal
 import Categories.Functor.Monoidal.Braided as BMF
@@ -63,6 +65,7 @@ module LaxBraided (B : Braided M) where
   open Lax (BraidedInterchange.hasInterchange B) public
 
 module LaxSymmetric (S : Symmetric M) where
+  open BraidedInterchange (Symmetric.braided S) using (hasInterchange)
   open SymmetricInterchange S
   open Lax hasInterchange public
   open SymmetricMonoidalCategory using ()
@@ -107,6 +110,7 @@ module StrongBraided (B : Braided M) where
   open Strong (BraidedInterchange.hasInterchange B) public
 
 module StrongSymmetric (S : Symmetric M) where
+  open BraidedInterchange (Symmetric.braided S) using (hasInterchange)
   open SymmetricInterchange S
   open Strong hasInterchange public
   open SymmetricMonoidalCategory using ()
