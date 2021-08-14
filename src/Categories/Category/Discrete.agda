@@ -1,41 +1,29 @@
 {-# OPTIONS --without-K --safe #-}
 module Categories.Category.Discrete where
 
-open import Level
-open import Data.Unit
-open import Function
-open import Relation.Binary.PropositionalEquality as ≡
+-- Discrete Category.
+-- https://ncatlab.org/nlab/show/discrete+category
+-- says:
+-- A category is discrete if it is both a groupoid and a preorder. That is,
+-- every morphism should be invertible, any two parallel morphisms should be equal.
+-- The idea is that in a discrete category, no two distinct (nonisomorphic) objects
+-- are connectable by any path (morphism), and an object connects to itself only through
+-- its identity morphism.
 
-open import Categories.Category
-open import Categories.Functor
+open import Level using (Level; suc; _⊔_)
 
-Discrete : ∀ {a} (A : Set a) → Category a a a
-Discrete A = record
-  { Obj       = A
-  ; _⇒_       = _≡_
-  ; _≈_       = _≡_
-  ; id        = refl
-  ; _∘_       = flip ≡.trans
-  ; assoc     = λ {_ _ _ _ g} → sym (trans-assoc g)
-  ; sym-assoc = λ {_ _ _ _ g} → trans-assoc g
-  ; identityˡ = λ {_ _ f} → trans-reflʳ f
-  ; identityʳ = refl
-  ; identity² = refl
-  ; equiv     = isEquivalence
-  ; ∘-resp-≈  = λ where
-    refl refl → refl
-  }
+open import Categories.Category using (Category)
+open import Categories.Category.Groupoid using (IsGroupoid)
 
-module _ {a o ℓ e} {A : Set a} (C : Category o ℓ e) where
-  open Category C renaming (id to one)
+record IsDiscrete {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
+  open Category C using (Obj; _⇒_; _≈_)
+  field
+     isGroupoid : IsGroupoid C
+     preorder : {A B : Obj} → (f g : A ⇒ B) → f ≈ g
 
-  module _ (f : A → Obj) where
+record DiscreteCategory (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
+  field
+    category   : Category o ℓ e
+    isDiscrete : IsDiscrete category
 
-    lift-func : Functor (Discrete A) C
-    lift-func = record
-      { F₀           = f
-      ; F₁           = λ { refl → one }
-      ; identity     = Equiv.refl
-      ; homomorphism = λ { {_} {_} {_} {refl} {refl} → Equiv.sym identity² }
-      ; F-resp-≈     = λ { {_} {_} {refl} refl → Equiv.refl }
-      }
+  open IsDiscrete isDiscrete public

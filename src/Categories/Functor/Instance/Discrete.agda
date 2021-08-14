@@ -6,16 +6,16 @@ module Categories.Functor.Instance.Discrete where
 --   because the equality in Cats is properly NaturalIsomorphism instead of something stricter,
 --   no need for that pesky Heterogeneous anything.
 
-open import Categories.Category
-open import Categories.Functor
+import Relation.Binary.PropositionalEquality as ≡
+open import Function using () renaming (id to idf; _∘_ to _●_)
+
+open import Categories.Category using (Category; _[_,_])
+import Categories.Category.Construction.StrictDiscrete as D
+open import Categories.Functor using (Functor; id; _∘F_)
 open import Categories.Category.Instance.Sets
 open import Categories.Category.Instance.Cats
 open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism
-import Categories.Category.Discrete as D
-
-import Relation.Binary.PropositionalEquality as ≡
-open import Function using () renaming (id to idf; _∘_ to _●_)
 
 Discrete : ∀ {o} → Functor (Sets o) (Cats o o o)
 Discrete {o} = record

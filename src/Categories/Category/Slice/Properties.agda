@@ -2,6 +2,9 @@
 
 open import Categories.Category
 
+-- Various properties of Slice Categories
+-- 1. Given a Product in a Slice cat, we cat get the pullback of the arrows
+-- 2. Given that same pullback, can extract a Product
 module Categories.Category.Slice.Properties {o ℓ e} (C : Category o ℓ e) where
 
 open import Categories.Category.Equivalence using (StrongEquivalence)

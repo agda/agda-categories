@@ -14,8 +14,10 @@ import Categories.Adjoint.Instance.0-Truncation
 import Categories.Adjoint.Instance.01-Truncation
 import Categories.Adjoint.Instance.Core
 import Categories.Adjoint.Instance.Discrete
+import Categories.Adjoint.Instance.PathsOf
 import Categories.Adjoint.Instance.PosetCore
 import Categories.Adjoint.Instance.StrictCore
+import Categories.Adjoint.Instance.StrictDiscrete
 import Categories.Adjoint.Mate
 import Categories.Adjoint.Monadic
 import Categories.Adjoint.Monadic.Crude
@@ -79,7 +81,6 @@ import Categories.Category.Construction.EnrichedFunctors
 import Categories.Category.Construction.F-Algebras
 import Categories.Category.Construction.Fin
 import Categories.Category.Construction.Functors
-import Categories.Category.Construction.Graphs
 import Categories.Category.Construction.Grothendieck
 import Categories.Category.Construction.GroupAsCategory
 import Categories.Category.Construction.KanComplex
@@ -91,6 +92,7 @@ import Categories.Category.Construction.MonoidalFunctors
 import Categories.Category.Construction.Monoids
 import Categories.Category.Construction.ObjectRestriction
 import Categories.Category.Construction.Path
+import Categories.Category.Construction.PathCategory
 import Categories.Category.Construction.Presheaves
 import Categories.Category.Construction.Properties.Comma
 import Categories.Category.Construction.Properties.EilenbergMoore
@@ -102,7 +104,9 @@ import Categories.Category.Construction.Properties.Presheaves.CartesianClosed
 import Categories.Category.Construction.Properties.Presheaves.Complete
 import Categories.Category.Construction.Properties.Presheaves.FromCartesianCCC
 import Categories.Category.Construction.Pullbacks
+import Categories.Category.Construction.SetoidDiscrete
 import Categories.Category.Construction.Spans
+import Categories.Category.Construction.StrictDiscrete
 import Categories.Category.Construction.Thin
 import Categories.Category.Construction.TwistedArrow
 import Categories.Category.Construction.Wedges
@@ -139,6 +143,7 @@ import Categories.Category.Instance.KanComplexes
 import Categories.Category.Instance.LawvereTheories
 import Categories.Category.Instance.Monoidals
 import Categories.Category.Instance.One
+import Categories.Category.Instance.PartialFunctions
 import Categories.Category.Instance.PointedSets
 import Categories.Category.Instance.Posets
 import Categories.Category.Instance.Properties.Cats
@@ -149,6 +154,7 @@ import Categories.Category.Instance.Properties.Setoids.Cocomplete
 import Categories.Category.Instance.Properties.Setoids.Complete
 import Categories.Category.Instance.Properties.Setoids.LCCC
 import Categories.Category.Instance.Properties.Setoids.Limits.Canonical
+import Categories.Category.Instance.Quivers
 import Categories.Category.Instance.Rels
 import Categories.Category.Instance.Setoids
 import Categories.Category.Instance.Sets
@@ -194,8 +200,11 @@ import Categories.Category.Monoidal.Utilities
 import Categories.Category.Product
 import Categories.Category.Product.Properties
 import Categories.Category.Regular
+import Categories.Category.Restriction
+import Categories.Category.Restriction.Construction.Trivial
+import Categories.Category.Restriction.Instance.PartialFunctions
+import Categories.Category.Restriction.Properties
 import Categories.Category.RigCategory
-import Categories.Category.SetoidDiscrete
 import Categories.Category.Site
 import Categories.Category.Slice
 import Categories.Category.Slice.Properties
@@ -262,6 +271,7 @@ import Categories.Functor.Construction.FromDiscrete
 import Categories.Functor.Construction.LiftSetoids
 import Categories.Functor.Construction.Limit
 import Categories.Functor.Construction.ObjectRestriction
+import Categories.Functor.Construction.PathsOf
 import Categories.Functor.Construction.SubCategory
 import Categories.Functor.Construction.SubCategory.Properties
 import Categories.Functor.Construction.Zero
@@ -281,6 +291,7 @@ import Categories.Functor.Instance.Discrete
 import Categories.Functor.Instance.SetoidDiscrete
 import Categories.Functor.Instance.StrictCore
 import Categories.Functor.Instance.Twisted
+import Categories.Functor.Instance.UnderlyingQuiver
 import Categories.Functor.Limits
 import Categories.Functor.Monoidal
 import Categories.Functor.Monoidal.Braided
@@ -295,6 +306,7 @@ import Categories.Functor.Presheaf
 import Categories.Functor.Profunctor
 import Categories.Functor.Properties
 import Categories.Functor.Representable
+import Categories.Functor.Restriction
 import Categories.Functor.Slice
 import Categories.GlobularSet
 import Categories.Kan
@@ -378,3 +390,7 @@ import Categories.Utils.Product
 import Categories.Yoneda
 import Categories.Yoneda.Continuous
 import Categories.Yoneda.Properties
+import Data.Quiver
+import Data.Quiver.Morphism
+import Data.Quiver.Paths
+import Relation.Binary.PropositionalEquality.Subst.Properties
