@@ -13,10 +13,10 @@
 
 module Categories.Multi.Category.Cartesian where
 
-open import Data.List hiding ([_])
-open import Data.List.Membership.Propositional
+open import Data.List using (List; []; _∷_; _++_)
+open import Data.List.Membership.Propositional using (_∈_)
 open import Data.Wrap
-open import Level
+open import Level using (Level; _⊔_; suc)
 open import Relation.Binary using (Rel; Setoid; IsEquivalence)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
@@ -62,11 +62,8 @@ record CartesianMultiCategory (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) wh
 
     identityˡ : ∀ {Γ Δ A} {i : A ∈ Δ} {σ : Γ ⇒ˢ Δ} → id i ∘ σ ≈ σ i
     identityʳ : ∀ {Γ A} {f : Γ ⇒ A} → f ∘ idˢ ≈ f
-    identity² : ∀ {Γ A} {i : A ∈ Γ} → id i ∘ idˢ ≈ id i
     assoc : ∀ {Γ Δ Θ A} {f : Θ ⇒ A} {σ : Δ ⇒ˢ Θ} {τ : Γ ⇒ˢ Δ} →
       f ∘ σ ∘ τ ≈ f ∘ (σ ∘ˢ τ)
-    sym-assoc : ∀ {Γ Δ Θ A} {f : Θ ⇒ A} {σ : Δ ⇒ˢ Θ} {τ : Γ ⇒ˢ Δ} →
-      f ∘ (σ ∘ˢ τ) ≈ f ∘ σ ∘ τ
 
   module Equiv {Γ A} = IsEquivalence (equiv {Γ} {A})
 
@@ -94,14 +91,9 @@ record CartesianMultiCategory (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) wh
   identityˡˢ .get i = identityˡ
   identityʳˢ : ∀ {Γ Δ} {σ : Γ ⇒ˢ Δ} → σ ∘ˢ idˢ ≈ˢ σ
   identityʳˢ .get i = identityʳ
-  identity²ˢ : ∀ {Γ} → idˢ ∘ˢ idˢ ≈ˢ idˢ {Γ}
-  identity²ˢ .get i = identity²
   assocˢ : ∀ {Γ Δ Θ Λ} {σ : Θ ⇒ˢ Λ} {τ : Δ ⇒ˢ Θ} {υ : Γ ⇒ˢ Δ} →
     (σ ∘ˢ τ) ∘ˢ υ ≈ˢ σ ∘ˢ (τ ∘ˢ υ)
   assocˢ .get i = assoc
-  sym-assocˢ : ∀ {Γ Δ Θ Λ} {σ : Θ ⇒ˢ Λ} {τ : Δ ⇒ˢ Θ} {υ : Γ ⇒ˢ Δ} →
-    σ ∘ˢ (τ ∘ˢ υ) ≈ˢ (σ ∘ˢ τ) ∘ˢ υ
-  sym-assocˢ .get i = sym-assoc
 
   hom-setoid : ∀ {Γ A} → Setoid ℓ e
   hom-setoid {Γ} {A} = record { isEquivalence = equiv {Γ} {A} }
