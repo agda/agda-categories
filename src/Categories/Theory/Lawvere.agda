@@ -26,7 +26,7 @@ open import Categories.Functor.IdentityOnObjects
 
 private
   variable
-    ℓ e ℓ′ e′ ℓ″ e″ : Level
+    ℓ e o′ ℓ′ e′ ℓ″ e″ : Level
 
 record LawvereTheory (ℓ e : Level) : Set (suc (ℓ ⊔ e)) where
   private
@@ -61,7 +61,8 @@ LT-∘ : {A : LawvereTheory ℓ e} {B : LawvereTheory ℓ′ e′} {C : LawvereT
 LT-∘ G H = record { cartF = ∘-CartesianF (cartF G) (cartF H) }
   where open LT-Hom
 
-record T-Algebra (LT : LawvereTheory ℓ e) : Set (ℓ ⊔ e ⊔ suc (ℓ′ ⊔ e′)) where
+-- A 'Model' will be taken to be in Setoids.
+record Model (LT : LawvereTheory ℓ e) : Set (ℓ ⊔ e ⊔ suc (ℓ′ ⊔ e′)) where
   private
     module LT = LawvereTheory LT
   field
@@ -71,3 +72,14 @@ record T-Algebra (LT : LawvereTheory ℓ e) : Set (ℓ ⊔ e ⊔ suc (ℓ′ ⊔
 
   mod : Functor LT.L′ (Setoids ℓ′ e′)
   mod = cartF.F
+
+-- But we can have more general models 'in' a cartesian category
+record ModelsOf_In_ (LT : LawvereTheory ℓ e) (𝒞 : CartesianCategory o′ ℓ′ e′) : Set (ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
+  private
+    module LT = LawvereTheory LT using (L′; CartT)
+    module CC = CartesianCategory 𝒞 using (U)
+  field
+    cartF : CartesianF LT.CartT 𝒞
+
+  mod : Functor LT.L′ CC.U
+  mod = CartesianF.F cartF
