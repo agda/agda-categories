@@ -8,6 +8,11 @@ open import Categories.Category using (Category; module Commutation)
 -- more comonly used in the more general context of composition in
 -- 2-categories).
 
+-- Section 5.3 of the PhD thesis of Geoff Cruttwell states most (all?)
+-- the properties in the module, starting on p. 57 (starting with Prop. 5.3.4).
+-- It also has nice string-diagrammatic proofs.
+--    See also further comments in https://github.com/agda/agda-categories/pull/294#issuecomment-897697009
+
 module Categories.Category.Monoidal.Interchange
   {o ℓ e} {C : Category o ℓ e} where
 

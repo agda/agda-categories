@@ -55,8 +55,8 @@ swapInner-commutative : [ (X₁ ⊗₀ X₂) ⊗₀ (Y₁ ⊗₀ Y₂) ⇒
                           (X₁ ⊗₀ X₂) ⊗₀ (Y₁ ⊗₀ Y₂) ]⟨
                            i⇒    ⇒⟨ (X₁ ⊗₀ Y₁) ⊗₀ (X₂ ⊗₀ Y₂) ⟩
                            i⇒
-                         ≈ id
-                         ⟩
+                        ≈ id
+                        ⟩
 swapInner-commutative = begin
     i⇒ ∘ i⇒                                                               ≈⟨ pullʳ (cancelInner α.isoʳ) ⟩
     α⇐ ∘ id ⊗₁ (α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐) ∘ id ⊗₁ (α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐) ∘ α⇒  ≈˘⟨ refl⟩∘⟨ pushˡ split₂ˡ ⟩
