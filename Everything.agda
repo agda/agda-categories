@@ -87,6 +87,7 @@ import Categories.Category.Construction.KanComplex
 import Categories.Category.Construction.KaroubiEnvelope
 import Categories.Category.Construction.KaroubiEnvelope.Properties
 import Categories.Category.Construction.Kleisli
+import Categories.Category.Construction.LT-Models
 import Categories.Category.Construction.MonoidAsCategory
 import Categories.Category.Construction.MonoidalFunctors
 import Categories.Category.Construction.Monoids
@@ -385,6 +386,8 @@ import Categories.Pseudofunctor.Identity
 import Categories.Pseudofunctor.Instance.EnrichedUnderlying
 import Categories.Tactic.Category
 import Categories.Theory.Lawvere
+import Categories.Theory.Lawvere.Instance.Identity
+import Categories.Theory.Lawvere.Instance.Triv
 import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda

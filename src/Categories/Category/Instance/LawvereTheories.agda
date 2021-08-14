@@ -9,7 +9,7 @@ open import Categories.Category.Core using (Category)
 open import Categories.Functor.Cartesian using (CartesianF)
 open import Categories.NaturalTransformation.NaturalIsomorphism
  using (_≃_; associator; sym-associator; unitorˡ; unitorʳ; unitor²; refl; sym; trans; _ⓘₕ_)
-open import Categories.Theory.Lawvere using (LawvereTheory; LT-Hom; LT-id; LT-∘; T-Algebra)
+open import Categories.Theory.Lawvere using (LawvereTheory; LT-Hom; LT-id; LT-∘)
 
 LawvereTheories : (ℓ e : Level) → Category (suc (ℓ ⊔ e)) (ℓ ⊔ e) (ℓ ⊔ e)
 LawvereTheories ℓ e = record
