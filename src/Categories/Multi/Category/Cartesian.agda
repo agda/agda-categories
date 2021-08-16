@@ -100,8 +100,44 @@ record CartesianMultiCategory (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) wh
   homˢ-setoid : ∀ {Γ Δ} → Setoid ℓ e
   homˢ-setoid {Γ} {Δ} = record { isEquivalence = equiv {Γ} {Δ} }
 
-  module HomReasoning {Γ A} where
-    open SetoidR (hom-setoid {Γ} {A}) public
+  module HomReasoning where
+    private
+      module Hom-setoid {Γ A} = SetoidR (hom-setoid {Γ} {A}) using
+        (step-≈; step-≈˘; step-≡; step-≡˘; _≡⟨⟩_; begin_; _∎)
+      module Homˢ-setoid {Γ Δ} = SetoidR (homˢ-setoid {Γ} {Δ}) using () renaming
+        ( step-≈ to step-≈ˢ; step-≈˘ to step-≈ˢ˘; step-≡ to step-≡ˢ
+        ; step-≡˘ to step-≡ˢ˘; _≡⟨⟩_ to _≡ˢ⟨⟩_; begin_ to beginˢ_; _∎ to _∎ˢ
+        )
+    open Hom-setoid public
+    open Homˢ-setoid public using (_≡ˢ⟨⟩_; beginˢ_; _∎ˢ)
 
-  module HomˢReasoning {Γ Δ} where
-    open SetoidR (homˢ-setoid {Γ} {Δ}) public
+    infixr 2 step-≈ˢ step-≈ˢ˘ step-≡ˢ step-≡ˢ˘
+
+    step-≈ˢ = Homˢ-setoid.step-≈ˢ
+    syntax step-≈ˢ x y≈z x≈y = x ≈ˢ⟨ x≈y ⟩ y≈z
+    step-≈ˢ˘ = Homˢ-setoid.step-≈ˢ˘
+    syntax step-≈ˢ˘ x y≈z y≈x = x ≈ˢ˘⟨ y≈x ⟩ y≈z
+    step-≡ˢ = Homˢ-setoid.step-≡ˢ
+    syntax step-≡ˢ x y≡z x≡y = x ≡ˢ⟨ x≡y ⟩ y≡z
+    step-≡ˢ˘ = Homˢ-setoid.step-≡ˢ˘
+    syntax step-≡ˢ˘ x y≡z y≡x = x ≡ˢ˘⟨ y≡x ⟩ y≡z
+
+    infixr 4 _⟩∘⟨_ refl⟩∘⟨_ _⟩∘ˢ⟨_ reflˢ⟩∘ˢ⟨_
+    infixl 5 _⟩∘⟨reflˢ _⟩∘ˢ⟨reflˢ
+    _⟩∘⟨_ = ∘-resp-≈
+
+    refl⟩∘⟨_ : ∀ {Γ Δ A} {f : Δ ⇒ A} {σ σ′ : Γ ⇒ˢ Δ} → σ ≈ˢ σ′ → f ∘ σ ≈ f ∘ σ′
+    refl⟩∘⟨_ = refl ⟩∘⟨_
+
+    _⟩∘⟨reflˢ : ∀ {Γ Δ A} {f f′ : Δ ⇒ A} {σ : Γ ⇒ˢ Δ} → f ≈ f′ → f ∘ σ ≈ f′ ∘ σ
+    _⟩∘⟨reflˢ = _⟩∘⟨ reflˢ
+
+    _⟩∘ˢ⟨_ = ∘ˢ-resp-≈
+
+    reflˢ⟩∘ˢ⟨_ : ∀ {Γ Δ Θ} {σ : Δ ⇒ˢ Θ} {τ τ′ : Γ ⇒ˢ Δ} →
+      τ ≈ˢ τ′ → σ ∘ˢ τ ≈ˢ σ ∘ˢ τ′
+    reflˢ⟩∘ˢ⟨_ = reflˢ ⟩∘ˢ⟨_
+
+    _⟩∘ˢ⟨reflˢ : ∀ {Γ Δ Θ} {σ σ′ : Δ ⇒ˢ Θ} {τ : Γ ⇒ˢ Δ} →
+      σ ≈ˢ σ′ → σ ∘ˢ τ ≈ˢ σ′ ∘ˢ τ
+    _⟩∘ˢ⟨reflˢ = _⟩∘ˢ⟨ reflˢ
