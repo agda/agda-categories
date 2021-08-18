@@ -64,8 +64,8 @@ documented in the proto-contributor's guide.
 - (definition of Pseudofunctor is in Benabou style rather than 'by hand')
   
 ### Places to find more design notes
-- [Category.Discrete](Categories/Category/Discrete.agda)
-- [Category.Monoidal](Categories/Category/Monoidal.agda)
+- [Category.Discrete](src/Categories/Category/Discrete.agda)
+- [Category.Monoidal](src/Categories/Category/Monoidal.agda)
 - (all the stuff about Mates)
 - (closed) Issue 5 in the github repository contains more discussion.
 
