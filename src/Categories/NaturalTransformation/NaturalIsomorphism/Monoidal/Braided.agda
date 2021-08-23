@@ -23,6 +23,7 @@ open import Categories.Functor.Monoidal.Properties using () renaming
   ( idF-BraidedMonoidal to idFˡ  ; idF-StrongBraidedMonoidal to idFˢ
   ; ∘-BraidedMonoidal   to _∘Fˡ_ ; ∘-StrongBraidedMonoidal   to _∘Fˢ_
   )
+import Categories.NaturalTransformation.Monoidal.Braided as BMNT
 open import Categories.NaturalTransformation.NaturalIsomorphism as NI
   using (NaturalIsomorphism)
 import Categories.NaturalTransformation.NaturalIsomorphism.Monoidal as MNI
@@ -30,6 +31,7 @@ import Categories.NaturalTransformation.NaturalIsomorphism.Monoidal as MNI
 module Lax where
   open BMF.Lax using (BraidedMonoidalFunctor)
   open MNI.Lax using (IsMonoidalNaturalIsomorphism)
+  open BMNT.Lax using (BraidedMonoidalNaturalTransformation)
   open BraidedMonoidalFunctor using () renaming (F to UF; monoidalFunctor to MF)
   private module U = MNI.Lax
 
@@ -49,7 +51,14 @@ module Lax where
       ⌊_⌋ : U.MonoidalNaturalIsomorphism (MF F) (MF G)
       ⌊_⌋ = record { U = U ; F⇒G-isMonoidal = F⇒G-isMonoidal }
 
-      open U.MonoidalNaturalIsomorphism ⌊_⌋ public hiding (U; F⇒G-isMonoidal)
+      open U.MonoidalNaturalIsomorphism ⌊_⌋ public
+        hiding (U; F⇒G-isMonoidal; F⇒G-monoidal; F⇐G-monoidal)
+
+      F⇒G-monoidal : BraidedMonoidalNaturalTransformation F G
+      F⇒G-monoidal = record { U = F⇒G ; isMonoidal = F⇒G-isMonoidal }
+
+      F⇐G-monoidal : BraidedMonoidalNaturalTransformation G F
+      F⇐G-monoidal = record { U = F⇐G ; isMonoidal = F⇐G-isMonoidal }
 
     infix 4 _≃_
 
@@ -176,6 +185,7 @@ module Lax where
 module Strong where
   open BMF.Strong using (BraidedMonoidalFunctor)
   open MNI.Strong using (IsMonoidalNaturalIsomorphism)
+  open BMNT.Strong using (BraidedMonoidalNaturalTransformation)
   open BraidedMonoidalFunctor using () renaming
     ( F                         to UF
     ; monoidalFunctor           to MF
@@ -199,11 +209,17 @@ module Strong where
       ⌊_⌋ : U.MonoidalNaturalIsomorphism (MF F) (MF G)
       ⌊_⌋ = record { U = U ; F⇒G-isMonoidal = F⇒G-isMonoidal }
 
+      open U.MonoidalNaturalIsomorphism ⌊_⌋ public
+        hiding (U; F⇒G-isMonoidal; F⇒G-monoidal; F⇐G-monoidal)
+
+      F⇒G-monoidal : BraidedMonoidalNaturalTransformation F G
+      F⇒G-monoidal = record { U = F⇒G ; isMonoidal = F⇒G-isMonoidal }
+
+      F⇐G-monoidal : BraidedMonoidalNaturalTransformation G F
+      F⇐G-monoidal = record { U = F⇐G ; isMonoidal = F⇐G-isMonoidal }
+
       laxBNI : Lax.BraidedMonoidalNaturalIsomorphism (laxBMF F) (laxBMF G)
       laxBNI = record { U = U ; F⇒G-isMonoidal = F⇒G-isMonoidal }
-
-      open Lax.BraidedMonoidalNaturalIsomorphism laxBNI public
-        hiding (U; F⇒G-isMonoidal; ⌊_⌋)
 
     infix 4 _≃_
 

@@ -48,7 +48,7 @@ module Lax where
         U              : NaturalIsomorphism F.U G.U
         F⇒G-isMonoidal : IsMonoidalNaturalIsomorphism U
 
-      open NaturalIsomorphism              U              public
+      open NaturalIsomorphism U public hiding (module ⇒; module ⇐)
       open IsMonoidalNaturalTransformation F⇒G-isMonoidal public
 
       open D using (module Equiv)
@@ -67,6 +67,9 @@ module Lax where
 
       F⇐G-monoidal : MonoidalNaturalTransformation G F
       F⇐G-monoidal = record { U = F⇐G U ; isMonoidal = F⇐G-isMonoidal }
+
+      module ⇒ = MonoidalNaturalTransformation F⇒G-monoidal
+      module ⇐ = MonoidalNaturalTransformation F⇐G-monoidal
 
     infix 4 _≃_
 
@@ -215,7 +218,7 @@ module Lax where
 -- Monoidal natural isomorphisms between strong monoidal functors.
 
 module Strong where
-  open NT.Strong using (IsMonoidalNaturalTransformation)
+  open NT.Strong hiding (id; strengthen)
   open StrongMonoidalFunctor renaming (F to UF; monoidalFunctor to laxF)
 
   module _ {o ℓ e o′ ℓ′ e′}
@@ -237,8 +240,17 @@ module Strong where
 
       laxNI : Lax.MonoidalNaturalIsomorphism (laxF F) (laxF G)
       laxNI = record { U = U ; F⇒G-isMonoidal = F⇒G-isMonoidal }
-      open Lax.MonoidalNaturalIsomorphism laxNI public
-        hiding (U; F⇒G-isMonoidal)
+      open Lax.MonoidalNaturalIsomorphism laxNI public hiding
+        (U; F⇒G-isMonoidal; F⇒G-monoidal; F⇐G-monoidal; module ⇒; module ⇐)
+
+      F⇒G-monoidal : MonoidalNaturalTransformation F G
+      F⇒G-monoidal = record { U = F⇒G U ; isMonoidal = F⇒G-isMonoidal }
+
+      F⇐G-monoidal : MonoidalNaturalTransformation G F
+      F⇐G-monoidal = record { U = F⇐G U ; isMonoidal = F⇐G-isMonoidal }
+
+      module ⇒ = MonoidalNaturalTransformation F⇒G-monoidal
+      module ⇐ = MonoidalNaturalTransformation F⇐G-monoidal
 
     infix 4 _≃_
 
