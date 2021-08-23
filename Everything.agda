@@ -13,7 +13,6 @@ import Categories.Adjoint.Equivalents
 import Categories.Adjoint.Instance.0-Truncation
 import Categories.Adjoint.Instance.01-Truncation
 import Categories.Adjoint.Instance.Core
-import Categories.Adjoint.Instance.Discrete
 import Categories.Adjoint.Instance.PathsOf
 import Categories.Adjoint.Instance.PosetCore
 import Categories.Adjoint.Instance.StrictCore
@@ -190,6 +189,8 @@ import Categories.Category.Monoidal.Instance.Setoids
 import Categories.Category.Monoidal.Instance.Sets
 import Categories.Category.Monoidal.Instance.StrictCats
 import Categories.Category.Monoidal.Interchange
+import Categories.Category.Monoidal.Interchange.Braided
+import Categories.Category.Monoidal.Interchange.Symmetric
 import Categories.Category.Monoidal.Properties
 import Categories.Category.Monoidal.Reasoning
 import Categories.Category.Monoidal.Rigid
