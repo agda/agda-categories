@@ -108,6 +108,7 @@ import Categories.Category.Construction.Pullbacks
 import Categories.Category.Construction.SetoidDiscrete
 import Categories.Category.Construction.Spans
 import Categories.Category.Construction.StrictDiscrete
+import Categories.Category.Construction.SymmetricMonoidalFunctors
 import Categories.Category.Construction.Thin
 import Categories.Category.Construction.TwistedArrow
 import Categories.Category.Construction.Wedges
@@ -304,6 +305,7 @@ import Categories.Functor.Limits
 import Categories.Functor.Monoidal
 import Categories.Functor.Monoidal.Braided
 import Categories.Functor.Monoidal.Construction.Product
+import Categories.Functor.Monoidal.PointwiseTensor
 import Categories.Functor.Monoidal.Properties
 import Categories.Functor.Monoidal.Symmetric
 import Categories.Functor.Monoidal.Tensor
