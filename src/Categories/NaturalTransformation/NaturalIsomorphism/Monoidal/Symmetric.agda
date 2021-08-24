@@ -18,18 +18,20 @@ open import Level
 open import Relation.Binary using (IsEquivalence)
 
 open import Categories.Category.Monoidal using (SymmetricMonoidalCategory)
-import Categories.Functor.Monoidal.Symmetric as BMF
+import Categories.Functor.Monoidal.Symmetric as SMF
 open import Categories.Functor.Monoidal.Properties using () renaming
   ( idF-SymmetricMonoidal to idFˡ  ; idF-StrongSymmetricMonoidal to idFˢ
   ; ∘-SymmetricMonoidal   to _∘Fˡ_ ; ∘-StrongSymmetricMonoidal   to _∘Fˢ_
   )
+import Categories.NaturalTransformation.Monoidal.Symmetric as SMNT
 open import Categories.NaturalTransformation.NaturalIsomorphism as NI
   using (NaturalIsomorphism)
 import Categories.NaturalTransformation.NaturalIsomorphism.Monoidal as MNI
 
 module Lax where
-  open BMF.Lax using (SymmetricMonoidalFunctor)
+  open SMF.Lax using (SymmetricMonoidalFunctor)
   open MNI.Lax using (IsMonoidalNaturalIsomorphism)
+  open SMNT.Lax using (SymmetricMonoidalNaturalTransformation)
   open SymmetricMonoidalFunctor using ()
     renaming (F to UF; monoidalFunctor to MF)
   private module U = MNI.Lax
@@ -50,7 +52,14 @@ module Lax where
       ⌊_⌋ : U.MonoidalNaturalIsomorphism (MF F) (MF G)
       ⌊_⌋ = record { U = U ; F⇒G-isMonoidal = F⇒G-isMonoidal }
 
-      open U.MonoidalNaturalIsomorphism ⌊_⌋ public hiding (U; F⇒G-isMonoidal)
+      open U.MonoidalNaturalIsomorphism ⌊_⌋ public
+        hiding (U; F⇒G-isMonoidal; F⇒G-monoidal; F⇐G-monoidal)
+
+      F⇒G-monoidal : SymmetricMonoidalNaturalTransformation F G
+      F⇒G-monoidal = record { U = F⇒G ; isMonoidal = F⇒G-isMonoidal }
+
+      F⇐G-monoidal : SymmetricMonoidalNaturalTransformation G F
+      F⇐G-monoidal = record { U = F⇐G ; isMonoidal = F⇐G-isMonoidal }
 
     infix 4 _≃_
 
@@ -176,12 +185,13 @@ module Lax where
           U.MonoidalNaturalIsomorphism (U.associator {F = MF F} {MF G} {MF H})
 
 module Strong where
-  open BMF.Strong using (SymmetricMonoidalFunctor)
+  open SMF.Strong using (SymmetricMonoidalFunctor)
   open MNI.Strong using (IsMonoidalNaturalIsomorphism)
+  open SMNT.Strong using (SymmetricMonoidalNaturalTransformation)
   open SymmetricMonoidalFunctor using () renaming
     ( F                         to UF
     ; monoidalFunctor           to MF
-    ; laxSymmetricMonoidalFunctor to laxBMF
+    ; laxSymmetricMonoidalFunctor to laxSMF
     )
   private module U = MNI.Strong
 
@@ -201,11 +211,17 @@ module Strong where
       ⌊_⌋ : U.MonoidalNaturalIsomorphism (MF F) (MF G)
       ⌊_⌋ = record { U = U ; F⇒G-isMonoidal = F⇒G-isMonoidal }
 
-      laxBNI : Lax.SymmetricMonoidalNaturalIsomorphism (laxBMF F) (laxBMF G)
-      laxBNI = record { U = U ; F⇒G-isMonoidal = F⇒G-isMonoidal }
+      open U.MonoidalNaturalIsomorphism ⌊_⌋ public
+        hiding (U; F⇒G-isMonoidal; F⇒G-monoidal; F⇐G-monoidal)
 
-      open Lax.SymmetricMonoidalNaturalIsomorphism laxBNI public
-        hiding (U; F⇒G-isMonoidal; ⌊_⌋)
+      F⇒G-monoidal : SymmetricMonoidalNaturalTransformation F G
+      F⇒G-monoidal = record { U = F⇒G ; isMonoidal = F⇒G-isMonoidal }
+
+      F⇐G-monoidal : SymmetricMonoidalNaturalTransformation G F
+      F⇐G-monoidal = record { U = F⇐G ; isMonoidal = F⇐G-isMonoidal }
+
+      laxSNI : Lax.SymmetricMonoidalNaturalIsomorphism (laxSMF F) (laxSMF G)
+      laxSNI = record { U = U ; F⇒G-isMonoidal = F⇒G-isMonoidal }
 
     infix 4 _≃_
 
