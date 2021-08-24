@@ -51,7 +51,7 @@ env:
   GHC_VERSION: 8.6.5
   CABAL_VERSION: 3.2.0.0
   CABAL_INSTALL: cabal install --overwrite-policy=always --ghc-options='-O1 +RTS -M6G -RTS'
-  AGDA: agda --auto-inline -Werror +RTS -M3.5G -H3.5G -A128M -RTS -i. -i src/
+  AGDA: agda --auto-inline -Werror +RTS -M6G -H3.5G -A128M -RTS -i. -i src/
 
 jobs:
   test-categories:
