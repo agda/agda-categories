@@ -67,6 +67,7 @@ module LaxBraided (B : Braided M) where
 module LaxSymmetric (S : Symmetric M) where
   open BraidedInterchange (Symmetric.braided S) using (hasInterchange)
   open SymmetricInterchange S
+    hiding (swapInner-commutative; swapInner-iso; swapInner-selfInverse)
   open Lax hasInterchange public
   open SymmetricMonoidalCategory using ()
     renaming (braidedMonoidalCategory to bmc)
@@ -89,6 +90,12 @@ module LaxSymmetric (S : Symmetric M) where
   ⊗-SymmetricMonoidalFunctor = record
     { isBraidedMonoidal = ⊗-isBraidedMonoidalFunctor }
 
+  open SymmetricInterchange S public using () renaming
+    ( swapInner-commutative to ⊗-homo-commutative
+    ; swapInner-iso         to ⊗-homo-iso
+    ; swapInner-selfInverse to ⊗-homo-selfInverse
+    )
+
 module Strong (hasInterchange : HasInterchange M) where
   private module interchange = HasInterchange hasInterchange
 
@@ -104,14 +111,13 @@ module Strong (hasInterchange : HasInterchange M) where
   ⊗-MonoidalFunctor : StrongMonoidalFunctor C×C-monoidal C-monoidal
   ⊗-MonoidalFunctor = record { isStrongMonoidal = ⊗-isMonoidalFunctor }
 
--- TODO: implement the missing bits in Categories.Category.Monoidal.Interchange.
-
 module StrongBraided (B : Braided M) where
   open Strong (BraidedInterchange.hasInterchange B) public
 
 module StrongSymmetric (S : Symmetric M) where
   open BraidedInterchange (Symmetric.braided S) using (hasInterchange)
   open SymmetricInterchange S
+    hiding (swapInner-commutative; swapInner-iso; swapInner-selfInverse)
   open Strong hasInterchange public
   open SymmetricMonoidalCategory using ()
     renaming (braidedMonoidalCategory to bmc)
@@ -133,3 +139,9 @@ module StrongSymmetric (S : Symmetric M) where
   ⊗-SymmetricMonoidalFunctor : SymmetricMonoidalFunctor
   ⊗-SymmetricMonoidalFunctor = record
     { isBraidedMonoidal = ⊗-isBraidedMonoidalFunctor }
+
+  open SymmetricInterchange S public using () renaming
+    ( swapInner-commutative to ⊗-homo-commutative
+    ; swapInner-iso         to ⊗-homo-iso
+    ; swapInner-selfInverse to ⊗-homo-selfInverse
+    )

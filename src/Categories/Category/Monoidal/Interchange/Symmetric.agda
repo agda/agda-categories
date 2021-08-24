@@ -22,10 +22,11 @@ open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (_≃_; niHelper)
 open import Categories.Morphism C using (_≅_; module ≅)
+open import Categories.Morphism.IsoEquiv C using (to-unique)
 open import Categories.Morphism.Reasoning C
   using (elim-center; pushˡ; pullʳ; cancelInner; switch-fromtoˡ)
 
-open Category C using (Obj; _⇒_; _∘_; id; sym-assoc; ∘-resp-≈ʳ)
+open Category C using (Obj; _⇒_; _∘_; id; sym-assoc; ∘-resp-≈ʳ; module Equiv)
 open Commutation C
 open MonoidalReasoning M
 open MonoidalUtilities M
@@ -74,6 +75,14 @@ swapInner-iso = record
     ; isoʳ = swapInner-commutative
     }
   }
+
+swapInner-selfInverse : [ (X₁ ⊗₀ X₂) ⊗₀ (Y₁ ⊗₀ Y₂) ⇒
+                          (X₁ ⊗₀ Y₁) ⊗₀ (X₂ ⊗₀ Y₂) ]⟨
+                          i⇒
+                        ≈ i⇐
+                        ⟩
+swapInner-selfInverse =
+  to-unique (_≅_.iso swapInner-iso) swapInner.iso Equiv.refl
 
 swapInner-braiding′ : [ (W ⊗₀ X) ⊗₀ (Y ⊗₀ Z) ⇒ (Y ⊗₀ W) ⊗₀ (Z ⊗₀ X) ]⟨
                         i⇒         ⇒⟨ (W ⊗₀ Y) ⊗₀ (X ⊗₀ Z) ⟩
