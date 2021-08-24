@@ -53,6 +53,7 @@ import Categories.Category.CartesianClosed.Locally.Properties
 import Categories.Category.CartesianClosed.Properties
 import Categories.Category.Closed
 import Categories.Category.Cocartesian
+import Categories.Category.Cocartesian.Bundle
 import Categories.Category.Cocomplete
 import Categories.Category.Cocomplete.Finitely
 import Categories.Category.Cocomplete.Finitely.Properties
@@ -86,6 +87,7 @@ import Categories.Category.Construction.KanComplex
 import Categories.Category.Construction.KaroubiEnvelope
 import Categories.Category.Construction.KaroubiEnvelope.Properties
 import Categories.Category.Construction.Kleisli
+import Categories.Category.Construction.LT-Models
 import Categories.Category.Construction.MonoidAsCategory
 import Categories.Category.Construction.MonoidalFunctors
 import Categories.Category.Construction.Monoids
@@ -141,6 +143,7 @@ import Categories.Category.Instance.Groupoids
 import Categories.Category.Instance.KanComplexes
 import Categories.Category.Instance.LawvereTheories
 import Categories.Category.Instance.Monoidals
+import Categories.Category.Instance.Nat
 import Categories.Category.Instance.One
 import Categories.Category.Instance.PartialFunctions
 import Categories.Category.Instance.PointedSets
@@ -213,6 +216,9 @@ import Categories.Category.Species
 import Categories.Category.Species.Constructions
 import Categories.Category.SubCategory
 import Categories.Category.Topos
+import Categories.Category.Unbundled
+import Categories.Category.Unbundled.Properties
+import Categories.Category.Unbundled.Utilities
 import Categories.CoYoneda
 import Categories.Comonad
 import Categories.Comonad.Relative
@@ -285,6 +291,7 @@ import Categories.Functor.Hom
 import Categories.Functor.Hom.Properties
 import Categories.Functor.Hom.Properties.Contra
 import Categories.Functor.Hom.Properties.Covariant
+import Categories.Functor.IdentityOnObjects
 import Categories.Functor.Instance.0-Truncation
 import Categories.Functor.Instance.01-Truncation
 import Categories.Functor.Instance.Core
@@ -386,6 +393,8 @@ import Categories.Pseudofunctor.Identity
 import Categories.Pseudofunctor.Instance.EnrichedUnderlying
 import Categories.Tactic.Category
 import Categories.Theory.Lawvere
+import Categories.Theory.Lawvere.Instance.Identity
+import Categories.Theory.Lawvere.Instance.Triv
 import Categories.Utils.EqReasoning
 import Categories.Utils.Product
 import Categories.Yoneda
