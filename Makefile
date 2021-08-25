@@ -1,8 +1,8 @@
 .PHONY: test Everything.agda clean
 
-OTHEROPTS=
+OTHEROPTS = --auto-inline -Werror
 
-RTSARGS = +RTS -M6G -A128M ${OTHEROPTS} -RTS
+RTSARGS = +RTS -M6G -A128M -RTS ${OTHEROPTS}
 
 test: Everything.agda
 	agda ${RTSARGS} -i. Everything.agda
