@@ -16,21 +16,13 @@ open import Categories.Category
 
 module Categories.Category.Monoidal.Core {o ℓ e} (C : Category o ℓ e) where
 
-open import Level
-open import Function using (_$_)
-open import Data.Product using (_×_; _,_; curry′)
+open import Level using (_⊔_)
+open import Data.Product using (_,_; curry′)
 
-open import Categories.Category.Product
-open import Categories.Functor renaming (id to idF)
+open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor using (Bifunctor; appˡ; appʳ)
-open import Categories.Functor.Properties using ([_]-resp-≅)
-open import Categories.NaturalTransformation renaming (id to idN)
-open import Categories.NaturalTransformation.NaturalIsomorphism
-  hiding (unitorˡ; unitorʳ; associator; _≃_)
-open import Categories.Morphism C using (_≅_; module ≅)
-open import Categories.Morphism.IsoEquiv C using (_≃_; ⌞_⌟)
-open import Categories.Morphism.Isomorphism C using (_∘ᵢ_; lift-triangle′; lift-pentagon′)
-open import Categories.Morphism.Reasoning C
+open import Categories.Morphism C using (_≅_)
+open import Categories.Morphism.Reasoning C using (conjugate-from)
 
 private
   module C = Category C

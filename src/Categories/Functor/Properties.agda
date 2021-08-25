@@ -11,12 +11,14 @@ open import Relation.Binary using (_Preserves_⟶_)
 open import Relation.Nullary
 
 open import Categories.Category
+open import Categories.Category.Construction.Core using (module Shorthands)
 open import Categories.Functor
 import Categories.Morphism as Morphism
 import Categories.Morphism.Reasoning as Reas
 open import Categories.Morphism.IsoEquiv as IsoEquiv
-open import Categories.Morphism.Isomorphism
 open import Categories.Morphism.Notation
+
+open Shorthands using (_∘ᵢ_)
 
 private
   variable

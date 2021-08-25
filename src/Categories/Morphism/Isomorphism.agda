@@ -23,10 +23,9 @@ import Categories.Morphism.Properties as MorphismProps
 import Categories.Morphism.IsoEquiv as IsoEquiv
 import Categories.Category.Construction.Path as Path
 
-open Core 𝒞 using (Core; Core-isGroupoid; CoreGroupoid)
+open Core 𝒞 using (Core; Core-isGroupoid; CoreGroupoid; module Shorthands)
 open Morphism 𝒞
 open MorphismProps 𝒞
-open IsoEquiv 𝒞 using (_≃_; ⌞_⌟; ≃-sym)
 open Path 𝒞
 
 import Categories.Morphism.Reasoning as MR
@@ -36,16 +35,15 @@ open Definitions 𝒞
 
 private
   module MCore where
-    open IsGroupoid    Core-isGroupoid public
     open GroupoidProps CoreGroupoid public
-    open MorphismProps Core public
-    open Morphism      Core public
-    open Path          Core public
+    open MorphismProps Core         public
+    open Morphism      Core         public
+    open Path          Core         public
 
   variable
     A B C D E F : Obj
 
-open MCore using () renaming (_∘_ to _∘ᵢ_) public
+open Shorthands hiding (_≅_)
 
 CommutativeIso = IsGroupoid.CommutativeSquare Core-isGroupoid
 
@@ -90,23 +88,23 @@ module _ where
     ; iso = λ {_ _ f⁺} → record { isoˡ = isoˡ′ f⁺ ; isoʳ = isoʳ′ f⁺ }
     }
     where
-      open MCore.HomReasoning
+      open HomReasoningᵢ
 
-      isoˡ′ : (f⁺ : A [ _≅_ ]⁺ B) → ∘ᵢ-tc (reverse f⁺) ∘ᵢ ∘ᵢ-tc f⁺ ≃ ≅.refl
+      isoˡ′ : (f⁺ : A [ _≅_ ]⁺ B) → ∘ᵢ-tc (reverse f⁺) ∘ᵢ ∘ᵢ-tc f⁺ ≈ᵢ ≅.refl
       isoˡ′ f⁺ = begin
           ∘ᵢ-tc (reverse f⁺) ∘ᵢ ∘ᵢ-tc f⁺
         ≡⟨ ≡.cong (_∘ᵢ ∘ᵢ-tc f⁺) (reverse⇒≅-sym f⁺) ⟩
           ≅.sym (∘ᵢ-tc f⁺) ∘ᵢ ∘ᵢ-tc f⁺
-        ≈⟨ MCore.iso.isoˡ ⟩
+        ≈⟨ ⁻¹-iso.isoˡ ⟩
           ≅.refl
         ∎
 
-      isoʳ′ : (f⁺ : A [ _≅_ ]⁺ B) → ∘ᵢ-tc f⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺) ≃ ≅.refl
+      isoʳ′ : (f⁺ : A [ _≅_ ]⁺ B) → ∘ᵢ-tc f⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺) ≈ᵢ ≅.refl
       isoʳ′ f⁺ = begin
           ∘ᵢ-tc f⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺)
         ≡⟨ ≡.cong (∘ᵢ-tc f⁺ ∘ᵢ_) (reverse⇒≅-sym f⁺) ⟩
           ∘ᵢ-tc f⁺ ∘ᵢ ≅.sym (∘ᵢ-tc f⁺)
-        ≈⟨ MCore.iso.isoʳ ⟩
+        ≈⟨ ⁻¹-iso.isoʳ ⟩
           ≅.refl
         ∎
 
@@ -117,7 +115,7 @@ module _ where
   ≅*⇒⇒*-cong : ≅⁺⇒⇒⁺ {A} {B} Preserves _≃⁺_ ⟶ _≈⁺_
   ≅*⇒⇒*-cong {_} {_} {f⁺} {g⁺} f⁺≃⁺g⁺ = begin
     ∘-tc (≅⁺⇒⇒⁺ f⁺)  ≡˘⟨ from-∘ᵢ-tc f⁺ ⟩
-    from (∘ᵢ-tc f⁺)  ≈⟨ _≃_.from-≈ f⁺≃⁺g⁺ ⟩
+    from (∘ᵢ-tc f⁺)  ≈⟨ from-≈ f⁺≃⁺g⁺ ⟩
     from (∘ᵢ-tc g⁺)  ≡⟨ from-∘ᵢ-tc g⁺ ⟩
     ∘-tc (≅⁺⇒⇒⁺ g⁺)  ∎
     where open HomReasoning
@@ -129,7 +127,7 @@ module _ where
     ∘ᵢ-tc g⁺ ∘ᵢ (∘ᵢ-tc f⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺))  ≈⟨ pullˡ eq ⟩
     ∘ᵢ-tc h⁺ ∘ᵢ ∘ᵢ-tc (reverse f⁺)                ∎
     where
-      open MCore.HomReasoning
+      open HomReasoningᵢ
       open MR Core
       module I {A B} (f⁺ : A [ _≅_ ]⁺ B) = Morphism.Iso (IsGroupoid.iso TransitiveClosure-groupoid {f = f⁺})
 
@@ -180,64 +178,63 @@ module _ where
 
   -- projecting isomorphism commutations to morphism commutations
 
-  project-triangle : {g : A ≅ B} {f : C ≅ A} {h : C ≅ B} → g ∘ᵢ f ≃ h → from g ∘ from f ≈ from h
-  project-triangle = _≃_.from-≈
+  project-triangle : {g : A ≅ B} {f : C ≅ A} {h : C ≅ B} → g ∘ᵢ f ≈ᵢ h → from g ∘ from f ≈ from h
+  project-triangle = from-≈
 
-  project-square : {g : A ≅ B} {f : C ≅ A} {i : D ≅ B} {h : C ≅ D} → g ∘ᵢ f ≃ i ∘ᵢ h → from g ∘ from f ≈ from i ∘ from h
-  project-square = _≃_.from-≈
+  project-square : {g : A ≅ B} {f : C ≅ A} {i : D ≅ B} {h : C ≅ D} → g ∘ᵢ f ≈ᵢ i ∘ᵢ h → from g ∘ from f ≈ from i ∘ from h
+  project-square = from-≈
 
   -- direct lifting from morphism commutations to isomorphism commutations
 
-  lift-triangle′ : {f : A ≅ B} {g : C ≅ A} {h : C ≅ B} → from f ∘ from g ≈ from h → f ∘ᵢ g ≃ h
+  lift-triangle′ : {f : A ≅ B} {g : C ≅ A} {h : C ≅ B} → from f ∘ from g ≈ from h → f ∘ᵢ g ≈ᵢ h
   lift-triangle′ = ⌞_⌟
 
-  lift-square′ : {f : A ≅ B} {g : C ≅ A} {h : D ≅ B} {i : C ≅ D} → from f ∘ from g ≈ from h ∘ from i → f ∘ᵢ g ≃ h ∘ᵢ i
+  lift-square′ : {f : A ≅ B} {g : C ≅ A} {h : D ≅ B} {i : C ≅ D} → from f ∘ from g ≈ from h ∘ from i → f ∘ᵢ g ≈ᵢ h ∘ᵢ i
   lift-square′ = ⌞_⌟
 
   lift-pentagon′ : {f : A ≅ B} {g : C ≅ A} {h : D ≅ C} {i : E ≅ B} {j : D ≅ E} →
-                   from f ∘ from g ∘ from h ≈ from i ∘ from j → f ∘ᵢ g ∘ᵢ h ≃ i ∘ᵢ j
+                   from f ∘ from g ∘ from h ≈ from i ∘ from j → f ∘ᵢ g ∘ᵢ h ≈ᵢ i ∘ᵢ j
   lift-pentagon′ = ⌞_⌟
 
   open MR Core
-  open MCore using (_⁻¹)
-  open MCore.HomReasoning
+  open HomReasoningᵢ
   open MR.GroupoidR _ Core-isGroupoid
 
   squares×≃⇒≃ : {f f′ : A ≅ B} {g : A ≅ C} {h : B ≅ D} {i i′ : C ≅ D} →
-                CommutativeIso f g h i → CommutativeIso f′ g h i′ → i ≃ i′ → f ≃ f′
+                CommutativeIso f g h i → CommutativeIso f′ g h i′ → i ≈ᵢ i′ → f ≈ᵢ f′
   squares×≃⇒≃ sq₁ sq₂ eq = MCore.isos×≈⇒≈ eq helper₁ (MCore.≅.sym helper₂) sq₁ sq₂
     where
-      helper₁ = record { iso = MCore.iso }
-      helper₂ = record { iso = MCore.iso }
+      helper₁ = record { iso = ⁻¹-iso }
+      helper₂ = record { iso = ⁻¹-iso }
 
   -- imagine a triangle prism, if all the sides and the top face commute, the bottom face commute.
   triangle-prism : {i′ : A ≅ B} {f′ : C ≅ A} {h′ : C ≅ B} {i : D ≅ E} {j : D ≅ A}
     {k : E ≅ B} {f : F ≅ D} {g : F ≅ C} {h : F ≅ E} →
-    i′ ∘ᵢ f′ ≃ h′ →
+    i′ ∘ᵢ f′ ≈ᵢ h′ →
     CommutativeIso i j k i′ → CommutativeIso f g j f′ → CommutativeIso h g k h′ →
-    i ∘ᵢ f ≃ h
+    i ∘ᵢ f ≈ᵢ h
   triangle-prism {i′ = i′} {f′} {_} {i} {_} {k} {f} {g} {_} eq sq₁ sq₂ sq₃ =
     squares×≃⇒≃ glued sq₃ eq
     where
       glued : CommutativeIso (i ∘ᵢ f) g k (i′ ∘ᵢ f′)
-      glued = ≃-sym (glue (≃-sym sq₁) (≃-sym sq₂))
+      glued = ⟺ (glue (⟺ sq₁) (⟺ sq₂))
 
   elim-triangleˡ : {f : A ≅ B} {g : C ≅ A} {h : D ≅ C} {i : D ≅ B} {j : D ≅ A} →
-                   f ∘ᵢ g ∘ᵢ h ≃ i → f ∘ᵢ j ≃ i → g ∘ᵢ h ≃ j
+                   f ∘ᵢ g ∘ᵢ h ≈ᵢ i → f ∘ᵢ j ≈ᵢ i → g ∘ᵢ h ≈ᵢ j
   elim-triangleˡ perim tri = MCore.mono _ _ (perim ○ ⟺ tri)
 
   elim-triangleˡ′ : {f : A ≅ B} {g : C ≅ A} {h : D ≅ C} {i : D ≅ B} {j : C ≅ B} →
-                    f ∘ᵢ g ∘ᵢ h ≃ i → j ∘ᵢ h ≃ i → f ∘ᵢ g ≃ j
+                    f ∘ᵢ g ∘ᵢ h ≈ᵢ i → j ∘ᵢ h ≈ᵢ i → f ∘ᵢ g ≈ᵢ j
   elim-triangleˡ′ {f = f} {g} {h} {i} {j} perim tri = MCore.epi _ _ ( begin
-    (f ∘ᵢ g) ∘ᵢ h ≈⟨ MCore.assoc ⟩
+    (f ∘ᵢ g) ∘ᵢ h ≈⟨ ⌞ assoc ⌟ ⟩
     f ∘ᵢ g ∘ᵢ h   ≈⟨ perim ⟩
     i             ≈˘⟨ tri ⟩
     j ∘ᵢ h        ∎ )
 
   cut-squareʳ : {g : A ≅ B} {f : A ≅ C} {h : B ≅ D} {i : C ≅ D} {j : B ≅ C} →
-                CommutativeIso g f h i → i ∘ᵢ j ≃ h → j ∘ᵢ g ≃ f
+                CommutativeIso g f h i → i ∘ᵢ j ≈ᵢ h → j ∘ᵢ g ≈ᵢ f
   cut-squareʳ {g = g} {f = f} {h = h} {i = i} {j = j} sq tri = begin
     j ∘ᵢ g            ≈⟨ switch-fromtoˡ′ {f = i} {h = j} {k = h} tri ⟩∘⟨refl ⟩
-    (i ⁻¹ ∘ᵢ h) ∘ᵢ g  ≈⟨ MCore.assoc ⟩
-    i ⁻¹ ∘ᵢ h ∘ᵢ g    ≈˘⟨ switch-fromtoˡ′ {f = i} {h = f} {k = h ∘ᵢ g} (≃-sym sq) ⟩
+    (i ⁻¹ ∘ᵢ h) ∘ᵢ g  ≈⟨ ⌞ assoc ⌟ ⟩
+    i ⁻¹ ∘ᵢ h ∘ᵢ g    ≈˘⟨ switch-fromtoˡ′ {f = i} {h = f} {k = h ∘ᵢ g} (⟺ sq) ⟩
     f                 ∎

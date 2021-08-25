@@ -6,6 +6,7 @@ module Categories.Bicategory.Extras {o ℓ e t} (Bicat : Bicategory o ℓ e t) w
 
 open import Data.Product using (_,_)
 
+import Categories.Category.Construction.Core as Core
 open import Categories.Category.Construction.Functors using (Functors; module curry)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor using (flip-bifunctor)
@@ -16,9 +17,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIs
 
 import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
-import Categories.Morphism.IsoEquiv as IsoEquiv
-open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
-  using (push-eq)
+open import Categories.NaturalTransformation.NaturalIsomorphism.Properties using (push-eq)
 
 open Bicategory Bicat public
 private
@@ -27,11 +26,10 @@ private
     f g h i : A ⇒₁ B
     α β γ δ : f ⇒₂ g
 
-infixr 7 _∘ᵢ_
-infixr 9 _▷ᵢ_
-infixl 9 _◁ᵢ_
-infixr 6 _⟩⊚⟨_ refl⟩⊚⟨_
-infixl 7 _⟩⊚⟨refl
+infixr 10 _▷ᵢ_
+infixl 10 _◁ᵢ_
+infixr 6  _⟩⊚⟨_ refl⟩⊚⟨_
+infixl 7  _⟩⊚⟨refl
 
 module ⊚ {A B C}          = Functor (⊚ {A} {B} {C})
 module ⊚-assoc {A B C D}  = NaturalIsomorphism (⊚-assoc {A} {B} {C} {D})
@@ -39,32 +37,39 @@ module unitˡ {A B}        = NaturalIsomorphism (unitˡ {A} {B})
 module unitʳ {A B}        = NaturalIsomorphism (unitʳ {A} {B})
 module id {A}             = Functor (id {A})
 
-unitorˡ : {A B : Obj} {f : A ⇒₁ B} → Mor._≅_ (hom A B) (id₁ ∘ₕ f) f
+private
+  module MR′ {A} {B} where
+    open Core.Shorthands (hom A B) public
+    open MR (hom A B) public hiding (push-eq)
+  open MR′
+
+unitorˡ : {A B : Obj} {f : A ⇒₁ B} → id₁ ∘ₕ f ≅ f
 unitorˡ {_} {_} {f} = record
   { from = unitˡ.⇒.η (_ , f)
   ; to   = unitˡ.⇐.η (_ , f)
   ; iso  = unitˡ.iso (_ , f)
   }
 
-module unitorˡ {A B f} = Mor._≅_ (unitorˡ {A} {B} {f})
+module unitorˡ {A B f} = _≅_ (unitorˡ {A} {B} {f})
 
-unitorʳ : {A B : Obj} {f : A ⇒₁ B} → Mor._≅_ (hom A B) (f ∘ₕ id₁) f
+unitorʳ : {A B : Obj} {f : A ⇒₁ B} → f ∘ₕ id₁ ≅ f
 unitorʳ {_} {_} {f} = record
   { from = unitʳ.⇒.η (f , _)
   ; to   = unitʳ.⇐.η (f , _)
   ; iso  = unitʳ.iso (f , _)
   }
 
-module unitorʳ {A B f} = Mor._≅_ (unitorʳ {A} {B} {f})
+module unitorʳ {A B f} = _≅_ (unitorʳ {A} {B} {f})
 
-associator : {A B C D : Obj} {f : D ⇒₁ B} {g : C ⇒₁ D} {h : A ⇒₁ C} →  Mor._≅_ (hom A B) ((f ∘ₕ g) ∘ₕ h) (f ∘ₕ g ∘ₕ h)
+associator : {A B C D : Obj} {f : D ⇒₁ B} {g : C ⇒₁ D} {h : A ⇒₁ C} →
+             (f ∘ₕ g) ∘ₕ h ≅ f ∘ₕ g ∘ₕ h
 associator {_} {_} {_} {_} {f} {g} {h} = record
   { from = ⊚-assoc.⇒.η ((f , g) , h)
   ; to   = ⊚-assoc.⇐.η ((f , g) , h)
   ; iso  = ⊚-assoc.iso ((f , g) , h)
   }
 
-module associator {A B C D} {f : C ⇒₁ B} {g : D ⇒₁ C} {h} = Mor._≅_ (associator {A = A} {B = B} {f = f} {g = g} {h = h})
+module associator {A B C D} {f : C ⇒₁ B} {g : D ⇒₁ C} {h} = _≅_ (associator {A = A} {B = B} {f = f} {g = g} {h = h})
 
 module Shorthands where
   λ⇒ = unitorˡ.from
@@ -114,14 +119,6 @@ id₂◁ = ⊚.identity
 
 open hom.HomReasoning
 open hom.Equiv
-private
-  module MR′ {A} {B} where
-    open MR (hom A B) public hiding (push-eq)
-    open Mor (hom A B) using (_≅_; module ≅) public
-    open IsoEquiv (hom A B) using (⌞_⌟; _≃_) public
-  open MR′
-idᵢ  = λ {A B f} → ≅.refl {A} {B} {f}
-_∘ᵢ_ = λ {A B f g h} α β → ≅.trans {A} {B} {f} {g} {h} β α
 
 _⊚ᵢ_ : f ≅ h → g ≅ i → f ⊚₀ g ≅ h ⊚₀ i
 α ⊚ᵢ β = record
@@ -131,7 +128,6 @@ _⊚ᵢ_ : f ≅ h → g ≅ i → f ⊚₀ g ≅ h ⊚₀ i
     { isoˡ = [ ⊚ ]-merge (isoˡ α) (isoˡ β) ○ ⊚.identity
     ; isoʳ = [ ⊚ ]-merge (isoʳ α) (isoʳ β) ○ ⊚.identity }
   }
-  where open _≅_
 
 _◁ᵢ_ : {g h : B ⇒₁ C} (α : g ≅ h) (f : A ⇒₁ B) → g ∘ₕ f ≅ h ∘ₕ f
 α ◁ᵢ _ = α ⊚ᵢ idᵢ
@@ -170,7 +166,7 @@ _⟩⊚⟨refl = ⊚-resp-≈ˡ
   α ∘ᵥ λ⇒            ∎
 
 ▷-∘ᵥ-λ⇐ : (id₁ ▷ α) ∘ᵥ λ⇐ ≈ λ⇐ ∘ᵥ α
-▷-∘ᵥ-λ⇐ = conjugate-to (≅.sym unitorˡ) (≅.sym unitorˡ) λ⇒-∘ᵥ-▷
+▷-∘ᵥ-λ⇐ = conjugate-to (unitorˡ ⁻¹) (unitorˡ ⁻¹) λ⇒-∘ᵥ-▷
 
 ρ⇒-∘ᵥ-◁ : ρ⇒ ∘ᵥ (α ◁ id₁) ≈ α ∘ᵥ ρ⇒
 ρ⇒-∘ᵥ-◁ {α = α} = begin
@@ -179,7 +175,7 @@ _⟩⊚⟨refl = ⊚-resp-≈ˡ
   α ∘ᵥ ρ⇒              ∎
 
 ◁-∘ᵥ-ρ⇐ : (α ◁ id₁) ∘ᵥ ρ⇐ ≈ ρ⇐ ∘ᵥ α
-◁-∘ᵥ-ρ⇐ = conjugate-to (≅.sym unitorʳ) (≅.sym unitorʳ) ρ⇒-∘ᵥ-◁
+◁-∘ᵥ-ρ⇐ = conjugate-to (unitorʳ ⁻¹) (unitorʳ ⁻¹) ρ⇒-∘ᵥ-◁
 
 α⇐-◁-∘ₕ : α⇐ ∘ᵥ (γ ◁ (g ∘ₕ f)) ≈ ((γ ◁ g) ◁ f) ∘ᵥ α⇐
 α⇐-◁-∘ₕ {γ = γ} {g = g} {f = f} = begin
@@ -206,20 +202,20 @@ _⟩⊚⟨refl = ⊚-resp-≈ˡ
 ◁-▷-exchg = [ ⊚ ]-commute
 
 triangle-iso : {f : A ⇒₁ B} {g : B ⇒₁ C} →
-               (g ▷ᵢ unitorˡ ∘ᵢ associator) ≃ (unitorʳ ◁ᵢ f)
+               (g ▷ᵢ unitorˡ ∘ᵢ associator) ≈ᵢ (unitorʳ ◁ᵢ f)
 triangle-iso = ⌞ triangle ⌟
 
 triangle-inv : {f : A ⇒₁ B} {g : B ⇒₁ C} → α⇐ ∘ᵥ g ▷ λ⇐ ≈ ρ⇐ ◁ f
-triangle-inv = _≃_.to-≈ triangle-iso
+triangle-inv = to-≈ triangle-iso
 
 pentagon-iso : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
-               (i ▷ᵢ associator ∘ᵢ associator ∘ᵢ associator ◁ᵢ f) ≃
+               (i ▷ᵢ associator ∘ᵢ associator ∘ᵢ associator ◁ᵢ f) ≈ᵢ
                (associator {f = i} {h} {g ∘ₕ f} ∘ᵢ associator)
 pentagon-iso = ⌞ pentagon ⌟
 
 pentagon-inv : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
                (α⇐ ◁ f ∘ᵥ α⇐) ∘ᵥ i ▷ α⇐ ≈ α⇐ ∘ᵥ α⇐ {f = i} {h} {g ∘ₕ f}
-pentagon-inv = _≃_.to-≈ pentagon-iso
+pentagon-inv = to-≈ pentagon-iso
 
 module UnitorCoherence where
 

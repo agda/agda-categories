@@ -12,8 +12,9 @@ module Categories.Category.Monoidal.Interchange.Braided
 open import Level using (_⊔_)
 open import Data.Product using (_,_)
 
+import Categories.Category.Construction.Core C as Core
 import Categories.Category.Monoidal.Construction.Product as MonoidalProduct
-open import Categories.Category.Monoidal.Braided.Properties
+open import Categories.Category.Monoidal.Braided.Properties as BraidedProps
   using (braiding-coherence; inv-Braided; inv-braiding-coherence)
 open import Categories.Category.Monoidal.Interchange using (HasInterchange)
 open import Categories.Category.Monoidal.Properties using (module Kelly's)
@@ -23,8 +24,6 @@ open import Categories.Category.Product using (_⁂_; assocˡ)
 open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (_≃_; niHelper)
-open import Categories.Morphism C using (_≅_; module ≅)
-open import Categories.Morphism.IsoEquiv C using (module _≃_)
 open import Categories.Morphism.Reasoning C
 
 open Category C
@@ -35,28 +34,14 @@ private
     W W₁ W₂ X X₁ X₂ Y Y₁ Y₂ Z Z₁ Z₂ : Obj
     f g h i : X ⇒ Y
 
--- Shorthands for composing and inverting isomorphisms.
-
-open ≅ using () renaming (refl to idᵢ; sym to _⁻¹)
-private
-  infixr 9 _∘ᵢ_
-  _∘ᵢ_ = λ {X Y Z} f g → ≅.trans {X} {Y} {Z} g f
-
 -- Braided monoidal categories have an interchange map.
 
 open MonoidalReasoning M
 open MonoidalUtilities M
 open Braided B renaming (associator to α)
-open Shorthands
-
--- Shorthands for braiding.
-
-private
-  σ : X ⊗₀ Y ≅ Y ⊗₀ X
-  σ = braiding.FX≅GX
-  module σ  {X Y} = _≅_ (σ {X} {Y})
-  σ⇒ = σ.from
-  σ⇐ = σ.to
+open Core.Shorthands            -- for idᵢ, _∘ᵢ_, ...
+open Shorthands                 -- for λ⇒, ρ⇒, α⇒, ...
+open BraidedProps.Shorthands B  -- for σ⇒, ...
 
 -- The "four middle interchange" for braided tensor products.
 
@@ -156,13 +141,12 @@ private
     id ⊗₁ α⇒ ∘ α⇒ ⊗₁ id                                ≈⟨ refl⟩∘⟨ (begin
       α⇒ ⊗₁ id                                             ≈⟨ switch-fromtoˡ α (switch-fromtoˡ (idᵢ ⊗ᵢ α) pentagon) ⟩
       α⇐ ∘ id ⊗₁ α⇐ ∘ α⇒ ∘ α⇒                             ≈˘⟨ refl⟩∘⟨ refl⟩⊗⟨ cancelˡ α.isoʳ ⟩∘⟨refl ⟩
-      α⇐ ∘ id ⊗₁ (α⇒ ∘ α⇐ ∘ α⇐) ∘ α⇒ ∘ α⇒                 ≈˘⟨ refl⟩∘⟨ refl⟩⊗⟨ pullʳ inv-pentagon ⟩∘⟨refl ⟩
+      α⇐ ∘ id ⊗₁ (α⇒ ∘ α⇐ ∘ α⇐) ∘ α⇒ ∘ α⇒                 ≈˘⟨ refl⟩∘⟨ refl⟩⊗⟨ pullʳ pentagon-inv ⟩∘⟨refl ⟩
       α⇐ ∘ id ⊗₁ (α-mid ∘ id ⊗₁ α⇐) ∘ α⇒ ∘ α⇒             ≈⟨ refl⟩∘⟨ pushˡ split₂ˡ ⟩
       α⇐ ∘ id ⊗₁ α-mid ∘ id ⊗₁ (id ⊗₁ α⇐) ∘ α⇒ ∘ α⇒       ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ assoc-commute-from ⟩
       α⇐ ∘ id ⊗₁ α-mid ∘ α⇒ ∘ (id ⊗₁ id) ⊗₁ α⇐ ∘ α⇒       ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ⊗.identity ⟩⊗⟨refl ⟩∘⟨refl ⟩
       α⇐ ∘ id ⊗₁ α-mid ∘ α⇒ ∘ id ⊗₁ α⇐ ∘ α⇒               ∎) ⟩
     id ⊗₁ α⇒ ∘ α⇐ ∘ id ⊗₁ α-mid ∘ α⇒ ∘ id ⊗₁ α⇐ ∘ α⇒  ∎
-    where inv-pentagon = λ {W X Y Z} → _≃_.to-≈ (pentagon-iso {W} {X} {Y} {Z})
 
 swapInner-assoc : [ ((X₁ ⊗₀ X₂) ⊗₀ (Y₁ ⊗₀ Y₂)) ⊗₀ (Z₁ ⊗₀ Z₂) ⇒
                     (X₁ ⊗₀ (Y₁ ⊗₀ Z₁)) ⊗₀ (X₂ ⊗₀ (Y₂ ⊗₀ Z₂)) ]⟨
@@ -232,7 +216,7 @@ swapInner-assoc = begin
       α⇒ ∘ (α⇐ ∘ α⇐) ⊗₁ id ∘ (id ⊗₁ σ⇒) ⊗₁ id ∘ (α⇐ ∘ (id ⊗₁ α⇐ ∘ α⇒)) ∘
       (α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐) ⊗₁ id ∘ α⇐
                                                                   ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ (sym-assoc ○
-                                                                         (conjugate-to α (α ⊗ᵢ idᵢ) (sym-assoc ○ inv-pentagon))) ⟩∘⟨refl ⟩
+                                                                         (conjugate-to α (α ⊗ᵢ idᵢ) (sym-assoc ○ pentagon-inv))) ⟩∘⟨refl ⟩
       α⇒ ∘ (α⇐ ∘ α⇐) ⊗₁ id ∘ (id ⊗₁ σ⇒) ⊗₁ id ∘ (α⇒ ⊗₁ id ∘ α⇐) ∘
       (α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐) ⊗₁ id ∘ α⇐
                                                                   ≈˘⟨ refl⟩∘⟨ split₁ Equiv.refl ⟩∘⟨
@@ -245,7 +229,7 @@ swapInner-assoc = begin
                                                                   ≈˘⟨ refl⟩∘⟨ pushˡ split₁ˡ ⟩
       α⇒ ∘ ((α⇐ ∘ α⇐ ∘ id ⊗₁ σ⇒ ∘ α⇒) ∘ (α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐) ⊗₁ id) ⊗₁ id ∘
       α⇐ ∘ α⇐
-                                                                  ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ (sym-assoc ○ inv-pentagon) ⟩
+                                                                  ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ (sym-assoc ○ pentagon-inv) ⟩
       α⇒ ∘ ((α⇐ ∘ α⇐ ∘ id ⊗₁ σ⇒ ∘ α⇒) ∘ (α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐) ⊗₁ id) ⊗₁ id ∘
       α⇐ ⊗₁ id ∘ α⇐ ∘ id ⊗₁ α⇐
                                                                   ≈⟨ refl⟩∘⟨ pullˡ (⟺ split₁ˡ ○ (assoc ⟩⊗⟨refl)) ⟩
@@ -262,8 +246,8 @@ swapInner-assoc = begin
         α⇒ ∘ (σ⇒ ⊗₁ id) ⊗₁ id ∘ α⇐ ⊗₁ id ∘ α⇐                                   ≈⟨ pullʳ (refl⟩∘⟨ extendʳ assoc-commute-from) ⟩
         (α⇐ ∘ α⇐ ∘ id ⊗₁ σ⇒ ∘ id ⊗₁ α⇐) ∘ α⇒ ∘
         σ⇒ ⊗₁ (id ⊗₁ id) ∘ α⇒ ∘ α⇐ ⊗₁ id ∘ α⇐                                   ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ ⟺ split₂ˡ) ⟩∘⟨ refl⟩∘⟨ (refl⟩⊗⟨ ⊗.identity ⟩∘⟨
-           conjugate-from (idᵢ ⊗ᵢ (α ⁻¹)) (α ⁻¹) inv-pentagon) ⟩
-        (α⇐ ∘ α⇐ ∘ id ⊗₁ (σ⇒ ∘ α⇐)) ∘ α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐ ∘ id ⊗₁ α⇒            ≈˘⟨ extendʳ (sym-assoc ○ inv-pentagon) ⟩∘⟨refl ⟩
+           conjugate-from (idᵢ ⊗ᵢ (α ⁻¹)) (α ⁻¹) pentagon-inv) ⟩
+        (α⇐ ∘ α⇐ ∘ id ⊗₁ (σ⇒ ∘ α⇐)) ∘ α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐ ∘ id ⊗₁ α⇒            ≈˘⟨ extendʳ (sym-assoc ○ pentagon-inv) ⟩∘⟨refl ⟩
         (α⇐ ⊗₁ id ∘ (α⇐ ∘ id ⊗₁ α⇐) ∘ id ⊗₁ (σ⇒ ∘ α⇐)) ∘
         α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐ ∘ id ⊗₁ α⇒                                           ≈˘⟨ (refl⟩∘⟨ pushʳ split₂ˡ) ⟩∘⟨refl ⟩
         (α⇐ ⊗₁ id ∘ α⇐ ∘ id ⊗₁ (α⇐ ∘ σ⇒ ∘ α⇐)) ∘
@@ -290,7 +274,7 @@ swapInner-assoc = begin
         ((((α⇐ ∘ id ⊗₁ σ⇒) ∘ α⇒) ⊗₁ id ∘ (σ⇒ ⊗₁ id) ⊗₁ id) ∘ α⇐) ∘
         α⇐ ∘ id ⊗₁ id ⊗₁ σ⇒ ∘ id ⊗₁ α⇒                                          ≈˘⟨ ((sym-assoc ○ sym-assoc) ⟩⊗⟨refl ○ split₁ˡ) ⟩∘⟨refl ⟩∘⟨ refl⟩∘⟨ split₂ˡ ⟩
         (((α⇐ ∘ id ⊗₁ σ⇒ ∘ α⇒ ∘ σ⇒ ⊗₁ id) ⊗₁ id) ∘ α⇐) ∘
-        α⇐ ∘ id ⊗₁ (id ⊗₁ σ⇒ ∘ α⇒)                                              ≈˘⟨ extend² (sym-assoc ○ inv-pentagon) ⟩
+        α⇐ ∘ id ⊗₁ (id ⊗₁ σ⇒ ∘ α⇒)                                              ≈˘⟨ extend² (sym-assoc ○ pentagon-inv) ⟩
         (((α⇐ ∘ id ⊗₁ σ⇒ ∘ α⇒ ∘ σ⇒ ⊗₁ id) ⊗₁ id) ∘ α⇐ ⊗₁ id) ∘
         (α⇐ ∘ id ⊗₁ α⇐) ∘ id ⊗₁ (id ⊗₁ σ⇒ ∘ α⇒)                                ≈˘⟨ split₁ˡ ⟩∘⟨ pushʳ split₂ˡ ⟩
         ((α⇐ ∘ id ⊗₁ σ⇒ ∘ α⇒ ∘ σ⇒ ⊗₁ id) ∘ α⇐) ⊗₁ id ∘
@@ -319,7 +303,6 @@ swapInner-assoc = begin
     i⇒ ∘ (id ⊗₁ id) ⊗₁ j⇒ ∘ α⇒                                     ≈⟨ refl⟩∘⟨ ⊗.identity ⟩⊗⟨ ⟺ swapInner-coherent ⟩∘⟨refl ⟩
     i⇒ ∘ id ⊗₁ i⇒ ∘ α⇒
   ∎
-  where inv-pentagon = λ {W X Y Z} → _≃_.to-≈ (pentagon-iso {W} {X} {Y} {Z})
 
 private
   mid-1-elim-coh : [ X ⊗₀ (unit ⊗₀ Y) ⇒ X ⊗₀ Y ]⟨ λ⇒ ∘ α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐ ≈ id ⊗₁ λ⇒ ⟩
@@ -333,11 +316,8 @@ private
   Kelly₁′ :  [ unit ⊗₀ (X ⊗₀ Y) ⇒ X ⊗₀ Y ]⟨ λ⇒ ⊗₁ id ∘ α⇐ ≈ λ⇒ ⟩
   Kelly₁′ = ⟺ (switch-fromtoʳ α (Kelly's.coherence₁ M))
 
-  Kelly₂′ : [  X ⊗₀ (Y ⊗₀ unit) ⇒ X ⊗₀ Y ]⟨ ρ⇒ ∘ α⇐  ≈ id ⊗₁ ρ⇒ ⟩
+  Kelly₂′ : [  X ⊗₀ (Y ⊗₀ unit) ⇒ X ⊗₀ Y ]⟨ ρ⇒ ∘ α⇐ ≈ id ⊗₁ ρ⇒ ⟩
   Kelly₂′ = ⟺ (switch-fromtoʳ α (Kelly's.coherence₂ M))
-
-  Kelly₃′ : [ unit  ⇒ unit ⊗₀ unit ]⟨ λ⇐ ≈ ρ⇐ ⟩
-  Kelly₃′ = _≃_.to-≈ (Kelly's.coherence-iso₃ M)
 
   σ⁻¹-coherence : [ unit ⊗₀ X ⇒ X ]⟨ ρ⇒ ∘ σ⇒ ≈ λ⇒ ⟩
   σ⁻¹-coherence = inv-braiding-coherence (inv-Braided B)
@@ -349,7 +329,7 @@ swapInner-unitˡ : [ unit ⊗₀ (X ⊗₀ Y) ⇒ (X ⊗₀ Y) ]⟨
                   ≈ λ⇒
                   ⟩
 swapInner-unitˡ = begin
-    λ⇒ ⊗₁ λ⇒ ∘ i⇒ ∘ λ⇐ ⊗₁ id      ≈⟨ refl⟩∘⟨ swapInner-coherent ⟩∘⟨ (Kelly₃′ ⟩⊗⟨refl) ⟩
+    λ⇒ ⊗₁ λ⇒ ∘ i⇒ ∘ λ⇐ ⊗₁ id      ≈⟨ refl⟩∘⟨ swapInner-coherent ⟩∘⟨ (Kelly's.coherence-inv₃ M ⟩⊗⟨refl) ⟩
     λ⇒ ⊗₁ λ⇒ ∘ j⇒ ∘ ρ⇐ ⊗₁ id      ≈⟨ pullˡ (pushˡ serialize₁₂) ⟩
     (λ⇒ ⊗₁ id ∘ id ⊗₁ λ⇒ ∘ α⇒ ∘ swapʳ ⊗₁ id ∘ α⇐) ∘ ρ⇐ ⊗₁ id
   ≈⟨ (refl⟩∘⟨ (begin
@@ -421,12 +401,11 @@ swapInner-braiding = begin
     α⇐ ∘ id ⊗₁ (id ⊗₁ σ⇒) ∘ id ⊗₁ swapˡ ∘ α⇒           ≈⟨ [23][14]ʳ ⟩∘⟨ [13][42]ˡ ⟩
     ((α⇒ ∘ σ⇒ ⊗₁ id) ∘ α⇒ ⊗₁ id ∘ α⇐) ∘ (α⇐ ∘ id ⊗₁ α⇒) ∘ id ⊗₁ σ⇒ ∘ α⇒  ≈˘⟨ extendʳ (pushʳ (pushʳ assoc)) ⟩
     (α⇒ ∘ σ⇒ ⊗₁ id) ∘ (α⇒ ⊗₁ id ∘ (α⇐ ∘ α⇐) ∘ id ⊗₁ α⇒) ∘ id ⊗₁ σ⇒ ∘ α⇒  ≈˘⟨ refl⟩∘⟨ switch-tofromˡ (α ⊗ᵢ idᵢ)
-                                                                                (switch-tofromʳ (idᵢ ⊗ᵢ α) inv-pentagon) ⟩∘⟨refl ⟩
+                                                                                (switch-tofromʳ (idᵢ ⊗ᵢ α) pentagon-inv) ⟩∘⟨refl ⟩
     (α⇒ ∘ σ⇒ ⊗₁ id) ∘ α⇐ ∘ id ⊗₁ σ⇒ ∘ α⇒               ≈⟨ pullʳ (sym-assoc ○ pullˡ hexagon₂) ⟩
     α⇒ ∘ ((α⇐ ∘ σ⇒) ∘ α⇐) ∘ α⇒                          ≈⟨ (refl⟩∘⟨ cancelʳ α.isoˡ) ⟩
     α⇒ ∘ (α⇐ ∘ σ⇒)                                       ≈⟨ cancelˡ α.isoʳ ⟩
     σ⇒                                                   ∎
-  where inv-pentagon = _≃_.to-≈ pentagon-iso
 
 -- Braided monoidal categories have an interchange.
 
