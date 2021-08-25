@@ -10,6 +10,7 @@ open import Function using (_$_)
 open import Data.Product using (_×_; _,_; curry′)
 
 open import Categories.Category.Product
+import Categories.Category.Construction.Core as Core
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor; appˡ; appʳ)
 open import Categories.Functor.Properties using ([_]-resp-≅)
@@ -17,18 +18,17 @@ open import Categories.NaturalTransformation renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   hiding (unitorˡ; unitorʳ; associator; _≃_)
 
-infixr 10 _⊗ᵢ_
-
-open import Categories.Morphism C using (_≅_; module ≅)
-open import Categories.Morphism.IsoEquiv C using (_≃_; ⌞_⌟)
-open import Categories.Morphism.Isomorphism C using (_∘ᵢ_; lift-triangle′; lift-pentagon′)
+--open import Categories.Morphism C using (_≅_)
+--open import Categories.Morphism.IsoEquiv C using (_≃_; ⌞_⌟)
+open import Categories.Morphism.Isomorphism C using (lift-triangle′; lift-pentagon′)
 open import Categories.Morphism.Reasoning C
 
 private
   module C = Category C
 
-open C hiding (id; identityˡ; identityʳ; assoc)
+open C hiding (identityˡ; identityʳ; assoc)
 open Commutation C
+open Core.Shorthands C
 
 private
   variable
@@ -113,6 +113,8 @@ module unitorˡ-natural = NaturalIsomorphism unitorˡ-naturalIsomorphism
 module unitorʳ-natural = NaturalIsomorphism unitorʳ-naturalIsomorphism
 module associator-natural = NaturalIsomorphism associator-naturalIsomorphism
 
+infixr 10 _⊗ᵢ_
+
 _⊗ᵢ_ : X ≅ Y → Z ≅ W → X ⊗₀ Z ≅ Y ⊗₀ W
 f ⊗ᵢ g = [ ⊗ ]-resp-≅ record
   { from = from f , from g
@@ -122,15 +124,20 @@ f ⊗ᵢ g = [ ⊗ ]-resp-≅ record
     ; isoʳ = isoʳ f , isoʳ g
     }
   }
-  where open _≅_
 
-triangle-iso : ≅.refl ⊗ᵢ unitorˡ ∘ᵢ associator ≃ unitorʳ {X} ⊗ᵢ ≅.refl {Y}
-triangle-iso = lift-triangle′ triangle
+triangle-iso : idᵢ ⊗ᵢ unitorˡ ∘ᵢ associator ≈ᵢ unitorʳ {X} ⊗ᵢ idᵢ {Y}
+triangle-iso = ⌞ triangle ⌟
+
+triangle-inv : α⇐ ∘ id ⊗₁ λ⇐ ≈ ρ⇐ {X} ⊗₁ id {Y}
+triangle-inv = to-≈ triangle-iso
 
 pentagon-iso :
-    ≅.refl ⊗ᵢ associator ∘ᵢ associator ∘ᵢ associator {X} {Y} {Z} ⊗ᵢ ≅.refl {W}
-  ≃ associator ∘ᵢ associator
-pentagon-iso = lift-pentagon′ pentagon
+     idᵢ ⊗ᵢ associator ∘ᵢ associator ∘ᵢ associator {X} {Y} {Z} ⊗ᵢ idᵢ {W}
+  ≈ᵢ associator ∘ᵢ associator
+pentagon-iso = ⌞ pentagon ⌟
 
-refl⊗refl≃refl : ≅.refl {A} ⊗ᵢ ≅.refl {B} ≃ ≅.refl
+pentagon-inv : (α⇐ {X} {Y} {Z} ⊗₁ id {W} ∘ α⇐) ∘ id ⊗₁ α⇐ ≈ α⇐ ∘ α⇐
+pentagon-inv = to-≈ pentagon-iso
+
+refl⊗refl≃refl : idᵢ {A} ⊗ᵢ idᵢ {B} ≈ᵢ idᵢ
 refl⊗refl≃refl = ⌞ ⊗.identity ⌟

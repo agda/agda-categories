@@ -11,6 +11,7 @@ open import Data.Product using (_,_)
 import Categories.Bicategory.Extras as BicategoryExtras
 open import Categories.Bicategory.Opposite using (op)
 open import Categories.Bicategory.Instance.Cats using (Cats)
+import Categories.Category.Construction.Core as Core
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.Pseudofunctor using (Pseudofunctor)
 import Categories.Morphism.Reasoning as MorphismReasoning
@@ -24,9 +25,8 @@ open Shorthands
 open hom.HomReasoning
 private
   module MR {A} {B} where
-    open Morphism (hom A B) public using (_≅_; module ≅)
+    open Core.Shorthands (hom A B) public
     open MorphismReasoning (hom A B) public
-    open _≅_ public
   open MR
 
 
@@ -93,7 +93,7 @@ Hom[ A ,-] = record
         ρ⇒ ◁ g ∘ᵥ α⇐ ∘ᵥ f ▷ λ⇐ ∘ᵥ id₂
       ≈⟨ pushʳ (refl⟩∘⟨ hom.identityʳ) ⟩
         (ρ⇒ ◁ g ∘ᵥ α⇐) ∘ᵥ f ▷ λ⇐
-      ≈˘⟨ switch-tofromʳ (≅.sym associator) triangle ⟩∘⟨refl ⟩
+      ≈˘⟨ switch-tofromʳ (associator ⁻¹) triangle ⟩∘⟨refl ⟩
         f ▷ λ⇒ ∘ᵥ f ▷ λ⇐
       ≈⟨ isoʳ (f ▷ᵢ unitorˡ) ⟩
         id₂
@@ -104,7 +104,7 @@ Hom[ A ,-] = record
         α⇒ ◁ e ∘ᵥ α⇐ ∘ᵥ id₂ ∘ᵥ α⇐
       ≈⟨ refl⟩∘⟨ refl⟩∘⟨ hom.identityˡ ⟩
         α⇒ ◁ e ∘ᵥ α⇐ ∘ᵥ α⇐
-      ≈˘⟨ switch-fromtoˡ (≅.sym (associator ◁ᵢ e))
+      ≈˘⟨ switch-fromtoˡ ((associator ◁ᵢ e) ⁻¹)
                          (hom.sym-assoc ○ pentagon-inv) ⟩
         α⇐ ∘ᵥ h ▷ α⇐
       ≈˘⟨ pushʳ hom.identityʳ ○ hom.identityʳ  ⟩

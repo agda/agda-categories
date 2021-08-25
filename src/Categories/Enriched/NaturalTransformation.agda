@@ -17,7 +17,6 @@ open import Categories.Enriched.Functor M using (Functor; UnderlyingFunctor; _�
   renaming (id to idF)
 open import Categories.Morphism.Reasoning V
   using (pushˡ; pullˡ; cancelʳ; pullʳ; pushʳ; switch-tofromˡ; extendˡ; extendʳ)
-import Categories.Morphism.IsoEquiv V as IsoEquiv
 open import Categories.NaturalTransformation using (ntHelper)
   renaming (NaturalTransformation to Setoid-NT)
 
@@ -64,7 +63,6 @@ module _ {c d : Level} {C : Category c} {D : Category d} where
 
   open NaturalTransformation
   open D hiding (id)
-  open IsoEquiv._≃_
 
   id : ∀ {F : Functor C D} → NaturalTransformation F F
   id {F} = record
@@ -108,7 +106,7 @@ module _ {c d : Level} {C : Category c} {D : Category d} where
         ⊚ ∘ ((⊚ ∘ H.₁ ⊗₁ α [ X ]) ⊗₁ β [ X ] ∘ ρ⇐ ⊗₁ idV) ∘ ρ⇐
       ≈⟨ pullˡ (pullˡ ⊚-assoc-var) ⟩
         ((⊚ ∘ H.₁ ⊗₁ (⊚ ∘ α [ X ] ⊗₁ β [ X ]) ∘ α⇒) ∘ ρ⇐ ⊗₁ idV) ∘ ρ⇐
-      ≈˘⟨ pushʳ (pushʳ (switch-tofromˡ associator (to-≈ triangle-iso))) ⟩∘⟨refl ⟩
+      ≈˘⟨ pushʳ (pushʳ (switch-tofromˡ associator triangle-inv)) ⟩∘⟨refl ⟩
         (⊚ ∘ H.₁ ⊗₁ (⊚ ∘ α [ X ] ⊗₁ β [ X ]) ∘ idV ⊗₁ λ⇐) ∘ ρ⇐
       ≈˘⟨ pushʳ (split₂ʳ ⟩∘⟨refl) ⟩
         ⊚ ∘ H.₁ ⊗₁ ((⊚ ∘ α [ X ] ⊗₁ β [ X ]) ∘ λ⇐) ∘ ρ⇐
@@ -133,7 +131,7 @@ module _ {c d : Level} {C : Category c} {D : Category d} where
           ⊚ ∘ ((⊚ ∘ f ⊗₁ g) ⊗₁ h ∘ λ⇐ ⊗₁ idV) ∘ i
         ≈⟨ pullˡ (pullˡ ⊚-assoc-var) ⟩
           ((⊚ ∘ f ⊗₁ (⊚ ∘ g ⊗₁ h) ∘ α⇒) ∘ λ⇐ ⊗₁ idV) ∘ i
-        ≈˘⟨ pushʳ (pushʳ (switch-tofromˡ associator (to-≈ Kelly's.coherence-iso₁))) ⟩∘⟨refl ⟩
+        ≈˘⟨ pushʳ (pushʳ (switch-tofromˡ associator Kelly's.coherence-inv₁)) ⟩∘⟨refl ⟩
           (⊚ ∘ f ⊗₁ (⊚ ∘ g ⊗₁ h) ∘ λ⇐) ∘ i
         ≈⟨ pullʳ (pullʳ unitorˡ-commute-to) ⟩
           ⊚ ∘ f ⊗₁ (⊚ ∘ g ⊗₁ h) ∘ idV ⊗₁ i ∘ λ⇐
@@ -161,7 +159,7 @@ module _ {c d : Level} {C : Category c} {D : Category d} where
         ⊚ ∘ (α [ Y ] ⊗₁ F.₁ ∘ λ⇐) ∘ f          ≈⟨ extendʳ (commute α) ⟩
         ⊚ ∘ (G.₁ ⊗₁ α [ X ] ∘ ρ⇐) ∘ f          ≈⟨ refl⟩∘⟨ extendˡ unitorʳ-commute-to ⟩
         ⊚ ∘ (G.₁ ⊗₁ α [ X ] ∘ f ⊗₁ idV) ∘ ρ⇐   ≈˘⟨ refl⟩∘⟨ split₁ʳ ⟩∘⟨refl ⟩
-        ⊚ ∘ (G.₁ ∘ f) ⊗₁ α [ X ] ∘ ρ⇐          ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ to-≈ Kelly's.coherence-iso₃ ⟩
+        ⊚ ∘ (G.₁ ∘ f) ⊗₁ α [ X ] ∘ ρ⇐          ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ Kelly's.coherence-inv₃ ⟩
         ⊚ ∘ (G.₁ ∘ f) ⊗₁ α [ X ] ∘ λ⇐          ∎
     })
     where

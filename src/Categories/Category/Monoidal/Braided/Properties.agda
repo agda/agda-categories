@@ -9,29 +9,43 @@ module Categories.Category.Monoidal.Braided.Properties
 
 open import Data.Product using (_,_)
 
+import Categories.Category.Construction.Core C as Core
 open import Categories.Category.Monoidal.Properties M
 open import Categories.Category.Monoidal.Reasoning M
-open import Categories.Category.Monoidal.Utilities M
+import Categories.Category.Monoidal.Utilities M as MonoidalUtilities
 open import Categories.Functor using (Functor)
-open import Categories.Morphism C using (module ≅)
-open import Categories.Morphism.IsoEquiv C using (_≃_; ⌞_⌟)
 open import Categories.Morphism.Reasoning C hiding (push-eq)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
   using (push-eq)
 
 open Category C
-open Braided BM
 open Commutation C
+open Braided BM
+open MonoidalUtilities using (_⊗ᵢ_; unitorʳ-naturalIsomorphism)
+open MonoidalUtilities.Shorthands
+open Core.Shorthands
+open Commutationᵢ
 
 private
   variable
     X Y Z : Obj
 
-  -- A shorthand for the braiding
-  B : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X
-  B {X} {Y} = braiding.⇒.η (X , Y)
+-- Shorthands for the braiding
 
+module Shorthands where
+
+  σ⇒ : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X
+  σ⇒ {X} {Y} = braiding.⇒.η (X , Y)
+
+  σ⇐ : ∀ {X Y} → Y ⊗₀ X ⇒ X ⊗₀ Y
+  σ⇐ {X} {Y} = braiding.⇐.η (X , Y)
+
+  σ = braiding.FX≅GX
+
+open Shorthands
+
+private
 
   -- It's easier to prove the following lemma, which is the desired
   -- coherence theorem moduolo application of the |-⊗ unit| functor.
@@ -54,92 +68,91 @@ private
   --
   --
   --       ┌─────>  X(11)  ─────────>  (11)X ──────┐
-  --      ┌┘ α        │        B         │       α └┐
+  --      ┌┘ α        │        σ         │       α └┐
   --     ┌┘           │id⊗λ              │λ⊗id     └┐
   --    ┌┘            V                  V           V
   --  (X1)1 ═══════> X1  ════════════>  1X <══════ 1(1X)
-  --    ╚╗   ρ⊗id     Λ <───┐  B              λ      Λ
+  --    ╚╗   ρ⊗id     Λ <───┐  σ              λ      Λ
   --     ╚╗           │λ⊗id └────────┐              ╔╝
   --      ╚╗          │           λ   └┐           ╔╝
   --       ╚═════>  (1X)1  ═════════>  1(X1)  ═════╝
-  --       B⊗id                α                id⊗B
+  --       σ⊗id                α                id⊗σ
 
   braiding-coherence⊗unit : [ (X ⊗₀ unit) ⊗₀ unit ⇒ X ⊗₀ unit ]⟨
-               B ⊗₁ id                       ⇒⟨ (unit ⊗₀ X) ⊗₀ unit ⟩
-               unitorˡ.from ⊗₁ id
-             ≈ unitorʳ.from ⊗₁ id
-             ⟩
-  braiding-coherence⊗unit = cancel-fromˡ braiding.FX≅GX (
-    begin
-      B ∘ unitorˡ.from ⊗₁ id ∘ B ⊗₁ id                               ≈⟨ pullˡ (⟺ (glue◽◃ unitorˡ-commute-from coherence₁)) ⟩
-      (unitorˡ.from ∘ id ⊗₁ B ∘ associator.from) ∘ B ⊗₁ id           ≈⟨ assoc²' ⟩
-      unitorˡ.from ∘ id ⊗₁ B ∘ associator.from ∘ B ⊗₁ id             ≈⟨ refl⟩∘⟨ hexagon₁ ⟩
-      unitorˡ.from ∘ associator.from ∘ B ∘ associator.from            ≈⟨ pullˡ coherence₁ ⟩
-      unitorˡ.from ⊗₁ id ∘ B ∘ associator.from                       ≈˘⟨ pushˡ (braiding.⇒.commute _) ⟩
-      (B ∘ id ⊗₁ unitorˡ.from) ∘ associator.from                     ≈⟨ pullʳ triangle ⟩
-      B ∘ unitorʳ.from ⊗₁ id
-    ∎)
+                              σ⇒ ⊗₁ id            ⇒⟨ (unit ⊗₀ X) ⊗₀ unit ⟩
+                              λ⇒ ⊗₁ id
+                            ≈ ρ⇒ ⊗₁ id
+                            ⟩
+  braiding-coherence⊗unit = cancel-fromˡ braiding.FX≅GX (begin
+    σ⇒ ∘ λ⇒ ⊗₁ id ∘ σ⇒ ⊗₁ id            ≈⟨ pullˡ (⟺ (glue◽◃ unitorˡ-commute-from coherence₁)) ⟩
+    (λ⇒ ∘ id ⊗₁ σ⇒ ∘ α⇒) ∘ σ⇒ ⊗₁ id     ≈⟨ assoc²' ⟩
+    λ⇒ ∘ id ⊗₁ σ⇒ ∘ α⇒ ∘ σ⇒ ⊗₁ id       ≈⟨ refl⟩∘⟨ hexagon₁ ⟩
+    λ⇒ ∘ α⇒ ∘ σ⇒ ∘ α⇒                   ≈⟨ pullˡ coherence₁ ⟩
+    λ⇒ ⊗₁ id ∘ σ⇒ ∘ α⇒                  ≈˘⟨ pushˡ (braiding.⇒.commute _) ⟩
+    (σ⇒ ∘ id ⊗₁ λ⇒) ∘ α⇒                ≈⟨ pullʳ triangle ⟩
+    σ⇒ ∘ ρ⇒ ⊗₁ id                       ∎)
 
 -- The desired theorem follows from |braiding-coherence⊗unit| by
 -- translating it along the right unitor (which is a natural iso).
 
 braiding-coherence : [ X ⊗₀ unit ⇒ X ]⟨
-                       B              ⇒⟨ unit ⊗₀ X ⟩
-                       unitorˡ.from
-                     ≈ unitorʳ.from
+                       σ⇒              ⇒⟨ unit ⊗₀ X ⟩
+                       λ⇒
+                     ≈ ρ⇒
                      ⟩
 braiding-coherence = push-eq unitorʳ-naturalIsomorphism (begin
-  (unitorˡ.from ∘ B) ⊗₁ id           ≈⟨ homomorphism ⟩
-  (unitorˡ.from ⊗₁ id) ∘ (B ⊗₁ id)   ≈⟨ braiding-coherence⊗unit ⟩
-  unitorʳ.from  ⊗₁ id                ∎)
+  (λ⇒ ∘ σ⇒) ⊗₁ id           ≈⟨ homomorphism ⟩
+  (λ⇒ ⊗₁ id) ∘ (σ⇒ ⊗₁ id)   ≈⟨ braiding-coherence⊗unit ⟩
+  ρ⇒  ⊗₁ id                 ∎)
   where open Functor (-⊗ unit)
-
-
--- Shorthands for working with isomorphisms.
-
-open ≅ using () renaming (refl to idᵢ; sym to _⁻¹)
-infixr 9 _∘ᵢ_
-private
-  _∘ᵢ_ = λ {A B C} f g → ≅.trans {A} {B} {C} g f
-  Bᵢ   = braiding.FX≅GX
-  B⁻¹  = λ {X} {Y} → braiding.⇐.η (X , Y)
 
 -- Variants of the hexagon identities defined on isos.
 
-hexagon₁-iso : idᵢ ⊗ᵢ Bᵢ ∘ᵢ associator ∘ᵢ Bᵢ {X , Y} ⊗ᵢ idᵢ {Z}  ≃
-               associator ∘ᵢ Bᵢ {X , Y ⊗₀ Z} ∘ᵢ associator
+hexagon₁-iso : idᵢ ⊗ᵢ σ ∘ᵢ associator ∘ᵢ σ {X , Y} ⊗ᵢ idᵢ {Z} ≈ᵢ
+               associator ∘ᵢ σ {X , Y ⊗₀ Z} ∘ᵢ associator
 hexagon₁-iso = ⌞ hexagon₁ ⌟
 
-hexagon₂-iso : (Bᵢ ⊗ᵢ idᵢ ∘ᵢ associator ⁻¹) ∘ᵢ idᵢ {X} ⊗ᵢ Bᵢ {Y , Z} ≃
-               (associator ⁻¹ ∘ᵢ Bᵢ {X ⊗₀ Y , Z}) ∘ᵢ associator ⁻¹
+hexagon₁-inv : (σ⇐ {X} {Y} ⊗₁ id {Z} ∘ α⇐) ∘ id ⊗₁ σ⇐ ≈
+               (α⇐ ∘ σ⇐ {X} {Y ⊗₀ Z}) ∘ α⇐
+hexagon₁-inv = to-≈ hexagon₁-iso
+
+hexagon₂-iso : (σ ⊗ᵢ idᵢ ∘ᵢ associator ⁻¹) ∘ᵢ idᵢ {X} ⊗ᵢ σ {Y , Z} ≈ᵢ
+               (associator ⁻¹ ∘ᵢ σ {X ⊗₀ Y , Z}) ∘ᵢ associator ⁻¹
 hexagon₂-iso = ⌞ hexagon₂ ⌟
 
--- A variants of the above coherence law defined on isos.
+hexagon₂-inv : id {X} ⊗₁ σ⇐ {Y} {Z} ∘ α⇒ ∘ σ⇐ ⊗₁ id ≈
+               α⇒ ∘ σ⇐ {X ⊗₀ Y} {Z} ∘ α⇒
+hexagon₂-inv = to-≈ hexagon₂-iso
 
-braiding-coherence-iso : unitorˡ ∘ᵢ Bᵢ ≃ unitorʳ {X}
+-- Variants of the above coherence law.
+
+braiding-coherence-iso : unitorˡ ∘ᵢ σ ≈ᵢ unitorʳ {X}
 braiding-coherence-iso = ⌞ braiding-coherence ⌟
+
+braiding-coherence-inv : σ⇐ ∘ λ⇐ ≈ ρ⇐ {X}
+braiding-coherence-inv = to-≈ braiding-coherence-iso
 
 -- The inverse of the braiding is also a braiding on M.
 
 inv-Braided : Braided M
 inv-Braided = record
   { braiding = niHelper (record
-    { η       = λ _ → B⁻¹
-    ; η⁻¹     = λ _ → B
+    { η       = λ _ → σ⇐
+    ; η⁻¹     = λ _ → σ⇒
     ; commute = λ{ (f , g) → braiding.⇐.commute (g , f) }
     ; iso     = λ{ (X , Y) → record
       { isoˡ = braiding.iso.isoʳ (Y , X)
       ; isoʳ = braiding.iso.isoˡ (Y , X) } }
     })
-  ; hexagon₁ = _≃_.to-≈ hexagon₂-iso
-  ; hexagon₂ = _≃_.to-≈ hexagon₁-iso
+  ; hexagon₁ = hexagon₂-inv
+  ; hexagon₂ = hexagon₁-inv
   }
 
 -- A variant of the above coherence law for the inverse of the braiding.
 
 inv-braiding-coherence : [ unit ⊗₀ X ⇒ X ]⟨
-                           B⁻¹            ⇒⟨ X ⊗₀ unit ⟩
-                           unitorʳ.from
-                         ≈ unitorˡ.from
+                           σ⇐            ⇒⟨ X ⊗₀ unit ⟩
+                           ρ⇒
+                         ≈ λ⇒
                          ⟩
-inv-braiding-coherence = ⟺ (switch-fromtoʳ Bᵢ braiding-coherence)
+inv-braiding-coherence = ⟺ (switch-fromtoʳ σ braiding-coherence)

@@ -15,12 +15,10 @@ open import Categories.Category.Monoidal.Properties M using (module Kelly's)
 open import Categories.Category.Monoidal.Reasoning M
 open import Categories.Category.Monoidal.Utilities M using (module Shorthands)
 open import Categories.Morphism.Reasoning V
-import Categories.Morphism.IsoEquiv V as IsoEquiv
 
 open Setoid-Category V renaming (Obj to ObjV; id to idV)
 open Monoidal M
 open Shorthands
-open IsoEquiv._≃_
 
 -- A V-category C does not have morphisms of its own, but the
 -- collection of V-morphisms from the monoidal unit into the
@@ -40,7 +38,7 @@ Underlying C = categoryHelper (record
       ⊚ ∘ ((⊚ ∘ h ⊗₁ g) ∘ λ⇐) ⊗₁ f ∘ λ⇐                ≈⟨ refl⟩∘⟨ pushˡ split₁ʳ ⟩
       ⊚ ∘ (⊚ ∘ h ⊗₁ g) ⊗₁ f ∘ (λ⇐ ⊗₁ idV) ∘ λ⇐        ≈⟨ pullˡ ⊚-assoc-var ⟩
       (⊚ ∘ h ⊗₁ (⊚ ∘ g ⊗₁ f) ∘ α⇒) ∘ (λ⇐ ⊗₁ idV) ∘ λ⇐ ≈˘⟨ pushˡ (pushʳ (pushʳ
-                                                            (switch-tofromˡ associator (to-≈ Kelly's.coherence-iso₁)))) ⟩
+                                                            (switch-tofromˡ associator Kelly's.coherence-inv₁))) ⟩
       (⊚ ∘ h ⊗₁ (⊚ ∘ g ⊗₁ f) ∘ λ⇐) ∘ λ⇐                ≈⟨ pullʳ (pullʳ unitorˡ-commute-to) ⟩
       ⊚ ∘ h ⊗₁ (⊚ ∘ g ⊗₁ f) ∘ idV ⊗₁ λ⇐ ∘ λ⇐           ≈˘⟨ refl⟩∘⟨ pushˡ split₂ʳ ⟩
       ⊚ ∘ h ⊗₁ ((⊚ ∘ g ⊗₁ f) ∘ λ⇐) ∘ λ⇐                ≈⟨ refl⟩∘⟨ refl⟩⊗⟨ assoc ⟩∘⟨refl ⟩
