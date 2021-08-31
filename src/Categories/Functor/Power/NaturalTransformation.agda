@@ -15,7 +15,6 @@ module Pow = Power C
 open Pow
 open import Categories.Functor.Bifunctor using (Bifunctor)
 
--- open import Categories.Functor.Bifunctor.NaturalTransformation renaming (id to idⁿ; _≡_ to _≡ⁿ_)
 open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper; _∘ˡ_)
 open import Categories.Category.Product using (_※ⁿ_)
 open import Categories.Functor using (Functor; module Functor)

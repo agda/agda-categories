@@ -18,8 +18,6 @@ open import Categories.NaturalTransformation renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   hiding (unitorˡ; unitorʳ; associator; _≃_)
 
---open import Categories.Morphism C using (_≅_)
---open import Categories.Morphism.IsoEquiv C using (_≃_; ⌞_⌟)
 open import Categories.Morphism.Isomorphism C using (lift-triangle′; lift-pentagon′)
 open import Categories.Morphism.Reasoning C
 

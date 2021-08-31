@@ -8,7 +8,6 @@ module Categories.Functor.Instance.UnderlyingQuiver where
 -- NaturalIsomorphism.
 
 open import Level using (Level)
--- open import Function using (_$_; flip)
 open import Relation.Binary.PropositionalEquality
   using (refl)
 open import Relation.Binary.PropositionalEquality.Subst.Properties
