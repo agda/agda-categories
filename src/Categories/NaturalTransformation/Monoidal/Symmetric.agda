@@ -105,9 +105,9 @@ module Strong where
   open BMF.Strong using (SymmetricMonoidalFunctor)
   open MNT.Strong using (IsMonoidalNaturalTransformation)
   open SymmetricMonoidalFunctor using () renaming
-    ( F                         to UF
-    ; monoidalFunctor           to MF
-    ; laxSymmetricMonoidalFunctor to laxBMF
+    ( F                           to UF
+    ; monoidalFunctor             to MF
+    ; laxSymmetricMonoidalFunctor to laxSMF
     )
 
   module _ {o ℓ e o′ ℓ′ e′}
@@ -124,9 +124,9 @@ module Strong where
         U          : NaturalTransformation (UF F) (UF G)
         isMonoidal : IsMonoidalNaturalTransformation (MF F) (MF G) U
 
-      laxBNT : Lax.SymmetricMonoidalNaturalTransformation (laxBMF F) (laxBMF G)
-      laxBNT = record { U = U ; isMonoidal = isMonoidal }
-      open Lax.SymmetricMonoidalNaturalTransformation laxBNT public
+      laxSNT : Lax.SymmetricMonoidalNaturalTransformation (laxSMF F) (laxSMF G)
+      laxSNT = record { U = U ; isMonoidal = isMonoidal }
+      open Lax.SymmetricMonoidalNaturalTransformation laxSNT public
         hiding (U; isMonoidal)
 
   -- To shorten some definitions
