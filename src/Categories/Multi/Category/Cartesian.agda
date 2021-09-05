@@ -20,14 +20,27 @@ open import Level using (Level; _⊔_; suc)
 open import Relation.Binary using (Rel; Setoid; IsEquivalence)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
-infix 4 [_]_≈ᵉ_
+infix 4 [_]_∼ᵉ_
+
+-- `Env` is equivalent to `All`, but biased towards lookup.
+-- `Env` is used to define a collection of multimorphisms from a common domain.
+-- For example, if `Γ ⊢ A` is a type of terms, then `Env (Γ ⊢_) Δ` is a type
+-- of simultaneous substitutions thereof.
 
 Env : ∀ {o ℓ} {X : Set o} (V : X → Set ℓ) (Δ : List X) → Set (o ⊔ ℓ)
 Env V Δ = ∀ {y} → y ∈ Δ → V y
 
-[_]_≈ᵉ_ : ∀ {o ℓ e} {X : Set o} {V : X → Set ℓ} {Δ} →
+-- Pointwise lifting of a binary relation from values to environments.
+
+[_]_∼ᵉ_ : ∀ {o ℓ e} {X : Set o} {V : X → Set ℓ} {Δ} →
   (∀ {x} → Rel (V x) e) → Rel (Env V Δ) (o ⊔ e)
-[_]_≈ᵉ_ = Wrap λ _≈_ ρ σ → ∀ {y} (i : y ∈ _) → ρ i ≈ σ i
+[_]_∼ᵉ_ = Wrap λ _≈_ ρ σ → ∀ {y} (i : y ∈ _) → ρ i ≈ σ i
+
+-- The pattern is that we define what a Cartesian multicategory is together
+-- with the category of contexts it yields.
+-- For example, given the family of multimorphisms _⇒_, we can derive the
+-- family _⇒ˢ_ of simultaneous morphisms (compare: simultaneous substitutions)
+-- that form the morphisms in the category of contexts.
 
 record CartesianMultiCategory (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
   infix 4 _≈_ _≈ˢ_ _⇒_ _⇒ˢ_
@@ -42,7 +55,7 @@ record CartesianMultiCategory (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) wh
   Γ ⇒ˢ Δ = Env (Γ ⇒_) Δ
 
   _≈ˢ_ : ∀ {Γ Δ} (σ τ : Γ ⇒ˢ Δ) → Set (o ⊔ e)
-  _≈ˢ_ = [ _≈_ ]_≈ᵉ_
+  _≈ˢ_ = [ _≈_ ]_∼ᵉ_
 
   field
     id : ∀ {Γ A} → A ∈ Γ → Γ ⇒ A

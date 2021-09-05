@@ -61,12 +61,14 @@ module _ {C : Category o ℓ e} (cart : Cartesian C) where
   -- A map of type `X ⇒ prod Δ` is equivalently
   -- a map of type `X ⇒ Y` for each Y ∈ Δ.
   -- `X ⇒Π Δ` is exactly the latter.
+  -- The idea is that the `X` is usually of the form `prod Γ`, but there's a
+  -- lot worth doing without specifying that.
 
   _⇒Π_ : Obj → List Obj → Set (o ⊔ ℓ)
   X ⇒Π Δ = Env (X ⇒_) Δ
 
   _≈Π_ : ∀ {X Δ} (fs gs : X ⇒Π Δ) → Set (o ⊔ e)
-  _≈Π_ = [ _≈_ ]_≈ᵉ_
+  _≈Π_ = [ _≈_ ]_∼ᵉ_
 
   ⟨_⟩Π : ∀ {X Δ} → X ⇒Π Δ → X ⇒ prod Δ
   ⟨_⟩Π {Δ = []} fs = !
@@ -88,7 +90,7 @@ module _ {C : Category o ℓ e} (cart : Cartesian C) where
   Rep : CartesianMultiCategory o ℓ e
   Rep = record
     { Obj = Obj
-    ; _⇒_ = λ Γ A → prod Γ ⇒ A
+    ; _⇒_ = _R⇒_
     ; _≈_ = _≈_
     ; id = π[_]
     ; _∘_ = λ f σ → f ∘ ⟨ σ ⟩Π
