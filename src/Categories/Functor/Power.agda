@@ -169,7 +169,7 @@ reduce2ʳ : ∀ (G : Bifunctor C C C) {n₁ n₂ n₃} (F₁ : Powerendo n₁) (
 reduce2ʳ G F₁ F₂ F₃ = flattenP-assocʳ $ reduce′ G F₁ $ reduce′ G F₂ F₃
 
 overlaps : (H : Bifunctor D D E) (F G : Powerfunctor′ D I) → Powerfunctor′ E I
-overlaps = overlap-×
+overlaps H = overlap-× H
 
 overlap2ʳ : (G : Bifunctor C C C) (F₁ F₂ F₃ : Powerendo n) → Powerendo n
 overlap2ʳ G F₁ F₂ F₃ = overlaps G F₁ (overlaps G F₂ F₃)
