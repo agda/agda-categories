@@ -145,15 +145,26 @@ Forgetful⊣Cofree =
       ((F₁ f ∘ M.δ.η X) ∘ M.ε.η (F₀ X)) ∘ F₁ (F₁ C.id) ∘ M.δ.η X ∎
     }
   ; counit = ntHelper record
-    { η = M.ε.η ; commute = λ {X Y} f → begin
-    M.ε.η Y ∘ (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X) ≈⟨ refl⟩∘⟨ homomorphism ⟩∘⟨refl ⟩
-    M.ε.η Y ∘ ((F₁ f ∘ F₁ (M.ε.η X)) ∘ M.δ.η X) ≈⟨ refl⟩∘⟨ assoc ⟩
-    M.ε.η Y ∘ (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X) ≈⟨ refl⟩∘⟨ refl⟩∘⟨ Comonad.identityˡ M ⟩
-    M.ε.η Y ∘ (F₁ f ∘ C.id) ≈⟨ sym assoc ⟩
-    (M.ε.η Y ∘ F₁ f) ∘ C.id ≈⟨ identityʳ ⟩
-    M.ε.η Y ∘ F₁ f ≈⟨ M.ε.commute f ⟩
-    f ∘ M.ε.η X ∎
+    { η = M.ε.η
+    ; commute = λ {X Y} f → begin
+      M.ε.η Y ∘ (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X)
+       ≈⟨ refl⟩∘⟨ homomorphism ⟩∘⟨refl ⟩
+      M.ε.η Y ∘ ((F₁ f ∘ F₁ (M.ε.η X)) ∘ M.δ.η X)
+       ≈⟨ refl⟩∘⟨ assoc ⟩
+      M.ε.η Y ∘ (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X)
+       ≈⟨ refl⟩∘⟨ refl⟩∘⟨ Comonad.identityˡ M ⟩
+      M.ε.η Y ∘ (F₁ f ∘ C.id)
+       ≈⟨ sym assoc ⟩
+      (M.ε.η Y ∘ F₁ f) ∘ C.id
+       ≈⟨ identityʳ ⟩
+      M.ε.η Y ∘ F₁ f
+       ≈⟨ M.ε.commute f ⟩
+      f ∘ M.ε.η X ∎
     }
-  ; zig = λ {A} → {!   !}
-  ; zag = λ {B} → {!   !}
+  ; zig = λ {A} → begin
+    {!   !} ∘ {!   !} ≈⟨ {!   !} ⟩
+    C.id ∎
+  ; zag = λ {B} → begin
+    {!   !} ∘ {!   !} ≈⟨ {!   !} ⟩
+    M.ε.η B ∎
   }
