@@ -131,29 +131,27 @@ Forgetful⊣Cofree =
        ≈⟨ sym homomorphism ⟩∘⟨refl ⟩
       (F₁ (C.id ∘ f)) ∘ M.δ.η X
        ≈⟨ F-resp-≈ identityˡ ⟩∘⟨refl ⟩
-      F₁ f ∘ M.δ.η X
-       ≈⟨ {!   !} ⟩∘⟨refl ⟩
-      (Functor.₁ Cofree (Functor.₁ Forgetful f) ∘ F₁ (F₁ C.id)) ∘ M.δ.η X
-       ≈⟨ assoc ⟩
-      Functor.₁ Cofree (Functor.₁ Forgetful f) ∘ F₁ (F₁ C.id) ∘ M.δ.η X ∎
+      F₁ f ∘ M.δ.η X ≈⟨ sym identityʳ ⟩
+      (F₁ f ∘ M.δ.η X) ∘ C.id
+       ≈⟨ sym (refl⟩∘⟨ Comonad.identityʳ M) ⟩
+      (F₁ f ∘ M.δ.η X) ∘ (M.ε.η (F₀ X) ∘ M.δ.η X)
+       ≈⟨ sym assoc ⟩
+      ((F₁ f ∘ M.δ.η X) ∘ M.ε.η (F₀ X)) ∘ M.δ.η X
+       ≈⟨ refl⟩∘⟨ sym identityˡ ⟩
+      ((F₁ f ∘ M.δ.η X) ∘ M.ε.η (F₀ X)) ∘ C.id ∘ M.δ.η X
+       ≈⟨ refl⟩∘⟨ sym identity ⟩∘⟨refl ⟩
+      ((F₁ f ∘ M.δ.η X) ∘ M.ε.η (F₀ X)) ∘ F₁ C.id ∘ M.δ.η X
+       ≈⟨ refl⟩∘⟨ sym (F-resp-≈ identity) ⟩∘⟨refl ⟩
+      ((F₁ f ∘ M.δ.η X) ∘ M.ε.η (F₀ X)) ∘ F₁ (F₁ C.id) ∘ M.δ.η X ∎
     }
   ; counit = ntHelper record
     { η = M.ε.η ; commute = λ {X Y} f → begin
-    M.ε.η Y ∘ Functor.₁ Forgetful (Functor.₁ Cofree f)
-     ≈⟨ refl⟩∘⟨ {!   !} ⟩
-    M.ε.η Y ∘ F₁ (Functor.₁ Cofree f) ∘ M.δ.η X
-     ≈⟨ refl⟩∘⟨ F-resp-≈ {!   !}  ⟩∘⟨refl ⟩
-    -- these holes should be true by definition...
-    M.ε.η Y ∘ F₁ (f ∘ M.ε.η X) ∘ M.δ.η X
-     ≈⟨ refl⟩∘⟨ homomorphism ⟩∘⟨refl ⟩
-    M.ε.η Y ∘ (F₁ f ∘ F₁ (M.ε.η X)) ∘ M.δ.η X
-     ≈⟨ refl⟩∘⟨ assoc ⟩
-    M.ε.η Y ∘ F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X
-     ≈⟨ refl⟩∘⟨ refl⟩∘⟨ Comonad.identityˡ M ⟩
-    M.ε.η Y ∘ F₁ f ∘ C.id
-     ≈⟨ refl⟩∘⟨ identityʳ ⟩
-    M.ε.η Y ∘ F₁ f
-     ≈⟨ M.ε.commute f ⟩
+    M.ε.η Y ∘ (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X) ≈⟨ refl⟩∘⟨ homomorphism ⟩∘⟨refl ⟩
+    M.ε.η Y ∘ ((F₁ f ∘ F₁ (M.ε.η X)) ∘ M.δ.η X) ≈⟨ refl⟩∘⟨ assoc ⟩
+    M.ε.η Y ∘ (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X) ≈⟨ refl⟩∘⟨ refl⟩∘⟨ Comonad.identityˡ M ⟩
+    M.ε.η Y ∘ (F₁ f ∘ C.id) ≈⟨ sym assoc ⟩
+    (M.ε.η Y ∘ F₁ f) ∘ C.id ≈⟨ identityʳ ⟩
+    M.ε.η Y ∘ F₁ f ≈⟨ M.ε.commute f ⟩
     f ∘ M.ε.η X ∎
     }
   ; zig = λ {A} → {!   !}
