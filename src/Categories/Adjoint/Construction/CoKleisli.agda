@@ -75,31 +75,36 @@ FF≃F =
  record
   { F⇒G = ntHelper record
     { η = λ X → F₁ C.id
-    ; commute = λ {X Y} f → begin
-     F₁ C.id ∘ F₁ (f ∘ M.ε.η X) ∘ M.δ.η X        ≈⟨ refl⟩∘⟨ homomorphism ⟩∘⟨refl ⟩
-     F₁ C.id ∘ (F₁ f ∘ F₁ (M.ε.η X)) ∘ M.δ.η X   ≈⟨ refl⟩∘⟨ assoc ⟩
-     F₁ C.id ∘ (F₁ f ∘ (F₁ (M.ε.η X) ∘ M.δ.η X)) ≈⟨ sym assoc ⟩
-     (F₁ C.id ∘ F₁ f) ∘ (F₁ (M.ε.η X) ∘ M.δ.η X) ≈⟨ identity ⟩∘⟨refl ⟩∘⟨refl ⟩
-     (C.id ∘ F₁ f) ∘ (F₁ (M.ε.η X) ∘ M.δ.η X)    ≈⟨ identityˡ ⟩∘⟨refl ⟩
-     F₁ f ∘ (F₁ (M.ε.η X) ∘ M.δ.η X)             ≈⟨ refl⟩∘⟨ Comonad.identityˡ M ⟩
-     F₁ f ∘ C.id                                 ≈⟨ refl⟩∘⟨ sym identity ⟩
-     F₁ f ∘ F₁ C.id                              ∎
+    ; commute = λ {X Y} f → to-commute {X} {Y} f
     }
   ; F⇐G = ntHelper record
     { η = λ X → F₁ C.id
-    ; commute = λ {X Y} f → begin
-      F₁ C.id ∘ F₁ f                              ≈⟨ [ M.F ]-resp-square id-comm-sym ⟩
-      F₁ f ∘ F₁ C.id                              ≈⟨ sym identityʳ ⟩∘⟨refl ⟩
-      (F₁ f ∘ C.id) ∘ F₁ C.id                     ≈⟨ (refl⟩∘⟨ sym (Comonad.identityˡ M)) ⟩∘⟨refl ⟩
-      (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id   ≈⟨ sym assoc ⟩∘⟨refl ⟩
-      ((F₁ f ∘ F₁ (M.ε.η X)) ∘ M.δ.η X) ∘ F₁ C.id ≈⟨ sym homomorphism ⟩∘⟨refl ⟩∘⟨refl ⟩
-      (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id      ∎
+    ; commute = λ {X Y} f → from-commute {X} {Y} f
     }
   ; iso = λ X → record
     { isoˡ = elimʳ identity ○ identity
     ; isoʳ = elimʳ identity ○ identity
     }
   }
+  where
+  to-commute : {X Y : Obj} → (f : X ⇒ Y) → F₁ C.id ∘ F₁ (f ∘ M.ε.η X) ∘ M.δ.η X ≈ F₁ f ∘ F₁ C.id
+  to-commute {X} {Y} f = begin
+   F₁ C.id ∘ F₁ (f ∘ M.ε.η X) ∘ M.δ.η X        ≈⟨ refl⟩∘⟨ homomorphism ⟩∘⟨refl ⟩
+   F₁ C.id ∘ (F₁ f ∘ F₁ (M.ε.η X)) ∘ M.δ.η X   ≈⟨ refl⟩∘⟨ assoc ⟩
+   F₁ C.id ∘ (F₁ f ∘ (F₁ (M.ε.η X) ∘ M.δ.η X)) ≈⟨ sym assoc ⟩
+   (F₁ C.id ∘ F₁ f) ∘ (F₁ (M.ε.η X) ∘ M.δ.η X) ≈⟨ identity ⟩∘⟨refl ⟩∘⟨refl ⟩
+   (C.id ∘ F₁ f) ∘ (F₁ (M.ε.η X) ∘ M.δ.η X)    ≈⟨ identityˡ ⟩∘⟨refl ⟩
+   F₁ f ∘ (F₁ (M.ε.η X) ∘ M.δ.η X)             ≈⟨ refl⟩∘⟨ Comonad.identityˡ M ⟩
+   F₁ f ∘ C.id                                 ≈⟨ refl⟩∘⟨ sym identity ⟩
+   F₁ f ∘ F₁ C.id                              ∎
+  from-commute : {X Y : Obj} → (f : X ⇒ Y) → F₁ C.id ∘ F₁ f ≈ (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id
+  from-commute {X} {Y} f = begin
+      F₁ C.id ∘ F₁ f                              ≈⟨ [ M.F ]-resp-square id-comm-sym ⟩
+      F₁ f ∘ F₁ C.id                              ≈⟨ sym identityʳ ⟩∘⟨refl ⟩
+      (F₁ f ∘ C.id) ∘ F₁ C.id                     ≈⟨ (refl⟩∘⟨ sym (Comonad.identityˡ M)) ⟩∘⟨refl ⟩
+      (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id   ≈⟨ sym assoc ⟩∘⟨refl ⟩
+      ((F₁ f ∘ F₁ (M.ε.η X)) ∘ M.δ.η X) ∘ F₁ C.id ≈⟨ sym homomorphism ⟩∘⟨refl ⟩∘⟨refl ⟩
+      (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id      ∎
 
 Forgetful⊣Cofree : Forgetful ⊣ Cofree
 Forgetful⊣Cofree =
