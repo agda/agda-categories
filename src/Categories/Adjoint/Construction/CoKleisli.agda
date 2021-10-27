@@ -162,9 +162,32 @@ Forgetful⊣Cofree =
       f ∘ M.ε.η X ∎
     }
   ; zig = λ {A} → begin
-    {!   !} ∘ {!   !} ≈⟨ {!   !} ⟩
+    M.ε.η (F₀ A) ∘ F₁ (F₁ C.id) ∘ M.δ.η _
+     ≈⟨ refl⟩∘⟨ F-resp-≈ identity ⟩∘⟨refl ⟩
+    M.ε.η (F₀ A) ∘ F₁ C.id ∘ M.δ.η _
+     ≈⟨ refl⟩∘⟨ identity ⟩∘⟨refl ⟩
+    M.ε.η (F₀ A) ∘ C.id ∘ M.δ.η _
+     ≈⟨ refl⟩∘⟨ identityˡ ⟩
+    M.ε.η (F₀ A) ∘ M.δ.η _
+     ≈⟨ Comonad.identityʳ M ⟩
     C.id ∎
+    -- zig : (counit * U) ∘ (U * unit) = C.id (U _)
+    -- composition in C
   ; zag = λ {B} → begin
-    {!   !} ∘ {!   !} ≈⟨ {!   !} ⟩
+    (M.ε.η B ∘ M.ε.η (F₀ B)) ∘ (F₁ (F₁ C.id) ∘ M.δ.η _)
+     ≈⟨ assoc ⟩
+    M.ε.η B ∘ (M.ε.η (F₀ B) ∘ (F₁ (F₁ C.id) ∘ M.δ.η _))
+     ≈⟨ refl⟩∘⟨ (refl⟩∘⟨ F-resp-≈ identity ⟩∘⟨refl) ⟩
+    M.ε.η B ∘ (M.ε.η (F₀ B) ∘ (F₁ C.id ∘ M.δ.η _))
+     ≈⟨ refl⟩∘⟨ (refl⟩∘⟨ identity ⟩∘⟨refl) ⟩
+    M.ε.η B ∘ (M.ε.η (F₀ B) ∘ (C.id ∘ M.δ.η _))
+     ≈⟨ refl⟩∘⟨ refl⟩∘⟨ identityˡ ⟩
+    M.ε.η B ∘ (M.ε.η (F₀ B) ∘ M.δ.η _)
+     ≈⟨ refl⟩∘⟨ Comonad.identityʳ M ⟩
+    M.ε.η B ∘ C.id
+     ≈⟨ identityʳ ⟩
     M.ε.η B ∎
+    -- zag : (L * counit ∘ unit * L = Cokleisli.id (L _))
+    -- L = cofree
+    -- composition in CoKleisli
   }
