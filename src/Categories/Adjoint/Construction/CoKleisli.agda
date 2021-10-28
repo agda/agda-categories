@@ -101,8 +101,8 @@ FC≃M =
 FF1≈1 : {X : Obj} → F₁ (F₁ (C.id {X})) ≈ C.id 
 FF1≈1 {X} = begin 
  F₁ (F₁ (C.id {X})) ≈⟨ F-resp-≈ identity ⟩
- F₁ (C.id) ≈⟨ identity ⟩
- C.id ∎
+ F₁ (C.id)          ≈⟨ identity ⟩
+ C.id               ∎
 
 Forgetful⊣Cofree : Forgetful ⊣ Cofree
 Forgetful⊣Cofree =
