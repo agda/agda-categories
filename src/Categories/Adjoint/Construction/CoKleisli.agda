@@ -127,12 +127,9 @@ Forgetful⊣Cofree =
    (f : X ⇒ Y) →
    M.ε.η Y ∘ (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X) ≈ f ∘ M.ε.η X
   counit-commute {X} {Y} f = begin
-   M.ε.η Y ∘ (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X)      ≈⟨ refl⟩∘⟨ homomorphism ⟩∘⟨refl ⟩
-   M.ε.η Y ∘ ((F₁ f ∘ F₁ (M.ε.η X)) ∘ M.δ.η X) ≈⟨ refl⟩∘⟨ assoc ⟩
-   M.ε.η Y ∘ (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X)   ≈⟨ refl⟩∘⟨ refl⟩∘⟨ Comonad.identityˡ M ⟩
-   M.ε.η Y ∘ (F₁ f ∘ C.id)                     ≈⟨ sym assoc ⟩
-   (M.ε.η Y ∘ F₁ f) ∘ C.id                     ≈⟨ identityʳ ⟩
-   M.ε.η Y ∘ F₁ f                              ≈⟨ M.ε.commute f ⟩
+   M.ε.η Y ∘ F₁ (f ∘ M.ε.η X) ∘ M.δ.η X      ≈⟨ refl⟩∘⟨ pushˡ homomorphism ⟩
+   M.ε.η Y ∘ (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X) ≈⟨ refl⟩∘⟨ elimʳ (Comonad.identityˡ M) ⟩
+   M.ε.η Y ∘ F₁ f                            ≈⟨ M.ε.commute f ⟩
    f ∘ M.ε.η X ∎
   zig-proof : {A : Obj} → M.ε.η (F₀ A) ∘ F₁ (F₁ C.id) ∘ M.δ.η _ ≈ C.id
   zig-proof {A} = begin
