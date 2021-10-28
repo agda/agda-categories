@@ -33,9 +33,9 @@ Forgetful =
   }
   where
   trihom : {X Y Z W : Obj} {f : X ⇒ Y} {g : Y ⇒ Z} {h : Z ⇒ W} → F₁ (h ∘ g ∘ f) ≈ F₁ h ∘ F₁ g ∘ F₁ f
-  trihom {X} {Y} {Z} {W} {f} {g} {h} = begin 
-   F₁ (h ∘ g ∘ f)     ≈⟨ homomorphism ⟩ 
-   F₁ h ∘ F₁ (g ∘ f)  ≈⟨ refl⟩∘⟨ homomorphism ⟩ 
+  trihom {X} {Y} {Z} {W} {f} {g} {h} = begin
+   F₁ (h ∘ g ∘ f)     ≈⟨ homomorphism ⟩
+   F₁ h ∘ F₁ (g ∘ f)  ≈⟨ refl⟩∘⟨ homomorphism ⟩
    F₁ h ∘ F₁ g ∘ F₁ f ∎
   hom-proof :
    {X Y Z : Obj} {f : F₀ X ⇒ Y} {g : F₀ Y ⇒ Z} →
@@ -98,8 +98,8 @@ FC≃M =
       (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id    ∎
 
 -- useful lemma:
-FF1≈1 : {X : Obj} → F₁ (F₁ (C.id {X})) ≈ C.id 
-FF1≈1 {X} = begin 
+FF1≈1 : {X : Obj} → F₁ (F₁ (C.id {X})) ≈ C.id
+FF1≈1 {X} = begin
  F₁ (F₁ (C.id {X})) ≈⟨ F-resp-≈ identity ⟩
  F₁ (C.id)          ≈⟨ identity ⟩
  C.id               ∎
