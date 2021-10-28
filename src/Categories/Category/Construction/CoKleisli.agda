@@ -39,33 +39,32 @@ CoKleisli {𝒞 = 𝒞} M =
   open HomReasoning
   open Equiv
   open MR 𝒞
-
+  
+  -- useful lemma
+  trihom : {X Y Z W : Obj} {f : X ⇒ Y} {g : Y ⇒ Z} {h : Z ⇒ W} → F₁ (h ∘ g ∘ f) ≈ F₁ h ∘ F₁ g ∘ F₁ f
+  trihom {X} {Y} {Z} {W} {f} {g} {h} = begin 
+   F₁ (h ∘ g ∘ f)     ≈⟨ homomorphism ⟩ 
+   F₁ h ∘ F₁ (g ∘ f)  ≈⟨ refl⟩∘⟨ homomorphism ⟩ 
+   F₁ h ∘ F₁ g ∘ F₁ f ∎
   -- shorthands to make the proofs nicer
   F≈ = F-resp-≈
 
   assoc′ : {A B C D : Obj} {f : F₀ A ⇒ B} {g : F₀ B ⇒ C} {h : F₀ C ⇒ D} → (h ∘ F₁ g ∘ δ.η B) ∘ F₁ f ∘ δ.η A ≈ h ∘ F₁ (g ∘ F₁ f ∘ δ.η A) ∘ δ.η A
   assoc′ {A} {B} {C} {D} {f} {g} {h} =
       begin
-        (h ∘ F₁ g ∘ δ.η B) ∘ (F₁ f ∘ δ.η A) ≈⟨ assoc²' ⟩
-        -- h ∘ ((F₁ g ∘ δ.η B) ∘ (F₁ f ∘ δ.η A)) ≈⟨ ((refl⟩∘⟨ assoc)) ⟩
-        h ∘ (F₁ g ∘ (δ.η B ∘ (F₁ f ∘ δ.η A))) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ sym assoc)) ⟩
-        h ∘ (F₁ g ∘ ((δ.η B ∘ F₁ f) ∘ δ.η A)) ≈⟨ (refl⟩∘⟨ {!   !}) ⟩
-        -- h ∘ (F₁ g ∘ ((F₁ (F₁ f) ∘ δ.η (F₀ A)) ∘ δ.η A)) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ assoc)) ⟩
-        h ∘ (F₁ g ∘ (F₁ (F₁ f) ∘ (δ.η (F₀ A) ∘ δ.η A))) ≈⟨ ((refl⟩∘⟨ (refl⟩∘⟨ (refl⟩∘⟨ Comonad.assoc M)))) ⟩
-        h ∘ (F₁ g ∘ (F₁ (F₁ f) ∘ (F₁ (δ.η A) ∘ δ.η A))) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ sym assoc)) ⟩
-        h ∘ (F₁ g ∘ ((F₁ (F₁ f) ∘ F₁ (δ.η A)) ∘ δ.η A)) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ (sym homomorphism ⟩∘⟨refl))) ⟩
-        h ∘ (F₁ g ∘ (F₁ (F₁ f ∘ δ.η A) ∘ δ.η A)) ≈⟨ (refl⟩∘⟨ sym assoc) ⟩
-        h ∘ ((F₁ g ∘ F₁ (F₁ f ∘ δ.η A)) ∘ δ.η A) ≈⟨ (refl⟩∘⟨ (sym homomorphism ⟩∘⟨refl)) ⟩
+        (h ∘ F₁ g ∘ δ.η B) ∘ (F₁ f ∘ δ.η A)             ≈⟨ assoc²' ⟩
+        h ∘ (F₁ g ∘ (δ.η B ∘ (F₁ f ∘ δ.η A)))           ≈⟨ ((refl⟩∘⟨ (refl⟩∘⟨ sym assoc))) ⟩
+        h ∘ (F₁ g ∘ ((δ.η B ∘ F₁ f) ∘ δ.η A))           ≈⟨ ((refl⟩∘⟨ (refl⟩∘⟨ pushˡ (δ.commute f)))) ⟩
+        h ∘ (F₁ g ∘ (F₁ (F₁ f) ∘ (δ.η (F₀ A) ∘ δ.η A))) ≈⟨ refl⟩∘⟨ (refl⟩∘⟨  pushʳ (Comonad.assoc M)) ⟩
+        h ∘ (F₁ g ∘ ((F₁ (F₁ f) ∘ F₁ (δ.η A)) ∘ δ.η A)) ≈⟨ pull-center (sym trihom) ⟩
         h ∘ (F₁ (g ∘ (F₁ f ∘ δ.η A)) ∘ δ.η A)
       ∎
 
   identityˡ′ : ∀ {A B : Obj} {f : F₀ A ⇒ B} → ε.η B ∘ F₁ f ∘ δ.η A ≈ f
   identityˡ′ {A} {B} {f} =
     begin
-      ε.η B ∘ F₁ f ∘ δ.η A ≈⟨ sym assoc ⟩
-      (ε.η B ∘ F₁ f) ∘ δ.η A ≈⟨ ∘-resp-≈ (ε.commute f) refl ⟩
-      (f ∘ ε.η (F₀ A)) ∘ δ.η A ≈⟨ assoc ⟩
-      f ∘ ε.η (F₀ A) ∘ δ.η A ≈⟨ elimʳ (Comonad.identityʳ M) ⟩
+      ε.η B ∘ F₁ f ∘ δ.η A     ≈⟨ pullˡ (ε.commute f) ⟩
+      (f ∘ ε.η (F₀ A)) ∘ δ.η A ≈⟨ trans (pullʳ (Comonad.identityʳ M)) identityʳ ⟩
       f
     ∎
 
