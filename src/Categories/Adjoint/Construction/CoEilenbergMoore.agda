@@ -32,62 +32,56 @@ Forgetful = record
   }
 
 Cofree : Functor C CoEilenbergMoore
-Cofree = {!   !}
-{-
-  { F₀           = λ A → record
-    { A        = F₀ A
-    ; action   = M.μ.η A
-    ; commute  = M.assoc
-    ; identity = M.identityʳ
-    }
-  ; F₁           = λ f → record
-    { arr     = F₁ f
-    ; commute = ⟺ (M.μ.commute f)
-    }
-  ; identity     = identity
-  ; homomorphism = homomorphism
-  ; F-resp-≈     = F-resp-≈
+Cofree = record
+ { F₀ = λ A → record
+  { A = F₀ A
+  ; coaction = M.δ.η A
+  ; commute = sym M.assoc
+  ; identity = Comonad.identityʳ M
   }
--}
+ ; F₁ = λ f → record
+  { arr = F₁ f
+  ; commute = ⟺ (sym (M.δ.commute f))
+  }
+ ; identity = identity
+ ; homomorphism = homomorphism
+ ; F-resp-≈ = F-resp-≈
+ }
+
 UC≃M : Forgetful ∘F Cofree ≃ M.F
-UC≃M = {!   !}
-{-
-  { F⇒G = record
-    { η           = λ _ → F₁ C.id
-    ; commute     = λ _ → [ M.F ]-resp-square id-comm-sym
-    ; sym-commute = λ _ → [ M.F ]-resp-square id-comm
-    }
-  ; F⇐G = record
-    { η       = λ _ → F₁ C.id
-    ; commute = λ _ → [ M.F ]-resp-square id-comm-sym
-    ; sym-commute = λ _ → [ M.F ]-resp-square id-comm
-    }
-  ; iso = λ _ → record
+UC≃M = record
+ { F⇒G = record
+  { η = λ _ → F₁ C.id
+  ; commute = λ f → [ M.F ]-resp-square id-comm-sym
+  ; sym-commute = λ f → [ M.F ]-resp-square id-comm
+  }
+ ; F⇐G = record
+  { η = λ _ → F₁ C.id
+  ; commute = λ f → [ M.F ]-resp-square id-comm-sym
+  ; sym-commute = λ f → [ M.F ]-resp-square id-comm
+  }
+ ; iso = λ _ → record
     { isoˡ = elimˡ identity ○ identity
     ; isoʳ = elimˡ identity ○ identity
     }
-  }
--}
+ }
 
-Free⊣Forgetful : Cofree ⊣ Forgetful
-Free⊣Forgetful = {!   !}
-{-
-  { unit   = record
-    { η           = M.η.η
-    ; commute     = M.η.commute
-    ; sym-commute = M.η.sym-commute
-    }
-  ; counit = record
-    { η           = λ X →
-      let module X = Comodule X
+Forgetful⊣Cofree : Forgetful ⊣ Cofree
+Forgetful⊣Cofree = record
+ { unit = record
+  { η = λ X → let module X = Comodule X
       in record
-        { arr     = X.action
+        { arr     = X.coaction
         ; commute = ⟺ X.commute
         }
-    ; commute     = λ f → ⟺ (Comodule⇒.commute f)
-    ; sym-commute = Comodule⇒.commute
-    }
-  ; zig    = M.identityˡ
-  ; zag    = λ {B} → Comodule.identity B
+  ; commute = Comodule⇒.commute
+  ; sym-commute = λ f → ⟺ (Comodule⇒.commute f)
   }
--}
+ ; counit = record
+  { η = M.ε.η
+  ; commute = M.ε.commute
+  ; sym-commute = M.ε.sym-commute
+  }
+ ; zig = λ {A} → Comodule.identity A
+ ; zag = λ {B} → Comonad.identityˡ M
+ }
