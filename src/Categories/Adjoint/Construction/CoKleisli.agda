@@ -61,13 +61,9 @@ Cofree =
    {X Y Z : Obj} {f : X ⇒ Y} {g : Y ⇒ Z} →
    (g ∘ f) ∘ M.ε.η X ≈ (g ∘ M.ε.η Y) ∘ (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X)
   hom-proof {X} {Y} {Z} {f} {g} = begin
-   (g ∘ f) ∘ M.ε.η X                                 ≈⟨ assoc ⟩
-   g ∘ f ∘ M.ε.η X                                   ≈⟨ refl⟩∘⟨ sym (M.ε.commute f) ⟩
-   g ∘ M.ε.η Y ∘ F₁ f                                ≈⟨ sym assoc ⟩
-   (g ∘ M.ε.η Y) ∘ F₁ f                              ≈⟨ refl⟩∘⟨ sym identityʳ ⟩
-   (g ∘ M.ε.η Y) ∘ (F₁ f ∘ C.id)                     ≈⟨ refl⟩∘⟨ refl⟩∘⟨ sym (Comonad.identityˡ M) ⟩
-   (g ∘ M.ε.η Y) ∘ (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X)   ≈⟨ refl⟩∘⟨ sym assoc ⟩
-   (g ∘ M.ε.η Y) ∘ ((F₁ f ∘ F₁ (M.ε.η X)) ∘ M.δ.η X) ≈⟨ refl⟩∘⟨ sym homomorphism ⟩∘⟨refl ⟩
+   (g ∘ f) ∘ M.ε.η X                                 ≈⟨ pullʳ (sym (M.ε.commute f)) ⟩
+   g ∘ M.ε.η Y ∘ F₁ f                                ≈⟨ sym (pullʳ (refl⟩∘⟨ elimʳ (Comonad.identityˡ M))) ⟩
+   (g ∘ M.ε.η Y) ∘ (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X)   ≈⟨ refl⟩∘⟨ pullˡ (sym homomorphism) ⟩
    (g ∘ M.ε.η Y) ∘ (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X)      ∎
 
 FF≃F : Forgetful ∘F Cofree ≃ M.F
@@ -89,21 +85,16 @@ FF≃F =
   where
   to-commute : {X Y : Obj} → (f : X ⇒ Y) → F₁ C.id ∘ F₁ (f ∘ M.ε.η X) ∘ M.δ.η X ≈ F₁ f ∘ F₁ C.id
   to-commute {X} {Y} f = begin
-   F₁ C.id ∘ F₁ (f ∘ M.ε.η X) ∘ M.δ.η X        ≈⟨ refl⟩∘⟨ homomorphism ⟩∘⟨refl ⟩
-   F₁ C.id ∘ (F₁ f ∘ F₁ (M.ε.η X)) ∘ M.δ.η X   ≈⟨ refl⟩∘⟨ assoc ⟩
-   F₁ C.id ∘ (F₁ f ∘ (F₁ (M.ε.η X) ∘ M.δ.η X)) ≈⟨ sym assoc ⟩
-   (F₁ C.id ∘ F₁ f) ∘ (F₁ (M.ε.η X) ∘ M.δ.η X) ≈⟨ identity ⟩∘⟨refl ⟩∘⟨refl ⟩
-   (C.id ∘ F₁ f) ∘ (F₁ (M.ε.η X) ∘ M.δ.η X)    ≈⟨ identityˡ ⟩∘⟨refl ⟩
-   F₁ f ∘ (F₁ (M.ε.η X) ∘ M.δ.η X)             ≈⟨ refl⟩∘⟨ Comonad.identityˡ M ⟩
-   F₁ f ∘ C.id                                 ≈⟨ refl⟩∘⟨ sym identity ⟩
-   F₁ f ∘ F₁ C.id                              ∎
+   F₁ C.id ∘ F₁ (f ∘ M.ε.η X) ∘ M.δ.η X ≈⟨ elimˡ identity ⟩
+   F₁ (f ∘ M.ε.η X) ∘ M.δ.η X           ≈⟨ pushˡ homomorphism ⟩
+   F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X        ≈⟨ refl⟩∘⟨ Comonad.identityˡ M ⟩
+   F₁ f ∘ C.id                          ≈⟨ refl⟩∘⟨ sym identity ⟩
+   F₁ f ∘ F₁ C.id                       ∎
   from-commute : {X Y : Obj} → (f : X ⇒ Y) → F₁ C.id ∘ F₁ f ≈ (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id
   from-commute {X} {Y} f = begin
       F₁ C.id ∘ F₁ f                              ≈⟨ [ M.F ]-resp-square id-comm-sym ⟩
-      F₁ f ∘ F₁ C.id                              ≈⟨ sym identityʳ ⟩∘⟨refl ⟩
-      (F₁ f ∘ C.id) ∘ F₁ C.id                     ≈⟨ (refl⟩∘⟨ sym (Comonad.identityˡ M)) ⟩∘⟨refl ⟩
-      (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id   ≈⟨ sym assoc ⟩∘⟨refl ⟩
-      ((F₁ f ∘ F₁ (M.ε.η X)) ∘ M.δ.η X) ∘ F₁ C.id ≈⟨ sym homomorphism ⟩∘⟨refl ⟩∘⟨refl ⟩
+      F₁ f ∘ F₁ C.id                              ≈⟨ introʳ (Comonad.identityˡ M) ⟩∘⟨refl ⟩
+      (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id   ≈⟨ pullˡ (sym homomorphism) ⟩∘⟨refl ⟩
       (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id      ∎
 
 Forgetful⊣Cofree : Forgetful ⊣ Cofree
@@ -125,12 +116,10 @@ Forgetful⊣Cofree =
    (f : F₀ X ⇒ Y) →
    F₁ C.id ∘ F₁ f ∘ M.δ.η X ≈ ((F₁ f ∘ M.δ.η X) ∘ M.ε.η (F₀ X)) ∘ F₁ (F₁ C.id) ∘ M.δ.η X
   unit-commute {X} {Y} f = begin
-   F₁ C.id ∘ F₁ f ∘ M.δ.η X                                   ≈⟨ sym assoc ⟩
-   (F₁ C.id ∘ F₁ f) ∘ M.δ.η X                                 ≈⟨ sym homomorphism ⟩∘⟨refl ⟩
-   (F₁ (C.id ∘ f)) ∘ M.δ.η X                                  ≈⟨ F-resp-≈ identityˡ ⟩∘⟨refl ⟩  F₁ f ∘  M.δ.η X ≈⟨ sym identityʳ ⟩
-   (F₁ f ∘ M.δ.η X) ∘ C.id                                    ≈⟨ sym (refl⟩∘⟨ Comonad.identityʳ M) ⟩
-   (F₁ f ∘ M.δ.η X) ∘ (M.ε.η (F₀ X) ∘ M.δ.η X)                ≈⟨ sym assoc ⟩
-   ((F₁ f ∘ M.δ.η X) ∘ M.ε.η (F₀ X)) ∘ M.δ.η X                ≈⟨ refl⟩∘⟨ sym identityˡ ⟩
+   F₁ C.id ∘ F₁ f ∘ M.δ.η X                                   ≈⟨ elimˡ identity ⟩
+   F₁ f ∘  M.δ.η X                                            ≈⟨ introʳ (Comonad.identityʳ M) ⟩
+   (F₁ f ∘ M.δ.η X) ∘ M.ε.η (F₀ X) ∘ M.δ.η X                  ≈⟨ sym assoc ⟩
+   ((F₁ f ∘ M.δ.η X) ∘ M.ε.η (F₀ X)) ∘ M.δ.η X                ≈⟨ intro-center Equiv.refl ⟩
    ((F₁ f ∘ M.δ.η X) ∘ M.ε.η (F₀ X)) ∘ C.id ∘ M.δ.η X         ≈⟨ refl⟩∘⟨ sym identity ⟩∘⟨refl ⟩
    ((F₁ f ∘ M.δ.η X) ∘ M.ε.η (F₀ X)) ∘ F₁ C.id ∘ M.δ.η X      ≈⟨ refl⟩∘⟨ sym (F-resp-≈ identity)  ⟩∘⟨refl ⟩
    ((F₁ f ∘ M.δ.η X) ∘ M.ε.η (F₀ X)) ∘ F₁ (F₁ C.id) ∘ M.δ.η X ∎
@@ -156,8 +145,6 @@ Forgetful⊣Cofree =
   zag-proof {B} = begin
     (M.ε.η B ∘ M.ε.η (F₀ B)) ∘ (F₁ (F₁ C.id) ∘ M.δ.η _) ≈⟨ assoc ⟩
     M.ε.η B ∘ (M.ε.η (F₀ B) ∘ (F₁ (F₁ C.id) ∘ M.δ.η _)) ≈⟨ refl⟩∘⟨ (refl⟩∘⟨ F-resp-≈ identity ⟩∘⟨refl) ⟩
-    M.ε.η B ∘ (M.ε.η (F₀ B) ∘ (F₁ C.id ∘ M.δ.η _))      ≈⟨ refl⟩∘⟨ (refl⟩∘⟨ identity ⟩∘⟨refl) ⟩
-    M.ε.η B ∘ (M.ε.η (F₀ B) ∘ (C.id ∘ M.δ.η _))         ≈⟨ refl⟩∘⟨ refl⟩∘⟨ identityˡ ⟩
-    M.ε.η B ∘ (M.ε.η (F₀ B) ∘ M.δ.η _)                  ≈⟨ refl⟩∘⟨ Comonad.identityʳ M ⟩
-    M.ε.η B ∘ C.id                                      ≈⟨ identityʳ ⟩
+    M.ε.η B ∘ (M.ε.η (F₀ B) ∘ (F₁ C.id ∘ M.δ.η _))      ≈⟨ refl⟩∘⟨ elim-center identity ⟩
+    M.ε.η B ∘ (M.ε.η (F₀ B) ∘ M.δ.η _)                  ≈⟨ elimʳ (Comonad.identityʳ M) ⟩
     M.ε.η B                                             ∎
