@@ -35,7 +35,7 @@ Forgetful =
   trihom : {X Y Z W : Obj} {f : X ⇒ Y} {g : Y ⇒ Z} {h : Z ⇒ W} → F₁ (h ∘ g ∘ f) ≈ F₁ h ∘ F₁ g ∘ F₁ f
   trihom {X} {Y} {Z} {W} {f} {g} {h} = begin 
    F₁ (h ∘ g ∘ f)     ≈⟨ homomorphism ⟩ 
-   F₁ h ∘ F₁ (g ∘ f)     ≈⟨ refl⟩∘⟨ homomorphism ⟩ 
+   F₁ h ∘ F₁ (g ∘ f)  ≈⟨ refl⟩∘⟨ homomorphism ⟩ 
    F₁ h ∘ F₁ g ∘ F₁ f ∎
   hom-proof :
    {X Y Z : Obj} {f : F₀ X ⇒ Y} {g : F₀ Y ⇒ Z} →
@@ -45,7 +45,7 @@ Forgetful =
    F₁ g ∘ (F₁ (F₁ f) ∘ F₁ (M.δ.η X)) ∘ M.δ.η X ≈⟨ refl⟩∘⟨ (pullʳ (sym M.assoc)) ⟩
    F₁ g ∘ F₁ (F₁ f) ∘ M.δ.η (F₀ X) ∘ M.δ.η X   ≈⟨ refl⟩∘⟨ pullˡ (sym (M.δ.commute f)) ⟩
    F₁ g ∘ (M.δ.η Y ∘ F₁ f) ∘ M.δ.η X           ≈⟨ assoc²'' ⟩
-   (F₁ g ∘ M.δ.η Y) ∘ F₁ f ∘ M.δ.η X             ∎
+   (F₁ g ∘ M.δ.η Y) ∘ F₁ f ∘ M.δ.η X           ∎
 
 Cofree : Functor C (CoKleisli M)
 Cofree =
@@ -61,10 +61,10 @@ Cofree =
    {X Y Z : Obj} {f : X ⇒ Y} {g : Y ⇒ Z} →
    (g ∘ f) ∘ M.ε.η X ≈ (g ∘ M.ε.η Y) ∘ (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X)
   hom-proof {X} {Y} {Z} {f} {g} = begin
-   (g ∘ f) ∘ M.ε.η X                                 ≈⟨ pullʳ (sym (M.ε.commute f)) ⟩
-   g ∘ M.ε.η Y ∘ F₁ f                                ≈⟨ sym (pullʳ (refl⟩∘⟨ elimʳ (Comonad.identityˡ M))) ⟩
-   (g ∘ M.ε.η Y) ∘ (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X)   ≈⟨ refl⟩∘⟨ pullˡ (sym homomorphism) ⟩
-   (g ∘ M.ε.η Y) ∘ (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X)      ∎
+   (g ∘ f) ∘ M.ε.η X                               ≈⟨ pullʳ (sym (M.ε.commute f)) ⟩
+   g ∘ M.ε.η Y ∘ F₁ f                              ≈⟨ sym (pullʳ (refl⟩∘⟨ elimʳ (Comonad.identityˡ M))) ⟩
+   (g ∘ M.ε.η Y) ∘ (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X) ≈⟨ refl⟩∘⟨ pullˡ (sym homomorphism) ⟩
+   (g ∘ M.ε.η Y) ∘ (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X)    ∎
 
 FC≃M : Forgetful ∘F Cofree ≃ M.F
 FC≃M =
@@ -92,10 +92,10 @@ FC≃M =
    F₁ f ∘ F₁ C.id                       ∎
   from-commute : {X Y : Obj} → (f : X ⇒ Y) → F₁ C.id ∘ F₁ f ≈ (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id
   from-commute {X} {Y} f = begin
-      F₁ C.id ∘ F₁ f                              ≈⟨ [ M.F ]-resp-square id-comm-sym ⟩
-      F₁ f ∘ F₁ C.id                              ≈⟨ introʳ (Comonad.identityˡ M) ⟩∘⟨refl ⟩
-      (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id   ≈⟨ pullˡ (sym homomorphism) ⟩∘⟨refl ⟩
-      (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id      ∎
+      F₁ C.id ∘ F₁ f                            ≈⟨ [ M.F ]-resp-square id-comm-sym ⟩
+      F₁ f ∘ F₁ C.id                            ≈⟨ introʳ (Comonad.identityˡ M) ⟩∘⟨refl ⟩
+      (F₁ f ∘ F₁ (M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id ≈⟨ pullˡ (sym homomorphism) ⟩∘⟨refl ⟩
+      (F₁ (f ∘ M.ε.η X) ∘ M.δ.η X) ∘ F₁ C.id    ∎
 
 -- useful lemma:
 FF1≈1 : {X : Obj} → F₁ (F₁ (C.id {X})) ≈ C.id 
