@@ -10,12 +10,11 @@ open import Categories.Adjoint.Properties
 open import Categories.Category
 open import Categories.Functor using (Functor; _∘F_)
 open import Categories.Functor.Equivalence
-open import Categories.Monad
+open import Categories.Comonad
 
 open import Categories.NaturalTransformation.Core renaming (id to idN)
 open import Categories.Morphism.HeterogeneousIdentity
 
-{-
 open import Categories.Adjoint.Construction.CoEilenbergMoore
 open import Categories.Category.Construction.CoEilenbergMoore
 
@@ -24,21 +23,21 @@ private
     o ℓ e : Level
     𝒞 𝒟 : Category o ℓ e
 
-module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (F⊣G : Adjoint F G) where
+module _ {F : Functor 𝒟 𝒞} {G : Functor 𝒞 𝒟} (F⊣G : Adjoint F G) where
   private
-    T : Monad 𝒞
-    T = adjoint⇒monad F⊣G
+    T : Comonad 𝒞
+    T = adjoint⇒comonad F⊣G
 
-    𝒞ᵀ : Category _ _ _
-    𝒞ᵀ = EilenbergMoore T
+    coEM𝒞 : Category _ _ _
+    coEM𝒞 = CoEilenbergMoore T
 
     module 𝒞 = Category 𝒞
     module 𝒟 = Category 𝒟
-    module 𝒞ᵀ = Category 𝒞ᵀ
+    module coEM𝒞 = Category coEM𝒞
 
     open 𝒞.HomReasoning
 
-    module T = Monad T
+    module T = Comonad T
     module F = Functor F
     module G = Functor G
 
@@ -46,47 +45,50 @@ module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (F⊣G : Adjoint F G) w
     open NaturalTransformation
 
   -- Maclane's Comparison Functor
-  ComparisonF : Functor 𝒟 𝒞ᵀ
-  ComparisonF = {!   !}
-
-    { F₀ = λ X → record
-      { A = G.F₀ X
-      ; action = G.F₁ (counit.η X)
-      ; commute = commute (G ∘ˡ counit) (counit.η X)
-      ; identity = zag
-      }
-    ; F₁ = λ {A} {B} f → record
-      { arr = G.F₁ f
-      ; commute =  begin
-        𝒞 [ G.F₁ f ∘ G.F₁ (counit.η A) ]               ≈˘⟨ G.homomorphism ⟩
-        G.F₁ (𝒟 [ f ∘ (counit.η A) ])                  ≈˘⟨ G.F-resp-≈ (counit.commute f) ⟩
-        G.F₁ (𝒟 [ counit.η B ∘ F.F₁ (G.F₁ f) ])        ≈⟨ G.homomorphism  ⟩
-        𝒞 [ G.F₁ (counit.η B) ∘ G.F₁ (F.F₁ (G.F₁ f)) ] ∎
-      }
-    ; identity = G.identity
-    ; homomorphism = G.homomorphism
-    ; F-resp-≈ = G.F-resp-≈
+  ComparisonF : Functor 𝒟 coEM𝒞
+  ComparisonF = record
+   { F₀ = λ X → record
+    { A = F.F₀ X
+    ; coaction = F.F₁ (unit.η X)
+    ; commute = {!   !}
+    ; identity = zig
     }
+   ; F₁ = λ {A} {B} f → record
+    { arr = F.F₁ f
+    ; commute = begin
+      F.F₁ (unit.η B) 𝒞.∘ F.F₁ f ≈⟨ {!   !} ⟩
+      T.F.F₁ (F.F₁ f) 𝒞.∘ F.F₁ (unit.η A) ∎
+    }
+   ; identity = F.identity
+   ; homomorphism = F.homomorphism
+   ; F-resp-≈ = F.F-resp-≈
+   }
+
   private
     K = ComparisonF
     module K = Functor K
-    module Gᵀ = Functor (Forgetful T)
-    module Fᵀ = Functor (Cofree T)
+    module Fᵀ = Functor (Forgetful T)
+    module Gᵀ = Functor (Cofree T)
 
-  Comparison∘F≡Free : (ComparisonF ∘F F) ≡F Free T
-  Comparison∘F≡Free = record
+  Comparison∘F≡Free : (ComparisonF ∘F G) ≡F Cofree T
+  Comparison∘F≡Free = record { eq₀ = λ X → {!   !} ; eq₁ = {!   !} }
+{-
+  record
     { eq₀ = λ X → ≡.refl
     ; eq₁ = λ {A} {B} f → begin
-      Module⇒.arr (𝒞ᵀ [ (hid 𝒞ᵀ ≡.refl) ∘ K.F₁ (F.F₁ f) ]) ≈⟨ hid-refl 𝒞ᵀ {A = K.F₀ (F.F₀ B)} ⟩∘⟨refl ⟩
-      Module⇒.arr (𝒞ᵀ [ 𝒞ᵀ.id ∘ K.F₁ (F.F₁ f) ])           ≈⟨ 𝒞.identityˡ {f = Module⇒.arr (K.F₁ (F.F₁ f))} ⟩
+      Module⇒.arr (coEM𝒞 [ (hid coEM𝒞 ≡.refl) ∘ K.F₁ (F.F₁ f) ]) ≈⟨ hid-refl coEM𝒞 {A = K.F₀ (F.F₀ B)} ⟩∘⟨refl ⟩
+      Module⇒.arr (coEM𝒞 [ coEM𝒞.id ∘ K.F₁ (F.F₁ f) ])           ≈⟨ 𝒞.identityˡ {f = Module⇒.arr (K.F₁ (F.F₁ f))} ⟩
       Module⇒.arr (K.F₁ (F.F₁ f))                          ≈⟨ 𝒞.Equiv.refl ⟩
-      Module⇒.arr (Fᵀ.F₁ f)                                 ≈˘⟨ 𝒞ᵀ.identityʳ {f = Fᵀ.F₁ f} ⟩
-      Module⇒.arr (𝒞ᵀ [ Fᵀ.F₁ f ∘ 𝒞ᵀ.id ])                 ≈˘⟨ refl⟩∘⟨ hid-refl 𝒞ᵀ {A = Fᵀ.F₀ A} ⟩
-      Module⇒.arr (𝒞ᵀ [ Fᵀ.F₁ f ∘ (hid 𝒞ᵀ ≡.refl) ])       ∎
+      Module⇒.arr (Fᵀ.F₁ f)                                 ≈˘⟨ coEM𝒞.identityʳ {f = Fᵀ.F₁ f} ⟩
+      Module⇒.arr (coEM𝒞 [ Fᵀ.F₁ f ∘ coEM𝒞.id ])                 ≈˘⟨ refl⟩∘⟨ hid-refl coEM𝒞 {A = Fᵀ.F₀ A} ⟩
+      Module⇒.arr (coEM𝒞 [ Fᵀ.F₁ f ∘ (hid coEM𝒞 ≡.refl) ])       ∎
     }
+-}
 
-  Forgetful∘ComparisonF≡G : (Forgetful T ∘F ComparisonF) ≡F G
-  Forgetful∘ComparisonF≡G = record
+  Forgetful∘ComparisonF≡G : (Forgetful T ∘F ComparisonF) ≡F F
+  Forgetful∘ComparisonF≡G = record { eq₀ = λ X → ≡.refl ; eq₁ = {!   !} }
+{-
+  record
     { eq₀ = λ X → ≡.refl
     ; eq₁ = λ f → begin
       𝒞 [ (hid 𝒞 ≡.refl) ∘ (Gᵀ.F₁ (K.F₁ f)) ] ≈⟨ hid-refl 𝒞 ⟩∘⟨refl ⟩
