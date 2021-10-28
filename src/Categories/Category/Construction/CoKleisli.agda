@@ -24,12 +24,12 @@ CoKleisli {𝒞 = 𝒞} M =
   ; _∘_       = λ f g → f ∘ F₁ g ∘ δ.η _
   ; id        = ε.η _
   ; assoc     = assoc′
-  ; sym-assoc = Equiv.sym assoc′
+  ; sym-assoc = sym assoc′
   ; identityˡ = identityˡ′
   ; identityʳ = identityʳ′
   ; identity² = identity²′
   ; equiv     = equiv
-  ; ∘-resp-≈  = λ f≈h g≈i → ∘-resp-≈ f≈h (∘-resp-≈ (F≈ g≈i) Equiv.refl)
+  ; ∘-resp-≈  = λ f≈h g≈i → ∘-resp-≈ f≈h (∘-resp-≈ (F≈ g≈i) refl)
   }
   where
   module M = Comonad M
@@ -37,6 +37,7 @@ CoKleisli {𝒞 = 𝒞} M =
   open Functor F
   open Category 𝒞
   open HomReasoning
+  open Equiv
   open MR 𝒞
 
   -- shorthands to make the proofs nicer
@@ -45,24 +46,24 @@ CoKleisli {𝒞 = 𝒞} M =
   assoc′ : {A B C D : Obj} {f : F₀ A ⇒ B} {g : F₀ B ⇒ C} {h : F₀ C ⇒ D} → (h ∘ F₁ g ∘ δ.η B) ∘ F₁ f ∘ δ.η A ≈ h ∘ F₁ (g ∘ F₁ f ∘ δ.η A) ∘ δ.η A
   assoc′ {A} {B} {C} {D} {f} {g} {h} =
       begin
-        (h ∘ F₁ g ∘ δ.η B) ∘ (F₁ f ∘ δ.η A) ≈⟨ assoc ⟩
-        h ∘ ((F₁ g ∘ δ.η B) ∘ (F₁ f ∘ δ.η A)) ≈⟨ ((refl⟩∘⟨ assoc)) ⟩
-        h ∘ (F₁ g ∘ (δ.η B ∘ (F₁ f ∘ δ.η A))) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ Equiv.sym assoc)) ⟩
-        h ∘ (F₁ g ∘ ((δ.η B ∘ F₁ f) ∘ δ.η A)) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ (δ.commute f ⟩∘⟨refl))) ⟩
-        h ∘ (F₁ g ∘ ((F₁ (F₁ f) ∘ δ.η (F₀ A)) ∘ δ.η A)) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ assoc)) ⟩
+        (h ∘ F₁ g ∘ δ.η B) ∘ (F₁ f ∘ δ.η A) ≈⟨ assoc²' ⟩
+        -- h ∘ ((F₁ g ∘ δ.η B) ∘ (F₁ f ∘ δ.η A)) ≈⟨ ((refl⟩∘⟨ assoc)) ⟩
+        h ∘ (F₁ g ∘ (δ.η B ∘ (F₁ f ∘ δ.η A))) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ sym assoc)) ⟩
+        h ∘ (F₁ g ∘ ((δ.η B ∘ F₁ f) ∘ δ.η A)) ≈⟨ (refl⟩∘⟨ {!   !}) ⟩
+        -- h ∘ (F₁ g ∘ ((F₁ (F₁ f) ∘ δ.η (F₀ A)) ∘ δ.η A)) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ assoc)) ⟩
         h ∘ (F₁ g ∘ (F₁ (F₁ f) ∘ (δ.η (F₀ A) ∘ δ.η A))) ≈⟨ ((refl⟩∘⟨ (refl⟩∘⟨ (refl⟩∘⟨ Comonad.assoc M)))) ⟩
-        h ∘ (F₁ g ∘ (F₁ (F₁ f) ∘ (F₁ (δ.η A) ∘ δ.η A))) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ Equiv.sym assoc)) ⟩
-        h ∘ (F₁ g ∘ ((F₁ (F₁ f) ∘ F₁ (δ.η A)) ∘ δ.η A)) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ (Equiv.sym homomorphism ⟩∘⟨refl))) ⟩
-        h ∘ (F₁ g ∘ (F₁ (F₁ f ∘ δ.η A) ∘ δ.η A)) ≈⟨ (refl⟩∘⟨ Equiv.sym assoc) ⟩
-        h ∘ ((F₁ g ∘ F₁ (F₁ f ∘ δ.η A)) ∘ δ.η A) ≈⟨ (refl⟩∘⟨ (Equiv.sym homomorphism ⟩∘⟨refl)) ⟩
+        h ∘ (F₁ g ∘ (F₁ (F₁ f) ∘ (F₁ (δ.η A) ∘ δ.η A))) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ sym assoc)) ⟩
+        h ∘ (F₁ g ∘ ((F₁ (F₁ f) ∘ F₁ (δ.η A)) ∘ δ.η A)) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ (sym homomorphism ⟩∘⟨refl))) ⟩
+        h ∘ (F₁ g ∘ (F₁ (F₁ f ∘ δ.η A) ∘ δ.η A)) ≈⟨ (refl⟩∘⟨ sym assoc) ⟩
+        h ∘ ((F₁ g ∘ F₁ (F₁ f ∘ δ.η A)) ∘ δ.η A) ≈⟨ (refl⟩∘⟨ (sym homomorphism ⟩∘⟨refl)) ⟩
         h ∘ (F₁ (g ∘ (F₁ f ∘ δ.η A)) ∘ δ.η A)
       ∎
 
   identityˡ′ : ∀ {A B : Obj} {f : F₀ A ⇒ B} → ε.η B ∘ F₁ f ∘ δ.η A ≈ f
   identityˡ′ {A} {B} {f} =
     begin
-      ε.η B ∘ F₁ f ∘ δ.η A ≈⟨ Equiv.sym assoc ⟩
-      (ε.η B ∘ F₁ f) ∘ δ.η A ≈⟨ ∘-resp-≈ (ε.commute f) Equiv.refl ⟩
+      ε.η B ∘ F₁ f ∘ δ.η A ≈⟨ sym assoc ⟩
+      (ε.η B ∘ F₁ f) ∘ δ.η A ≈⟨ ∘-resp-≈ (ε.commute f) refl ⟩
       (f ∘ ε.η (F₀ A)) ∘ δ.η A ≈⟨ assoc ⟩
       f ∘ ε.η (F₀ A) ∘ δ.η A ≈⟨ elimʳ (Comonad.identityʳ M) ⟩
       f
