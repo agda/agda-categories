@@ -116,3 +116,7 @@ module ≅ = IsEquivalence ≅-isEquivalence
   ; _≈_           = _≅_
   ; isEquivalence = ≅-isEquivalence
   }
+
+-- diagrammatic composition of morphisms; the symbol is (U+FF1B), "Fullwidth Semicolon", not semicolon (U+003B)
+_；_ : {A B C : Obj} → (f : A ⇒ B) → (g : B ⇒ C) → (A ⇒ C)
+f ； g = g ∘ f
