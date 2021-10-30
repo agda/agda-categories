@@ -19,6 +19,12 @@ open NaturalTransformation
 -- https://ncatlab.org/nlab/show/monad#the_bicategory_of_monads
 -- between generic monads t : a -> a & s : b -> b
 -- TODO
+record Monad⇒ (M : Monad C) (N : Monad D) : Set (o ⊔ ℓ ⊔ e) where
+  field
+    X : Functor C D
+    α : NaturalTransformation (Monad.F N ∘F X) (X ∘F Monad.F M)
+    -- todo: properties
+
 
 -- monad morphism in the sense of [ref],
 -- monads are on the same category
