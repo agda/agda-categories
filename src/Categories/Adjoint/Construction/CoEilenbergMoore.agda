@@ -10,6 +10,7 @@ open import Categories.Category.Construction.CoEilenbergMoore M
 open import Categories.Adjoint
 open import Categories.Functor
 open import Categories.Functor.Properties
+open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
 open import Categories.NaturalTransformation.Core
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)
 open import Categories.Morphism.Reasoning C
@@ -49,22 +50,15 @@ Cofree = record
  }
 
 UC≃M : Forgetful ∘F Cofree ≃ M.F
-UC≃M = record
- { F⇒G = record
-  { η = λ _ → F₁ C.id
-  ; commute = λ f → [ M.F ]-resp-square id-comm-sym
-  ; sym-commute = λ f → [ M.F ]-resp-square id-comm
-  }
- ; F⇐G = record
-  { η = λ _ → F₁ C.id
-  ; commute = λ f → [ M.F ]-resp-square id-comm-sym
-  ; sym-commute = λ f → [ M.F ]-resp-square id-comm
-  }
+UC≃M = niHelper (record
+ { η = λ _ → F₁ C.id
+ ; η⁻¹ = λ _ → F₁ C.id
+ ; commute = λ f → [ M.F ]-resp-square id-comm-sym
  ; iso = λ _ → record
     { isoˡ = elimˡ identity ○ identity
     ; isoʳ = elimˡ identity ○ identity
     }
- }
+ })
 
 Forgetful⊣Cofree : Forgetful ⊣ Cofree
 Forgetful⊣Cofree = record
