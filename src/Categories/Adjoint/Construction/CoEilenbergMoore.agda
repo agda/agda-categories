@@ -42,7 +42,7 @@ Cofree = record
   }
  ; F₁ = λ f → record
   { arr = F₁ f
-  ; commute = ⟺ (sym (M.δ.commute f))
+  ; commute = M.δ.commute f
   }
  ; identity = identity
  ; homomorphism = homomorphism
