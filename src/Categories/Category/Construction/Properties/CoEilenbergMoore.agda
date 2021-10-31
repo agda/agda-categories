@@ -66,12 +66,10 @@ module _ {F : Functor 𝒟 𝒞} {G : Functor 𝒞 𝒟} (F⊣G : Adjoint F G) w
    where
     commute-obj : {X : Category.Obj 𝒟} → T.F.F₁ (F.F₁ (unit.η X)) 𝒞.∘ F.F₁ (unit.η X) 𝒞.≈ T.δ.η (F.F₀ X) 𝒞.∘ F.F₁ (unit.η X)
     commute-obj {X} = begin
-      T.F.F₁ (F.F₁ (unit.η X)) 𝒞.∘ F.F₁ (unit.η X) ≈⟨ {!   !} ⟩
-      F.F₁ (G.F₁ (F.F₁ (unit.η X))) 𝒞.∘ F.F₁ (unit.η X) ≈⟨ {!   !} ⟩
-      F.F₁ (G.F₁ (F.F₁ (unit.η X)) 𝒟.∘ unit.η X) ≈⟨ {!   !} ⟩
-      F.F₁ (unit.η (G.F₀ (F.F₀ X)) 𝒟.∘ unit.η X) ≈⟨ {!   !} ⟩
-      -- δ = FηG
-      T.δ.η (F.F₀ X) 𝒞.∘ F.F₁ (unit.η X) ∎
+      F.F₁ (G.F₁ (F.F₁ (unit.η X))) 𝒞.∘ F.F₁ (unit.η X) ≈⟨ Category.Equiv.sym 𝒞 (Functor.homomorphism F) ⟩
+      F.F₁ (G.F₁ (F.F₁ (unit.η X)) 𝒟.∘ unit.η X)        ≈⟨ Functor.F-resp-≈ F (Category.Equiv.sym 𝒟 (Adjoint.unit.commute F⊣G (unit.η X))) ⟩
+      F.F₁ (unit.η (G.F₀ (F.F₀ X)) 𝒟.∘ unit.η X)        ≈⟨ Functor.homomorphism F ⟩
+      T.δ.η (F.F₀ X) 𝒞.∘ F.F₁ (unit.η X)                ∎
     commute-mor : {A B : Category.Obj 𝒟} {f : Category._⇒_ 𝒟 A B} → F.F₁ (unit.η B) 𝒞.∘ F.F₁ f 𝒞.≈ T.F.F₁ (F.F₁ f) 𝒞.∘ F.F₁ (unit.η A)
     commute-mor {A} {B} {f} = begin
      F.F₁ (unit.η B) 𝒞.∘ F.F₁ f          ≈⟨ Category.Equiv.sym 𝒞 (Functor.homomorphism F) ⟩
