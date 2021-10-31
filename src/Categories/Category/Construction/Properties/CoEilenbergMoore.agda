@@ -87,7 +87,9 @@ module _ {F : Functor 𝒟 𝒞} {G : Functor 𝒞 𝒟} (F⊣G : Adjoint F G) w
 
   Comparison∘F≡Free : (ComparisonF ∘F G) ≡F Cofree T
   Comparison∘F≡Free = record
-   { eq₀ = λ X → {!   !}
+   { eq₀ = λ X → {!    !}
+   -- this is an equality of records, they are already equal;
+   -- just have to decide how to tell agda...
    ; eq₁ = {!   !}
    }
 {-
@@ -106,20 +108,5 @@ module _ {F : Functor 𝒟 𝒞} {G : Functor 𝒞 𝒟} (F⊣G : Adjoint F G) w
   Forgetful∘ComparisonF≡G : (Forgetful T ∘F ComparisonF) ≡F F
   Forgetful∘ComparisonF≡G = record
    { eq₀ = λ X → ≡.refl
-   ; eq₁ = eq-1
+   ; eq₁ = λ f → id-comm-sym 𝒞
    }
-   where
-     eq-1 : {X Y : 𝒟.Obj} (f : X 𝒟.⇒ Y) → 𝒞.id 𝒞.∘ F.F₁ f 𝒞.≈ F.F₁ f 𝒞.∘ 𝒞.id
-     eq-1 = λ f → id-comm-sym 𝒞
-{-
-  record
-    { eq₀ = λ X → ≡.refl
-    ; eq₁ = λ f → begin
-      𝒞 [ (hid 𝒞 ≡.refl) ∘ (Gᵀ.F₁ (K.F₁ f)) ] ≈⟨ hid-refl 𝒞 ⟩∘⟨refl ⟩
-      𝒞 [ 𝒞.id ∘ (Gᵀ.F₁ (K.F₁ f)) ]           ≈⟨ 𝒞.identityˡ ⟩
-      (Gᵀ.F₁ (K.F₁ f))                         ≈⟨ 𝒞.Equiv.refl ⟩
-      G.F₁ f                                   ≈˘⟨ 𝒞.identityʳ ⟩
-      𝒞 [ G.F₁ f ∘ 𝒞.id ]                     ≈˘⟨ refl⟩∘⟨ hid-refl 𝒞 ⟩
-      𝒞 [ G.F₁ f ∘ (hid 𝒞 ≡.refl) ]           ∎
-    }
--}
