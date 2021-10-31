@@ -110,9 +110,7 @@ module _ {F : Functor 𝒟 𝒞} {G : Functor 𝒞 𝒟} (F⊣G : Adjoint F G) w
    }
    where
      eq-1 : {X Y : 𝒟.Obj} (f : X 𝒟.⇒ Y) → 𝒞.id 𝒞.∘ F.F₁ f 𝒞.≈ F.F₁ f 𝒞.∘ 𝒞.id
-     eq-1 = λ f → begin
-       𝒞.id 𝒞.∘ F.F₁ f ≈⟨ id-comm-sym 𝒞 ⟩
-       F.F₁ f 𝒞.∘ 𝒞.id ∎
+     eq-1 = λ f → id-comm-sym 𝒞
 {-
   record
     { eq₀ = λ X → ≡.refl
