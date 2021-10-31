@@ -14,6 +14,7 @@ open import Categories.Comonad
 
 open import Categories.NaturalTransformation.Core renaming (id to idN)
 open import Categories.Morphism.HeterogeneousIdentity
+open import Categories.Morphism.Reasoning
 
 open import Categories.Adjoint.Construction.CoEilenbergMoore
 open import Categories.Category.Construction.CoEilenbergMoore
@@ -40,6 +41,7 @@ module _ {F : Functor 𝒟 𝒞} {G : Functor 𝒞 𝒟} (F⊣G : Adjoint F G) w
     module T = Comonad T
     module F = Functor F
     module G = Functor G
+    module FG = Functor (F ∘F G)
 
     open Adjoint F⊣G
     open NaturalTransformation
@@ -50,19 +52,33 @@ module _ {F : Functor 𝒟 𝒞} {G : Functor 𝒞 𝒟} (F⊣G : Adjoint F G) w
    { F₀ = λ X → record
     { A = F.F₀ X
     ; coaction = F.F₁ (unit.η X)
-    ; commute = {!   !}
+    ; commute = commute-obj
     ; identity = zig
     }
    ; F₁ = λ {A} {B} f → record
     { arr = F.F₁ f
-    ; commute = begin
-      F.F₁ (unit.η B) 𝒞.∘ F.F₁ f ≈⟨ {!   !} ⟩
-      T.F.F₁ (F.F₁ f) 𝒞.∘ F.F₁ (unit.η A) ∎
+    ; commute = commute-mor
     }
    ; identity = F.identity
    ; homomorphism = F.homomorphism
    ; F-resp-≈ = F.F-resp-≈
    }
+   where
+    commute-obj : {X : Category.Obj 𝒟} → T.F.F₁ (F.F₁ (unit.η X)) 𝒞.∘ F.F₁ (unit.η X) 𝒞.≈ T.δ.η (F.F₀ X) 𝒞.∘ F.F₁ (unit.η X)
+    commute-obj {X} = begin
+      T.F.F₁ (F.F₁ (unit.η X)) 𝒞.∘ F.F₁ (unit.η X) ≈⟨ {!   !} ⟩
+      F.F₁ (G.F₁ (F.F₁ (unit.η X))) 𝒞.∘ F.F₁ (unit.η X) ≈⟨ {!   !} ⟩
+      F.F₁ (G.F₁ (F.F₁ (unit.η X)) 𝒟.∘ unit.η X) ≈⟨ {!   !} ⟩
+      F.F₁ (unit.η (G.F₀ (F.F₀ X)) 𝒟.∘ unit.η X) ≈⟨ {!   !} ⟩
+      -- δ = FηG
+      T.δ.η (F.F₀ X) 𝒞.∘ F.F₁ (unit.η X) ∎
+    commute-mor : {A B : Category.Obj 𝒟} {f : Category._⇒_ 𝒟 A B} → F.F₁ (unit.η B) 𝒞.∘ F.F₁ f 𝒞.≈ T.F.F₁ (F.F₁ f) 𝒞.∘ F.F₁ (unit.η A)
+    commute-mor {A} {B} {f} = begin
+     F.F₁ (unit.η B) 𝒞.∘ F.F₁ f          ≈⟨ Category.Equiv.sym 𝒞 (Functor.homomorphism F) ⟩
+     F.F₁ (unit.η B 𝒟.∘ f)               ≈⟨ Functor.F-resp-≈ F (Adjoint.unit.commute F⊣G f) ⟩
+     F.F₁ (G.F₁ (F.F₁ f) 𝒟.∘ unit.η A)   ≈⟨ Functor.homomorphism F ⟩
+     T.F.F₁ (F.F₁ f) 𝒞.∘ F.F₁ (unit.η A) ∎
+
 
   private
     K = ComparisonF
@@ -71,7 +87,10 @@ module _ {F : Functor 𝒟 𝒞} {G : Functor 𝒞 𝒟} (F⊣G : Adjoint F G) w
     module Gᵀ = Functor (Cofree T)
 
   Comparison∘F≡Free : (ComparisonF ∘F G) ≡F Cofree T
-  Comparison∘F≡Free = record { eq₀ = λ X → {!   !} ; eq₁ = {!   !} }
+  Comparison∘F≡Free = record
+   { eq₀ = λ X → {!   !}
+   ; eq₁ = {!   !}
+   }
 {-
   record
     { eq₀ = λ X → ≡.refl
@@ -86,7 +105,10 @@ module _ {F : Functor 𝒟 𝒞} {G : Functor 𝒞 𝒟} (F⊣G : Adjoint F G) w
 -}
 
   Forgetful∘ComparisonF≡G : (Forgetful T ∘F ComparisonF) ≡F F
-  Forgetful∘ComparisonF≡G = record { eq₀ = λ X → ≡.refl ; eq₁ = {!   !} }
+  Forgetful∘ComparisonF≡G = record
+   { eq₀ = λ X → ≡.refl
+   ; eq₁ = {!   !}
+   }
 {-
   record
     { eq₀ = λ X → ≡.refl
