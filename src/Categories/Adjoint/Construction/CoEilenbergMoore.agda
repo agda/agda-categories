@@ -37,7 +37,7 @@ Cofree = record
  { F₀ = λ A → record
   { A = F₀ A
   ; coaction = M.δ.η A
-  ; commute = sym M.assoc
+  ; commute = M.sym-assoc
   ; identity = Comonad.identityʳ M
   }
  ; F₁ = λ f → record

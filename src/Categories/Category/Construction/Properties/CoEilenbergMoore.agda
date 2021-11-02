@@ -68,7 +68,7 @@ module _ {F : Functor 𝒟 𝒞} {G : Functor 𝒞 𝒟} (F⊣G : Adjoint F G) w
     commute-obj : {X : Category.Obj 𝒟} → T.F.F₁ (F.F₁ (unit.η X)) 𝒞.∘ F.F₁ (unit.η X) 𝒞.≈ T.δ.η (F.F₀ X) 𝒞.∘ F.F₁ (unit.η X)
     commute-obj {X} = begin
       F.F₁ (G.F₁ (F.F₁ (unit.η X))) 𝒞.∘ F.F₁ (unit.η X) ≈⟨ sym 𝒞 (Functor.homomorphism F) ⟩
-      F.F₁ (G.F₁ (F.F₁ (unit.η X)) 𝒟.∘ unit.η X)        ≈⟨ Functor.F-resp-≈ F (sym 𝒟 (Adjoint.unit.commute F⊣G (unit.η X))) ⟩
+      F.F₁ (G.F₁ (F.F₁ (unit.η X)) 𝒟.∘ unit.η X)        ≈⟨ Functor.F-resp-≈ F (Adjoint.unit.sym-commute F⊣G (unit.η X)) ⟩
       F.F₁ (unit.η (G.F₀ (F.F₀ X)) 𝒟.∘ unit.η X)        ≈⟨ Functor.homomorphism F ⟩
       T.δ.η (F.F₀ X) 𝒞.∘ F.F₁ (unit.η X)                ∎
     commute-mor : {A B : Category.Obj 𝒟} {f : Category._⇒_ 𝒟 A B} → F.F₁ (unit.η B) 𝒞.∘ F.F₁ f 𝒞.≈ T.F.F₁ (F.F₁ f) 𝒞.∘ F.F₁ (unit.η A)
@@ -87,23 +87,9 @@ module _ {F : Functor 𝒟 𝒞} {G : Functor 𝒞 𝒟} (F⊣G : Adjoint F G) w
 
   Comparison∘F≡Free : (ComparisonF ∘F G) ≡F Cofree T
   Comparison∘F≡Free = record
-   { eq₀ = λ X → {!    !}
-   -- this is an equality of records, they are already equal;
-   -- just have to decide how to tell agda...
-   ; eq₁ = {!   !}
+   { eq₀ = λ X → ≡.refl
+   ; eq₁ = λ f → id-comm-sym 𝒞
    }
-{-
-  record
-    { eq₀ = λ X → ≡.refl
-    ; eq₁ = λ {A} {B} f → begin
-      Module⇒.arr (coEM𝒞 [ (hid coEM𝒞 ≡.refl) ∘ K.F₁ (F.F₁ f) ]) ≈⟨ hid-refl coEM𝒞 {A = K.F₀ (F.F₀ B)} ⟩∘⟨refl ⟩
-      Module⇒.arr (coEM𝒞 [ coEM𝒞.id ∘ K.F₁ (F.F₁ f) ])           ≈⟨ 𝒞.identityˡ {f = Module⇒.arr (K.F₁ (F.F₁ f))} ⟩
-      Module⇒.arr (K.F₁ (F.F₁ f))                          ≈⟨ 𝒞.Equiv.refl ⟩
-      Module⇒.arr (Fᵀ.F₁ f)                                 ≈˘⟨ coEM𝒞.identityʳ {f = Fᵀ.F₁ f} ⟩
-      Module⇒.arr (coEM𝒞 [ Fᵀ.F₁ f ∘ coEM𝒞.id ])                 ≈˘⟨ refl⟩∘⟨ hid-refl coEM𝒞 {A = Fᵀ.F₀ A} ⟩
-      Module⇒.arr (coEM𝒞 [ Fᵀ.F₁ f ∘ (hid coEM𝒞 ≡.refl) ])       ∎
-    }
--}
 
   Forgetful∘ComparisonF≡G : (Forgetful T ∘F ComparisonF) ≡F F
   Forgetful∘ComparisonF≡G = record
