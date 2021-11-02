@@ -44,14 +44,16 @@ module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (F⊣G : Adjoint F G) w
   ComparisonF : Functor 𝒟ₜ 𝒞
   ComparisonF = record
    { F₀ = λ X → G.F₀ X
-   ; F₁ = λ {A} {B} f → (G.F₁ f) 𝒞.∘ Adjoint.unit.η F⊣G (G.F₀ A)
-   ; identity = λ {A} → Adjoint.zag F⊣G
+   ; F₁ = λ {A} {B} f → 𝒞 [ (G.F₁ f) ∘ unit.η (G.F₀ A) ]
+   ; identity = λ {A} → zag
    ; homomorphism = λ {X} {Y} {Z} {f} {g} → begin
-       G.F₁ (g 𝒟.∘ F.F₁ (G.F₁ f) 𝒟.∘ F.F₁ (unit.η (G.F₀ X))) 𝒞.∘ unit.η (G.F₀ X) ≈⟨ {!   !} ⟩
-       G.F₁ g 𝒞.∘ G.F₁ ((F.F₁ (G.F₁ f)) 𝒟.∘ F.F₁ (unit.η (G.F₀ X))) 𝒞.∘ unit.η (G.F₀ X) ≈⟨ {!   !} ⟩
-       G.F₁ g 𝒞.∘ G.F₁ (F.F₁ (G.F₁ f)) 𝒞.∘ G.F₁ (F.F₁ (unit.η (G.F₀ X))) 𝒞.∘ unit.η (G.F₀ X) ≈⟨ {!   !} ⟩
-       G.F₁ g 𝒞.∘ G.F₁ (F.F₁ (G.F₁ f)) 𝒞.∘ G.F₁ (F.F₁ (unit.η (G.F₀ X))) 𝒞.∘ unit.η (G.F₀ X) ≈⟨ {!   !} ⟩
-       (G.F₁ g 𝒞.∘ unit.η (G.F₀ Y)) 𝒞.∘ G.F₁ f 𝒞.∘ unit.η (G.F₀ X) ∎
+      G.F₁ (g 𝒟.∘ F.F₁ (G.F₁ f) 𝒟.∘ F.F₁ (unit.η (G.F₀ X))) 𝒞.∘ unit.η (G.F₀ X) ≈⟨ pushˡ G.homomorphism ⟩
+      G.F₁ g 𝒞.∘ G.F₁ ((F.F₁ (G.F₁ f)) 𝒟.∘ F.F₁ (unit.η (G.F₀ X))) 𝒞.∘ unit.η (G.F₀ X) ≈⟨ (refl⟩∘⟨ pushˡ G.homomorphism) ⟩
+      G.F₁ g 𝒞.∘ G.F₁ (F.F₁ (G.F₁ f)) 𝒞.∘ G.F₁ (F.F₁ (unit.η (G.F₀ X))) 𝒞.∘ unit.η (G.F₀ X) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ sym (unit.commute (unit.η (G.F₀ X))))) ⟩
+      G.F₁ g 𝒞.∘ G.F₁ (F.F₁ (G.F₁ f)) 𝒞.∘ unit.η (G.F₀ (F.F₀ (G.F₀ X))) 𝒞.∘ unit.η (G.F₀ X) ≈⟨ (refl⟩∘⟨ pullˡ (sym (unit.commute (G.F₁ f)))) ⟩
+      G.F₁ g 𝒞.∘ (unit.η (G.F₀ Y) 𝒞.∘ G.F₁ f) 𝒞.∘ unit.η (G.F₀ X) ≈⟨ (refl⟩∘⟨ Category.assoc 𝒞) ⟩
+      G.F₁ g 𝒞.∘ unit.η (G.F₀ Y) 𝒞.∘ G.F₁ f 𝒞.∘ unit.η (G.F₀ X) ≈⟨ sym (Category.assoc 𝒞) ⟩
+      (G.F₁ g 𝒞.∘ unit.η (G.F₀ Y)) 𝒞.∘ G.F₁ f 𝒞.∘ unit.η (G.F₀ X) ∎
    ; F-resp-≈ = λ eq → 𝒞.∘-resp-≈ (G.F-resp-≈ eq) (Category.Equiv.refl 𝒞)
    }
    where
