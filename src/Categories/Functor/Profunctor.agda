@@ -11,6 +11,7 @@ open import Categories.Category.Instance.Setoids
 open import Categories.Functor hiding (id)
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Hom
+open import Categories.Morphism.Reasoning as MR hiding (assoc²)
 
 module Profunctor {o ℓ e} (C : Category o ℓ e) (D : Category o ℓ e) where
 
@@ -20,12 +21,12 @@ module Profunctor {o ℓ e} (C : Category o ℓ e) (D : Category o ℓ e) where
   id : ∀ {o ℓ e} → {C : Category o ℓ e} → Profunctor C C
   id {C = C} = Hom[ C ][-,-]
 
-  -- representable profunctor
+  -- representable profunctors
   -- hom(f,1)
   repˡ : (F : Functor C D) → Profunctor D C
   repˡ F = record
     { F₀ = λ (c , d) → record
-      { Carrier = D [ F.F₀ c , d ]
+      { Carrier = D [ F₀ c , d ]
       ; _≈_ = D._≈_
       ; isEquivalence = D.equiv
       }
@@ -35,21 +36,18 @@ module Profunctor {o ℓ e} (C : Category o ℓ e) (D : Category o ℓ e) where
       }
     ; identity = λ {x} {y} {y'} y≈y' → begin
         D.id ∘ y ∘ F₁ C.id ≈⟨ D.identityˡ ⟩
-        y ∘ F₁ C.id        ≈⟨ refl⟩∘⟨ Functor.identity F ⟩
-        y ∘ D.id           ≈⟨ D.identityʳ ⟩
+        y ∘ F₁ C.id        ≈⟨ elimʳ D identity ⟩
         y                  ≈⟨ y≈y' ⟩
         y'                 ∎
     ; homomorphism = λ { {f = f0 , f1} {g = g0 , g1} {x} {y} x≈y → begin
-        (g1 ∘ f1) ∘ x ∘ F₁ (f0 C.∘ g0)  ≈⟨ refl⟩∘⟨ refl⟩∘⟨ Functor.homomorphism F ⟩
-        (g1 ∘ f1) ∘ x ∘ F₁ f0 ∘ F₁ g0   ≈⟨ refl⟩∘⟨ x≈y ⟩∘⟨refl ⟩
+        (g1 ∘ f1) ∘ x ∘ F₁ (f0 C.∘ g0)  ≈⟨ refl⟩∘⟨ x≈y ⟩∘⟨ Functor.homomorphism F ⟩
         (g1 ∘ f1) ∘ y ∘ F₁ f0 ∘ F₁ g0   ≈⟨ refl⟩∘⟨ D.Equiv.sym D.assoc ⟩
-        (g1 ∘ f1) ∘ (y ∘ F₁ f0) ∘ F₁ g0 ≈⟨ D.assoc ⟩
-        g1 ∘ f1 ∘ (y ∘ F₁ f0) ∘ F₁ g0   ≈⟨ refl⟩∘⟨ D.Equiv.sym D.assoc ⟩
+        (g1 ∘ f1) ∘ (y ∘ F₁ f0) ∘ F₁ g0 ≈⟨ assoc²'' D ⟩
         g1 ∘ (f1 ∘ y ∘ F₁ f0) ∘ F₁ g0 ∎
       }
     ; F-resp-≈ = λ { {f = f0 , f1} {g = g0 , g1} (f0≈g0 , f1≈g1) {x} {y} x≈y → begin
-        f1 ∘ x ∘ F.F₁ f0 ≈⟨ f1≈g1 ⟩∘⟨ x≈y ⟩∘⟨ F-resp-≈ f0≈g0 ⟩
-        g1 ∘ y ∘ F.F₁ g0 ∎
+        f1 ∘ x ∘ F₁ f0 ≈⟨ f1≈g1 ⟩∘⟨ x≈y ⟩∘⟨ F-resp-≈ f0≈g0 ⟩
+        g1 ∘ y ∘ F₁ g0 ∎
       }
     }
     where
@@ -62,27 +60,26 @@ module Profunctor {o ℓ e} (C : Category o ℓ e) (D : Category o ℓ e) where
   repʳ : (F : Functor C D) → Profunctor C D
   repʳ F = record
     { F₀ = λ (c , d) → record
-      { Carrier = D [ c , F.F₀ d ]
+      { Carrier = D [ c , F₀ d ]
       ; _≈_ = D._≈_
       ; isEquivalence = D.equiv
       }
     ; F₁ = λ (f , g) → record
-      { _⟨$⟩_ = λ x → F.F₁ g ∘ x ∘ f
+      { _⟨$⟩_ = λ x → F₁ g ∘ x ∘ f
       ; cong = λ x → begin _ ≈⟨ refl⟩∘⟨ x ⟩∘⟨refl ⟩ _ ∎
       }
     ; identity = λ {x} {y} {y'} y≈y' → begin
-        F.F₁ C.id ∘ y ∘ D.id ≈⟨ (Functor.identity F ⟩∘⟨refl) ⟩
-        D.id ∘ y ∘ D.id      ≈⟨ D.identityˡ ⟩
+        F₁ C.id ∘ y ∘ D.id ≈⟨ elimˡ D identity ⟩
         y ∘ D.id             ≈⟨ D.identityʳ ⟩
         y                    ≈⟨ y≈y' ⟩
         y'                   ∎
     ; homomorphism = λ { {f = f0 , f1} {g = g0 , g1} {x} {y} x≈y → begin
-        F.F₁ (g1 C.∘ f1) ∘ x ∘ f0 ∘ g0    ≈⟨ refl⟩∘⟨ x≈y ⟩∘⟨refl ⟩
-        F.F₁ (g1 C.∘ f1) ∘ y ∘ f0 ∘ g0    ≈⟨ Functor.homomorphism F ⟩∘⟨refl ⟩
-        (F.F₁ g1 ∘ F.F₁ f1) ∘ y ∘ f0 ∘ g0 ≈⟨ D.assoc ⟩
+        F₁ (g1 C.∘ f1) ∘ x ∘ f0 ∘ g0    ≈⟨ refl⟩∘⟨ x≈y ⟩∘⟨refl ⟩
+        F₁ (g1 C.∘ f1) ∘ y ∘ f0 ∘ g0    ≈⟨ Functor.homomorphism F ⟩∘⟨refl ⟩
+        (F₁ g1 ∘ F₁ f1) ∘ y ∘ f0 ∘ g0 ≈⟨ D.assoc ⟩
         F₁ g1 ∘ F₁ f1 ∘ y ∘ f0 ∘ g0       ≈⟨ refl⟩∘⟨ D.Equiv.sym assoc² ⟩
         F₁ g1 ∘ ((F₁ f1 ∘ y) ∘ f0) ∘ g0   ≈⟨ refl⟩∘⟨ D.assoc ⟩∘⟨refl ⟩
-        F.F₁ g1 ∘ (F.F₁ f1 ∘ y ∘ f0) ∘ g0 ∎
+        F₁ g1 ∘ (F₁ f1 ∘ y ∘ f0) ∘ g0 ∎
       }
     ; F-resp-≈ = λ { {f = f0 , f1} {g = g0 , g1} (f0≈g0 , f1≈g1) {x} {y} x≈y → begin
         F₁ f1 ∘ x ∘ f0 ≈⟨ F-resp-≈ f1≈g1 ⟩∘⟨ x≈y ⟩∘⟨ f0≈g0 ⟩
