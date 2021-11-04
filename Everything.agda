@@ -5,6 +5,7 @@ import Categories.Adjoint.AFT
 import Categories.Adjoint.AFT.SolutionSet
 import Categories.Adjoint.Alternatives
 import Categories.Adjoint.Compose
+import Categories.Adjoint.Construction.CoKleisli
 import Categories.Adjoint.Construction.EilenbergMoore
 import Categories.Adjoint.Construction.Kleisli
 import Categories.Adjoint.Equivalence
@@ -69,6 +70,7 @@ import Categories.Category.Concrete.Properties
 import Categories.Category.Construction.0-Groupoid
 import Categories.Category.Construction.Adjoints
 import Categories.Category.Construction.Arrow
+import Categories.Category.Construction.CoKleisli
 import Categories.Category.Construction.Cocones
 import Categories.Category.Construction.Comma
 import Categories.Category.Construction.Cones
@@ -95,6 +97,7 @@ import Categories.Category.Construction.ObjectRestriction
 import Categories.Category.Construction.Path
 import Categories.Category.Construction.PathCategory
 import Categories.Category.Construction.Presheaves
+import Categories.Category.Construction.Properties.CoKleisli
 import Categories.Category.Construction.Properties.Comma
 import Categories.Category.Construction.Properties.EilenbergMoore
 import Categories.Category.Construction.Properties.Functors
