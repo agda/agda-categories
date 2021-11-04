@@ -48,6 +48,9 @@ module Utils where
   assoc²' : (i ∘ (h ∘ g)) ∘ f ≈ i ∘ (h ∘ (g ∘ f))
   assoc²' = Equiv.trans assoc (∘-resp-≈ʳ assoc)
 
+  assoc²'' : (i ∘ h) ∘ g ∘ f ≈ i ∘ ((h ∘ g) ∘ f)
+  assoc²'' = Equiv.trans assoc (∘-resp-≈ʳ  (Equiv.sym assoc))
+
 open Utils public
 
 module Pulls (ab≡c : a ∘ b ≈ c) where
