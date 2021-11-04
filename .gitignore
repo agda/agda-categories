@@ -1,6 +1,3 @@
 *.agdai
 .DS_Store
 src/MAlonzo
-
-agda-categories.agda-lib
-agda-categories.agda-lib
