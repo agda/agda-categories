@@ -4,7 +4,7 @@ module Categories.Functor.Profunctor where
 
 open import Level
 
-open import Data.Product 
+open import Data.Product
 open import Relation.Binary.Bundles
 open import Categories.Category
 open import Categories.Category.Instance.Setoids
@@ -25,7 +25,7 @@ private
     D : Category o′ ℓ′ e′
 
 -- stub for representable profunctors
-repˡ : (F : Functor C D) → Profunctor D C 
+repˡ : (F : Functor C D) → Profunctor D C
 repˡ F = record
   { F₀ = {!   !}
   ; F₁ = {!   !}
@@ -35,10 +35,10 @@ repˡ F = record
   }
   where
   F0 : Σ (Category.Obj C) (λ x → Category.Obj D) → Setoid (ℓ ⊔ ℓ′) (e ⊔ e′)
-  F0 (c , d) = record 
-    { Carrier = {!   !} 
-    ; _≈_ = {! _≈_   !} 
-    ; isEquivalence = record { refl = {!   !} ; sym = {!   !} ; trans = {!   !} } 
+  F0 (c , d) = record
+    { Carrier = {!   !}
+    ; _≈_ = {! _≈_   !}
+    ; isEquivalence = record { refl = {!   !} ; sym = {!   !} ; trans = {!   !} }
     }
 
 repʳ : (F : Functor C D) → Profunctor C D
