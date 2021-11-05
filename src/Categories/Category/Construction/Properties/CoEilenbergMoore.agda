@@ -71,7 +71,7 @@ module _ {F : Functor 𝒟 𝒞} {G : Functor 𝒞 𝒟} (F⊣G : Adjoint F G) w
       F.F₁ (G.F₁ (F.F₁ (unit.η X)) 𝒟.∘ unit.η X)        ≈⟨ Functor.F-resp-≈ F (Adjoint.unit.sym-commute F⊣G (unit.η X)) ⟩
       F.F₁ (unit.η (G.F₀ (F.F₀ X)) 𝒟.∘ unit.η X)        ≈⟨ Functor.homomorphism F ⟩
       T.δ.η (F.F₀ X) 𝒞.∘ F.F₁ (unit.η X)                ∎
-    commute-mor : {A B : Category.Obj 𝒟} {f : Category._⇒_ 𝒟 A B} → F.F₁ (unit.η B) 𝒞.∘ F.F₁ f 𝒞.≈ T.F.F₁ (F.F₁ f) 𝒞.∘ F.F₁ (unit.η A)
+    commute-mor : {A B : Category.Obj 𝒟} {f : 𝒟 [ A , B ]} → F.F₁ (unit.η B) 𝒞.∘ F.F₁ f 𝒞.≈ T.F.F₁ (F.F₁ f) 𝒞.∘ F.F₁ (unit.η A)
     commute-mor {A} {B} {f} = begin
      F.F₁ (unit.η B) 𝒞.∘ F.F₁ f          ≈⟨ sym 𝒞 (Functor.homomorphism F) ⟩
      F.F₁ (unit.η B 𝒟.∘ f)               ≈⟨ Functor.F-resp-≈ F (Adjoint.unit.commute F⊣G f) ⟩
