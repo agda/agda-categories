@@ -11,12 +11,14 @@ open import Categories.Category.Instance.Setoids
 open import Categories.Functor hiding (id)
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Hom
+open import Categories.NaturalTransformation
 
 Profunctor : ∀ {o ℓ e} {o′ ℓ′ e′} → Category o ℓ e → Category o′ ℓ′ e′ → Set _
 Profunctor {ℓ = ℓ} {e} {ℓ′ = ℓ′} {e′} C D = Bifunctor (Category.op D) C (Setoids (ℓ ⊔ ℓ′) (e ⊔ e′))
 
-id : ∀ {o ℓ e} → {C : Category o ℓ e} → Profunctor C C
-id {C = C} = Hom[ C ][-,-]
+-- Calling the profunctor identity "id" is a bad idea
+proid : ∀ {o ℓ e} → {C : Category o ℓ e} → Profunctor C C
+proid {C = C} = Hom[ C ][-,-]
 
 module Profunctor {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ e) where
   module C = Category C
@@ -86,3 +88,20 @@ module Profunctor {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ
     }
     where
       open module F = Functor F
+
+  -- each Prof(C,D) is a category
+  homProf : (C : Category o ℓ e) → (D : Category o′ ℓ e) → Category _ _ e
+  homProf C D = record
+    { Obj = Profunctor C D
+    ; _⇒_ = λ P Q → NaturalTransformation P Q
+    ; _≈_ = λ α β → {!    !} -- equality of nat transf
+    ; id = Categories.NaturalTransformation.id
+    ; _∘_ = _∘ᵥ_
+    ; assoc = λ {A} {B} {C₂} {D₂} {f} {g} {h} → {!   !}
+    ; sym-assoc = {!   !}
+    ; identityˡ = {!   !}
+    ; identityʳ = {!   !}
+    ; identity² = {!   !}
+    ; equiv = {!   !}
+    ; ∘-resp-≈ = {!   !}
+    }
