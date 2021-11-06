@@ -12,6 +12,8 @@ open import Categories.Functor hiding (id)
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Hom
 open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation.Equivalence
+open import Function.Equality using (Π; _⟨$⟩_; cong)
 
 Profunctor : ∀ {o ℓ e} {o′ ℓ′ e′} → Category o ℓ e → Category o′ ℓ′ e′ → Set _
 Profunctor {ℓ = ℓ} {e} {ℓ′ = ℓ′} {e′} C D = Bifunctor (Category.op D) C (Setoids (ℓ ⊔ ℓ′) (e ⊔ e′))
@@ -22,7 +24,7 @@ proid {C = C} = Hom[ C ][-,-]
 
 module Profunctor {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ e) where
   module C = Category C
-  open module D = Category D
+  open module D = Category D hiding (id)
   open D.HomReasoning
   open import Categories.Morphism.Reasoning D using (assoc²''; elimˡ; elimʳ)
 
@@ -90,18 +92,33 @@ module Profunctor {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ
       open module F = Functor F
 
   -- each Prof(C,D) is a category
-  homProf : (C : Category o ℓ e) → (D : Category o′ ℓ e) → Category _ _ e
+  homProf : (C : Category o ℓ e) → (D : Category o′ ℓ e) → Category _ _ _
   homProf C D = record
     { Obj = Profunctor C D
     ; _⇒_ = λ P Q → NaturalTransformation P Q
-    ; _≈_ = λ α β → {!    !} -- equality of nat transf
-    ; id = Categories.NaturalTransformation.id
+    ; _≈_ = _≃_
+    ; id = id
     ; _∘_ = _∘ᵥ_
-    ; assoc = λ {A} {B} {C₂} {D₂} {f} {g} {h} → {!   !}
+    ; assoc = {!   !}
     ; sym-assoc = {!   !}
-    ; identityˡ = {!   !}
+    ; identityˡ = {!  !}
+      -- λ { {P} {Q} {f} {(d , c)} {u} {v} u≈v → {!  !}}
     ; identityʳ = {!   !}
-    ; identity² = {!   !}
-    ; equiv = {!   !}
+      -- λ { {P} {Q} {f} {(d , c)} {u} {v} u≈v → {!   !}}
+    ; identity² = λ z → z
+    ; equiv = ≃-isEquivalence
     ; ∘-resp-≈ = {!   !}
     }
+    where
+    assoc-proof : {A B : Profunctor C D} {C = C₂ : Profunctor C D}
+      {D = D₂ : Profunctor C D}
+      {f : NaturalTransformation A B} {g : NaturalTransformation B C₂}
+      {h : NaturalTransformation C₂ D₂} →
+      (h ∘ᵥ g) ∘ᵥ f ≃ h ∘ᵥ g ∘ᵥ f
+    assoc-proof {P} {Q} {R} {S} {f} {g} {h} {(d , c)} {u} {v} = λ u≈v → {!  !}
+    idl-proof : {A B : Profunctor C D} {f : NaturalTransformation A B} →
+      id ∘ᵥ f ≃ f
+    idl-proof {P} {Q} {f} {(d , c)} {u} {v} u≈v = {!   !}
+    idr-proof : {A B : Profunctor C D} {f : NaturalTransformation A B} →
+      f ∘ᵥ id ≃ f
+    idr-proof {P} {Q} {f} {(d , c)} {u} {v} u≈v = {!   !}
