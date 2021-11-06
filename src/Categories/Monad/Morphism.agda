@@ -53,6 +53,7 @@ record Monad⇒-id (M N : Monad C) : Set (o ⊔ ℓ ⊔ e) where
     unit-comp : ∀ {U : C.Obj} → α.η U ∘ N.η.η U ≈ M.η.η U
     mult-comp : ∀ {U : C.Obj} → α.η U ∘ (N.μ.η U) ≈ M.μ.η U ∘ α.η (M.F.₀ U) ∘ N.F.₁ (α.η U)
 
+-- monad 2-cell in the sense of https://ncatlab.org/nlab/show/monad#the_bicategory_of_monads
 record Monad²⇒ {M : Monad C} {N : Monad D} (Γ Δ : Monad⇒ M N) : Set (o ⊔ ℓ ⊔ e) where
 
   module M = Monad M
