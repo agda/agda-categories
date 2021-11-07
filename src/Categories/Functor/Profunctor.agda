@@ -91,34 +91,46 @@ module Profunctor {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ
     where
       open module F = Functor F
 
-  -- each Prof(C,D) is a category
-  homProf : (C : Category o ℓ e) → (D : Category o′ ℓ e) → Category _ _ _
-  homProf C D = record
-    { Obj = Profunctor C D
-    ; _⇒_ = λ P Q → NaturalTransformation P Q
-    ; _≈_ = _≃_
-    ; id = id
-    ; _∘_ = _∘ᵥ_
-    ; assoc = {!   !}
-    ; sym-assoc = {!   !}
-    ; identityˡ = {!  !}
-      -- λ { {P} {Q} {f} {(d , c)} {u} {v} u≈v → {!  !}}
-    ; identityʳ = {!   !}
-      -- λ { {P} {Q} {f} {(d , c)} {u} {v} u≈v → {!   !}}
-    ; identity² = λ z → z
-    ; equiv = ≃-isEquivalence
-    ; ∘-resp-≈ = {!   !}
-    }
-    where
-    assoc-proof : {A B : Profunctor C D} {C = C₂ : Profunctor C D}
-      {D = D₂ : Profunctor C D}
-      {f : NaturalTransformation A B} {g : NaturalTransformation B C₂}
-      {h : NaturalTransformation C₂ D₂} →
-      (h ∘ᵥ g) ∘ᵥ f ≃ h ∘ᵥ g ∘ᵥ f
-    assoc-proof {P} {Q} {R} {S} {f} {g} {h} {(d , c)} {u} {v} = λ u≈v → {!  !}
-    idl-proof : {A B : Profunctor C D} {f : NaturalTransformation A B} →
-      id ∘ᵥ f ≃ f
-    idl-proof {P} {Q} {f} {(d , c)} {u} {v} u≈v = {!   !}
-    idr-proof : {A B : Profunctor C D} {f : NaturalTransformation A B} →
-      f ∘ᵥ id ≃ f
-    idr-proof {P} {Q} {f} {(d , c)} {u} {v} u≈v = {!   !}
+-- each Prof(C,D) is a category
+homProf : {o o′ ℓ e : Level} → (C : Category o ℓ e) → (D : Category o′ ℓ e) → Category _ _ _
+homProf {o} {o′} {ℓ} {e} C D = record
+  { Obj = Profunctor C D
+  ; _⇒_ = λ P Q → NaturalTransformation P Q
+  ; _≈_ = _≃_
+  ; id = id
+  ; _∘_ = _∘ᵥ_
+  ; assoc     = λ { {f = f} {g} {h} → assoc-lemma {f = f} {g} {h}}
+  ; sym-assoc = λ { {f = f} {g} {h} → sym-assoc-lemma {f = f} {g} {h}}
+  ; identityˡ = λ { {f = f} → id-lemmaˡ {f = f}}
+  ; identityʳ = λ { {f = f} → id-lemmaʳ {f = f} }
+  ; identity² = λ z → z
+  ; equiv = ≃-isEquivalence
+  ; ∘-resp-≈ = λ { {f = f} {h} {g} {i} eq eq' → ∘ᵥ-resp-≃ {f = f} {h} {g} {i} eq eq' }
+  }
+  where
+    id-lemmaˡ : ∀ {o o′ ℓ ℓ′ e e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {P K : Functor C D}
+            {f : NaturalTransformation P K} → id ∘ᵥ f ≃ f
+    id-lemmaˡ {D = D} = Category.identityˡ D
+
+    id-lemmaʳ : ∀ {o o′ ℓ ℓ′ e e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {P K : Functor C D}
+            {f : NaturalTransformation P K} → f ∘ᵥ id ≃ f
+    id-lemmaʳ {D = D} = Category.identityʳ D
+
+    assoc-lemma : ∀ {o o′ ℓ ℓ′ e e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {E F G H : Functor C D}
+              {f : NaturalTransformation E F}
+              {g : NaturalTransformation F G}
+              {h : NaturalTransformation G H}
+               → (h ∘ᵥ g) ∘ᵥ f ≃ h ∘ᵥ g ∘ᵥ f
+    assoc-lemma {D = D} = Category.assoc D
+
+    sym-assoc-lemma : ∀ {o o′ ℓ ℓ′ e e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {E F G H : Functor C D}
+              {f : NaturalTransformation E F}
+              {g : NaturalTransformation F G}
+              {h : NaturalTransformation G H}
+               → h ∘ᵥ g ∘ᵥ f ≃ (h ∘ᵥ g) ∘ᵥ f
+    sym-assoc-lemma {D = D} = Category.sym-assoc D
+
+    ∘ᵥ-resp-≃ : ∀ {o o′ ℓ ℓ′ e e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {R P K : Functor C D}
+        {f h : NaturalTransformation P K}
+        {g i : NaturalTransformation R P} → f ≃ h → g ≃ i → f ∘ᵥ g ≃ h ∘ᵥ i
+    ∘ᵥ-resp-≃ {D = D} fh gi = Category.∘-resp-≈ D fh gi
