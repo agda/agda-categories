@@ -49,8 +49,8 @@ module Profunctor {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ
     ; homomorphism = λ { {f = f0 , f1} {g = g0 , g1} {x} {y} x≈y → begin
         (g1 ∘ f1) ∘ x ∘ F₁ (f0 C.∘ g0)  ≈⟨ refl⟩∘⟨ x≈y ⟩∘⟨ F.homomorphism ⟩
         (g1 ∘ f1) ∘ y ∘ F₁ f0 ∘ F₁ g0   ≈⟨ refl⟩∘⟨ D.sym-assoc ⟩
-        (g1 ∘ f1) ∘ (y ∘ F₁ f0) ∘ F₁ g0 ≈⟨ {!   !} ⟩ -- was assoc²''
-        g1 ∘ (f1 ∘ y ∘ F₁ f0) ∘ F₁ g0 ∎
+        (g1 ∘ f1) ∘ (y ∘ F₁ f0) ∘ F₁ g0 ≈⟨ Equiv.sym assoc²'' ⟩
+        g1 ∘ (f1 ∘ y ∘ F₁ f0) ∘ F₁ g0   ∎
       }
     ; F-resp-≈ = λ { {f = f0 , f1} {g = g0 , g1} (f0≈g0 , f1≈g1) {x} {y} x≈y → begin
         f1 ∘ x ∘ F₁ f0 ≈⟨ f1≈g1 ⟩∘⟨ x≈y ⟩∘⟨ F-resp-≈ f0≈g0 ⟩
@@ -80,7 +80,7 @@ module Profunctor {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ
     ; homomorphism = λ { {f = f0 , f1} {g = g0 , g1} {x} {y} x≈y → begin
         F₁ (g1 C.∘ f1) ∘ x ∘ f0 ∘ g0    ≈⟨ F.homomorphism ⟩∘⟨ x≈y ⟩∘⟨refl ⟩
         (F₁ g1 ∘ F₁ f1) ∘ y ∘ f0 ∘ g0   ≈⟨ refl⟩∘⟨ D.sym-assoc ⟩
-        (F₁ g1 ∘ F₁ f1) ∘ (y ∘ f0) ∘ g0 ≈⟨ {!   !} ⟩ -- was assoc²''
+        (F₁ g1 ∘ F₁ f1) ∘ (y ∘ f0) ∘ g0 ≈⟨ Equiv.sym assoc²'' ⟩
         F₁ g1 ∘ (F₁ f1 ∘ y ∘ f0) ∘ g0   ∎
       }
     ; F-resp-≈ = λ { {f = f0 , f1} {g = g0 , g1} (f0≈g0 , f1≈g1) {x} {y} x≈y → begin
