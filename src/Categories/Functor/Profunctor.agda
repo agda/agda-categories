@@ -93,15 +93,15 @@ module Profunctor {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ
 
 -- each Prof(C,D) is a category
 homProf : {o o′ ℓ e : Level} → (C : Category o ℓ e) → (D : Category o′ ℓ e) → Category _ _ _
-homProf {o} {o′} {ℓ} {e} C D = record
+homProf C D = record
   { Obj = Profunctor C D
-  ; _⇒_ = λ P Q → NaturalTransformation P Q
+  ; _⇒_ = NaturalTransformation
   ; _≈_ = _≃_
   ; id = id
   ; _∘_ = _∘ᵥ_
   ; assoc     = λ { {f = f} {g} {h} → assoc-lemma {f = f} {g} {h}}
   ; sym-assoc = λ { {f = f} {g} {h} → sym-assoc-lemma {f = f} {g} {h}}
-  ; identityˡ = λ { {f = f} → id-lemmaˡ {f = f}}
+  ; identityˡ = λ { {f = f} → id-lemmaˡ {f = f} }
   ; identityʳ = λ { {f = f} → id-lemmaʳ {f = f} }
   ; identity² = λ z → z
   ; equiv = ≃-isEquivalence

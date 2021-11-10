@@ -49,7 +49,7 @@ module Utils where
   assoc²' = Equiv.trans assoc (∘-resp-≈ʳ assoc)
 
   assoc²'' : i ∘ ((h ∘ g) ∘ f) ≈ (i ∘ h) ∘ (g ∘ f)
-  assoc²'' = Equiv.trans (∘-resp-≈ʳ assoc) (Equiv.sym assoc)
+  assoc²'' = Equiv.trans (∘-resp-≈ʳ assoc) sym-assoc
 
 open Utils public
 
