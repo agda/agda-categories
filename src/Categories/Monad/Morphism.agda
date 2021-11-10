@@ -16,12 +16,11 @@ open NaturalTransformation
 -- between generic monads t : a -> a & s : b -> b
 record Monad⇒ (M : Monad C) (N : Monad D) : Set (o ⊔ ℓ ⊔ e) where
 
-  module M = Monad M
-  module N = Monad N
-  module C = Category C
-  module D = Category D
+  private
+    module M = Monad M
+    module N = Monad N
 
-  open D
+  open module D = Category D using (_∘_; _≈_)
 
   field
     X : Functor C D
@@ -31,44 +30,43 @@ record Monad⇒ (M : Monad C) (N : Monad D) : Set (o ⊔ ℓ ⊔ e) where
   module α = NaturalTransformation α
 
   field
-    unit-comp : ∀ {U : C.Obj} → α.η U ∘ (N.η.η (X.₀ U)) ≈ X.₁ (M.η.η U)
-    mult-comp : ∀ {U : C.Obj} → α.η U ∘ (N.μ.η (X.₀ U)) ≈ X.₁ (M.μ.η U) ∘ α.η (M.F.₀ U) ∘ N.F.₁ (α.η U)
+    unit-comp : ∀ {U} → α.η U ∘ (N.η.η (X.₀ U)) ≈ X.₁ (M.η.η U)
+    mult-comp : ∀ {U} → α.η U ∘ (N.μ.η (X.₀ U)) ≈ X.₁ (M.μ.η U) ∘ α.η (M.F.₀ U) ∘ N.F.₁ (α.η U)
 
 -- monad morphism in a different sense:
 -- monads are on the same category, X is the identity
 record Monad⇒-id (M N : Monad C) : Set (o ⊔ ℓ ⊔ e) where
 
-  module M = Monad M
-  module N = Monad N
-  module C = Category C
-
-  open C
+  private
+    module M = Monad M
+    module N = Monad N
 
   field
     α : NaturalTransformation N.F M.F
 
   module α = NaturalTransformation α
 
+  open module C = Category C using (_∘_; _≈_)
+
   field
-    unit-comp : ∀ {U : C.Obj} → α.η U ∘ N.η.η U ≈ M.η.η U
-    mult-comp : ∀ {U : C.Obj} → α.η U ∘ (N.μ.η U) ≈ M.μ.η U ∘ α.η (M.F.₀ U) ∘ N.F.₁ (α.η U)
+    unit-comp : ∀ {U} → α.η U ∘ N.η.η U ≈ M.η.η U
+    mult-comp : ∀ {U} → α.η U ∘ (N.μ.η U) ≈ M.μ.η U ∘ α.η (M.F.₀ U) ∘ N.F.₁ (α.η U)
 
 -- monad 2-cell in the sense of https://ncatlab.org/nlab/show/monad#the_bicategory_of_monads
 record Monad²⇒ {M : Monad C} {N : Monad D} (Γ Δ : Monad⇒ M N) : Set (o ⊔ ℓ ⊔ e) where
 
-  module M = Monad M
-  module N = Monad N
-  module C = Category C
-  module D = Category D
-  open D
-
-  module Γ = Monad⇒ Γ
-  module Δ = Monad⇒ Δ
+  private
+    module M = Monad M
+    module N = Monad N
+    module Γ = Monad⇒ Γ
+    module Δ = Monad⇒ Δ
 
   field
-    m : NaturalTransformation (Monad⇒.X Γ) (Monad⇒.X Δ)
+    m : NaturalTransformation Γ.X Δ.X
 
   module m = NaturalTransformation m
 
+  open module D = Category D using (_∘_; _≈_)
+
   field
-    comm : ∀ {U : C.Obj} → Δ.α.η U ∘ N.F.₁ (m.η U) ≈ m.η (M.F.₀ U) ∘ Γ.α.η U
+    comm : ∀ {U} → Δ.α.η U ∘ N.F.₁ (m.η U) ≈ m.η (M.F.₀ U) ∘ Γ.α.η U
