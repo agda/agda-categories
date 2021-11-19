@@ -8,8 +8,7 @@ module Categories.Category.Instance.Properties.Setoids.Colimits.Canonical where
 
 open import Level
 
-open import Data.Sum using (inj₁; inj₂)
-open import Data.Sum.Relation.Binary.Pointwise as P using (_⊎ₛ_)
+open import Data.Sum.Relation.Binary.Pointwise using (_⊎ₛ_; inj₁; inj₂)
 open import Data.Sum.Function.Setoid
 
 open import Relation.Binary.Bundles using (Setoid)
@@ -27,6 +26,6 @@ coproduct _ _ X Y = record
    ; [_,_] = [_,_]ₛ
    ; inject₁ = λ {_} {f} → cong f
    ; inject₂ = λ {_} {_} {g} → cong g
-   ; unique = λ {B} eq₁ eq₂ → λ { {inj₁ x₀} {inj₁ x₁} (P.inj₁ x₀≈x₁) → sym B (eq₁ (sym X x₀≈x₁))
-                                ; {inj₂ y₀} {inj₂ y₁} (P.inj₂ y₀≈y₁) → sym B (eq₂ (sym Y y₀≈y₁))}
+   ; unique = λ {B} eq₁ eq₂ → λ { (inj₁ x₀≈x₁) → sym B (eq₁ (sym X x₀≈x₁))
+                                ; (inj₂ y₀≈y₁) → sym B (eq₂ (sym Y y₀≈y₁))}
    }
