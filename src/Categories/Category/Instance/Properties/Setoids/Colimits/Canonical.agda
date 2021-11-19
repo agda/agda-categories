@@ -2,7 +2,7 @@
 
 -- A "canonical" presentation of binary coproducts in Setoid.
 --
--- Done by analogy with Categories.Category.Instance.Properties.Setoids.Colimits.Canonical
+-- Done by analogy with Categories.Category.Instance.Properties.Setoids.Limits.Canonical
 
 module Categories.Category.Instance.Properties.Setoids.Colimits.Canonical where
 
