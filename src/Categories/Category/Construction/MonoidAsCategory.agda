@@ -1,3 +1,4 @@
+{-# OPTIONS --safe --without-K #-}
 open import Algebra.Bundles using (Monoid)
 
 module Categories.Category.Construction.MonoidAsCategory o {c ℓ} (M : Monoid c ℓ) where
