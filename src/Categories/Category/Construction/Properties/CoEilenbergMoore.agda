@@ -78,13 +78,6 @@ module _ {F : Functor 𝒟 𝒞} {G : Functor 𝒞 𝒟} (F⊣G : Adjoint F G) w
      F.F₁ (G.F₁ (F.F₁ f) 𝒟.∘ unit.η A)   ≈⟨ F.homomorphism ⟩
      T.F.F₁ (F.F₁ f) 𝒞.∘ F.F₁ (unit.η A) ∎
 
-
-  private
-    K = ComparisonF
-    module K = Functor K
-    module Fᵀ = Functor (Forgetful T)
-    module Gᵀ = Functor (Cofree T)
-
   Comparison∘F≡Free : (ComparisonF ∘F G) ≡F Cofree T
   Comparison∘F≡Free = record
    { eq₀ = λ X → ≡.refl

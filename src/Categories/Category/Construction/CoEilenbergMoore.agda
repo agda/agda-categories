@@ -18,10 +18,6 @@ private
   open HomReasoning
   open Equiv
 
--- helper for composition in diagrammatic order: bad idea?
-_؛_ : {A B C : Obj} → (f : A ⇒ B) → (g : B ⇒ C) → (A ⇒ C)
-f ؛ g = g ∘ f
-
 record Comodule : Set (o ⊔ ℓ ⊔ e) where
   field
     A        : Obj
