@@ -1,3 +1,4 @@
+{-# OPTIONS --safe --without-K #-}
 open import Algebra.Bundles using (Group)
 
 module Categories.Category.Construction.GroupAsCategory o {c ℓ} (G : Group c ℓ) where
