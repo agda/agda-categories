@@ -6,33 +6,20 @@ open import Level
 open import Data.Product using (Σ; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_)
 open import Function.Equality using (Π)
 open import Relation.Binary using (Setoid; Rel)
-
 open import Categories.Category using (Category; _[_,_])
-open import Categories.Functor
 open import Categories.Category.Instance.Setoids
-open import Categories.Category.Complete
 open import Categories.Category.Extensive
-open import Categories.Category.Instance.Properties.Setoids.Cocomplete
-open import Categories.Category.Instance.Properties.Setoids.Complete
-open import Categories.Category.Cocomplete.Properties
-open import Categories.Category.Cocomplete.Finitely
-open import Categories.Category.Complete.Finitely
-open import Categories.Category.Complete.Properties
 open import Categories.Category.Cocartesian
 open import Categories.Diagram.Pullback
-
 open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical
-open import Categories.Category.Monoidal.Instance.Setoids -- using (Setoids-Cartesian)
+open import Categories.Category.Monoidal.Instance.Setoids 
 open import Data.Sum.Relation.Binary.Pointwise
 open import Data.Unit.Polymorphic using (⊤; tt)
-
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum.Base using ([_,_]′)
-open import Data.Product using (∃)
-
 open import Function.Equality as SΠ renaming (id to ⟶-id)
 
-import Relation.Binary.PropositionalEquality as P -- using (inspect; [_])
+import Relation.Binary.PropositionalEquality as P
 
 open Π
 
@@ -103,31 +90,31 @@ module _ ℓ where
            (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X) →
            (z z' : ∣ C ∣) → (z≈z' : [ C ][ z ≈ z' ]) → [ X ][ copair-$ f g h z ≈ copair-$ f g h z' ]
          copair-cong {A} {B} {C} f g h z z' z≈z' with (f ⟨$⟩ z) | P.inspect (_⟨$⟩_ f) z | (f ⟨$⟩ z') | P.inspect (_⟨$⟩_ f) z'
-         ... | inj₁ x | P.[ eq ] | inj₁ x' | P.[ eq' ] = Π.cong g
+         ... | inj₁ x | P.[ eq ] | inj₁ x' | P.[ eq' ] = cong g
           (z≈z' , drop-inj₁ (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z') (reflexive-A⊎B eq'))))
            where
-             trans-A⊎B = trans (Setoid.isEquivalence (⊎-setoid A B))
-             sym-A⊎B = sym (Setoid.isEquivalence (⊎-setoid A B))
-             reflexive-A⊎B = reflexive (Setoid.isEquivalence (⊎-setoid A B))
+             trans-A⊎B = trans (isEquivalence (⊎-setoid A B))
+             sym-A⊎B = sym (isEquivalence (⊎-setoid A B))
+             reflexive-A⊎B = reflexive (isEquivalence (⊎-setoid A B))
          ... | inj₁ x | P.[ eq ] | inj₂ y  | P.[ eq' ] = conflict A B x y
           (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z') (reflexive-A⊎B eq')))
            where
-             trans-A⊎B = trans (Setoid.isEquivalence (⊎-setoid A B))
-             sym-A⊎B = sym (Setoid.isEquivalence (⊎-setoid A B))
-             reflexive-A⊎B = reflexive (Setoid.isEquivalence (⊎-setoid A B))
+             trans-A⊎B = trans (isEquivalence (⊎-setoid A B))
+             sym-A⊎B = sym (isEquivalence (⊎-setoid A B))
+             reflexive-A⊎B = reflexive (isEquivalence (⊎-setoid A B))
          ... | inj₂ y | P.[ eq ] | inj₁ x  | P.[ eq' ] = conflict A B x y
           (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq')) (trans-A⊎B (cong f (sym-C z≈z')) (reflexive-A⊎B eq)))
            where
-             trans-A⊎B = trans (Setoid.isEquivalence (⊎-setoid A B))
-             sym-A⊎B = sym (Setoid.isEquivalence (⊎-setoid A B))
-             sym-C = sym (Setoid.isEquivalence C)
-             reflexive-A⊎B = reflexive (Setoid.isEquivalence (⊎-setoid A B))
+             trans-A⊎B = trans (isEquivalence (⊎-setoid A B))
+             sym-A⊎B = sym (isEquivalence (⊎-setoid A B))
+             sym-C = sym (isEquivalence C)
+             reflexive-A⊎B = reflexive (isEquivalence (⊎-setoid A B))
          ... | inj₂ y | P.[ eq ] | inj₂ y' | P.[ eq' ] = cong h (z≈z' , drop-inj₂
           (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z') (reflexive-A⊎B eq'))))
            where
-             trans-A⊎B = trans (Setoid.isEquivalence (⊎-setoid A B))
-             sym-A⊎B = sym (Setoid.isEquivalence (⊎-setoid A B))
-             reflexive-A⊎B = reflexive (Setoid.isEquivalence (⊎-setoid A B))
+             trans-A⊎B = trans (isEquivalence (⊎-setoid A B))
+             sym-A⊎B = sym (isEquivalence (⊎-setoid A B))
+             reflexive-A⊎B = reflexive (isEquivalence (⊎-setoid A B))
 
          -- copair-inject₁ : ∀ {A B C X : Setoid ℓ ℓ} (f : C ⟶ ⊎-setoid A B)
          --   (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X) →
