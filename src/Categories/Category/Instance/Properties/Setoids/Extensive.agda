@@ -28,6 +28,7 @@ open import Data.Unit.Polymorphic using (⊤; tt)
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum.Base using ([_,_]′)
+open import Data.Product using (∃)
 
 open import Function.Equality as SΠ renaming (id to ⟶-id)
 
@@ -45,8 +46,8 @@ module _ ℓ where
   Setoids-Extensive : (ℓ : Level) → Extensive (Setoids ℓ ℓ)
   Setoids-Extensive ℓ = record
      { cocartesian = record { initial = initial ; coproducts = coproducts }
-     ; pullback-of-inl = λ f → pullback ℓ ℓ f i₁ 
-     ; pullback-of-inr = λ f → pullback ℓ ℓ f i₂ 
+     ; pullback₁ = λ f → pullback ℓ ℓ f i₁ 
+     ; pullback₂ = λ f → pullback ℓ ℓ f i₂ 
      ; pullback-of-cp-is-cp = λ {C A B} f → record
          { [_,_] = λ g h →
              record
@@ -54,20 +55,21 @@ module _ ℓ where
              ; cong = λ {z z'} → copair-cong f g h z z'
              }
           ; inject₁ = λ {X g h z} eq →
-              trans (Setoid.isEquivalence {ℓ} X) (copair-inject₁ f g h z) (cong g eq)  
+               trans (isEquivalence {ℓ} X) (copair-inject₁ f g h z) (cong g eq)
           ; inject₂ = λ {X g h z} eq →
-              trans (Setoid.isEquivalence {ℓ} X) (copair-inject₂ f g h z) (cong h eq)
-          ; unique = λ {X u g h} x eq {z} eq' → trans (Setoid.isEquivalence {ℓ} X) (copair-unique f g h u z eq) (cong u eq')
+               trans (isEquivalence {ℓ} X) (copair-inject₂ f g h z) (cong h eq)
+          ; unique = λ {X u g h} x eq {z} eq' →
+               trans (isEquivalence {ℓ} X) (copair-unique f g h u z eq) (cong u eq')
           }
-     ; inl-is-mono = λ _ _ eq x≈y → drop-inj₁ (eq x≈y)
-     ; inr-is-mono = λ _ _ eq x≈y → drop-inj₂ (eq x≈y)
+     ; pullback₁-is-mono = λ _ _ eq x≈y → drop-inj₁ (eq x≈y)
+     ; pullback₂-is-mono = λ _ _ eq x≈y → drop-inj₂ (eq x≈y)
      ; disjoint = λ {A B} → record
           { commute = λ { {()} _}
           ; universal = λ {C f g} eq → record
-             { _⟨$⟩_ = λ z → conflict A B (f ⟨$⟩ z) (g ⟨$⟩ z) (eq (refl (Setoid.isEquivalence {ℓ} C)))
+             { _⟨$⟩_ = λ z → conflict A B (f ⟨$⟩ z) (g ⟨$⟩ z) (eq (refl (isEquivalence {ℓ} C)))
              ; cong = λ z → tt
              } 
-          ; unique = λ { {a} {b} {c} x x₁ x₂ → tt }
+          ; unique = λ _ _ _ → tt
           ; p₁∘universal≈h₁ = λ {C h₁ h₂ eq x y} x≈y → conflict A B (h₁ ⟨$⟩ x) (h₂ ⟨$⟩ y) (eq x≈y) 
           ; p₂∘universal≈h₂ = λ {C h₁ h₂ eq x y} x≈y → conflict A B (h₁ ⟨$⟩ x) (h₂ ⟨$⟩ y) (eq x≈y)
           }
@@ -76,25 +78,30 @@ module _ ℓ where
          open Cocartesian (Setoids-Cocartesian {ℓ} {ℓ})
          open Relation.Binary.IsEquivalence 
          open import Data.Sum using (inj₁; inj₂)
-         open Setoid renaming (_≈_ to [_][_≈_]) using ()
+         open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence)
 
          -- must be in the standard library. Maybe it is?
          conflict : ∀ {ℓ ℓ' ℓ''} (X Y : Setoid ℓ ℓ') {Z : Set ℓ''}
-           (x : Setoid.Carrier X) (y : Setoid.Carrier Y) →
-           ((⊎-setoid X Y) Setoid.≈ inj₁ x) (inj₂ y) → Z
+           (x : ∣ X ∣) (y : ∣ Y ∣) → [ ⊎-setoid X Y ][ inj₁ x ≈ inj₂ y ] → Z
          conflict X Y x y ()
 
-         copair-$ : ∀ {A B C X : Setoid ℓ ℓ} (f : C ⟶ ⊎-setoid A B)
-           (g : P (pullback ℓ ℓ f i₁) ⟶ X)
-           (h : P (pullback ℓ ℓ f i₂) ⟶ X) →
-           Setoid.Carrier C → Setoid.Carrier X
+         copair-$ : ∀ {A B C X : Setoid ℓ ℓ}
+           (f : C ⟶ ⊎-setoid A B) (g : P (pullback ℓ ℓ f i₁) ⟶ X)
+           (h : P (pullback ℓ ℓ f i₂) ⟶ X) → ∣ C ∣ → ∣ X ∣
          copair-$ {A} {B} f g h z with (f ⟨$⟩ z) | P.inspect (f ⟨$⟩_) z
-         ... | inj₁ x | P.[ eq ] = g ⟨$⟩ record { elem₁ = z ; elem₂ = x ; commute = reflexive (Setoid.isEquivalence (⊎-setoid A B)) eq }
-         ... | inj₂ y | P.[ eq ] = h ⟨$⟩ record { elem₁ = z ; elem₂ = y ; commute = reflexive (Setoid.isEquivalence (⊎-setoid A B)) eq }
-      
+         ... | inj₁ x | P.[ eq ] = g ⟨$⟩ record { elem₁ = z ; elem₂ = x ; commute = reflexive (isEquivalence (⊎-setoid A B)) eq }
+         ... | inj₂ y | P.[ eq ] = h ⟨$⟩ record { elem₁ = z ; elem₂ = y ; commute = reflexive (isEquivalence (⊎-setoid A B)) eq }
+
+         copair-$-i₁ : ∀ {A B C X : Setoid ℓ ℓ} (f : C ⟶ ⊎-setoid A B)
+           (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X) →
+           (x : ∣ A ∣) (z : ∣ C ∣) (eq : [ ⊎-setoid A B ][ f ⟨$⟩ z ≈ inj₁ x ]) →
+           [ X ][ copair-$ f g h z ≈ g ⟨$⟩ record { elem₁ = z ; elem₂ = x ; commute = eq} ] -- [ X ][ copair-$ f g h z ]
+
+         copair-$-i₁ {A} {B} f g h x z eq = cong {!!} eq
+
          copair-cong : ∀ {A B C X : Setoid ℓ ℓ} (f : C ⟶ ⊎-setoid A B)
            (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X) →
-           (z z' : Setoid.Carrier C) → (z≈z' : [ C ][ z ≈ z' ]) → [ X ][ copair-$ f g h z ≈ copair-$ f g h z' ]
+           (z z' : ∣ C ∣) → (z≈z' : [ C ][ z ≈ z' ]) → [ X ][ copair-$ f g h z ≈ copair-$ f g h z' ]
          copair-cong {A} {B} {C} f g h z z' z≈z' with (f ⟨$⟩ z) | P.inspect (_⟨$⟩_ f) z | (f ⟨$⟩ z') | P.inspect (_⟨$⟩_ f) z'
          ... | inj₁ x | P.[ eq ] | inj₁ x' | P.[ eq' ] = Π.cong g
           (z≈z' , drop-inj₁ (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z') (reflexive-A⊎B eq'))))
@@ -122,21 +129,25 @@ module _ ℓ where
              sym-A⊎B = sym (Setoid.isEquivalence (⊎-setoid A B))
              reflexive-A⊎B = reflexive (Setoid.isEquivalence (⊎-setoid A B))
 
+         -- copair-inject₁ : ∀ {A B C X : Setoid ℓ ℓ} (f : C ⟶ ⊎-setoid A B)
+         --   (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X) →
+         --   (x : Setoid.Carrier A) → (z : Setoid.Carrier C) → [ ⊎-setoid A B ][ f ⟨$⟩ z ≈ i₁ ⟨$⟩ x ] → [ X ][ copair-$ f g h z ≈ g ⟨$⟩ {!!} ]
+         -- copair-inject₁ f g h x z eq = {!!} -- ( f ⟨$⟩ z ) -- with (f ⟨$⟩ z)
+         -- -- ... | a = {!!}
+
          copair-inject₁ : ∀ {A B C X : Setoid ℓ ℓ} (f : C ⟶ ⊎-setoid A B)
            (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X) 
            (z : FiberProduct f i₁) → [ X ][ copair-$ f g h (FiberProduct.elem₁ z) ≈ g ⟨$⟩ z ]
-         copair-inject₁ f g h record { elem₁ = z ; elem₂ = x ; commute = eq} = {!!} -- with (f ⟨$⟩ z)
-         -- ... | a = {!!}
+         copair-inject₁ f g h record { elem₁ = z ; elem₂ = x ; commute = eq } = {!!}
 
          copair-inject₂ : ∀ {A B C X : Setoid ℓ ℓ} (f : C ⟶ ⊎-setoid A B)
            (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X) 
            (z : FiberProduct f i₂) → [ X ][ copair-$ f g h (FiberProduct.elem₁ z) ≈ h ⟨$⟩ z ]
-         copair-inject₂ f g h record { elem₁ = z ; elem₂ = elem₂ ; commute = commute } = {!!} -- with f ⟨$⟩ z
-         -- ... | a = {!!}
+         copair-inject₂ f g h record { elem₁ = z ; elem₂ = y ; commute = eq } = {!!}
 
          copair-unique : ∀ {A B C X : Setoid ℓ ℓ} (f : C ⟶ ⊎-setoid A B)
            (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X)
-           (u : C ⟶ X) (z : Setoid.Carrier C) →
+           (u : C ⟶ X) (z : ∣ C ∣) →
            [ P (pullback ℓ ℓ f i₂) ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₂) ≈ h ] →
            [ X ][ copair-$ f g h z ≈ u ⟨$⟩ z ]
          copair-unique f g h u z eq = {!!} -- with (f ⟨$⟩ z)
