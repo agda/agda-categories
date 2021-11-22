@@ -16,10 +16,12 @@ open import Categories.Category.Monoidal.Instance.Setoids
 open import Data.Sum.Relation.Binary.Pointwise
 open import Data.Unit.Polymorphic using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
-open import Data.Sum.Base using ([_,_]′)
+open import Data.Sum.Base using ([_,_]′; _⊎_)
 open import Function.Equality as SΠ renaming (id to ⟶-id)
+open import Data.Product using (∃)
 
-import Relation.Binary.PropositionalEquality as P
+
+open import Relation.Binary.PropositionalEquality using (_≡_; [_]; inspect)
 
 open Π
 
@@ -36,17 +38,16 @@ module _ ℓ where
      ; pullback₁ = λ f → pullback ℓ ℓ f i₁ 
      ; pullback₂ = λ f → pullback ℓ ℓ f i₂ 
      ; pullback-of-cp-is-cp = λ {C A B} f → record
-          { [_,_] = λ g h →
-             record
-             { _⟨$⟩_ = copair-$ f g h
-             ; cong = λ {z z'} → copair-cong f g h z z'
-             }
+          { [_,_] = λ g h → record
+              { _⟨$⟩_ = copair-$ f g h
+              ; cong = λ {z z'} → copair-cong f g h z z'
+              }
           ; inject₁ = λ {X g h z} eq →
                trans (isEquivalence {ℓ} X) (copair-inject₁ f g h z) (cong g eq)
           ; inject₂ = λ {X g h z} eq →
                trans (isEquivalence {ℓ} X) (copair-inject₂ f g h z) (cong h eq)
-          ; unique = λ {X u g h} eq₁ eq₂ {z} eq₃ → 
-               trans (isEquivalence {ℓ} X) (copair-unique f g h u z eq₁ eq₂) (cong u eq₃)
+          ; unique = λ {X u g h} feq₁ feq₂ {z} eq → 
+               trans (isEquivalence {ℓ} X) (copair-unique f g h u z feq₁ feq₂) (cong u eq)
           }
      ; pullback₁-is-mono = λ _ _ eq x≈y → drop-inj₁ (eq x≈y)
      ; pullback₂-is-mono = λ _ _ eq x≈y → drop-inj₂ (eq x≈y)
@@ -74,53 +75,98 @@ module _ ℓ where
 
          module Diagram {A B C X : Setoid ℓ ℓ} (f : C ⟶ ⊎-setoid A B) (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X) where
 
-           A′ = P (pullback ℓ ℓ f i₁)
-           B′ = P (pullback ℓ ℓ f i₂)
+           private
+             A⊎B = ⊎-setoid A B
+             A′ = P (pullback ℓ ℓ f i₁)
+             B′ = P (pullback ℓ ℓ f i₂)
 
-           trans-A⊎B = trans (isEquivalence (⊎-setoid A B))
-           sym-A⊎B = sym (isEquivalence (⊎-setoid A B))
-           reflexive-A⊎B = reflexive (isEquivalence (⊎-setoid A B))
-           sym-C = sym (isEquivalence C)
+             refl-A = refl (isEquivalence A)
+             refl-B = refl (isEquivalence B)
+             refl-C = refl (isEquivalence C)
+             refl-A⊎B = refl (isEquivalence A⊎B)
 
+             reflexive-A⊎B = reflexive (isEquivalence A⊎B)
+
+             sym-A = sym (isEquivalence A)
+             sym-B = sym (isEquivalence B)
+             sym-C = sym (isEquivalence C)
+             sym-X = sym (isEquivalence X)
+             sym-A⊎B = sym (isEquivalence A⊎B)
+
+             trans-A⊎B = trans (isEquivalence A⊎B)
+             trans-X = trans (isEquivalence X)
+
+           -- copairing of g : A′ → X and h : B′ → X, resulting in C → X 
            copair-$ : ∣ C ∣ → ∣ X ∣
-           copair-$ z with (f ⟨$⟩ z) | P.inspect (f ⟨$⟩_) z
-           ... | inj₁ x | P.[ eq ] = g ⟨$⟩ record { elem₁ = z ; elem₂ = x ; commute = reflexive (isEquivalence (⊎-setoid A B)) eq }
-           ... | inj₂ y | P.[ eq ] = h ⟨$⟩ record { elem₁ = z ; elem₂ = y ; commute = reflexive (isEquivalence (⊎-setoid A B)) eq }
+           copair-$ z with (f ⟨$⟩ z) | inspect (f ⟨$⟩_) z
+           ... | inj₁ x | [ eq ] = g ⟨$⟩ record { elem₁ = z ; elem₂ = x ; commute = reflexive-A⊎B eq }
+           ... | inj₂ y | [ eq ] = h ⟨$⟩ record { elem₁ = z ; elem₂ = y ; commute = reflexive-A⊎B eq }
 
-           copair-$-i₁ : (h : B′ ⟶ X) → (x : ∣ A ∣) (z : ∣ C ∣) (eq : [ ⊎-setoid A B ][ f ⟨$⟩ z ≈ inj₁ x ]) →
-             [ X ][ copair-$ z ≈ g ⟨$⟩ record { elem₁ = z ; elem₂ = x ; commute = eq} ] -- [ X ][ copair-$ f g h z ]
+           -- somewhat roundabout way to expand the definition of copair-$ z if f ⟨$⟩ z ≈ inj₁ x,
+           -- in order to circumwent the pitfalls of the with-abstraction
+           copair-$-i₁ : (x : ∣ A ∣) (z : ∣ C ∣) → (eq : [ A⊎B ][ f ⟨$⟩ z ≈ inj₁ x ]) →
+             ∃ (λ v → [ X ][ copair-$ z ≈ g ⟨$⟩ v ] ×
+                        [ C ][ FiberProduct.elem₁ v ≈ z ] ×
+                        [ A ][ FiberProduct.elem₂ v ≈ x ])
+           copair-$-i₁ x z eq with (f ⟨$⟩ z) | inspect (f ⟨$⟩_) z
+           ... | inj₁ x′ | [ eq′ ] =
+             record { elem₁ = z ; elem₂ =  x′ ; commute = reflexive-A⊎B eq′}
+             , cong g (refl-C , refl-A)
+             , refl-C
+             , drop-inj₁ eq
 
-           copair-$-i₁ h x z eq = cong {!!} eq
+           -- same for f ⟨$⟩ z ≈ inj₂ y
+           copair-$-i₂ : (y : ∣ B ∣) (z : ∣ C ∣) → (eq : [ A⊎B ][ f ⟨$⟩ z ≈ inj₂ y ]) →
+             ∃ (λ v → [ X ][ copair-$ z ≈ h ⟨$⟩ v ] × [ C ][ FiberProduct.elem₁ v ≈ z ] × [ B ][ FiberProduct.elem₂ v ≈ y ])
+           copair-$-i₂ y z eq with (f ⟨$⟩ z) | inspect (f ⟨$⟩_) z
+           ... | inj₂ y′ | [ eq′ ] =
+             record { elem₁ = z ; elem₂ =  y′ ; commute = reflexive-A⊎B eq′}
+             , cong h (refl-C , refl-B)
+             , refl-C
+             , drop-inj₂ eq
 
+           elim-f⟨$⟩z : (z : ∣ C ∣) → (∃ λ x → [ A⊎B ][ f ⟨$⟩ z ≈ inj₁ x ]) ⊎ (∃ λ y → [ A⊎B ][ f ⟨$⟩ z ≈ inj₂ y ])
+           elim-f⟨$⟩z z with (f ⟨$⟩ z)
+           ... | inj₁ x = inj₁ (x , refl-A⊎B)
+           ... | inj₂ y = inj₂ (y , refl-A⊎B)
+             
            copair-cong : (z z' : ∣ C ∣) → (z≈z' : [ C ][ z ≈ z' ]) → [ X ][ copair-$ z ≈ copair-$ z' ]
-           copair-cong z z' z≈z' with (f ⟨$⟩ z) | P.inspect (_⟨$⟩_ f) z | (f ⟨$⟩ z') | P.inspect (_⟨$⟩_ f) z'
-           ... | inj₁ x | P.[ eq ] | inj₁ x' | P.[ eq' ] = cong g
+           copair-cong z z' z≈z' with (f ⟨$⟩ z) | inspect (_⟨$⟩_ f) z | (f ⟨$⟩ z') | inspect (_⟨$⟩_ f) z'
+           ... | inj₁ x | [ eq ] | inj₁ x' | [ eq' ] = cong g
              (z≈z' , drop-inj₁ (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z') (reflexive-A⊎B eq'))))
-           ... | inj₁ x | P.[ eq ] | inj₂ y  | P.[ eq' ] = conflict A B x y
+           ... | inj₁ x | [ eq ] | inj₂ y  | [ eq' ] = conflict A B x y
              (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z') (reflexive-A⊎B eq')))
-           ... | inj₂ y | P.[ eq ] | inj₁ x  | P.[ eq' ] = conflict A B x y
+           ... | inj₂ y | [ eq ] | inj₁ x  | [ eq' ] = conflict A B x y
              (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq')) (trans-A⊎B (cong f (sym-C z≈z')) (reflexive-A⊎B eq)))
-           ... | inj₂ y | P.[ eq ] | inj₂ y' | P.[ eq' ] = cong h (z≈z' , drop-inj₂
+           ... | inj₂ y | [ eq ] | inj₂ y' | [ eq' ] = cong h (z≈z' , drop-inj₂
              (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z') (reflexive-A⊎B eq'))))
 
-         -- copair-inject₁ : ∀ {A B C X : Setoid ℓ ℓ} (f : C ⟶ ⊎-setoid A B)
-         --   (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X) →
-         --   (x : Setoid.Carrier A) → (z : Setoid.Carrier C) → [ ⊎-setoid A B ][ f ⟨$⟩ z ≈ i₁ ⟨$⟩ x ] → [ X ][ copair-$ f g h z ≈ g ⟨$⟩ {!!} ]
-         -- copair-inject₁ f g h x z eq = {!!} -- ( f ⟨$⟩ z ) -- with (f ⟨$⟩ z)
-         -- -- ... | a = {!!}
-
            copair-inject₁ : (z : FiberProduct f i₁) → [ X ][ copair-$ (FiberProduct.elem₁ z) ≈ g ⟨$⟩ z ]
-           copair-inject₁ record { elem₁ = z ; elem₂ = x ; commute = eq } = {!!}
+           copair-inject₁ record { elem₁ = z ; elem₂ = x ; commute = eq } with elim-f⟨$⟩z z  
+           ... | inj₁ _  with copair-$-i₁ x z eq
+           ... | _ , eq₁ , eq₂ , eq₃ = trans (isEquivalence X) eq₁ (cong g (eq₂ , eq₃))
+           copair-inject₁ record { elem₁ = z ; elem₂ = x ; commute = eq } | inj₂ (y , eq′) =
+             conflict A B x y (trans-A⊎B (sym-A⊎B eq) eq′)
 
            copair-inject₂ : (z : FiberProduct f i₂) → [ X ][ copair-$ (FiberProduct.elem₁ z) ≈ h ⟨$⟩ z ]
-           copair-inject₂ record { elem₁ = z ; elem₂ = y ; commute = eq } = {!!}
+           copair-inject₂ record { elem₁ = z ; elem₂ = y ; commute = eq } with elim-f⟨$⟩z z  
+           ... | inj₂ _  with copair-$-i₂ y z eq
+           ... | _ , eq₁ , eq₂ , eq₃ = trans (isEquivalence X) eq₁ (cong h (eq₂ , eq₃))
+           copair-inject₂ record { elem₁ = z ; elem₂ = y ; commute = eq } | inj₁ (x , eq′) =
+             conflict A B x y (trans-A⊎B (sym-A⊎B eq′) eq) 
 
            copair-unique : (u : C ⟶ X) (z : ∣ C ∣) →
              [ A′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₁) ≈ g ] →
+--             ({ x y : FiberProduct f i₁} →
+--               Σ [ C ][ FiberProduct.elem₁ x ≈ FiberProduct.elem₁ y ]
+--               (λ _ → [ A ][ FiberProduct.elem₂ x ≈ FiberProduct.elem₂ y ]) →
+--               [ X ][ u ⟨$⟩ FiberProduct.elem₁ x ≈ g ⟨$⟩ y ])  →
              [ B′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₂) ≈ h ] →
              [ X ][ copair-$ z ≈ u ⟨$⟩ z ]
-           copair-unique u z eq₁ eq₂ = {!!} -- with (f ⟨$⟩ z)
-         -- ... | inj₁ x = ?
-         -- ... | inj₂ y = ?
+           copair-unique u z feq₁ feq₂  with elim-f⟨$⟩z z 
+           ... | inj₁ (x , eq) with copair-$-i₁ x z eq
+           ... | x′ , eq₁ , eq₂ , eq₃ = trans-X eq₁ (sym-X (feq₁ (sym-C eq₂ , sym-A eq₃)))
+           copair-unique u z feq₁ feq₂ | inj₂ (y , eq) with copair-$-i₂ y z eq
+           ... | y′ , eq₁ , eq₂ , eq₃ = trans-X eq₁ (sym-X (feq₂ (sym-C eq₂ , sym-B eq₃)))
         
          open Diagram
