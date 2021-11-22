@@ -20,7 +20,6 @@ open import Data.Sum.Base using ([_,_]′; _⊎_)
 open import Function.Equality as SΠ renaming (id to ⟶-id)
 open import Data.Product using (∃)
 
-
 open import Relation.Binary.PropositionalEquality using (_≡_; [_]; inspect)
 
 open Π
@@ -40,14 +39,14 @@ module _ ℓ where
      ; pullback-of-cp-is-cp = λ {C A B} f → record
           { [_,_] = λ g h → record
               { _⟨$⟩_ = copair-$ f g h
-              ; cong = λ {z z'} → copair-cong f g h z z'
+              ; cong = λ {z z′} → copair-cong f g h z z′
               }
           ; inject₁ = λ {X g h z} eq →
                trans (isEquivalence {ℓ} X) (copair-inject₁ f g h z) (cong g eq)
           ; inject₂ = λ {X g h z} eq →
                trans (isEquivalence {ℓ} X) (copair-inject₂ f g h z) (cong h eq)
           ; unique = λ {X u g h} feq₁ feq₂ {z} eq → 
-               trans (isEquivalence {ℓ} X) (copair-unique f g h u z feq₁ feq₂) (cong u eq)
+               trans (isEquivalence {ℓ} X) (copair-unique {A}{B}{C}{X} f g h u z feq₁ feq₂) (cong u eq)
           }
      ; pullback₁-is-mono = λ _ _ eq x≈y → drop-inj₁ (eq x≈y)
      ; pullback₂-is-mono = λ _ _ eq x≈y → drop-inj₂ (eq x≈y)
@@ -93,8 +92,8 @@ module _ ℓ where
              sym-X = sym (isEquivalence X)
              sym-A⊎B = sym (isEquivalence A⊎B)
 
-             trans-A⊎B = trans (isEquivalence A⊎B)
              trans-X = trans (isEquivalence X)
+             trans-A⊎B = trans (isEquivalence A⊎B)
 
            -- copairing of g : A′ → X and h : B′ → X, resulting in C → X 
            copair-$ : ∣ C ∣ → ∣ X ∣
@@ -130,43 +129,43 @@ module _ ℓ where
            ... | inj₁ x = inj₁ (x , refl-A⊎B)
            ... | inj₂ y = inj₂ (y , refl-A⊎B)
              
-           copair-cong : (z z' : ∣ C ∣) → (z≈z' : [ C ][ z ≈ z' ]) → [ X ][ copair-$ z ≈ copair-$ z' ]
-           copair-cong z z' z≈z' with (f ⟨$⟩ z) | inspect (_⟨$⟩_ f) z | (f ⟨$⟩ z') | inspect (_⟨$⟩_ f) z'
-           ... | inj₁ x | [ eq ] | inj₁ x' | [ eq' ] = cong g
-             (z≈z' , drop-inj₁ (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z') (reflexive-A⊎B eq'))))
-           ... | inj₁ x | [ eq ] | inj₂ y  | [ eq' ] = conflict A B x y
-             (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z') (reflexive-A⊎B eq')))
-           ... | inj₂ y | [ eq ] | inj₁ x  | [ eq' ] = conflict A B x y
-             (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq')) (trans-A⊎B (cong f (sym-C z≈z')) (reflexive-A⊎B eq)))
-           ... | inj₂ y | [ eq ] | inj₂ y' | [ eq' ] = cong h (z≈z' , drop-inj₂
-             (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z') (reflexive-A⊎B eq'))))
+           copair-cong : (z z′ : ∣ C ∣) → (z≈z′ : [ C ][ z ≈ z′ ]) → [ X ][ copair-$ z ≈ copair-$ z′ ]
+           copair-cong z z′ z≈z′ with (f ⟨$⟩ z) | inspect (_⟨$⟩_ f) z | (f ⟨$⟩ z′) | inspect (_⟨$⟩_ f) z′
+           ... | inj₁ x | [ eq ] | inj₁ x′ | [ eq′ ] = cong g
+             (z≈z′ , drop-inj₁ (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z′) (reflexive-A⊎B eq′))))
+           ... | inj₁ x | [ eq ] | inj₂ y  | [ eq′ ] = conflict A B x y
+             (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z′) (reflexive-A⊎B eq′)))
+           ... | inj₂ y | [ eq ] | inj₁ x  | [ eq′ ] = conflict A B x y
+             (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq′)) (trans-A⊎B (cong f (sym-C z≈z′)) (reflexive-A⊎B eq)))
+           ... | inj₂ y | [ eq ] | inj₂ y′ | [ eq′ ] = cong h (z≈z′ , drop-inj₂
+             (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z′) (reflexive-A⊎B eq′))))
 
            copair-inject₁ : (z : FiberProduct f i₁) → [ X ][ copair-$ (FiberProduct.elem₁ z) ≈ g ⟨$⟩ z ]
            copair-inject₁ record { elem₁ = z ; elem₂ = x ; commute = eq } with elim-f⟨$⟩z z  
            ... | inj₁ _  with copair-$-i₁ x z eq
-           ... | _ , eq₁ , eq₂ , eq₃ = trans (isEquivalence X) eq₁ (cong g (eq₂ , eq₃))
+           ... | _ , eq₁ , eq₂ , eq₃ = trans-X eq₁ (cong g (eq₂ , eq₃))
            copair-inject₁ record { elem₁ = z ; elem₂ = x ; commute = eq } | inj₂ (y , eq′) =
              conflict A B x y (trans-A⊎B (sym-A⊎B eq) eq′)
 
            copair-inject₂ : (z : FiberProduct f i₂) → [ X ][ copair-$ (FiberProduct.elem₁ z) ≈ h ⟨$⟩ z ]
            copair-inject₂ record { elem₁ = z ; elem₂ = y ; commute = eq } with elim-f⟨$⟩z z  
            ... | inj₂ _  with copair-$-i₂ y z eq
-           ... | _ , eq₁ , eq₂ , eq₃ = trans (isEquivalence X) eq₁ (cong h (eq₂ , eq₃))
+           ... | _ , eq₁ , eq₂ , eq₃ = trans-X eq₁ (cong h (eq₂ , eq₃))
            copair-inject₂ record { elem₁ = z ; elem₂ = y ; commute = eq } | inj₁ (x , eq′) =
              conflict A B x y (trans-A⊎B (sym-A⊎B eq′) eq) 
 
            copair-unique : (u : C ⟶ X) (z : ∣ C ∣) →
              [ A′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₁) ≈ g ] →
---             ({ x y : FiberProduct f i₁} →
---               Σ [ C ][ FiberProduct.elem₁ x ≈ FiberProduct.elem₁ y ]
---               (λ _ → [ A ][ FiberProduct.elem₂ x ≈ FiberProduct.elem₂ y ]) →
---               [ X ][ u ⟨$⟩ FiberProduct.elem₁ x ≈ g ⟨$⟩ y ])  →
+             -- ({ z z′ : FiberProduct f i₁} →
+             --   Σ [ C ][ FiberProduct.elem₁ z ≈ FiberProduct.elem₁ z′ ]
+             --   (λ _ → [ A ][ FiberProduct.elem₂ z ≈ FiberProduct.elem₂ z′ ]) →
+             --   [ X ][ u ⟨$⟩ FiberProduct.elem₁ z ≈ g ⟨$⟩ z′ ])  →
              [ B′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₂) ≈ h ] →
              [ X ][ copair-$ z ≈ u ⟨$⟩ z ]
-           copair-unique u z feq₁ feq₂  with elim-f⟨$⟩z z 
+           copair-unique u z feq₁ feq₂ with elim-f⟨$⟩z z 
            ... | inj₁ (x , eq) with copair-$-i₁ x z eq
-           ... | x′ , eq₁ , eq₂ , eq₃ = trans-X eq₁ (sym-X (feq₁ (sym-C eq₂ , sym-A eq₃)))
+           ... | z′ , eq₁ , eq₂ , eq₃ = trans-X eq₁ (trans-X (sym-X (feq₁{z′} (refl-C , refl-A))) (cong u eq₂))
            copair-unique u z feq₁ feq₂ | inj₂ (y , eq) with copair-$-i₂ y z eq
-           ... | y′ , eq₁ , eq₂ , eq₃ = trans-X eq₁ (sym-X (feq₂ (sym-C eq₂ , sym-B eq₃)))
-        
+           ... | z′ , eq₁ , eq₂ , eq₃ = trans-X eq₁ (trans-X (sym-X (feq₂{z′} (refl-C , refl-B))) (cong u eq₂))
+       
          open Diagram
