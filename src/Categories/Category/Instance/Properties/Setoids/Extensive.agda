@@ -45,8 +45,8 @@ module _ ℓ where
                trans (isEquivalence {ℓ} X) (copair-inject₁ f g h z) (cong g eq)
           ; inject₂ = λ {X g h z} eq →
                trans (isEquivalence {ℓ} X) (copair-inject₂ f g h z) (cong h eq)
-          ; unique = λ {X u g h} feq₁ feq₂ {z} eq → 
-               trans (isEquivalence {ℓ} X) (copair-unique {A}{B}{C}{X} f g h u z feq₁ feq₂) (cong u eq)
+          ; unique = λ {X u g h} feq₁ feq₂ {z z′} eq →
+               trans (isEquivalence {ℓ} X) (copair-unique f g h u z (λ {z} → feq₁ {z}) (λ {z} → feq₂ {z})) (cong u eq)
           }
      ; pullback₁-is-mono = λ _ _ eq x≈y → drop-inj₁ (eq x≈y)
      ; pullback₂-is-mono = λ _ _ eq x≈y → drop-inj₂ (eq x≈y)
@@ -72,7 +72,8 @@ module _ ℓ where
            (x : ∣ X ∣) (y : ∣ Y ∣) → [ ⊎-setoid X Y ][ inj₁ x ≈ inj₂ y ] → Z
          conflict X Y x y ()
 
-         module Diagram {A B C X : Setoid ℓ ℓ} (f : C ⟶ ⊎-setoid A B) (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X) where
+         module Diagram {A B C X : Setoid ℓ ℓ} (f : C ⟶ ⊎-setoid A B)
+           (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X) where
 
            private
              A⊎B = ⊎-setoid A B
@@ -124,8 +125,8 @@ module _ ℓ where
              , refl-C
              , drop-inj₂ eq
 
-           elim-f⟨$⟩z : (z : ∣ C ∣) → (∃ λ x → [ A⊎B ][ f ⟨$⟩ z ≈ inj₁ x ]) ⊎ (∃ λ y → [ A⊎B ][ f ⟨$⟩ z ≈ inj₂ y ])
-           elim-f⟨$⟩z z with (f ⟨$⟩ z)
+           case-f⟨$⟩z : (z : ∣ C ∣) → (∃ λ x → [ A⊎B ][ f ⟨$⟩ z ≈ inj₁ x ]) ⊎ (∃ λ y → [ A⊎B ][ f ⟨$⟩ z ≈ inj₂ y ])
+           case-f⟨$⟩z z with (f ⟨$⟩ z)
            ... | inj₁ x = inj₁ (x , refl-A⊎B)
            ... | inj₂ y = inj₂ (y , refl-A⊎B)
              
@@ -141,14 +142,14 @@ module _ ℓ where
              (trans-A⊎B (sym-A⊎B (reflexive-A⊎B eq)) (trans-A⊎B (cong f z≈z′) (reflexive-A⊎B eq′))))
 
            copair-inject₁ : (z : FiberProduct f i₁) → [ X ][ copair-$ (FiberProduct.elem₁ z) ≈ g ⟨$⟩ z ]
-           copair-inject₁ record { elem₁ = z ; elem₂ = x ; commute = eq } with elim-f⟨$⟩z z  
+           copair-inject₁ record { elem₁ = z ; elem₂ = x ; commute = eq } with case-f⟨$⟩z z  
            ... | inj₁ _  with copair-$-i₁ x z eq
            ... | _ , eq₁ , eq₂ , eq₃ = trans-X eq₁ (cong g (eq₂ , eq₃))
            copair-inject₁ record { elem₁ = z ; elem₂ = x ; commute = eq } | inj₂ (y , eq′) =
              conflict A B x y (trans-A⊎B (sym-A⊎B eq) eq′)
 
            copair-inject₂ : (z : FiberProduct f i₂) → [ X ][ copair-$ (FiberProduct.elem₁ z) ≈ h ⟨$⟩ z ]
-           copair-inject₂ record { elem₁ = z ; elem₂ = y ; commute = eq } with elim-f⟨$⟩z z  
+           copair-inject₂ record { elem₁ = z ; elem₂ = y ; commute = eq } with case-f⟨$⟩z z  
            ... | inj₂ _  with copair-$-i₂ y z eq
            ... | _ , eq₁ , eq₂ , eq₃ = trans-X eq₁ (cong h (eq₂ , eq₃))
            copair-inject₂ record { elem₁ = z ; elem₂ = y ; commute = eq } | inj₁ (x , eq′) =
@@ -156,16 +157,12 @@ module _ ℓ where
 
            copair-unique : (u : C ⟶ X) (z : ∣ C ∣) →
              [ A′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₁) ≈ g ] →
-             -- ({ z z′ : FiberProduct f i₁} →
-             --   Σ [ C ][ FiberProduct.elem₁ z ≈ FiberProduct.elem₁ z′ ]
-             --   (λ _ → [ A ][ FiberProduct.elem₂ z ≈ FiberProduct.elem₂ z′ ]) →
-             --   [ X ][ u ⟨$⟩ FiberProduct.elem₁ z ≈ g ⟨$⟩ z′ ])  →
              [ B′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₂) ≈ h ] →
              [ X ][ copair-$ z ≈ u ⟨$⟩ z ]
-           copair-unique u z feq₁ feq₂ with elim-f⟨$⟩z z 
+           copair-unique u z feq₁ feq₂ with case-f⟨$⟩z z 
            ... | inj₁ (x , eq) with copair-$-i₁ x z eq
-           ... | z′ , eq₁ , eq₂ , eq₃ = trans-X eq₁ (trans-X (sym-X (feq₁{z′} (refl-C , refl-A))) (cong u eq₂))
+           ... | z′ , eq₁ , eq₂ , _ = trans-X eq₁ (trans-X (sym-X (feq₁{z′} (refl-C , refl-A))) (cong u eq₂))
            copair-unique u z feq₁ feq₂ | inj₂ (y , eq) with copair-$-i₂ y z eq
-           ... | z′ , eq₁ , eq₂ , eq₃ = trans-X eq₁ (trans-X (sym-X (feq₂{z′} (refl-C , refl-B))) (cong u eq₂))
-       
+           ... | z′ , eq₁ , eq₂ , _ = trans-X eq₁ (trans-X (sym-X (feq₂{z′} (refl-C , refl-B))) (cong u eq₂))
+
          open Diagram
