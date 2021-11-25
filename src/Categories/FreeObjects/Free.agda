@@ -87,7 +87,6 @@ module _  {C : Category o ℓ e} {D : Category o' ℓ' e'} (U : Functor D C) whe
             module FY =  FreeObject (F Y) using (η; _*; *-lift)
             module FZ =  FreeObject (F Z) using (η)
 
--- tryout 
 
         resp-proof :{X Y : C.Obj} {f g : C [ X , Y ]} → C [ f ≈ g ] → C [ U.₁ ((F X *) (η (F Y) C.∘ g)) C.∘ η (F X) ≈ η (F Y) C.∘ f ]
         resp-proof {X} {Y} {f} {g} f≈g =  begin
