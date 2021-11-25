@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-module Categories.Objects.FreeObjects.Free where
+module Categories.FreeObjects.Free where
 
 open import Level
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
@@ -76,9 +76,9 @@ module _  {C : Category o ℓ e} {D : Category o' ℓ' e'} (U : Functor D C) whe
         hom-proof : ∀ {X : C.Obj} {Y : C.Obj} {Z : C.Obj} {f : C [ X , Y ]} {g : C [ Y , Z ]} →
             C [ (η (F Z) C.∘ (g C.∘ f)) ≈ (U.₁ (_* (F Y) (η (F Z) C.∘ g) D.∘ _* (F X) (η (F Y) C.∘ f) ) C.∘ η (F X)) ]
         hom-proof {X} {Y} {Z} {f} {g} =  begin
-          FZ.η C.∘ (g C.∘ f)                                                     ≈⟨ {! pullˡ (sym (FY.*-lift (FZ.η C.∘ g)))  !} ⟩   -- pullˡ (sym (FY.*-lift (FZ.η C.∘ g)))
-          (U.₁((FZ.η C.∘ g) FY.*) C.∘ FY.η) C.∘ f                                ≈⟨ {! pullʳ (sym (FX.*-lift (FY.η C.∘ f)))  !} ⟩   -- pullʳ (sym (FX.*-lift (FY.η C.∘ f)))
-          U.₁((FZ.η C.∘ g) FY.*) C.∘ (U.₁((FY.η C.∘ f) FX.*) C.∘ FX.η)           ≈⟨ {! pullˡ (sym (U.homomorphism))  !} ⟩           -- pullˡ (sym (U.homomorphism))
+          FZ.η C.∘ (g C.∘ f)                                                     ≈˘⟨ pushˡ (FY.*-lift (FZ.η C.∘ g)) ⟩
+          (U.₁((FZ.η C.∘ g) FY.*) C.∘ FY.η) C.∘ f                                ≈˘⟨ pushʳ (FX.*-lift (FY.η C.∘ f)) ⟩ 
+          U.₁((FZ.η C.∘ g) FY.*) C.∘ (U.₁((FY.η C.∘ f) FX.*) C.∘ FX.η)           ≈˘⟨ pushˡ U.homomorphism ⟩     
           U.₁ ((FZ.η C.∘ g) FY.* D.∘ (FY.η C.∘ f) FX.*) C.∘ FX.η                 ∎
           where
             open MR C
@@ -86,15 +86,7 @@ module _  {C : Category o ℓ e} {D : Category o' ℓ' e'} (U : Functor D C) whe
             module FX =  FreeObject (F X) using (η; _*; *-lift)
             module FY =  FreeObject (F Y) using (η; _*; *-lift)
             module FZ =  FreeObject (F Z) using (η)
-{-
-            FZ.η C.∘ (g C.∘ f)                                              ≈˘⟨ C.assoc ⟩
-            (FZ.η C.∘ g) C.∘ f                                              ≈˘⟨ (FY.*-lift (FZ.η C.∘ g) ⟩∘⟨refl ) ⟩
-            (U.₁((FZ.η C.∘ g) FY.*) C.∘ FY.η) C.∘ f                         ≈⟨ C.assoc ⟩
-            U.₁ ((FZ.η C.∘ g) FY.*) C.∘ (FY.η C.∘ f)                        ≈˘⟨ refl⟩∘⟨ FX.*-lift (FY.η C.∘ f) ⟩
-            U.₁((FZ.η C.∘ g) FY.*) C.∘ (U.₁((FY.η C.∘ f) FX.*) C.∘ FX.η)    ≈˘⟨ C.assoc ⟩
-            (U.₁((FZ.η C.∘ g) FY.*) C.∘ U.₁((FY.η C.∘ f) FX.*)) C.∘ FX.η    ≈˘⟨ U.homomorphism ⟩∘⟨refl ⟩
-            U.₁ ((FZ.η C.∘ g) FY.* D.∘ (FY.η C.∘ f) FX.*) C.∘ FX.η          ∎
--}
+
 
 
         resp-proof :{X Y : C.Obj} {f g : C [ X , Y ]} → C [ f ≈ g ] → C [ U.₁ ((F X *) (η (F Y) C.∘ g)) C.∘ η (F X) ≈ η (F Y) C.∘ f ]
