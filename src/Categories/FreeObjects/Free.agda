@@ -99,23 +99,15 @@ module _  {C : Category o ℓ e} {D : Category o' ℓ' e'} (U : Functor D C) whe
 
 
 
+
   FO⇒unit : (F : ((X : C.Obj) → FreeObject U X)) → NaturalTransformation idF (U ∘F FO⇒Functor F)
-  FO⇒unit F = record
-    { η = λ X → η (F X)
-    ; commute = λ {X} {Y} f → sym (*-lift (F X) (η (F Y) C.∘ f))
-    ; sym-commute = λ {X} {Y} f → *-lift (F X) (η (F Y) C.∘ f)
-    }
-    where open C.Equiv
+  FO⇒unit F = ntHelper (record { η = λ X → η (F X) ; commute = λ {X} {Y} f → sym (*-lift (F X) (η (F Y) C.∘ f)) }) where open C.Equiv
 
 
   -- define a counit
   FO⇒counit : (F : ((X : C.Obj) → FreeObject U X)) → NaturalTransformation (FO⇒Functor F ∘F U) idF
-  FO⇒counit F = record
-    { η =  λ X → _* (F (U.₀ X)) C.id
-    ; commute = λ {X} {Y} f → counit-comm {X} {Y} f
-    ; sym-commute = λ {X} {Y} → λ f → sym (counit-comm {X} {Y} f)
-    }
-    where
+  FO⇒counit F = ntHelper (record { η = λ X → _* (F (U.₀ X)) C.id ; commute = λ {X} {Y} f → counit-comm {X} {Y} f }) 
+      where
       open D.Equiv
       module F = Functor (FO⇒Functor F) using (₀; ₁; identity; homomorphism)
 
