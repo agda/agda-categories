@@ -8,7 +8,7 @@ open import Relation.Binary using (IsEquivalence)
 open import Categories.Functor renaming (id to idF)
 open import Categories.Category
 open import Categories.Adjoint
-open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation.Core
 
 import Categories.Morphism.Reasoning as MR
 
@@ -57,7 +57,7 @@ module _  {C : Category o ℓ e} {D : Category o' ℓ' e'} (U : Functor D C) whe
               ((_* (F Y) (η (F Z) C.∘ g)) D.∘ (_* (F X) (η (F Y) C.∘ f)))
               (⟺ (hom-proof {X} {Y} {Z} {f} {g}))
               )
-      ; F-resp-≈ = λ {X} {Y} {f} {g} f≈g → sym (*-uniq (F X) (η (F Y) C.∘ f) (_* (F X) (η (F Y) C.∘ g)) (resp-proof {X} {Y} {f} {g} f≈g))
+      ; F-resp-≈ = λ {X} {Y} {f} {g} f≈g → sym (*-uniq (F X) (η (F Y) C.∘ f) (_* (F X) (η (F Y) C.∘ g)) (resp-proof  f≈g)) 
       }
       where
         open C.HomReasoning
@@ -66,17 +66,17 @@ module _  {C : Category o ℓ e} {D : Category o' ℓ' e'} (U : Functor D C) whe
         id-proof : ∀ {X : C.Obj} → C [ U.₁ D.id C.∘ η (F X) ≈ η (F X) C.∘ C.id ]
         id-proof {X} = begin
            (U.₁ D.id) C.∘ FX.η         ≈⟨ U.identity ⟩∘⟨refl ⟩
-           C.id C.∘ FX.η               ≈⟨ C.identityˡ ⟩
-           FX.η                        ≈˘⟨ C.identityʳ ⟩
+           C.id C.∘ FX.η               ≈⟨ id-comm-sym ⟩
            FX.η C.∘ C.id               ∎
            where
+            open MR C
             module FX = FreeObject (F X) using (η)
 
 
         hom-proof : ∀ {X : C.Obj} {Y : C.Obj} {Z : C.Obj} {f : C [ X , Y ]} {g : C [ Y , Z ]} →
             C [ (η (F Z) C.∘ (g C.∘ f)) ≈ (U.₁ (_* (F Y) (η (F Z) C.∘ g) D.∘ _* (F X) (η (F Y) C.∘ f) ) C.∘ η (F X)) ]
         hom-proof {X} {Y} {Z} {f} {g} =  begin
-          FZ.η C.∘ (g C.∘ f)                                                     ≈˘⟨ pushˡ (FY.*-lift (FZ.η C.∘ g)) ⟩
+          FZ.η C.∘ (g C.∘ f)                                                     ≈˘⟨ pushˡ (FY.*-lift (FZ.η C.∘ g)) ⟩  
           (U.₁((FZ.η C.∘ g) FY.*) C.∘ FY.η) C.∘ f                                ≈˘⟨ pushʳ (FX.*-lift (FY.η C.∘ f)) ⟩ 
           U.₁((FZ.η C.∘ g) FY.*) C.∘ (U.₁((FY.η C.∘ f) FX.*) C.∘ FX.η)           ≈˘⟨ pushˡ U.homomorphism ⟩     
           U.₁ ((FZ.η C.∘ g) FY.* D.∘ (FY.η C.∘ f) FX.*) C.∘ FX.η                 ∎
@@ -98,7 +98,7 @@ module _  {C : Category o ℓ e} {D : Category o' ℓ' e'} (U : Functor D C) whe
               module FY = FreeObject (F Y) using (η; _*; *-lift)
 
 
-  -- the "unit" of the free object definition is a natural transformation
+
   FO⇒unit : (F : ((X : C.Obj) → FreeObject U X)) → NaturalTransformation idF (U ∘F FO⇒Functor F)
   FO⇒unit F = record
     { η = λ X → η (F X)
@@ -173,24 +173,15 @@ module _  {C : Category o ℓ e} {D : Category o' ℓ' e'} (U : Functor D C) whe
     where
       module F = Functor (FO⇒Functor F) using (₀; ₁; identity; homomorphism)
 
-      zig-comm1 : {X : C.Obj} → C [ U.₁ D.id C.∘ η (F X) ≈ η (F X) ]
-      zig-comm1 {X} =  begin
-        U.₁ D.id C.∘ FX.η         ≈⟨ U.identity ⟩∘⟨refl ⟩
-        C.id C.∘ FX.η             ≈⟨ C.identityˡ ⟩
-        FX.η                      ∎
-        where
-          open C.HomReasoning
-          module FX = FreeObject (F X) using (η)
 
+      zig-comm1 : {X : C.Obj} → C [ U.₁ D.id C.∘ η (F X) ≈ η (F X) ]
+      zig-comm1 {X} =  elimˡ (U.identity)  where open MR C
 
       zig-helper1 : {X : C.Obj} → D [ _* (F X) (η (F X)) ≈ D.id ]
-      zig-helper1 {X} =  begin
-        FX.η FX.*           ≈˘⟨ FX.*-uniq FX.η D.id (zig-comm1 {X}) ⟩
-        D.id            ∎
+      zig-helper1 {X} =  sym (FX.*-uniq FX.η D.id (zig-comm1 {X}))
         where
-          open D.HomReasoning
-          module FX = FreeObject (F X) using (η; _*; *-uniq)
-
+          open D.Equiv
+          module FX = FreeObject (F X) using (η; *-uniq)
 
       zig-comm2 : {X : C.Obj} → C [ U.₁ (_* (F (U.₀ (F.₀ X))) C.id D.∘ F.₁ (η (F X)) ) C.∘ η (F X) ≈ η (F X) ]
       zig-comm2 {X} = begin
