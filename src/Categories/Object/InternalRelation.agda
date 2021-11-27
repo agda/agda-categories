@@ -1,53 +1,98 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
-module Categories.Object.InternalRelation {o ℓ e} (𝒞 : CartesianCategory o ℓ e) where
-
-open import Level
-open import Data.Product hiding (_×_)
-open import Data.Unit
+-- Formalization of internal relations
+-- (=congruences: https://ncatlab.org/nlab/show/congruence)
 
 open import Categories.Category
+module Categories.Object.InternalRelation {o ℓ e} (𝒞 : Category o ℓ e) where
+
+open import Level hiding (zero)
+open import Data.Unit
+open import Data.Fin using (Fin; zero) renaming (suc to nzero)
+
 import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
 open import Categories.Morphism.Notation
 
-𝒞′ = CartesianCategory.U 𝒞
+open import Categories.Diagram.Pullback
+open import Categories.Diagram.KernelPair
+open import Categories.Category.Cartesian
 
-open import Categories.Category.BinaryProducts 𝒞′
-open import Categories.Category.Cartesian 𝒞′
+open import Categories.Category.BinaryProducts 𝒞 using (BinaryProducts; module BinaryProducts)
 
 private
-  module 𝒞′ = Category 𝒞′
-  module 𝒞 = CartesianCategory 𝒞
+  module 𝒞 = Category 𝒞
 
-open BinaryProducts (Cartesian.products (CartesianCategory.cartesian 𝒞))
-  using (_×_; product; π₁; π₂; ⟨_,_⟩)
+open Category 𝒞
+open Mor 𝒞
 
-BinaryRelation : 𝒞.Obj → 𝒞.Obj → Set (o ⊔ ℓ ⊔ e)
-BinaryRelation X Y = Σ[ Z ∈ 𝒞.Obj ](Z ↣ (X × Y)) where open Mor 𝒞′; open _↣_
+-- A relation is a span, "which is (-1)-truncated as a morphism into the cartesian product."
+-- (https://ncatlab.org/nlab/show/span#correspondences)
+isRelation : {X Y R : 𝒞.Obj} (f : R ⇒ X) (g : R ⇒ Y) → Set (o ⊔ ℓ ⊔ e)
+isRelation{X}{Y}{R} f g = JointMono {I = Fin 2}{B = λ{zero → X; (nzero _) → Y}} λ{ zero → f ; (nzero _) → g} 
+  where open Category 𝒞
 
-record EquivalenceRelation (X : 𝒞.Obj) : Set (o ⊔ ℓ ⊔ e) where
-  open Category 𝒞′
-  open Mor 𝒞′
-  open _↣_
+record Relation (X Y : 𝒞.Obj) : Set (suc (o ⊔ ℓ ⊔ e)) where
+  open Mor 𝒞
+  
+  field
+    dom : 𝒞.Obj
+    p₁ : dom ⇒ X 
+    p₂ : dom ⇒ Y 
 
   field
-    relation : BinaryRelation X X
+    isrel : isRelation p₁ p₂
 
-  R    = proj₁ relation
-  incl = proj₂ relation
+record isEqSpan {X R : 𝒞.Obj} (f : R ⇒ X) (g : R ⇒ X) : Set (suc (o ⊔ ℓ ⊔ e)) where
+  field
+     R×R : Pullback 𝒞 f g
+
+  module R×R = Pullback R×R renaming (P to dom)
 
   field
-    refl  : X ⇒ R
-    sym   : R ⇒ R
-    trans : R × R ⇒ R
+     refl  : X ⇒ R
+     sym   : R ⇒ R
+     trans : R×R.dom ⇒ R
     
-    is-refl₁ : π₁ ∘ (mor incl) ∘ refl ≈ id 
-    is-refl₂ : π₂ ∘ (mor incl) ∘ refl ≈ id 
+     is-refl₁ : f ∘ refl ≈ id
+     is-refl₂ : g ∘ refl ≈ id
 
-    is-sym₁ : π₁ ∘ (mor incl) ∘ sym ≈ π₂ ∘ (mor incl) 
-    is-sym₂ : π₂ ∘ (mor incl) ∘ sym ≈ π₁ ∘ (mor incl)
+     is-sym₁ : f ∘ sym ≈ g
+     is-sym₂ : g ∘ sym ≈ f
 
-    -- is-trans₁ : -- 𝒞 must have pullbacks
-    -- is-trans₂ : -- 𝒞 must have pullbacks
+     is-trans₁ : f ∘ trans ≈ f ∘ R×R.p₁
+     is-trans₂ : g ∘ trans ≈ g ∘ R×R.p₂
+
+-- Internal equivalence
+record Equivalence (X : 𝒞.Obj) : Set (suc (o ⊔ ℓ ⊔ e)) where
+  open Mor 𝒞
+  open BinaryProducts  
+
+  field
+     R : Relation X X
+    
+  open Relation R
+  module R = Relation R
+
+  field
+    eqspan : isEqSpan R.p₁ R.p₂
+
+module _ where
+  open Pullback hiding (P)
+  
+  KP⇒EqSpan : {X Y : 𝒞.Obj} (f : X ⇒ Y) → (kp : KernelPair 𝒞 f) → (p : Pullback 𝒞 (p₁ kp) (p₂ kp)) → isEqSpan (p₁ kp) (p₂ kp)
+  KP⇒EqSpan f kp p = record
+    { R×R = p
+    ; refl = universal kp {_} {id}{id} 𝒞.Equiv.refl
+    ; sym  = universal kp {_} {p₂ kp}{p₁ kp} (𝒞.Equiv.sym (commute kp))
+    ; trans = universal kp {_}{p₁ kp ∘ p₁ p}{p₂ kp ∘ p₂ p} (∘-resp-≈ʳ (commute p)) 
+    ; is-refl₁ = p₁∘universal≈h₁ kp
+    ; is-refl₂ = p₂∘universal≈h₂ kp
+    ; is-sym₁ = p₁∘universal≈h₁ kp
+    ; is-sym₂ = p₂∘universal≈h₂ kp
+    ; is-trans₁ = p₁∘universal≈h₁ kp
+    ; is-trans₂ = p₂∘universal≈h₂ kp
+    }
+                         
+  KP⇒Relation : {X Y : 𝒞.Obj} (f : X ⇒ Y) → (kp : KernelPair 𝒞 f) → (p : Pullback 𝒞 (p₁ kp) (p₂ kp)) → isRelation (p₁ kp) (p₂ kp)
+  KP⇒Relation f kp _ _ _ eq = unique-diagram kp (eq zero) (eq (nzero zero))
