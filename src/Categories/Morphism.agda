@@ -25,6 +25,9 @@ private
 Mono : ∀ (f : A ⇒ B) → Set (o ⊔ ℓ ⊔ e)
 Mono {A = A} f = ∀ {C} → (g₁ g₂ : C ⇒ A) → f ∘ g₁ ≈ f ∘ g₂ → g₁ ≈ g₂
 
+JointMono : {I : Set} {B : I → Obj} → ((i : I) → A ⇒ B i) → Set (o ⊔ ℓ ⊔ e)
+JointMono {A}{I} f = ∀ {C} → (g₁ g₂ : C ⇒ A) → ((i : I) → f i ∘ g₁ ≈ f i ∘ g₂) → g₁ ≈ g₂
+
 record _↣_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
     mor  : A ⇒ B
@@ -32,6 +35,9 @@ record _↣_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
 
 Epi : ∀ (f : A ⇒ B) → Set (o ⊔ ℓ ⊔ e)
 Epi {B = B} f = ∀ {C} → (g₁ g₂ : B ⇒ C) → g₁ ∘ f ≈ g₂ ∘ f → g₁ ≈ g₂
+
+JointEpi : {I : Set} {A : I → Obj} → ((i : I) → A i ⇒ B) → Set (o ⊔ ℓ ⊔ e)
+JointEpi {B}{I} f = ∀ {C} → (g₁ g₂ : B ⇒ C) → ((i : I) → g₁ ∘ f i ≈ g₂ ∘ f i) → g₁ ≈ g₂
 
 record _↠_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
