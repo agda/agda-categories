@@ -12,6 +12,7 @@ open import Categories.Functor.Properties
 open import Categories.NaturalTransformation.Core
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)
 open import Categories.Morphism.Reasoning C
+open import Categories.Tactic.Category
 
 private
   module C = Category C
@@ -105,3 +106,54 @@ Free⊣Forgetful = record
     M.μ.η B ∘ M.η.η (F₀ B)                            ≈⟨ M.identityʳ ⟩
     C.id                                              ∎
   }
+
+
+module KleisliExtension where
+  kl-extension : {A B : Obj} → (f : A ⇒ F₀ B) → F₀ A ⇒ F₀ B
+  kl-extension {A} {B} f = M.μ.η B ∘ F₁ f
+
+  -- probably something like f ⋆, but it would be confusing
+
+  f-iso⇒Klf-iso : ∀ {A B : Obj} → (f : A ⇒ F₀ B) → (g : B ⇒ F₀ A) → Iso (Kleisli M) g f → Iso C (kl-extension f) (kl-extension g)
+  f-iso⇒Klf-iso {A} {B} f g (record { isoˡ = isoˡ ; isoʳ = isoʳ }) = record
+    { isoˡ = begin
+       (M.μ.η A ∘ F₁ g) ∘ M.μ.η B ∘ F₁ f           ≈⟨ center (sym (M.μ.commute g)) ⟩
+       M.μ.η A ∘ (M.μ.η (F₀ A) ∘ F₁ (F₁ g)) ∘ F₁ f ≈⟨ assoc²'' ⟩
+       (M.μ.η A ∘ M.μ.η (F₀ A)) ∘ F₁ (F₁ g) ∘ F₁ f ≈⟨ pushˡ (Monad.sym-assoc M) ⟩
+       M.μ.η A ∘ F₁ (M.μ.η A) ∘ F₁ (F₁ g) ∘ F₁ f   ≈⟨ refl⟩∘⟨ sym trihom ⟩
+       M.μ.η A ∘ F₁ (M.μ.η A ∘ F₁ g ∘ f)           ≈⟨ refl⟩∘⟨ F-resp-≈ (sym assoc) ⟩
+       M.μ.η A ∘ F₁ ((M.μ.η A ∘ F₁ g) ∘ f)         ≈⟨ refl⟩∘⟨ F-resp-≈ isoʳ ○ Monad.identityˡ M ⟩
+       C.id ∎
+    ; isoʳ = begin
+       (M.μ.η B ∘ F₁ f) ∘ M.μ.η A ∘ F₁ g           ≈⟨ center (sym (M.μ.commute f)) ⟩
+       M.μ.η B ∘ (M.μ.η (F₀ B) ∘ F₁ (F₁ f)) ∘ F₁ g ≈⟨ assoc²'' ⟩
+       (M.μ.η B ∘ M.μ.η (F₀ B)) ∘ F₁ (F₁ f) ∘ F₁ g ≈⟨ pushˡ (Monad.sym-assoc M) ⟩
+       M.μ.η B ∘ F₁ (M.μ.η B) ∘ F₁ (F₁ f) ∘ F₁ g   ≈⟨ refl⟩∘⟨ sym trihom ⟩
+       M.μ.η B ∘ F₁ (M.μ.η B ∘ F₁ f ∘ g)           ≈⟨ refl⟩∘⟨ F-resp-≈ (sym assoc) ⟩
+       M.μ.η B ∘ F₁ ((M.μ.η B ∘ F₁ f) ∘ g)         ≈⟨ refl⟩∘⟨ F-resp-≈ isoˡ ○ Monad.identityˡ M ⟩
+       C.id ∎
+    }
+    where
+    trihom : {X Y Z W : Obj} {f : X ⇒ Y} {g : Y ⇒ Z} {h : Z ⇒ W} → F₁ (h ∘ g ∘ f) ≈ F₁ h ∘ F₁ g ∘ F₁ f
+    trihom {X} {Y} {Z} {W} {f} {g} {h} = begin
+      F₁ (h ∘ g ∘ f)     ≈⟨ homomorphism ⟩
+      F₁ h ∘ F₁ (g ∘ f)  ≈⟨ refl⟩∘⟨ homomorphism ⟩
+      F₁ h ∘ F₁ g ∘ F₁ f ∎
+
+  Klf-iso⇒f-iso : ∀ {A B : Obj} → (f : A ⇒ F₀ B) → (g : B ⇒ F₀ A) → Iso C (kl-extension f) (kl-extension g) → Iso (Kleisli M) g f
+  Klf-iso⇒f-iso {A} {B} f g record { isoˡ = isoˡ ; isoʳ = isoʳ } = record
+    { isoˡ = begin
+      (M.μ.η B ∘ F₁ f) ∘ g                              ≈⟨ introʳ (Monad.identityʳ M) ⟩∘⟨refl ⟩
+      ((M.μ.η B ∘ F₁ f) ∘ (M.μ.η A ∘ M.η.η (F₀ A))) ∘ g ≈⟨ solve C ⟩
+      M.μ.η B ∘ F₁ f ∘ (M.μ.η A) ∘ (M.η.η (F₀ A) ∘ g)   ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ M.η.commute g ⟩
+      M.μ.η B ∘ F₁ f ∘ M.μ.η A ∘ (F₁ g ∘ M.η.η B)       ≈⟨ solve C ⟩
+      ((M.μ.η B ∘ F₁ f) ∘ M.μ.η A ∘ F₁ g) ∘ M.η.η B     ≈⟨ elimˡ isoʳ ⟩
+      M.η.η B ∎
+    ; isoʳ = begin
+      (M.μ.η A ∘ F₁ g) ∘ f                              ≈⟨ introʳ (Monad.identityʳ M) ⟩∘⟨refl ⟩
+      ((M.μ.η A ∘ F₁ g) ∘ (M.μ.η B ∘ M.η.η (F₀ B))) ∘ f ≈⟨ solve C ⟩
+      M.μ.η A ∘ F₁ g ∘ (M.μ.η B) ∘ (M.η.η (F₀ B) ∘ f)   ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ M.η.commute f ⟩
+      M.μ.η A ∘ F₁ g ∘ M.μ.η B ∘ (F₁ f ∘ M.η.η A)       ≈⟨ solve C ⟩
+      ((M.μ.η A ∘ F₁ g) ∘ M.μ.η B ∘ F₁ f) ∘ M.η.η A     ≈⟨ elimˡ isoˡ ⟩
+      M.η.η A ∎
+    }
