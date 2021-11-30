@@ -49,7 +49,7 @@ Split : {𝒞 : Category o ℓ e} → Monad 𝒞 → Category _ _ _
 Split {𝒞 = 𝒞} M = record
   { Obj = SplitObj M
   ; _⇒_ = Split⇒ M
-  ; _≈_ = {!   !}
+  ; _≈_ = λ H K → {!   !}
   ; id = {!   !}
   ; _∘_ = {!   !}
   ; assoc = {!   !}
@@ -60,3 +60,11 @@ Split {𝒞 = 𝒞} M = record
   ; equiv = {!   !}
   ; ∘-resp-≈ = {!   !}
   }
+  where
+  open NaturalTransformation
+  split-id : {A : SplitObj M} → Split⇒ M A A
+  split-id = record
+    { H = Categories.Functor.id
+    ; HF≃F' = record { F⇒G = {!   !} ; F⇐G = {!   !} ; iso = {!   !} }
+    ; G'H≃G = record { F⇒G = {!   !} ; F⇐G = {!   !} ; iso = {!   !} }
+    }
