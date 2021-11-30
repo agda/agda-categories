@@ -15,7 +15,7 @@ open import Categories.Functor
 open import Categories.Morphism
 open import Categories.Functor.Properties
 open import Categories.NaturalTransformation.Core
-open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)
+open import Categories.NaturalTransformation.NaturalIsomorphism -- using (_≃_; unitorʳ; unitorˡ)
 open import Categories.Morphism.Reasoning as MR
 open import Categories.Tactic.Category
 
@@ -50,8 +50,8 @@ Split {𝒞 = 𝒞} M = record
   { Obj = SplitObj M
   ; _⇒_ = Split⇒ M
   ; _≈_ = λ H K → {!   !}
-  ; id = {!   !}
-  ; _∘_ = {!   !}
+  ; id = split-id
+  ; _∘_ = comp
   ; assoc = {!   !}
   ; sym-assoc = {!   !}
   ; identityˡ = {!   !}
@@ -65,6 +65,25 @@ Split {𝒞 = 𝒞} M = record
   split-id : {A : SplitObj M} → Split⇒ M A A
   split-id = record
     { H = Categories.Functor.id
-    ; HF≃F' = record { F⇒G = {!   !} ; F⇐G = {!   !} ; iso = {!   !} }
-    ; G'H≃G = record { F⇒G = {!   !} ; F⇐G = {!   !} ; iso = {!   !} }
+    ; HF≃F' = unitorˡ
+    ; G'H≃G = unitorʳ
     }
+  comp : {A B X : SplitObj M} → Split⇒ M B X → Split⇒ M A B → Split⇒ M A X
+  comp U V = record 
+    { H = H U ∘F H V 
+    ; HF≃F' = {!   !}
+    ; G'H≃G = {!   !} 
+    }
+    where
+      module U = Split⇒ U 
+      module V = Split⇒ V 
+      open U 
+      open V
+
+  -- comp record { H = H ; HF≃F' = record { F⇒G = F⇒G₁ ; F⇐G = F⇐G₁ ; iso = iso₁ } ; G'H≃G = isoGH } 
+  --      record { H = K ; HF≃F' = record { F⇒G = F⇒G ; F⇐G = F⇐G ; iso = iso } ; G'H≃G = isoGK }
+  --       = record 
+  --        { H = H ∘F K 
+  --        ; HF≃F' = ≃.trans {!   !} {!   !}
+  --        ; G'H≃G = {!   !} 
+  --        }
