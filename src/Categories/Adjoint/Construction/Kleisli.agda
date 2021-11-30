@@ -158,3 +158,18 @@ module KleisliExtension where
       ((M.μ.η A ∘ F₁ g) ∘ M.μ.η B ∘ F₁ f) ∘ M.η.η A     ≈⟨ elimˡ isoˡ ⟩
       M.η.η A ∎
     }
+
+  kl-ext-compat : ∀ {A B X : Obj} → (f : A ⇒ F₀ B) → (g : B ⇒ F₀ X) → κ ((κ g) ∘ f) ≈ κ g ∘ κ f
+  kl-ext-compat {A} {B} {X} f g = begin
+    M.μ.η X ∘ F₁ ((M.μ.η X ∘ F₁ g) ∘ f)         ≈⟨ refl⟩∘⟨ F-resp-≈ assoc ○ refl⟩∘⟨ trihom ⟩
+    M.μ.η X ∘ (F₁ (M.μ.η X) ∘ F₁ (F₁ g) ∘ F₁ f) ≈⟨ solve C ⟩
+    (M.μ.η X ∘ F₁ (M.μ.η X)) ∘ F₁ (F₁ g) ∘ F₁ f ≈⟨ Monad.assoc M ⟩∘⟨refl ⟩
+    (M.μ.η X ∘ M.μ.η (F₀ X)) ∘ F₁ (F₁ g) ∘ F₁ f ≈⟨ center (M.μ.commute g) ⟩
+    M.μ.η X ∘ (F₁ g ∘ M.μ.η B) ∘ F₁ f           ≈⟨ solve C ⟩
+    (M.μ.η X ∘ F₁ g) ∘ M.μ.η B ∘ F₁ f           ∎
+    where
+    trihom : {X Y Z W : Obj} {f : X ⇒ Y} {g : Y ⇒ Z} {h : Z ⇒ W} → F₁ (h ∘ g ∘ f) ≈ F₁ h ∘ F₁ g ∘ F₁ f
+    trihom {X} {Y} {Z} {W} {f} {g} {h} = begin
+      F₁ (h ∘ g ∘ f)     ≈⟨ homomorphism ⟩
+      F₁ h ∘ F₁ (g ∘ f)  ≈⟨ refl⟩∘⟨ homomorphism ⟩
+      F₁ h ∘ F₁ g ∘ F₁ f ∎
