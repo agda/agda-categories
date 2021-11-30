@@ -3,8 +3,8 @@
 open import Categories.Category
 open import Categories.Functor
 
--- Cartesian fibration, also known as Grothendieck Fibration, see
--- https://ncatlab.org/nlab/show/Grothendieck+fibration
+-- Street fibration, which is the version of fibration that respects the principle of equivalence.
+-- https://ncatlab.org/nlab/show/Grothendieck+fibration#StreetFibration
 module Categories.Functor.Fibration {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′} (F : Functor C D) where
 
 open import Level
