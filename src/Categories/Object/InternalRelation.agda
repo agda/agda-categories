@@ -29,7 +29,10 @@ open Mor 𝒞
 -- A relation is a span, "which is (-1)-truncated as a morphism into the cartesian product."
 -- (https://ncatlab.org/nlab/show/span#correspondences)
 isRelation : {X Y R : 𝒞.Obj} (f : R ⇒ X) (g : R ⇒ Y) → Set (o ⊔ ℓ ⊔ e)
-isRelation{X}{Y}{R} f g = JointMono (Fin 2)(λ{zero → X; (nzero _) → Y}) λ{zero → f; (nzero _) → g} 
+isRelation{X}{Y}{R} f g = JointMono
+     (Fin 2)
+     (λ{zero → X; (nzero _) → Y})
+     (λ{zero → f; (nzero _) → g}) 
 
 record Relation (X Y : 𝒞.Obj) : Set (suc (o ⊔ ℓ ⊔ e)) where
   open Mor 𝒞
@@ -85,10 +88,10 @@ module _ where
     ; refl = universal kp {_} {id}{id} 𝒞.Equiv.refl
     ; sym  = universal kp {_} {p₂ kp}{p₁ kp} (𝒞.Equiv.sym (commute kp))
     ; trans = universal kp {_}{p₁ kp ∘ p₁ p}{p₂ kp ∘ p₂ p} (∘-resp-≈ʳ (commute p))
-    ; is-refl₁ = p₁∘universal≈h₁ kp
-    ; is-refl₂ = p₂∘universal≈h₂ kp
-    ; is-sym₁ = p₁∘universal≈h₁ kp
-    ; is-sym₂ = p₂∘universal≈h₂ kp
+    ; is-refl₁  = p₁∘universal≈h₁ kp
+    ; is-refl₂  = p₂∘universal≈h₂ kp
+    ; is-sym₁   = p₁∘universal≈h₁ kp
+    ; is-sym₂   = p₂∘universal≈h₂ kp
     ; is-trans₁ = p₁∘universal≈h₁ kp
     ; is-trans₂ = p₂∘universal≈h₂ kp
     }
