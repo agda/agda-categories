@@ -25,7 +25,7 @@ record Extensive {o ℓ e : Level} (𝒞 : Category o ℓ e) : Set (suc (o ⊔ �
   field
     pullback₁ : {A B C : Obj} (f : A ⇒ B + C) → Pullback 𝒞 f i₁
     pullback₂ : {A B C : Obj} (f : A ⇒ B + C) → Pullback 𝒞 f i₂
-    pullback-of-cp-is-cp : {A B C : Obj} (f : A ⇒ _+_ B C) → IsCoproduct 𝒞 (p₁ (pullback₁ f)) (p₁ (pullback₂ f))
+    pullback-of-cp-is-cp : {A B C : Obj} (f : A ⇒ B + C) → IsCoproduct 𝒞 (p₁ (pullback₁ f)) (p₁ (pullback₂ f))
     
     pullback₁-is-mono : ∀ {A B : Obj} → Mono 𝒞 (i₁ {A = A}{B = B})
     pullback₂-is-mono : ∀ {A B : Obj} → Mono 𝒞 (i₂ {A = A}{B = B})
