@@ -33,7 +33,7 @@ Setoids-Extensive ℓ = record
    ; pullback-of-cp-is-cp = λ f → record
         { [_,_] = λ g h → copair f g h
         ; inject₁ = λ {X g h z} eq →
-             {!trans (isEquivalence X) (copair-inject₁ f g h z) (cong g eq)!}
+             trans (isEquivalence X) (copair-inject₁ f g h z) (cong g eq)
         ; inject₂ = λ {X g h z} eq →
              trans (isEquivalence X) (copair-inject₂ f g h z) (cong h eq)
         ; unique = λ {X u g h} feq₁ feq₂ {z} eq →
