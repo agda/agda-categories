@@ -26,15 +26,18 @@ open import Categories.Adjoint.Construction.EilenbergMoore M as EM
 
 EM-object : SplitObj
 EM-object = record
-  { D = {!  !}
-  ; F = {!   !}
-  ; G = {!   !}
-  ; adj = {!   !}
-  ; eqM = {!   !}
+  { D = EilenbergMoore M
+  ; F = EM.Free
+  ; G = EM.Forgetful
+  ; adj = EM.Free⊣Forgetful
+  ; eqM = EM.FF≃F
   }
 
 EM-terminal : IsTerminal EM-object
-EM-terminal = {!   !}
+EM-terminal = record
+  { ! = {!   !}
+  ; !-unique = {!   !}
+  }
 
 
 Kl-object : SplitObj
@@ -48,6 +51,20 @@ Kl-object = record
 
 Kl-initial : IsInitial Kl-object
 Kl-initial = record
-  { ! = {!   !}
+  { ! = bang
   ; !-unique = {!   !}
   }
+  where
+  -- vanno aperte un po' di cose per non diventar matti
+  bang : {A : SplitObj} → Split⇒ Kl-object A
+  bang {Splitc D F G adj eq} = record
+    { H = record
+          { F₀ = λ T → Functor.F₀ F T
+          ; F₁ = λ f → {!   !}
+          ; identity = {!   !}
+          ; homomorphism = {!   !}
+          ; F-resp-≈ = {!   !}
+          }
+    ; HF≃F' = {!   !}
+    ; G'H≃G = {!   !}
+    }

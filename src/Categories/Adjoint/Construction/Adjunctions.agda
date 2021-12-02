@@ -24,6 +24,7 @@ open import Categories.Tactic.Category
 -- 3. the proof that KL(M) is the initial object here
 
 record SplitObj : Set (suc o ⊔ suc ℓ ⊔ suc e) where
+  constructor Splitc
   field
     D : Category o ℓ e
     F : Functor C D
@@ -70,39 +71,3 @@ Split M = record
     ; HF≃F' = HF≃F'ᵤ ⓘᵥ (Hᵤ ⓘˡ HF≃F'ᵥ) ⓘᵥ associator (SplitObj.F A) Hᵥ Hᵤ
     ; G'H≃G = G'H≃Gᵥ ⓘᵥ (G'H≃Gᵤ ⓘʳ Hᵥ) ⓘᵥ sym-associator Hᵥ Hᵤ (SplitObj.G X)
     }
-
-open import Categories.Object.Terminal (Split M)
-open import Categories.Object.Initial (Split M)
-open import Categories.Category.Construction.EilenbergMoore
-open import Categories.Category.Construction.Kleisli
-open import Categories.Adjoint.Construction.Kleisli M as KL
-open import Categories.Adjoint.Construction.EilenbergMoore M as EM
-
--- there's a problem with levels here...
--- EM-object : SplitObj
--- EM-object = record
---   { D = {!  !}
---   ; F = {!   !}
---   ; G = {!   !}
---   ; adj = {!   !}
---   ; eqM = {!   !}
---   }
-
--- EM-terminal : IsTerminal EM-object
--- EM-terminal = {!   !}
-
-
--- Kl-object : SplitObj
--- Kl-object = record
---   { D = Kleisli M
---   ; F = KL.Free
---   ; G = KL.Forgetful
---   ; adj = KL.Free⊣Forgetful
---   ; eqM = KL.FF≃F
---   }
-
--- Kl-initial : IsInitial Kl-object
--- Kl-initial = record
---   { ! = {!   !}
---   ; !-unique = {!   !}
---   }
