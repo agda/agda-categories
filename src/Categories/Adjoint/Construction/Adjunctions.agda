@@ -24,7 +24,7 @@ open import Categories.Tactic.Category
 -- 3. the proof that KL(M) is the initial object here
 
 record SplitObj : Set (suc o ⊔ suc ℓ ⊔ suc e) where
-  constructor Splitc
+  constructor splitobj
   field
     D : Category o ℓ e
     F : Functor C D
@@ -33,7 +33,7 @@ record SplitObj : Set (suc o ⊔ suc ℓ ⊔ suc e) where
     eqM : G ∘F F ≃ Monad.F M
 
 record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
-  constructor Splitc⇒
+  constructor split⇒
   private
     module X = SplitObj X
     module Y = SplitObj Y
@@ -41,8 +41,6 @@ record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
     H : Functor X.D Y.D
     HF≃F' : H ∘F X.F ≃ Y.F
     G'H≃G : Y.G ∘F H ≃ X.G
-
-open Split⇒
 
 Split : Monad C → Category _ _ _
 Split M = record
@@ -68,7 +66,7 @@ Split M = record
     ; G'H≃G = unitorʳ
     }
   comp : {A B X : SplitObj} → Split⇒ B X → Split⇒ A B → Split⇒ A X
-  comp {A = A} {B = B} {X = X} (Splitc⇒ Hᵤ HF≃F'ᵤ G'H≃Gᵤ) (Splitc⇒ Hᵥ HF≃F'ᵥ G'H≃Gᵥ) = record
+  comp {A = A} {B = B} {X = X} (split⇒ Hᵤ HF≃F'ᵤ G'H≃Gᵤ) (split⇒ Hᵥ HF≃F'ᵥ G'H≃Gᵥ) = record
     { H = Hᵤ ∘F Hᵥ
     ; HF≃F' = HF≃F'ᵤ ⓘᵥ (Hᵤ ⓘˡ HF≃F'ᵥ) ⓘᵥ associator (SplitObj.F A) Hᵥ Hᵤ
     ; G'H≃G = G'H≃Gᵥ ⓘᵥ (G'H≃Gᵤ ⓘʳ Hᵥ) ⓘᵥ sym-associator Hᵥ Hᵤ (SplitObj.G X)
