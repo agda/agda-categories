@@ -79,30 +79,30 @@ open import Categories.Adjoint.Construction.Kleisli M as KL
 open import Categories.Adjoint.Construction.EilenbergMoore M as EM
 
 -- there's a problem with levels here...
-EM-object : SplitObj
-EM-object = record
-  { D = {!  !}
-  ; F = {!   !}
-  ; G = {!   !}
-  ; adj = {!   !}
-  ; eqM = {!   !}
-  }
+-- EM-object : SplitObj
+-- EM-object = record
+--   { D = {!  !}
+--   ; F = {!   !}
+--   ; G = {!   !}
+--   ; adj = {!   !}
+--   ; eqM = {!   !}
+--   }
 
-EM-terminal : IsTerminal EM-object
-EM-terminal = {!   !}
+-- EM-terminal : IsTerminal EM-object
+-- EM-terminal = {!   !}
 
 
-Kl-object : SplitObj
-Kl-object = record
-  { D = Kleisli M
-  ; F = KL.Free
-  ; G = KL.Forgetful
-  ; adj = KL.Free⊣Forgetful
-  ; eqM = KL.FF≃F
-  }
+-- Kl-object : SplitObj
+-- Kl-object = record
+--   { D = Kleisli M
+--   ; F = KL.Free
+--   ; G = KL.Forgetful
+--   ; adj = KL.Free⊣Forgetful
+--   ; eqM = KL.FF≃F
+--   }
 
-Kl-initial : IsInitial Kl-object
-Kl-initial = record
-  { ! = {!   !}
-  ; !-unique = {!   !}
-  }
+-- Kl-initial : IsInitial Kl-object
+-- Kl-initial = record
+--   { ! = {!   !}
+--   ; !-unique = {!   !}
+--   }
