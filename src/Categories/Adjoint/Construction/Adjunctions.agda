@@ -42,6 +42,8 @@ record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
     HF≃F' : H ∘F X.F ≃ Y.F
     G'H≃G : Y.G ∘F H ≃ X.G
 
+open Split⇒
+
 Split : Monad C → Category _ _ _
 Split M = record
   { Obj = SplitObj

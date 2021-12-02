@@ -23,6 +23,9 @@ open import Categories.Category.Construction.Kleisli
 open import Categories.Adjoint.Construction.Kleisli M as KL
 open import Categories.Adjoint.Construction.EilenbergMoore M as EM
 
+open Category (Split M)
+open SplitObj
+open Split⇒
 
 EM-object : SplitObj
 EM-object = record
