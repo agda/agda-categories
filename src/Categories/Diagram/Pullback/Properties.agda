@@ -14,6 +14,8 @@ open import Categories.Object.Product C
 open import Categories.Object.Terminal C
 open import Categories.Morphism C
 open import Categories.Morphism.Reasoning C
+open import Categories.Category.Complete.Finitely using (FinitelyComplete)
+open import Data.Product using (∃; _,_)
 
 private
   open Category C
@@ -98,7 +100,6 @@ module _ (p : Pullback id f) where
         (f ∘ p₂)      ≈˘⟨ refl⟩∘⟨ identityˡ ⟩
         (f ∘ id ∘ p₂) ∎
 
-
 module _ (pullbacks : ∀ {X Y Z} (f : X ⇒ Z) (g : Y ⇒ Z) → Pullback f g)
          (cartesian : Cartesian) where
   open Cartesian cartesian
@@ -142,3 +143,31 @@ module _ (pullbacks : ∀ {X Y Z} (f : X ⇒ Z) (g : Y ⇒ Z) → Pullback f g)
             π₂ ∘ ⟨ p.p₂ , p.p₂ ⟩         ≈˘⟨ refl⟩∘⟨ eq ⟩
             π₂ ∘ ⟨ f ∘ p.p₁ , g ∘ p.p₁ ⟩ ≈⟨ project₂ ⟩
             g ∘ p.p₁                     ∎
+
+pullback-⊤⇒FinitelyComplete : (∀ {X Y Z} (f : X ⇒ Z) (g : Y ⇒ Z) → Pullback f g) → Terminal → FinitelyComplete C
+pullback-⊤⇒FinitelyComplete pullbacks ⊤ = record
+  { cartesian = cartesian
+  ; equalizer = λ _ _ → pullback×cartesian⇒equalizer pullbacks cartesian
+  }
+    where
+      open Category hiding (Obj)
+      open Pullback
+      open Terminal ⊤ hiding (⊤)
+      
+      _×_ : (A B : Obj) → Pullback (IsTerminal.! ⊤-is-terminal) (IsTerminal.! ⊤-is-terminal)
+      A × B = pullbacks (IsTerminal.! ⊤-is-terminal) (IsTerminal.! ⊤-is-terminal)
+
+      cartesian = record
+        { terminal = ⊤
+        ; products = record
+            { product = λ {A B} → record
+                { A×B = P {A}{_}{B} (A × B)
+                ; π₁ = p₁ (A × B)
+                ; π₂ = p₂ (A × B)
+                ; ⟨_,_⟩ =  λ _ _ → universal (A × B) (!-unique₂)
+                ; project₁ = p₁∘universal≈h₁ (A × B)
+                ; project₂ = p₂∘universal≈h₂ (A × B)
+                ; unique = λ eq₁ eq₂ → Equiv.sym C (unique (A × B) eq₁ eq₂)
+                }
+            }
+        }
