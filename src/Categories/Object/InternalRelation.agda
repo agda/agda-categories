@@ -45,7 +45,7 @@ record Relation (X Y : 𝒞.Obj) : Set (suc (o ⊔ ℓ ⊔ e)) where
   field
     relation : isRelation p₁ p₂
 
-record isEqSpan {X R : 𝒞.Obj} (f : R ⇒ X) (g : R ⇒ X) : Set (suc (o ⊔ ℓ ⊔ e)) where
+record EqSpan {X R : 𝒞.Obj} (f : R ⇒ X) (g : R ⇒ X) : Set (suc (o ⊔ ℓ ⊔ e)) where
   field
      R×R : Pullback 𝒞 f g
 
@@ -77,17 +77,17 @@ record Equivalence (X : 𝒞.Obj) : Set (suc (o ⊔ ℓ ⊔ e)) where
   module R = Relation R
 
   field
-    eqspan : isEqSpan R.p₁ R.p₂
+    eqspan : EqSpan R.p₁ R.p₂
 
 module _ where
   open Pullback hiding (P)
   
-  KP⇒EqSpan : {X Y : 𝒞.Obj} (f : X ⇒ Y) → (kp : KernelPair 𝒞 f) → (p : Pullback 𝒞 (p₁ kp) (p₂ kp)) → isEqSpan (p₁ kp) (p₂ kp)
+  KP⇒EqSpan : {X Y : 𝒞.Obj} (f : X ⇒ Y) (kp : KernelPair 𝒞 f) (p : Pullback 𝒞 (p₁ kp) (p₂ kp)) → EqSpan (p₁ kp) (p₂ kp)
   KP⇒EqSpan f kp p = record
     { R×R = p
-    ; refl = universal kp {_} {id}{id} 𝒞.Equiv.refl
-    ; sym  = universal kp {_} {p₂ kp}{p₁ kp} (𝒞.Equiv.sym (commute kp))
-    ; trans = universal kp {_}{p₁ kp ∘ p₁ p}{p₂ kp ∘ p₂ p} (∘-resp-≈ʳ (commute p))
+    ; refl  = universal kp {_} {id}{id} 𝒞.Equiv.refl
+    ; sym   = universal kp {_} {p₂ kp}{p₁ kp} (𝒞.Equiv.sym (commute kp))
+    ; trans = universal kp {_} {p₁ kp ∘ p₁ p}{p₂ kp ∘ p₂ p} (∘-resp-≈ʳ (commute p))
     ; is-refl₁  = p₁∘universal≈h₁ kp
     ; is-refl₂  = p₂∘universal≈h₂ kp
     ; is-sym₁   = p₁∘universal≈h₁ kp
@@ -98,3 +98,4 @@ module _ where
                          
   KP⇒Relation : {X Y : 𝒞.Obj} (f : X ⇒ Y) → (kp : KernelPair 𝒞 f) → (p : Pullback 𝒞 (p₁ kp) (p₂ kp)) → isRelation (p₁ kp) (p₂ kp)
   KP⇒Relation f kp _ _ _ eq = unique-diagram kp (eq zero) (eq (nzero zero))
+
