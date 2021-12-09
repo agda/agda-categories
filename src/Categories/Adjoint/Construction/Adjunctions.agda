@@ -18,11 +18,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism
 open import Categories.Morphism.Reasoning as MR
 open import Categories.Tactic.Category
 
--- three things:
--- 1. the category of adjunctions splitting a given Monad
--- 2. the proof that EM(M) is the terminal object here
--- 3. the proof that KL(M) is the initial object here
-
+-- the category of adjunctions splitting a given monad
 record SplitObj : Set (suc o ⊔ suc ℓ ⊔ suc e) where
   constructor splitobj
   field
@@ -31,6 +27,7 @@ record SplitObj : Set (suc o ⊔ suc ℓ ⊔ suc e) where
     G : Functor D C
     adj : F ⊣ G
     eqM : G ∘F F ≃ Monad.F M
+    -- probably this is asking too little...
 
 record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
   constructor split⇒

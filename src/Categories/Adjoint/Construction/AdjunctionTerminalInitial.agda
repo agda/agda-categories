@@ -33,7 +33,7 @@ EM-object = record
 
 EM-terminal : IsTerminal EM-object
 EM-terminal = record
-  { ! = {!!}
+  { ! = {!   !}
   ; !-unique = {!   !}
   }
 
@@ -53,7 +53,6 @@ Kl-initial = record
   ; !-unique = {!   !}
   }
   where
-    -- vanno aperte un po' di cose per non diventar matti
     bang : {A : SplitObj} → Split⇒ Kl-object A
     bang {splitobj D F G adj eq} = record
       { H = record
@@ -66,19 +65,30 @@ Kl-initial = record
             ; homomorphism = λ {X} {Y} {Z} {f} {g} → {!   !}
             ; F-resp-≈ = λ x → D.∘-resp-≈ʳ (Functor.F-resp-≈ F (C.∘-resp-≈ʳ x))
             }
-      ; HF≃F' = {!   !}
+      ; HF≃F' = niHelper (record
+        { η = λ X → Functor.F₁ F (Category.id C)
+        ; η⁻¹ = λ X → Functor.F₁ F (Category.id C)
+        ; commute = λ {X} {Y} f → begin
+          F.F₁ C.id ∘ adj.counit.η (F.F₀ Y) ∘ F.F₁ (eq.⇐.η Y C.∘ M.η.η Y C.∘ f) ≈⟨ {!   !} ⟩
+          adj.counit.η (F.F₀ Y) ∘ F.F₁ (eq.⇐.η Y C.∘ M.η.η Y C.∘ f) ≈⟨ {!   !} ⟩
+          adj.counit.η (F.F₀ Y) ∘ F.F₁ (eq.⇐.η Y) D.∘ F.F₁ (M.η.η Y) D.∘ F.F₁ f ≈⟨ {!   !} ⟩
+          adj.counit.η (F.F₀ Y) ∘ F.F₁ (eq.⇐.η Y) D.∘ F.F₁ (M.F.F₁ f) D.∘ F.F₁ (M.η.η X)  ≈⟨ {!   !} ⟩
+          adj.counit.η (F.F₀ Y) ∘ F.F₁ (eq.⇐.η Y) D.∘ F.F₁ (M.F.F₁ f) D.∘ F.F₁ (M.η.η X)  ≈⟨ {!   !} ⟩
+          F.F₁ f ∘ F.F₁ C.id ∎
+        ; iso = {!   !}
+        })
       ; G'H≃G = {!   !}
       }
-      where module adj    = Adjoint adj
-            module F      = Functor F
-            module M      = Monad M
-            module eq     = NaturalIsomorphism eq
-            open module D = Category D
-            open D.HomReasoning
-            module C = Category C
-
-            lemma : ∀ {A} → eq.⇐.η A C.∘ M.η.η A C.≈ adj.unit.η A
-            lemma {A} = C.HomReasoning.begin
-                eq.⇐.η A C.∘ M.η.η A C.HomReasoning.≈⟨ {!   !} ⟩
-                adj.unit.η A         C.HomReasoning.∎
-              where open C.HomReasoning
+      where
+       module adj    = Adjoint adj
+       module F      = Functor F
+       module M      = Monad M
+       module eq     = NaturalIsomorphism eq
+       open module D = Category D
+       open D.HomReasoning
+       module C = Category C
+       lemma : ∀ {A} → eq.⇐.η A C.∘ M.η.η A C.≈ adj.unit.η A
+       lemma {A} = C.HomReasoning.begin
+           eq.⇐.η A C.∘ M.η.η A C.HomReasoning.≈⟨ {!   !} ⟩
+           adj.unit.η A         C.HomReasoning.∎
+         where open C.HomReasoning
