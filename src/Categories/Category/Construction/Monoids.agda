@@ -29,14 +29,10 @@ Monoids = record
     ; preserves-μ = identityˡ ○ introʳ (Functor.identity ⊗)
     ; preserves-η = identityˡ
     }
-  ; _∘_ = λ {A B C} f g → record
+  ; _∘_ = λ f g → record
     { arr = arr f ∘ arr g
-    ; preserves-μ = begin
-      (arr f ∘ arr g) ∘ μ A                    ≈⟨ pullʳ (preserves-μ g) ⟩
-      arr f ∘ (μ B ∘ arr g ⊗₁ arr g)           ≈⟨ pullˡ (preserves-μ f) ⟩
-      (μ C ∘ arr f ⊗₁ arr f) ∘ arr g ⊗₁ arr g  ≈˘⟨ pushʳ (Functor.homomorphism ⊗) ⟩
-      μ C ∘ (arr f ∘ arr g) ⊗₁ (arr f ∘ arr g) ∎
-    ; preserves-η = pullʳ (preserves-η g) ○ preserves-η f
+    ; preserves-μ = glue (preserves-μ f) (preserves-μ g) ○ ∘-resp-≈ʳ (⟺ (Functor.homomorphism ⊗))
+    ; preserves-η = glueTrianglesˡ (preserves-η f) (preserves-η g)
     }
   ; assoc = assoc
   ; sym-assoc = sym-assoc
