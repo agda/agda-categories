@@ -11,13 +11,15 @@ open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical
 open import Categories.Object.InternalRelation
 
 open import Categories.Diagram.Coequalizer using (Coequalizer)
-open import Categories.Morphism using (_≅_)
+open import Categories.Morphism using (_≅_; JointMono; Epi)
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-Cartesian)
 open import Data.Product using (∃)
 open import Data.Product using (Σ; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_)
 open import Relation.Binary using (Setoid; Rel; IsEquivalence)
 open import Categories.Category using (Category)
 open import Function.Equality as SΠ renaming (id to ⟶-id)
+
+open import Data.Fin using (Fin; zero) renaming (suc to nzero)
 
 open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence)
 
@@ -31,61 +33,39 @@ module _ ℓ where
   open Pullback
 
   Quotient : ∀ {X : Setoid ℓ ℓ} → (E : Equivalence S X) → Rel ∣ X ∣ ℓ
-  Quotient {X} E x₁ x₂ = ∃ λ y₁ → ∃ λ y₂ →
-     [ R.dom ][ y₁ ≈ y₂ ] × [ X ][ R.p₁ ⟨$⟩ y₁ ≈ x₁ ] × [ X ][ R.p₂ ⟨$⟩ y₂ ≈ x₂ ]
+  Quotient {X} E x₁ x₂ = ∃ λ y → [ X ][ R.p₁ ⟨$⟩ y ≈ x₁ ] × [ X ][ R.p₂ ⟨$⟩ y ≈ x₂ ]
        where
          open Equivalence E
          open Setoid
-
+         
   Quotient-Equivalence : ∀ {X : Setoid ℓ ℓ} → (E : Equivalence S X) → IsEquivalence (Quotient E)
   Quotient-Equivalence {X} E = record
-     { refl = λ {x} →
-          EqSpan.refl eqspan ⟨$⟩ x 
-        , EqSpan.refl eqspan ⟨$⟩ x
-        , refl R.dom
-        , EqSpan.is-refl₁ eqspan (refl X) 
-        , EqSpan.is-refl₂ eqspan (refl X) 
-     ; sym = λ (y₁ , y₂ , y₁≈y₂ , eq₁ , eq₂) →
-          EqSpan.sym eqspan ⟨$⟩ y₁
-        , EqSpan.sym eqspan ⟨$⟩ y₂
-        , cong (EqSpan.sym eqspan) y₁≈y₂ 
-        , trans X (EqSpan.is-sym₁ eqspan y₁≈y₂) eq₂
-        , trans X (EqSpan.is-sym₂ eqspan (sym R.dom y₁≈y₂)) eq₁ 
-     ; trans = λ { {x₁}{x₂}{x₃} (y₁ , y₂ , y₁≈y₂ , eq₁ , eq₂) (y₃ , y₄ , y₃≈y₄ , eq₃ , eq₄) →
-          EqSpan.trans eqspan ⟨$⟩ (f y₁≈y₂ y₃≈y₄ eq₁ eq₂ eq₃ eq₄ ⟨$⟩ y₁′ y₁≈y₂ y₃≈y₄ eq₁ eq₂ eq₃ eq₄)
-        , EqSpan.trans eqspan ⟨$⟩ (f y₁≈y₂ y₃≈y₄ eq₁ eq₂ eq₃ eq₄ ⟨$⟩ y₂′ y₁≈y₂ y₃≈y₄ eq₁ eq₂ eq₃ eq₄)
-        , cong (EqSpan.trans eqspan SΠ.∘ f y₁≈y₂ y₃≈y₄ eq₁ eq₂ eq₃ eq₄) (y₃≈y₄ , y₁≈y₂)
-        , trans X (trans X (EqSpan.is-trans₁ eqspan (refl (P (EqSpan.R×R eqspan)))) (cong R.p₁ (h y₁≈y₂ y₃≈y₄ eq₁ eq₂ eq₃ eq₄))) eq₁
-        , trans X (trans X {!!} {!!}) eq₄
-       } 
-     }
-     where
-       open Equivalence E
-       open Setoid
-       open Category S
+      {
+        refl = λ {x} → ES.refl ⟨$⟩ x , ES.is-refl₁ (refl X) , ES.is-refl₂ (refl X)
+      ; sym = λ { (x , eq₁ , eq₂) →  ES.sym ⟨$⟩ x , trans X (ES.is-sym₁ (refl R.dom)) eq₂ , trans X (ES.is-sym₂ (refl R.dom)) eq₁}
+      ; trans = λ { (r , x≈ , ≈y) (s , y≈ , ≈z) →
+         let t = record { elem₁ = s ; elem₂ = r ; commute = trans X y≈ (sym X ≈y) } in
+           ES.trans ⟨$⟩ (to-R×R ⟨$⟩ t)
+         , trans X (ES.is-trans₁ (refl ES.R×R.dom)) (trans X (cong R.p₁ (p₂-to-R×R t)) x≈)
+         , trans X (ES.is-trans₂ (refl ES.R×R.dom)) (trans X (cong R.p₂ (p₁-to-R×R t)) ≈z)
+         }
+      }
+        where
+          open Equivalence E
+          open Setoid
+          open Category S
 
-       module Transitivity {x₁ x₂ x₃ : ∣ X ∣} {y₁ y₂ y₃ y₄ : ∣ R.dom ∣}
-         (y₁≈y₂  : [ R.dom ][ y₁ ≈ y₂ ])  (y₃≈y₄ : [ R.dom ][ y₃ ≈ y₄ ])
-         (eq₁ : [ X ][ R.p₁ ⟨$⟩ y₁ ≈ x₁ ]) (eq₂ : [ X ][ R.p₂ ⟨$⟩ y₂ ≈ x₂ ])
-         (eq₃ : [ X ][ R.p₁ ⟨$⟩ y₃ ≈ x₂ ]) (eq₄ : [ X ][ R.p₂ ⟨$⟩ y₄ ≈ x₃ ]) where
+          module ES = EqSpan eqspan 
 
-         y₁′ : FiberProduct R.p₁ R.p₂
-         y₁′ = record { elem₁ = y₃ ; elem₂ = y₁ ; commute = trans X (trans X eq₃ (sym X eq₂)) (sym X (cong R.p₂ y₁≈y₂)) }
+          to-R×R : P (pullback ℓ ℓ R.p₁ R.p₂) ⇒ P ES.R×R
+          to-R×R = _≅_.from (up-to-iso S (pullback ℓ ℓ R.p₁ R.p₂) ES.R×R)
 
-         y₂′ : FiberProduct R.p₁ R.p₂
-         y₂′ = record { elem₁ = y₄ ; elem₂ = y₂ ; commute = trans X (cong R.p₁ (sym R.dom y₃≈y₄)) (trans X eq₃ (sym X eq₂))}
+          p₁-to-R×R : (p : FiberProduct R.p₁ R.p₂) → [ R.dom ][ ES.R×R.p₁ ⟨$⟩ (to-R×R ⟨$⟩ p) ≈  FiberProduct.elem₁ p ]
+          p₁-to-R×R p = p₁∘universal≈h₁ ES.R×R {eq = λ {x y} → commute (pullback ℓ ℓ R.p₁ R.p₂) {x} {y}} {p} {p} (refl R.dom , refl R.dom)
 
-         f : P (pullback ℓ ℓ R.p₁ R.p₂) ⇒ P (EqSpan.R×R eqspan)
-         f = _≅_.from (up-to-iso S (pullback ℓ ℓ R.p₁ R.p₂) (EqSpan.R×R eqspan))
+          p₂-to-R×R : (p : FiberProduct R.p₁ R.p₂) → [ R.dom ][ ES.R×R.p₂ ⟨$⟩ (to-R×R ⟨$⟩ p) ≈  FiberProduct.elem₂ p ]
+          p₂-to-R×R p = p₂∘universal≈h₂ ES.R×R {eq = λ {x y} → commute (pullback ℓ ℓ R.p₁ R.p₂) {x} {y}} {p} {p} (refl R.dom , refl R.dom)
 
-         h : [ R.dom ][ p₁ (EqSpan.R×R eqspan) ⟨$⟩ (f ⟨$⟩ y₁′) ≈ y₁ ]
-         h = {!!} --p₁∘universal≈h₁ {f = R.p₁}{g = R.p₂} {!EqSpan.R×R eqspan!}  -- p₁∘universal≈h₁
-
-         h′ : [ R.dom ][ p₁ (EqSpan.R×R eqspan) ⟨$⟩ (f ⟨$⟩ y₁′) ≈ y₃ ]
-         h′ = p₁∘universal≈h₁ {_}{_}{_}{S}{ {!y₁′!}} {!!} {!!} -- (EqSpan.R×R eqspan) (refl R.dom , refl R.dom) 
-
-       open Transitivity
-       
   Quotient-Coequalizer : ∀ {X : Setoid ℓ ℓ} (E : Equivalence S X) → Coequalizer S (Equivalence.R.p₁ E) (Equivalence.R.p₂ E)
   Quotient-Coequalizer {X} E = record
     { obj = record
@@ -96,18 +76,47 @@ module _ ℓ where
     ; arr = record
        { _⟨$⟩_ = λ x → x
        ; cong = λ {x₁}{x₂} eq →
-            EqSpan.refl eqspan ⟨$⟩ x₁
-          , EqSpan.refl eqspan ⟨$⟩ x₂
-          , cong (EqSpan.refl eqspan) eq
-          , EqSpan.is-refl₁ eqspan (refl X)
-          , EqSpan.is-refl₂ eqspan (refl X)
+            ES.refl ⟨$⟩ x₁
+          , ES.is-refl₁ (refl X) 
+          , trans X (ES.is-refl₂ (refl X)) eq 
+       } 
+    ; isCoequalizer = record
+       { equality = λ {x}{y} x≈y → x , refl X , cong R.p₂ x≈y
+       ; coequalize = λ {C}{h} eq → record
+           { _⟨$⟩_ = λ x → h ⟨$⟩ x
+           ; cong = λ { (r , x≈ , ≈y) → trans C (cong h (sym X x≈)) (trans C (eq (refl R.dom)) (cong h ≈y))}
+           }
+       ; universal = λ {C}{h} → cong h
+       -- TODO : Reformulate with equational reasoning
+       ; unique = λ { {C} {h}{i}{eq'} eq (r , x≈ , ≈y) → trans C (trans C (sym C (trans C (cong h x≈) (eq (refl X)))) (eq' (refl R.dom))) (cong h ≈y) }
        }
-    ; isCoequalizer = {!!}
     }
       where
-        open Equivalence E
-        open Setoid
+          open Equivalence E
+          open Setoid
+          open Category S
 
+          module ES = EqSpan eqspan
+
+  -- Every epi is regular. How to define the equivalence it induces?
+  Epi-Equivalence : ∀ {X Y : Setoid ℓ ℓ} (f : S._⇒_ X  Y) → Epi S f → Equivalence S X
+  Epi-Equivalence {X}{Y} f epi = record
+    { R = record
+       { dom = record
+          { Carrier = {!!}
+          ; _≈_ = {!!}
+          ; isEquivalence = record { refl = {!!} , {!!} ; sym = {!!} ; trans = trans {!!} }
+          }
+       ; p₁ = {!!}
+       ; p₂ = {!!}
+       ; relation = {!!}
+       }
+    ; eqspan = {!!}
+    }
+          where
+          open Setoid
+          open Category S
+  
   Setoids-Exact : Exact (Setoids ℓ ℓ)
   Setoids-Exact = record
     { regular = record
@@ -123,24 +132,27 @@ module _ ℓ where
               ; relation = KP⇒Relation (Setoids ℓ ℓ) f kp (pullback ℓ ℓ (p₁ kp) (p₂ kp))
               } 
            ; eqspan = KP⇒EqSpan (Setoids ℓ ℓ) f kp (pullback ℓ ℓ (p₁ kp) (p₂ kp))
-           } 
+           }
+          -- instead, just use the general fact that all epis are regular
         ; pullback-of-regularepi-is-regularepi =
-            λ { f record { C = C ; h = h ; g = g ; coequalizer = coeq } pb → record
-                { h = p₂ (pullback ℓ ℓ h (p₁ pb))
-                ; g = {!!} 
+            λ { {A}{B}{D} f {u} record { C = C ; h = h ; g = g ; coequalizer = coeq } pb → record
+                { h = {!!}
+                ; g = {!!} -- p₂ (pullback ℓ ℓ h (p₁ pb)) --record { _⟨$⟩_ = λ x → {!!} ; cong = {!!} } 
                 ; coequalizer = {!!}
                 }
             }
         }
     ; quotient = Quotient-Coequalizer
     ; effective = λ {X} E → record
-        { commute = λ {x₁}{x₂} eq → x₁ , x₂ , eq , refl X , refl X
-        ; universal = λ {Y}{h₁}{h₂} eq → record { _⟨$⟩_ = λ x → {!!} ; cong = {!!} }
-        ; unique = {!!}
-        ; p₁∘universal≈h₁ = {!!}
-        ; p₂∘universal≈h₂ = {!!}
+        { commute = λ {x} eq → x , refl X , cong (Relation.p₂ (R E)) eq 
+        ; universal = λ {_}{h} eq → EqSpan.refl (eqspan E) ∘ h
+        ; unique = λ {C}{h}{u}{f}{g} eq₁ eq₂ → Relation.relation (R E) f (EqSpan.refl (eqspan E) ∘ h) λ {zero →  trans (C ⇨ X) eq₁ {!!} ; (nzero _) → {!!}}
+          --{x}{y} eq → trans (Relation.dom (R E) ) {!!} (cong (EqSpan.refl (eqspan E)) (eq₁ eq)) -- (cong {!f!} eq₁ )
+        ; p₁∘universal≈h₁ = λ {_}{h} eq → trans X (EqSpan.is-refl₁ (eqspan E) (refl X)) (cong h eq)
+        ; p₂∘universal≈h₂ = λ {_}{h'}{h}{eq'}{x}{y} eq → let a , b , c = eq' eq in {!!} --trans X (EqSpan.is-refl₂ (eqspan E) (refl X)) (trans X (sym X {!b!}) c)
         }
     }
       where
         open Equivalence 
         open Setoid
+
