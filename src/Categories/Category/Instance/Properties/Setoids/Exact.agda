@@ -10,14 +10,14 @@ open import Categories.Diagram.Pullback.Properties
 open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical
 open import Categories.Object.InternalRelation
 
-open import Categories.Diagram.Coequalizer using (Coequalizer)
+open import Categories.Diagram.Coequalizer using (Coequalizer; IsCoequalizer)
 open import Categories.Morphism using (_≅_; JointMono; Epi)
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-Cartesian)
-open import Data.Product using (∃)
-open import Data.Product using (Σ; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_)
+open import Data.Product using (∃; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary using (Setoid; Rel; IsEquivalence)
 open import Categories.Category using (Category)
-open import Function.Equality as SΠ renaming (id to ⟶-id)
+open import Function.Equality as SΠ using (Π; _⇨_) renaming (id to ⟶-id)
 
 open import Data.Fin using (Fin; zero) renaming (suc to nzero)
 
@@ -28,15 +28,14 @@ open Π
 module _ ℓ where
   private
     S = Setoids ℓ ℓ
-    module S = Category S
+    open Category S
     
   open Pullback
+  open Setoid
 
   Quotient : ∀ {X : Setoid ℓ ℓ} → (E : Equivalence S X) → Rel ∣ X ∣ ℓ
   Quotient {X} E x₁ x₂ = ∃ λ y → [ X ][ R.p₁ ⟨$⟩ y ≈ x₁ ] × [ X ][ R.p₂ ⟨$⟩ y ≈ x₂ ]
-       where
-         open Equivalence E
-         open Setoid
+       where open Equivalence E
          
   Quotient-Equivalence : ∀ {X : Setoid ℓ ℓ} → (E : Equivalence S X) → IsEquivalence (Quotient E)
   Quotient-Equivalence {X} E = record
@@ -52,9 +51,6 @@ module _ ℓ where
       }
         where
           open Equivalence E
-          open Setoid
-          open Category S
-
           module ES = EqSpan eqspan 
 
           to-R×R : P (pullback ℓ ℓ R.p₁ R.p₂) ⇒ P ES.R×R
@@ -93,29 +89,16 @@ module _ ℓ where
     }
       where
           open Equivalence E
-          open Setoid
-          open Category S
-
           module ES = EqSpan eqspan
 
-  -- Every epi is regular. How to define the equivalence it induces?
-  Epi-Equivalence : ∀ {X Y : Setoid ℓ ℓ} (f : S._⇒_ X  Y) → Epi S f → Equivalence S X
-  Epi-Equivalence {X}{Y} f epi = record
-    { R = record
-       { dom = record
-          { Carrier = {!!}
-          ; _≈_ = {!!}
-          ; isEquivalence = record { refl = {!!} , {!!} ; sym = {!!} ; trans = trans {!!} }
-          }
-       ; p₁ = {!!}
-       ; p₂ = {!!}
-       ; relation = {!!}
-       }
-    ; eqspan = {!!}
-    }
-          where
-          open Setoid
-          open Category S
+  -- hm, this must be true, but how to show it?
+  Epi-Regular : ∀ {X Y : Setoid ℓ ℓ} (f : X ⇒ Y) → Epi S f → IsCoequalizer S (p₁ (pullback ℓ ℓ f f)) (p₂ (pullback ℓ ℓ f f)) f
+  Epi-Regular {X}{Y} f epi = record
+      { equality   = λ { {x}{y} (eq₁ , eq₂) → commute (pullback ℓ ℓ f f) {x} {y} (eq₁ , eq₂) }
+      ; coequalize = λ x → {!!}
+      ; universal  = {!!}
+      ; unique     = {!!}
+      }
   
   Setoids-Exact : Exact (Setoids ℓ ℓ)
   Setoids-Exact = record
