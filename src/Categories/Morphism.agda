@@ -25,7 +25,7 @@ private
 Mono : ∀ (f : A ⇒ B) → Set (o ⊔ ℓ ⊔ e)
 Mono {A = A} f = ∀ {C} → (g₁ g₂ : C ⇒ A) → f ∘ g₁ ≈ f ∘ g₂ → g₁ ≈ g₂
 
-JointMono : (I : Set) (B : I → Obj) → ((i : I) → A ⇒ B i) → Set (o ⊔ ℓ ⊔ e)
+JointMono : {ι : Level} (I : Set ι) (B : I → Obj) → ((i : I) → A ⇒ B i) → Set (o ⊔ ℓ ⊔ e ⊔ ι)
 JointMono {A} I B f = ∀ {C} → (g₁ g₂ : C ⇒ A) → ((i : I) → f i ∘ g₁ ≈ f i ∘ g₂) → g₁ ≈ g₂
 
 record _↣_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
