@@ -73,21 +73,32 @@ record Equivalence (X : 𝒞.Obj) : Set (suc (o ⊔ ℓ ⊔ e)) where
 
 module _ where
   open Pullback hiding (P)
+  open 𝒞.Equiv
 
   KP⇒EqSpan : {X Y : 𝒞.Obj} (f : X ⇒ Y) (kp : KernelPair 𝒞 f) (p : Pullback 𝒞 (p₁ kp) (p₂ kp)) → EqSpan (p₁ kp) (p₂ kp)
   KP⇒EqSpan f kp p = record
     { R×R = p
-    ; refl  = universal kp {_} {id}{id} 𝒞.Equiv.refl
-    ; sym   = universal kp {_} {p₂ kp}{p₁ kp} (𝒞.Equiv.sym (commute kp))
+    ; refl  = universal kp refl
+    ; sym   = universal kp {_} {p₂ kp}{p₁ kp} (sym (commute kp))
     -- TODO: redo with equational reasoning
-    ; trans = universal kp {_} {p₁ kp ∘ p₂ p}{p₂ kp ∘ p₁ p} (𝒞.Equiv.trans (𝒞.Equiv.sym assoc) (𝒞.Equiv.trans (∘-resp-≈ˡ (commute kp)) (𝒞.Equiv.trans (𝒞.Equiv.trans (𝒞.Equiv.trans assoc (𝒞.Equiv.trans (∘-resp-≈ʳ (𝒞.Equiv.sym (commute p))) (𝒞.Equiv.sym assoc))) (∘-resp-≈ˡ (commute kp))) assoc)))
+    ; trans = universal kp {_} {p₁ kp ∘ p₂ p}{p₂ kp ∘ p₁ p} {!f-commute!}
     ; is-refl₁  = p₁∘universal≈h₁ kp
     ; is-refl₂  = p₂∘universal≈h₂ kp
     ; is-sym₁   = p₁∘universal≈h₁ kp
     ; is-sym₂   = p₂∘universal≈h₂ kp
-    ; is-trans₁ = 𝒞.Equiv.trans (p₁∘universal≈h₁ kp) 𝒞.Equiv.refl
-    ; is-trans₂ = 𝒞.Equiv.trans (p₂∘universal≈h₂ kp) 𝒞.Equiv.refl
+    ; is-trans₁ = p₁∘universal≈h₁ kp
+    ; is-trans₂ = p₂∘universal≈h₂ kp
     }
+    where
+    open 𝒞.HomReasoning
+    open MR 𝒞
+    f-commute : f ∘ p₁ kp ∘ p₂ p ≈ f ∘ p₂ kp ∘ p₁ p
+    f-commute = begin
+      f ∘ p₁ kp ∘ p₂ p   ≈⟨ pullˡ (commute kp) ⟩
+      (f ∘ p₂ kp) ∘ p₂ p ≈⟨ pullʳ (sym (commute p)) ⟩
+      f ∘ p₁ kp ∘ p₁ p   ≈⟨ pullˡ (commute kp) ⟩
+      (f ∘ p₂ kp) ∘ p₁ p ≈⟨ assoc ⟩
+      f ∘ p₂ kp ∘ p₁ p   ∎
 
   KP⇒Relation : {X Y : 𝒞.Obj} (f : X ⇒ Y) → (kp : KernelPair 𝒞 f) → (p : Pullback 𝒞 (p₁ kp) (p₂ kp)) → isRelation (p₁ kp) (p₂ kp)
   KP⇒Relation f kp _ _ _ eq = unique-diagram kp (eq zero) (eq (nzero zero))
