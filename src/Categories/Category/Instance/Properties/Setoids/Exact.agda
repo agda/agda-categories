@@ -2,41 +2,38 @@
 
 module Categories.Category.Instance.Properties.Setoids.Exact where
 
-open import Level
-open import Categories.Category.Instance.Setoids
-open import Categories.Category.Exact
-open import Categories.Diagram.Pullback
-open import Categories.Diagram.Pullback.Properties
+open import Categories.Category using (Category)
+open import Categories.Category.Exact using (Exact)
 open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical
-open import Categories.Object.InternalRelation
-
-open import Categories.Diagram.Coequalizer using (Coequalizer; IsCoequalizer)
-open import Categories.Morphism using (_≅_; JointMono; Epi)
+open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-Cartesian)
+open import Categories.Diagram.Coequalizer using (Coequalizer; IsCoequalizer)
+open import Categories.Diagram.Pullback using (Pullback; up-to-iso)
+open import Categories.Diagram.Pullback.Properties
+open import Categories.Morphism using (_≅_; JointMono; Epi)
+open import Categories.Object.InternalRelation using (Equivalence; EqSpan; KP⇒Relation; KP⇒EqSpan; module Relation)
+
+open import Level
+open import Data.Fin using (Fin; zero) renaming (suc to nzero)
 open import Data.Product using (∃; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Relation.Binary using (Setoid; Rel; IsEquivalence)
-open import Categories.Category using (Category)
 open import Function.Equality as SΠ using (Π; _⇨_) renaming (id to ⟶-id)
+open import Relation.Binary using (Setoid; Rel; IsEquivalence)
 
-open import Data.Fin using (Fin; zero) renaming (suc to nzero)
-
-open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence)
-
-open Π
+open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence; refl; sym; trans)
+open Π using (_⟨$⟩_; cong)
 
 module _ ℓ where
   private
     S = Setoids ℓ ℓ
     open Category S
-    
-  open Pullback
-  open Setoid
+
+  open Pullback using (P; p₁; p₂; p₁∘universal≈h₁; commute; p₂∘universal≈h₂)
 
   Quotient : ∀ {X : Setoid ℓ ℓ} → (E : Equivalence S X) → Rel ∣ X ∣ ℓ
   Quotient {X} E x₁ x₂ = ∃ λ y → [ X ][ R.p₁ ⟨$⟩ y ≈ x₁ ] × [ X ][ R.p₂ ⟨$⟩ y ≈ x₂ ]
        where open Equivalence E
-         
+
   Quotient-Equivalence : ∀ {X : Setoid ℓ ℓ} → (E : Equivalence S X) → IsEquivalence (Quotient E)
   Quotient-Equivalence {X} E = record
       {
@@ -51,7 +48,7 @@ module _ ℓ where
       }
         where
           open Equivalence E
-          module ES = EqSpan eqspan 
+          module ES = EqSpan eqspan
 
           to-R×R : P (pullback ℓ ℓ R.p₁ R.p₂) ⇒ P ES.R×R
           to-R×R = _≅_.from (up-to-iso S (pullback ℓ ℓ R.p₁ R.p₂) ES.R×R)
@@ -73,9 +70,9 @@ module _ ℓ where
        { _⟨$⟩_ = λ x → x
        ; cong = λ {x₁}{x₂} eq →
             ES.refl ⟨$⟩ x₁
-          , ES.is-refl₁ (refl X) 
-          , trans X (ES.is-refl₂ (refl X)) eq 
-       } 
+          , ES.is-refl₁ (refl X)
+          , trans X (ES.is-refl₂ (refl X)) eq
+       }
     ; isCoequalizer = record
        { equality = λ {x}{y} x≈y → x , refl X , cong R.p₂ x≈y
        ; coequalize = λ {C}{h} eq → record
@@ -99,7 +96,7 @@ module _ ℓ where
       ; universal  = {!!}
       ; unique     = {!!}
       }
-  
+
   Setoids-Exact : Exact (Setoids ℓ ℓ)
   Setoids-Exact = record
     { regular = record
@@ -113,21 +110,21 @@ module _ ℓ where
               ; p₁  = p₁ kp
               ; p₂  = p₂ kp
               ; relation = KP⇒Relation (Setoids ℓ ℓ) f kp (pullback ℓ ℓ (p₁ kp) (p₂ kp))
-              } 
+              }
            ; eqspan = KP⇒EqSpan (Setoids ℓ ℓ) f kp (pullback ℓ ℓ (p₁ kp) (p₂ kp))
            }
           -- instead, just use the general fact that all epis are regular
         ; pullback-of-regularepi-is-regularepi =
             λ { {A}{B}{D} f {u} record { C = C ; h = h ; g = g ; coequalizer = coeq } pb → record
                 { h = {!!}
-                ; g = {!!} -- p₂ (pullback ℓ ℓ h (p₁ pb)) --record { _⟨$⟩_ = λ x → {!!} ; cong = {!!} } 
+                ; g = {!!} -- p₂ (pullback ℓ ℓ h (p₁ pb)) --record { _⟨$⟩_ = λ x → {!!} ; cong = {!!} }
                 ; coequalizer = {!!}
                 }
             }
         }
     ; quotient = Quotient-Coequalizer
     ; effective = λ {X} E → record
-        { commute = λ {x} eq → x , refl X , cong (Relation.p₂ (R E)) eq 
+        { commute = λ {x} eq → x , refl X , cong (Relation.p₂ (R E)) eq
         ; universal = λ {_}{h} eq → EqSpan.refl (eqspan E) ∘ h
         ; unique = λ {C}{h}{u}{f}{g} eq₁ eq₂ → Relation.relation (R E) f (EqSpan.refl (eqspan E) ∘ h) λ {zero →  trans (C ⇨ X) eq₁ {!!} ; (nzero _) → {!!}}
           --{x}{y} eq → trans (Relation.dom (R E) ) {!!} (cong (EqSpan.refl (eqspan E)) (eq₁ eq)) -- (cong {!f!} eq₁ )
@@ -136,6 +133,4 @@ module _ ℓ where
         }
     }
       where
-        open Equivalence 
-        open Setoid
-
+        open Equivalence
