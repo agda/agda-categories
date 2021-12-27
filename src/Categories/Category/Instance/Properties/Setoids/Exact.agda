@@ -40,8 +40,8 @@ module _ ℓ where
   Quotient-Equivalence : ∀ {X : Setoid ℓ ℓ} → (E : Equivalence S X) → IsEquivalence (Quotient E)
   Quotient-Equivalence {X} E = record
       {
-        refl = λ {x} → ES.refl ⟨$⟩ x , ES.is-refl₁ (refl X) , ES.is-refl₂ (refl X)
-      ; sym = λ { (x , eq₁ , eq₂) →  ES.sym ⟨$⟩ x , trans X (ES.is-sym₁ (refl R.dom)) eq₂ , trans X (ES.is-sym₂ (refl R.dom)) eq₁}
+        refl  = λ {x} → ES.refl ⟨$⟩ x , ES.is-refl₁ (refl X) , ES.is-refl₂ (refl X)
+      ; sym   = λ { (x , eq₁ , eq₂) →  ES.sym ⟨$⟩ x , trans X (ES.is-sym₁ (refl R.dom)) eq₂ , trans X (ES.is-sym₂ (refl R.dom)) eq₁}
       ; trans = λ { (r , x≈ , ≈y) (s , y≈ , ≈z) →
          let t = record { elem₁ = s ; elem₂ = r ; commute = trans X y≈ (sym X ≈y) } in
            ES.trans ⟨$⟩ (to-R×R ⟨$⟩ t)
@@ -117,11 +117,32 @@ module _ ℓ where
            ; eqspan = KP⇒EqSpan (Setoids ℓ ℓ) f kp (pullback ℓ ℓ (p₁ kp) (p₂ kp))
            }
           -- instead, just use the general fact that all epis are regular
+          -- no, that must be harder. Trying to finish the proof below..
         ; pullback-of-regularepi-is-regularepi =
             λ { {A}{B}{D} f {u} record { C = C ; h = h ; g = g ; coequalizer = coeq } pb → record
-                { h = {!!}
-                ; g = {!!} -- p₂ (pullback ℓ ℓ h (p₁ pb)) --record { _⟨$⟩_ = λ x → {!!} ; cong = {!!} } 
-                ; coequalizer = {!!}
+                { C = record
+                    { Carrier = Σ[ x ∈ ∣ C ∣ ]  Σ[ y ∈ ∣ D ∣ ] [ A ][ f ⟨$⟩ (h ⟨$⟩ x) ≈ u ⟨$⟩ y ] × [ A ][ f ⟨$⟩ (g ⟨$⟩ x) ≈ u ⟨$⟩ y ]
+                    ; _≈_ = λ (x₁ , y₁ , _) (x₂ , y₂ , _) → [ C ][ x₁ ≈ x₂ ] × [ D ][ y₁ ≈ y₂ ] 
+                    ; isEquivalence = record
+                        { refl  = refl C , refl D 
+                        ; sym   = λ (x₁≈y₁ , x₂≈y₂) → sym C x₁≈y₁ , sym D x₂≈y₂ 
+                        ; trans = λ (x₁≈y₁ , x₂≈y₂) (y₁≈z₁ , y₂≈z₂) → trans C x₁≈y₁ y₁≈z₁ , trans D x₂≈y₂ y₂≈z₂
+                        }
+                    } 
+                ; h = record
+                    { _⟨$⟩_ = λ { (x , y , fhx≈uy , fgx≈uy) → to-R×R f u pb ⟨$⟩ record { elem₁ = h ⟨$⟩ x ; elem₂ = y ; commute = fhx≈uy }}
+                    ; cong = λ { (x≈x′ , y≈y′) → cong (to-R×R f u pb) (cong h x≈x′ , y≈y′) }
+                    }
+                ; g = record
+                    { _⟨$⟩_ = λ { (x , y , fhx≈uy , fgx≈uy) → to-R×R f u pb ⟨$⟩ record { elem₁ = g ⟨$⟩ x ; elem₂ = y ; commute = fgx≈uy }}
+                    ; cong = λ { (x≈x′ , y≈y′) → cong (to-R×R f u pb) (cong g x≈x′ , y≈y′) }
+                    } 
+                ; coequalizer = record
+                    { equality   = λ { (fst , snd) → {!!} }
+                    ; coequalize = {!!}
+                    ; universal  = {!!}
+                    ; unique     = {!!}
+                    }
                 }
             }
         }
@@ -138,4 +159,8 @@ module _ ℓ where
       where
         open Equivalence 
         open Setoid
+
+        to-R×R : {A B C : Setoid ℓ ℓ} (f : A ⇒ B)(u : C ⇒ B) → (pb : Pullback (Setoids ℓ ℓ) f u) → P (pullback ℓ ℓ f u) ⇒ P pb
+        to-R×R f u pb = _≅_.from (up-to-iso S (pullback ℓ ℓ f u) pb)
+
 
