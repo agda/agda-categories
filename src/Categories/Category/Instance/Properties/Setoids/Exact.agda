@@ -145,8 +145,32 @@ module _ ℓ where
            }
           -- instead, just use the general fact that all epis are regular
           -- no, that must be harder. Trying to finish the proof below..
-        ; pullback-of-regularepi-is-regularepi =
-            λ { {A}{B}{D} f {u} record { C = C ; h = h ; g = g ; coequalizer = coeq } pb → record
+        ; pullback-of-regularepi-is-regularepi = pb-of-re-is-re
+        }
+    ; quotient = Quotient-Coequalizer
+    ; effective = λ {X} E → record
+        { commute = λ eq → quot _ (refl X) (cong (Relation.p₂ (R E)) eq)
+        ; universal = λ {_}{h} _ → EqSpan.refl (eqspan E) ∘ h
+        ; unique = λ {C}{h}{u}{f}{g} eq₁ eq₂ → Relation.relation (R E) f (EqSpan.refl (eqspan E) ∘ h)
+            λ { zero eq      → trans X (eq₁ eq) (sym X (EqSpan.is-refl₁ (eqspan E) (cong h (refl C))))
+              ; (nzero _) eq → {!!} --{!trans X (eq₂ eq) (sym X (EqSpan.is-refl₂ (eqspan E) (cong h (refl C))))!}
+              }
+        ; p₁∘universal≈h₁ = λ {_}{h} eq → trans X (EqSpan.is-refl₁ (eqspan E) (refl X)) (cong h eq)
+        ; p₂∘universal≈h₂ = λ {_}{h'}{h}{eq'}{x}{y} eq → let (quot _ b c) = eq' eq in {!!}
+          --trans X (EqSpan.is-refl₂ (eqspan E) (refl X)) (trans X (sym X {!b!}) c)
+        }
+    }
+      where
+        open Equivalence 
+        open Setoid
+
+        open SR
+
+        to-R×R : {A B C : Setoid ℓ ℓ} (f : A ⇒ B)(u : C ⇒ B) → (pb : Pullback (Setoids ℓ ℓ) f u) → P (pullback ℓ ℓ f u) ⇒ P pb
+        to-R×R f u pb = _≅_.from (up-to-iso S (pullback ℓ ℓ f u) pb)
+
+        pb-of-re-is-re : {A B D : Setoid ℓ ℓ} (f : B SΠ.⟶ A) {u : D SΠ.⟶ A} → RegularEpi S f → (p : Pullback S f u) → RegularEpi S (p₂ p)
+        pb-of-re-is-re {A}{B}{D} f {u} record { C = C ; h = h ; g = g ; coequalizer = coeq } pb = record
                 { C = record
                     { Carrier = Σ[ x ∈ ∣ C ∣ ]  Σ[ y ∈ ∣ D ∣ ] [ A ][ f ⟨$⟩ (h ⟨$⟩ x) ≈ u ⟨$⟩ y ] × [ A ][ f ⟨$⟩ (g ⟨$⟩ x) ≈ u ⟨$⟩ y ]
                     ; _≈_ = λ (x₁ , y₁ , _) (x₂ , y₂ , _) → [ C ][ x₁ ≈ x₂ ] × [ D ][ y₁ ≈ y₂ ] 
@@ -171,37 +195,5 @@ module _ ℓ where
                     ; unique     = {!!}
                     }
                 }
-            }
-        }
-    ; quotient = Quotient-Coequalizer
-    ; effective = λ {X} E → record
-        { commute = λ {x} eq → quot _ (refl X) (cong (Relation.p₂ (R E)) eq)
-        ; universal = λ {_}{h} eq → EqSpan.refl (eqspan E) ∘ h
-        ; unique = λ {C}{h}{u}{f}{g} eq₁ eq₂ → Relation.relation (R E) f (EqSpan.refl (eqspan E) ∘ h) λ {zero →  trans (C ⇨ X) eq₁ {!!} ; (nzero _) → {!!}}
-          --{x}{y} eq → trans (Relation.dom (R E) ) {!!} (cong (EqSpan.refl (eqspan E)) (eq₁ eq)) -- (cong {!f!} eq₁ )
-        ; p₁∘universal≈h₁ = λ {_}{h} eq → trans X (EqSpan.is-refl₁ (eqspan E) (refl X)) (cong h eq)
-        ; p₂∘universal≈h₂ = λ {_}{h'}{h}{eq'}{x}{y} eq → let (quot _ b c) = eq' eq in {!!} --trans X (EqSpan.is-refl₂ (eqspan E) (refl X)) (trans X (sym X {!b!}) c)
-        }
-    }
-      where
-        open Equivalence 
-        open Setoid
-
-        to-R×R : {A B C : Setoid ℓ ℓ} (f : A ⇒ B)(u : C ⇒ B) → (pb : Pullback (Setoids ℓ ℓ) f u) → P (pullback ℓ ℓ f u) ⇒ P pb
-        to-R×R f u pb = _≅_.from (up-to-iso S (pullback ℓ ℓ f u) pb)
-
-        pb-of-re-is-re : {A B C : Setoid ℓ ℓ} (f : B SΠ.⟶ A) {g : C SΠ.⟶ A} → RegularEpi S f → (p : Pullback S f g) → RegularEpi S (p₂ p)
-        pb-of-re-is-re f {g} re p = record
-          { C = Quotient-Setoid (record
-            { R = record
-              { dom = {!!}
-              ; p₁ = {!!}
-              ; p₂ = {!!}
-              ; relation = {!!}
-              }
-            ; eqspan = {!!}
-            })
-          ; h = record { _⟨$⟩_ = {!!} ; cong = {!!} }
-          ; g = record { _⟨$⟩_ = {!!} ; cong = {!!} }
-          ; coequalizer = {!!}
-          }
+            
+        
