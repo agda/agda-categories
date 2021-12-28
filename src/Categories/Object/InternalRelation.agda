@@ -80,7 +80,6 @@ module _ where
     { R×R = p
     ; refl  = universal kp refl
     ; sym   = universal kp {_} {p₂ kp}{p₁ kp} (sym (commute kp))
-    -- TODO: redo with equational reasoning
     ; trans = universal kp {_} {p₁ kp ∘ p₂ p}{p₂ kp ∘ p₁ p} f-commute
     ; is-refl₁  = p₁∘universal≈h₁ kp
     ; is-refl₂  = p₂∘universal≈h₂ kp
