@@ -37,7 +37,7 @@ open Reasoning C using (switch-tofromʳ)
 -- To make this precise, this module introduces a notion of
 -- 'heterogeneous identity', which is an identity morphism whose
 -- domain and codomain are propositionally equal (but not necessarily
--- syntically equal).
+-- syntactically equal).
 
 
 -- A heterogeneous identity is just the transport of an identity
