@@ -9,9 +9,9 @@ open import Function using (_$_)
 open import Categories.Category.BinaryProducts C
 open import Categories.Category.Cartesian C
 open import Categories.Diagram.Pullback C
-open import Categories.Diagram.Equalizer C
-open import Categories.Object.Product C
-open import Categories.Object.Terminal C
+open import Categories.Diagram.Equalizer C hiding (up-to-iso)
+open import Categories.Object.Product C hiding (up-to-iso)
+open import Categories.Object.Terminal C hiding (up-to-iso)
 open import Categories.Morphism C
 open import Categories.Morphism.Reasoning C
 open import Categories.Category.Complete.Finitely using (FinitelyComplete)
@@ -100,6 +100,7 @@ module _ (p : Pullback id f) where
         (f ∘ p₂)      ≈˘⟨ refl⟩∘⟨ identityˡ ⟩
         (f ∘ id ∘ p₂) ∎
 
+-- pullbacks in Cartesian categories create equalizers
 module _ (pullbacks : ∀ {X Y Z} (f : X ⇒ Z) (g : Y ⇒ Z) → Pullback f g)
          (cartesian : Cartesian) where
   open Cartesian cartesian
@@ -144,6 +145,7 @@ module _ (pullbacks : ∀ {X Y Z} (f : X ⇒ Z) (g : Y ⇒ Z) → Pullback f g)
             π₂ ∘ ⟨ f ∘ p.p₁ , g ∘ p.p₁ ⟩ ≈⟨ project₂ ⟩
             g ∘ p.p₁                     ∎
 
+-- all pullbacks and a terminal object make a category finitely complete
 pullback-⊤⇒FinitelyComplete : (∀ {X Y Z} (f : X ⇒ Z) (g : Y ⇒ Z) → Pullback f g) → Terminal → FinitelyComplete C
 pullback-⊤⇒FinitelyComplete pullbacks ⊤ = record
   { cartesian = cartesian
@@ -153,7 +155,7 @@ pullback-⊤⇒FinitelyComplete pullbacks ⊤ = record
       open Category hiding (Obj)
       open Pullback
       open Terminal ⊤ hiding (⊤)
-      
+
       _×_ : (A B : Obj) → Pullback (IsTerminal.! ⊤-is-terminal) (IsTerminal.! ⊤-is-terminal)
       A × B = pullbacks (IsTerminal.! ⊤-is-terminal) (IsTerminal.! ⊤-is-terminal)
 
@@ -171,3 +173,19 @@ pullback-⊤⇒FinitelyComplete pullbacks ⊤ = record
                 }
             }
         }
+
+-- extra properties of "up-to-iso"
+module IsoPb {X Y Z} {f : X ⇒ Z} {g : Y ⇒ Z} (pull₀ pull₁ : Pullback f g) where
+  open Pullback using (P; p₁; p₂; p₁∘universal≈h₁; p₂∘universal≈h₂; commute; universal)
+
+  P₀≅P₁ : P pull₀ ≅ P pull₁
+  P₀≅P₁ = up-to-iso pull₀ pull₁
+
+  P₀⇒P₁ : P pull₀ ⇒ P pull₁
+  P₀⇒P₁ = _≅_.from P₀≅P₁
+
+  p₁-≈ : p₁ pull₁ ∘ P₀⇒P₁ ≈ p₁ pull₀
+  p₁-≈ = p₁∘universal≈h₁ pull₁ {eq = commute pull₀}
+
+  p₂-≈ : p₂ pull₁ ∘ P₀⇒P₁ ≈ p₂ pull₀
+  p₂-≈ = p₂∘universal≈h₂ pull₁ {eq = commute pull₀}
