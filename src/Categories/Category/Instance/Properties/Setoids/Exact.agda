@@ -45,8 +45,8 @@ module _ ℓ where
   Quotient-Equivalence : ∀ {X : Setoid ℓ ℓ} → (E : Equivalence S X) → IsEquivalence (Quotient E)
   Quotient-Equivalence {X} E = record
       {
-        refl = quot _ (ES.is-refl₁ X.refl) (ES.is-refl₂ X.refl)
-      ; sym = λ { (quot r eq₁ eq₂) →  quot (ES.sym ⟨$⟩ r) (X.trans (ES.is-sym₁ D.refl) eq₂) (X.trans (ES.is-sym₂ D.refl) eq₁) }
+        refl  = quot _ (ES.is-refl₁ X.refl) (ES.is-refl₂ X.refl)
+      ; sym   = λ { (quot r eq₁ eq₂) →  quot (ES.sym ⟨$⟩ r) (X.trans (ES.is-sym₁ D.refl) eq₂) (X.trans (ES.is-sym₂ D.refl) eq₁) }
       ; trans = λ { (quot r x≈ ≈y) (quot s y≈ ≈z) →
          let t = record { elem₁ = s ; elem₂ = r ; commute = X.trans y≈ (X.sym ≈y) } in
            quot
@@ -61,16 +61,17 @@ module _ ℓ where
           module X = Setoid X             using (refl; sym; trans)
           module D = Setoid R.dom         using (refl; _≈_)
           module R×R = Setoid ES.R×R.dom  using (refl)
+
           fp : Pullback S R.p₁ R.p₂
           fp = pullback ℓ ℓ R.p₁ R.p₂
 
           to-R×R : P fp ⇒ P ES.R×R
           to-R×R = _≅_.from (up-to-iso S fp ES.R×R)
 
-          p₁-to-R×R : (p : FiberProduct R.p₁ R.p₂) → ES.R×R.p₁ ⟨$⟩ (to-R×R ⟨$⟩ p) D.≈  FiberProduct.elem₁ p
+          p₁-to-R×R : (p : FiberProduct R.p₁ R.p₂) → ES.R×R.p₁ ⟨$⟩ (to-R×R ⟨$⟩ p) D.≈ FiberProduct.elem₁ p
           p₁-to-R×R p = p₁∘universal≈h₁ ES.R×R {eq = λ {x y} → commute fp {x} {y}} {p} {p} (D.refl , D.refl)
 
-          p₂-to-R×R : (p : FiberProduct R.p₁ R.p₂) → ES.R×R.p₂ ⟨$⟩ (to-R×R ⟨$⟩ p) D.≈  FiberProduct.elem₂ p
+          p₂-to-R×R : (p : FiberProduct R.p₁ R.p₂) → ES.R×R.p₂ ⟨$⟩ (to-R×R ⟨$⟩ p) D.≈ FiberProduct.elem₂ p
           p₂-to-R×R p = p₂∘universal≈h₂ ES.R×R {eq = λ {x y} → commute fp {x} {y}} {p} {p} (D.refl , D.refl)
 
   Quotient-Setoid : {X : Setoid ℓ ℓ} (E : Equivalence S X) → Setoid ℓ ℓ
@@ -146,22 +147,41 @@ module _ ℓ where
     ; pullback-of-regularepi-is-regularepi = pb-of-re-is-re
     }
     where
-      -- See Prop. 3.5 at https://ncatlab.org/nlab/show/regular+epimorphism
+      -- See Prop. 3.5 at https://ncatlab.org/nlab/show/regular+epimorphism ??
+      -- instead, just use the general fact that all epis are regular
+      -- no, that must be harder. Trying to finish the proof below..
       pb-of-re-is-re : {A B C : Setoid ℓ ℓ} (f : B SΠ.⟶ A) {g : C SΠ.⟶ A} → RegularEpi S f → (p : Pullback S f g) → RegularEpi S (p₂ p)
-      pb-of-re-is-re {A} {B} {C} f {g} re p = record
-        { h = p₂ pull₁
-        ; g = p₂ pull₁
-        ; coequalizer = record
-          { equality = λ {x} {y} x≈y → cong (p₂ p) (proj₂ x≈y)
-             -- this is going to use the 'universal' property of just the right pullback
-          ; coequalize = λ {D} {h′} eq → record { _⟨$⟩_ = λ c → {!!} ; cong = {!!} }
-          ; universal = {!!}
-          ; unique = {!!}
-          }
-        }
-        where
-          pull₁ : Pullback S (RegularEpi.g re) (p₁ p)
-          pull₁ = pullback ℓ ℓ (RegularEpi.g re) (p₁ p)
+      pb-of-re-is-re {A} {B} {D} f {u} record { C = C ; h = h ; g = g ; coequalizer = coeq } pb = record
+         { C = record
+             { Carrier = Σ[ x ∈ ∣ C ∣ ]  Σ[ y ∈ ∣ D ∣ ] [ A ][ f ⟨$⟩ (h ⟨$⟩ x) ≈ u ⟨$⟩ y ] × [ A ][ f ⟨$⟩ (g ⟨$⟩ x) ≈ u ⟨$⟩ y ]
+             ; _≈_ = λ (x₁ , y₁ , _) (x₂ , y₂ , _) → [ C ][ x₁ ≈ x₂ ] × [ D ][ y₁ ≈ y₂ ]
+             ; isEquivalence = record
+                 { refl  = refl C , refl D
+                 ; sym   = λ (x₁≈y₁ , x₂≈y₂) → sym C x₁≈y₁ , sym D x₂≈y₂
+                 ; trans = λ (x₁≈y₁ , x₂≈y₂) (y₁≈z₁ , y₂≈z₂) → trans C x₁≈y₁ y₁≈z₁ , trans D x₂≈y₂ y₂≈z₂
+                 }
+             }
+         ; h = record
+             { _⟨$⟩_ = λ { (x , y , fhx≈uy , _) → to-R×R ⟨$⟩ record { elem₁ = h ⟨$⟩ x ; elem₂ = y ; commute = fhx≈uy }}
+             ; cong = λ { (x≈x′ , y≈y′) → cong to-R×R (cong h x≈x′ , y≈y′) }
+             }
+         ; g = record
+             { _⟨$⟩_ = λ { (x , y , _ , fgx≈uy) → to-R×R ⟨$⟩ record { elem₁ = g ⟨$⟩ x ; elem₂ = y ; commute = fgx≈uy }}
+             ; cong = λ { (x≈x′ , y≈y′) → cong to-R×R (cong g x≈x′ , y≈y′) }
+             }
+         ; coequalizer = record
+             { equality   = λ { (fst , snd) → {!!} }
+             ; coequalize = λ {C} {h} eq → record { _⟨$⟩_ = λ d → {!!} ; cong = {!!} }
+             ; universal  = {!!}
+             ; unique     = {!!}
+             }
+         }
+         where
+           pb-fu : Pullback S f u
+           pb-fu = pullback ℓ ℓ f u
+           to-R×R : P pb-fu ⇒ P pb
+           to-R×R = _≅_.from (up-to-iso S pb-fu pb)
+
 
   Setoids-Exact : Exact (Setoids ℓ ℓ)
   Setoids-Exact = record
@@ -178,3 +198,4 @@ module _ ℓ where
     }
       where
         open Equivalence
+        open Setoid
