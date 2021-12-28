@@ -24,6 +24,8 @@ open import Function.Equality as SΠ using (Π; _⇨_) renaming (id to ⟶-id)
 open import Relation.Binary using (Setoid; Rel; IsEquivalence)
 import Relation.Binary.Reasoning.Setoid as SR
 
+open import Categories.Diagram.Coequalizer.Properties
+
 open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence; refl; sym; trans)
 open Π using (_⟨$⟩_; cong)
 
@@ -212,7 +214,9 @@ module _ ℓ where
               ; (nzero _) eq → {!!} --{!trans X (eq₂ eq) (sym X (EqSpan.is-refl₂ (eqspan E) (cong h (refl C))))!}
               }
         ; p₁∘universal≈h₁ = λ {_}{h} eq → trans X (EqSpan.is-refl₁ (eqspan E) (refl X)) (cong h eq)
-        ; p₂∘universal≈h₂ = λ {_}{h'}{h}{eq'}{x}{y} eq → let (quot _ b c) = eq' eq in {!!}
+        ; p₂∘universal≈h₂ = λ {_}{h'}{h}{eq'}{x}{y} eq →
+             let (quot _ b c) = eq' eq in {!!}
+          -- Coequalizer⇒Epi S (Quotient-Coequalizer E) {!!} {!!} {!!} {!!} -- {!Setoids ? ?!} {!Quotient-Coequalizer!} {!!} {!!} {!!}
           --trans X (EqSpan.is-refl₂ (eqspan E) (refl X)) (trans X (sym X {!b!}) c)
         }
     }
