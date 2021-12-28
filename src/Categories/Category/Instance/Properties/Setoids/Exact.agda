@@ -7,6 +7,7 @@ open import Categories.Category.Exact using (Exact)
 open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-Cartesian)
+open import Categories.Category.Regular using (Regular)
 open import Categories.Diagram.Coequalizer using (Coequalizer; IsCoequalizer)
 open import Categories.Diagram.Pullback using (Pullback; up-to-iso)
 open import Categories.Diagram.Pullback.Properties
@@ -126,25 +127,45 @@ module _ ℓ where
       ; unique     = {!!}
       }
 -}
+  Setoids-Regular : Regular (Setoids ℓ ℓ)
+  Setoids-Regular = record
+    { finitely-complete = record
+       { cartesian = Setoids-Cartesian
+       ; equalizer = λ _ _ → pullback×cartesian⇒equalizer S (pullback ℓ ℓ) Setoids-Cartesian
+       }
+    ; coeq-of-kernelpairs = λ f kp → Quotient-Coequalizer record
+       { R = record
+          { dom = P kp
+          ; p₁  = p₁ kp
+          ; p₂  = p₂ kp
+          ; relation = KP⇒Relation (Setoids ℓ ℓ) f kp (pullback ℓ ℓ (p₁ kp) (p₂ kp))
+          }
+       ; eqspan = KP⇒EqSpan (Setoids ℓ ℓ) f kp (pullback ℓ ℓ (p₁ kp) (p₂ kp))
+       }
+      -- instead, just use the general fact that all *split* epis are regular
+    ; pullback-of-regularepi-is-regularepi = pb-of-re-is-re
+    }
+    where
+      -- See Prop. 3.5 at https://ncatlab.org/nlab/show/regular+epimorphism
+      pb-of-re-is-re : {A B C : Setoid ℓ ℓ} (f : B SΠ.⟶ A) {g : C SΠ.⟶ A} → RegularEpi S f → (p : Pullback S f g) → RegularEpi S (p₂ p)
+      pb-of-re-is-re {A} {B} {C} f {g} re p = record
+        { h = p₂ pull₁
+        ; g = p₂ pull₁
+        ; coequalizer = record
+          { equality = λ {x} {y} x≈y → cong (p₂ p) (proj₂ x≈y)
+             -- this is going to use the 'universal' property of just the right pullback
+          ; coequalize = λ {D} {h′} eq → record { _⟨$⟩_ = λ c → {!!} ; cong = {!!} }
+          ; universal = {!!}
+          ; unique = {!!}
+          }
+        }
+        where
+          pull₁ : Pullback S (RegularEpi.g re) (p₁ p)
+          pull₁ = pullback ℓ ℓ (RegularEpi.g re) (p₁ p)
+
   Setoids-Exact : Exact (Setoids ℓ ℓ)
   Setoids-Exact = record
-    { regular = record
-        { finitely-complete = record
-           { cartesian = Setoids-Cartesian
-           ; equalizer = λ _ _ → pullback×cartesian⇒equalizer S (pullback ℓ ℓ) Setoids-Cartesian
-           }
-        ; coeq-of-kernelpairs = λ f kp → Quotient-Coequalizer record
-           { R = record
-              { dom = P kp
-              ; p₁  = p₁ kp
-              ; p₂  = p₂ kp
-              ; relation = KP⇒Relation (Setoids ℓ ℓ) f kp (pullback ℓ ℓ (p₁ kp) (p₂ kp))
-              }
-           ; eqspan = KP⇒EqSpan (Setoids ℓ ℓ) f kp (pullback ℓ ℓ (p₁ kp) (p₂ kp))
-           }
-          -- instead, just use the general fact that all *split* epis are regular
-        ; pullback-of-regularepi-is-regularepi = {!!}
-        }
+    { regular = Setoids-Regular
     ; quotient = Quotient-Coequalizer
     ; effective = λ {X} E → record
         { commute = λ {x} eq → quot _ (refl X) (cong (Relation.p₂ (R E)) eq)
@@ -157,18 +178,3 @@ module _ ℓ where
     }
       where
         open Equivalence
-        pb-of-re-is-re : {A B C : Setoid ℓ ℓ} (f : B SΠ.⟶ A) {g : C SΠ.⟶ A} → RegularEpi S f → (p : Pullback S f g) → RegularEpi S (p₂ p)
-        pb-of-re-is-re f {g} re p = record
-          { C = Quotient-Setoid (record
-            { R = record
-              { dom = {!!}
-              ; p₁ = {!!}
-              ; p₂ = {!!}
-              ; relation = {!!}
-              }
-            ; eqspan = {!!}
-            })
-          ; h = record { _⟨$⟩_ = {!!} ; cong = {!!} }
-          ; g = record { _⟨$⟩_ = {!!} ; cong = {!!} }
-          ; coequalizer = {!!}
-          }
