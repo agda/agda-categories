@@ -7,6 +7,7 @@ open import Categories.Category.Exact using (Exact)
 open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-Cartesian)
+open import Categories.Category.Regular using (Regular)
 open import Categories.Diagram.Coequalizer using (Coequalizer; IsCoequalizer)
 open import Categories.Diagram.Pullback using (Pullback; up-to-iso)
 open import Categories.Diagram.Pullback.Properties
@@ -60,7 +61,7 @@ module _ ℓ where
           module X = Setoid X             using (refl; sym; trans)
           module D = Setoid R.dom         using (refl; _≈_)
           module R×R = Setoid ES.R×R.dom  using (refl)
-          
+
           fp : Pullback S R.p₁ R.p₂
           fp = pullback ℓ ℓ R.p₁ R.p₂
 
@@ -127,6 +128,61 @@ module _ ℓ where
       ; unique     = {!!}
       }
 -}
+  Setoids-Regular : Regular (Setoids ℓ ℓ)
+  Setoids-Regular = record
+    { finitely-complete = record
+       { cartesian = Setoids-Cartesian
+       ; equalizer = λ _ _ → pullback×cartesian⇒equalizer S (pullback ℓ ℓ) Setoids-Cartesian
+       }
+    ; coeq-of-kernelpairs = λ f kp → Quotient-Coequalizer record
+       { R = record
+          { dom = P kp
+          ; p₁  = p₁ kp
+          ; p₂  = p₂ kp
+          ; relation = KP⇒Relation (Setoids ℓ ℓ) f kp (pullback ℓ ℓ (p₁ kp) (p₂ kp))
+          }
+       ; eqspan = KP⇒EqSpan (Setoids ℓ ℓ) f kp (pullback ℓ ℓ (p₁ kp) (p₂ kp))
+       }
+      -- instead, just use the general fact that all *split* epis are regular
+    ; pullback-of-regularepi-is-regularepi = pb-of-re-is-re
+    }
+    where
+      -- See Prop. 3.5 at https://ncatlab.org/nlab/show/regular+epimorphism ??
+      -- instead, just use the general fact that all epis are regular
+      -- no, that must be harder. Trying to finish the proof below..
+      pb-of-re-is-re : {A B C : Setoid ℓ ℓ} (f : B SΠ.⟶ A) {g : C SΠ.⟶ A} → RegularEpi S f → (p : Pullback S f g) → RegularEpi S (p₂ p)
+      pb-of-re-is-re {A} {B} {D} f {u} record { C = C ; h = h ; g = g ; coequalizer = coeq } pb = record
+         { C = record
+             { Carrier = Σ[ x ∈ ∣ C ∣ ]  Σ[ y ∈ ∣ D ∣ ] [ A ][ f ⟨$⟩ (h ⟨$⟩ x) ≈ u ⟨$⟩ y ] × [ A ][ f ⟨$⟩ (g ⟨$⟩ x) ≈ u ⟨$⟩ y ]
+             ; _≈_ = λ (x₁ , y₁ , _) (x₂ , y₂ , _) → [ C ][ x₁ ≈ x₂ ] × [ D ][ y₁ ≈ y₂ ]
+             ; isEquivalence = record
+                 { refl  = refl C , refl D
+                 ; sym   = λ (x₁≈y₁ , x₂≈y₂) → sym C x₁≈y₁ , sym D x₂≈y₂
+                 ; trans = λ (x₁≈y₁ , x₂≈y₂) (y₁≈z₁ , y₂≈z₂) → trans C x₁≈y₁ y₁≈z₁ , trans D x₂≈y₂ y₂≈z₂
+                 }
+             }
+         ; h = record
+             { _⟨$⟩_ = λ { (x , y , fhx≈uy , _) → to-R×R ⟨$⟩ record { elem₁ = h ⟨$⟩ x ; elem₂ = y ; commute = fhx≈uy }}
+             ; cong = λ { (x≈x′ , y≈y′) → cong to-R×R (cong h x≈x′ , y≈y′) }
+             }
+         ; g = record
+             { _⟨$⟩_ = λ { (x , y , _ , fgx≈uy) → to-R×R ⟨$⟩ record { elem₁ = g ⟨$⟩ x ; elem₂ = y ; commute = fgx≈uy }}
+             ; cong = λ { (x≈x′ , y≈y′) → cong to-R×R (cong g x≈x′ , y≈y′) }
+             }
+         ; coequalizer = record
+             { equality   = λ { (fst , snd) → {!!} }
+             ; coequalize = λ {C} {h} eq → record { _⟨$⟩_ = λ d → {!!} ; cong = {!!} }
+             ; universal  = {!!}
+             ; unique     = {!!}
+             }
+         }
+         where
+           pb-fu : Pullback S f u
+           pb-fu = pullback ℓ ℓ f u
+           to-R×R : P pb-fu ⇒ P pb
+           to-R×R = _≅_.from (up-to-iso S pb-fu pb)
+
+
   Setoids-Exact : Exact (Setoids ℓ ℓ)
   Setoids-Exact = record
     { regular = record
@@ -197,3 +253,4 @@ module _ ℓ where
                 }
             
         
+
