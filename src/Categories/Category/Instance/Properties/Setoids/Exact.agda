@@ -50,9 +50,9 @@ module _ ℓ where
       ; trans = λ { (quot r x≈ ≈y) (quot s y≈ ≈z) →
          let t = record { elem₁ = s ; elem₂ = r ; commute = X.trans y≈ (X.sym ≈y) } in
            quot
-             (ES.trans ⟨$⟩ (to-R×R ⟨$⟩ t))
-             (X.trans (ES.is-trans₁ R×R.refl) (X.trans (cong R.p₁ (p₂-to-R×R t)) x≈))
-             (X.trans (ES.is-trans₂ R×R.refl) (X.trans (cong R.p₂ (p₁-to-R×R t)) ≈z))
+             (ES.trans ⟨$⟩ (P₀⇒P₁ ⟨$⟩ t))
+             (X.trans (ES.is-trans₁ R×R.refl) (X.trans (cong R.p₁ (p₂-≈ {t} {t} (D.refl , D.refl))) x≈))
+             (X.trans (ES.is-trans₂ R×R.refl) (X.trans (cong R.p₂ (p₁-≈ {t} {t} (D.refl , D.refl))) ≈z))
          }
       }
         where
@@ -64,15 +64,7 @@ module _ ℓ where
 
           fp : Pullback S R.p₁ R.p₂
           fp = pullback ℓ ℓ R.p₁ R.p₂
-
-          to-R×R : P fp ⇒ P ES.R×R
-          to-R×R = _≅_.from (up-to-iso S fp ES.R×R)
-
-          p₁-to-R×R : (p : FiberProduct R.p₁ R.p₂) → ES.R×R.p₁ ⟨$⟩ (to-R×R ⟨$⟩ p) D.≈ FiberProduct.elem₁ p
-          p₁-to-R×R p = p₁∘universal≈h₁ ES.R×R {eq = λ {x y} → commute fp {x} {y}} {p} {p} (D.refl , D.refl)
-
-          p₂-to-R×R : (p : FiberProduct R.p₁ R.p₂) → ES.R×R.p₂ ⟨$⟩ (to-R×R ⟨$⟩ p) D.≈ FiberProduct.elem₂ p
-          p₂-to-R×R p = p₂∘universal≈h₂ ES.R×R {eq = λ {x y} → commute fp {x} {y}} {p} {p} (D.refl , D.refl)
+          open IsoPb S fp ES.R×R
 
   Quotient-Setoid : {X : Setoid ℓ ℓ} (E : Equivalence S X) → Setoid ℓ ℓ
   Quotient-Setoid {X} E = record { Carrier = ∣ X ∣ ; _≈_ = Quotient E; isEquivalence = Quotient-Equivalence E }
@@ -217,7 +209,7 @@ module _ ℓ where
         }
     }
       where
-        open Equivalence 
+        open Equivalence
         open Setoid
 
         open SR
@@ -229,13 +221,13 @@ module _ ℓ where
         pb-of-re-is-re {A}{B}{D} f {u} record { C = C ; h = h ; g = g ; coequalizer = coeq } pb = record
                 { C = record
                     { Carrier = Σ[ x ∈ ∣ C ∣ ]  Σ[ y ∈ ∣ D ∣ ] [ A ][ f ⟨$⟩ (h ⟨$⟩ x) ≈ u ⟨$⟩ y ] × [ A ][ f ⟨$⟩ (g ⟨$⟩ x) ≈ u ⟨$⟩ y ]
-                    ; _≈_ = λ (x₁ , y₁ , _) (x₂ , y₂ , _) → [ C ][ x₁ ≈ x₂ ] × [ D ][ y₁ ≈ y₂ ] 
+                    ; _≈_ = λ (x₁ , y₁ , _) (x₂ , y₂ , _) → [ C ][ x₁ ≈ x₂ ] × [ D ][ y₁ ≈ y₂ ]
                     ; isEquivalence = record
-                        { refl  = refl C , refl D 
-                        ; sym   = λ (x₁≈y₁ , x₂≈y₂) → sym C x₁≈y₁ , sym D x₂≈y₂ 
+                        { refl  = refl C , refl D
+                        ; sym   = λ (x₁≈y₁ , x₂≈y₂) → sym C x₁≈y₁ , sym D x₂≈y₂
                         ; trans = λ (x₁≈y₁ , x₂≈y₂) (y₁≈z₁ , y₂≈z₂) → trans C x₁≈y₁ y₁≈z₁ , trans D x₂≈y₂ y₂≈z₂
                         }
-                    } 
+                    }
                 ; h = record
                     { _⟨$⟩_ = λ { (x , y , fhx≈uy , fgx≈uy) → to-R×R f u pb ⟨$⟩ record { elem₁ = h ⟨$⟩ x ; elem₂ = y ; commute = fhx≈uy }}
                     ; cong = λ { (x≈x′ , y≈y′) → cong (to-R×R f u pb) (cong h x≈x′ , y≈y′) }
@@ -243,7 +235,7 @@ module _ ℓ where
                 ; g = record
                     { _⟨$⟩_ = λ { (x , y , fhx≈uy , fgx≈uy) → to-R×R f u pb ⟨$⟩ record { elem₁ = g ⟨$⟩ x ; elem₂ = y ; commute = fgx≈uy }}
                     ; cong = λ { (x≈x′ , y≈y′) → cong (to-R×R f u pb) (cong g x≈x′ , y≈y′) }
-                    } 
+                    }
                 ; coequalizer = record
                     { equality   = λ { (fst , snd) → {!!} }
                     ; coequalize = {!!}
@@ -251,6 +243,3 @@ module _ ℓ where
                     ; unique     = {!!}
                     }
                 }
-            
-        
-
