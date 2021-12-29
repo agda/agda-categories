@@ -9,6 +9,8 @@ open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-Cartesian)
 open import Categories.Category.Regular using (Regular)
 open import Categories.Diagram.Coequalizer using (Coequalizer; IsCoequalizer)
+open import Categories.Diagram.Coequalizer.Properties
+open import Categories.Diagram.KernelPair using (KernelPair)
 open import Categories.Diagram.Pullback using (Pullback; up-to-iso)
 open import Categories.Diagram.Pullback.Properties
 open import Categories.Morphism using (_≅_; JointMono; Epi)
@@ -24,7 +26,6 @@ open import Function.Equality as SΠ using (Π; _⇨_) renaming (id to ⟶-id)
 open import Relation.Binary using (Setoid; Rel; IsEquivalence)
 import Relation.Binary.Reasoning.Setoid as SR
 
-open import Categories.Diagram.Coequalizer.Properties
 
 open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence; refl; sym; trans)
 open Π using (_⟨$⟩_; cong)
@@ -86,26 +87,26 @@ module _ ℓ where
       open Equivalence E
       module X = Setoid X
       module ES = EqSpan eqspan
-      
+
       X∼ : Setoid ℓ ℓ
       X∼ = Quotient-Setoid E
-      
+
       inj : X ⇒ X∼
       inj = record
        { _⟨$⟩_ = id→
        ; cong = λ {x₁} eq → quot (ES.refl ⟨$⟩ x₁) (ES.is-refl₁ X.refl) (X.trans (ES.is-refl₂ X.refl) eq)
        }
-       
+
       inj-≈ : inj ∘ R.p₁ ≈ inj ∘ R.p₂
       inj-≈ {x} {y} x≈y = quot x X.refl (cong R.p₂ x≈y)
       -- coEqualizer wants the 'h' to be implicit, but can't figure it out, so make it explicit here
-      
+
       quotient : {C : Obj} (h : X ⇒ C) → h ∘ R.p₁ ≈ h ∘ R.p₂ → X∼ ⇒ C
       quotient {C} h eq = record
         { _⟨$⟩_ = h ⟨$⟩_
         ; cong = λ { (quot r x≈ ≈y) → trans C (cong h (X.sym x≈)) (trans C (eq (refl R.dom)) (cong h ≈y))}
         }
-        
+
       unique : {C : Obj} {h : X ⇒ C} {i : X∼ ⇒ C} {eq : h ∘ R.p₁ ≈ h ∘ R.p₂} → h ≈ i ∘ inj → i ≈ quotient h eq
       unique {C} {h} {i} {eq′} eq {x} {y} (quot r x≈ ≈y) = begin
         i ⟨$⟩ x           ≈˘⟨ eq X.refl ⟩
@@ -126,14 +127,16 @@ module _ ℓ where
           { dom = P kp
           ; p₁  = p₁ kp
           ; p₂  = p₂ kp
-          ; relation = KP⇒Relation (Setoids ℓ ℓ) f kp (pullback ℓ ℓ (p₁ kp) (p₂ kp))
+          ; relation = KP⇒Relation S f kp (pb kp)
           }
-       ; eqspan = KP⇒EqSpan (Setoids ℓ ℓ) f kp (pullback ℓ ℓ (p₁ kp) (p₂ kp))
+       ; eqspan = KP⇒EqSpan S f kp (pb kp)
        }
       -- instead, just use the general fact that all *split* epis are regular
     ; pullback-of-regularepi-is-regularepi = pb-of-re-is-re
     }
     where
+      pb : ∀ {A B} {f : A ⇒ B} (kp : KernelPair S f) → Pullback S (p₁ kp) (p₂ kp)
+      pb kp = pullback ℓ ℓ (p₁ kp) (p₂ kp)
       -- See Prop. 3.5 at https://ncatlab.org/nlab/show/regular+epimorphism ??
       -- instead, just use the general fact that all epis are regular
       -- no, that must be harder. Trying to finish the proof below..
@@ -149,29 +152,28 @@ module _ ℓ where
                  }
              }
          ; h = record
-             { _⟨$⟩_ = λ { (x , y , fhx≈uy , _) → to-R×R ⟨$⟩ record { elem₁ = h ⟨$⟩ x ; elem₂ = y ; commute = fhx≈uy }}
-             ; cong = λ { (x≈x′ , y≈y′) → cong to-R×R (cong h x≈x′ , y≈y′) }
+             { _⟨$⟩_ = λ { (x , y , fhx≈uy , _) → P₀⇒P₁ ⟨$⟩ record { elem₁ = h ⟨$⟩ x ; elem₂ = y ; commute = fhx≈uy }}
+             ; cong = λ { (x≈x′ , y≈y′) → cong P₀⇒P₁ (cong h x≈x′ , y≈y′) }
              }
          ; g = record
-             { _⟨$⟩_ = λ { (x , y , _ , fgx≈uy) → to-R×R ⟨$⟩ record { elem₁ = g ⟨$⟩ x ; elem₂ = y ; commute = fgx≈uy }}
-             ; cong = λ { (x≈x′ , y≈y′) → cong to-R×R (cong g x≈x′ , y≈y′) }
+             { _⟨$⟩_ = λ { (x , y , _ , fgx≈uy) → P₀⇒P₁ ⟨$⟩ record { elem₁ = g ⟨$⟩ x ; elem₂ = y ; commute = fgx≈uy }}
+             ; cong = λ { (x≈x′ , y≈y′) → cong P₀⇒P₁ (cong g x≈x′ , y≈y′) }
              }
          ; coequalizer = record
-             { equality   = λ { {x , y , fhx≈uy , fgx≈uy} {x′ , y′ , fhx≈uy′ , fgx≈uy′} (x≈x′ , y≈y′) → trans D ((p₂-≈ (pullback ℓ ℓ f u) {!!})) {!!} }
-             ; coequalize = λ {C} {h} eq → record { _⟨$⟩_ = λ d → {!!} ; cong = {!!} }
+             { equality   = λ { {x , y , fhx≈uy , fgx≈uy} {x′ , y′ , fhx≈uy′ , fgx≈uy′} (x≈x′ , y≈y′) →
+               trans D ((p₂-≈ ({!!} , {!!}))) {!!} }
+             ; coequalize = λ {C₁} {h₁} eq → record
+               { _⟨$⟩_ = λ d → {!!} -- IsCoequalizer.coequalize coeq {C₁} {{!!}} (λ {x}{y} x≈y → {!!}) ⟨$⟩ (u ⟨$⟩ d)
+               ; cong = {!!}
+               }
              ; universal  = {!!}
              ; unique     = {!!}
              }
          }
          where
-           open IsoPb S pb 
-
            pb-fu : Pullback S f u
            pb-fu = pullback ℓ ℓ f u
-           
-           to-R×R : P pb-fu ⇒ P pb
-           to-R×R = _≅_.from (up-to-iso S pb-fu pb)
-
+           open IsoPb S pb-fu pb
 
   Setoids-Exact : Exact (Setoids ℓ ℓ)
   Setoids-Exact = record
