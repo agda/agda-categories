@@ -40,17 +40,17 @@ module _ ℓ where
 
   open Pullback using (P; p₁; p₂)
 
-  record Quotient {X : Setoid ℓ ℓ} (E : Equivalence S X) (x₁ x₂ : ∣ X ∣) : Set ℓ where
+  record Equation {X : Setoid ℓ ℓ} (E : Equivalence S X) (x₁ x₂ : ∣ X ∣) : Set ℓ where
     constructor quot
     open Equivalence E using (module R)
     field
-      eq   : ∣ R.dom ∣
-      x₁≈  : [ X ][ R.p₁ ⟨$⟩ eq ≈ x₁ ]
-      ≈x₂  : [ X ][ R.p₂ ⟨$⟩ eq ≈ x₂ ]
+      name : ∣ R.dom ∣
+      x₁≈  : [ X ][ R.p₁ ⟨$⟩ name ≈ x₁ ]
+      ≈x₂  : [ X ][ R.p₂ ⟨$⟩ name ≈ x₂ ]
 
   quotient-trans : {X : Setoid ℓ ℓ} (E : Equivalence S X) {x₁ x₂ y₁ y₂ : ∣ X ∣} →
-    (p : Quotient E x₁ y₁) → (q : Quotient E x₂ y₂) →
-    [ X ][ x₁ ≈ x₂ ] → [ X ][ y₁ ≈ y₂ ] → [ Equivalence.R.dom E ][ Quotient.eq p ≈ Quotient.eq q ] 
+    (p : Equation E x₁ y₁) → (q : Equation E x₂ y₂) →
+    [ X ][ x₁ ≈ x₂ ] → [ X ][ y₁ ≈ y₂ ] → [ Equivalence.R.dom E ][ Equation.name p ≈ Equation.name q ] 
 
   quotient-trans {X} E {x₁} {x₂} {y₁} {y₂} (quot eq x₁≈ ≈y₁) (quot eq′ x₂≈ ≈y₂) x₁≈x₂ y₁≈y₂ =
     Relation.relation (Equivalence.R E) {SingletonSetoid}
@@ -59,7 +59,7 @@ module _ ℓ where
     (λ { zero _ → trans X x₁≈ (trans X x₁≈x₂ (sym X x₂≈))
        ; (nzero _) _ → trans X ≈y₁ (trans X y₁≈y₂ (sym X ≈y₂))}) tt
   
-  Quotient-Equivalence : ∀ {X : Setoid ℓ ℓ} → (E : Equivalence S X) → IsEquivalence (Quotient E)
+  Quotient-Equivalence : ∀ {X : Setoid ℓ ℓ} → (E : Equivalence S X) → IsEquivalence (Equation E)
   Quotient-Equivalence {X} E = record
       {
         refl  = quot _ (ES.is-refl₁ X.refl) (ES.is-refl₂ X.refl)
@@ -84,7 +84,7 @@ module _ ℓ where
           open IsoPb S fp ES.R×R
 
   Quotient-Setoid : {X : Setoid ℓ ℓ} (E : Equivalence S X) → Setoid ℓ ℓ
-  Quotient-Setoid {X} E = record { Carrier = ∣ X ∣ ; _≈_ = Quotient E; isEquivalence = Quotient-Equivalence E }
+  Quotient-Setoid {X} E = record { Carrier = ∣ X ∣ ; _≈_ = Equation E; isEquivalence = Quotient-Equivalence E }
 
   Quotient-Coequalizer : {X : Setoid ℓ ℓ} (E : Equivalence S X) → Coequalizer S (Equivalence.R.p₁ E) (Equivalence.R.p₂ E)
   Quotient-Coequalizer {X} E = record
@@ -137,15 +137,9 @@ module _ ℓ where
        ; equalizer = λ _ _ → pullback×cartesian⇒equalizer S (pullback ℓ ℓ) Setoids-Cartesian
        }
     ; coeq-of-kernelpairs = λ f kp → Quotient-Coequalizer record
-       { R = record
-          { dom = P kp
-          ; p₁  = p₁ kp
-          ; p₂  = p₂ kp
-          ; relation = KP⇒Relation S f kp (pb kp)
-          }
+       { R = record { dom = P kp; p₁  = p₁ kp; p₂  = p₂ kp; relation = KP⇒Relation S f kp (pb kp) }
        ; eqspan = KP⇒EqSpan S f kp (pb kp)
        }
-      -- instead, just use the general fact that all *split* epis are regular
     ; pullback-of-regularepi-is-regularepi = pb-of-re-is-re
     }
     where
