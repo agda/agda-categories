@@ -4,7 +4,7 @@ module Categories.Category.Instance.Properties.Setoids.Exact where
 
 open import Categories.Category using (Category)
 open import Categories.Category.Exact using (Exact)
-open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical
+open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical using (pullback; FiberProduct; mk-×; FP-≈)
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-Cartesian)
 open import Categories.Category.Regular using (Regular)
@@ -19,7 +19,7 @@ open import Categories.Object.InternalRelation using (Equivalence; EqSpan; KP⇒
 
 open import Level
 open import Data.Fin using (Fin; zero) renaming (suc to nzero)
-open import Data.Product using (∃; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_)
+open import Data.Product using (∃; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_; map; zip)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Function using () renaming (id to id→)
 open import Function.Equality as SΠ using (Π; _⇨_) renaming (id to ⟶-id)
@@ -146,22 +146,29 @@ module _ ℓ where
              { Carrier = Σ[ x ∈ ∣ C ∣ ]  Σ[ y ∈ ∣ D ∣ ] [ A ][ f ⟨$⟩ (h ⟨$⟩ x) ≈ u ⟨$⟩ y ] × [ A ][ f ⟨$⟩ (g ⟨$⟩ x) ≈ u ⟨$⟩ y ]
              ; _≈_ = λ (x₁ , y₁ , _) (x₂ , y₂ , _) → [ C ][ x₁ ≈ x₂ ] × [ D ][ y₁ ≈ y₂ ]
              ; isEquivalence = record
-                 { refl  = refl C , refl D
-                 ; sym   = λ (x₁≈y₁ , x₂≈y₂) → sym C x₁≈y₁ , sym D x₂≈y₂
-                 ; trans = λ (x₁≈y₁ , x₂≈y₂) (y₁≈z₁ , y₂≈z₂) → trans C x₁≈y₁ y₁≈z₁ , trans D x₂≈y₂ y₂≈z₂
+                 { refl  = C.refl , D.refl
+                 ; sym   = map C.sym D.sym
+                 ; trans = zip C.trans D.trans
                  }
              }
          ; h = record
-             { _⟨$⟩_ = λ { (x , y , fhx≈uy , _) → P₀⇒P₁ ⟨$⟩ record { elem₁ = h ⟨$⟩ x ; elem₂ = y ; commute = fhx≈uy }}
+             { _⟨$⟩_ = λ { (x , y , fhx≈uy , _) → P₀⇒P₁ ⟨$⟩ mk-× (h ⟨$⟩ x) y fhx≈uy }
              ; cong = λ { (x≈x′ , y≈y′) → cong P₀⇒P₁ (cong h x≈x′ , y≈y′) }
              }
          ; g = record
-             { _⟨$⟩_ = λ { (x , y , _ , fgx≈uy) → P₀⇒P₁ ⟨$⟩ record { elem₁ = g ⟨$⟩ x ; elem₂ = y ; commute = fgx≈uy }}
+             { _⟨$⟩_ = λ { (x , y , _ , fgx≈uy) → P₀⇒P₁ ⟨$⟩ mk-× (g ⟨$⟩ x) y fgx≈uy }
              ; cong = λ { (x≈x′ , y≈y′) → cong P₀⇒P₁ (cong g x≈x′ , y≈y′) }
              }
          ; coequalizer = record
              { equality   = λ { {x , y , fhx≈uy , fgx≈uy} {x′ , y′ , fhx≈uy′ , fgx≈uy′} (x≈x′ , y≈y′) →
-               trans D ((p₂-≈ ({!!} , {!!}))) {!!} }
+                 let fp-xy = mk-× {f = f} {u} (h ⟨$⟩ x) y fhx≈uy in
+                 let fp-xy′ = mk-× {f = f} {u} (g ⟨$⟩ x′) y′ fgx≈uy′ in
+                 begin
+                   (p₂ pb ∘ P₀⇒P₁ ) ⟨$⟩ fp-xy    ≈⟨ p₂-≈ {fp-xy} {fp-xy} (B.refl , D.refl) ⟩
+                   p₂ pb-fu ⟨$⟩ fp-xy            ≈⟨ y≈y′ ⟩
+                   p₂ pb-fu ⟨$⟩ fp-xy′           ≈⟨ D.sym (p₂-≈ {fp-xy′} {fp-xy′} (B.refl , D.refl)) ⟩
+                   (p₂ pb ∘ P₀⇒P₁ ) ⟨$⟩ mk-× (g ⟨$⟩ x′) y′ fgx≈uy′ ∎
+                  }
              ; coequalize = λ {C₁} {h₁} eq → record
                { _⟨$⟩_ = λ d → {!!} -- IsCoequalizer.coequalize coeq {C₁} {{!!}} (λ {x}{y} x≈y → {!!}) ⟨$⟩ (u ⟨$⟩ d)
                ; cong = {!!}
@@ -171,6 +178,10 @@ module _ ℓ where
              }
          }
          where
+           module B = Setoid B
+           module C = Setoid C
+           module D = Setoid D
+           open SR D
            pb-fu : Pullback S f u
            pb-fu = pullback ℓ ℓ f u
            open IsoPb S pb-fu pb
