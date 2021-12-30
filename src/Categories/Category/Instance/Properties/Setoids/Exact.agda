@@ -13,7 +13,7 @@ open import Categories.Diagram.Coequalizer.Properties
 open import Categories.Diagram.KernelPair using (KernelPair)
 open import Categories.Diagram.Pullback using (Pullback; up-to-iso)
 open import Categories.Diagram.Pullback.Properties
-open import Categories.Morphism using (_≅_; JointMono; Epi)
+open import Categories.Morphism using (_≅_)
 open import Categories.Morphism.Regular using (RegularEpi)
 open import Categories.Object.InternalRelation using (Equivalence; EqSpan; KP⇒Relation; KP⇒EqSpan; module Relation)
 
@@ -26,6 +26,9 @@ open import Function.Equality as SΠ using (Π; _⇨_) renaming (id to ⟶-id)
 open import Relation.Binary using (Setoid; Rel; IsEquivalence)
 import Relation.Binary.Reasoning.Setoid as SR
 
+open import Categories.Diagram.Coequalizer.Properties
+open import Data.Unit.Polymorphic.Base
+open import Categories.Category.Instance.SingletonSet
 
 open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence; refl; sym; trans)
 open Π using (_⟨$⟩_; cong)
@@ -35,23 +38,34 @@ module _ ℓ where
     S = Setoids ℓ ℓ
     open Category S
 
-  open Pullback using (P; p₁; p₂; p₁∘universal≈h₁; commute; p₂∘universal≈h₂)
+  open Pullback using (P; p₁; p₂)
 
-  record Quotient {X : Setoid ℓ ℓ} (E : Equivalence S X) (x₁ x₂ : ∣ X ∣) : Set ℓ where
+  record Equation {X : Setoid ℓ ℓ} (E : Equivalence S X) (x₁ x₂ : ∣ X ∣) : Set ℓ where
     constructor quot
     open Equivalence E using (module R)
     field
-      y     : ∣ R.dom ∣
-      py≈x₁ : [ X ][ R.p₁ ⟨$⟩ y ≈ x₁ ]
-      py≈x₂ : [ X ][ R.p₂ ⟨$⟩ y ≈ x₂ ]
+      name : ∣ R.dom ∣
+      x₁≈  : [ X ][ R.p₁ ⟨$⟩ name ≈ x₁ ]
+      ≈x₂  : [ X ][ R.p₂ ⟨$⟩ name ≈ x₂ ]
 
-  Quotient-Equivalence : ∀ {X : Setoid ℓ ℓ} → (E : Equivalence S X) → IsEquivalence (Quotient E)
+  quotient-trans : {X : Setoid ℓ ℓ} (E : Equivalence S X) {x₁ x₂ y₁ y₂ : ∣ X ∣} →
+    (p : Equation E x₁ y₁) → (q : Equation E x₂ y₂) →
+    [ X ][ x₁ ≈ x₂ ] → [ X ][ y₁ ≈ y₂ ] → [ Equivalence.R.dom E ][ Equation.name p ≈ Equation.name q ] 
+
+  quotient-trans {X} E {x₁} {x₂} {y₁} {y₂} (quot eq x₁≈ ≈y₁) (quot eq′ x₂≈ ≈y₂) x₁≈x₂ y₁≈y₂ =
+    Relation.relation (Equivalence.R E) {SingletonSetoid}
+    (record { _⟨$⟩_ = λ _ → eq  ; cong = λ _ → refl (Relation.dom (Equivalence.R E))})
+    (record { _⟨$⟩_ = λ _ → eq′ ; cong = λ _ → refl (Relation.dom (Equivalence.R E))})
+    (λ { zero _ → trans X x₁≈ (trans X x₁≈x₂ (sym X x₂≈))
+       ; (nzero _) _ → trans X ≈y₁ (trans X y₁≈y₂ (sym X ≈y₂))}) tt
+  
+  Quotient-Equivalence : ∀ {X : Setoid ℓ ℓ} → (E : Equivalence S X) → IsEquivalence (Equation E)
   Quotient-Equivalence {X} E = record
       {
         refl  = quot _ (ES.is-refl₁ X.refl) (ES.is-refl₂ X.refl)
       ; sym   = λ { (quot r eq₁ eq₂) → quot (ES.sym ⟨$⟩ r) (X.trans (ES.is-sym₁ D.refl) eq₂) (X.trans (ES.is-sym₂ D.refl) eq₁) }
       ; trans = λ { (quot r x≈ ≈y) (quot s y≈ ≈z) →
-         let t = record { elem₁ = s ; elem₂ = r ; commute = X.trans y≈ (X.sym ≈y) } in
+         let t = record { elem₁ = _ ; elem₂ = _ ; commute = X.trans y≈ (X.sym ≈y) } in
            quot
              (ES.trans ⟨$⟩ (P₀⇒P₁ ⟨$⟩ t))
              (X.trans (ES.is-trans₁ R×R.refl) (X.trans (cong R.p₁ (p₂-≈ {t} {t} (D.refl , D.refl))) x≈))
@@ -70,17 +84,17 @@ module _ ℓ where
           open IsoPb S fp ES.R×R
 
   Quotient-Setoid : {X : Setoid ℓ ℓ} (E : Equivalence S X) → Setoid ℓ ℓ
-  Quotient-Setoid {X} E = record { Carrier = ∣ X ∣ ; _≈_ = Quotient E; isEquivalence = Quotient-Equivalence E }
+  Quotient-Setoid {X} E = record { Carrier = ∣ X ∣ ; _≈_ = Equation E; isEquivalence = Quotient-Equivalence E }
 
   Quotient-Coequalizer : {X : Setoid ℓ ℓ} (E : Equivalence S X) → Coequalizer S (Equivalence.R.p₁ E) (Equivalence.R.p₂ E)
   Quotient-Coequalizer {X} E = record
     { obj = X∼
     ; arr = inj
     ; isCoequalizer = record
-       { equality = inj-≈
-       ; coequalize = λ {_} {h} → quotient h
-       ; universal = λ {_}{h} → cong h
-       ; unique = λ {_}{h}{i}{eq′} → unique {_}{h}{i}{eq′}
+       { equality   = inj-≈
+       ; coequalize = λ {_}{h} → quotient h
+       ; universal  = λ {_}{h} → cong h
+       ; unique     = λ {_}{h}{i}{eq′} → unique {_}{h}{i}{eq′}
        }
     }
     where
@@ -99,8 +113,8 @@ module _ ℓ where
 
       inj-≈ : inj ∘ R.p₁ ≈ inj ∘ R.p₂
       inj-≈ {x} {y} x≈y = quot x X.refl (cong R.p₂ x≈y)
-      -- coEqualizer wants the 'h' to be implicit, but can't figure it out, so make it explicit here
 
+      -- coEqualizer wants the 'h' to be implicit, but can't figure it out, so make it explicit here
       quotient : {C : Obj} (h : X ⇒ C) → h ∘ R.p₁ ≈ h ∘ R.p₂ → X∼ ⇒ C
       quotient {C} h eq = record
         { _⟨$⟩_ = h ⟨$⟩_
@@ -123,15 +137,9 @@ module _ ℓ where
        ; equalizer = λ _ _ → pullback×cartesian⇒equalizer S (pullback ℓ ℓ) Setoids-Cartesian
        }
     ; coeq-of-kernelpairs = λ f kp → Quotient-Coequalizer record
-       { R = record
-          { dom = P kp
-          ; p₁  = p₁ kp
-          ; p₂  = p₂ kp
-          ; relation = KP⇒Relation S f kp (pb kp)
-          }
+       { R = record { dom = P kp; p₁  = p₁ kp; p₂  = p₂ kp; relation = KP⇒Relation S f kp (pb kp) }
        ; eqspan = KP⇒EqSpan S f kp (pb kp)
        }
-      -- instead, just use the general fact that all *split* epis are regular
     ; pullback-of-regularepi-is-regularepi = pb-of-re-is-re
     }
     where
@@ -184,6 +192,7 @@ module _ ℓ where
            open SR D
            pb-fu : Pullback S f u
            pb-fu = pullback ℓ ℓ f u
+
            open IsoPb S pb-fu pb
 
   Setoids-Exact : Exact (Setoids ℓ ℓ)
@@ -191,23 +200,38 @@ module _ ℓ where
     { regular   = Setoids-Regular
     ; quotient  = Quotient-Coequalizer
     ; effective = λ {X} E → record
-        { commute = λ eq → quot _ (refl X) (cong (Relation.p₂ (R E)) eq)
-        ; universal = λ {_}{h} _ → EqSpan.refl (eqspan E) ∘ h
-        ; unique = λ {C}{h}{u}{f}{g} eq₁ eq₂ → Relation.relation (R E) f (EqSpan.refl (eqspan E) ∘ h)
-            λ { zero eq      → trans X (eq₁ eq) (sym X (EqSpan.is-refl₁ (eqspan E) (cong h (refl C))))
-              ; (nzero _) eq → {!!} -- this will be easy once p₂∘universal≈h₂ is finished
-              --{!trans X (eq₂ eq) (sym X (EqSpan.is-refl₂ (eqspan E) (cong h (refl C))))!}
+        { commute   = λ eq → quot _ (refl X) (cong (Relation.p₂ (R E)) eq)
+        ; universal = λ { {Z}{h₁}{h₂} → universal E h₁ h₂ }
+        ; unique    = λ {Z}{h₁}{h₂}{u}{eq} eq₁ eq₂ {x}{y} → Relation.relation (R E) u (universal E h₁ h₂ eq)
+            λ { zero {x}{y} eq′      → trans X (eq₁ eq′) (sym X (p₁∘universal≈h₁ E h₁ h₂ eq (refl Z)))
+              ; (nzero _) {x}{y} eq′ → trans X (eq₂ eq′) (sym X (p₂∘universal≈h₂ E h₁ h₂ eq (refl Z)))
               }
-        ; p₁∘universal≈h₁ = λ {_}{h} eq → trans X (EqSpan.is-refl₁ (eqspan E) (refl X)) (cong h eq)
-        ; p₂∘universal≈h₂ = λ {_}{h'}{h}{eq'}{x}{y} eq →
-             let (quot _ b c) = eq' eq in {!!}
-          -- Coequalizer⇒Epi S (Quotient-Coequalizer E) {!!} {!!} {!!} {!!} -- {!Setoids ? ?!} {!Quotient-Coequalizer!} {!!} {!!} {!!}
-          --trans X (EqSpan.is-refl₂ (eqspan E) (refl X)) (trans X (sym X {!b!}) c)
+        ; p₁∘universal≈h₁ = λ {Z}{h₁}{h₂}{eq} → p₁∘universal≈h₁ E h₁ h₂ eq
+        ; p₂∘universal≈h₂ = λ {Z}{h₁}{h₂}{eq} → p₂∘universal≈h₂ E h₁ h₂ eq 
         }
     }
       where
         open Equivalence
         open Setoid
+        open Coequalizer using (arr)
+
+        universal : {X Z : Setoid ℓ ℓ} → (E : Equivalence S X) → (h₁ h₂ : Z ⇒ X) →
+          (eq : [ Z ⇨ Quotient-Setoid E ][ arr (Quotient-Coequalizer E) ∘ h₁ ≈ arr (Quotient-Coequalizer E) ∘ h₂ ]) →
+          Z ⇒ Relation.dom (R E)
+        universal {X}{Z} E h₁ h₂ eq = record
+          { _⟨$⟩_ = λ z → let (quot eq _ _) = eq {z}{z} (refl Z) in eq
+          ; cong = λ {z}{z′} z≈z′ → quotient-trans E (eq {z}{z} (refl Z)) (eq {z′}{z′} (refl Z)) (cong h₁ z≈z′) (cong h₂ z≈z′)
+          }
+        p₁∘universal≈h₁ : {X Z : Setoid ℓ ℓ} → (E : Equivalence S X) → (h₁ h₂ : Z ⇒ X) →
+          (eq : [ Z ⇨ Quotient-Setoid E ][ arr (Quotient-Coequalizer E) ∘ h₁ ≈ arr (Quotient-Coequalizer E) ∘ h₂ ]) →
+          [ Z ⇨ X ][ Relation.p₁ (R E) ∘ (universal E h₁ h₂ eq) ≈ h₁ ]
+        p₁∘universal≈h₁ {X}{Z} _ h₁ h₂ eq x≈y = let (quot _ p₁z≈ _) = eq (refl Z) in trans X p₁z≈ (cong h₁ x≈y)
+        
+        p₂∘universal≈h₂ : {X Z : Setoid ℓ ℓ} → (E : Equivalence S X) → (h₁ h₂ : Z ⇒ X) →
+          (eq : [ Z ⇨ Quotient-Setoid E ][ arr (Quotient-Coequalizer E) ∘ h₁ ≈ arr (Quotient-Coequalizer E) ∘ h₂ ]) →
+          [ Z ⇨ X ][ Relation.p₂ (R E) ∘ (universal E h₁ h₂ eq) ≈ h₂ ]
+        p₂∘universal≈h₂ {X}{Z} _ h₁ h₂ eq x≈y = let (quot _ _ p₂z≈) = eq (refl Z) in trans X p₂z≈ (cong h₂ x≈y)
+        
 
 --        open SR
 
