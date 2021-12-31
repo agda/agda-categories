@@ -35,6 +35,7 @@ isRelation{X}{Y}{R} f g = JointMono
      (λ{zero → f; (nzero _) → g})
 
 record Relation (X Y : 𝒞.Obj) : Set (suc (o ⊔ ℓ ⊔ e)) where
+  constructor rel
   field
     dom : 𝒞.Obj
     p₁ : dom ⇒ X
@@ -76,7 +77,8 @@ record Equivalence (X : 𝒞.Obj) : Set (suc (o ⊔ ℓ ⊔ e)) where
 module _ where
   open Pullback hiding (P)
   open 𝒞.Equiv
-    
+
+  -- the span obtained from a KP does need that it forms a pullback
   KP⇒EqSpan : {X Y : 𝒞.Obj} (f : X ⇒ Y) (kp : KernelPair 𝒞 f) (p : Pullback 𝒞 (p₁ kp) (p₂ kp)) → EqSpan (p₁ kp) (p₂ kp)
   KP⇒EqSpan f kp p = record
     { R×R = p
@@ -101,5 +103,9 @@ module _ where
       (f ∘ p₂ kp) ∘ p₁ p ≈⟨ assoc ⟩
       f ∘ p₂ kp ∘ p₁ p   ∎
 
-  KP⇒Relation : {X Y : 𝒞.Obj} (f : X ⇒ Y) → (kp : KernelPair 𝒞 f) → (p : Pullback 𝒞 (p₁ kp) (p₂ kp)) → isRelation (p₁ kp) (p₂ kp)
-  KP⇒Relation f kp _ _ _ eq = unique-diagram kp (eq zero) (eq (nzero zero))
+  -- but the induced relation does not
+  KP⇒isRelation : {X Y : 𝒞.Obj} (f : X ⇒ Y) → (kp : KernelPair 𝒞 f) → isRelation (p₁ kp) (p₂ kp)
+  KP⇒isRelation f kp _ _ eq = unique-diagram kp (eq zero) (eq (nzero zero))
+
+  KP⇒Relation : {X Y : 𝒞.Obj} (f : X ⇒ Y) → (kp : KernelPair 𝒞 f) → Relation X X
+  KP⇒Relation f kp = rel (Pullback.P kp) (p₁ kp) (p₂ kp) (KP⇒isRelation f kp)
