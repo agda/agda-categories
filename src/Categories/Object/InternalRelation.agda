@@ -71,10 +71,12 @@ record Equivalence (X : 𝒞.Obj) : Set (suc (o ⊔ ℓ ⊔ e)) where
   field
     eqspan : EqSpan R.p₁ R.p₂
 
+-- move to properties?
+
 module _ where
   open Pullback hiding (P)
   open 𝒞.Equiv
-
+    
   KP⇒EqSpan : {X Y : 𝒞.Obj} (f : X ⇒ Y) (kp : KernelPair 𝒞 f) (p : Pullback 𝒞 (p₁ kp) (p₂ kp)) → EqSpan (p₁ kp) (p₂ kp)
   KP⇒EqSpan f kp p = record
     { R×R = p

@@ -148,7 +148,7 @@ module _ ℓ where
       -- See Prop. 3.5 at https://ncatlab.org/nlab/show/regular+epimorphism ??
       -- instead, just use the general fact that all epis are regular
       -- no, that must be harder. Trying to finish the proof below..
-      pb-of-re-is-re : {A B C : Setoid ℓ ℓ} (f : B ⇒ A) {g : C ⇒ A} → RegularEpi S f → (p : Pullback S f g) → RegularEpi S (p₂ p)
+      pb-of-re-is-re : {A B D : Setoid ℓ ℓ} (f : B ⇒ A) {u : D ⇒ A} → RegularEpi S f → (p : Pullback S f u) → RegularEpi S (p₂ p)
       pb-of-re-is-re {A} {B} {D} f {u} record { C = C ; h = h ; g = g ; coequalizer = coeq } pb = record
          { C = record
              { Carrier = Σ[ x ∈ ∣ C ∣ ]  Σ[ y ∈ ∣ D ∣ ] [ A ][ f ⟨$⟩ (h ⟨$⟩ x) ≈ u ⟨$⟩ y ] × [ A ][ f ⟨$⟩ (g ⟨$⟩ x) ≈ u ⟨$⟩ y ]
@@ -177,8 +177,14 @@ module _ ℓ where
                    p₂ pb-fu ⟨$⟩ fp-xy′           ≈⟨ D.sym (p₂-≈ {fp-xy′} {fp-xy′} (B.refl , D.refl)) ⟩
                    (p₂ pb ∘ P₀⇒P₁ ) ⟨$⟩ mk-× (g ⟨$⟩ x′) y′ fgx≈uy′ ∎
                   }
-             ; coequalize = λ {C₁} {h₁} eq → record
-               { _⟨$⟩_ = λ d → {!!} -- IsCoequalizer.coequalize coeq {C₁} {{!!}} (λ {x}{y} x≈y → {!!}) ⟨$⟩ (u ⟨$⟩ d)
+             ; coequalize = λ {X} {w} eq → record
+               { _⟨$⟩_ = λ d →
+                    IsCoequalizer.coequalize
+                      coeq
+                        {X}
+                        {record { _⟨$⟩_ = λ b → w ⟨$⟩ (P₀⇒P₁ ⟨$⟩ mk-× b d {!!}) ; cong = {!!} }}
+                        {!!}
+                    ⟨$⟩ {!!} -- IsCoequalizer.coequalize coeq {C₁} {{!!}} (λ {x}{y} x≈y → {!!}) ⟨$⟩ (u ⟨$⟩ d)
                ; cong = {!!}
                }
              ; universal  = {!!}
