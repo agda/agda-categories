@@ -59,12 +59,12 @@ regular-is-coeq-kp {A} {B} f record { C = D ; h = h ; g = g ; coequalizer = coeq
     u∘h≈u∘g {X} u u∘p₁≈u∘p₂ =
       begin
         u ∘ h ≈˘⟨ refl⟩∘⟨ p₁∘universal≈h₁ kp ⟩
-        u ∘ (p₁ kp ∘ IsPullback.universal (isPullback kp) (IsCoequalizer.equality coeq))  ≈˘⟨ assoc ⟩
-        (u ∘ p₁ kp) ∘ IsPullback.universal (isPullback kp) (IsCoequalizer.equality coeq)  ≈⟨ u∘p₁≈u∘p₂ ⟩∘⟨refl ⟩
-        (u ∘ p₂ kp) ∘ IsPullback.universal (isPullback kp) (IsCoequalizer.equality coeq)  ≈⟨ assoc ⟩
-        u ∘ (p₂ kp ∘ IsPullback.universal (isPullback kp) (IsCoequalizer.equality coeq))  ≈⟨ refl⟩∘⟨ p₂∘universal≈h₂ kp ⟩
-        u ∘ g ∎
+        u ∘ (p₁ kp  ∘ IsPullback.universal (isPullback kp) (IsCoequalizer.equality coeq))  ≈˘⟨ assoc ⟩
+        (u ∘ p₁ kp) ∘ IsPullback.universal (isPullback kp) (IsCoequalizer.equality coeq)   ≈⟨ u∘p₁≈u∘p₂ ⟩∘⟨refl ⟩
+        (u ∘ p₂ kp) ∘ IsPullback.universal (isPullback kp) (IsCoequalizer.equality coeq)   ≈⟨ assoc ⟩
+        u ∘ (p₂ kp  ∘ IsPullback.universal (isPullback kp) (IsCoequalizer.equality coeq))  ≈⟨ refl⟩∘⟨ p₂∘universal≈h₂ kp ⟩
+        u ∘ g  ∎
 
         where
           module C = Category C using (id; module HomReasoning)
-          open C.HomReasoning 
+          open C.HomReasoning

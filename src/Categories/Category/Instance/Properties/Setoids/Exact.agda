@@ -161,8 +161,9 @@ module _ ℓ where
       -- See Prop. 3.5 at https://ncatlab.org/nlab/show/regular+epimorphism ??
       -- instead, just use the general fact that all epis are regular
       -- no, that must be harder. Trying to finish the proof below..
-      pb-of-re-is-re : {A B D : Setoid ℓ ℓ} (f : B ⇒ A) {u : D ⇒ A} → RegularEpi S f → (p : Pullback S f u) → RegularEpi S (p₂ p)
-      pb-of-re-is-re {A} {B} {D} f {u} record { C = C ; h = h ; g = g ; coequalizer = coeq } pb = record
+      pb-of-re-is-re : {A B D : Setoid ℓ ℓ} (f : B ⇒ A) {u : D ⇒ A} → RegularEpi S f → (pb : Pullback S f u) → RegularEpi S (p₂ pb)
+      pb-of-re-is-re {A}{B}{D} f {u} re pb = 
+       record
          { C = record
              { Carrier = Σ[ x ∈ ∣ C ∣ ]  Σ[ y ∈ ∣ D ∣ ] [ A ][ f ⟨$⟩ (h ⟨$⟩ x) ≈ u ⟨$⟩ y ] × [ A ][ f ⟨$⟩ (g ⟨$⟩ x) ≈ u ⟨$⟩ y ]
              ; _≈_ = λ (x₁ , y₁ , _) (x₂ , y₂ , _) → [ C ][ x₁ ≈ x₂ ] × [ D ][ y₁ ≈ y₂ ]
@@ -182,13 +183,13 @@ module _ ℓ where
              }
          ; coequalizer = record
              { equality   = λ { {x , y , fhx≈uy , fgx≈uy} {x′ , y′ , fhx≈uy′ , fgx≈uy′} (x≈x′ , y≈y′) →
-                 let fp-xy = mk-× {f = f} {u} (h ⟨$⟩ x) y fhx≈uy in
+                 let fp-xy  = mk-× {f = f} {u} (h ⟨$⟩ x) y fhx≈uy in
                  let fp-xy′ = mk-× {f = f} {u} (g ⟨$⟩ x′) y′ fgx≈uy′ in
                  begin
-                   (p₂ pb ∘ P₀⇒P₁ ) ⟨$⟩ fp-xy    ≈⟨ p₂-≈ {fp-xy} {fp-xy} (B.refl , D.refl) ⟩
-                   p₂ pb-fu ⟨$⟩ fp-xy            ≈⟨ y≈y′ ⟩
-                   p₂ pb-fu ⟨$⟩ fp-xy′           ≈⟨ D.sym (p₂-≈ {fp-xy′} {fp-xy′} (B.refl , D.refl)) ⟩
-                   (p₂ pb ∘ P₀⇒P₁ ) ⟨$⟩ mk-× (g ⟨$⟩ x′) y′ fgx≈uy′ ∎
+                   (p₂ pb ∘ P₀⇒P₁) ⟨$⟩ fp-xy    ≈⟨ p₂-≈ {fp-xy} {fp-xy} (B.refl , D.refl) ⟩
+                   p₂ pb-fu ⟨$⟩ fp-xy           ≈⟨ y≈y′ ⟩
+                   p₂ pb-fu ⟨$⟩ fp-xy′          ≈⟨ D.sym (p₂-≈ {fp-xy′} {fp-xy′} (B.refl , D.refl)) ⟩
+                   (p₂ pb ∘ P₀⇒P₁) ⟨$⟩ mk-× (g ⟨$⟩ x′) y′ fgx≈uy′ ∎
                   }
              ; coequalize = λ {X} {w} eq → record
                { _⟨$⟩_ = λ d →
@@ -205,15 +206,22 @@ module _ ℓ where
              }
          }
          where
+
+           C = P (pullback ℓ ℓ f f)
+           h = p₁ (pullback ℓ ℓ f f) 
+           g = p₂ (pullback ℓ ℓ f f) 
+           coeq = regular-is-coeq-kp S f re (pullback ℓ ℓ f f) 
+           
            module B = Setoid B
            module C = Setoid C
            module D = Setoid D
            open SR D
            open IsCoequalizer coeq
+
            pb-fu : Pullback S f u
            pb-fu = pullback ℓ ℓ f u
 
-           open IsoPb S pb-fu pb
+           open IsoPb S pb-fu pb 
 
   Setoids-Exact : Exact (Setoids ℓ ℓ)
   Setoids-Exact = record
