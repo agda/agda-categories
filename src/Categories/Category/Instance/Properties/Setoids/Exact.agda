@@ -162,24 +162,24 @@ module _ ℓ where
       -- instead, just use the general fact that all epis are regular
       -- no, that must be harder. Trying to finish the proof below..
       pb-of-re-is-re : {A B D : Setoid ℓ ℓ} (f : B ⇒ A) {u : D ⇒ A} → RegularEpi S f → (pb : Pullback S f u) → RegularEpi S (p₂ pb)
-      pb-of-re-is-re {A}{B}{D} f {u} re pb = 
+      pb-of-re-is-re {A}{B}{D} f {u} re pb =
        record
          { C = record
              { Carrier = Σ[ x ∈ ∣ C ∣ ]  Σ[ y ∈ ∣ D ∣ ] [ A ][ f ⟨$⟩ (h ⟨$⟩ x) ≈ u ⟨$⟩ y ] × [ A ][ f ⟨$⟩ (g ⟨$⟩ x) ≈ u ⟨$⟩ y ]
              ; _≈_ = λ (x₁ , y₁ , _) (x₂ , y₂ , _) → [ C ][ x₁ ≈ x₂ ] × [ D ][ y₁ ≈ y₂ ]
              ; isEquivalence = record
-                 { refl  = C.refl , D.refl
-                 ; sym   = map C.sym D.sym
-                 ; trans = zip C.trans D.trans
+                 { refl  = (B.refl , B.refl) , D.refl
+                 ; sym   = map (map B.sym B.sym) D.sym
+                 ; trans = zip (zip B.trans B.trans) D.trans
                  }
              }
          ; h = record
              { _⟨$⟩_ = λ { (x , y , fhx≈uy , _) → P₀⇒P₁ ⟨$⟩ mk-× (h ⟨$⟩ x) y fhx≈uy }
-             ; cong = λ { (x≈x′ , y≈y′) → cong P₀⇒P₁ (cong h x≈x′ , y≈y′) }
+             ; cong = λ { (x≈x′ , y≈y′) → cong P₀⇒P₁ (proj₁ x≈x′ , y≈y′) }
              }
          ; g = record
              { _⟨$⟩_ = λ { (x , y , _ , fgx≈uy) → P₀⇒P₁ ⟨$⟩ mk-× (g ⟨$⟩ x) y fgx≈uy }
-             ; cong = λ { (x≈x′ , y≈y′) → cong P₀⇒P₁ (cong g x≈x′ , y≈y′) }
+             ; cong = λ { (x≈x′ , y≈y′) → cong P₀⇒P₁ (proj₂ x≈x′ , y≈y′) }
              }
          ; coequalizer = record
              { equality   = λ { {x , y , fhx≈uy , fgx≈uy} {x′ , y′ , fhx≈uy′ , fgx≈uy′} (x≈x′ , y≈y′) →
@@ -192,13 +192,7 @@ module _ ℓ where
                    (p₂ pb ∘ P₀⇒P₁) ⟨$⟩ mk-× (g ⟨$⟩ x′) y′ fgx≈uy′ ∎
                   }
              ; coequalize = λ {X} {w} eq → record
-               { _⟨$⟩_ = λ d →
-                    IsCoequalizer.coequalize
-                      coeq
-                        {X}
-                        {record { _⟨$⟩_ = λ b → w ⟨$⟩ (P₀⇒P₁ ⟨$⟩ mk-× b d {!!}) ; cong = {!!} }}
-                        {!!}
-                    ⟨$⟩ {!!} -- IsCoequalizer.coequalize coeq {C₁} {{!!}} (λ {x}{y} x≈y → {!!}) ⟨$⟩ (u ⟨$⟩ d)
+               { _⟨$⟩_ = {!!}
                ; cong = {!!}
                }
              ; universal  = λ {S} {pb⟶S} {eq} {x} {y} x≈y → {!!}
@@ -206,22 +200,23 @@ module _ ℓ where
              }
          }
          where
+           pb-fu : Pullback S f u
+           pb-fu = pullback ℓ ℓ f u
+           pb-ff : Pullback S f f
+           pb-ff = pullback ℓ ℓ f f
+           C = P pb-ff
+           h = p₁ pb-ff
+           g = p₂ pb-ff
+           coeq = regular-is-coeq-kp S f re pb-ff
 
-           C = P (pullback ℓ ℓ f f)
-           h = p₁ (pullback ℓ ℓ f f) 
-           g = p₂ (pullback ℓ ℓ f f) 
-           coeq = regular-is-coeq-kp S f re (pullback ℓ ℓ f f) 
-           
            module B = Setoid B
            module C = Setoid C
            module D = Setoid D
            open SR D
            open IsCoequalizer coeq
 
-           pb-fu : Pullback S f u
-           pb-fu = pullback ℓ ℓ f u
 
-           open IsoPb S pb-fu pb 
+           open IsoPb S pb-fu pb
 
   Setoids-Exact : Exact (Setoids ℓ ℓ)
   Setoids-Exact = record
