@@ -50,6 +50,12 @@ g SectionOf f = f ∘ g ≈ id
 _RetractOf_ : (g : B ⇒ A) (f : A ⇒ B) → Set e
 g RetractOf f = g ∘ f ≈ id
 
+record Retract (X U : Obj) : Set (ℓ ⊔ e) where
+  field
+    section : X ⇒ U
+    retract : U ⇒ X
+    is-retract : retract ∘ section ≈ id
+
 record Iso (from : A ⇒ B) (to : B ⇒ A) : Set e where
   field
     isoˡ : to ∘ from ≈ id
