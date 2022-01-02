@@ -17,19 +17,20 @@ open import Categories.Morphism using (_≅_; Epi)
 open import Categories.Morphism.Regular using (RegularEpi)
 open import Categories.Object.InternalRelation using (Equivalence; EqSpan; KP⇒Relation; KP⇒EqSpan; KP⇒Equivalence; module Relation; rel)
 
-open import Level
+open import Data.Bool.Base using (Bool; true; false; T)
+open import Data.Empty.Polymorphic using (⊥)
 open import Data.Fin using (Fin; zero) renaming (suc to nzero)
-open import Data.Product using (∃; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_; map; zip)
+open import Data.Product using (∃; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_; map; zip; swap; map₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Bool
-open import Data.Empty
-open import Function using () renaming (id to id→)
+open import Data.Unit.Polymorphic.Base using (⊤; tt)
+open import Function using (flip) renaming (id to id→; _∘′_ to _∘→_)
 open import Function.Equality as SΠ using (Π; _⇨_) renaming (id to ⟶-id; _∘_ to _∘⟶_)
+open import Function.Definitions using (Surjective)
+open import Level
 open import Relation.Binary using (Setoid; Rel; IsEquivalence)
 import Relation.Binary.Reasoning.Setoid as SR
 
 open import Categories.Diagram.Coequalizer.Properties
-open import Data.Unit.Polymorphic.Base
 open import Categories.Category.Instance.SingletonSet
 
 open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence; refl; sym; trans)
@@ -146,15 +147,15 @@ module _ ℓ where
           h ⟨$⟩ y ∎
           where open SR C
 
-  -- Proposition 1 from "Olov Wilander, Setoids and universes"  
-  Epi⇒Surjective : ∀ {A B : Setoid ℓ ℓ} (f : A ⇒ B) → Epi S f → ((y : ∣ B ∣) → Σ[ x ∈ ∣ A ∣ ] [ B ][ f ⟨$⟩ x ≈ y ])
-  Epi⇒Surjective {A}{B} f epi y = let a , b = g≈h (refl B {y}) in a (λ ()) tt
+  -- Setoid Surjectivity
+  SSurj : {A B : Setoid ℓ ℓ} (f : A ⇒ B) → Set ℓ
+  SSurj {A} {B} f = Surjective (Setoid._≈_ A) (Setoid._≈_ B) (f ⟨$⟩_)
+
+  -- Proposition 1 from "Olov Wilander, Setoids and universes"
+  Epi⇒Surjective : ∀ {A B : Setoid ℓ ℓ} (f : A ⇒ B) → Epi S f → SSurj f
+  Epi⇒Surjective {A}{B} f epi y = g≈h (refl B {y}) .proj₁ (λ ()) _
 
     where
-      π : Bool → Set ℓ
-      π false = Lift _ ⊥
-      π true  = ⊤
-
       infix 3 _↔_
 
       _↔_ : Set ℓ → Set ℓ → Set ℓ
@@ -163,11 +164,11 @@ module _ ℓ where
       B′ : Setoid ℓ ℓ
       B′ = record
         { Carrier =  Bool × ∣ B ∣
-        ; _≈_ = λ { (a , x)  (b , y) → ((π a → Σ[ z ∈ ∣ A ∣ ] [ B ][ f ⟨$⟩ z ≈ x ]) ↔ (π b → Σ[ z ∈ ∣ A ∣ ] [ B ][ f ⟨$⟩ z ≈ y ])) }
+        ; _≈_ = λ { (a , x)  (b , y) → ((T a → Σ[ z ∈ ∣ A ∣ ] [ B ][ f ⟨$⟩ z ≈ x ]) ↔ (T b → Σ[ z ∈ ∣ A ∣ ] [ B ][ f ⟨$⟩ z ≈ y ])) }
         ; isEquivalence = record
-            { refl  = (λ p → p) , (λ p → p)
-            ; sym   = λ (p , q) → q , p
-            ; trans = λ (p , q) (p′ , q′) → (λ x → p′ (p x)) , (λ x → q (q′ x))
+            { refl  = id→ , id→
+            ; sym   = swap
+            ; trans = zip (flip _∘→_) _∘→_
             }
         }
 
@@ -176,13 +177,13 @@ module _ ℓ where
 
       h : B ⇒ B′
       h = record
-          { _⟨$⟩_ = λ x → true , x
+          { _⟨$⟩_ = true ,_
           ; cong = λ x≈y →
-                (λ eq _ → let (a , eq′) = eq tt in a , trans B eq′ x≈y)
-              , (λ eq _ → let (a , eq′) = eq tt in a , (trans B eq′ (sym B x≈y)))
+                (λ eq _ → map₂ (λ z → trans B z x≈y) (eq _))
+              , (λ eq _ → let (a , eq′) = eq _ in a , (trans B eq′ (sym B x≈y)))
           }
 
-      g≈h : [ B ⇨ B′ ][ g ≈ h ] 
+      g≈h : [ B ⇨ B′ ][ g ≈ h ]
       g≈h = epi g h λ {x}{y} x≈y → (λ u _ → x , cong f x≈y) , λ _ ()
 
   -- not needed for exactness, but worthwhile
@@ -191,19 +192,58 @@ module _ ℓ where
     { h = p₁ kp
     ; g = p₂ kp
     ; coequalizer = record
-        { equality   = λ { {mk-× elem₁ elem₂ commute₁} → commute kp }  
-        ; coequalize = λ {_}{h} h∘p₁≈h∘p₂ → record
-          { _⟨$⟩_     = λ y → let (x , eq) = surj y in h ⟨$⟩ x
-          ; cong     = λ {y₁}{y₂} y₁≈y₂ → let (x₁ , eq₁) = surj y₁ ; (x₂ , eq₂) = surj y₂ in h∘p₁≈h∘p₂ (refl A , refl A)
-          }
-        ; universal = λ {_}{h}{eq}{x₁}{x₂} x₁≈x₂ → eq (x₁≈x₂ , {!!})
-        ; unique = {!!}
+        { equality   = λ {x} {y} → commute kp {x} {y}
+        ; coequalize = λ {_} {h} → Coeq.coeq {h = h}
+        ; universal = λ {C} {h} {eq} → Coeq.universal′ {C} {h} (λ {x} {y} → eq {x} {y})
+        ; unique = λ {_}{h}{i}{eq} h≈i∘f x≈y → Coeq.unique″ {_} {h} (λ {x} {y} → eq {x} {y}) {i} h≈i∘f x≈y
         }
     }
-
     where
       kp = pullback ℓ ℓ f f
-      open Pullback 
+      open Pullback
+      module Coeq {C : S.Obj} {h : A S.⇒ C} where
+        open SR C
+        f⁻¹∘h : ∣ B ∣ → ∣ C ∣
+        f⁻¹∘h b = h ⟨$⟩ proj₁ (surj b)
+        module _ (h∘p₁≈h∘p₂ : h S.∘ p₁ kp S.≈ h S.∘ p₂ kp) where
+          cong′ : {i j : ∣ B ∣} → [ B ][ i ≈ j ] → [ C ][ h ⟨$⟩ proj₁ (surj i) ≈ h ⟨$⟩ proj₁ (surj j) ]
+          cong′ {y₁}{y₂} y₁≈y₂ = h∘p₁≈h∘p₂ {pt₁} {pt₁} (refl A , refl A)
+            where
+              x₁ x₂ : ∣ A ∣
+              x₁ = surj y₁ .proj₁
+              x₂ = surj y₂ .proj₁
+              eq₁ : [ B ][ f ⟨$⟩ x₁ ≈ y₁ ]
+              eq₁ = surj y₁ .proj₂
+              eq₂ : [ B ][ f ⟨$⟩ x₂ ≈ y₂ ]
+              eq₂ = surj y₂ .proj₂
+              pt₁ : FiberProduct f f
+              pt₁ = mk-× x₁ x₂ (trans B eq₁ (trans B y₁≈y₂ (sym B eq₂)))
+          coeq : B S.⇒ C
+          coeq = record { _⟨$⟩_ = f⁻¹∘h ; cong = cong′ }
+          universal′ : h S.≈ coeq S.∘ f
+          universal′ {x} {y} x≈y = begin
+            h ⟨$⟩ x                     ≈⟨ cong h x≈y ⟩
+            h ⟨$⟩ y                     ≈⟨ h∘p₁≈h∘p₂ {mk-× y x₁ (sym B eq₁)} {mk-× x x₁ (trans B (cong f x≈y) (sym B eq₁))} (sym A x≈y , refl A) ⟩
+            h ⟨$⟩ proj₁ (surj (f ⟨$⟩ y)) ≡⟨⟩ -- by definition of f⁻¹∘h
+            f⁻¹∘h (f ⟨$⟩ y)             ≡⟨⟩ -- by definition of coeq
+            coeq S.∘ f ⟨$⟩ y            ∎
+            where
+              x₁ : ∣ A ∣
+              x₁ = surj (f ⟨$⟩ y) .proj₁
+              eq₁ : [ B ][ f ⟨$⟩ x₁ ≈ f ⟨$⟩ y ]
+              eq₁ = surj (f ⟨$⟩ y) .proj₂
+          unique″ : {i : B S.⇒ C} → h S.≈ i S.∘ f → i S.≈ coeq
+          unique″ {i} h≈i∘f {x} {y} x≈y = begin
+            i ⟨$⟩ x              ≈⟨ cong i x≈y ⟩
+            i ⟨$⟩ y              ≈⟨ cong i (sym B eq₁) ⟩
+            i ∘ f ⟨$⟩ x₁         ≈⟨ sym C (h≈i∘f (refl A)) ⟩
+            h ⟨$⟩ x₁             ≡⟨⟩ -- by definition of f⁻¹∘h
+            f⁻¹∘h y             ∎
+            where
+              x₁ : ∣ A ∣
+              x₁ = surj y .proj₁
+              eq₁ : [ B ][ f ⟨$⟩ x₁ ≈ y ]
+              eq₁ = surj y .proj₂
 
   Setoids-Regular : Regular (Setoids ℓ ℓ)
   Setoids-Regular = record
@@ -226,57 +266,17 @@ module _ ℓ where
       pb-of-re-is-re {A}{B}{D} f {u} record { C = C ; h = _ ; g = _ ; coequalizer = coeq } pb =
         Surjective⇒RegularEpi (p₂ pb) λ y →
           let (x , eq) = Epi⇒Surjective f (Coequalizer⇒Epi S record { arr = f ; isCoequalizer = coeq }) (u ⟨$⟩ y) in
-          (P₀⇒P₁ ⟨$⟩ mk-× x y eq) , p₂-≈ (refl (P pb-fu)) -- why is it yellow?
-          -- (Epi⇒Surjective (p₂ pb) (λ g₁ g₂ eq → {!Pullback.unique-diagram pb ? ?!}))
-      {- record
-         { C = record
-             { Carrier = Σ[ x ∈ ∣ C ∣ ]  Σ[ y ∈ ∣ D ∣ ] [ A ][ f ⟨$⟩ (h ⟨$⟩ x) ≈ u ⟨$⟩ y ] × [ A ][ f ⟨$⟩ (g ⟨$⟩ x) ≈ u ⟨$⟩ y ]
-             ; _≈_ = λ (x₁ , y₁ , _) (x₂ , y₂ , _) → [ C ][ x₁ ≈ x₂ ] × [ D ][ y₁ ≈ y₂ ]
-             ; isEquivalence = record
-                 { refl  = C.refl , D.refl
-                 ; sym   = map C.sym D.sym
-                 ; trans = zip C.trans D.trans
-                 }
-             }
-         ; h = record
-             { _⟨$⟩_ = λ { (x , y , fhx≈uy , _) → P₀⇒P₁ ⟨$⟩ mk-× (h ⟨$⟩ x) y fhx≈uy }
-             ; cong = λ { (x≈x′ , y≈y′) → cong P₀⇒P₁ (cong h x≈x′ , y≈y′) }
-             }
-         ; g = record
-             { _⟨$⟩_ = λ { (x , y , _ , fgx≈uy) → P₀⇒P₁ ⟨$⟩ mk-× (g ⟨$⟩ x) y fgx≈uy }
-             ; cong = λ { (x≈x′ , y≈y′) → cong P₀⇒P₁ (cong g x≈x′ , y≈y′) }
-             }
-         ; coequalizer = record
-             { equality   = λ { {x , y , fhx≈uy , fgx≈uy} {x′ , y′ , fhx≈uy′ , fgx≈uy′} (x≈x′ , y≈y′) →
-                 let fp-xy  = mk-× {f = f} {u} (h ⟨$⟩ x) y fhx≈uy in
-                 let fp-xy′ = mk-× {f = f} {u} (g ⟨$⟩ x′) y′ fgx≈uy′ in
-                 begin
-                   (p₂ pb ∘ P₀⇒P₁) ⟨$⟩ fp-xy    ≈⟨ p₂-≈ {fp-xy} {fp-xy} (B.refl , D.refl) ⟩
-                   p₂ pb-fu ⟨$⟩ fp-xy           ≈⟨ y≈y′ ⟩
-                   p₂ pb-fu ⟨$⟩ fp-xy′          ≈⟨ D.sym (p₂-≈ {fp-xy′} {fp-xy′} (B.refl , D.refl)) ⟩
-                   (p₂ pb ∘ P₀⇒P₁) ⟨$⟩ mk-× (g ⟨$⟩ x′) y′ fgx≈uy′ ∎
-                  }
-             ; coequalize = λ {X} {w} eq → record
-               { _⟨$⟩_ = λ d → let (b , eq′) = Epi⇒Surjective f (Coequalizer⇒Epi S (record { arr = f ; isCoequalizer = coeq })) (u ⟨$⟩ d) in
-                 w ⟨$⟩ (P₀⇒P₁ ⟨$⟩ mk-× b d eq′)
-               ; cong = λ x≈y → {!!}
-               }
-             ; universal  = λ {S} {pb⟶S} {eq} {x} {y} x≈y → {!!}
-             ; unique     = {!!}
-             }
-         -}
+          let pt = mk-× x y eq in
+          P₀⇒P₁ ⟨$⟩ pt , p₂-≈ {pt} {pt} (refl B , refl D)
          where
 
            pb-fu : Pullback S f u
            pb-fu = pullback ℓ ℓ f u
            pb-ff : Pullback S f f
            pb-ff = pullback ℓ ℓ f f
-
            module B = Setoid B
            module C = Setoid C
            module D = Setoid D
-           open SR D
-
            open IsoPb S pb-fu pb
 
   Setoids-Exact : Exact (Setoids ℓ ℓ)
@@ -315,4 +315,3 @@ module _ ℓ where
           (eq : [ Z ⇨ Quotient-Setoid E ][ arr (Quotient-Coequalizer E) ∘ h₁ ≈ arr (Quotient-Coequalizer E) ∘ h₂ ]) →
           [ Z ⇨ X ][ Relation.p₂ (R E) ∘ (universal E h₁ h₂ eq) ≈ h₂ ]
         p₂∘universal≈h₂ {X}{Z} _ h₁ h₂ eq x≈y = let (eqn _ _ p₂z≈) = eq (refl Z) in trans X p₂z≈ (cong h₂ x≈y)
-
