@@ -182,7 +182,8 @@ module _ ℓ where
           }
 
       g≈h : [ B ⇨ B′ ][ g ≈ h ] 
-      g≈h = epi g h (λ {x}{y} x≈y → (λ u _ → x , cong f x≈y) , λ _ ())
+      g≈h = epi g h λ {x}{y} x≈y → (λ u _ → x , cong f x≈y) , λ _ ()
+
   Setoids-Regular : Regular (Setoids ℓ ℓ)
   Setoids-Regular = record
     { finitely-complete = record
@@ -208,7 +209,7 @@ module _ ℓ where
              { Carrier = Σ[ x ∈ ∣ C ∣ ]  Σ[ y ∈ ∣ D ∣ ] [ A ][ f ⟨$⟩ (h ⟨$⟩ x) ≈ u ⟨$⟩ y ] × [ A ][ f ⟨$⟩ (g ⟨$⟩ x) ≈ u ⟨$⟩ y ]
              ; _≈_ = λ (x₁ , y₁ , _) (x₂ , y₂ , _) → [ C ][ x₁ ≈ x₂ ] × [ D ][ y₁ ≈ y₂ ]
              ; isEquivalence = record
-                 { refl  = λ { {x , _} → C.refl {x} , D.refl}
+                 { refl  = C.refl , D.refl
                  ; sym   = map C.sym D.sym
                  ; trans = zip C.trans D.trans
                  }
@@ -241,16 +242,19 @@ module _ ℓ where
              }
          }
          where
-           
+
+           pb-fu : Pullback S f u
+           pb-fu = pullback ℓ ℓ f u
+           pb-ff : Pullback S f f
+           pb-ff = pullback ℓ ℓ f f
+
            module B = Setoid B
            module C = Setoid C
            module D = Setoid D
            open SR D
 
-           pb-fu : Pullback S f u
-           pb-fu = pullback ℓ ℓ f u
 
-           open IsoPb S pb-fu pb 
+           open IsoPb S pb-fu pb
 
   Setoids-Exact : Exact (Setoids ℓ ℓ)
   Setoids-Exact = record
