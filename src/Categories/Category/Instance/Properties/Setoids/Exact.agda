@@ -145,9 +145,10 @@ module _ ℓ where
           h ⟨$⟩ (R.p₂ ⟨$⟩ r) ≈⟨ cong h ≈y ⟩
           h ⟨$⟩ y ∎
           where open SR C
+
   -- Proposition 1 from "Olov Wilander, Setoids and universes"  
-  Epi-Surjective : ∀ {A B : Setoid ℓ ℓ} (f : A ⇒ B) → Epi S f → ((y : ∣ B ∣) → Σ[ x ∈ ∣ A ∣ ] [ B ][ f ⟨$⟩ x ≈ y ])
-  Epi-Surjective {A}{B} f epi y = let a , b = g≈h (refl B {y}) in a (λ ()) tt
+  Epi⇒Surjective : ∀ {A B : Setoid ℓ ℓ} (f : A ⇒ B) → Epi S f → ((y : ∣ B ∣) → Σ[ x ∈ ∣ A ∣ ] [ B ][ f ⟨$⟩ x ≈ y ])
+  Epi⇒Surjective {A}{B} f epi y = let a , b = g≈h (refl B {y}) in a (λ ()) tt
 
     where
       π : Bool → Set ℓ
@@ -184,6 +185,26 @@ module _ ℓ where
       g≈h : [ B ⇨ B′ ][ g ≈ h ] 
       g≈h = epi g h λ {x}{y} x≈y → (λ u _ → x , cong f x≈y) , λ _ ()
 
+  -- not needed for exactness, but worthwhile
+  Surjective⇒RegularEpi : ∀ {A B : Setoid ℓ ℓ} (f : A ⇒ B) → ((y : ∣ B ∣) → Σ[ x ∈ ∣ A ∣ ] [ B ][ f ⟨$⟩ x ≈ y ]) → RegularEpi S f
+  Surjective⇒RegularEpi {A}{B} f surj = record
+    { h = p₁ kp
+    ; g = p₂ kp
+    ; coequalizer = record
+        { equality   = λ { {mk-× elem₁ elem₂ commute₁} → commute kp }  
+        ; coequalize = λ {_}{h} h∘p₁≈h∘p₂ → record
+          { _⟨$⟩_     = λ y → let (x , eq) = surj y in h ⟨$⟩ x
+          ; cong     = λ {y₁}{y₂} y₁≈y₂ → let (x₁ , eq₁) = surj y₁ ; (x₂ , eq₂) = surj y₂ in h∘p₁≈h∘p₂ (refl A , refl A)
+          }
+        ; universal = λ {_}{h}{eq}{x₁}{x₂} x₁≈x₂ → eq (x₁≈x₂ , {!!})
+        ; unique = {!!}
+        }
+    }
+
+    where
+      kp = pullback ℓ ℓ f f
+      open Pullback 
+
   Setoids-Regular : Regular (Setoids ℓ ℓ)
   Setoids-Regular = record
     { finitely-complete = record
@@ -199,12 +220,15 @@ module _ ℓ where
     where
       pb : ∀ {A B} {f : A ⇒ B} (kp : KernelPair S f) → Pullback S (p₁ kp) (p₂ kp)
       pb kp = pullback ℓ ℓ (p₁ kp) (p₂ kp)
-      -- See Prop. 3.5 at https://ncatlab.org/nlab/show/regular+epimorphism ??
-      -- instead, just use the general fact that all epis are regular
-      -- no, that must be harder. Trying to finish the proof below..
-      pb-of-re-is-re : {A B D : Setoid ℓ ℓ} (f : B ⇒ A) {u : D ⇒ A} → RegularEpi S f → (pb : Pullback S f u) → RegularEpi S (p₂ pb)
-      pb-of-re-is-re {A}{B}{D} f {u} record { C = C ; h = h ; g = g ; coequalizer = coeq } pb = 
-       record
+
+      pb-of-re-is-re : {A B D : Setoid ℓ ℓ} (f : B ⇒ A) {u : D ⇒ A} →
+        RegularEpi S f → (pb : Pullback S f u) → RegularEpi S (p₂ pb)
+      pb-of-re-is-re {A}{B}{D} f {u} record { C = C ; h = _ ; g = _ ; coequalizer = coeq } pb =
+        Surjective⇒RegularEpi (p₂ pb) λ y →
+          let (x , eq) = Epi⇒Surjective f (Coequalizer⇒Epi S record { arr = f ; isCoequalizer = coeq }) (u ⟨$⟩ y) in
+          (P₀⇒P₁ ⟨$⟩ mk-× x y eq) , p₂-≈ (refl (P pb-fu)) -- why is it yellow?
+          -- (Epi⇒Surjective (p₂ pb) (λ g₁ g₂ eq → {!Pullback.unique-diagram pb ? ?!}))
+      {- record
          { C = record
              { Carrier = Σ[ x ∈ ∣ C ∣ ]  Σ[ y ∈ ∣ D ∣ ] [ A ][ f ⟨$⟩ (h ⟨$⟩ x) ≈ u ⟨$⟩ y ] × [ A ][ f ⟨$⟩ (g ⟨$⟩ x) ≈ u ⟨$⟩ y ]
              ; _≈_ = λ (x₁ , y₁ , _) (x₂ , y₂ , _) → [ C ][ x₁ ≈ x₂ ] × [ D ][ y₁ ≈ y₂ ]
@@ -233,14 +257,14 @@ module _ ℓ where
                    (p₂ pb ∘ P₀⇒P₁) ⟨$⟩ mk-× (g ⟨$⟩ x′) y′ fgx≈uy′ ∎
                   }
              ; coequalize = λ {X} {w} eq → record
-               { _⟨$⟩_ = λ d → let (b , eq′) = Epi-Surjective f (Coequalizer⇒Epi S (record { arr = f ; isCoequalizer = coeq })) (u ⟨$⟩ d) in
+               { _⟨$⟩_ = λ d → let (b , eq′) = Epi⇒Surjective f (Coequalizer⇒Epi S (record { arr = f ; isCoequalizer = coeq })) (u ⟨$⟩ d) in
                  w ⟨$⟩ (P₀⇒P₁ ⟨$⟩ mk-× b d eq′)
                ; cong = λ x≈y → {!!}
                }
              ; universal  = λ {S} {pb⟶S} {eq} {x} {y} x≈y → {!!}
              ; unique     = {!!}
              }
-         }
+         -}
          where
 
            pb-fu : Pullback S f u
@@ -252,7 +276,6 @@ module _ ℓ where
            module C = Setoid C
            module D = Setoid D
            open SR D
-
 
            open IsoPb S pb-fu pb
 
