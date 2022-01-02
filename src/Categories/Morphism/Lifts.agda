@@ -26,29 +26,44 @@ open Definitions 𝒞
 --   V ╱     V
 --   B ────> Y
 --      g
+--
+-- Note that the filler is /not/ required to be unique.
+--
+-- For ease of use, we define lifts in two steps:
+-- * 'Filler' describes the data required to fill a /particular/ commutative square.
+-- * 'Lifts' then quantifies over all commutative squares.
 
-record Lifts {A B X Y} (i : A ⇒ B) (p : X ⇒ Y) : Set (ℓ ⊔ e) where
+record Filler {A B X Y} {i : A ⇒ B} {f : A ⇒ X} {g : B ⇒ Y} {p : X ⇒ Y}
+              (comm : CommutativeSquare i f g p) : Set (ℓ ⊔ e) where
   field
-    -- The diagonal filler of a given commutative square. Note that this
-    -- isn't required to be unique.
-    filler : ∀ {f : A ⇒ X} {g : B ⇒ Y} → CommutativeSquare i f g p → B ⇒ X
-    -- The "left" triangle of the diagram must commute.
-    fill-commˡ : ∀ {f g} → (sq : CommutativeSquare i f g p) → filler sq ∘ i ≈ f
-    -- The "right" triangle of the diagram must commute.
-    fill-commʳ : ∀ {f g} → (sq : CommutativeSquare i f g p) → p ∘ filler sq ≈ g
+    filler : B ⇒ X
+    fill-commˡ : filler ∘ i ≈ f
+    fill-commʳ : p ∘ filler ≈ g
 
--- We often want to discuss lifting properties with respect to /classes/ of morphisms,
--- not just individual morphisms.
+Lifts : ∀ {A B X Y} → (i : A ⇒ B) → (p : X ⇒ Y) → Set (ℓ ⊔ e)
+Lifts i p = ∀ {f g} → (comm : CommutativeSquare i f g p) → Filler comm
+
+--------------------------------------------------------------------------------
+-- Lifings of Morphism Classes
 
 -- Shorthand for denoting a class of morphisms.
 MorphismClass : (p : Level) → Set (o ⊔ ℓ ⊔ suc p)
 MorphismClass p = ∀ {X Y} → X ⇒ Y → Set p
 
--- A morphisms has the left lifting property with respect to a class of morphisms 'P'
--- if it has the left lifting property with each element of 'P'.
-LeftLifts : ∀ {p} {A B} → (i : A ⇒ B) → MorphismClass p → Set (o ⊔ ℓ ⊔ e ⊔ p)
-LeftLifts i P = ∀ {X Y} → (f : X ⇒ Y) → P f → Lifts i f
+-- A morphism 'i' is called "projective" with respect to some morphism class 'J'
+-- if it has the left-lifting property against every element of 'J'.
+Projective : ∀ {j} {A B} → MorphismClass j → (i : A ⇒ B) → Set (o ⊔ ℓ ⊔ e ⊔ j)
+Projective J i = ∀ {X Y} → (f : X ⇒ Y) → J f → Lifts i f
 
--- The situation is analogous for right lifting properties.
-RightLifts : ∀ {p} {A B} → (i : A ⇒ B) → MorphismClass p → Set (o ⊔ ℓ ⊔ e ⊔ p)
-RightLifts i P = ∀ {X Y} → (f : X ⇒ Y) → P f → Lifts f i
+-- Dually, a morphism 'i' is called "injective" with repsect to a morphism class 'J'
+-- if it has the right-lifting property against every element of 'J'.
+Injective : ∀ {j} {A B} → MorphismClass j → (i : A ⇒ B) → Set (o ⊔ ℓ ⊔ e ⊔ j)
+Injective J i = ∀ {X Y} → (f : X ⇒ Y) → J f → Lifts f i
+
+-- The class of J-Projective morphisms.
+Proj : ∀ {j} (J : MorphismClass j) → MorphismClass (o ⊔ ℓ ⊔ e ⊔ j)
+Proj J = Projective J
+
+-- The class of J-Injective morphisms.
+Inj : ∀ {j} (J : MorphismClass j) → MorphismClass (o ⊔ ℓ ⊔ e ⊔ j)
+Inj J = Injective J
