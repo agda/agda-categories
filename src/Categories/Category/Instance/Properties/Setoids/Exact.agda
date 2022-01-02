@@ -13,14 +13,16 @@ open import Categories.Diagram.Coequalizer.Properties
 open import Categories.Diagram.KernelPair using (KernelPair)
 open import Categories.Diagram.Pullback using (Pullback; up-to-iso)
 open import Categories.Diagram.Pullback.Properties
-open import Categories.Morphism using (_≅_)
+open import Categories.Morphism using (_≅_; Epi)
 open import Categories.Morphism.Regular using (RegularEpi)
-open import Categories.Object.InternalRelation using (Equivalence; EqSpan; KP⇒Relation; KP⇒EqSpan; module Relation; rel)
+open import Categories.Object.InternalRelation using (Equivalence; EqSpan; KP⇒Relation; KP⇒EqSpan; KP⇒Equivalence; module Relation; rel)
 
 open import Level
 open import Data.Fin using (Fin; zero) renaming (suc to nzero)
 open import Data.Product using (∃; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_; map; zip)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Data.Bool
+open import Data.Empty
 open import Function using () renaming (id to id→)
 open import Function.Equality as SΠ using (Π; _⇨_) renaming (id to ⟶-id; _∘_ to _∘⟶_)
 open import Relation.Binary using (Setoid; Rel; IsEquivalence)
@@ -32,6 +34,7 @@ open import Categories.Category.Instance.SingletonSet
 
 open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence; refl; sym; trans)
 open Π using (_⟨$⟩_; cong)
+
 
 module _ ℓ where
   private
@@ -142,7 +145,44 @@ module _ ℓ where
           h ⟨$⟩ (R.p₂ ⟨$⟩ r) ≈⟨ cong h ≈y ⟩
           h ⟨$⟩ y ∎
           where open SR C
+  -- Proposition 1 from "Olov Wilander, Setoids and universes"  
+  Epi-Surjective : ∀ {A B : Setoid ℓ ℓ} (f : A ⇒ B) → Epi S f → ((y : ∣ B ∣) → Σ[ x ∈ ∣ A ∣ ] [ B ][ f ⟨$⟩ x ≈ y ])
+  Epi-Surjective {A}{B} f epi y = let a , b = g≈h (refl B {y}) in a (λ ()) tt
 
+    where
+      π : Bool → Set ℓ
+      π false = Lift _ ⊥
+      π true  = ⊤
+
+      infix 3 _↔_
+
+      _↔_ : Set ℓ → Set ℓ → Set ℓ
+      A ↔ B = (A → B) × (B → A)
+
+      B′ : Setoid ℓ ℓ
+      B′ = record
+        { Carrier =  Bool × ∣ B ∣
+        ; _≈_ = λ { (a , x)  (b , y) → ((π a → Σ[ z ∈ ∣ A ∣ ] [ B ][ f ⟨$⟩ z ≈ x ]) ↔ (π b → Σ[ z ∈ ∣ A ∣ ] [ B ][ f ⟨$⟩ z ≈ y ])) }
+        ; isEquivalence = record
+            { refl  = (λ p → p) , (λ p → p)
+            ; sym   = λ (p , q) → q , p
+            ; trans = λ (p , q) (p′ , q′) → (λ x → p′ (p x)) , (λ x → q (q′ x))
+            }
+        }
+
+      g : B ⇒ B′
+      g = record { _⟨$⟩_ = λ x → false , x ; cong = λ _ → (λ _ ()) , (λ _ ()) }
+
+      h : B ⇒ B′
+      h = record
+          { _⟨$⟩_ = λ x → true , x
+          ; cong = λ x≈y →
+                (λ eq _ → let (a , eq′) = eq tt in a , trans B eq′ x≈y)
+              , (λ eq _ → let (a , eq′) = eq tt in a , (trans B eq′ (sym B x≈y)))
+          }
+
+      g≈h : [ B ⇨ B′ ][ g ≈ h ] 
+      g≈h = epi g h (λ {x}{y} x≈y → (λ u _ → x , cong f x≈y) , λ _ ())
   Setoids-Regular : Regular (Setoids ℓ ℓ)
   Setoids-Regular = record
     { finitely-complete = record
@@ -162,13 +202,13 @@ module _ ℓ where
       -- instead, just use the general fact that all epis are regular
       -- no, that must be harder. Trying to finish the proof below..
       pb-of-re-is-re : {A B D : Setoid ℓ ℓ} (f : B ⇒ A) {u : D ⇒ A} → RegularEpi S f → (pb : Pullback S f u) → RegularEpi S (p₂ pb)
-      pb-of-re-is-re {A}{B}{D} f {u} re pb = 
+      pb-of-re-is-re {A}{B}{D} f {u} record { C = C ; h = h ; g = g ; coequalizer = coeq } pb = 
        record
          { C = record
              { Carrier = Σ[ x ∈ ∣ C ∣ ]  Σ[ y ∈ ∣ D ∣ ] [ A ][ f ⟨$⟩ (h ⟨$⟩ x) ≈ u ⟨$⟩ y ] × [ A ][ f ⟨$⟩ (g ⟨$⟩ x) ≈ u ⟨$⟩ y ]
              ; _≈_ = λ (x₁ , y₁ , _) (x₂ , y₂ , _) → [ C ][ x₁ ≈ x₂ ] × [ D ][ y₁ ≈ y₂ ]
              ; isEquivalence = record
-                 { refl  = C.refl , D.refl
+                 { refl  = λ { {x , _} → C.refl {x} , D.refl}
                  ; sym   = map C.sym D.sym
                  ; trans = zip C.trans D.trans
                  }
@@ -192,31 +232,20 @@ module _ ℓ where
                    (p₂ pb ∘ P₀⇒P₁) ⟨$⟩ mk-× (g ⟨$⟩ x′) y′ fgx≈uy′ ∎
                   }
              ; coequalize = λ {X} {w} eq → record
-               { _⟨$⟩_ = λ d →
-                    IsCoequalizer.coequalize
-                      coeq
-                        {X}
-                        {record { _⟨$⟩_ = λ b → w ⟨$⟩ (P₀⇒P₁ ⟨$⟩ mk-× b d {!!}) ; cong = {!!} }}
-                        {!!}
-                    ⟨$⟩ {!!} -- IsCoequalizer.coequalize coeq {C₁} {{!!}} (λ {x}{y} x≈y → {!!}) ⟨$⟩ (u ⟨$⟩ d)
-               ; cong = {!!}
+               { _⟨$⟩_ = λ d → let (b , eq′) = Epi-Surjective f (Coequalizer⇒Epi S (record { arr = f ; isCoequalizer = coeq })) (u ⟨$⟩ d) in
+                 w ⟨$⟩ (P₀⇒P₁ ⟨$⟩ mk-× b d eq′)
+               ; cong = λ x≈y → {!!}
                }
              ; universal  = λ {S} {pb⟶S} {eq} {x} {y} x≈y → {!!}
              ; unique     = {!!}
              }
          }
          where
-
-           C = P (pullback ℓ ℓ f f)
-           h = p₁ (pullback ℓ ℓ f f) 
-           g = p₂ (pullback ℓ ℓ f f) 
-           coeq = regular-is-coeq-kp S f re (pullback ℓ ℓ f f) 
            
            module B = Setoid B
            module C = Setoid C
            module D = Setoid D
            open SR D
-           open IsCoequalizer coeq
 
            pb-fu : Pullback S f u
            pb-fu = pullback ℓ ℓ f u
@@ -260,17 +289,3 @@ module _ ℓ where
           [ Z ⇨ X ][ Relation.p₂ (R E) ∘ (universal E h₁ h₂ eq) ≈ h₂ ]
         p₂∘universal≈h₂ {X}{Z} _ h₁ h₂ eq x≈y = let (eqn _ _ p₂z≈) = eq (refl Z) in trans X p₂z≈ (cong h₂ x≈y)
 
-
-{-
-  -- hm, this must be true, but how to show it?
-  Epi-Regular : ∀ {X Y : Setoid ℓ ℓ} (f : X ⇒ Y) → Epi S f → IsCoequalizer S (p₁ (pullback ℓ ℓ f f)) (p₂ (pullback ℓ ℓ f f)) f
-  Epi-Regular {X}{Y} f epi = record
-      { equality   = λ { {x}{y} (eq₁ , eq₂) → commute (pullback ℓ ℓ f f) {x} {y} (eq₁ , eq₂) }
-      ; coequalize = λ {C} {h} x → record
-        { _⟨$⟩_ = λ y → {!!}
-        ; cong = {!!}
-        }
-      ; universal  = {!!}
-      ; unique     = {!!}
-      }
--}

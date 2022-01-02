@@ -109,3 +109,6 @@ module _ where
 
   KP⇒Relation : {X Y : 𝒞.Obj} (f : X ⇒ Y) → (kp : KernelPair 𝒞 f) → Relation X X
   KP⇒Relation f kp = rel (Pullback.P kp) (p₁ kp) (p₂ kp) (KP⇒isRelation f kp)
+
+  KP⇒Equivalence : {X Y : 𝒞.Obj} (f : X ⇒ Y) → (kp : KernelPair 𝒞 f) (pb : Pullback 𝒞 (p₁ kp) (p₂ kp)) → Equivalence X
+  KP⇒Equivalence f kp pb = record { R = KP⇒Relation f kp ; eqspan = KP⇒EqSpan f kp pb }
