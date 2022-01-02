@@ -61,6 +61,16 @@ record Iso (from : A ⇒ B) (to : B ⇒ A) : Set e where
     isoˡ : to ∘ from ≈ id
     isoʳ : from ∘ to ≈ id
 
+-- We often say that a morphism "is an iso" if there exists some inverse to it.
+-- This does buck the naming convention we use somewhat, but it lines up
+-- better with the literature.
+record IsIso (from : A ⇒ B) : Set (ℓ ⊔ e) where
+  field
+    inv : B ⇒ A
+    iso : Iso from inv 
+
+  open Iso iso public
+
 infix 4 _≅_
 record _≅_ (A B : Obj) : Set (ℓ ⊔ e) where
   field
