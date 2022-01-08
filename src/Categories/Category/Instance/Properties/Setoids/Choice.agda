@@ -33,8 +33,9 @@ module _ ℓ where
   record CoSHEP (A : Setoid ℓ ℓ) : Set (Level.suc ℓ) where
     field
       {P} : Setoid ℓ ℓ
-      pre : P ⇒ A
-      choice : {X : Setoid ℓ ℓ} (f : X ⇒ P) → SSurj ℓ f → Σ[ g ∈ ∣ P ⇨ X ∣ ] [ P ⇨ P ][ f ∘ g ≈ id ]
+      pre   : P ⇒ A
+      surj  : SSurj ℓ pre
+      split : {X : Setoid ℓ ℓ} (f : X ⇒ P) → SSurj ℓ f → Σ[ g ∈ ∣ P ⇨ X ∣ ] [ P ⇨ P ][ f ∘ g ≈ id ]
 
   Setoid-CoSHEP : (A : Setoid ℓ ℓ) → CoSHEP A
   Setoid-CoSHEP A = record
@@ -45,9 +46,10 @@ module _ ℓ where
            }
     ; pre = record
            { _⟨$⟩_ = λ x → x
-           ; cong = λ {x}{y} eq → P.subst (λ z → [ A ][ x ≈ z ]) eq (refl A)
+           ; cong = λ {x} eq → P.subst (λ z → [ A ][ x ≈ z ]) eq (refl A)
            }
-    ; choice = λ {X} f surj → record
+    ; surj = λ x → x , refl A
+    ; split = λ {X} f surj → record
            { _⟨$⟩_ = λ y → let x , _ = surj y in x
            ; cong = λ {x}{y} x≡y → P.subst (λ z → [ X ][ proj₁ (surj x) ≈ proj₁ (surj z) ]) x≡y (refl X)
            }
