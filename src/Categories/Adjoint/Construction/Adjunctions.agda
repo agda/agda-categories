@@ -27,6 +27,10 @@ record SplitObj : Set (suc o ⊔ suc ℓ ⊔ suc e) where
     G : Functor D C
     adj : F ⊣ G
     eqM : G ∘F F ≃ Monad.F M
+    unit-eq : ∀ A → eqM.⇐.η A C.∘ M.η.η A C.≈ adj.unit.η A
+    -- mult-eq :
+    -- unit M = unit adj
+    -- mult M = G . counit . F
     -- probably this is asking too little...
 
 record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
