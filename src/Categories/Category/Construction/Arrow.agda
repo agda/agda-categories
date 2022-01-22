@@ -22,6 +22,7 @@ private
     A B D E : Obj
 
 record Morphism : Set (o ⊔ ℓ) where
+  constructor mor
   field
     {dom} : Obj
     {cod} : Obj

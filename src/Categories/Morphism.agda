@@ -50,10 +50,26 @@ g SectionOf f = f ∘ g ≈ id
 _RetractOf_ : (g : B ⇒ A) (f : A ⇒ B) → Set e
 g RetractOf f = g ∘ f ≈ id
 
+record Retract (X U : Obj) : Set (ℓ ⊔ e) where
+  field
+    section : X ⇒ U
+    retract : U ⇒ X
+    is-retract : retract ∘ section ≈ id
+
 record Iso (from : A ⇒ B) (to : B ⇒ A) : Set e where
   field
     isoˡ : to ∘ from ≈ id
     isoʳ : from ∘ to ≈ id
+
+-- We often say that a morphism "is an iso" if there exists some inverse to it.
+-- This does buck the naming convention we use somewhat, but it lines up
+-- better with the literature.
+record IsIso (from : A ⇒ B) : Set (ℓ ⊔ e) where
+  field
+    inv : B ⇒ A
+    iso : Iso from inv 
+
+  open Iso iso public
 
 infix 4 _≅_
 record _≅_ (A B : Obj) : Set (ℓ ⊔ e) where
