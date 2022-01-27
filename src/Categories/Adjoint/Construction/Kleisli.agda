@@ -1,8 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category.Core using (Category)
-open import Categories.Category
-open import Categories.Monad
+open import Categories.Monad using (Monad)
 
 module Categories.Adjoint.Construction.Kleisli {o ℓ e} {C : Category o ℓ e} (M : Monad C) where
 
