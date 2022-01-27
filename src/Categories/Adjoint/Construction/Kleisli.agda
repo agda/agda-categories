@@ -5,15 +5,14 @@ open import Categories.Monad using (Monad)
 
 module Categories.Adjoint.Construction.Kleisli {o ℓ e} {C : Category o ℓ e} (M : Monad C) where
 
-open import Categories.Category.Construction.Kleisli
-open import Categories.Adjoint
-open import Categories.Functor
-open import Categories.Morphism
-open import Categories.Functor.Properties
-open import Categories.NaturalTransformation.Core
+open import Categories.Category.Construction.Kleisli using (Kleisli)
+open import Categories.Adjoint using (_⊣_)
+open import Categories.Functor using (Functor; _∘F_)
+open import Categories.Morphism using (Iso)
+open import Categories.Functor.Properties using ([_]-resp-square)
+open import Categories.NaturalTransformation.Core using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)
 open import Categories.Morphism.Reasoning C
-open import Categories.Tactic.Category
 
 private
   module C = Category C
@@ -111,7 +110,7 @@ Free⊣Forgetful = record
 module KleisliExtension where
 
   κ : {A B : Obj} → (f : A ⇒ F₀ B) → F₀ A ⇒ F₀ B
-  κ {A} {B} f = M.μ.η B ∘ F₁ f
+  κ {_} {B} f = M.μ.η B ∘ F₁ f
 
   f-iso⇒Klf-iso : ∀ {A B : Obj} → (f : A ⇒ F₀ B) → (g : B ⇒ F₀ A) → Iso (Kleisli M) g f → Iso C (κ f) (κ g)
   f-iso⇒Klf-iso {A} {B} f g (record { isoˡ = isoˡ ; isoʳ = isoʳ }) = record
@@ -119,7 +118,7 @@ module KleisliExtension where
        (M.μ.η A ∘ F₁ g) ∘ M.μ.η B ∘ F₁ f           ≈⟨ center (sym (M.μ.commute g)) ⟩
        M.μ.η A ∘ (M.μ.η (F₀ A) ∘ F₁ (F₁ g)) ∘ F₁ f ≈⟨ assoc²'' ○ pushˡ (Monad.sym-assoc M) ⟩
        M.μ.η A ∘ F₁ (M.μ.η A) ∘ F₁ (F₁ g) ∘ F₁ f   ≈⟨ refl⟩∘⟨ sym trihom ⟩
-       M.μ.η A ∘ F₁ (M.μ.η A ∘ F₁ g ∘ f)           ≈⟨ refl⟩∘⟨ F-resp-≈ (sym assoc) ⟩
+       M.μ.η A ∘ F₁ (M.μ.η A ∘ F₁ g ∘ f)           ≈⟨ refl⟩∘⟨ F-resp-≈ (sym-assoc) ⟩
        M.μ.η A ∘ F₁ ((M.μ.η A ∘ F₁ g) ∘ f)         ≈⟨ refl⟩∘⟨ F-resp-≈ isoʳ ○ Monad.identityˡ M ⟩
        C.id                                        ∎
     ; isoʳ = begin
@@ -141,16 +140,16 @@ module KleisliExtension where
   Klf-iso⇒f-iso {A} {B} f g record { isoˡ = isoˡ ; isoʳ = isoʳ } = record
     { isoˡ = begin
       (M.μ.η B ∘ F₁ f) ∘ g                              ≈⟨ introʳ (Monad.identityʳ M) ⟩∘⟨refl ⟩
-      ((M.μ.η B ∘ F₁ f) ∘ (M.μ.η A ∘ M.η.η (F₀ A))) ∘ g ≈⟨ solve C ⟩
+      ((M.μ.η B ∘ F₁ f) ∘ (M.μ.η A ∘ M.η.η (F₀ A))) ∘ g ≈⟨ assoc ⟩∘⟨refl ○ assoc ○ refl⟩∘⟨ assoc ○ refl⟩∘⟨ refl⟩∘⟨ assoc ⟩
       M.μ.η B ∘ F₁ f ∘ (M.μ.η A) ∘ (M.η.η (F₀ A) ∘ g)   ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ M.η.commute g ⟩
-      M.μ.η B ∘ F₁ f ∘ M.μ.η A ∘ (F₁ g ∘ M.η.η B)       ≈⟨ solve C ⟩
+      M.μ.η B ∘ F₁ f ∘ M.μ.η A ∘ (F₁ g ∘ M.η.η B)       ≈˘⟨ assoc ⟩∘⟨refl ○ assoc ○ refl⟩∘⟨ assoc ○ refl⟩∘⟨ refl⟩∘⟨ assoc ⟩
       ((M.μ.η B ∘ F₁ f) ∘ M.μ.η A ∘ F₁ g) ∘ M.η.η B     ≈⟨ elimˡ isoʳ ⟩
       M.η.η B                                           ∎
     ; isoʳ = begin
       (M.μ.η A ∘ F₁ g) ∘ f                              ≈⟨ introʳ (Monad.identityʳ M) ⟩∘⟨refl ⟩
-      ((M.μ.η A ∘ F₁ g) ∘ (M.μ.η B ∘ M.η.η (F₀ B))) ∘ f ≈⟨ solve C ⟩
+      ((M.μ.η A ∘ F₁ g) ∘ (M.μ.η B ∘ M.η.η (F₀ B))) ∘ f ≈⟨ assoc ⟩∘⟨refl ○ assoc ○ refl⟩∘⟨ assoc ○ refl⟩∘⟨ refl⟩∘⟨ assoc ⟩
       M.μ.η A ∘ F₁ g ∘ (M.μ.η B) ∘ (M.η.η (F₀ B) ∘ f)   ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ M.η.commute f ⟩
-      M.μ.η A ∘ F₁ g ∘ M.μ.η B ∘ (F₁ f ∘ M.η.η A)       ≈⟨ solve C ⟩
+      M.μ.η A ∘ F₁ g ∘ M.μ.η B ∘ (F₁ f ∘ M.η.η A)       ≈˘⟨ assoc ⟩∘⟨refl ○ assoc ○ refl⟩∘⟨ assoc ○ refl⟩∘⟨ refl⟩∘⟨ assoc ⟩
       ((M.μ.η A ∘ F₁ g) ∘ M.μ.η B ∘ F₁ f) ∘ M.η.η A     ≈⟨ elimˡ isoˡ ⟩
       M.η.η A                                           ∎
     }
@@ -158,10 +157,10 @@ module KleisliExtension where
   kl-ext-compat : ∀ {A B X : Obj} → (f : A ⇒ F₀ B) → (g : B ⇒ F₀ X) → κ ((κ g) ∘ f) ≈ κ g ∘ κ f
   kl-ext-compat {A} {B} {X} f g = begin
     M.μ.η X ∘ F₁ ((M.μ.η X ∘ F₁ g) ∘ f)         ≈⟨ refl⟩∘⟨ F-resp-≈ assoc ○ refl⟩∘⟨ trihom ⟩
-    M.μ.η X ∘ (F₁ (M.μ.η X) ∘ F₁ (F₁ g) ∘ F₁ f) ≈⟨ solve C ⟩
+    M.μ.η X ∘ (F₁ (M.μ.η X) ∘ F₁ (F₁ g) ∘ F₁ f) ≈⟨ sym-assoc ⟩
     (M.μ.η X ∘ F₁ (M.μ.η X)) ∘ F₁ (F₁ g) ∘ F₁ f ≈⟨ Monad.assoc M ⟩∘⟨refl ⟩
     (M.μ.η X ∘ M.μ.η (F₀ X)) ∘ F₁ (F₁ g) ∘ F₁ f ≈⟨ center (M.μ.commute g) ⟩
-    M.μ.η X ∘ (F₁ g ∘ M.μ.η B) ∘ F₁ f           ≈⟨ solve C ⟩
+    M.μ.η X ∘ (F₁ g ∘ M.μ.η B) ∘ F₁ f           ≈⟨ sym-assoc ○ (sym-assoc ⟩∘⟨refl) ○ assoc ⟩
     (M.μ.η X ∘ F₁ g) ∘ M.μ.η B ∘ F₁ f           ∎
     where
     trihom : {X Y Z W : Obj} {f : X ⇒ Y} {g : Y ⇒ Z} {h : Z ⇒ W} → F₁ (h ∘ g ∘ f) ≈ F₁ h ∘ F₁ g ∘ F₁ f
