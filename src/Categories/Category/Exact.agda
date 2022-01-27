@@ -13,7 +13,6 @@ open import Categories.Diagram.Pullback
 open import Categories.Category.Cocartesian
 open import Categories.Object.Coproduct
 open import Categories.Morphism
-open import Categories.Category.Complete.Finitely using (FinitelyComplete)
 open import Categories.Diagram.Coequalizer
 open import Categories.Diagram.KernelPair
 

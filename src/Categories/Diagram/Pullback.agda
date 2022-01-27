@@ -52,7 +52,7 @@ record IsPullback {P : Obj} (p₁ : P ⇒ X) (p₂ : P ⇒ Y) (f : X ⇒ Z) (g :
     universal eq ≈˘⟨ unique refl refl ⟩
     i            ∎
     where eq = extendʳ commute
-  
+
 
 -- Pullback of two arrows with a common codomain
 record Pullback (f : X ⇒ Z) (g : Y ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
@@ -83,12 +83,10 @@ up-to-iso pullback pullback′ = record
     repack∘ pullback pullback′ pullback″ =
       unique pullback″
              (glueTrianglesʳ (p₁∘universal≈h₁ pullback″) (p₁∘universal≈h₁ pullback′))
-             (glueTrianglesʳ (p₂∘universal≈h₂ pullback″) (p₂∘universal≈h₂ pullback′)) 
+             (glueTrianglesʳ (p₂∘universal≈h₂ pullback″) (p₂∘universal≈h₂ pullback′))
 
     repack-cancel : (pullback pullback′ : Pullback f g) → repack pullback pullback′ ∘ repack pullback′ pullback ≈ id
     repack-cancel pullback pullback′ = repack∘ pullback′ pullback pullback′ ○ ⟺ (id-unique pullback′)
-
-
 
 swap : Pullback f g → Pullback g f
 swap p = record
