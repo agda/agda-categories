@@ -226,6 +226,23 @@ module SliceHom (A : Obj) where
           open 1Category (hom X.Y A)
           open HomReasoning
 
+  slice-inv : ∀ {X}{Y}{H : Slice⇒₁ X Y}{K} (α : Slice⇒₂ H K) → (f : Slice⇒₁.h K ⇒₂ Slice⇒₁.h H) → (f ∘ᵥ (Slice⇒₂.ϕ α) ≈ id₂) → Slice⇒₂ K H
+  slice-inv {X}{Y}{H}{K} α f p = slicearr₂ $ begin
+                  H.Δ                               ≈˘⟨ identity₂ˡ ⟩
+                  id₂ ∘ᵥ H.Δ                        ≈⟨ (Equiv.sym ▷id₂ ⟩∘⟨refl) ⟩
+                  (Y.arr ▷ id₂) ∘ᵥ H.Δ              ≈˘⟨ (refl⟩⊚⟨ p ⟩∘⟨refl) ⟩
+                  (Y.arr ▷ (f ∘ᵥ α.ϕ)) ∘ᵥ H.Δ       ≈˘⟨ (∘ᵥ-distr-▷ ⟩∘⟨refl) ⟩
+                  (Y.arr ▷ f ∘ᵥ Y.arr ▷ α.ϕ) ∘ᵥ H.Δ ≈⟨ assoc ⟩
+                  Y.arr ▷ f ∘ᵥ Y.arr ▷ α.ϕ ∘ᵥ H.Δ   ≈˘⟨ (refl⟩∘⟨ α.E ) ⟩
+                  Y.arr ▷ f ∘ᵥ K.Δ                  ∎
+    where module X = SliceObj X
+          module Y = SliceObj Y
+          module H = Slice⇒₁ H
+          module K = Slice⇒₁ K
+          module α = Slice⇒₂ α          
+          open 1Category (hom X.Y A)
+          open HomReasoning
+
 LaxSlice : Obj → Bicategory (o ⊔ ℓ) (ℓ ⊔ e) e (o ⊔ t)
 LaxSlice A   = record
   { enriched = record
@@ -233,99 +250,25 @@ LaxSlice A   = record
     ; hom = SliceHomCat
     ; id = const (SliceHom.slicearr₁ ρ⇐)
     ; ⊚ = _⊚/_
-    ; ⊚-assoc = λ {W X Y Z} →
-      let module W = SliceObj W
-          module X = SliceObj X
-          module Y = SliceObj Y
-          module Z = SliceObj Z
-      in 
-      niHelper (record
+    ; ⊚-assoc = niHelper (record
       { η       = λ ((H , J) , K) → α⇒/ H J K
-      ; η⁻¹     = λ where
-        ((H , J) , K) →
-          let module H = Slice⇒₁ H
-              module J = Slice⇒₁ J
-              module K = Slice⇒₁ K
-              open 1Category (hom W.Y A)
-              open HomReasoning
-          in
-          SliceHom.slicearr₂ $ begin
-            Slice⇒₁.Δ (F₀ _⊚/_ (F₀ _⊚/_ (H , J) , K))                                 ≈˘⟨ identity₂ˡ ⟩
-            id₂ ∘ᵥ (Slice⇒₁.Δ (F₀ _⊚/_ (F₀ _⊚/_ (H , J) , K)))                        ≈⟨ (Equiv.sym ▷id₂ ⟩∘⟨refl) ⟩
-            (Z.arr ▷ id₂) ∘ᵥ (Slice⇒₁.Δ (F₀ _⊚/_ (F₀ _⊚/_ (H , J) , K)))              ≈˘⟨ (refl⟩⊚⟨ ⊚-assoc.iso.isoˡ ((H.h , J.h) , K.h) ⟩∘⟨refl) ⟩
-            (Z.arr ▷ (α⇐ ∘ᵥ α⇒)) ∘ᵥ (Slice⇒₁.Δ (F₀ _⊚/_ (F₀ _⊚/_ (H , J) , K)))       ≈˘⟨ (∘ᵥ-distr-▷ ⟩∘⟨refl) ⟩
-            (Z.arr ▷ α⇐ ∘ᵥ Z.arr ▷ α⇒) ∘ᵥ (Slice⇒₁.Δ (F₀ _⊚/_ (F₀ _⊚/_ (H , J) , K))) ≈⟨ assoc ⟩
-            Z.arr ▷ α⇐ ∘ᵥ Z.arr ▷ α⇒ ∘ᵥ (Slice⇒₁.Δ (F₀ _⊚/_ (F₀ _⊚/_ (H , J) , K)))   ≈˘⟨ (refl⟩∘⟨ Slice⇒₂.E (α⇒/ H J K)) ⟩
-            Z.arr ▷ α⇐ ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (H  , F₀ _⊚/_ (J , K)))                  ∎
-
-      ; commute = λ where
-        {(H , J) , K} {(H' , J') , K'} (( β , γ ) , δ) →
-          let module β = Slice⇒₂ β
-              module γ = Slice⇒₂ γ
-              module δ = Slice⇒₂ δ
-          in ⊚-assoc.⇒.commute (((β.ϕ , γ.ϕ) , δ.ϕ))
-      ; iso = λ where
-         ((H , J) , K) →
-          let module H = Slice⇒₁ H
-              module J = Slice⇒₁ J
-              module K = Slice⇒₁ K
-          in record { isoˡ = ⊚-assoc.iso.isoˡ ((H.h , J.h) , K.h) ; isoʳ = ⊚-assoc.iso.isoʳ ( (H.h , J.h) , K.h) }
+      ; η⁻¹     = λ ((H , J) , K) → slice-inv (α⇒/ H J K) α⇐ (⊚-assoc.iso.isoˡ _)
+      ; commute = λ f → ⊚-assoc.⇒.commute _
+      ; iso = λ HJK → record { isoˡ = ⊚-assoc.iso.isoˡ _ ; isoʳ = ⊚-assoc.iso.isoʳ _ }
       })
-    ; unitˡ = λ {X}{Y} →
-      let module X = SliceObj X
-          module Y = SliceObj Y
-      in niHelper (record
-      { η = λ where
-          (i , H) → λ⇒/ H
-      ; η⁻¹ = λ where
-          (i , H) →
-            let module H = Slice⇒₁ H
-                open 1Category (hom X.Y A)
-                open HomReasoning
-                open Equiv
-            in SliceHom.slicearr₂ $ begin
-               Slice⇒₁.Δ (F₀ _⊚/_ (SliceHom.slicearr₁ ρ⇐ , H))                                   ≈˘⟨ identity₂ˡ ⟩
-               (id₂ ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (SliceHom.slicearr₁ ρ⇐ , H)))                          ≈˘⟨ (▷id₂ ⟩∘⟨refl ) ⟩
-               (Y.arr ▷ id₂) ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (SliceHom.slicearr₁ ρ⇐ , H))                  ≈˘⟨ (refl⟩⊚⟨ unitˡ.iso.isoˡ _ ⟩∘⟨refl) ⟩
-               (Y.arr ▷ (λ⇐ ∘ᵥ λ⇒)) ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (SliceHom.slicearr₁ ρ⇐ , H))           ≈˘⟨ (∘ᵥ-distr-▷ ⟩∘⟨refl) ⟩
-               ((Y.arr ▷ λ⇐) ∘ᵥ (Y.arr ▷ λ⇒)) ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (SliceHom.slicearr₁ ρ⇐ , H)) ≈⟨ assoc ⟩
-               (Y.arr ▷ λ⇐) ∘ᵥ (Y.arr ▷ λ⇒) ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (SliceHom.slicearr₁ ρ⇐ , H))   ≈˘⟨ (refl⟩∘⟨ Slice⇒₂.E (λ⇒/ H)) ⟩
-               Y.arr ▷ λ⇐ ∘ᵥ H.Δ                                                                 ∎
-      ; commute = λ where
-          {lift _ , SliceHom.slicearr₁ {Hh} HΔ} {lift _ , SliceHom.slicearr₁ {Jh} JΔ} (lift _ , SliceHom.slicearr₂ {ϕ} E) → λ⇒-∘ᵥ-▷
-      ; iso = λ where
-          (i , SliceHom.slicearr₁ {h} Δ) →
-            record { isoˡ = unitˡ.iso.isoˡ (_ , h)
-                   ; isoʳ = unitˡ.iso.isoʳ (_ , h) }
+    ; unitˡ = niHelper (record
+      { η       = λ (i , H) → λ⇒/ H
+      ; η⁻¹     = λ (i , H) → slice-inv (λ⇒/ H) λ⇐ (unitˡ.iso.isoˡ _)
+      ; commute = λ f → λ⇒-∘ᵥ-▷
+      ; iso     = λ iH → record { isoˡ = unitˡ.iso.isoˡ _ ; isoʳ = unitˡ.iso.isoʳ _ }
       })
-    ; unitʳ = λ {X}{Y} →
-      let module X = SliceObj X
-          module Y = SliceObj Y
-      in niHelper (record
-         { η = λ (H , i) → ρ⇒/ H
-         ; η⁻¹ = λ (H , i) →
-            let module H = Slice⇒₁ H
-                open 1Category (hom X.Y A)
-                open HomReasoning
-                open Equiv
-            in SliceHom.slicearr₂ $ begin
-               Slice⇒₁.Δ (F₀ _⊚/_ (H , SliceHom.slicearr₁ ρ⇐ ))                                   ≈˘⟨ identity₂ˡ ⟩
-               (id₂ ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (H , SliceHom.slicearr₁ ρ⇐ )))                          ≈˘⟨ (▷id₂ ⟩∘⟨refl ) ⟩
-               (Y.arr ▷ id₂) ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (H , SliceHom.slicearr₁ ρ⇐))                   ≈˘⟨ (refl⟩⊚⟨ unitʳ.iso.isoˡ _ ⟩∘⟨refl) ⟩
-               (Y.arr ▷ (ρ⇐ ∘ᵥ ρ⇒)) ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (H , SliceHom.slicearr₁ ρ⇐))            ≈˘⟨ (∘ᵥ-distr-▷ ⟩∘⟨refl) ⟩
-               ((Y.arr ▷ ρ⇐) ∘ᵥ (Y.arr ▷ ρ⇒)) ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (H , SliceHom.slicearr₁ ρ⇐ )) ≈⟨ assoc ⟩
-               (Y.arr ▷ ρ⇐) ∘ᵥ (Y.arr ▷ ρ⇒) ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (H , SliceHom.slicearr₁ ρ⇐))    ≈˘⟨ (refl⟩∘⟨ Slice⇒₂.E (ρ⇒/ H)) ⟩
-               Y.arr ▷ ρ⇐ ∘ᵥ H.Δ                                                                  ∎
+    ; unitʳ = niHelper (record
+         { η       = λ (H , i) → ρ⇒/ H
+         ; η⁻¹     = λ (H , i) → slice-inv (ρ⇒/ H) ρ⇐ (unitʳ.iso.isoˡ _)
          ; commute = λ f → ρ⇒-∘ᵥ-◁
-         ; iso = λ where
-          ((SliceHom.slicearr₁ {h} Δ) , i) →
-            record { isoˡ = unitʳ.iso.isoˡ (h , _)
-                   ; isoʳ = unitʳ.iso.isoʳ (h , _) } })
+         ; iso     = λ Hi → record { isoˡ = unitʳ.iso.isoˡ _ ; isoʳ = unitʳ.iso.isoʳ _ } })
     }
-  ; triangle = λ {X}{Y}{Z}{H}{K} → triangle
-  ; pentagon = λ {V} {W} {X} {Y} {Z} {H} {J} {K} {L} → pentagon
+  ; triangle = triangle
+  ; pentagon = pentagon
   }
-  where
-    open SliceHom A
-    open Shorthands
-    open Functor
+  where open SliceHom A
