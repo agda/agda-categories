@@ -11,9 +11,14 @@ module Categories.Bicategory.Construction.LaxSlice
 
 open import Categories.Enriched.Category
 open import Categories.Category renaming (Category to 1Category)
-open import Categories.Morphism.Reasoning
-
+import Categories.Morphism.Reasoning as MR
 open import Categories.Bicategory.Extras 𝒞
+
+open import Categories.Functor.Construction.Constant using (const)
+open import Categories.Functor.Bifunctor using (Bifunctor)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; niHelper)
+open import Data.Product using (_,_)
+open import Categories.Functor using (Functor)
 
 open import Level
 
@@ -47,7 +52,6 @@ module SliceHom (A : Obj) where
       E   : K.Δ ≈ (Y.arr ▷ ϕ ∘ᵥ H.Δ)
 
   open hom.Equiv
-  open import Categories.Functor using (Functor)
 
   _∘'_ : ∀ {X Y : SliceObj A}{H K L : Slice⇒₁ X Y} → Slice⇒₂ K L → Slice⇒₂ H K → Slice⇒₂ H L
   _∘'_ {X}{Y}{H}{K}{L} (slicearr₂ {ϕ = ϕ} E) (slicearr₂ {ϕ = ψ} F) = slicearr₂ {ϕ = ϕ ∘ᵥ ψ} 
@@ -66,9 +70,7 @@ module SliceHom (A : Obj) where
           open 1Category (hom X.Y A)
           open HomReasoning
           open Equiv
-          open import Categories.Morphism.Reasoning (hom X.Y A)
-          open import Relation.Binary.Core using (Rel)
-          open import Function.Base using (_$_)
+          open MR (hom X.Y A)
           
   open SliceObj
   SliceHomCat : SliceObj A → SliceObj A → 1Category (o ⊔ ℓ) (ℓ ⊔ e) e
@@ -102,6 +104,8 @@ module SliceHom (A : Obj) where
               open 1Category (hom X.Y A)
               open HomReasoning
 
+  
+
 LaxSlice : Obj → Bicategory (o ⊔ ℓ) (ℓ ⊔ e) e (o ⊔ t)
 LaxSlice A   = record
   { enriched = record
@@ -121,7 +125,7 @@ LaxSlice A   = record
                 module K = Slice⇒₁ K
                 open 1Category (hom W.Y A)
                 open HomReasoning
-                module Help = Categories.Morphism.Reasoning (hom W.Y A)
+                module Help = MR (hom W.Y A)
             in SliceHom.slicearr₂ (begin (
               Slice⇒₁.Δ (F₀ _⊚'_ (H  , F₀ _⊚'_ (J , K))) ≈⟨ Equiv.refl ⟩
               (α⇒ ∘ᵥ H.Δ ◁ J.h ⊚₀ K.h) ∘ᵥ ((α⇒ ∘ᵥ J.Δ ◁ K.h) ∘ᵥ K.Δ) ≈⟨ (refl⟩∘⟨ assoc) ⟩
@@ -276,17 +280,9 @@ LaxSlice A   = record
   ; pentagon = λ {V} {W} {X} {Y} {Z} {H} {J} {K} {L} → pentagon
   }
   where
-    open import Categories.NaturalTransformation.NaturalIsomorphism
-      using (NaturalIsomorphism; niHelper)
     open SliceHom A
     open Shorthands
-    open import Categories.Functor
     open Functor
-    open import Categories.Functor.Construction.Constant
-    
-    open import Categories.Functor.Bifunctor
-
-    open import Data.Product
     _⊚'_ : ∀ {X Y Z : SliceObj A} → Bifunctor (SliceHomCat Y Z) (SliceHomCat X Y) (SliceHomCat X Z)
     _⊚'_ {X}{Y}{Z} = record
              { F₀ = λ where
