@@ -20,8 +20,9 @@ open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIs
 open import Function using (_$_)
 open import Data.Product using (_,_)
 open import Categories.Functor using (Functor)
+open Functor using (F₀)
 
-open import Level
+open import Level using (_⊔_)
 
 record SliceObj (X : Obj) : Set (t ⊔ o) where
   constructor sliceobj
@@ -41,29 +42,28 @@ module SliceHom (A : Obj) where
       {h} : X.Y ⇒₁ Y.Y
       Δ   : X.arr ⇒₂ (Y.arr ∘ₕ h)
 
-  record Slice⇒₂ {X Y : SliceObj A} (H K : Slice⇒₁ X Y) : Set (ℓ ⊔ e) where
+  record Slice⇒₂ {X Y : SliceObj A} (J K : Slice⇒₁ X Y) : Set (ℓ ⊔ e) where
     constructor slicearr₂
     private
       module Y = SliceObj Y
-      module H = Slice⇒₁ H
+      module J = Slice⇒₁ J
       module K = Slice⇒₁ K
 
     field
-      {ϕ} : H.h ⇒₂ K.h
-      E   : K.Δ ≈ (Y.arr ▷ ϕ ∘ᵥ H.Δ)
+      {ϕ} : J.h ⇒₂ K.h
+      E   : K.Δ ≈ (Y.arr ▷ ϕ ∘ᵥ J.Δ)
 
-  open hom.Equiv
 
-  _∘'_ : ∀ {X Y : SliceObj A}{H K L : Slice⇒₁ X Y} → Slice⇒₂ K L → Slice⇒₂ H K → Slice⇒₂ H L
-  _∘'_ {X}{Y}{H}{K}{L} (slicearr₂ {ϕ = ϕ} E) (slicearr₂ {ϕ = ψ} F) = slicearr₂ {ϕ = ϕ ∘ᵥ ψ} $ begin
+  _∘ᵥ/_ : ∀ {X Y : SliceObj A}{J K L : Slice⇒₁ X Y} → Slice⇒₂ K L → Slice⇒₂ J K → Slice⇒₂ J L
+  _∘ᵥ/_ {X}{Y}{J}{K}{L} (slicearr₂ {ϕ = ϕ} E) (slicearr₂ {ϕ = ψ} F) = slicearr₂ {ϕ = ϕ ∘ᵥ ψ} $ begin
       L.Δ                             ≈⟨ E ⟩
       (Y.arr ▷ ϕ ∘ᵥ K.Δ)              ≈⟨ refl⟩∘⟨ F ⟩
-      Y.arr ▷ ϕ ∘ᵥ (Y.arr ▷ ψ ∘ᵥ H.Δ) ≈˘⟨ hom.assoc ⟩
-      (Y.arr ▷ ϕ ∘ᵥ Y.arr ▷ ψ) ∘ᵥ H.Δ ≈⟨ (∘ᵥ-distr-▷ ⟩∘⟨refl) ⟩
-      Y.arr ▷ (ϕ ∘ᵥ ψ) ∘ᵥ H.Δ         ∎
+      Y.arr ▷ ϕ ∘ᵥ (Y.arr ▷ ψ ∘ᵥ J.Δ) ≈˘⟨ assoc ⟩
+      (Y.arr ▷ ϕ ∘ᵥ Y.arr ▷ ψ) ∘ᵥ J.Δ ≈⟨ (∘ᵥ-distr-▷ ⟩∘⟨refl) ⟩
+      Y.arr ▷ (ϕ ∘ᵥ ψ) ∘ᵥ J.Δ         ∎
     where module X = SliceObj X
           module Y = SliceObj Y
-          module H = Slice⇒₁ H
+          module J = Slice⇒₁ J
           module K = Slice⇒₁ K
           module L = Slice⇒₁ L
           open 1Category (hom X.Y A)
@@ -71,15 +71,13 @@ module SliceHom (A : Obj) where
           open Equiv
           open MR (hom X.Y A)
           
-  open SliceObj
   SliceHomCat : SliceObj A → SliceObj A → 1Category (o ⊔ ℓ) (ℓ ⊔ e) e
   SliceHomCat X Y = record
     { Obj = Slice⇒₁ X Y
     ; _⇒_ = Slice⇒₂
-    ; _≈_ = λ where
-      (slicearr₂ {ϕ} _) (slicearr₂ {ψ} _) → ϕ ≈ ψ 
+    ; _≈_ = λ (slicearr₂ {ϕ} _) (slicearr₂ {ψ} _) → ϕ ≈ ψ 
     ; id = slice-id _
-    ; _∘_ = _∘'_
+    ; _∘_ = _∘ᵥ/_
     ; assoc = hom.assoc
     ; sym-assoc = hom.sym-assoc
     ; identityˡ = hom.identityˡ
@@ -92,58 +90,66 @@ module SliceHom (A : Obj) where
     ; ∘-resp-≈ = hom.∘-resp-≈
     }
     where
-      slice-id : ∀ (H : Slice⇒₁ X Y) → Slice⇒₂ H H
-      slice-id H = slicearr₂ $ begin
-        H.Δ                 ≈˘⟨ identity₂ˡ ⟩
-        id₂ ∘ᵥ H.Δ          ≈⟨ (sym ▷id₂ ⟩∘⟨refl) ⟩
-        (arr Y ▷ id₂) ∘ H.Δ ∎
-        where module X = SliceObj X
-              module H = Slice⇒₁ H
+      open hom.Equiv
+      module X = SliceObj X
+      module Y = SliceObj Y
+
+      slice-id : ∀ (J : Slice⇒₁ X Y) → Slice⇒₂ J J
+      slice-id J = slicearr₂ $ begin
+        J.Δ                 ≈˘⟨ identity₂ˡ ⟩
+        id₂ ∘ᵥ J.Δ          ≈˘⟨ ▷id₂ ⟩∘⟨refl ⟩
+        (Y.arr ▷ id₂) ∘ J.Δ ∎
+        where module J = Slice⇒₁ J
               open 1Category (hom X.Y A)
               open HomReasoning
 
-  open Shorthands
-  open Functor
+  _⊚₀/_ : ∀ {X Y Z : SliceObj A} → Slice⇒₁ Y Z → Slice⇒₁ X Y → Slice⇒₁ X Z
+  _⊚₀/_ {X}{Y}{Z} J K = slicearr₁ ((α⇒ ∘ᵥ J.Δ ◁ K.h) ∘ᵥ K.Δ)
+    where module K = Slice⇒₁ K
+          module J = Slice⇒₁ J
+  
+  _⊚₁/_ : ∀ {X Y Z : SliceObj A} → {J J' : Slice⇒₁ Y Z} → {K K' : Slice⇒₁ X Y} → Slice⇒₂ J J' → Slice⇒₂ K K' → Slice⇒₂ (J ⊚₀/ K) (J' ⊚₀/ K')
+  _⊚₁/_ {X}{Y}{Z}{J'}{J}{K'}{K} δ γ = slicearr₂ $ begin
+    (α⇒ ∘ᵥ J.Δ ◁ K.h) ∘ᵥ K.Δ                                                      ≈⟨ (refl⟩∘⟨ γ.E) ⟩
+    (α⇒ ∘ᵥ J.Δ ◁ K.h) ∘ᵥ (Y.arr ▷ γ.ϕ ∘ᵥ K'.Δ)                                    ≈⟨ ((refl⟩∘⟨ δ.E ⟩⊚⟨refl) ⟩∘⟨refl) ⟩
+    (α⇒ ∘ᵥ (Z.arr ▷ δ.ϕ ∘ᵥ J'.Δ) ◁ K.h) ∘ᵥ (Y.arr ▷ γ.ϕ ∘ᵥ K'.Δ)                  ≈˘⟨ (((refl⟩∘⟨ ∘ᵥ-distr-◁ ) ⟩∘⟨refl)) ⟩
+
+    -- generalized assoc
+    (α⇒ ∘ᵥ ((Z.arr ▷ δ.ϕ) ◁ K.h ∘ᵥ J'.Δ ◁ K.h)) ∘ᵥ (Y.arr ▷ γ.ϕ ∘ᵥ K'.Δ)          ≈˘⟨ assoc ⟩
+    ((α⇒ ∘ᵥ ((Z.arr ▷ δ.ϕ) ◁ K.h ∘ᵥ J'.Δ ◁ K.h)) ∘ᵥ Y.arr ▷ γ.ϕ) ∘ᵥ K'.Δ          ≈⟨ (assoc ⟩∘⟨refl) ⟩
+    (α⇒ ∘ᵥ ((Z.arr ▷ δ.ϕ) ◁ K.h ∘ᵥ J'.Δ ◁ K.h) ∘ᵥ Y.arr ▷ γ.ϕ) ∘ᵥ K'.Δ            ≈⟨ ((refl⟩∘⟨ assoc) ⟩∘⟨refl) ⟩
+                   
+    (α⇒ ∘ᵥ (Z.arr ▷ δ.ϕ) ◁ K.h ∘ᵥ (J'.Δ ◁ K.h ∘ᵥ Y.arr ▷ γ.ϕ)) ∘ᵥ K'.Δ            ≈˘⟨ ((refl⟩∘⟨ (refl⟩∘⟨ ◁-▷-exchg)) ⟩∘⟨refl) ⟩
+    -- generalized assoc
+    (α⇒ ∘ᵥ (Z.arr ▷ δ.ϕ) ◁ K.h ∘ᵥ (Z.arr ⊚₀ J'.h ▷ γ.ϕ ∘ᵥ J'.Δ ◁ K'.h)) ∘ᵥ K'.Δ   ≈˘⟨ ((refl⟩∘⟨ assoc) ⟩∘⟨refl) ⟩
+    (α⇒ ∘ᵥ ((Z.arr ▷ δ.ϕ) ◁ K.h ∘ᵥ Z.arr ⊚₀ J'.h ▷ γ.ϕ) ∘ᵥ J'.Δ ◁ K'.h) ∘ᵥ K'.Δ   ≈˘⟨ (assoc ⟩∘⟨refl) ⟩
+    (((α⇒ ∘ᵥ (Z.arr ▷ δ.ϕ) ◁ K.h ∘ᵥ Z.arr ⊚₀ J'.h ▷ γ.ϕ)) ∘ᵥ J'.Δ ◁ K'.h) ∘ᵥ K'.Δ ≈⟨ assoc ⟩
+
+    (α⇒ ∘ᵥ (Z.arr ▷ δ.ϕ) ◁ K.h ∘ᵥ Z.arr ⊚₀ J'.h ▷ γ.ϕ) ∘ᵥ J'.Δ ◁ K'.h ∘ᵥ K'.Δ     ≈˘⟨ ((refl⟩∘⟨ ⊚.homomorphism) ⟩∘⟨refl) ⟩
+    (α⇒ ∘ᵥ (Z.arr ▷ δ.ϕ ∘ᵥ id₂) ⊚₁ (id₂ ∘ᵥ γ.ϕ)) ∘ᵥ J'.Δ ◁ K'.h ∘ᵥ K'.Δ           ≈⟨ ((refl⟩∘⟨ identity₂ʳ ⟩⊚⟨ identity₂ˡ) ⟩∘⟨refl) ⟩
+    (α⇒ ∘ᵥ (Z.arr ▷ δ.ϕ) ⊚₁ γ.ϕ) ∘ᵥ J'.Δ ◁ K'.h ∘ᵥ K'.Δ                           ≈⟨ (⊚-assoc.⇒.commute ((id₂ , δ.ϕ) , γ.ϕ) ⟩∘⟨refl) ⟩
+    ((Z.arr ▷ δ.ϕ ⊚₁ γ.ϕ) ∘ᵥ α⇒) ∘ᵥ J'.Δ ◁ K'.h ∘ᵥ K'.Δ                           ≈⟨ assoc ⟩
+    (Z.arr ▷ δ.ϕ ⊚₁ γ.ϕ) ∘ᵥ α⇒ ∘ᵥ J'.Δ ◁ K'.h ∘ᵥ K'.Δ                             ≈˘⟨ refl⟩∘⟨ assoc ⟩
+    (Z.arr ▷ δ.ϕ ⊚₁ γ.ϕ) ∘ᵥ ((α⇒ ∘ᵥ J'.Δ ◁ K'.h) ∘ᵥ K'.Δ)                         ∎
+    where module X = SliceObj X
+          module Y = SliceObj Y
+          module Z = SliceObj Z
+          module J = Slice⇒₁ J
+          module J' = Slice⇒₁ J'
+          module K = Slice⇒₁ K
+          module K' = Slice⇒₁ K'
+          module γ = Slice⇒₂ γ
+          module δ = Slice⇒₂ δ          
+          open 1Category (hom X.Y A)
+          open HomReasoning
+
+  id/ : ∀ {X : SliceObj A} → Slice⇒₁ X X
+  id/ = slicearr₁ ρ⇐
+
   _⊚/_ : ∀ {X Y Z : SliceObj A} → Bifunctor (SliceHomCat Y Z) (SliceHomCat X Y) (SliceHomCat X Z)
   _⊚/_ {X}{Y}{Z} = record
-    { F₀ = λ (H' , H) →
-           let module H' = Slice⇒₁ H'
-               module H = Slice⇒₁ H
-           in slicearr₁ ((α⇒ ∘ᵥ H'.Δ ◁ H.h) ∘ᵥ H.Δ)
-    ; F₁ = λ where
-          {H' , H} {J' , J} (γ , δ) →
-            let module H' = Slice⇒₁ H'
-                module H = Slice⇒₁ H
-                module J' = Slice⇒₁ J'
-                module J = Slice⇒₁ J
-                module γ = Slice⇒₂ γ
-                module δ = Slice⇒₂ δ
-                open 1Category (hom X.Y A)
-                open HomReasoning
-            in slicearr₂ $ begin
-               (α⇒ ∘ᵥ J'.Δ ◁ J.h) ∘ᵥ J.Δ                                                   ≈⟨ (refl⟩∘⟨ δ.E) ⟩
-               (α⇒ ∘ᵥ J'.Δ ◁ J.h) ∘ᵥ (Y.arr ▷ δ.ϕ ∘ᵥ H.Δ)                                  ≈⟨ ((refl⟩∘⟨ γ.E ⟩⊚⟨refl) ⟩∘⟨refl) ⟩
-               (α⇒ ∘ᵥ (Z.arr ▷ γ.ϕ ∘ᵥ H'.Δ) ◁ J.h) ∘ᵥ (Y.arr ▷ δ.ϕ ∘ᵥ H.Δ)                 ≈˘⟨ (((refl⟩∘⟨ ∘ᵥ-distr-◁ ) ⟩∘⟨refl)) ⟩
-
-                -- generalized assoc
-               (α⇒ ∘ᵥ ((Z.arr ▷ γ.ϕ) ◁ J.h ∘ᵥ H'.Δ ◁ J.h)) ∘ᵥ (Y.arr ▷ δ.ϕ ∘ᵥ H.Δ)         ≈˘⟨ assoc ⟩
-               ((α⇒ ∘ᵥ ((Z.arr ▷ γ.ϕ) ◁ J.h ∘ᵥ H'.Δ ◁ J.h)) ∘ᵥ Y.arr ▷ δ.ϕ) ∘ᵥ H.Δ         ≈⟨ (assoc ⟩∘⟨refl) ⟩
-               (α⇒ ∘ᵥ ((Z.arr ▷ γ.ϕ) ◁ J.h ∘ᵥ H'.Δ ◁ J.h) ∘ᵥ Y.arr ▷ δ.ϕ) ∘ᵥ H.Δ           ≈⟨ ((refl⟩∘⟨ assoc) ⟩∘⟨refl) ⟩
-                   
-               (α⇒ ∘ᵥ (Z.arr ▷ γ.ϕ) ◁ J.h ∘ᵥ (H'.Δ ◁ J.h ∘ᵥ Y.arr ▷ δ.ϕ)) ∘ᵥ H.Δ           ≈˘⟨ ((refl⟩∘⟨ (refl⟩∘⟨ ◁-▷-exchg)) ⟩∘⟨refl) ⟩
-
-               -- generalized assoc
-               (α⇒ ∘ᵥ (Z.arr ▷ γ.ϕ) ◁ J.h ∘ᵥ (Z.arr ⊚₀ H'.h ▷ δ.ϕ ∘ᵥ H'.Δ ◁ H.h)) ∘ᵥ H.Δ   ≈˘⟨ ((refl⟩∘⟨ assoc) ⟩∘⟨refl) ⟩
-               (α⇒ ∘ᵥ ((Z.arr ▷ γ.ϕ) ◁ J.h ∘ᵥ Z.arr ⊚₀ H'.h ▷ δ.ϕ) ∘ᵥ H'.Δ ◁ H.h) ∘ᵥ H.Δ   ≈˘⟨ (assoc ⟩∘⟨refl) ⟩
-               (((α⇒ ∘ᵥ (Z.arr ▷ γ.ϕ) ◁ J.h ∘ᵥ Z.arr ⊚₀ H'.h ▷ δ.ϕ)) ∘ᵥ H'.Δ ◁ H.h) ∘ᵥ H.Δ ≈⟨ assoc ⟩
-
-               (α⇒ ∘ᵥ (Z.arr ▷ γ.ϕ) ◁ J.h ∘ᵥ Z.arr ⊚₀ H'.h ▷ δ.ϕ) ∘ᵥ H'.Δ ◁ H.h ∘ᵥ H.Δ     ≈˘⟨ ((refl⟩∘⟨ ⊚.homomorphism) ⟩∘⟨refl) ⟩
-               (α⇒ ∘ᵥ (Z.arr ▷ γ.ϕ ∘ᵥ id₂) ⊚₁ (id₂ ∘ᵥ δ.ϕ)) ∘ᵥ H'.Δ ◁ H.h ∘ᵥ H.Δ           ≈⟨ ((refl⟩∘⟨ identity₂ʳ ⟩⊚⟨ identity₂ˡ) ⟩∘⟨refl) ⟩
-               (α⇒ ∘ᵥ (Z.arr ▷ γ.ϕ) ⊚₁ δ.ϕ) ∘ᵥ H'.Δ ◁ H.h ∘ᵥ H.Δ                           ≈⟨ (⊚-assoc.⇒.commute ((id₂ , γ.ϕ) , δ.ϕ) ⟩∘⟨refl) ⟩
-               ((Z.arr ▷ γ.ϕ ⊚₁ δ.ϕ) ∘ᵥ α⇒) ∘ᵥ H'.Δ ◁ H.h ∘ᵥ H.Δ                           ≈⟨ assoc ⟩
-               (Z.arr ▷ γ.ϕ ⊚₁ δ.ϕ) ∘ᵥ α⇒ ∘ᵥ H'.Δ ◁ H.h ∘ᵥ H.Δ                             ≈˘⟨ refl⟩∘⟨ assoc ⟩
-               (Z.arr ▷ γ.ϕ ⊚₁ δ.ϕ) ∘ᵥ ((α⇒ ∘ᵥ H'.Δ ◁ H.h) ∘ᵥ H.Δ)
-               ∎
+    { F₀ = λ (J , K) → J ⊚₀/ K
+    ; F₁ = λ (δ , γ) → δ ⊚₁/ γ
       ; identity = ⊚.identity
       ; homomorphism = ⊚.homomorphism
       ; F-resp-≈ = ⊚.F-resp-≈
@@ -151,35 +157,31 @@ module SliceHom (A : Obj) where
       where module X = SliceObj X
             module Y = SliceObj Y
             module Z = SliceObj Z
-
   
-  α⇒/ : ∀ {W X Y Z}(H : Slice⇒₁ Y Z) (J : Slice⇒₁ X Y) (K : Slice⇒₁ W X) → Slice⇒₂ ((F₀ _⊚/_ (F₀ _⊚/_ (H , J) , K))) (F₀ _⊚/_ (H  , F₀ _⊚/_ (J , K)))
+  α⇒/ : ∀ {W X Y Z}(H : Slice⇒₁ Y Z) (J : Slice⇒₁ X Y) (K : Slice⇒₁ W X) → Slice⇒₂ ((H ⊚₀/ J) ⊚₀/ K) (H ⊚₀/ (J ⊚₀/ K))
   α⇒/ {W}{X}{Y}{Z} H J K = slicearr₂ $ begin
-              Slice⇒₁.Δ (F₀ _⊚/_ (H  , F₀ _⊚/_ (J , K))) ≈⟨ Equiv.refl ⟩
-              (α⇒ ∘ᵥ H.Δ ◁ J.h ⊚₀ K.h) ∘ᵥ ((α⇒ ∘ᵥ J.Δ ◁ K.h) ∘ᵥ K.Δ)                  ≈⟨ (refl⟩∘⟨ assoc) ⟩
-              (α⇒ ∘ᵥ H.Δ ◁ J.h ⊚₀ K.h) ∘ᵥ α⇒ ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                    ≈˘⟨ assoc ⟩
-              ((α⇒ ∘ᵥ H.Δ ◁ J.h ⊚₀ K.h) ∘ᵥ α⇒) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                  ≈⟨ (assoc ⟩∘⟨refl) ⟩
-              (α⇒ ∘ᵥ (H.Δ ◁ J.h ⊚₀ K.h ∘ᵥ α⇒)) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                  ≈⟨ assoc ⟩
+    (α⇒ ∘ᵥ H.Δ ◁ J.h ⊚₀ K.h) ∘ᵥ ((α⇒ ∘ᵥ J.Δ ◁ K.h) ∘ᵥ K.Δ)                  ≈⟨ (refl⟩∘⟨ assoc) ⟩
+    (α⇒ ∘ᵥ H.Δ ◁ J.h ⊚₀ K.h) ∘ᵥ α⇒ ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                    ≈˘⟨ assoc ⟩
+    ((α⇒ ∘ᵥ H.Δ ◁ J.h ⊚₀ K.h) ∘ᵥ α⇒) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                  ≈⟨ (assoc ⟩∘⟨refl) ⟩
+    (α⇒ ∘ᵥ (H.Δ ◁ J.h ⊚₀ K.h ∘ᵥ α⇒)) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                  ≈⟨ assoc ⟩
 
-              α⇒ ∘ᵥ (H.Δ ◁ J.h ⊚₀ K.h ∘ᵥ α⇒) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                    ≈˘⟨ (refl⟩∘⟨ (α⇒-◁-∘ₕ  ⟩∘⟨refl)) ⟩
+    α⇒ ∘ᵥ (H.Δ ◁ J.h ⊚₀ K.h ∘ᵥ α⇒) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                    ≈˘⟨ (refl⟩∘⟨ (α⇒-◁-∘ₕ  ⟩∘⟨refl)) ⟩
   
-              α⇒ ∘ᵥ (α⇒ ∘ᵥ H.Δ ◁ J.h ◁ K.h) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                     ≈⟨ Equiv.sym assoc ⟩
-              (α⇒ ∘ᵥ (α⇒ ∘ᵥ H.Δ ◁ J.h ◁ K.h)) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                   ≈˘⟨ ( assoc ⟩∘⟨refl) ⟩
-              ((α⇒ ∘ᵥ α⇒) ∘ᵥ H.Δ ◁ J.h ◁ K.h) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                   ≈⟨ assoc ⟩
+    α⇒ ∘ᵥ (α⇒ ∘ᵥ H.Δ ◁ J.h ◁ K.h) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                     ≈˘⟨ assoc ⟩
+    (α⇒ ∘ᵥ (α⇒ ∘ᵥ H.Δ ◁ J.h ◁ K.h)) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                   ≈˘⟨ ( assoc ⟩∘⟨refl) ⟩
+    ((α⇒ ∘ᵥ α⇒) ∘ᵥ H.Δ ◁ J.h ◁ K.h) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                   ≈⟨ assoc ⟩
 
-              (α⇒ ∘ᵥ α⇒) ∘ᵥ H.Δ ◁ J.h ◁ K.h ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                     ≈˘⟨ (pentagon ⟩∘⟨refl) ⟩
+    (α⇒ ∘ᵥ α⇒) ∘ᵥ H.Δ ◁ J.h ◁ K.h ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)                     ≈˘⟨ (pentagon ⟩∘⟨refl) ⟩
   
-              (Z.arr ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ K.h) ∘ᵥ H.Δ ◁ J.h ◁ K.h ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ) ≈⟨ assoc²' ⟩
-              Z.arr ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ K.h ∘ᵥ H.Δ ◁ J.h ◁ K.h ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)   ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ Equiv.sym assoc)) ⟩
+    (Z.arr ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ K.h) ∘ᵥ H.Δ ◁ J.h ◁ K.h ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ) ≈⟨ assoc²' ⟩
+    Z.arr ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ K.h ∘ᵥ H.Δ ◁ J.h ◁ K.h ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)   ≈˘⟨ (refl⟩∘⟨ (refl⟩∘⟨ assoc)) ⟩
 
-              Z.arr ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ (α⇒ ◁ K.h ∘ᵥ H.Δ ◁ J.h ◁ K.h) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ (∘ᵥ-distr-◁ ⟩∘⟨refl))) ⟩
-              Z.arr ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ ((α⇒ ∘ᵥ H.Δ ◁ J.h) ◁ K.h) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)     ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ Equiv.sym assoc) ⟩
-              Z.arr ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ ((α⇒ ∘ᵥ H.Δ ◁ J.h) ◁ K.h ∘ᵥ J.Δ ◁ K.h) ∘ᵥ K.Δ       ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ (∘ᵥ-distr-◁  ⟩∘⟨refl))) ⟩
-              -- assoc/lifted assoc
-              Z.arr ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ (((α⇒ ∘ᵥ H.Δ ◁ J.h) ∘ᵥ J.Δ) ◁ K.h) ∘ᵥ K.Δ           ≈⟨ (refl⟩∘⟨ Equiv.sym assoc) ⟩
+    Z.arr ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ (α⇒ ◁ K.h ∘ᵥ H.Δ ◁ J.h ◁ K.h) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ (∘ᵥ-distr-◁ ⟩∘⟨refl))) ⟩
+    Z.arr ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ ((α⇒ ∘ᵥ H.Δ ◁ J.h) ◁ K.h) ∘ᵥ (J.Δ ◁ K.h ∘ᵥ K.Δ)     ≈˘⟨ (refl⟩∘⟨ refl⟩∘⟨ assoc) ⟩
+    Z.arr ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ ((α⇒ ∘ᵥ H.Δ ◁ J.h) ◁ K.h ∘ᵥ J.Δ ◁ K.h) ∘ᵥ K.Δ       ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ (∘ᵥ-distr-◁  ⟩∘⟨refl))) ⟩
+    Z.arr ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ (((α⇒ ∘ᵥ H.Δ ◁ J.h) ∘ᵥ J.Δ) ◁ K.h) ∘ᵥ K.Δ           ≈˘⟨ refl⟩∘⟨ assoc ⟩
 
-              Z.arr ▷ α⇒ ∘ᵥ ((α⇒ ∘ᵥ (((α⇒ ∘ᵥ H.Δ ◁ J.h)) ∘ᵥ J.Δ) ◁ K.h) ∘ᵥ K.Δ)       ≈⟨ Equiv.refl ⟩
-              Z.arr ▷ α⇒ ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (F₀ _⊚/_ (H , J) , K))                 ∎
+    Z.arr ▷ α⇒ ∘ᵥ ((α⇒ ∘ᵥ (((α⇒ ∘ᵥ H.Δ ◁ J.h)) ∘ᵥ J.Δ) ◁ K.h) ∘ᵥ K.Δ)       ∎
     where module W = SliceObj W
           module X = SliceObj X
           module Y = SliceObj Y
@@ -191,35 +193,33 @@ module SliceHom (A : Obj) where
           open HomReasoning
           open MR (hom W.Y A) using (assoc²')
 
-  λ⇒/ : ∀ {X Y} (H : Slice⇒₁ X Y) → Slice⇒₂ (F₀ _⊚/_ (slicearr₁ ρ⇐ , H)) H
+  λ⇒/ : ∀ {X Y} (H : Slice⇒₁ X Y) → Slice⇒₂ (id/ ⊚₀/ H) H
   λ⇒/ {X}{Y} H = slicearr₂ $ begin
-              H.Δ                                                  ≈˘⟨ identity₂ˡ ⟩
-              id₂ ∘ᵥ H.Δ                                           ≈˘⟨ (id₂◁ ⟩∘⟨refl) ⟩
-              (id₂ ◁ H.h) ∘ᵥ H.Δ                                   ≈˘⟨ (unitʳ.iso.isoʳ (Y.arr , (lift _)) ⟩⊚⟨refl ⟩∘⟨refl) ⟩
-              ((ρ⇒ ∘ᵥ ρ⇐) ◁ H.h) ∘ᵥ H.Δ                            ≈˘⟨ (∘ᵥ-distr-◁ ⟩∘⟨refl) ⟩
-              (ρ⇒ ◁ H.h ∘ᵥ ρ⇐ ◁ H.h) ∘ᵥ H.Δ                        ≈⟨ assoc ⟩
-              ρ⇒ ◁ H.h ∘ᵥ ρ⇐ ◁ H.h ∘ᵥ H.Δ                          ≈˘⟨ (triangle ⟩∘⟨refl) ⟩
-              (Y.arr ▷ λ⇒ ∘ᵥ α⇒) ∘ᵥ ρ⇐ ◁ H.h ∘ᵥ H.Δ                ≈⟨ assoc ⟩
-              Y.arr ▷ λ⇒ ∘ᵥ α⇒ ∘ᵥ ρ⇐ ◁ H.h ∘ᵥ H.Δ                  ≈˘⟨ (refl⟩∘⟨ assoc) ⟩
-              Y.arr ▷ λ⇒ ∘ᵥ (α⇒ ∘ᵥ ρ⇐ ◁ H.h) ∘ᵥ H.Δ                ≈⟨ refl ⟩
-              Y.arr ▷ λ⇒ ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (slicearr₁ ρ⇐ , H)) ∎
+    H.Δ                                                  ≈˘⟨ identity₂ˡ ⟩
+    id₂ ∘ᵥ H.Δ                                           ≈˘⟨ (id₂◁ ⟩∘⟨refl) ⟩
+    (id₂ ◁ H.h) ∘ᵥ H.Δ                                   ≈˘⟨ (unitʳ.iso.isoʳ (Y.arr , _) ⟩⊚⟨refl ⟩∘⟨refl) ⟩
+    ((ρ⇒ ∘ᵥ ρ⇐) ◁ H.h) ∘ᵥ H.Δ                            ≈˘⟨ (∘ᵥ-distr-◁ ⟩∘⟨refl) ⟩
+    (ρ⇒ ◁ H.h ∘ᵥ ρ⇐ ◁ H.h) ∘ᵥ H.Δ                        ≈⟨ assoc ⟩
+    ρ⇒ ◁ H.h ∘ᵥ ρ⇐ ◁ H.h ∘ᵥ H.Δ                          ≈˘⟨ (triangle ⟩∘⟨refl) ⟩
+    (Y.arr ▷ λ⇒ ∘ᵥ α⇒) ∘ᵥ ρ⇐ ◁ H.h ∘ᵥ H.Δ                ≈⟨ assoc ⟩
+    Y.arr ▷ λ⇒ ∘ᵥ α⇒ ∘ᵥ ρ⇐ ◁ H.h ∘ᵥ H.Δ                  ≈˘⟨ (refl⟩∘⟨ assoc) ⟩
+    Y.arr ▷ λ⇒ ∘ᵥ (α⇒ ∘ᵥ ρ⇐ ◁ H.h) ∘ᵥ H.Δ                ∎
     where module X = SliceObj X
           module Y = SliceObj Y
           module H = Slice⇒₁ H
           open 1Category (hom X.Y A)
           open HomReasoning
 
-  ρ⇒/ : ∀{X}{Y} (H : Slice⇒₁ X Y) → Slice⇒₂ (F₀ _⊚/_ (H , slicearr₁ ρ⇐)) H
+  ρ⇒/ : ∀{X}{Y} (H : Slice⇒₁ X Y) → Slice⇒₂ (H ⊚₀/ id/) H
   ρ⇒/ {X}{Y} H = slicearr₂ $ begin
-               H.Δ                                                   ≈˘⟨ identity₂ʳ ⟩
-               H.Δ ∘ᵥ id₂                                            ≈˘⟨ refl⟩∘⟨ unitʳ.iso.isoʳ (X.arr , _) ⟩
-               H.Δ ∘ᵥ ρ⇒ ∘ᵥ ρ⇐                                       ≈˘⟨ assoc ⟩
-               (H.Δ ∘ᵥ ρ⇒) ∘ᵥ ρ⇐                                     ≈˘⟨ ρ⇒-∘ᵥ-◁ ⟩∘⟨refl ⟩
-               (ρ⇒ ∘ᵥ H.Δ ◁ id₁) ∘ᵥ ρ⇐                               ≈⟨ unitorʳ-coherence  ⟩∘⟨refl ⟩∘⟨refl ⟩
-               ((Y.arr ▷ ρ⇒ ∘ᵥ α⇒) ∘ᵥ H.Δ ◁ id₁) ∘ᵥ ρ⇐               ≈⟨ assoc ⟩∘⟨refl ⟩
-               (Y.arr ▷ ρ⇒ ∘ᵥ (α⇒ ∘ᵥ H.Δ ◁ id₁)) ∘ᵥ ρ⇐               ≈⟨ assoc ⟩
-               Y.arr ▷ ρ⇒ ∘ᵥ (α⇒ ∘ᵥ H.Δ ◁ id₁) ∘ᵥ ρ⇐                 ≈⟨ refl ⟩
-               Y.arr ▷ ρ⇒ ∘ᵥ Slice⇒₁.Δ (F₀ _⊚/_ (H , slicearr₁ ρ⇐ )) ∎
+    H.Δ                                                   ≈˘⟨ identity₂ʳ ⟩
+    H.Δ ∘ᵥ id₂                                            ≈˘⟨ refl⟩∘⟨ unitʳ.iso.isoʳ (X.arr , _) ⟩
+    H.Δ ∘ᵥ ρ⇒ ∘ᵥ ρ⇐                                       ≈˘⟨ assoc ⟩
+    (H.Δ ∘ᵥ ρ⇒) ∘ᵥ ρ⇐                                     ≈˘⟨ ρ⇒-∘ᵥ-◁ ⟩∘⟨refl ⟩
+    (ρ⇒ ∘ᵥ H.Δ ◁ id₁) ∘ᵥ ρ⇐                               ≈⟨ unitorʳ-coherence  ⟩∘⟨refl ⟩∘⟨refl ⟩
+    ((Y.arr ▷ ρ⇒ ∘ᵥ α⇒) ∘ᵥ H.Δ ◁ id₁) ∘ᵥ ρ⇐               ≈⟨ assoc ⟩∘⟨refl ⟩
+    (Y.arr ▷ ρ⇒ ∘ᵥ (α⇒ ∘ᵥ H.Δ ◁ id₁)) ∘ᵥ ρ⇐               ≈⟨ assoc ⟩
+    Y.arr ▷ ρ⇒ ∘ᵥ (α⇒ ∘ᵥ H.Δ ◁ id₁) ∘ᵥ ρ⇐                 ∎
     where module X = SliceObj X
           module Y = SliceObj Y
           module H = Slice⇒₁ H
@@ -228,13 +228,13 @@ module SliceHom (A : Obj) where
 
   slice-inv : ∀ {X}{Y}{H : Slice⇒₁ X Y}{K} (α : Slice⇒₂ H K) → (f : Slice⇒₁.h K ⇒₂ Slice⇒₁.h H) → (f ∘ᵥ (Slice⇒₂.ϕ α) ≈ id₂) → Slice⇒₂ K H
   slice-inv {X}{Y}{H}{K} α f p = slicearr₂ $ begin
-                  H.Δ                               ≈˘⟨ identity₂ˡ ⟩
-                  id₂ ∘ᵥ H.Δ                        ≈⟨ (Equiv.sym ▷id₂ ⟩∘⟨refl) ⟩
-                  (Y.arr ▷ id₂) ∘ᵥ H.Δ              ≈˘⟨ (refl⟩⊚⟨ p ⟩∘⟨refl) ⟩
-                  (Y.arr ▷ (f ∘ᵥ α.ϕ)) ∘ᵥ H.Δ       ≈˘⟨ (∘ᵥ-distr-▷ ⟩∘⟨refl) ⟩
-                  (Y.arr ▷ f ∘ᵥ Y.arr ▷ α.ϕ) ∘ᵥ H.Δ ≈⟨ assoc ⟩
-                  Y.arr ▷ f ∘ᵥ Y.arr ▷ α.ϕ ∘ᵥ H.Δ   ≈˘⟨ (refl⟩∘⟨ α.E ) ⟩
-                  Y.arr ▷ f ∘ᵥ K.Δ                  ∎
+    H.Δ                               ≈˘⟨ identity₂ˡ ⟩
+    id₂ ∘ᵥ H.Δ                        ≈⟨ (Equiv.sym ▷id₂ ⟩∘⟨refl) ⟩
+    (Y.arr ▷ id₂) ∘ᵥ H.Δ              ≈˘⟨ (refl⟩⊚⟨ p ⟩∘⟨refl) ⟩
+    (Y.arr ▷ (f ∘ᵥ α.ϕ)) ∘ᵥ H.Δ       ≈˘⟨ (∘ᵥ-distr-▷ ⟩∘⟨refl) ⟩
+    (Y.arr ▷ f ∘ᵥ Y.arr ▷ α.ϕ) ∘ᵥ H.Δ ≈⟨ assoc ⟩
+    Y.arr ▷ f ∘ᵥ Y.arr ▷ α.ϕ ∘ᵥ H.Δ   ≈˘⟨ (refl⟩∘⟨ α.E ) ⟩
+    Y.arr ▷ f ∘ᵥ K.Δ                  ∎
     where module X = SliceObj X
           module Y = SliceObj Y
           module H = Slice⇒₁ H
@@ -248,7 +248,7 @@ LaxSlice A   = record
   { enriched = record
     { Obj = SliceObj A
     ; hom = SliceHomCat
-    ; id = const (SliceHom.slicearr₁ ρ⇐)
+    ; id = const id/
     ; ⊚ = _⊚/_
     ; ⊚-assoc = niHelper (record
       { η       = λ ((H , J) , K) → α⇒/ H J K
