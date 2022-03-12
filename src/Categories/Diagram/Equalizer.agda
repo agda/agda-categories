@@ -47,17 +47,16 @@ record IsEqualizer {E} (arr : E ⇒ A) (f g : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) w
     equalize eq′ ≈˘⟨ eqk ⟩
     k            ∎
 
-  equality-∘ : f ∘ arr ∘ h ≈ g ∘ arr ∘ h
-  equality-∘ {h = h} = begin
-    f ∘ arr ∘ h   ≈⟨ pullˡ equality ⟩
-    (g ∘ arr) ∘ h ≈⟨ assoc ⟩
-    g ∘ arr ∘ h   ∎
-
   unique-diagram : arr ∘ h ≈ arr ∘ i → h ≈ i
   unique-diagram {h = h} {i = i} eq = begin
     h                           ≈⟨ unique (sym eq) ⟩
     equalize (extendʳ equality) ≈˘⟨ unique refl ⟩
     i                           ∎
+
+IsEqualizer⇒Mono : (e : IsEqualizer h i j) → Mono h
+IsEqualizer⇒Mono e f g eq =
+  equalize-resp-≈′ (extendʳ equality) (extendʳ equality) eq (unique refl) (unique refl)
+  where open IsEqualizer e
 
 record Equalizer (f g : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
   field
@@ -68,8 +67,7 @@ record Equalizer (f g : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
   open IsEqualizer isEqualizer public
 
 Equalizer⇒Mono : (e : Equalizer h i) → Mono (Equalizer.arr e)
-Equalizer⇒Mono e f g eq =
-  equalize-resp-≈′ equality-∘ equality-∘ eq (unique refl) (unique refl)
+Equalizer⇒Mono e = IsEqualizer⇒Mono isEqualizer
   where open Equalizer e
 
 up-to-iso : (e₁ e₂ : Equalizer h i) → Equalizer.obj e₁ ≅ Equalizer.obj e₂

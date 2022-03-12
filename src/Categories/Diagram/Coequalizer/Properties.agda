@@ -33,15 +33,12 @@ module _ (coe : Coequalizer f g) where
     equalizer = Coequalizer⇒coEqualizer coe
 
   open Equalizer equalizer
-    using (unique′; equality-∘; unique-diagram)
+    using (unique′; unique-diagram)
     renaming ( id-equalize      to id-coequalize
              ; equalize-resp-≈  to coequalize-resp-≈
              ; equalize-resp-≈′ to coequalize-resp-≈′
              )
     public
-
-  Coequalizer⇒Epi : Epi arr
-  Coequalizer⇒Epi = Equalizer⇒Mono equalizer
 
 -- a regular epi is a coequalizer of its kernel pair
 regular-is-coeq-kp : {A B : Obj} (f : A ⇒ B) → RegularEpi f → (kp : KernelPair f) → IsCoequalizer (p₁ kp) (p₂ kp) f
