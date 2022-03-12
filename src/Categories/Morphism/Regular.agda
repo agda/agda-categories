@@ -18,6 +18,7 @@ module Categories.Morphism.Regular {o ℓ e} (𝒞 : Category o ℓ e) where
 open import Level
 open import Data.Product using (Σ; _×_; _,_)
 
+open import Categories.Morphism 𝒞
 open import Categories.Diagram.Equalizer 𝒞
 open import Categories.Diagram.Coequalizer 𝒞
 
@@ -40,3 +41,14 @@ record RegularEpi (f : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
     h : C ⇒ A
     g : C ⇒ A
     coequalizer : IsCoequalizer h g f
+
+RegularMono⇒Mono : ∀ {f : A ⇒ B} → RegularMono f → Mono f
+RegularMono⇒Mono regular = IsEqualizer⇒Mono equalizer
+  where
+    open RegularMono regular
+
+RegularEpi⇒Epi : ∀ {f : A ⇒ B} → RegularEpi f → Epi f
+RegularEpi⇒Epi regular = IsCoequalizer⇒Epi coequalizer
+  where
+    open RegularEpi regular
+
