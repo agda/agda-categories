@@ -1,6 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
--- Mentioned in passing https://ncatlab.org/nlab/show/slice+2-category
+-- Mentioned in passing here:
+-- https://ncatlab.org/nlab/show/slice+2-category
 
 open import Categories.Bicategory using (Bicategory)
 
@@ -9,20 +10,19 @@ module Categories.Bicategory.Construction.LaxSlice
        (𝒞 : Bicategory o ℓ e t)
        where
 
-open import Categories.Category using () renaming (Category to 1Category)
-import Categories.Morphism.Reasoning as MR
+open import Data.Product using (_,_)
+open import Function using (_$_)
+open import Level using (_⊔_)
+
 open import Categories.Bicategory.Extras 𝒞
 open Shorthands
-
-open import Categories.Functor.Construction.Constant using (const)
-open import Categories.Functor.Bifunctor using (Bifunctor)
-open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; niHelper)
-open import Function using (_$_)
-open import Data.Product using (_,_)
+open import Categories.Category using () renaming (Category to 1Category)
 open import Categories.Functor using (Functor)
 open Functor using (F₀)
-
-open import Level using (_⊔_)
+open import Categories.Functor.Bifunctor using (Bifunctor)
+open import Categories.Functor.Construction.Constant using (const)
+import Categories.Morphism.Reasoning as MR
+open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; niHelper)
 
 record SliceObj (X : Obj) : Set (t ⊔ o) where
   constructor sliceobj
@@ -81,10 +81,7 @@ module SliceHom (A : Obj) where
     ; identityˡ = hom.identityˡ
     ; identityʳ = hom.identityʳ
     ; identity² = hom.identity²
-    ; equiv = record
-      { refl = refl
-      ; sym = sym
-      ; trans = trans }
+    ; equiv = record { refl = refl ; sym = sym ; trans = trans }
     ; ∘-resp-≈ = hom.∘-resp-≈
     }
     where
