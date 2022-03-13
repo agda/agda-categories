@@ -11,10 +11,12 @@ open import Categories.Diagram.Coequalizer C using (Coequalizer; IsCoequalizer)
 open import Categories.Morphism C
 import Categories.Morphism.Reasoning as MR
 open import Categories.Diagram.Equalizer op
+open import Categories.Diagram.Equalizer.Properties op
 open import Categories.Diagram.Duality C
 open import Categories.Diagram.KernelPair C
 open import Categories.Diagram.Pullback C
 open import Categories.Morphism.Regular C
+
 
 import Relation.Binary.Reasoning.Setoid as SR
 
@@ -63,3 +65,6 @@ regular-is-coeq-kp {A} {B} f record { C = D ; h = h ; g = g ; coequalizer = coeq
       where
         open Category.HomReasoning C
         open MR C
+
+retract-coequalizer : ∀ {X Y} {f : Y ⇒ X} {g : X ⇒ Y} → f RetractOf g → IsCoequalizer (g ∘ f) id f
+retract-coequalizer f∘g≈id = IscoEqualizer⇒IsCoequalizer (section-equalizer f∘g≈id)
