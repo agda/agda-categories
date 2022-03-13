@@ -36,33 +36,41 @@ private
     o′ ℓ′ e′ : Level
     D J : Category o′ ℓ′ e′
     A B : Obj
-    f g : A ⇒ B
+    f g h : A ⇒ B
 
 -- note that what would be called
 -- terminal⇒coInitial and initial⇒coTerminal are in
 -- Categories.Object.Duality
 
+IsCoequalizer⇒IscoEqualizer : IsCoequalizer f g h → IsEqualizer h f g 
+IsCoequalizer⇒IscoEqualizer is-coe = record
+  { equality = equality
+  ; equalize = coequalize
+  ; universal = universal
+  ; unique = unique
+  }
+  where open IsCoequalizer is-coe
+
 Coequalizer⇒coEqualizer : Coequalizer f g → Equalizer f g
 Coequalizer⇒coEqualizer coe = record
   { arr       = arr
-  ; isEqualizer = record
-    { equality  = equality
-    ; equalize  = coequalize
-    ; universal = universal
-    ; unique    = unique
-    }
+  ; isEqualizer = IsCoequalizer⇒IscoEqualizer isCoequalizer
   }
   where open Coequalizer coe
+
+IscoEqualizer⇒IsCoequalizer : IsEqualizer h f g → IsCoequalizer f g h
+IscoEqualizer⇒IsCoequalizer is-eq = record
+  { equality = equality
+  ; coequalize = equalize
+  ; universal = universal
+  ; unique = unique
+  }
+  where open IsEqualizer is-eq
 
 coEqualizer⇒Coequalizer : Equalizer f g → Coequalizer f g
 coEqualizer⇒Coequalizer e = record
   { arr        = arr
-  ; isCoequalizer = record
-    { equality   = equality
-    ; coequalize = equalize
-    ; universal  = universal
-    ; unique     = unique
-    }
+  ; isCoequalizer = IscoEqualizer⇒IsCoequalizer isEqualizer
   }
   where open Equalizer e
 
