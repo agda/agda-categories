@@ -15,7 +15,7 @@ private
   variable
     o ℓ e o′ ℓ′ e′ : Level
 
-record IsCartesianClosedF {C : CartesianClosedCategory o ℓ e} {D : CartesianClosedCategory o′ ℓ′ e′}
+record IsCartesianClosedF (C : CartesianClosedCategory o ℓ e) (D : CartesianClosedCategory o′ ℓ′ e′)
   (F : Functor (CartesianClosedCategory.U C) (CartesianClosedCategory.U D)) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   private
     module C = CartesianClosedCategory C using (cartesianCategory; cartesianClosed)
@@ -31,4 +31,14 @@ record IsCartesianClosedF {C : CartesianClosedCategory o ℓ e} {D : CartesianCl
   field
     F-closed : ∀ {A B} → M.IsIso D.U (F-mor A B)
 
+record CartesianClosedF (C : CartesianClosedCategory o ℓ e) (D : CartesianClosedCategory o′ ℓ′ e′) : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
+  private
+    module C = CartesianClosedCategory C
+    module D = CartesianClosedCategory D
 
+  field
+    F                 : Functor C.U D.U
+    isCartesianClosed : IsCartesianClosedF C D F
+
+  open Functor F public
+  open IsCartesianClosedF isCartesianClosed public
