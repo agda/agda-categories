@@ -8,7 +8,7 @@ open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical usi
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-Cartesian)
 open import Categories.Category.Regular using (Regular)
-open import Categories.Diagram.Coequalizer using (Coequalizer; IsCoequalizer)
+open import Categories.Diagram.Coequalizer using (Coequalizer; IsCoequalizer; Coequalizer⇒Epi)
 open import Categories.Diagram.Coequalizer.Properties
 open import Categories.Diagram.KernelPair using (KernelPair)
 open import Categories.Diagram.Pullback using (Pullback; up-to-iso)
@@ -30,7 +30,6 @@ open import Level
 open import Relation.Binary using (Setoid; Rel; IsEquivalence)
 import Relation.Binary.Reasoning.Setoid as SR
 
-open import Categories.Diagram.Coequalizer.Properties
 open import Categories.Category.Instance.SingletonSet
 
 open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence; refl; sym; trans)

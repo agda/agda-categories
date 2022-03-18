@@ -6,6 +6,7 @@ module Categories.Diagram.Coequalizer {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open Category 𝒞
 open HomReasoning
+open Equiv
 
 open import Categories.Morphism 𝒞
 open import Categories.Morphism.Reasoning 𝒞
@@ -46,6 +47,14 @@ record IsCoequalizer {E} (f g : A ⇒ B) (arr : B ⇒ E) : Set (o ⊔ ℓ ⊔ e)
     coequalize eq′ ≈˘⟨ eqk ⟩
     k              ∎
 
+-- This could be proved via duality, but is easier to just write by hand,
+-- as it makes the dependency graph a lot cleaner.
+IsCoequalizer⇒Epi : IsCoequalizer h i j → Epi j
+IsCoequalizer⇒Epi coeq _ _ eq =
+  coequalize-resp-≈′ (extendˡ equality) (extendˡ equality) eq (unique refl) (unique refl)
+  where
+    open IsCoequalizer coeq
+
 record Coequalizer (f g : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
   field
     {obj} : Obj
@@ -54,6 +63,10 @@ record Coequalizer (f g : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
 
   open IsCoequalizer isCoequalizer public
 
+Coequalizer⇒Epi : (e : Coequalizer h i) → Epi (Coequalizer.arr e)
+Coequalizer⇒Epi coeq = IsCoequalizer⇒Epi isCoequalizer
+  where
+    open Coequalizer coeq
 
 -- Proving this via duality arguments is kind of annoying, as ≅ does not behave nicely in
 -- concert with op.
