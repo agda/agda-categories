@@ -43,7 +43,7 @@ private
     open MR (hom A B) public hiding (push-eq)
   open MR′
 
-unitorˡ : {A B : Obj} {f : A ⇒₁ B} → id₁ ∘ₕ f ≅ f
+unitorˡ : {A B : Obj} {f : A ⇒₁ B} → id₁ ∘₁ f ≅ f
 unitorˡ {_} {_} {f} = record
   { from = unitˡ.⇒.η (_ , f)
   ; to   = unitˡ.⇐.η (_ , f)
@@ -52,7 +52,7 @@ unitorˡ {_} {_} {f} = record
 
 module unitorˡ {A B f} = _≅_ (unitorˡ {A} {B} {f})
 
-unitorʳ : {A B : Obj} {f : A ⇒₁ B} → f ∘ₕ id₁ ≅ f
+unitorʳ : {A B : Obj} {f : A ⇒₁ B} → f ∘₁ id₁ ≅ f
 unitorʳ {_} {_} {f} = record
   { from = unitʳ.⇒.η (f , _)
   ; to   = unitʳ.⇐.η (f , _)
@@ -62,7 +62,7 @@ unitorʳ {_} {_} {f} = record
 module unitorʳ {A B f} = _≅_ (unitorʳ {A} {B} {f})
 
 associator : {A B C D : Obj} {f : D ⇒₁ B} {g : C ⇒₁ D} {h : A ⇒₁ C} →
-             (f ∘ₕ g) ∘ₕ h ≅ f ∘ₕ g ∘ₕ h
+             (f ∘₁ g) ∘₁ h ≅ f ∘₁ g ∘₁ h
 associator {_} {_} {_} {_} {f} {g} {h} = record
   { from = ⊚-assoc.⇒.η ((f , g) , h)
   ; to   = ⊚-assoc.⇐.η ((f , g) , h)
@@ -129,10 +129,10 @@ _⊚ᵢ_ : f ≅ h → g ≅ i → f ⊚₀ g ≅ h ⊚₀ i
     ; isoʳ = [ ⊚ ]-merge (isoʳ α) (isoʳ β) ○ ⊚.identity }
   }
 
-_◁ᵢ_ : {g h : B ⇒₁ C} (α : g ≅ h) (f : A ⇒₁ B) → g ∘ₕ f ≅ h ∘ₕ f
+_◁ᵢ_ : {g h : B ⇒₁ C} (α : g ≅ h) (f : A ⇒₁ B) → g ∘₁ f ≅ h ∘₁ f
 α ◁ᵢ _ = α ⊚ᵢ idᵢ
 
-_▷ᵢ_ : {f g : A ⇒₁ B} (h : B ⇒₁ C) (α : f ≅ g) → h ∘ₕ f ≅ h ∘ₕ g
+_▷ᵢ_ : {f g : A ⇒₁ B} (h : B ⇒₁ C) (α : f ≅ g) → h ∘₁ f ≅ h ∘₁ g
 _ ▷ᵢ α = idᵢ ⊚ᵢ α
 
 ⊚-resp-≈ : α ≈ β → γ ≈ δ → α ⊚₁ γ ≈ β ⊚₁ δ
@@ -177,26 +177,26 @@ _⟩⊚⟨refl = ⊚-resp-≈ˡ
 ◁-∘ᵥ-ρ⇐ : (α ◁ id₁) ∘ᵥ ρ⇐ ≈ ρ⇐ ∘ᵥ α
 ◁-∘ᵥ-ρ⇐ = conjugate-to (unitorʳ ⁻¹) (unitorʳ ⁻¹) ρ⇒-∘ᵥ-◁
 
-α⇐-◁-∘ₕ : α⇐ ∘ᵥ (γ ◁ (g ∘ₕ f)) ≈ ((γ ◁ g) ◁ f) ∘ᵥ α⇐
-α⇐-◁-∘ₕ {γ = γ} {g = g} {f = f} = begin
-  α⇐ ∘ᵥ (γ ◁ (g ∘ₕ f))    ≈˘⟨ refl⟩∘⟨ refl⟩⊚⟨ ⊚.identity ⟩
+α⇐-◁-∘₁ : α⇐ ∘ᵥ (γ ◁ (g ∘₁ f)) ≈ ((γ ◁ g) ◁ f) ∘ᵥ α⇐
+α⇐-◁-∘₁ {γ = γ} {g = g} {f = f} = begin
+  α⇐ ∘ᵥ (γ ◁ (g ∘₁ f))    ≈˘⟨ refl⟩∘⟨ refl⟩⊚⟨ ⊚.identity ⟩
   α⇐ ∘ᵥ (γ ⊚₁ id₂ ⊚₁ id₂)  ≈⟨ ⊚-assoc.⇐.commute ((γ , id₂) , id₂) ⟩
   ((γ ◁ g) ◁ f) ∘ᵥ α⇐      ∎
 
-α⇒-◁-∘ₕ : α⇒ ∘ᵥ γ ◁ g ◁ f ≈ γ ◁ (g ∘ₕ f) ∘ᵥ α⇒
-α⇒-◁-∘ₕ = ⟺ (conjugate-to associator associator α⇐-◁-∘ₕ)
+α⇒-◁-∘₁ : α⇒ ∘ᵥ γ ◁ g ◁ f ≈ γ ◁ (g ∘₁ f) ∘ᵥ α⇒
+α⇒-◁-∘₁ = ⟺ (conjugate-to associator associator α⇐-◁-∘₁)
 
 α⇐-▷-◁ : α⇐ ∘ᵥ (f ▷ (γ ◁ g)) ≈ ((f ▷ γ) ◁ g) ∘ᵥ α⇐
 α⇐-▷-◁ {f = f} {γ = γ} {g = g} = ⊚-assoc.⇐.commute ((id₂ , γ) , id₂)
 
-α⇒-▷-∘ₕ : α⇒ ∘ᵥ (f ∘ₕ g) ▷ γ ≈ f ▷ g ▷ γ ∘ᵥ α⇒
-α⇒-▷-∘ₕ{f = f} {g = g} {γ = γ} = begin
+α⇒-▷-∘₁ : α⇒ ∘ᵥ (f ∘₁ g) ▷ γ ≈ f ▷ g ▷ γ ∘ᵥ α⇒
+α⇒-▷-∘₁{f = f} {g = g} {γ = γ} = begin
   α⇒ ∘ᵥ (f ⊚₀ g) ▷ γ     ≈˘⟨ refl⟩∘⟨ ⊚.identity ⟩⊚⟨refl ⟩
   α⇒ ∘ᵥ (f ▷ id₂) ⊚₁ γ   ≈⟨ ⊚-assoc.⇒.commute ((id₂ , id₂) , γ) ⟩
   f ▷ g ▷ γ ∘ᵥ α⇒        ∎
 
-α⇐-▷-∘ₕ : α⇐ ∘ᵥ (g ▷ (f ▷ γ)) ≈ ((g ∘ₕ f) ▷ γ) ∘ᵥ α⇐
-α⇐-▷-∘ₕ = conjugate-from associator associator (⟺ α⇒-▷-∘ₕ)
+α⇐-▷-∘₁ : α⇐ ∘ᵥ (g ▷ (f ▷ γ)) ≈ ((g ∘₁ f) ▷ γ) ∘ᵥ α⇐
+α⇐-▷-∘₁ = conjugate-from associator associator (⟺ α⇒-▷-∘₁)
 
 ◁-▷-exchg : ∀ {α : f ⇒₂ g} {β : h ⇒₂ i} → (i ▷ α) ∘ᵥ (β ◁ f) ≈ (β ◁ g) ∘ᵥ (h ▷ α)
 ◁-▷-exchg = [ ⊚ ]-commute
@@ -210,11 +210,11 @@ triangle-inv = to-≈ triangle-iso
 
 pentagon-iso : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
                (i ▷ᵢ associator ∘ᵢ associator ∘ᵢ associator ◁ᵢ f) ≈ᵢ
-               (associator {f = i} {h} {g ∘ₕ f} ∘ᵢ associator)
+               (associator {f = i} {h} {g ∘₁ f} ∘ᵢ associator)
 pentagon-iso = ⌞ pentagon ⌟
 
 pentagon-inv : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
-               (α⇐ ◁ f ∘ᵥ α⇐) ∘ᵥ i ▷ α⇐ ≈ α⇐ ∘ᵥ α⇐ {f = i} {h} {g ∘ₕ f}
+               (α⇐ ◁ f ∘ᵥ α⇐) ∘ᵥ i ▷ α⇐ ≈ α⇐ ∘ᵥ α⇐ {f = i} {h} {g ∘₁ f}
 pentagon-inv = to-≈ pentagon-iso
 
 module UnitorCoherence where

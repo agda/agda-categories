@@ -65,11 +65,11 @@ Hom[ A ,-] = record
   ; P-homomorphism = niHelper (record
     { η         = λ{ (f , g) → ntHelper (record
       { η       = λ h → ⊚-assoc.⇐.η ((f , g) , h)
-      ; commute = λ _ → α⇐-▷-∘ₕ
+      ; commute = λ _ → α⇐-▷-∘₁
       }) }
     ; η⁻¹       = λ{ (f , g) → ntHelper (record
       { η       = λ h → ⊚-assoc.⇒.η ((f , g) , h)
-      ; commute = λ _ → α⇒-▷-∘ₕ
+      ; commute = λ _ → α⇒-▷-∘₁
       }) }
     ; commute = λ{ {f₁ , g₁} {f₂ , g₂} (β , γ) {h} → begin
           α⇐ ∘ᵥ f₂ ▷ (γ ◁ h) ∘ᵥ β ◁ (g₁ ⊚₀ h)
@@ -138,11 +138,11 @@ Hom[-, B ] = record
   ; P-homomorphism = niHelper (record
     { η         = λ{ (f , g) → ntHelper (record
       { η       = λ h → ⊚-assoc.⇒.η ((h , g) , f)
-      ; commute = λ _ → α⇒-◁-∘ₕ
+      ; commute = λ _ → α⇒-◁-∘₁
       }) }
     ; η⁻¹       = λ{ (f , g) → ntHelper (record
       { η       = λ h → ⊚-assoc.⇐.η ((h , g) , f)
-      ; commute = λ _ → α⇐-◁-∘ₕ
+      ; commute = λ _ → α⇐-◁-∘₁
       }) }
     ; commute = λ{ {f₁ , g₁} {f₂ , g₂} (β , γ) {h} → begin
           α⇒ ∘ᵥ (h ▷ γ) ◁ f₂ ∘ᵥ (h ⊚₀ g₁) ▷ β

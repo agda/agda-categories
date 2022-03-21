@@ -40,7 +40,7 @@ module SliceHom (A : Obj) where
 
     field
       {h} : X.Y ⇒₁ Y.Y
-      Δ   : X.arr ⇒₂ (Y.arr ∘ₕ h)
+      Δ   : X.arr ⇒₂ (Y.arr ∘₁ h)
 
   record Slice⇒₂ {X Y : SliceObj A} (J K : Slice⇒₁ X Y) : Set (ℓ ⊔ e) where
     constructor slicearr₂
@@ -145,7 +145,7 @@ module SliceHom (A : Obj) where
   
   α⇒/ : ∀ {W X Y Z}(J : Slice⇒₁ Y Z) (K : Slice⇒₁ X Y) (L : Slice⇒₁ W X) → Slice⇒₂ ((J ⊚₀/ K) ⊚₀/ L) (J ⊚₀/ (K ⊚₀/ L))
   α⇒/ {W}{X}{Y}{Z} J K L = slicearr₂ $ begin
-    (α⇒ ∘ᵥ J.Δ ◁ K.h ⊚₀ L.h) ∘ᵥ ((α⇒ ∘ᵥ K.Δ ◁ L.h) ∘ᵥ L.Δ  )                  ≈⟨ pullʳ (center⁻¹ (sym α⇒-◁-∘ₕ) refl) ⟩
+    (α⇒ ∘ᵥ J.Δ ◁ K.h ⊚₀ L.h) ∘ᵥ ((α⇒ ∘ᵥ K.Δ ◁ L.h) ∘ᵥ L.Δ  )                  ≈⟨ pullʳ (center⁻¹ (sym α⇒-◁-∘₁) refl) ⟩
     α⇒ ∘ᵥ (α⇒ ∘ᵥ J.Δ ◁ K.h ◁ L.h) ∘ᵥ K.Δ ◁ L.h ∘ᵥ L.Δ                         ≈⟨ pullˡ (pullˡ (sym pentagon)) ⟩
     ((Z.arr ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ L.h) ∘ᵥ J.Δ ◁ K.h ◁ L.h) ∘ᵥ (K.Δ ◁ L.h ∘ᵥ L.Δ) ≈⟨ pullˡ (pushˡ (pull-last ∘ᵥ-distr-◁ )) ⟩
     (Z.arr ▷ α⇒ ∘ᵥ (α⇒ ∘ᵥ ((α⇒ ∘ᵥ J.Δ ◁ K.h) ◁ L.h)) ∘ᵥ K.Δ ◁ L.h) ∘ᵥ L.Δ     ≈⟨ pushˡ (pushʳ (pullʳ ∘ᵥ-distr-◁)) ⟩
