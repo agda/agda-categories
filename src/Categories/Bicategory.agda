@@ -23,10 +23,10 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   module ComHom {A B} = Commutation (hom A B)
 
   infix 4 _⇒₁_ _⇒₂_ _≈_
-  infixr 7 _∘ᵥ_ _∘ₕ_
+  infixr 7 _∘ᵥ_ _∘₁_
   infixr 9 _▷_
   infixl 9 _◁_
-  infixr 11 _⊚₀_ _⊚₁_
+  infixr 11 _⊚₀_ _⊚₁_  _∘ₕ_
 
   _⇒₁_ : Obj → Obj → Set o
   A ⇒₁ B = Category.Obj (hom A B)
@@ -49,18 +49,22 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   id₂ : {A B : Obj} {f : A ⇒₁ B} → f ⇒₂ f
   id₂ {A} {B} = Category.id (hom A B)
 
+  -- 1-cell composition
+  _∘₁_ : {A B C : Obj} → B ⇒₁ C → A ⇒₁ B → A ⇒₁ C
+  _∘₁_ = _⊚₀_
+
   -- horizontal composition
-  _∘ₕ_ : {A B C : Obj} → B ⇒₁ C → A ⇒₁ B → A ⇒₁ C
-  _∘ₕ_ = _⊚₀_
+  _∘ₕ_ : {A B C : Obj} {f h : B ⇒₁ C} {g i : A ⇒₁ B} → f ⇒₂ h → g ⇒₂ i → f ⊚₀ g ⇒₂ h ⊚₀ i
+  _∘ₕ_ = _⊚₁_
 
   -- vertical composition
   _∘ᵥ_ : {A B : Obj} {f g h : A ⇒₁ B} (α : g ⇒₂ h) (β : f ⇒₂ g) → f ⇒₂ h
   _∘ᵥ_ = hom._∘_
 
-  _◁_ : {A B C : Obj} {g h : B ⇒₁ C} (α : g ⇒₂ h) (f : A ⇒₁ B) → g ∘ₕ f ⇒₂ h ∘ₕ f
+  _◁_ : {A B C : Obj} {g h : B ⇒₁ C} (α : g ⇒₂ h) (f : A ⇒₁ B) → g ∘₁ f ⇒₂ h ∘₁ f
   α ◁ _ = α ⊚₁ id₂
 
-  _▷_ : {A B C : Obj} {f g : A ⇒₁ B} (h : B ⇒₁ C) (α : f ⇒₂ g) → h ∘ₕ f ⇒₂ h ∘ₕ g
+  _▷_ : {A B C : Obj} {f g : A ⇒₁ B} (h : B ⇒₁ C) (α : f ⇒₂ g) → h ∘₁ f ⇒₂ h ∘₁ g
   _ ▷ α = id₂ ⊚₁ α
 
   private
@@ -77,17 +81,17 @@ record Bicategory o ℓ e t : Set (suc (o ⊔ ℓ ⊔ e ⊔ t)) where
   field
     triangle : {A B C : Obj} {f : A ⇒₁ B} {g : B ⇒₁ C} →
                  let open ComHom {A} {C} in
-                 [ (g ∘ₕ id₁) ∘ₕ f ⇒ g ∘ₕ f ]⟨
-                   α⇒                 ⇒⟨ g ∘ₕ id₁ ∘ₕ f ⟩
+                 [ (g ∘₁ id₁) ∘₁ f ⇒ g ∘₁ f ]⟨
+                   α⇒                 ⇒⟨ g ∘₁ id₁ ∘₁ f ⟩
                    g ▷ λ⇒
                  ≈ ρ⇒ ◁ f
                  ⟩
     pentagon : {A B C D E : Obj} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
                  let open ComHom {A} {E} in
-                 [ ((i ∘ₕ h) ∘ₕ g) ∘ₕ f ⇒ i ∘ₕ h ∘ₕ g ∘ₕ f ]⟨
-                   α⇒ ◁ f                     ⇒⟨ (i ∘ₕ h ∘ₕ g) ∘ₕ f ⟩
-                   α⇒                         ⇒⟨ i ∘ₕ (h ∘ₕ g) ∘ₕ f ⟩
+                 [ ((i ∘₁ h) ∘₁ g) ∘₁ f ⇒ i ∘₁ h ∘₁ g ∘₁ f ]⟨
+                   α⇒ ◁ f                     ⇒⟨ (i ∘₁ h ∘₁ g) ∘₁ f ⟩
+                   α⇒                         ⇒⟨ i ∘₁ (h ∘₁ g) ∘₁ f ⟩
                    i ▷ α⇒
-                 ≈ α⇒                         ⇒⟨ (i ∘ₕ h) ∘ₕ g ∘ₕ f ⟩
+                 ≈ α⇒                         ⇒⟨ (i ∘₁ h) ∘₁ g ∘₁ f ⟩
                    α⇒
                  ⟩

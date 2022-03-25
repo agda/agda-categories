@@ -51,20 +51,20 @@ record IsBigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ 
   field
     pentagon₁ : ∀ {A B} {f : A ⇒₁ B} →
                   let open Commutation (hom A B) in
-                  [ (f ∘ₕ f ⁻¹) ∘ₕ f ⇒ f ]⟨
-                    α⇒                  ⇒⟨ f ∘ₕ f ⁻¹ ∘ₕ f ⟩
-                    f ▷ cancel.⇒.η f    ⇒⟨ f ∘ₕ id₁ ⟩
+                  [ (f ∘₁ f ⁻¹) ∘₁ f ⇒ f ]⟨
+                    α⇒                  ⇒⟨ f ∘₁ f ⁻¹ ∘₁ f ⟩
+                    f ▷ cancel.⇒.η f    ⇒⟨ f ∘₁ id₁ ⟩
                     ρ⇒
-                  ≈ cancel′.⇒.η f ◁ f   ⇒⟨ id₁ ∘ₕ f ⟩
+                  ≈ cancel′.⇒.η f ◁ f   ⇒⟨ id₁ ∘₁ f ⟩
                     λ⇒
                   ⟩
     pentagon₂ : ∀ {A B} {f : A ⇒₁ B} →
                   let open Commutation (hom B A) in
-                  [ (f ⁻¹ ∘ₕ f) ∘ₕ f ⁻¹ ⇒ f ⁻¹ ]⟨
-                    α⇒                     ⇒⟨ f ⁻¹ ∘ₕ f ∘ₕ f ⁻¹ ⟩
-                    f ⁻¹ ▷ cancel′.⇒.η f   ⇒⟨ f ⁻¹ ∘ₕ id₁ ⟩
+                  [ (f ⁻¹ ∘₁ f) ∘₁ f ⁻¹ ⇒ f ⁻¹ ]⟨
+                    α⇒                     ⇒⟨ f ⁻¹ ∘₁ f ∘₁ f ⁻¹ ⟩
+                    f ⁻¹ ▷ cancel′.⇒.η f   ⇒⟨ f ⁻¹ ∘₁ id₁ ⟩
                     ρ⇒
-                  ≈ cancel.⇒.η f ◁ f ⁻¹    ⇒⟨ id₁ ∘ₕ f ⁻¹ ⟩
+                  ≈ cancel.⇒.η f ◁ f ⁻¹    ⇒⟨ id₁ ∘₁ f ⁻¹ ⟩
                     λ⇒
                   ⟩
 
@@ -104,8 +104,8 @@ record IsBigroupoid {o ℓ e t} (C : Bicategory o ℓ e t) : Set (o ⊔ ℓ ⊔ 
           ≈˘⟨ pushʳ ◁-∘ᵥ-ρ⇐ ⟩
         (((λ⇒ ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ α⇐) ∘ᵥ g ⁻¹ ⁻¹ ▷ cancel.⇐.η g) ∘ᵥ ((β ⁻¹′ ⁻¹′ ◁ id₁) ∘ᵥ ρ⇐)
           ≈⟨ center ◁-▷-exchg ⟩
-        ((λ⇒ ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ α⇐) ∘ᵥ (β ⁻¹′ ⁻¹′ ◁ (g ⁻¹ ∘ₕ g) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η g) ∘ᵥ ρ⇐
-          ≈⟨ center (⟺ assoc₂ ○ hom.∘-resp-≈ α⇐-◁-∘ₕ (ℱ.F-resp-≈ ((f ⁻¹ ⁻¹) ⊚-) (⟺ cancel⁻¹-comm))) ⟩
+        ((λ⇒ ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ α⇐) ∘ᵥ (β ⁻¹′ ⁻¹′ ◁ (g ⁻¹ ∘₁ g) ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η g) ∘ᵥ ρ⇐
+          ≈⟨ center (⟺ assoc₂ ○ hom.∘-resp-≈ α⇐-◁-∘₁ (ℱ.F-resp-≈ ((f ⁻¹ ⁻¹) ⊚-) (⟺ cancel⁻¹-comm))) ⟩
         (λ⇒ ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ ((β ⁻¹′ ⁻¹′ ◁ g ⁻¹ ◁ g ∘ᵥ α⇐) ∘ᵥ f ⁻¹ ⁻¹ ▷ ((β ⁻¹′ ⊚₁ β) ∘ᵥ cancel.⇐.η f)) ∘ᵥ ρ⇐
           ≈⟨ refl⟩∘⟨ (hom.∘-resp-≈ʳ (ℱ.homomorphism ((f ⁻¹ ⁻¹) ⊚-)) ○ center (⊚-assoc.⇐.commute _) ○ center⁻¹ ([ ⊚ ]-merge (⟺ [ ⊚ ]-decompose₁) identity₂ˡ) refl) ⟩∘⟨refl ⟩
         (λ⇒ ∘ᵥ cancel.⇒.η (g ⁻¹) ◁ g) ∘ᵥ (((β ⁻¹′ ⁻¹′ ⊚₁ β ⁻¹′) ⊚₁ β) ∘ᵥ α⇐ ∘ᵥ f ⁻¹ ⁻¹ ▷ cancel.⇐.η f) ∘ᵥ ρ⇐
