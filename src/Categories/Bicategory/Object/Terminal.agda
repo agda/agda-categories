@@ -6,6 +6,7 @@ module Categories.Bicategory.Object.Terminal {o ℓ e t} (𝒞 : Bicategory o �
 open Bicategory 𝒞
 open import Level
 open import Categories.Category using (_[_,_])
+open import Categories.Morphism.HeterogeneousEquality using (Along_,_[_≈_])
 open import Categories.Morphism.Notation using (_[_≅_])
 open import Categories.Morphism using (_≅_)
 
@@ -16,4 +17,5 @@ record IsTerminal (⊤ : Obj) : Set (o ⊔ ℓ ⊔ e ⊔ t) where
 
     η₁ : ∀ {A} f → hom A ⊤ [ f ≅ !₁ ]
     η₂ : ∀ {A}{f g}(α : hom A ⊤ [ f , g ])
-       → α ≈ _≅_.to (η₁ _) ∘ᵥ !₂ ∘ᵥ _≅_.from (η₁ _)
+       → Along η₁ _ , η₁ _ [ α ≈ !₂ ] 
+
