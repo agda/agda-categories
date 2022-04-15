@@ -239,6 +239,28 @@ vertical 2-associativity:
       (s₁ : Sq₂ hT₁ hT₂ vL₁ vR₁) →
       Sq≈ (s₃ ∘₂ᵥ (s₂ ∘₂ᵥ s₁)) ((s₃ ∘₂ᵥ s₂) ∘₂ᵥ s₁)
 
+{-
+interchange law:
+
+        T₁  →  T₂  →  T₃
+        ↓   s₁  ↓   s₂  ↓
+        M₁  →  M₂  →  M₃
+        ↓   s₃  ↓   s₄  ↓
+        B₁  →  B₂  →  B₃
+-}
+    interchange :
+      {T₁ T₂ T₃ M₁ M₂ M₃ B₁ B₂ B₃ : Obj} →
+      {hT₁ : T₁ ⇒ₕ T₂} {hT₂ : T₂ ⇒ₕ T₃} →
+      {hM₁ : M₁ ⇒ₕ M₂} {hM₂ : M₂ ⇒ₕ M₃} →
+      {hB₁ : B₁ ⇒ₕ B₂} {hB₂ : B₂ ⇒ₕ B₃} →
+      {vL₁  : T₁ ⇒ᵥ M₁} {vL₂  : M₁ ⇒ᵥ B₁} →
+      {vM₁  : T₂ ⇒ᵥ M₂} {vM₂  : M₂ ⇒ᵥ B₂} →
+      {vR₁  : T₃ ⇒ᵥ M₃} {vR₂  : M₃ ⇒ᵥ B₃} →
+      (s₄ : Sq₂ hM₂ hB₂ vM₂ vR₂) →
+      (s₃ : Sq₂ hM₁ hB₁ vL₂ vM₂) →
+      (s₂ : Sq₂ hT₂ hM₂ vM₁ vR₁)
+      (s₁ : Sq₂ hT₁ hM₁ vL₁ vM₁) →
+      Sq≈ ((s₄ ∘₂ₕ s₃) ∘₂ᵥ (s₂ ∘₂ₕ s₁)) ((s₄ ∘₂ᵥ s₂) ∘₂ₕ (s₃ ∘₂ᵥ s₁))
   -- When a category is quantified, it is convenient to refer to the levels from a module,
   -- so we do not have to explicitly quantify over a category when universe levels do not
   -- play a big part in a proof (which is the case probably all the time).
@@ -271,4 +293,5 @@ vertical 2-associativity:
     ; sym-assocₕ = λ s₁ s₂ s₃ → dual≈ Hor Ver (sym-assocᵥ s₁ s₂ s₃)
     ; assocᵥ = λ s₁ s₂ s₃ → dual≈ Hor Ver (assocₕ s₁ s₂ s₃)
     ; sym-assocᵥ = λ s₁ s₂ s₃ → dual≈ Hor Ver (sym-assocₕ s₁ s₂ s₃)
+    ; interchange = λ s₄ s₃ s₂ s₁ → dual≈ Hor Ver (interchange s₄ s₂ s₃ s₁)
     }
