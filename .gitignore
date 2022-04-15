@@ -1,3 +1,4 @@
 *.agdai
 .DS_Store
 src/MAlonzo
+Everything.agda
