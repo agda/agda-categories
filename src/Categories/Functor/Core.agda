@@ -28,7 +28,6 @@ record Functor (C : Category o ℓ e) (D : Category o′ ℓ′ e′) : Set (o �
   -- nice shorthands
   ₀ = F₀
   ₁ = F₁
-  resp-≈ = F-resp-≈
 
   op : Functor C.op D.op
   op = record
