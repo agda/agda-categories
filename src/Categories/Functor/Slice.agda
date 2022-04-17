@@ -1,18 +1,12 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
+open import Categories.Category using (Category)
 
 module Categories.Functor.Slice {o ℓ e} (C : Category o ℓ e) where
 
-open import Data.Product using (_,_)
-
-open import Categories.Adjoint
-open import Categories.Category.CartesianClosed
-open import Categories.Category.CartesianClosed.Locally
-open import Categories.Functor
-open import Categories.Functor.Properties
+open import Categories.Functor using (Functor)
+open import Categories.Functor.Properties using ([_]-resp-∘)
 open import Categories.Morphism.Reasoning C
-open import Categories.NaturalTransformation
 
 import Categories.Category.Slice as S
 import Categories.Diagram.Pullback as P
@@ -28,8 +22,8 @@ module _ {A : Obj} where
 
   Base-F : ∀ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} (F : Functor C D) → Functor (S.Slice C A) (S.Slice D (Functor.F₀ F A))
   Base-F {D = D} F = record
-    { F₀           = λ { (S.sliceobj arr) → S.sliceobj (F₁ arr) }
-    ; F₁           = λ { (S.slicearr △) → S.slicearr ([ F ]-resp-∘ △) }
+    { F₀           = λ { s → S.sliceobj (F₁ (arr s)) }
+    ; F₁           = λ { s⇒ → S.slicearr ([ F ]-resp-∘ (△ s⇒)) }
     ; identity     = identity
     ; homomorphism = homomorphism
     ; F-resp-≈     = F-resp-≈
@@ -41,8 +35,8 @@ module _ {A : Obj} where
 
   Forgetful : Functor (Slice A) C
   Forgetful = record
-    { F₀           = λ X → Y X
-    ; F₁           = λ f → h f
+    { F₀           = Y
+    ; F₁           = h
     ; identity     = refl
     ; homomorphism = refl
     ; F-resp-≈     = λ eq → eq
@@ -76,24 +70,6 @@ module _ {A : Obj} where
       ; F-resp-≈     = λ {X Y} eq″ → unique (arr Y) f (p₁∘universal≈h₁ (arr Y) f ○ ∘-resp-≈ˡ eq″) (p₂∘universal≈h₂ (arr Y) f)
       }
 
-
-    !⊣* : ∀ {B} (f : B ⇒ A) →  BaseChange! f ⊣ BaseChange* f
-    !⊣* f = record
-      { unit   = ntHelper record
-        { η       = λ X → slicearr (p₂∘universal≈h₂ (f ∘ arr X) f {eq = identityʳ})
-        ; commute = λ {X Y} g → unique-diagram (f ∘ arr Y) f
-                                               (cancelˡ (p₁∘universal≈h₁ (f ∘ arr Y) f) ○ ⟺ (cancelʳ (p₁∘universal≈h₁ (f ∘ arr X) f)) ○ pushˡ (⟺ (p₁∘universal≈h₁ (f ∘ arr Y) f)))
-                                               (pullˡ (p₂∘universal≈h₂ (f ∘ arr Y) f) ○ △ g ○ ⟺ (p₂∘universal≈h₂ (f ∘ arr X) f) ○ pushˡ (⟺ (p₂∘universal≈h₂ (f ∘ arr Y) f)))
-        }
-      ; counit = ntHelper record
-        { η       = λ X → slicearr (pullbacks.commute (arr X) f)
-        ; commute = λ {X Y} g → p₁∘universal≈h₁ (arr Y) f
-        }
-      ; zig    = λ {X} → p₁∘universal≈h₁ (f ∘ arr X) f
-      ; zag    = λ {Y} → unique-diagram (arr Y) f
-                                        (pullˡ (p₁∘universal≈h₁ (arr Y) f) ○ pullʳ (p₁∘universal≈h₁ (f ∘ pullbacks.p₂ (arr Y) f) f))
-                                        (pullˡ (p₂∘universal≈h₂ (arr Y) f) ○ p₂∘universal≈h₂ (f ∘ pullbacks.p₂ (arr Y) f) f ○ ⟺ identityʳ)
-      }
 
     pullback-functorial : ∀ {B} (f : B ⇒ A) → Functor (Slice A) C
     pullback-functorial f = record
