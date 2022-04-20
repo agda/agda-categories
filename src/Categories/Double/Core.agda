@@ -10,27 +10,29 @@ import Relation.Binary.Reasoning.Setoid as SetoidR
 import Categories.Category.Unbundled as Cat
 
 -- Equality of squares in a double category
-module _ {o ℓ e : Level} {Obj : Set o} (Hor Ver : Cat.Category Obj ℓ e) where
+module _ {o ℓ ℓ' e e' : Level} {Obj : Set o} 
+         (Hor : Cat.Category Obj ℓ e) (Ver : Cat.Category Obj ℓ' e') where
   private
     module H = Cat.Category Hor
     module V = Cat.Category Ver
     _≈ₕ_ : ∀ {A B} → Rel (A H.⇒ B) e
     _≈ₕ_ = H._≈_
-    _≈ᵥ_ : ∀ {A B} → Rel (A V.⇒ B) e
+    _≈ᵥ_ : ∀ {A B} → Rel (A V.⇒ B) e'
     _≈ᵥ_ = V._≈_
   record SqEquality
     {T₁ T₂ B₁ B₂ : Obj}
     (hT₁ hT₂ : T₁ H.⇒ T₂)
     (hB₁ hB₂ : B₁ H.⇒ B₂)
     (vL₁ vL₂ : T₁ V.⇒ B₁)
-    (vR₁ vR₂ : T₂ V.⇒ B₂) : Set e where
+    (vR₁ vR₂ : T₂ V.⇒ B₂) : Set (e ⊔ e') where
       field
         horT≈ : hT₁ ≈ₕ hT₂
         horB≈ : hB₁ ≈ₕ hB₂
         verL≈ : vL₁ ≈ᵥ vL₂
         verR≈ : vR₁ ≈ᵥ vR₂
 
-module _ {o ℓ e : Level} {Obj : Set o} (Hor Ver : Cat.Category Obj ℓ e) where
+module _ {o ℓ ℓ' e e' : Level} {Obj : Set o} 
+         (Hor : Cat.Category Obj ℓ e) (Ver : Cat.Category Obj ℓ' e') where
   private
     module H = Cat.Category Hor
     module V = Cat.Category Ver
@@ -51,7 +53,7 @@ module _ {o ℓ e : Level} {Obj : Set o} (Hor Ver : Cat.Category Obj ℓ e) wher
     where module S = SqEquality S
 
 -- Basic definition of a |Double Category|
-record Category (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) where
+record Category (o ℓ ℓ' e e' : Level) : Set (suc (o ⊔ ℓ ⊔ e ⊔ ℓ' ⊔ e')) where
   field
     Obj : Set o
     Hor : Cat.Category Obj ℓ e
@@ -261,19 +263,8 @@ interchange law:
       (s₂ : Sq₂ hT₂ hM₂ vM₁ vR₁)
       (s₁ : Sq₂ hT₁ hM₁ vL₁ vM₁) →
       Sq≈ ((s₄ ∘₂ₕ s₃) ∘₂ᵥ (s₂ ∘₂ₕ s₁)) ((s₄ ∘₂ᵥ s₂) ∘₂ₕ (s₃ ∘₂ᵥ s₁))
-  -- When a category is quantified, it is convenient to refer to the levels from a module,
-  -- so we do not have to explicitly quantify over a category when universe levels do not
-  -- play a big part in a proof (which is the case probably all the time).
-  o-level : Level
-  o-level = o
 
-  ℓ-level : Level
-  ℓ-level = ℓ
-
-  e-level : Level
-  e-level = e
-
-  dual : Category o ℓ e
+  dual : Category o ℓ ℓ' e e'
   dual = record
     { Obj = Obj
     ; Hor = Ver
