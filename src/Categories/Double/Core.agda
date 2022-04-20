@@ -12,18 +12,20 @@ import Categories.Category.Unbundled as Cat
 {-
 When defining a double category over a setoid enriched category
 we wish to state an identity law like the following:
+```
 
           f
       T₁  →  T₂
-   v  ↓   s   ↓ w
+    v ↓   s  ↓ w
       B₁  →  B₂              f
           g                T₁ → T₂
-          ∘        ≃    v  ↓     ↓ w
+          ∘        ≃    v  ↓    ↓ w
           h                B₁ → B₂
-      B₁  →  B₂            h ∘ g
-  id  ↓   id  ↓ id
+      B₁  →  B₂             h ∘ g
+   id ↓  id  ↓ id
       B₁  →  B₂
           h
+```
 
 Note that if we try to define homogeneous equality between squares of
 the form: `Sq₂ f (h ∘ g) v w`, then this will not work as the left-hand
@@ -115,9 +117,9 @@ record Category (o ℓ ℓ' e e' : Level) : Set (suc (o ⊔ ℓ ⊔ e ⊔ ℓ' �
 {-
 horizontal 2-composition:
 
-        T₂  →  T₃      T₁  →  T₂     T₁ → T₃
-        ↓       ↓   ∘   ↓       ↓  ~>  ↓     ↓
-        B₁  →  B₂      B₁  →  B₂     B₁ → B₃
+        T₂  →  T₃       T₁  →  T₂      T₁ → T₃
+        ↓      ↓   ∘    ↓      ↓   ~>  ↓    ↓
+        B₁  →  B₂       B₁  →  B₂      B₁ → B₃
 -}
     _∘₂ₕ_ : 
       {T₁ T₂ T₃ B₁ B₂ B₃ : Obj} →
@@ -132,7 +134,7 @@ horizontal 2-composition:
 horizontal 2-identity
 
         V₁  →  V₁
-      v ↓   id  ↓ v
+      v ↓  id  ↓ v
         V₂  →  V₂
 -}
     id₂ₕ : {V₁ V₂ : Obj} →
@@ -143,11 +145,11 @@ horizontal 2-identity
 vertical 2-composition
 
         M₁  →  M₁
-        ↓       ↓
+        ↓      ↓
         B₁  →  B₂      T₁ → T₂
-            ∘       ~>  ↓     ↓
+            ∘      ~>  ↓    ↓
         T₁  →  T₁      B₁ → B₂
-        ↓       ↓
+        ↓      ↓
         M₁  →  M₂
 
 -}
@@ -165,7 +167,7 @@ vertical 2-identity
 
              h
          H₁  →  H₂
-         ↓   id  ↓
+         ↓  id  ↓
          H₁  →  H₂
              h
 -}
@@ -209,7 +211,7 @@ vertical 2-identity
 horizontal 2-associativity:
 
         T₁  →  T₂  →  T₃  →  T₄
-        ↓       ↓       ↓       ↓
+        ↓      ↓      ↓      ↓
         B₁  →  B₂  →  B₃  →  B₄
 -}
     assocₕ :
@@ -236,11 +238,11 @@ horizontal 2-associativity:
 vertical 2-associativity:
 
         T₁  →  T₂
-        ↓       ↓
+        ↓      ↓
         T₃  →  T₄
-        ↓       ↓
+        ↓      ↓
         B₁  →  B₂
-        ↓       ↓
+        ↓      ↓
         B₃  →  B₄
 
 -}
@@ -270,9 +272,9 @@ vertical 2-associativity:
 interchange law:
 
         T₁  →  T₂  →  T₃
-        ↓       ↓       ↓
+        ↓      ↓      ↓
         M₁  →  M₂  →  M₃
-        ↓       ↓       ↓
+        ↓      ↓      ↓
         B₁  →  B₂  →  B₃
 -}
     interchange :
