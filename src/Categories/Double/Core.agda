@@ -10,7 +10,7 @@ import Relation.Binary.Reasoning.Setoid as SetoidR
 import Categories.Category.Unbundled as Cat
 
 -- Equality of squares in a double category
-module _ {o ℓ ℓ' e e' : Level} {Obj : Set o} 
+module _ {o ℓ ℓ' e e' : Level} {Obj : Set o}
          (Hor : Cat.Category Obj ℓ e) (Ver : Cat.Category Obj ℓ' e') where
   private
     module H = Cat.Category Hor
@@ -31,7 +31,7 @@ module _ {o ℓ ℓ' e e' : Level} {Obj : Set o}
         verL≈ : vL₁ ≈ᵥ vL₂
         verR≈ : vR₁ ≈ᵥ vR₂
 
-module _ {o ℓ ℓ' e e' : Level} {Obj : Set o} 
+module _ {o ℓ ℓ' e e' : Level} {Obj : Set o}
          (Hor : Cat.Category Obj ℓ e) (Ver : Cat.Category Obj ℓ' e') where
   private
     module H = Cat.Category Hor
