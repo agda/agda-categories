@@ -145,9 +145,6 @@ module IsCartesianClosed {o} (C : Category o o o) where
       let module H  = Functor H
           module α  = NaturalTransformation α
       in Π.cong (α.η _) (H.identity eq₁ , eq₂) }
-    ; curry-resp-≈ = λ { {F} {G} eq eq₁ (eq₂ , eq₃) →
-      let module G = Functor G
-      in eq (G.F-resp-≈ eq₂ eq₁ , eq₃) }
     ; curry-unique = λ {F G H} {α β} eq {X} {x y} eq₁ → λ { {Y} {f , z} {g , w} (eq₂ , eq₃) →
       let module F = Functor F
           module G = Functor G

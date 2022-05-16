@@ -47,7 +47,6 @@ module _ ℓ where
       ; cong  = λ eq₁ eq₂ → cong f (eq₁ , eq₂)
       }
     ; eval-comp    = λ {_ _ _ f} → cong f
-    ; curry-resp-≈ = λ eq₁ eq₂ eq → eq₁ (eq₂ , eq)
     ; curry-unique = λ eq₁ eq₂ eq → eq₁ (eq₂ , eq)
     }
     where
