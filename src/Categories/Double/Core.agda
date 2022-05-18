@@ -84,7 +84,7 @@ record Category (o ℓ ℓ' e e' : Level) : Set (suc (o ⊔ ℓ ⊔ e ⊔ ℓ' �
   field
     Obj : Set o
     Hor : Cat.Category Obj ℓ e
-    Ver : Cat.Category Obj ℓ e
+    Ver : Cat.Category Obj ℓ' e'
   private
     module H = Cat.Category Hor
     module V = Cat.Category Ver
@@ -92,9 +92,9 @@ record Category (o ℓ ℓ' e e' : Level) : Set (suc (o ⊔ ℓ ⊔ e ⊔ ℓ' �
   _⇒ₕ_ = H._⇒_
   _≈ₕ_ : ∀ {A B} → Rel (A ⇒ₕ B) e
   _≈ₕ_ = H._≈_
-  _⇒ᵥ_ : Rel Obj ℓ
+  _⇒ᵥ_ : Rel Obj ℓ'
   _⇒ᵥ_ = V._⇒_
-  _≈ᵥ_ : ∀ {A B} → Rel (A ⇒ᵥ B) e
+  _≈ᵥ_ : ∀ {A B} → Rel (A ⇒ᵥ B) e'
   _≈ᵥ_ = V._≈_
   _∘₁ₕ_ : ∀ {A B C} → (B ⇒ₕ C) → (A ⇒ₕ B) → (A ⇒ₕ C)
   _∘₁ₕ_ = H._∘_
@@ -102,14 +102,14 @@ record Category (o ℓ ℓ' e e' : Level) : Set (suc (o ⊔ ℓ ⊔ e ⊔ ℓ' �
   _∘₁ᵥ_ = V._∘_
 
   field
-    Sq₂ : {T₁ T₂ B₁ B₂ : Obj} → T₁ ⇒ₕ T₂ → B₁ ⇒ₕ B₂ → T₁ ⇒ᵥ B₁ → T₂ ⇒ᵥ B₂ → Set ℓ
+    Sq₂ : {T₁ T₂ B₁ B₂ : Obj} → T₁ ⇒ₕ T₂ → B₁ ⇒ₕ B₂ → T₁ ⇒ᵥ B₁ → T₂ ⇒ᵥ B₂ → Set (ℓ ⊔ ℓ')
 
   Sq≈ : ∀ {T₁ T₂ B₁ B₂ : Obj}
     {hT₁ hT₂ : T₁ ⇒ₕ T₂} →
     {hB₁ hB₂ : B₁ ⇒ₕ B₂} →
     {vL₁ vL₂ : T₁ ⇒ᵥ B₁} →
     {vR₁ vR₂ : T₂ ⇒ᵥ B₂} →
-    REL (Sq₂ hT₁ hB₁ vL₁ vR₁) (Sq₂ hT₂ hB₂ vL₂ vR₂) e
+    REL (Sq₂ hT₁ hB₁ vL₁ vR₁) (Sq₂ hT₂ hB₂ vL₂ vR₂) (e ⊔ e')
   Sq≈ {_} {_} {_} {_} {hT₁} {hT₂} {hB₁} {hB₂} {vL₁} {vL₂} {vR₁} {vR₂} _ _ =
     SqEquality Hor Ver hT₁ hT₂ hB₁ hB₂ vL₁ vL₂ vR₁ vR₂
 
@@ -291,7 +291,7 @@ interchange law:
       (s₁ : Sq₂ hT₁ hM₁ vL₁ vM₁) →
       Sq≈ ((s₄ ∘₂ₕ s₃) ∘₂ᵥ (s₂ ∘₂ₕ s₁)) ((s₄ ∘₂ᵥ s₂) ∘₂ₕ (s₃ ∘₂ᵥ s₁))
 
-  dual : Category o ℓ ℓ' e e'
+  dual : Category o ℓ' ℓ e' e
   dual = record
     { Obj = Obj
     ; Hor = Ver
