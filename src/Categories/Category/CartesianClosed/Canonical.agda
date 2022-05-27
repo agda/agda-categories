@@ -93,8 +93,10 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
 
     eval-comp  : eval ∘ (curry f ⁂ id) ≈ f
 
-    curry-resp-≈ : f ≈ g → curry f ≈ curry g
     curry-unique : eval ∘ (f ⁂ id) ≈ g → f ≈ curry g
+
+  curry-resp-≈ : f ≈ g → curry f ≈ curry g
+  curry-resp-≈ f≈g = curry-unique (eval-comp ○ f≈g)
 
   -- The above defines canonical exponentials, making 𝒞 cartesian closed.
   --
@@ -153,7 +155,6 @@ module Equivalence where
     ; eval  = eval′
     ; curry = λg
     ; eval-comp    = β′
-    ; curry-resp-≈ = λ-cong
     ; curry-unique = λ-unique′
     }
     where

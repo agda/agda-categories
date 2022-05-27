@@ -257,7 +257,6 @@ Posets-CanonicallyCCC = record
   ; eval         = eval
   ; curry        = curry
   ; eval-comp    = λ {_ _ _ f}   → eval-comp {f = f}
-  ; curry-resp-≈ = λ {_ _ _ f g} → curry-resp-≗ {f = f} {g}
   ; curry-unique = λ {_ _ _ f g} → curry-unique {f = f} {g}
   }
 

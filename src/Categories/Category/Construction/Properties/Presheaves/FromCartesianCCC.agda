@@ -222,10 +222,6 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
           ≈⟨ Π.cong (α.η X) (H.identity HX.refl , G.identity GX.refl) ⟩
         α.η X ⟨$⟩ (z , w)
           ∎ }
-    ; curry-resp-≈ = λ {F G H} eq eq₁ eq₂ →
-      let module G = Functor G
-          module H = Functor H
-      in eq (Π.cong (G.₁ π₁) eq₁ , Π.cong (H.₁ π₂) eq₂)
     ; curry-unique = λ {F G H} {α β} eq {X} {x y} eq₁ {Y} {z w} eq₂ →
       let module F   = Functor F
           module G   = Functor G
