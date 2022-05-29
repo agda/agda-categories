@@ -7,7 +7,10 @@ open import Categories.Monad
 
 module Categories.Adjoint.Construction.Adjunctions {o ℓ e} {C : Category o ℓ e} (M : Monad C) where
 
-open Category C
+private
+  module C = Category C
+  module M = Monad M
+  open C
 
 open import Categories.Adjoint
 open import Categories.Functor
@@ -26,12 +29,38 @@ record SplitObj : Set (suc o ⊔ suc ℓ ⊔ suc e) where
     F : Functor C D
     G : Functor D C
     adj : F ⊣ G
-    eqM : G ∘F F ≃ Monad.F M
-    unit-eq : ∀ A → eqM.⇐.η A C.∘ M.η.η A C.≈ adj.unit.η A
-    -- mult-eq :
-    -- unit M = unit adj
-    -- mult M = G . counit . F
-    -- probably this is asking too little...
+    GF≃M : G ∘F F ≃ M.F
+
+  module D = Category D
+  module F = Functor F
+  module G = Functor G
+  module adj = Adjoint adj
+  module GF≃M = NaturalIsomorphism GF≃M
+
+  field
+    η-eq : ∀ {A} → GF≃M.⇐.η A ∘ M.η.η A ≈ adj.unit.η A
+    μ-eq : ∀ {A} → GF≃M.⇐.η A ∘ M.μ.η A ≈ G.₁ (adj.counit.η _) ∘ GF≃M.⇐.η _ ∘ M.F.F₁ (GF≃M.⇐.η A)
+
+  {-
+  η-eq:
+                 adj.unit.η A
+            A ------------------+
+    M.η.η A |                   |
+            v                   v
+            MA --------------> GFA
+                  GF≃M.⇐.η A
+
+  μ-eq:
+
+         M.F.F₁ (GF≃M.⇐.η A)        GF≃M.⇐.η
+    MMA ---------------------> GFM ----------> GFGFA
+     |                                           |
+     | M.μ A                                     | G.₁ (adj.counit.η A)
+     v                                           v
+     MA --------------------------------------> GFA
+                     GF≃M.⇐.η A
+  -}
+
 
 record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
   constructor split⇒
