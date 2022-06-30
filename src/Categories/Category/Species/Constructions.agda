@@ -16,6 +16,8 @@ open import Data.Sum.Base as ⊎ using (inj₁; inj₂)
 open import Data.Sum.Relation.Binary.Pointwise using (_⊎ₛ_; inj₁; inj₂)
 open import Data.Unit.Polymorphic using (⊤; tt)
 open import Function.Base using () renaming (id to id→)
+open import Function.Construct.Symmetry using () renaming (inverse to syminv)
+open import Function.Construct.Composition using () renaming (inverse to transinv)
 open import Function.Equality using (_⟨$⟩_; cong; Π) renaming (id to idΠ)
 open import Function.Bundles using (Inverse)
 open import Relation.Nullary using (Dec; yes; no)
@@ -56,10 +58,10 @@ module _ {o ℓ : Level} where
     ⊤-Setoid ,
     1 ,
     record
-      { f = λ _ → Fin.zero
-      ; f⁻¹ = λ _ → tt
-      ; cong₁ = λ _ → ≡.refl
-      ; cong₂ = λ _ → tt
+      { to = λ _ → Fin.zero
+      ; from = λ _ → tt
+      ; to-cong = λ _ → ≡.refl
+      ; from-cong = λ _ → tt
       ; inverse = (λ { Fin.zero → ≡.refl}) , λ _ → tt
       }
 
@@ -97,27 +99,15 @@ module _ (o : Level) where
 
     iso⇒Inverse : (A B : Σ S IsFiniteSetoid) (A≅B : A ≅ B) → Inverse (proj₁ A) (proj₁ B)
     iso⇒Inverse (s , n , p) (s′ , n′ , p′) A≅B = record
-      { f = from A≅B ⟨$⟩_
-      ; f⁻¹ = to A≅B ⟨$⟩_
-      ; cong₁ = cong (from A≅B)
-      ; cong₂ = cong (to A≅B)
+      { to = from A≅B ⟨$⟩_
+      ; from = to A≅B ⟨$⟩_
+      ; to-cong = cong (from A≅B)
+      ; from-cong = cong (to A≅B)
       ; inverse = (λ x → isoʳ A≅B (Setoid.refl s′ {x})) , λ x → isoˡ A≅B (Setoid.refl s {x})
       }
 
     iso⇒≡ : {A B : Σ S IsFiniteSetoid} (A≅B : A ≅ B) → proj₁ (proj₂ A) ≡.≡ proj₁ (proj₂ B)
-    iso⇒≡ {A@(s , n , p)} {B@(s′ , n′ , p′)} A≅B = ↔⇒≡ ( (translate p′) Inv.∘ (translate X Inv.∘ Inv.sym (translate p)))
-      where
-      X : Inverse (proj₁ A) (proj₁ B)
-      X = iso⇒Inverse A B A≅B
-      translate : {a b c d : Level} {X : Setoid a b} {Y : Setoid c d} → Inverse X Y → Inv.Inverse X Y
-      translate I = record
-        { to = record { _⟨$⟩_ = Inverse.f I ; cong = Inverse.cong₁ I }
-        ; from = record { _⟨$⟩_ = Inverse.f⁻¹ I ; cong = Inverse.cong₂ I }
-        ; inverse-of = record
-          { left-inverse-of = Inverse.inverseʳ I
-          ; right-inverse-of = Inverse.inverseˡ I
-          }
-        }
+    iso⇒≡ {A@(_ , _ , p)} {B@(_ , _ , p′)} A≅B = ↔⇒≡ (transinv (transinv (syminv p) (iso⇒Inverse A B A≅B)) p′)
 
     -- one can do this in 3 cases structurally, but that leads to 9 cases elsewhere
     -- so a dispatch on size makes sense
