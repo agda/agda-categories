@@ -34,7 +34,7 @@ Instead, we define equality of squares to mean an equalities in each of
 the horizontal or vertical hom setoids.
 
 This equality of squares in a double category is captured in the
-definition |SqEqualtiy|.
+definition |FrameEqualtiy|.
 
 -}
 module _ {o ℓ ℓ' e e' : Level} {Obj : Set o}
@@ -46,17 +46,17 @@ module _ {o ℓ ℓ' e e' : Level} {Obj : Set o}
     _≈ₕ_ = H._≈_
     _≈ᵥ_ : ∀ {A B} → Rel (A V.⇒ B) e'
     _≈ᵥ_ = V._≈_
-  record SqEquality
-    {T₁ T₂ B₁ B₂ : Obj}
-    (hT₁ hT₂ : T₁ H.⇒ T₂)
-    (hB₁ hB₂ : B₁ H.⇒ B₂)
-    (vL₁ vL₂ : T₁ V.⇒ B₁)
-    (vR₁ vR₂ : T₂ V.⇒ B₂) : Set (e ⊔ e') where
+  record FrameEquality
+    {A B C D : Obj}
+    (T₁ T₂ : A H.⇒ B)
+    (B₁ B₂ : C H.⇒ D)
+    (L₁ L₂ : A V.⇒ C)
+    (R₁ R₂ : B V.⇒ D) : Set (e ⊔ e') where
       field
-        horT≈ : hT₁ ≈ₕ hT₂
-        horB≈ : hB₁ ≈ₕ hB₂
-        verL≈ : vL₁ ≈ᵥ vL₂
-        verR≈ : vR₁ ≈ᵥ vR₂
+        T≈ : T₁ ≈ₕ T₂
+        B≈ : B₁ ≈ₕ B₂
+        L≈ : L₁ ≈ᵥ L₂
+        R≈ : R₁ ≈ᵥ R₂
 
 module _ {o ℓ ℓ' e e' : Level} {Obj : Set o}
          (Hor : Cat.Category Obj ℓ e) (Ver : Cat.Category Obj ℓ' e') where
@@ -64,20 +64,20 @@ module _ {o ℓ ℓ' e e' : Level} {Obj : Set o}
     module H = Cat.Category Hor
     module V = Cat.Category Ver
   dual≈ :
-    ∀ {T₁ T₂ B₁ B₂ : Obj} →
-    {hT₁ hT₂ : T₁ H.⇒ T₂} →
-    {hB₁ hB₂ : B₁ H.⇒ B₂} →
-    {vL₁ vL₂ : T₁ V.⇒ B₁} →
-    {vR₁ vR₂ : T₂ V.⇒ B₂} →
-    SqEquality Hor Ver hT₁ hT₂ hB₁ hB₂ vL₁ vL₂ vR₁ vR₂ →
-    SqEquality Ver Hor vL₁ vL₂ vR₁ vR₂ hT₁ hT₂ hB₁ hB₂
+    ∀ {A B C D : Obj} →
+    {T₁ T₂ : A H.⇒ B} →
+    {B₁ B₂ : C H.⇒ D} →
+    {L₁ L₂ : A V.⇒ C} →
+    {R₁ R₂ : B V.⇒ D} →
+    FrameEquality Hor Ver T₁ T₂ B₁ B₂ L₁ L₂ R₁ R₂ →
+    FrameEquality Ver Hor L₁ L₂ R₁ R₂ T₁ T₂ B₁ B₂
   dual≈ S = record
-      { horT≈ = S.verL≈
-      ; horB≈ = S.verR≈
-      ; verL≈ = S.horT≈
-      ; verR≈ = S.horB≈
+      { T≈ = S.L≈
+      ; B≈ = S.R≈
+      ; L≈ = S.T≈
+      ; R≈ = S.B≈
       }
-    where module S = SqEquality S
+    where module S = FrameEquality S
 
 -- Basic definition of a strict setoid-enriched |Double Category|.
 record Category (o ℓ ℓ' e e' : Level) : Set (suc (o ⊔ ℓ ⊔ e ⊔ ℓ' ⊔ e')) where
@@ -102,16 +102,16 @@ record Category (o ℓ ℓ' e e' : Level) : Set (suc (o ⊔ ℓ ⊔ e ⊔ ℓ' �
   _∘₁ᵥ_ = V._∘_
 
   field
-    Sq₂ : {T₁ T₂ B₁ B₂ : Obj} → T₁ ⇒ₕ T₂ → B₁ ⇒ₕ B₂ → T₁ ⇒ᵥ B₁ → T₂ ⇒ᵥ B₂ → Set (ℓ ⊔ ℓ')
+    Sq₂ : {A B C D : Obj} → A ⇒ₕ B → C ⇒ₕ D → A ⇒ᵥ C → B ⇒ᵥ D → Set (ℓ ⊔ ℓ')
 
-  Sq≈ : ∀ {T₁ T₂ B₁ B₂ : Obj}
-    {hT₁ hT₂ : T₁ ⇒ₕ T₂} →
-    {hB₁ hB₂ : B₁ ⇒ₕ B₂} →
-    {vL₁ vL₂ : T₁ ⇒ᵥ B₁} →
-    {vR₁ vR₂ : T₂ ⇒ᵥ B₂} →
-    REL (Sq₂ hT₁ hB₁ vL₁ vR₁) (Sq₂ hT₂ hB₂ vL₂ vR₂) (e ⊔ e')
-  Sq≈ {_} {_} {_} {_} {hT₁} {hT₂} {hB₁} {hB₂} {vL₁} {vL₂} {vR₁} {vR₂} _ _ =
-    SqEquality Hor Ver hT₁ hT₂ hB₁ hB₂ vL₁ vL₂ vR₁ vR₂
+  Frame≈ : ∀ {A B C D : Obj}
+    {T₁ T₂ : A ⇒ₕ B} →
+    {B₁ B₂ : C ⇒ₕ D} →
+    {L₁ L₂ : A ⇒ᵥ C} →
+    {R₁ R₂ : B ⇒ᵥ D} →
+    REL (Sq₂ T₁ B₁ L₁ R₁) (Sq₂ T₂ B₂ L₂ R₂) (e ⊔ e')
+  Frame≈ {_} {_} {_} {_} {T₁} {T₂} {B₁} {B₂} {L₁} {L₂} {R₁} {R₂} _ _ =
+    FrameEquality Hor Ver T₁ T₂ B₁ B₂ L₁ L₂ R₁ R₂
 
   field
 {-
@@ -181,31 +181,31 @@ vertical 2-identity
       {hT : T₁ ⇒ₕ T₂} {hB : B₁ ⇒ₕ B₂} →
       {vL : T₁ ⇒ᵥ B₁} {vR : T₂ ⇒ᵥ B₂} →
       (sq : Sq₂ hT hB vL vR) →
-      Sq≈ (id₂ₕ vR ∘₂ₕ sq) sq
+      Frame≈ (id₂ₕ vR ∘₂ₕ sq) sq
 
     identity₂ₕˡ :
       {T₁ T₂ B₁ B₂ : Obj} →
       {hT : T₁ ⇒ₕ T₂} {hB : B₁ ⇒ₕ B₂} →
       {vL : T₁ ⇒ᵥ B₁} {vR : T₂ ⇒ᵥ B₂} →
       (sq : Sq₂ hT hB vL vR) →
-      Sq≈ (sq ∘₂ₕ (id₂ₕ vL)) sq
+      Frame≈ (sq ∘₂ₕ (id₂ₕ vL)) sq
 
     identity₂ᵥʳ :
       {T₁ T₂ B₁ B₂ : Obj} →
       {hT : T₁ ⇒ₕ T₂} {hB : B₁ ⇒ₕ B₂} →
       {vL : T₁ ⇒ᵥ B₁} {vR : T₂ ⇒ᵥ B₂} →
       (sq : Sq₂ hT hB vL vR) →
-      Sq≈ ((id₂ᵥ hB) ∘₂ᵥ sq) sq
+      Frame≈ ((id₂ᵥ hB) ∘₂ᵥ sq) sq
 
     identity₂ᵥˡ :
       {T₁ T₂ B₁ B₂ : Obj} →
       {hT : T₁ ⇒ₕ T₂} {hB : B₁ ⇒ₕ B₂} →
       {vL : T₁ ⇒ᵥ B₁} {vR : T₂ ⇒ᵥ B₂} →
       (sq : Sq₂ hT hB vL vR) →
-      Sq≈ (sq ∘₂ᵥ (id₂ᵥ hT)) sq
+      Frame≈ (sq ∘₂ᵥ (id₂ᵥ hT)) sq
 
-    identity₂ₕ² : ∀ {V₁ V₂} {v : V₁ ⇒ᵥ V₂} → Sq≈ (id₂ₕ v ∘₂ₕ id₂ₕ v) (id₂ₕ v)
-    identity₂ᵥ² : ∀ {H₁ H₂} {h : H₁ ⇒ₕ H₂} → Sq≈ (id₂ᵥ h ∘₂ᵥ id₂ᵥ h) (id₂ᵥ h)
+    identity₂ₕ² : ∀ {V₁ V₂} {v : V₁ ⇒ᵥ V₂} → Frame≈ (id₂ₕ v ∘₂ₕ id₂ₕ v) (id₂ₕ v)
+    identity₂ᵥ² : ∀ {H₁ H₂} {h : H₁ ⇒ₕ H₂} → Frame≈ (id₂ᵥ h ∘₂ᵥ id₂ᵥ h) (id₂ᵥ h)
 
 {-
 horizontal 2-associativity:
@@ -222,7 +222,7 @@ horizontal 2-associativity:
       (s₃ : Sq₂ hT₃ hB₃ v₃ v₄) →
       (s₂ : Sq₂ hT₂ hB₂ v₂ v₃) →
       (s₁ : Sq₂ hT₁ hB₁ v₁ v₂) →
-      Sq≈ ((s₃ ∘₂ₕ s₂) ∘₂ₕ s₁) (s₃ ∘₂ₕ (s₂ ∘₂ₕ s₁))
+      Frame≈ ((s₃ ∘₂ₕ s₂) ∘₂ₕ s₁) (s₃ ∘₂ₕ (s₂ ∘₂ₕ s₁))
 
     sym-assocₕ :
       {T₁ T₂ T₃ T₄ B₁ B₂ B₃ B₄ : Obj} →
@@ -232,7 +232,7 @@ horizontal 2-associativity:
       (s₃ : Sq₂ hT₃ hB₃ v₃ v₄) →
       (s₂ : Sq₂ hT₂ hB₂ v₂ v₃) →
       (s₁ : Sq₂ hT₁ hB₁ v₁ v₂) →
-      Sq≈ (s₃ ∘₂ₕ (s₂ ∘₂ₕ s₁)) ((s₃ ∘₂ₕ s₂) ∘₂ₕ s₁)
+      Frame≈ (s₃ ∘₂ₕ (s₂ ∘₂ₕ s₁)) ((s₃ ∘₂ₕ s₂) ∘₂ₕ s₁)
 
 {-
 vertical 2-associativity:
@@ -255,7 +255,7 @@ vertical 2-associativity:
       (s₃ : Sq₂ hB₁ hB₂ vL₃ vR₃) →
       (s₂ : Sq₂ hT₂ hB₁ vL₂ vR₂) →
       (s₁ : Sq₂ hT₁ hT₂ vL₁ vR₁) →
-      Sq≈ ((s₃ ∘₂ᵥ s₂) ∘₂ᵥ s₁) (s₃ ∘₂ᵥ (s₂ ∘₂ᵥ s₁))
+      Frame≈ ((s₃ ∘₂ᵥ s₂) ∘₂ᵥ s₁) (s₃ ∘₂ᵥ (s₂ ∘₂ᵥ s₁))
 
     sym-assocᵥ :
       {T₁ T₂ T₃ T₄ B₁ B₂ B₃ B₄ : Obj} →
@@ -266,7 +266,7 @@ vertical 2-associativity:
       (s₃ : Sq₂ hB₁ hB₂ vL₃ vR₃) →
       (s₂ : Sq₂ hT₂ hB₁ vL₂ vR₂) →
       (s₁ : Sq₂ hT₁ hT₂ vL₁ vR₁) →
-      Sq≈ (s₃ ∘₂ᵥ (s₂ ∘₂ᵥ s₁)) ((s₃ ∘₂ᵥ s₂) ∘₂ᵥ s₁)
+      Frame≈ (s₃ ∘₂ᵥ (s₂ ∘₂ᵥ s₁)) ((s₃ ∘₂ᵥ s₂) ∘₂ᵥ s₁)
 
 {-
 interchange law:
@@ -289,7 +289,7 @@ interchange law:
       (s₃ : Sq₂ hM₁ hB₁ vL₂ vM₂) →
       (s₂ : Sq₂ hT₂ hM₂ vM₁ vR₁)
       (s₁ : Sq₂ hT₁ hM₁ vL₁ vM₁) →
-      Sq≈ ((s₄ ∘₂ₕ s₃) ∘₂ᵥ (s₂ ∘₂ₕ s₁)) ((s₄ ∘₂ᵥ s₂) ∘₂ₕ (s₃ ∘₂ᵥ s₁))
+      Frame≈ ((s₄ ∘₂ₕ s₃) ∘₂ᵥ (s₂ ∘₂ₕ s₁)) ((s₄ ∘₂ᵥ s₂) ∘₂ₕ (s₃ ∘₂ᵥ s₁))
 
   dual : Category o ℓ' ℓ e' e
   dual = record
