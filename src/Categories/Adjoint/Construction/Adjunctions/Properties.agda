@@ -106,22 +106,61 @@ Kl-initial = record
               adj.counit.η (F.₀ A) ∘ F.₁ (GF≃M.⇐.η A C.∘ M.η.η A) ≈⟨ refl⟩∘⟨ F.F-resp-≈ η-eq ⟩
               adj.counit.η (F.₀ A) ∘ F.₁ (adj.unit.η A)           ≈⟨ adj.zig ⟩
               D.id                                                ∎
-            ; homomorphism = λ {X} {Y} {_} {f} {g} →
+            ; homomorphism = λ {X} {Y} {Z} {f} {g} →
+              let FF = F.F₁ in
+              let GG = G.F₁ in
+              let ε x = adj.counit.η x in
+              let 𝑀 x = M.μ.η x in
+              let Γ x = GF≃M.⇐.η x in
+              let lemma : ∀ {A} → G.F₁ (F.F₁ (GF≃M.⇐.η A)) C.∘ GF≃M.⇐.η _
+                        C.≈ GF≃M.⇐.η _ C.∘ M.F.F₁ (GF≃M.⇐.η A)
+                  lemma {A} = C.Equiv.sym (GF≃M.⇐.commute (GF≃M.⇐.η A)) in
+              let super : FF (GG (ε _)) ∘ FF (GG (FF (Γ _)))
+                       ≈ FF (Γ _) ∘ ε _
+                  super =
+                   begin
+                    FF (GG (ε (F.F₀ Z))) ∘ FF (GG (FF (Γ Z))) ≈⟨ {!   !} ⟩
+                    FF (GG (ε (F.F₀ Z)) C.∘ GG (FF (Γ Z)))    ≈⟨ {!   !} ⟩
+                    {!   !}                                  ≈⟨ {!   !} ⟩
+                    {!   !}                                  ≈⟨ {!   !} ⟩
+                    {!   !}                                  ≈⟨ {!   !} ⟩
+                    FF (Γ Z) ∘ ε (F.F₀ (M.F.F₀ Z))            ∎
+               in
                begin
-                adj.counit.η _ ∘ F.F₁ (GF≃M.⇐.η _ C.∘ (M.μ.η _ C.∘ M.F.F₁ g) C.∘ f)                                                     ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ C.assoc) ⟩
-                adj.counit.η _ ∘ F.F₁ (GF≃M.⇐.η _ C.∘ M.μ.η _ C.∘ M.F.F₁ g C.∘ f)                                                       ≈⟨ refl⟩∘⟨ F.F-resp-≈ (pullˡ C μ-eq) ⟩
-                adj.counit.η _ ∘ F.F₁ ((G.F₁ (adj.counit.η _) C.∘ GF≃M.⇐.η _ C.∘ M.F.F₁ (GF≃M.⇐.η _))         C.∘ M.F.F₁ g C.∘ f)       ≈⟨ refl⟩∘⟨ F.F-resp-≈ CMR.assoc²' ⟩
-                adj.counit.η _ ∘ F.F₁ (G.F₁  (adj.counit.η _) C.∘ GF≃M.⇐.η _ C.∘ M.F.F₁ (GF≃M.⇐.η _)          C.∘ M.F.F₁ g C.∘ f)       ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ pullˡ C (GF≃M.⇐.commute _)) ⟩
-                adj.counit.η _ ∘ F.F₁ (G.F₁  (adj.counit.η _) C.∘ (G.F₁ (F.F₁ (GF≃M.⇐.η _)) C.∘ GF≃M.⇐.η _)   C.∘ M.F.F₁ g C.∘ f)       ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ C.assoc) ⟩
-                adj.counit.η _ ∘ F.F₁ (G.F₁  (adj.counit.η _) C.∘ G.F₁ (F.F₁ (GF≃M.⇐.η _)) C.∘ GF≃M.⇐.η _     C.∘ M.F.F₁ g C.∘ f)       ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ CHR.refl⟩∘⟨ pullˡ C (GF≃M.⇐.commute _)) ⟩
-                adj.counit.η _ ∘ F.F₁ (G.F₁  (adj.counit.η _) C.∘ G.F₁ (F.F₁ (GF≃M.⇐.η _)) C.∘ (G.F₁ (F.F₁ g) C.∘ GF≃M.⇐.η Y)    C.∘ f) ≈⟨ refl⟩∘⟨ F.F-resp-≈ {!  !} ⟩
-                adj.counit.η _ ∘ F.F₁ ((G.F₁ (adj.counit.η _) C.∘ G.F₁ (F.F₁ (GF≃M.⇐.η _)) C.∘ G.F₁ (F.F₁ g)) C.∘ GF≃M.⇐.η Y     C.∘ f) ≈⟨ refl⟩∘⟨ F.homomorphism ⟩
-                adj.counit.η _ ∘ F.F₁ (G.F₁  (adj.counit.η _) C.∘ G.F₁ (F.F₁ (GF≃M.⇐.η _)) C.∘ G.F₁ (F.F₁ g)) ∘ F.F₁ (GF≃M.⇐.η _ C.∘ f) ≈⟨ refl⟩∘⟨ F.F-resp-≈ (pullˡ C (C.Equiv.sym G.homomorphism)) ⟩∘⟨refl ⟩
-                adj.counit.η _ ∘ F.F₁ (G.F₁  (adj.counit.η _    ∘ F.F₁ (GF≃M.⇐.η _))       C.∘ G.F₁ (F.F₁ g)) ∘ F.F₁ (GF≃M.⇐.η _ C.∘ f) ≈⟨ (refl⟩∘⟨ F.F-resp-≈ (G.F-resp-≈ {!   !} CHR.⟩∘⟨refl)  ⟩∘⟨refl) ⟩
-                {!   !} ≈⟨ {!   !} ⟩
-                ((adj.counit.η _ ∘ F.F₁ (GF≃M.⇐.η _ C.∘ g)) ∘ adj.counit.η _ ∘ F.F₁ (GF≃M.⇐.η Y C.∘ f)) ∎
+                ε _ ∘ FF (Γ _ C.∘ (𝑀 _ C.∘ M.F.F₁ g) C.∘ f) ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ C.assoc) ⟩
+                ε _ ∘ FF (Γ _ C.∘ 𝑀 _  C.∘ M.F.F₁ g C.∘ f) ≈⟨ refl⟩∘⟨ F.F-resp-≈ (pullˡ C μ-eq) ⟩
+                ε _ ∘ FF ((GG (ε _) C.∘ Γ _ C.∘ M.F.F₁ (Γ _)) C.∘ M.F.F₁ g C.∘ f)       ≈⟨ refl⟩∘⟨ F.F-resp-≈ CMR.assoc²' ⟩
+                ε _ ∘ FF (GG (ε _) C.∘ Γ _ C.∘ M.F.F₁ (Γ _) C.∘ M.F.F₁ g C.∘ f)         ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ pullˡ C (GF≃M.⇐.commute _)) ⟩
+                ε _ ∘ FF (GG (ε _) C.∘ (GG (FF (Γ _)) C.∘ Γ _) C.∘ M.F.F₁ g C.∘ f)        ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ C.assoc) ⟩
+                ε _ ∘ FF (GG (ε _) C.∘ GG (FF (Γ _)) C.∘ Γ _ C.∘ M.F.F₁ g C.∘ f)          ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ CHR.refl⟩∘⟨ pullˡ C (GF≃M.⇐.commute _)) ⟩
+                ε _ ∘ FF (GG (ε _) C.∘ GG (FF (Γ _)) C.∘ (GG (FF g) C.∘ Γ _) C.∘ f)         ≈⟨ refl⟩∘⟨ F.F-resp-≈ {!  !} ⟩
+                ε _ ∘ FF ((GG (ε _) C.∘ GG (FF (Γ _)) C.∘ GG (FF g)) C.∘ Γ _ C.∘ f)         ≈⟨ refl⟩∘⟨ F.homomorphism ⟩
+                ε _ ∘ FF (GG (ε _) C.∘ GG (FF (Γ _)) C.∘ GG (FF g)) ∘ FF (Γ _ C.∘ f)         ≈⟨ refl⟩∘⟨ F.F-resp-≈ (pullˡ C (C.Equiv.sym G.homomorphism)) ⟩∘⟨refl ⟩
+                ε _ ∘ FF (GG (ε _ ∘ FF (Γ _)) C.∘ GG (FF g)) ∘ FF (Γ _ C.∘ f)               ≈⟨ (refl⟩∘⟨ F.homomorphism ⟩∘⟨refl) ⟩
+                ε _ ∘ (FF (GG (ε _ ∘ FF (Γ _))) ∘ FF (GG (FF g))) ∘ FF (Γ _ C.∘ f)           ≈⟨ (refl⟩∘⟨ (F.F-resp-≈ G.homomorphism ⟩∘⟨refl) ⟩∘⟨refl) ⟩
+                ε _ ∘ ((FF (GG (ε _) C.∘ GG (FF (Γ _)))) ∘ FF (GG (FF g))) ∘ FF (Γ _ C.∘ f)   ≈⟨ (refl⟩∘⟨ (F.homomorphism ⟩∘⟨refl) ⟩∘⟨refl) ⟩
+                ε _ ∘ ((FF (GG (ε _)) ∘ FF (GG (FF (Γ _)))) ∘ FF (GG (FF g))) ∘ FF (Γ _ C.∘ f) ≈⟨ (refl⟩∘⟨ (super ⟩∘⟨refl) ⟩∘⟨refl) ⟩
+                ε _ ∘ ((FF (Γ _) ∘ ε _) ∘ FF (GG (FF g))) ∘ FF (Γ _ C.∘ f)                 ≈⟨ (refl⟩∘⟨ assoc ⟩∘⟨refl) ⟩
+                ε _ ∘ (FF (Γ _) ∘ (ε _ ∘ FF (GG (FF g)))) ∘ FF (Γ _ C.∘ f)                 ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ adj.counit.commute _) ⟩∘⟨refl) ⟩
+                ε _ ∘ (FF (Γ _) ∘ FF g ∘ ε _) ∘ FF (Γ _ C.∘ f)                           ≈⟨ (refl⟩∘⟨ Equiv.sym assoc ⟩∘⟨refl) ⟩
+                ε _ ∘ ((FF (Γ _) ∘ FF g) ∘ ε _) ∘ FF (Γ _ C.∘ f)                         ≈⟨ (refl⟩∘⟨ (Equiv.sym F.homomorphism ⟩∘⟨refl) ⟩∘⟨refl) ⟩
+                ε _ ∘ (FF (Γ _ C.∘ g) ∘ ε _) ∘ FF (Γ _ C.∘ f)                           ≈⟨ DMR.assoc²'' ⟩
+                (ε _ ∘ FF (Γ _ C.∘ g)) ∘ ε _ ∘ FF (Γ _ C.∘ f)                           ∎
             ; F-resp-≈ = λ x → D.∘-resp-≈ʳ (F.F-resp-≈ (C.∘-resp-≈ʳ x))
             }
+{-
+
+        F (G (ε (F Z) ∘ F (Γ Z)) ∘ G (F g))
+        F (G (ε (F Z) ∘ F (Γ Z))) ∘ F (G (F g))
+        F (G (ε (F Z)) ∘ G (F (Γ Z))) ∘ F (G (F g))
+        F (G (ε (F Z))) ∘ F (G (F (Γ Z))) ∘ F (G (F g))
+        F (G (ε (F Z))) ∘ F (G (F (Γ Z))) ∘ F (G (F g))
+      ≈ F (Γ Z ∘ g) ∘ ε (F Y)
+
+-}
+
+
+
       ; HF≃F' = niHelper (record
         { η = λ _ → D.id
         ; η⁻¹ = λ _ → D.id
