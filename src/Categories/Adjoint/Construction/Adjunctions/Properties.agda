@@ -25,6 +25,8 @@ open import Categories.Category.Construction.Kleisli
 open import Categories.Adjoint.Construction.Kleisli M as KL
 open import Categories.Adjoint.Construction.EilenbergMoore M as EM
 
+open import Categories.Tactic.Category
+
 EM-object : SplitObj
 EM-object = record
   { D = EilenbergMoore M
@@ -60,8 +62,7 @@ Kl-object = record
             M.F.F₁ C.id ∘ M.η.η _ ≈⟨ M.F.identity ⟩∘⟨refl ⟩
             C.id ∘ M.η.η _        ≈⟨ identityˡ ⟩
             M.η.η _               ∎
-  ; μ-eq = begin
-            M.F.F₁ C.id ∘ M.μ.η _                                                 ≈⟨ M.F.identity ⟩∘⟨refl ⟩
+  ; μ-eq = begin M.F.F₁ C.id ∘ M.μ.η _                                            ≈⟨ M.F.identity ⟩∘⟨refl ⟩
             C.id ∘ M.μ.η _                                                        ≈⟨ identityˡ ⟩
             M.μ.η _                                                               ≈⟨ Equiv.sym identityʳ ⟩
             M.μ.η _ ∘ C.id                                                        ≈⟨ refl⟩∘⟨ Equiv.sym M.F.identity ⟩
@@ -102,76 +103,57 @@ Kl-initial = record
       { H = record
             { F₀ = F.F₀
             ; F₁ = λ f → adj.counit.η _ ∘ F.₁ (GF≃M.⇐.η _ C.∘ f)
-            ; identity = λ {A} → begin
-              adj.counit.η (F.₀ A) ∘ F.₁ (GF≃M.⇐.η A C.∘ M.η.η A) ≈⟨ refl⟩∘⟨ F.F-resp-≈ η-eq ⟩
-              adj.counit.η (F.₀ A) ∘ F.₁ (adj.unit.η A)           ≈⟨ adj.zig ⟩
-              D.id                                                ∎
+            ; identity = λ {A} →
+             begin
+                adj.counit.η (F.₀ A) ∘ F.₁ (GF≃M.⇐.η A C.∘ M.η.η A) ≈⟨ refl⟩∘⟨ F.F-resp-≈ η-eq ⟩
+                adj.counit.η (F.₀ A) ∘ F.₁ (adj.unit.η A)           ≈⟨ adj.zig ⟩
+                D.id                                                ∎
             ; homomorphism = λ {X} {Y} {Z} {f} {g} →
-              let FF = F.F₁ in
-              let GG = G.F₁ in
-              let ε x = adj.counit.η x in
-              let 𝑀 x = M.μ.η x in
-              let Γ x = GF≃M.⇐.η x in
-              let lemma : ∀ {A} → G.F₁ (F.F₁ (GF≃M.⇐.η A)) C.∘ GF≃M.⇐.η _
-                        C.≈ GF≃M.⇐.η _ C.∘ M.F.F₁ (GF≃M.⇐.η A)
-                  lemma {A} = C.Equiv.sym (GF≃M.⇐.commute (GF≃M.⇐.η A)) in
-              let super : FF (GG (ε _)) ∘ FF (GG (FF (Γ _)))
-                       ≈ FF (Γ _) ∘ ε _
-                  super =
-                   begin
-                    FF (GG (ε (F.F₀ Z))) ∘ FF (GG (FF (Γ Z))) ≈⟨ {!   !} ⟩
-                    FF (GG (ε (F.F₀ Z)) C.∘ GG (FF (Γ Z)))    ≈⟨ {!   !} ⟩
-                    {!   !}                                  ≈⟨ {!   !} ⟩
-                    {!   !}                                  ≈⟨ {!   !} ⟩
-                    {!   !}                                  ≈⟨ {!   !} ⟩
-                    FF (Γ Z) ∘ ε (F.F₀ (M.F.F₀ Z))            ∎
-               in
-               begin
-                ε _ ∘ FF (Γ _ C.∘ (𝑀 _ C.∘ M.F.F₁ g) C.∘ f) ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ C.assoc) ⟩
-                ε _ ∘ FF (Γ _ C.∘ 𝑀 _  C.∘ M.F.F₁ g C.∘ f) ≈⟨ refl⟩∘⟨ F.F-resp-≈ (pullˡ C μ-eq) ⟩
-                ε _ ∘ FF ((GG (ε _) C.∘ Γ _ C.∘ M.F.F₁ (Γ _)) C.∘ M.F.F₁ g C.∘ f)       ≈⟨ refl⟩∘⟨ F.F-resp-≈ CMR.assoc²' ⟩
-                ε _ ∘ FF (GG (ε _) C.∘ Γ _ C.∘ M.F.F₁ (Γ _) C.∘ M.F.F₁ g C.∘ f)         ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ pullˡ C (GF≃M.⇐.commute _)) ⟩
-                ε _ ∘ FF (GG (ε _) C.∘ (GG (FF (Γ _)) C.∘ Γ _) C.∘ M.F.F₁ g C.∘ f)        ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ C.assoc) ⟩
-                ε _ ∘ FF (GG (ε _) C.∘ GG (FF (Γ _)) C.∘ Γ _ C.∘ M.F.F₁ g C.∘ f)          ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ CHR.refl⟩∘⟨ pullˡ C (GF≃M.⇐.commute _)) ⟩
-                ε _ ∘ FF (GG (ε _) C.∘ GG (FF (Γ _)) C.∘ (GG (FF g) C.∘ Γ _) C.∘ f)         ≈⟨ refl⟩∘⟨ F.F-resp-≈ {!  !} ⟩
-                ε _ ∘ FF ((GG (ε _) C.∘ GG (FF (Γ _)) C.∘ GG (FF g)) C.∘ Γ _ C.∘ f)         ≈⟨ refl⟩∘⟨ F.homomorphism ⟩
-                ε _ ∘ FF (GG (ε _) C.∘ GG (FF (Γ _)) C.∘ GG (FF g)) ∘ FF (Γ _ C.∘ f)         ≈⟨ refl⟩∘⟨ F.F-resp-≈ (pullˡ C (C.Equiv.sym G.homomorphism)) ⟩∘⟨refl ⟩
-                ε _ ∘ FF (GG (ε _ ∘ FF (Γ _)) C.∘ GG (FF g)) ∘ FF (Γ _ C.∘ f)               ≈⟨ (refl⟩∘⟨ F.homomorphism ⟩∘⟨refl) ⟩
-                ε _ ∘ (FF (GG (ε _ ∘ FF (Γ _))) ∘ FF (GG (FF g))) ∘ FF (Γ _ C.∘ f)           ≈⟨ (refl⟩∘⟨ (F.F-resp-≈ G.homomorphism ⟩∘⟨refl) ⟩∘⟨refl) ⟩
-                ε _ ∘ ((FF (GG (ε _) C.∘ GG (FF (Γ _)))) ∘ FF (GG (FF g))) ∘ FF (Γ _ C.∘ f)   ≈⟨ (refl⟩∘⟨ (F.homomorphism ⟩∘⟨refl) ⟩∘⟨refl) ⟩
-                ε _ ∘ ((FF (GG (ε _)) ∘ FF (GG (FF (Γ _)))) ∘ FF (GG (FF g))) ∘ FF (Γ _ C.∘ f) ≈⟨ (refl⟩∘⟨ (super ⟩∘⟨refl) ⟩∘⟨refl) ⟩
-                ε _ ∘ ((FF (Γ _) ∘ ε _) ∘ FF (GG (FF g))) ∘ FF (Γ _ C.∘ f)                 ≈⟨ (refl⟩∘⟨ assoc ⟩∘⟨refl) ⟩
-                ε _ ∘ (FF (Γ _) ∘ (ε _ ∘ FF (GG (FF g)))) ∘ FF (Γ _ C.∘ f)                 ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ adj.counit.commute _) ⟩∘⟨refl) ⟩
-                ε _ ∘ (FF (Γ _) ∘ FF g ∘ ε _) ∘ FF (Γ _ C.∘ f)                           ≈⟨ (refl⟩∘⟨ Equiv.sym assoc ⟩∘⟨refl) ⟩
-                ε _ ∘ ((FF (Γ _) ∘ FF g) ∘ ε _) ∘ FF (Γ _ C.∘ f)                         ≈⟨ (refl⟩∘⟨ (Equiv.sym F.homomorphism ⟩∘⟨refl) ⟩∘⟨refl) ⟩
-                ε _ ∘ (FF (Γ _ C.∘ g) ∘ ε _) ∘ FF (Γ _ C.∘ f)                           ≈⟨ DMR.assoc²'' ⟩
-                (ε _ ∘ FF (Γ _ C.∘ g)) ∘ ε _ ∘ FF (Γ _ C.∘ f)                           ∎
-            ; F-resp-≈ = λ x → D.∘-resp-≈ʳ (F.F-resp-≈ (C.∘-resp-≈ʳ x))
-            }
-{-
-
-        F (G (ε (F Z) ∘ F (Γ Z)) ∘ G (F g))
-        F (G (ε (F Z) ∘ F (Γ Z))) ∘ F (G (F g))
-        F (G (ε (F Z)) ∘ G (F (Γ Z))) ∘ F (G (F g))
-        F (G (ε (F Z))) ∘ F (G (F (Γ Z))) ∘ F (G (F g))
-        F (G (ε (F Z))) ∘ F (G (F (Γ Z))) ∘ F (G (F g))
-      ≈ F (Γ Z ∘ g) ∘ ε (F Y)
-
--}
-
-
-
+                let 𝐹 = F.F₁ in
+                let 𝐺 = G.F₁ in
+                let ε x = adj.counit.η x in
+                let μ x = M.μ.η x in
+                let M⇒GF x = GF≃M.⇐.η x in
+                let GF⇒M x = GF≃M.⇒.η x in
+                let 𝑓 = M⇒GF _ C.∘ f in
+                let 𝑔 = M⇒GF _ C.∘ g in
+                let lemma : 𝐹 (𝐺 (ε (F.F₀ Z))) ≈ ε (F.F₀ (G.F₀ (F.F₀ Z)))
+                    lemma = {!   !} in
+                begin
+                  -- Push f externally
+                  ε _ ∘ 𝐹 (M⇒GF _ C.∘ (μ _ C.∘ M.F.F₁ g) C.∘ f)        ≈⟨ refl⟩∘⟨ F.F-resp-≈ {! DMR.assoc²''  !} ⟩
+                  ε _ ∘ 𝐹 ((M⇒GF _ C.∘ μ _ C.∘ M.F.F₁ g) C.∘ f)        ≈⟨ refl⟩∘⟨ F.homomorphism ⟩
+                  ε _ ∘ 𝐹 (M⇒GF _ C.∘ μ _ C.∘ M.F.F₁ g)  ∘ 𝐹 f         ≈⟨ refl⟩∘⟨ F.F-resp-≈ C.sym-assoc ⟩∘⟨refl ⟩
+                  ε _ ∘ 𝐹 ((M⇒GF _ C.∘ μ _) C.∘ M.F.F₁ g)  ∘ 𝐹 f       ≈⟨ refl⟩∘⟨ F.F-resp-≈ (μ-eq CHR.⟩∘⟨refl) ⟩∘⟨refl ⟩
+                  -- Switch from M to GF as close to g as possible
+                  ε _ ∘ 𝐹 ((𝐺 (ε (F.₀ _)) C.∘ M⇒GF _ C.∘ M.F.F₁ (M⇒GF _)) C.∘ M.F.F₁ g)  ∘ 𝐹 f ≈⟨ refl⟩∘⟨ F.F-resp-≈ {!   !} ⟩∘⟨refl ⟩
+                  ε _ ∘ 𝐹 (𝐺 (ε (F.₀ _)) C.∘ M⇒GF _ C.∘ (M.F.F₁ (M⇒GF _) C.∘ M.F.F₁ g))  ∘ 𝐹 f ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ CHR.refl⟩∘⟨ C.Equiv.sym M.F.homomorphism) ⟩∘⟨refl ⟩
+                  ε _ ∘ 𝐹 (𝐺 (ε (F.₀ _)) C.∘ M⇒GF _ C.∘ (M.F.F₁ 𝑔))  ∘ 𝐹 f        ≈⟨ refl⟩∘⟨ F.F-resp-≈ (CHR.refl⟩∘⟨ GF≃M.⇐.commute _) ⟩∘⟨refl ⟩
+                  -- Switch from M to GF as close to f as possible
+                  ε _ ∘ 𝐹 (𝐺 (ε (F.₀ _)) C.∘ 𝐺 (𝐹 𝑔) C.∘ M⇒GF _) ∘ 𝐹 f          ≈⟨ ((refl⟩∘⟨ F.F-resp-≈ C.sym-assoc ⟩∘⟨refl)) ⟩
+                  ε _ ∘ 𝐹 ((𝐺 (ε (F.₀ _)) C.∘ 𝐺 (𝐹 𝑔)) C.∘ M⇒GF _) ∘ 𝐹 f        ≈⟨ (refl⟩∘⟨ F.homomorphism ⟩∘⟨refl) ⟩
+                  ε _ ∘ (𝐹 ((𝐺 (ε (F.₀ _)) C.∘ 𝐺 (𝐹 𝑔))) ∘ 𝐹 (M⇒GF _)) ∘ 𝐹 f    ≈⟨ (refl⟩∘⟨ assoc) ⟩
+                  ε _ ∘ 𝐹 ((𝐺 (ε (F.₀ _)) C.∘ 𝐺 (𝐹 𝑔))) ∘ 𝐹 (M⇒GF _) ∘ 𝐹 f     ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ Equiv.sym F.homomorphism)) ⟩
+                  ε _ ∘ 𝐹 ((𝐺 (ε (F.₀ _)) C.∘ 𝐺 (𝐹 𝑔))) ∘ 𝐹 𝑓                   ≈⟨ (refl⟩∘⟨ F.homomorphism ⟩∘⟨refl) ⟩
+                  -- Solve the adjunction
+                  ε _ ∘ (𝐹 (𝐺 (ε (F.₀ _))) ∘ 𝐹 (𝐺 (𝐹 𝑔))) ∘ 𝐹 𝑓                 ≈⟨ (refl⟩∘⟨ (lemma ⟩∘⟨refl) ⟩∘⟨refl) ⟩
+                  ε _ ∘ ((ε _) ∘ 𝐹 (𝐺 (𝐹 𝑔))) ∘ 𝐹 𝑓                             ≈⟨ (refl⟩∘⟨ adj.counit.commute _ ⟩∘⟨refl) ⟩
+                  ε _ ∘ (𝐹 𝑔 ∘ ε _) ∘ 𝐹 𝑓                                       ≈⟨ DMR.assoc²'' ⟩
+                  (ε _ ∘ 𝐹 𝑔) ∘ ε _ ∘ 𝐹 𝑓                                       ∎
+              ; F-resp-≈ = λ x → D.∘-resp-≈ʳ (F.F-resp-≈ (C.∘-resp-≈ʳ x))
+              }
       ; HF≃F' = niHelper (record
         { η = λ _ → D.id
         ; η⁻¹ = λ _ → D.id
-        ; commute = λ f → begin
-                   D.id ∘ adj.counit.η _ ∘ F.F₁ (GF≃M.⇐.η _ C.∘ M.η.η _ C.∘ f) ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ F.F-resp-≈ (pullˡ C η-eq)) ⟩
-                   (D.id ∘ adj.counit.η _ ∘ F.F₁ (adj.unit.η _ C.∘ f))         ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ F.homomorphism) ⟩
-                   (D.id ∘ adj.counit.η _ ∘ F.F₁ (adj.unit.η _) ∘ F.F₁ f)      ≈⟨ (refl⟩∘⟨ pullˡ D adj.zig) ⟩
-                   (D.id ∘ D.id ∘ F.F₁ f)                                      ≈⟨ identityˡ ⟩
-                   (D.id ∘ F.F₁ f)                                             ≈⟨ identityˡ ⟩
-                   F.F₁ f                                                      ≈⟨ D.Equiv.sym identityʳ ⟩
-                   (F.F₁ f ∘ D.id)                                             ∎
+        ; commute = λ f →
+            begin
+              D.id ∘ adj.counit.η _ ∘ F.F₁ (GF≃M.⇐.η _ C.∘ M.η.η _ C.∘ f) ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ F.F-resp-≈ (pullˡ C η-eq)) ⟩
+              (D.id ∘ adj.counit.η _ ∘ F.F₁ (adj.unit.η _ C.∘ f))         ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ F.homomorphism) ⟩
+              (D.id ∘ adj.counit.η _ ∘ F.F₁ (adj.unit.η _) ∘ F.F₁ f)      ≈⟨ (refl⟩∘⟨ pullˡ D adj.zig) ⟩
+              (D.id ∘ D.id ∘ F.F₁ f)                                      ≈⟨ identityˡ ⟩
+              (D.id ∘ F.F₁ f)                                             ≈⟨ identityˡ ⟩
+              F.F₁ f                                                      ≈⟨ D.Equiv.sym identityʳ ⟩
+              (F.F₁ f ∘ D.id)                                             ∎
         ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityˡ }
         })
       ; G'H≃G = {!   !}

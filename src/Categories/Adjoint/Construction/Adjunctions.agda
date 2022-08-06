@@ -38,8 +38,8 @@ record SplitObj : Set (suc o ⊔ suc ℓ ⊔ suc e) where
   module GF≃M = NaturalIsomorphism GF≃M
 
   field
-    η-eq : ∀ {A} → GF≃M.⇐.η A ∘ M.η.η A ≈ adj.unit.η A
-    μ-eq : ∀ {A} → GF≃M.⇐.η A ∘ M.μ.η A ≈ G.₁ (adj.counit.η _) ∘ GF≃M.⇐.η _ ∘ M.F.F₁ (GF≃M.⇐.η A)
+    η-eq : ∀ {A} → GF≃M.⇐.η _ ∘ M.η.η A ≈ adj.unit.η _
+    μ-eq : ∀ {A} → GF≃M.⇐.η _ ∘ M.μ.η A ≈ G.₁ (adj.counit.η (F.₀ A)) ∘ GF≃M.⇐.η _ ∘ M.F.F₁ (GF≃M.⇐.η A)
 
   {-
   η-eq:
@@ -53,10 +53,11 @@ record SplitObj : Set (suc o ⊔ suc ℓ ⊔ suc e) where
   μ-eq:
 
              GF≃M.⇐.η              G.F₁ (F.F₁ (GF≃M.⇐.η))
-    MMA ---------------------> GFMA --------------------> GFGFA
-        ---------------------> MGFA -------------------->
+        ---------------------> GFMA -------------------->
+    MMA ---------------------> MGFA --------------------> GFGFA
      |   M.F.F₁ (GF≃M.⇐.η A)              GF≃M.⇐.η         |
-     | M.μ A                                                | G.₁ (adj.counit.η A)
+     |                                                      |
+     | M.μ A                                                | G.₁ (adj.counit.η (F.₀ A))
      v                                                      v
      MA -------------------------------------------------> GFA
                      GF≃M.⇐.η A
