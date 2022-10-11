@@ -6,7 +6,7 @@ module Categories.Category.Instance.Simplex where
 
 open import Level using (0ℓ)
 open import Data.Product
-open import Data.Fin.Base using (Fin; zero; suc; _≤_; _<_; inject₁; punchIn)
+open import Data.Fin.Base using (Fin; zero; suc; _≤_; _<_; inject₁; punchIn; pinch)
 open import Data.Nat.Base using (ℕ; zero; suc; z≤n; s≤s)
 open import Function renaming (id to idF; _∘_ to _∙_)
 
@@ -58,10 +58,7 @@ face : ∀ {n} → Fin (ℕ.suc n) → Fin n → Fin (ℕ.suc n)
 face = punchIn
 
 degen : ∀ {n} → Fin n → Fin (ℕ.suc n) → Fin n
-degen Fin.zero    Fin.zero    = Fin.zero
-degen Fin.zero    (Fin.suc k) = k
-degen (Fin.suc i) Fin.zero    = Fin.zero
-degen (Fin.suc i) (Fin.suc k) = Fin.suc (degen i k)
+degen = pinch
 
 ⟦_⟧ : ∀ {m n} → m Δ⇒ n → (Fin m → Fin n)
 ⟦ ε ⟧ x = x
@@ -118,7 +115,7 @@ face-comm (suc i) (suc j) (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} →
 degen-comm : ∀ {n} (i j : Fin n) → i ≤ j → σ j ∘ σ (inject₁ i) ≈ σ i ∘ σ (suc j)
 degen-comm zero    zero    z≤n      = Δ-eq λ { {zero} → refl ; {suc x} → refl }
 degen-comm zero    (suc _) z≤n      = Δ-eq λ { {zero} → refl ; {suc x} → refl }
-degen-comm (suc i) (suc j) (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-comm i j le)) })
+degen-comm (suc i) (suc j) (s≤s le) = Δ-eq (λ { {zero} → refl ; {suc x} → cong suc (Δ-pointwise (degen-comm i j le) {x = x}) })
 
 -- σⱼ ∘ δᵢ = δᵢ ∘ σⱼ₋₁ if i < j
 degen-face-comm : ∀ {n} (i : Fin (suc n)) (j : Fin n) → i < suc j → σ (suc j) ∘ δ (inject₁ i) ≈ δ i ∘ σ j
