@@ -79,22 +79,15 @@ record IsNI {C : Category o ℓ e}
             {F G : Functor C D}
             (F⇒G : NaturalTransformation F G) : Set (o ⊔ ℓ ⊔ ℓ′ ⊔ e′) where
   field
-    inv : NaturalTransformation G F
-
-  module F⇒G = NaturalTransformation F⇒G
-  module inv = NaturalTransformation inv
-
-  field
-    F⇒G-iso : ∀ X → Morphism.Iso D (F⇒G.η X) (inv.η X)
+    F⇐G : NaturalTransformation G F
+    iso : ∀ X → Morphism.Iso D (NaturalTransformation.η F⇒G X) (NaturalTransformation.η F⇐G X)
 
   natiso : NaturalIsomorphism F G
   natiso = record
     { F⇒G = F⇒G
-    ; F⇐G = inv
-    ; iso = F⇒G-iso
+    ; F⇐G = F⇐G
+    ; iso = iso
     }
-
-  open NaturalIsomorphism natiso public
 
 -- This helper definition lets us specify only one of the commuting
 -- squares and have the other one derived.
