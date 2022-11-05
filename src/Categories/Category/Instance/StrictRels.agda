@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Category.Instance.Rels where
+module Categories.Category.Instance.StrictRels where
 
 open import Data.Product
 open import Function hiding (_⇔_)
@@ -11,8 +11,8 @@ open import Relation.Binary.PropositionalEquality
 open import Categories.Category.Core
 
 -- the category whose objects are sets and whose morphisms are binary relations.
-Rels : ∀ o ℓ → Category (suc o) (suc (o ⊔ ℓ)) (o ⊔ ℓ)
-Rels o ℓ = record
+StrictRels : ∀ o ℓ → Category (suc o) (suc (o ⊔ ℓ)) (o ⊔ ℓ)
+StrictRels o ℓ = record
   { Obj = Set o
   ; _⇒_ = λ A B → REL A B (o ⊔ ℓ)
   ; _≈_ = λ L R → L ⇔ R

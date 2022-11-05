@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Category.Monoidal.Instance.Rels where
+module Categories.Category.Monoidal.Instance.StrictRels where
 
 -- The category of relations is cartesian and (by self-duality) co-cartesian.
 -- Perhaps slightly counter-intuitively if you're used to categories which act
@@ -20,15 +20,15 @@ open import Categories.Category.Cartesian using (Cartesian)
 open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Cocartesian using (Cocartesian)
-open import Categories.Category.Instance.Rels using (Rels)
+open import Categories.Category.Instance.StrictRels using (StrictRels)
 open import Categories.Category.Monoidal using (Monoidal; monoidalHelper)
 open import Categories.Category.Monoidal.Symmetric using (Symmetric; symmetricHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
 
 module _ {o ℓ} where
 
-  Rels-Cartesian : Cartesian (Rels o ℓ)
-  Rels-Cartesian = record
+  StrictRels-Cartesian : Cartesian (StrictRels o ℓ)
+  StrictRels-Cartesian = record
     { terminal = record
       { ⊤ = ⊥
       ; ⊤-is-terminal = record
@@ -57,8 +57,8 @@ module _ {o ℓ} where
 
   -- because Rels is dual to itself, the proof that it is cocartesian resembles the proof that it's cartesian
   -- Rels is not self-dual 'on the nose', so we can't use duality proper.
-  Rels-Cocartesian : Cocartesian (Rels o ℓ)
-  Rels-Cocartesian = record
+  StrictRels-Cocartesian : Cocartesian (StrictRels o ℓ)
+  StrictRels-Cocartesian = record
     { initial = record
       { ⊥ = ⊥
       ; ⊥-is-initial = record
@@ -84,8 +84,8 @@ module _ {o ℓ} where
       }
     }
 
-  Rels-Monoidal : Monoidal (Rels o ℓ)
-  Rels-Monoidal = monoidalHelper _ record
+  StrictRels-Monoidal : Monoidal (StrictRels o ℓ)
+  StrictRels-Monoidal = monoidalHelper _ record
     { ⊗ = record
       { F₀ = λ { (A , B) → A ×.× B }
       ; F₁ = λ {(R , S) (a , b) (c , d) → R a c ×.× S b d}
@@ -169,8 +169,8 @@ module _ {o ℓ} where
       }
     }
 
-  Rels-Symmetric : Symmetric Rels-Monoidal
-  Rels-Symmetric = symmetricHelper _ record
+  StrictRels-Symmetric : Symmetric StrictRels-Monoidal
+  StrictRels-Symmetric = symmetricHelper _ record
     { braiding = niHelper record
       { η =   λ { (X , Y) (x₁ , y₁) (y₂ , x₂) → Lift ℓ (x₁ ≡ x₂) ×.× Lift ℓ (y₁ ≡ y₂) }
       ; η⁻¹ = λ { (X , Y) (y₁ , x₁) (x₂ , y₂) → Lift ℓ (x₁ ≡ x₂) ×.× Lift ℓ (y₁ ≡ y₂) }

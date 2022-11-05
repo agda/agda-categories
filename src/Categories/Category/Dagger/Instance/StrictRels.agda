@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Category.Dagger.Instance.Rels where
+module Categories.Category.Dagger.Instance.StrictRels where
 
 open import Data.Product
 open import Function
@@ -7,10 +7,10 @@ open import Relation.Binary.PropositionalEquality
 open import Level
 
 open import Categories.Category.Dagger
-open import Categories.Category.Instance.Rels
+open import Categories.Category.Instance.StrictRels
 
-RelsHasDagger : ∀ {o ℓ} → HasDagger (Rels o ℓ)
-RelsHasDagger = record
+StrictRelsHasDagger : ∀ {o ℓ} → HasDagger (StrictRels o ℓ)
+StrictRelsHasDagger = record
   { _† = flip
   ; †-identity = (lift ∘ sym ∘ lower) , (lift ∘ sym ∘ lower)
   ; †-homomorphism = (map₂ swap) , (map₂ swap)
@@ -18,8 +18,8 @@ RelsHasDagger = record
   ; †-involutive = λ _ → id , id
   }
 
-RelsDagger : ∀ o ℓ → DaggerCategory (suc o) (suc (o ⊔ ℓ)) (o ⊔ ℓ)
-RelsDagger o ℓ = record
-  { C = Rels o ℓ
-  ; hasDagger = RelsHasDagger
+StrictRelsDagger : ∀ o ℓ → DaggerCategory (suc o) (suc (o ⊔ ℓ)) (o ⊔ ℓ)
+StrictRelsDagger o ℓ = record
+  { C = StrictRels o ℓ
+  ; hasDagger = StrictRelsHasDagger
   }
