@@ -58,3 +58,9 @@ module _ {C : Category o ℓ e} where
       f : X.A ⇒ Y.A
       f-is-alg-morph : is-F-Algebra-Morphism X.a Y.a f
       f-is-coalg-morph : is-F-Coalgebra-Morphism X.c Y.c f
+
+    alg-morph : F-Algebra-Morphism X.a Y.a
+    alg-morph = record { f = f; commutes = f-is-alg-morph }
+
+    coalg-morph : F-Coalgebra-Morphism X.c Y.c
+    coalg-morph = record { f = f; commutes = f-is-coalg-morph }
