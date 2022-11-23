@@ -39,27 +39,5 @@ LiftAlgebras {C = C} T F μ = record
     commut : { X Y : F-Algebra T } → (a : F-Algebra-Morphism X Y) →
       (F .F₁) (a .f) ∘ ((F .F₁) (X .α) ∘ (μ .η) (X .A)) ≈
       ((F .F₁) (Y .α) ∘ (μ .η) (Y .A)) ∘ (T .F₁) ((F .F₁) (a .f))
-    commut {X} {Y} a = ⟺ (glue foo3 bar2)
-      where
-        foo : (F .F₁) (a .f) ∘ (F .F₁) (X .α) ≈
-          (F .F₁) (Y .α) ∘ (F .F₁) ((T .F₁) (a .f))
-        foo2 : CommutativeSquare
-          ((F .F₁) (X .α))
-          (F .F₁ (T .F₁ (a .f)))  ((F .F₁) (a .f))
-          ((F .F₁) (Y .α))
-        foo2 = foo
-        foo3 : CommutativeSquare
-          (F .F₁ (T .F₁ (a .f)))
-          ((F .F₁) (X .α)) ((F .F₁) (Y .α))
-          ((F .F₁) (a .f))
-        foo3 = ⟺ foo2
-        foo = [ F ]-resp-square (commutes a)
-        bar : μ .η (Y .A) ∘ T .F₁ (F .F₁ (a .f)) ≈
-          F .F₁ (T .F₁ (a .f)) ∘ μ .η (X .A)
-        bar2 : CommutativeSquare
-          (T .F₁ (F .F₁ (a .f)))
-          (μ .η (X .A))   (μ .η (Y .A))
-          (F .F₁ (T .F₁ (a .f)))
-        bar2 = bar
-        bar = commute μ (f a)
-        baz = glue foo3 bar2
+    commut {X} {Y} a = ⟺ (glue (⟺ ([ F ]-resp-square (commutes a))) (commute μ (f a)))
+
