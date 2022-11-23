@@ -9,6 +9,8 @@ open import Categories.Functor.Coalgebra
 open import Categories.Functor.Bialgebra using (Distr-law)
 open import Categories.NaturalTransformation
 open import Categories.Category.Construction.F-Algebras
+open import Categories.Functor.Properties
+open import Categories.Category
 
 import Categories.Morphism.Reasoning as MR
 
@@ -26,6 +28,7 @@ LiftAlgebras {C = C} T F μ = record
   }
   where
     open Category C
+    open Definitions C
     open MR C
     open HomReasoning
     open Equiv
@@ -36,15 +39,27 @@ LiftAlgebras {C = C} T F μ = record
     commut : { X Y : F-Algebra T } → (a : F-Algebra-Morphism X Y) →
       (F .F₁) (a .f) ∘ ((F .F₁) (X .α) ∘ (μ .η) (X .A)) ≈
       ((F .F₁) (Y .α) ∘ (μ .η) (Y .A)) ∘ (T .F₁) ((F .F₁) (a .f))
-    commut {X} {Y} a = begin
-      (F .F₁) (a .f) ∘ ((F .F₁) (X .α) ∘ (μ .η) (X .A))
-      ≈⟨ pullˡ (⟺ (homomorphism F)) ⟩
-      (F .F₁) ((a .f) ∘ (X .α)) ∘ (μ .η) (X .A)
-      ≈⟨ ∘-resp-≈ˡ (F-resp-≈ F (commutes a)) ⟩
-      (F .F₁) ((Y .α) ∘ ((T .F₁) (a .f))) ∘ (μ .η) (X .A)
-      ≈⟨ ∘-resp-≈ˡ (homomorphism F) ⟩
-      ((F .F₁) (Y .α) ∘ ((F .F₁) ((T .F₁) (a .f)))) ∘ (μ .η) (X .A)
-      ≈⟨ pullʳ (sym-commute μ (f a)) ⟩
-      (F .F₁) (Y .α) ∘ (μ .η) (Y .A) ∘ (T .F₁) ((F .F₁) (a .f))
-      ≈⟨ sym-assoc ⟩
-      ((F .F₁) (Y .α) ∘ (μ .η) (Y .A)) ∘ (T .F₁) ((F .F₁) (a .f)) ∎
+    commut {X} {Y} a = ⟺ (glue foo3 bar2)
+      where
+        foo : (F .F₁) (a .f) ∘ (F .F₁) (X .α) ≈
+          (F .F₁) (Y .α) ∘ (F .F₁) ((T .F₁) (a .f))
+        foo2 : CommutativeSquare
+          ((F .F₁) (X .α))
+          (F .F₁ (T .F₁ (a .f)))  ((F .F₁) (a .f))
+          ((F .F₁) (Y .α))
+        foo2 = foo
+        foo3 : CommutativeSquare
+          (F .F₁ (T .F₁ (a .f)))
+          ((F .F₁) (X .α)) ((F .F₁) (Y .α))
+          ((F .F₁) (a .f))
+        foo3 = ⟺ foo2
+        foo = [ F ]-resp-square (commutes a)
+        bar : μ .η (Y .A) ∘ T .F₁ (F .F₁ (a .f)) ≈
+          F .F₁ (T .F₁ (a .f)) ∘ μ .η (X .A)
+        bar2 : CommutativeSquare
+          (T .F₁ (F .F₁ (a .f)))
+          (μ .η (X .A))   (μ .η (Y .A))
+          (F .F₁ (T .F₁ (a .f)))
+        bar2 = bar
+        bar = commute μ (f a)
+        baz = glue foo3 bar2
