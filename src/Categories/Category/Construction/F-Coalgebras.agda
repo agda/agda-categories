@@ -108,23 +108,29 @@ termToInit {C = C} {F = F} {T = T} isTT = record
   { ! =
       F-Coalgebra-Morphism⇒coF-Algebra-Morphism ¡
   ; !-unique =
-      λ γ →
+      λ {J} γ  →
         let
-          known : F-Coalgebras F [ ¡ ≈ coF-Algebra-Morphism⇒F-Coalgebra-Morphism γ ]
-          known = ¡-unique (coF-Algebra-Morphism⇒F-Coalgebra-Morphism γ)
+          J' : F-Algebra (Functor.op F)
+          J' = J
+          γ' : F-Algebra-Morphism (F-Coalgebra⇒coF-Algebra T) J
+          γ' = γ
+          known : (F-Coalgebras F) [ ¡ ≈ coF-Algebra-Morphism⇒F-Coalgebra-Morphism γ ]
+          known = ¡-unique {coF-Algebra⇒F-Coalgebra J} (coF-Algebra-Morphism⇒F-Coalgebra-Morphism γ)
           bar :
             F-Algebras (Functor.op F)
               [ F-Coalgebra-Morphism⇒coF-Algebra-Morphism ¡
-                ≈ F-Coalgebra-Morphism⇒coF-Algebra-Morphism (coF-Algebra-Morphism⇒F-Coalgebra-Morphism γ) ]
-          bar = Functor.F-resp-≈ (F-Co-M⇒coF-M F) known
+                ≈ γ ]
+          bar = Functor.F-resp-≈ (F-Co-M⇒coF-M F) {coF-Algebra⇒F-Coalgebra J} {T} {¡} {coF-Algebra-Morphism⇒F-Coalgebra-Morphism γ} known
+          baz : (Category.op C) [ (F-Coalgebra.A T) , F-Algebra.A J ]
+          baz = F-Algebra-Morphism.f γ
+          baz2 : C [ F-Algebra.A J , (F-Coalgebra.A T) ]
+          baz2 = baz
+          -- notably, this is the flipped diagram in C that it would be in C^op.
+          γcommutes : C [ C [ (F-Coalgebra.α T) ∘ baz ]  ≈  C [ Functor.F₁ F baz ∘ F-Algebra.α J ] ]
+          γcommutes = F-Algebra-Morphism.commutes γ
           result : F-Algebras (Functor.op F)
             [ F-Coalgebra-Morphism⇒coF-Algebra-Morphism ¡ ≈ γ ]
-          result = begin
-            F-Coalgebra-Morphism⇒coF-Algebra-Morphism ¡ ≈⟨ bar ⟩
-            F-Coalgebra-Morphism⇒coF-Algebra-Morphism (coF-Algebra-Morphism⇒F-Coalgebra-Morphism γ)
-            ≈⟨ refl ⟩
-            γ ∎
-
+          result = bar
         in result
   }
   where
