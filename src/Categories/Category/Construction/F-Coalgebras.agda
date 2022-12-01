@@ -24,10 +24,12 @@ F-Coalgebras {C = C} F = record
   { Obj       = F-Coalgebra F
   ; _⇒_       = F-Coalgebra-Morphism
   ; _≈_       = λ α₁ α₂ → f α₁ ≈ f α₂
-  ; _∘_       = λ α₁ α₂ → coF-Algebra-Morphism⇒F-Coalgebra-Morphism
-    (F-Coalgebra-Morphism⇒coF-Algebra-Morphism α₁
-    coF-Algebras.∘
-    F-Coalgebra-Morphism⇒coF-Algebra-Morphism α₂)
+  ; _∘_       = λ α₁ α₂ → record
+    { f = f α₁ ∘ f α₂
+    ; commutes = F-Algebra-Morphism.commutes (F-Coalgebra-Morphism⇒coF-Algebra-Morphism α₁
+       coF-Algebras.∘
+       F-Coalgebra-Morphism⇒coF-Algebra-Morphism α₂)
+    }
   ; id        = coF-Algebra-Morphism⇒F-Coalgebra-Morphism coF-Algebras.id
   ; assoc     = assoc
   ; sym-assoc = sym-assoc
