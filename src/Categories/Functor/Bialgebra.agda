@@ -11,10 +11,14 @@ open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Functor.DistributiveLaw using (DistributiveLaw)
 
 {-
-given two endofunctors T and F on a category C, we can define a (T,F)-bialgebra to be an object of C equipped with the structure of a T-algebra and an F-coalgebra, i.e. just a triple (A,a,c), where a:TA→A and c:A→FA.
-μ is a distributive law (of T over F): a natural transformation μ:TF→FT.
-A μ-bialgebra is a (T,F)-bialgebra (A,a,c) such that c∘a=Fa∘μ_A∘Tc
-[category theory - How are F-bialgebras defined? - Mathematics Stack Exchange](https://math.stackexchange.com/questions/3057781/how-are-f-bialgebras-defined#answer-3057859)
+given two endofunctors T and F on a category C, we can define a
+(T,F)-bialgebra to be an object of C equipped with the structure of a
+T-algebra and an F-coalgebra, i.e. just a triple (A,a,c), where a:TA→A
+and c:A→FA.  μ is a distributive law (of T over F): a natural
+transformation μ:TF→FT.  A μ-bialgebra is a (T,F)-bialgebra (A,a,c)
+such that c∘a=Fa∘μ_A∘Tc [category theory - How are F-bialgebras
+defined? - Mathematics Stack Exchange]
+(https://math.stackexchange.com/questions/3057781/how-are-f-bialgebras-defined#answer-3057859)
 -}
 
 private
