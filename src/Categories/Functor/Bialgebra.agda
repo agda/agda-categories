@@ -48,10 +48,10 @@ module _ {C : Category o ℓ e} where
     c = to-Coalgebra c₁
 
   record μ-Bialgebra-Morphism {T F : Endofunctor C} {μ : DistributiveLaw T F} (X Y : μ-Bialgebra T F μ) : Set (o ⊔ ℓ ⊔ e) where
-    open Category C
-    module X = μ-Bialgebra X
-    module Y = μ-Bialgebra Y
-    open Functor F
+    open Category C using (_⇒_)
+    private
+      module X = μ-Bialgebra X
+      module Y = μ-Bialgebra Y
     field
       f : X.A ⇒ Y.A
       f-is-alg-morph : is-F-Algebra-Morphism X.a Y.a f
