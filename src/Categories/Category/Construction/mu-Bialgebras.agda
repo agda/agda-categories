@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Category.Construction.μ-Bialgebras where
+module Categories.Category.Construction.mu-Bialgebras where
 
 open import Level
 open import Function using (_$_)
@@ -16,7 +16,6 @@ open import Categories.Category.Construction.F-Coalgebras
 private
   variable
     o ℓ e : Level
-    C : Category o ℓ e
 
 μ-Bialgebras : {C : Category o ℓ e} → (T : Endofunctor C) → (F : Endofunctor C) → (Distr-law T F) → Category (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e) e
 μ-Bialgebras {C = C} T F μ = record
