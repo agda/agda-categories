@@ -30,11 +30,11 @@ module _ {C : Category o ℓ e} where
   iterate {F = F} F-alg = record { A = Functor.F₀ F $ A F-alg ; α = Functor.F₁ F $ α F-alg }
 
   module _ {F : Endofunctor C} (X Y : F-Coalgebra F) where
-    open Category C
+    open Category C using (_⇒_; _∘_; _≈_)
+    open Functor F using (F₁)
     private
       module X = F-Coalgebra X
       module Y = F-Coalgebra Y
-    open Functor F
     is-F-Coalgebra-Morphism : (X.A ⇒ Y.A) → (Set e)
     is-F-Coalgebra-Morphism f = Y.α ∘ f ≈ F₁ f ∘ X.α
 

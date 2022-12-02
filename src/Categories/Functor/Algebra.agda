@@ -34,8 +34,8 @@ module _ {C : Category o ℓ e} where
   iterate {F} c = record { A = Functor.F₀ F $ A c ; α = Functor.F₁ F $ α c }
 
   module _ {F : Endofunctor C} (X Y : F-Algebra F) where
-    open Category C
-    open Functor F
+    open Category C using (_⇒_; _∘_; _≈_)
+    open Functor F using (F₁)
     private
       module X = F-Algebra X
       module Y = F-Algebra Y
