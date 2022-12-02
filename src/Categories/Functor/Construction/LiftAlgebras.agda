@@ -6,7 +6,7 @@ open import Categories.Category using (Category)
 open import Categories.Functor hiding (id)
 open import Categories.Functor.Algebra
 open import Categories.Functor.Coalgebra
-open import Categories.Functor.Bialgebra using (Distr-law)
+open import Categories.Functor.DistributiveLaw using (DistributiveLaw)
 open import Categories.NaturalTransformation
 open import Categories.Category.Construction.F-Algebras
 open import Categories.Functor.Properties
@@ -18,7 +18,7 @@ private
   variable
     o ℓ e : Level
 
-LiftAlgebras : {C : Category o ℓ e} → (T : Endofunctor C) → (F : Endofunctor C) → (Distr-law T F) → Endofunctor (F-Algebras T)
+LiftAlgebras : {C : Category o ℓ e} → (T F : Endofunctor C) → (DistributiveLaw T F) → Endofunctor (F-Algebras T)
 LiftAlgebras {C = C} T F μ = record
   { F₀           = λ X → record { A = (F .F₀) (X .A);  α = (F₁ F) (X .α) ∘ (μ .η) (X .A) }
   ; F₁           = λ α₁ → record { f = (F .F₁) (α₁ .f) ; commutes = commut α₁ }
