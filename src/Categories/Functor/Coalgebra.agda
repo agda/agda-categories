@@ -23,6 +23,9 @@ module _ {C : Category o ℓ e} where
       A : Obj
       α : F-Coalgebra-on F A
 
+  to-Coalgebra : {A : Category.Obj C} → {F : Endofunctor C} → (F-Coalgebra-on F A) → (F-Coalgebra F)
+  to-Coalgebra {A = A} α = record {A = A; α = α}
+
   open F-Coalgebra
 
   -- Given a F-Coalgebra F, one can apply F to it to obtain an new 'iterated' F-Coalgebra

@@ -27,6 +27,9 @@ module _ {C : Category o ℓ e} where
       A : Obj
       α : F-Algebra-on F A
 
+  to-Algebra : {A : Category.Obj C} → {F : Endofunctor C} → (F-Algebra-on F A) → (F-Algebra F)
+  to-Algebra {A = A} α = record {A = A; α = α}
+
   open F-Algebra
 
   -- Given an F-Algebra F, one can apply F to it to obtain an new 'iterated' F-Algebra

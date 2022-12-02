@@ -42,10 +42,10 @@ module _ {C : Category o ℓ e} where
       respects-μ : c₁ ∘ a₁ ≈ ((F.₁) a₁) ∘ (μ .η A) ∘ ((T.₁) c₁)
     --to access the (co)algebras induced by the morphisms:
     a : F-Algebra T
-    a = record { A = A ; α = a₁ }
+    a = to-Algebra a₁
 
     c : F-Coalgebra F
-    c = record { A = A ; α = c₁ }
+    c = to-Coalgebra c₁
 
   record μ-Bialgebra-Morphism {T F : Endofunctor C} {μ : DistributiveLaw T F} (X Y : μ-Bialgebra T F μ) : Set (o ⊔ ℓ ⊔ e) where
     open Category C
