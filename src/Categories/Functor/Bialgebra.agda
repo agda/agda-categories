@@ -7,7 +7,8 @@ open import Categories.Category using (Category)
 open import Categories.Functor
 open import Categories.Functor.Algebra
 open import Categories.Functor.Coalgebra
-open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation using (NaturalTransformation)
+open import Categories.Functor.DistributiveLaw using (DistributiveLaw)
 
 {-
 given two endofunctors T and F on a category C, we can define a (T,F)-bialgebra to be an object of C equipped with the structure of a T-algebra and an F-coalgebra, i.e. just a triple (A,a,c), where a:TA→A and c:A→FA.
@@ -22,11 +23,7 @@ private
 
 module _ {C : Category o ℓ e} where
 
-  module _ (T : Endofunctor C) (F : Endofunctor C) where
-    Distr-law : Set (o ⊔ ℓ ⊔ e)
-    Distr-law = NaturalTransformation (T ∘F F) (F ∘F T)
-
-  record μ-Bialgebra (T : Endofunctor C) (F : Endofunctor C) (μ : Distr-law T F)
+  record μ-Bialgebra (T F : Endofunctor C) (μ : DistributiveLaw T F)
        : Set (o ⊔ ℓ ⊔ e) where
     open Category C
     open Functor
@@ -46,10 +43,7 @@ module _ {C : Category o ℓ e} where
     c : F-Coalgebra F
     c = record { A = A ; α = c₁ }
 
-
-  open μ-Bialgebra
-
-  record μ-Bialgebra-Morphism {T F : Endofunctor C} {μ : Distr-law T F} (X Y : μ-Bialgebra T F μ) : Set (o ⊔ ℓ ⊔ e) where
+  record μ-Bialgebra-Morphism {T F : Endofunctor C} {μ : DistributiveLaw T F} (X Y : μ-Bialgebra T F μ) : Set (o ⊔ ℓ ⊔ e) where
     open Category C
     module X = μ-Bialgebra X
     module Y = μ-Bialgebra Y

@@ -12,12 +12,13 @@ import Categories.Morphism.Reasoning as MR
 open import Categories.Functor.Bialgebra
 open import Categories.Category.Construction.F-Algebras
 open import Categories.Category.Construction.F-Coalgebras
+open import Categories.Functor.DistributiveLaw using (DistributiveLaw)
 
 private
   variable
     o ℓ e : Level
 
-μ-Bialgebras : {C : Category o ℓ e} → (T : Endofunctor C) → (F : Endofunctor C) → (Distr-law T F) → Category (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e) e
+μ-Bialgebras : {C : Category o ℓ e} → (T F : Endofunctor C) → (DistributiveLaw T F) → Category (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e) e
 μ-Bialgebras {C = C} T F μ = record
  { Obj       = μ-Bialgebra T F μ
  ; _⇒_       = μ-Bialgebra-Morphism
