@@ -2,15 +2,13 @@ module Categories.Functor.Construction.LiftAlgebras where
 
 open import Level
 
-open import Categories.Category using (Category)
-open import Categories.Functor hiding (id)
-open import Categories.Functor.Algebra
-open import Categories.Functor.Coalgebra
-open import Categories.Functor.DistributiveLaw using (DistributiveLaw)
-open import Categories.NaturalTransformation
-open import Categories.Category.Construction.F-Algebras
-open import Categories.Functor.Properties
 open import Categories.Category
+open import Categories.Functor hiding (id)
+open import Categories.Functor.Algebra using (F-Algebra; F-Algebra-Morphism)
+open import Categories.Functor.DistributiveLaw using (DistributiveLaw)
+open import Categories.NaturalTransformation using (NaturalTransformation)
+open import Categories.Category.Construction.F-Algebras using (F-Algebras)
+open import Categories.Functor.Properties using ([_]-resp-square)
 
 import Categories.Morphism.Reasoning as MR
 
