@@ -4,6 +4,9 @@ open import Categories.Category using (Category)
 
 module Categories.Functor.Slice {o ℓ e} (C : Category o ℓ e) where
 
+open import Function using () renaming (id to id→)
+
+open import Categories.Category.Pullbacks using (Pullbacks) -- Predicate of having all pullbacks
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Properties using ([_]-resp-∘)
 open import Categories.Morphism.Reasoning C
@@ -20,16 +23,16 @@ module _ {A : Obj} where
   open S.SliceObj
   open S.Slice⇒
 
+  -- A functor between categories induces one between the corresponding slices at a given object of C.
   Base-F : ∀ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} (F : Functor C D) → Functor (S.Slice C A) (S.Slice D (Functor.F₀ F A))
-  Base-F {D = D} F = record
-    { F₀           = λ { s → S.sliceobj (F₁ (arr s)) }
-    ; F₁           = λ { s⇒ → S.slicearr ([ F ]-resp-∘ (△ s⇒)) }
+  Base-F F = record
+    { F₀           = λ s → S.sliceobj (F₁ (arr s))
+    ; F₁           = λ s⇒ → S.slicearr ([ F ]-resp-∘ (△ s⇒))
     ; identity     = identity
     ; homomorphism = homomorphism
     ; F-resp-≈     = F-resp-≈
     }
-    where module D = Category D
-          open Functor F
+    where open Functor F
 
   open S C
 
@@ -39,36 +42,46 @@ module _ {A : Obj} where
     ; F₁           = h
     ; identity     = refl
     ; homomorphism = refl
-    ; F-resp-≈     = λ eq → eq
+    ; F-resp-≈     = id→
     }
 
+  -- any morphism induces a Functor between slices
   BaseChange! : ∀ {B} (f : B ⇒ A) → Functor (Slice B) (Slice A)
   BaseChange! f = record
     { F₀           = λ X → sliceobj (f ∘ arr X)
     ; F₁           = λ g → slicearr (pullʳ (△ g))
     ; identity     = refl
     ; homomorphism = refl
-    ; F-resp-≈     = λ eq → eq
+    ; F-resp-≈     = id→
     }
 
 
-  module _ (pullbacks : ∀ {X Y Z} (h : X ⇒ Z) (i : Y ⇒ Z) → P.Pullback C h i) where
+  module _ (pb : Pullbacks C) where
     private
-      open P C
-      module pullbacks {X Y Z} h i = Pullback (pullbacks {X} {Y} {Z} h i)
-      open pullbacks
+      open P C using (Pullback; unglue; Pullback-resp-≈)
+      open Pullbacks pb using (pullback)
+      module pullbacks {X Y Z} h i = Pullback (pullback {X} {Y} {Z} h i)
+      open pullbacks using (p₂; p₂∘universal≈h₂; unique; unique-diagram; p₁∘universal≈h₁)
+
+    -- pieces that recur below and elsewhere, so name them
+    module _ {B} (f : B ⇒ A) where
+      q : (X : S.SliceObj C A)  → Pullback (arr X) f
+      q X = pullback (arr X) f
+
+      derived-pb : {X Y : SliceObj A} (g : Slice⇒ X Y) → Pullback (h g) (Pullback.p₁ (q Y))
+      derived-pb {X} {Y} g = unglue (q Y) (Pullback-resp-≈ (q X) (△ g) refl)
 
     BaseChange* : ∀ {B} (f : B ⇒ A) → Functor (Slice A) (Slice B)
     BaseChange* f = record
-      { F₀           = λ X → sliceobj (p₂ (arr X) f)
-      ; F₁           = λ {X Y} g → slicearr {h = Pullback.p₂ (unglue (pullbacks (arr Y) f)
-                                                                     (Pullback-resp-≈ (pullbacks (arr X) f) (△ g) refl))}
-                                            (p₂∘universal≈h₂ (arr Y) f)
-      ; identity     = λ {X} → ⟺ (unique (arr X) f id-comm identityʳ)
+      { F₀           = λ X → sliceobj (Q.p₂ X)
+      ; F₁           = λ {X Y} g → slicearr {h = Pullback.p₂ (derived-pb f g)} (p₂∘universal≈h₂ (arr Y) f)
+      ; identity     = λ {X} → {!⟺ (unique (arr X) f id-comm identityʳ)!}
       ; homomorphism = λ {X Y Z} {h i} → unique-diagram (arr Z) f (p₁∘universal≈h₁ (arr Z) f ○ assoc ○ ⟺ (pullʳ (p₁∘universal≈h₁ (arr Y) f)) ○ ⟺ (pullˡ (p₁∘universal≈h₁ (arr Z) f)))
                                                                   (p₂∘universal≈h₂ (arr Z) f ○ ⟺ (p₂∘universal≈h₂ (arr Y) f) ○ ⟺ (pullˡ (p₂∘universal≈h₂ (arr Z) f)))
       ; F-resp-≈     = λ {X Y} eq″ → unique (arr Y) f (p₁∘universal≈h₁ (arr Y) f ○ ∘-resp-≈ˡ eq″) (p₂∘universal≈h₂ (arr Y) f)
       }
+      where
+        module Q X = Pullback (q f X)
 
 
     pullback-functorial : ∀ {B} (f : B ⇒ A) → Functor (Slice A) C
@@ -84,7 +97,7 @@ module _ {A : Obj} where
                            (p.p₂∘universal≈h₂ B ○ ∘-resp-≈ˡ eq ○ ⟺ (p.p₂∘universal≈h₂ B))
       }
       where p : ∀ X → Pullback f (arr X)
-            p X        = pullbacks f (arr X)
+            p X        = pullback f (arr X)
             module p X = Pullback (p X)
 
             p⇒ : ∀ X Y (g : Slice⇒ X Y) → p.P X ⇒ p.P Y
