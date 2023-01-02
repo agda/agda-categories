@@ -82,22 +82,28 @@ EM-terminal = record
   ; !-unique = {!   !}
   }
 
+{-
+  HF≃F'.⇐.η Y ∘ A.adj.counit.η (A.F.F₀ Y) ∘ A.F.F₁ (A.GF≃M.⇐.η Y C.∘ f)
+
+≈ Functor.F₁ H f ∘ Γ.⇐.η X
+-}
+
 Kl-initial : IsInitial Kl-object
 Kl-initial = record
   { ! = !
-  ; !-unique = λ { {A} f → niHelper (
-    let open SplitObj A
-        open Split⇒ f
-        module G'H≃G = NaturalIsomorphism G'H≃G
-        module HF≃F' = NaturalIsomorphism HF≃F' in
+  ; !-unique = λ { {A} H → niHelper (
+    let module A = SplitObj A
+        module K = SplitObj Kl-object
+        module H = Split⇒ H
+        module G'H≃G = NaturalIsomorphism H.G'H≃G
+        module HF≃F' = NaturalIsomorphism H.HF≃F'
+        open Category A.D
+        open HomReasoning in
     record
-      { η = HF≃F'.⇐.η
+      { η   = HF≃F'.⇐.η
       ; η⁻¹ = HF≃F'.⇒.η
-      ; commute =
-          let open D
-              open D.HomReasoning in λ f →
-              {!   !}
-      ; iso = NaturalIsomorphism.iso (sym HF≃F')
+      ; commute = λ f → let open A.D.HomReasoning in {! HomReasoning._∎  !}
+      ; iso = NaturalIsomorphism.iso (sym H.HF≃F')
       })
     }
   }
