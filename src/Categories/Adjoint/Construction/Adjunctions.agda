@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --without-K  --allow-unsolved-metas #-}
 
 open import Level
 open import Categories.Category.Core using (Category)
@@ -14,10 +14,11 @@ private
 
 open import Categories.Adjoint
 open import Categories.Functor
-open import Categories.Morphism
+open import Categories.Morphism hiding (_≅_)
 open import Categories.Functor.Properties
 open import Categories.NaturalTransformation.Core
 open import Categories.NaturalTransformation.NaturalIsomorphism
+open import Categories.NaturalTransformation.Equivalence renaming (_≃_ to _≅_)
 open import Categories.Morphism.Reasoning as MR
 open import Categories.Tactic.Category
 
@@ -62,19 +63,10 @@ record SplitObj : Set (suc o ⊔ suc ℓ ⊔ suc e) where
                      GF≃M.⇐.η A
   -}
 
-
-record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
-  constructor split⇒
+module _ {X Y : SplitObj} (H : Functor (SplitObj.D X) (SplitObj.D Y)) (Γ : H ∘F (SplitObj.F X) ≃ (SplitObj.F Y)) where
   private
     module X = SplitObj X
     module Y = SplitObj Y
-    open X
-    open Y
-  field
-    H : Functor X.D Y.D
-    Γ : H ∘F X.F ≃ Y.F
-
-  private
     module Γ = NaturalIsomorphism Γ
 
   Γ' : NaturalTransformation X.G (Y.G ∘F H)
@@ -88,6 +80,26 @@ record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
       zip = F⇐G (associator (X.F ∘F X.G) H Y.G)
       zop = F⇒G (associator X.G X.F H)
       zap = F⇒G (associator X.G Y.F Y.G)
+
+record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
+  constructor split⇒
+  private
+    module X = SplitObj X
+    module Y = SplitObj Y
+
+  field
+    H : Functor X.D Y.D
+    Γ : H ∘F X.F ≃ Y.F
+
+  private
+    module Γ = NaturalIsomorphism Γ
+
+  field
+    μ-comp : Y.GF≃M.F⇐G -- Y.GF≃M.F⇒G
+           ≅ (Y.G ∘ˡ Γ.F⇒G)
+           ∘ᵥ NaturalIsomorphism.F⇒G (associator X.F H Y.G)
+           ∘ᵥ (Γ' {X = X} {Y = Y} H Γ ∘ʳ X.F)
+           ∘ᵥ X.GF≃M.F⇐G
 
 Split : Monad C → Category _ _ _
 Split M = record
@@ -107,14 +119,18 @@ Split M = record
   where
   open NaturalTransformation
   split-id : {A : SplitObj} → Split⇒ A A
-  split-id = record
+  split-id {A} = record
     { H = Categories.Functor.id
     ; Γ = unitorˡ
-    -- ; G'H≃G = unitorʳ
-    }
+    ; μ-comp = {!   !}
+    } where module A = SplitObj A
   comp : {A B X : SplitObj} → Split⇒ B X → Split⇒ A B → Split⇒ A X
-  comp {A = A} {B = B} {X = X} (split⇒ Hᵤ HF≃F'ᵤ) (split⇒ Hᵥ HF≃F'ᵥ) = record
+  comp {A = A} {B = B} {X = X} (split⇒ Hᵤ HF≃F'ᵤ μ-comp) (split⇒ Hᵥ HF≃F'ᵥ μ-comp′) = record
     { H = Hᵤ ∘F Hᵥ
     ; Γ = HF≃F'ᵤ ⓘᵥ (Hᵤ ⓘˡ HF≃F'ᵥ) ⓘᵥ associator (SplitObj.F A) Hᵥ Hᵤ
+    ; μ-comp = {!   !}
     -- ; G'H≃G = G'H≃Gᵥ ⓘᵥ (G'H≃Gᵤ ⓘʳ Hᵥ) ⓘᵥ sym-associator Hᵥ Hᵤ (SplitObj.G X)
-    }
+    } where
+       module A = SplitObj A
+       module B = SplitObj B
+       module X = SplitObj X
