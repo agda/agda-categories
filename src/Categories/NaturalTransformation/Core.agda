@@ -102,6 +102,7 @@ _∘ₕ_ {E = E} {F} {I = I} Y X = ntHelper record
         open Functor I renaming (F₀ to I₀; F₁ to I₁)
         open MR E
 
+-- F * α
 _∘ˡ_ : ∀ {G H : Functor C D} (F : Functor D E) → NaturalTransformation G H → NaturalTransformation (F ∘F G) (F ∘F H)
 _∘ˡ_ F α = record
   { η           = λ X → F₁ (η X)
@@ -111,6 +112,7 @@ _∘ˡ_ F α = record
   where open Functor F
         open NaturalTransformation α
 
+-- α * F
 _∘ʳ_ : ∀ {G H : Functor D E} → NaturalTransformation G H → (F : Functor C D) → NaturalTransformation (G ∘F F) (H ∘F F)
 _∘ʳ_ {D = D} {E = E} {G = G} {H = H} α F = record
   { η           = λ X → η (F₀ X)

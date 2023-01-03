@@ -51,7 +51,6 @@ record SplitObj : Set (suc o ⊔ suc ℓ ⊔ suc e) where
                   GF≃M.⇐.η A
 
   μ-eq:
-
              GF≃M.⇐.η              G.F₁ (F.F₁ (GF≃M.⇐.η))
         ---------------------> GFMA -------------------->
     MMA ---------------------> MGFA --------------------> GFGFA
@@ -69,10 +68,26 @@ record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
   private
     module X = SplitObj X
     module Y = SplitObj Y
+    open X
+    open Y
   field
     H : Functor X.D Y.D
-    HF≃F' : H ∘F X.F ≃ Y.F
-    G'H≃G : Y.G ∘F H ≃ X.G
+    Γ : H ∘F X.F ≃ Y.F
+
+  private
+    module Γ = NaturalIsomorphism Γ
+
+  Γ' : NaturalTransformation X.G (Y.G ∘F H)
+  Γ' = F∘id⇒F ∘ᵥ
+    (((Y.G ∘F H) ∘ˡ X.adj.counit) ∘ᵥ zip ∘ᵥ Y.G ∘ˡ zop)
+              ∘ᵥ (Y.G ∘ˡ Γ.F⇐G ∘ʳ X.G)
+              ∘ᵥ (zap ∘ᵥ Y.adj.unit ∘ʳ X.G)
+              ∘ᵥ F⇒id∘F
+    where
+      open NaturalIsomorphism
+      zip = F⇐G (associator (X.F ∘F X.G) H Y.G)
+      zop = F⇒G (associator X.G X.F H)
+      zap = F⇒G (associator X.G Y.F Y.G)
 
 Split : Monad C → Category _ _ _
 Split M = record
@@ -94,12 +109,12 @@ Split M = record
   split-id : {A : SplitObj} → Split⇒ A A
   split-id = record
     { H = Categories.Functor.id
-    ; HF≃F' = unitorˡ
-    ; G'H≃G = unitorʳ
+    ; Γ = unitorˡ
+    -- ; G'H≃G = unitorʳ
     }
   comp : {A B X : SplitObj} → Split⇒ B X → Split⇒ A B → Split⇒ A X
-  comp {A = A} {B = B} {X = X} (split⇒ Hᵤ HF≃F'ᵤ G'H≃Gᵤ) (split⇒ Hᵥ HF≃F'ᵥ G'H≃Gᵥ) = record
+  comp {A = A} {B = B} {X = X} (split⇒ Hᵤ HF≃F'ᵤ) (split⇒ Hᵥ HF≃F'ᵥ) = record
     { H = Hᵤ ∘F Hᵥ
-    ; HF≃F' = HF≃F'ᵤ ⓘᵥ (Hᵤ ⓘˡ HF≃F'ᵥ) ⓘᵥ associator (SplitObj.F A) Hᵥ Hᵤ
-    ; G'H≃G = G'H≃Gᵥ ⓘᵥ (G'H≃Gᵤ ⓘʳ Hᵥ) ⓘᵥ sym-associator Hᵥ Hᵤ (SplitObj.G X)
+    ; Γ = HF≃F'ᵤ ⓘᵥ (Hᵤ ⓘˡ HF≃F'ᵥ) ⓘᵥ associator (SplitObj.F A) Hᵥ Hᵤ
+    -- ; G'H≃G = G'H≃Gᵥ ⓘᵥ (G'H≃Gᵤ ⓘʳ Hᵥ) ⓘᵥ sym-associator Hᵥ Hᵤ (SplitObj.G X)
     }
