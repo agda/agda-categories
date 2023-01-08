@@ -1,3 +1,4 @@
+{-# OPTIONS --without-K --safe #-}
 module Categories.Functor.Construction.LiftAlgebras where
 
 open import Level
