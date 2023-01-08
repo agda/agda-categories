@@ -66,7 +66,7 @@ module _ {C : Category o ℓ e} (T F : Endofunctor C) (μ : DistributiveLaw T F)
 
   μ-Bialgebras⇒CoalgebrasLiftAlgebrasF : Functor μ-Bialgebras (F-Coalgebras (LiftAlgebras T F μ))
   μ-Bialgebras⇒CoalgebrasLiftAlgebrasF = record
-    { F₀           = λ X → record { A = a X ; α = record { f = c₁ X ; commutes = respects-μ X ○ sym-assoc } }
+    { F₀           = λ X → record { A = alg X ; α = record { f = c₁ X ; commutes = respects-μ X ○ sym-assoc } }
     ; F₁           = λ {X Y} β → record
       { f = alg-morph β
       ; commutes = F-Coalgebra-Morphism.commutes (coalg-morph β)

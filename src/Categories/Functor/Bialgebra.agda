@@ -41,11 +41,11 @@ module _ {C : Category o ℓ e} where
     field
       respects-μ : c₁ ∘ a₁ ≈ ((F.₁) a₁) ∘ (μ .η A) ∘ ((T.₁) c₁)
     --to access the (co)algebras induced by the morphisms:
-    a : F-Algebra T
-    a = to-Algebra a₁
+    alg : F-Algebra T
+    alg = to-Algebra a₁
 
-    c : F-Coalgebra F
-    c = to-Coalgebra c₁
+    coalg : F-Coalgebra F
+    coalg = to-Coalgebra c₁
 
   record μ-Bialgebra-Morphism {T F : Endofunctor C} {μ : DistributiveLaw T F} (X Y : μ-Bialgebra T F μ) : Set (o ⊔ ℓ ⊔ e) where
     open Category C using (_⇒_)
@@ -54,11 +54,11 @@ module _ {C : Category o ℓ e} where
       module Y = μ-Bialgebra Y
     field
       f : X.A ⇒ Y.A
-      f-is-alg-morph : is-F-Algebra-Morphism X.a Y.a f
-      f-is-coalg-morph : is-F-Coalgebra-Morphism X.c Y.c f
+      f-is-alg-morph : is-F-Algebra-Morphism X.alg Y.alg f
+      f-is-coalg-morph : is-F-Coalgebra-Morphism X.coalg Y.coalg f
 
-    alg-morph : F-Algebra-Morphism X.a Y.a
+    alg-morph : F-Algebra-Morphism X.alg Y.alg
     alg-morph = record { f = f; commutes = f-is-alg-morph }
 
-    coalg-morph : F-Coalgebra-Morphism X.c Y.c
+    coalg-morph : F-Coalgebra-Morphism X.coalg Y.coalg
     coalg-morph = record { f = f; commutes = f-is-coalg-morph }
