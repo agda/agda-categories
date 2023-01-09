@@ -30,7 +30,7 @@ F-Coalgebras {C = C} F = record
        coF-Algebras.∘
        F-Coalgebra-Morphism⇒coF-Algebra-Morphism α₂)
     }
-  ; id        = coF-Algebra-Morphism⇒F-Coalgebra-Morphism coF-Algebras.id
+  ; id        = record { f = id; commutes = F-Algebra-Morphism.commutes coF-Algebras.id }
   ; assoc     = assoc
   ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
@@ -57,12 +57,7 @@ F-Coalgebras⇒coF-Algebras {C = C} F = record
   ; F₁           = F-Coalgebra-Morphism⇒coF-Algebra-Morphism
   ; identity     = refl
   ; homomorphism = refl
-  ; F-resp-≈     = λ {_ _ α₁ α₂} α₁≈α₂ →
-     begin
-      F-Algebra-Morphism.f (F-Coalgebra-Morphism⇒coF-Algebra-Morphism α₁) ≈⟨ refl ⟩
-      f α₁ ≈⟨ α₁≈α₂ ⟩
-      f α₂ ≈⟨ refl ⟩
-      F-Algebra-Morphism.f (F-Coalgebra-Morphism⇒coF-Algebra-Morphism α₂) ∎
+  ; F-resp-≈     = λ x → x
   }
   where
     open Category C
@@ -92,7 +87,7 @@ private
       open HomReasoning
       open Equiv
 
-private module CoLambek {C : Category o ℓ e} {F : Endofunctor C} (T : Terminal (F-Coalgebras F)) where
+module CoLambek {C : Category o ℓ e} {F : Endofunctor C} (T : Terminal (F-Coalgebras F)) where
   open Category C
   open Functor F using (F₀)
   open F-Coalgebra using (α)
