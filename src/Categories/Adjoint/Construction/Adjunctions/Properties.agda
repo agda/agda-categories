@@ -91,7 +91,7 @@ Kl-initial = record
     let module A = SplitObj A
         module K = SplitObj Kl-object
         module H = Split⇒ H
-        module ! = Split⇒ !
+        -- module ! = Split⇒ !
         module Γ = NaturalIsomorphism H.Γ
         module CH = C.HomReasoning
         open Category A.D in
@@ -187,7 +187,7 @@ Kl-initial = record
               (F.₁ f ∘ D.id)                                             ∎
           ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityˡ }
           })
-      ; μ-comp = {!   !}
+      ; μ-comp = λ { {x} → {!   !} }
       } where
         module adj  = Adjoint adj
         module F    = Functor F
