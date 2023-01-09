@@ -13,7 +13,9 @@ module M = Monad M
 open import Categories.Adjoint using (Adjoint)
 open import Categories.Functor using (Functor)
 open import Categories.Morphism.Reasoning
-open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; niHelper; sym)
+open import Categories.NaturalTransformation
+open NaturalTransformation using (η)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; niHelper; sym; associator)
 
 open import Categories.Adjoint.Construction.Adjunctions M
 
@@ -108,7 +110,7 @@ Kl-initial = record
                                    C.∘ A.G.F₁ (Functor.F₁ H.H C.id)
                                    C.∘ A.G.F₁ (Γ.⇐.η (M.F.F₀ x))
                                    C.∘ A.adj.unit.η (M.F.F₀ x)
-             useful = {!   !} {-let open C.HomReasoning in
+             useful = {!  let open H in NaturalIsomorphism.F⇒G (associator ? ? ?) !} {-let open C.HomReasoning in
                          begin _ ≈⟨ H.μ-comp ⟩
                                _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ elimʳ C (M.F.identity)) ⟩
                                _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ C.identityʳ) ⟩
@@ -121,15 +123,21 @@ Kl-initial = record
      in let open A.D.HomReasoning
 
          in begin (Γ.⇐.η _ ∘ A.adj.counit.η (A.F.F₀ _) ∘ A.F.F₁ (A.GF≃M.⇐.η _ C.∘ f))
-                                        ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ A.F.F-resp-≈ ((useful CH.⟩∘⟨refl) CH.○ (C.assoc CH.○ (CH.refl⟩∘⟨ C.assoc ) CH.○ CH.refl⟩∘⟨ CH.refl⟩∘⟨ C.assoc ))) ⟩
+                                        ≈⟨  (refl⟩∘⟨ refl⟩∘⟨ A.F.F-resp-≈ ((useful CH.⟩∘⟨refl) CH.○ (C.assoc CH.○ (CH.refl⟩∘⟨ C.assoc ) CH.○ CH.refl⟩∘⟨ CH.refl⟩∘⟨ C.assoc ))) ⟩
                               {!   !} ≈⟨ ((refl⟩∘⟨ refl⟩∘⟨ A.F.homomorphism)) ⟩
                               {!   !} ≈⟨ (refl⟩∘⟨ pullˡ A.D (A.adj.counit.commute _)) ⟩
                               {!   !} ≈⟨ (refl⟩∘⟨ assoc) ⟩
                               {!   !} ≈⟨ cancelˡ A.D (Γ.iso.isoˡ _) ⟩
                               {!   !} ≈⟨ (refl⟩∘⟨ (A.F.homomorphism ○ refl⟩∘⟨ A.F.homomorphism ○ refl⟩∘⟨ refl⟩∘⟨ A.F.homomorphism)) ⟩
                               {!   !} ≈⟨ extendʳ A.D (A.adj.counit.commute _) ⟩
-                              {!   !} ≈⟨ {!   !} ⟩
-                              {!   !} ≈⟨ {!   !} ⟩
+                              {!   !} ≈⟨ (refl⟩∘⟨ extendʳ A.D (A.adj.counit.commute _)) ⟩
+                              {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pullˡ A.D A.adj.zig) ⟩
+                              {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ A.D.identityˡ) ⟩
+                              {!   !} ≈⟨ (refl⟩∘⟨ Γ.⇐.commute _) ⟩
+                              {!   !} ≈⟨ (refl⟩∘⟨ {!  Functor.homomorphism H.H !}) ⟩
+
+                             -- {!   !} ≈⟨ (refl⟩∘⟨ Functor.F-resp-≈ H.H (M.η.commute _) ⟩∘⟨refl) ⟩
+                             -- {!   !} ≈⟨ (refl⟩∘⟨ {! Functor.homomorphism H.H {f = f} {g = M.η.η _}  !} ⟩∘⟨refl) ⟩
                               {!   !} ≈⟨ {!   !} ⟩
                               {!   !} ≈⟨ {!   !} ⟩
                               Functor.F₁ H.H f ∘ Γ.⇐.η _ ∎
