@@ -123,18 +123,17 @@ Split M = record
     { H = Categories.Functor.id
     ; Γ = unitorˡ
     ; μ-comp = λ { {x} →
-       Equiv.sym (begin {!   !} ≈⟨ elimˡ C (Functor.identity A.G) ⟩
-             {!   !} ≈⟨ identityˡ ⟩
-             {!   !} ≈⟨ assoc  ⟩
-             {!   !} ≈⟨ identityˡ ⟩
-             {!   !} ≈⟨ ((refl⟩∘⟨ (refl⟩∘⟨ identityʳ)) ⟩∘⟨refl) ⟩
-             {!   !} ≈⟨ (refl⟩∘⟨ elimˡ C (Functor.identity A.G)) ⟩∘⟨refl ⟩
-             {!   !} ≈⟨ ((refl⟩∘⟨ identityˡ) ⟩∘⟨refl) ⟩
-             {!   !} ≈⟨ (((refl⟩∘⟨ identityˡ) ⟩∘⟨refl) ⟩∘⟨refl) ⟩
-             {!   !} ≈⟨ ((elimʳ C (Functor.identity A.G) ⟩∘⟨refl) ⟩∘⟨refl) ⟩
-            --  {!   !} ≈⟨ ({!   !} ⟩∘⟨refl) ⟩
-             {!   !} ≈⟨ elimˡ C A.adj.zag ⟩
-             {!   !} ∎)}
+       Equiv.sym (begin _ ≈⟨ elimˡ C (Functor.identity A.G) ⟩
+             _ ≈⟨ identityˡ ⟩
+             _ ≈⟨ assoc  ⟩
+             _ ≈⟨ identityˡ ⟩
+             _ ≈⟨ ((refl⟩∘⟨ (refl⟩∘⟨ identityʳ)) ⟩∘⟨refl) ⟩
+             _ ≈⟨ (refl⟩∘⟨ elimˡ C (Functor.identity A.G)) ⟩∘⟨refl ⟩
+             _ ≈⟨ ((refl⟩∘⟨ identityˡ) ⟩∘⟨refl) ⟩
+             _ ≈⟨ (((refl⟩∘⟨ identityˡ) ⟩∘⟨refl) ⟩∘⟨refl) ⟩
+             _ ≈⟨ ((elimʳ C (Functor.identity A.G) ⟩∘⟨refl) ⟩∘⟨refl) ⟩
+             _ ≈⟨ elimˡ C A.adj.zag ⟩
+             _ ∎)}
     } where module A = SplitObj A
             open C
             open C.HomReasoning
