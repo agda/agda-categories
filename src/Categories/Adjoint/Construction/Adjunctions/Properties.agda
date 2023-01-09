@@ -13,7 +13,7 @@ module M = Monad M
 open import Categories.Adjoint using (Adjoint)
 open import Categories.Functor using (Functor)
 open import Categories.Morphism.Reasoning
-open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation hiding (id)
 open NaturalTransformation using (η)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; niHelper; sym; associator)
 
@@ -35,11 +35,11 @@ EM-object = record
   ; G = EM.Forgetful
   ; adj = EM.Free⊣Forgetful
   ; GF≃M = EM.FF≃F
-  ; η-eq = {!   !} {- begin
+  ; η-eq = begin
              M.F.₁ id ∘ M.η.η _ ≈⟨ M.F.identity ⟩∘⟨refl ⟩
              id ∘ M.η.η _       ≈⟨ identityˡ ⟩
-             M.η.η _            ∎ -}
-  ; μ-eq = {!   !} {- begin
+             M.η.η _            ∎
+  ; μ-eq = begin
              M.F.₁ id ∘ M.μ.η _                    ≈⟨ M.F.identity ⟩∘⟨refl ⟩
              id ∘ M.μ.η _                          ≈⟨ identityˡ ⟩
              M.μ.η _                               ≈⟨ Equiv.sym identityʳ ⟩
@@ -48,7 +48,7 @@ EM-object = record
              (M.μ.η _ ∘ M.F.₁ id) ∘ id             ≈⟨ assoc ⟩
              M.μ.η _ ∘ M.F.₁ id ∘ id               ≈⟨ refl⟩∘⟨  refl⟩∘⟨ Equiv.sym M.F.identity ⟩
              M.μ.η _ ∘ M.F.₁ id ∘ M.F.₁ id         ≈⟨ refl⟩∘⟨  refl⟩∘⟨ M.F.F-resp-≈ (Equiv.sym M.F.identity) ⟩
-             M.μ.η _ ∘ M.F.₁ id ∘ M.F.₁ (M.F.₁ id) ∎ -}
+             M.μ.η _ ∘ M.F.₁ id ∘ M.F.₁ (M.F.₁ id) ∎
   } where open Category C
           open HomReasoning
 
@@ -59,11 +59,11 @@ Kl-object = record
   ; G = KL.Forgetful
   ; adj = KL.Free⊣Forgetful
   ; GF≃M = KL.FF≃F
-  ; η-eq = {!   !} {- begin
+  ; η-eq = begin
              M.F.₁ id ∘ M.η.η _ ≈⟨ M.F.identity ⟩∘⟨refl ⟩
              id ∘ M.η.η _       ≈⟨ identityˡ ⟩
-             M.η.η _            ∎ -}
-  ; μ-eq = {!   !} {- begin M.F.₁ id ∘ M.μ.η _                                     ≈⟨ M.F.identity ⟩∘⟨refl ⟩
+             M.η.η _            ∎
+  ; μ-eq = begin M.F.₁ id ∘ M.μ.η _                                     ≈⟨ M.F.identity ⟩∘⟨refl ⟩
              id ∘ M.μ.η _                                               ≈⟨ identityˡ ⟩
              M.μ.η _                                                    ≈⟨ Equiv.sym identityʳ ⟩
              M.μ.η _ ∘ id                                               ≈⟨ refl⟩∘⟨ Equiv.sym M.F.identity ⟩
@@ -74,7 +74,7 @@ Kl-object = record
              ((M.μ.η _ ∘ M.F.₁ (M.F.₁ id)) ∘ M.F.₁ id) ∘ id             ≈⟨ assoc ⟩
              (M.μ.η _ ∘ M.F.₁ (M.F.₁ id)) ∘ M.F.₁ id ∘ id               ≈⟨ refl⟩∘⟨ refl⟩∘⟨ Equiv.sym M.F.identity ⟩
              (M.μ.η _ ∘ M.F.₁ (M.F.₁ id)) ∘ M.F.₁ id ∘ M.F.₁ id         ≈⟨ refl⟩∘⟨ refl⟩∘⟨ M.F.F-resp-≈ (Equiv.sym M.F.identity) ⟩
-             (M.μ.η _ ∘ M.F.₁ (M.F.₁ id)) ∘ M.F.₁ id ∘ M.F.₁ (M.F.₁ id) ∎ -}
+             (M.μ.η _ ∘ M.F.₁ (M.F.₁ id)) ∘ M.F.₁ id ∘ M.F.₁ (M.F.₁ id) ∎
   } where open Category C
           open HomReasoning
 
@@ -83,12 +83,6 @@ EM-terminal = record
   { ! = {!   !}
   ; !-unique = {!   !}
   }
-
-{-
-  HF≃F'.⇐.η Y ∘ A.adj.counit.η (A.F.F₀ Y) ∘ A.F.F₁ (A.GF≃M.⇐.η Y C.∘ f)
-
-≈ Functor.F₁ H f ∘ Γ.⇐.η X
--}
 
 Kl-initial : IsInitial Kl-object
 Kl-initial = record
@@ -110,7 +104,7 @@ Kl-initial = record
                                    C.∘ A.G.F₁ (Functor.F₁ H.H C.id)
                                    C.∘ A.G.F₁ (Γ.⇐.η (M.F.F₀ x))
                                    C.∘ A.adj.unit.η (M.F.F₀ x)
-             useful = {!  let open H in NaturalIsomorphism.F⇒G (associator ? ? ?) !} {-let open C.HomReasoning in
+             useful = let open C.HomReasoning in
                          begin _ ≈⟨ H.μ-comp ⟩
                                _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ elimʳ C (M.F.identity)) ⟩
                                _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ C.identityʳ) ⟩
@@ -119,7 +113,7 @@ Kl-initial = record
                                _ ≈⟨ (refl⟩∘⟨ (A.G.F-resp-≈ (Functor.F-resp-≈ H.H M.F.identity) ⟩∘⟨refl) ⟩∘⟨refl) ⟩
                                _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ C.identityˡ) ⟩
                                _ ≈⟨ (refl⟩∘⟨ (elimʳ C (elimʳ C A.G.identity)) ⟩∘⟨refl) ⟩
-                               _ ∎-}
+                               _ ∎
      in let open A.D.HomReasoning
 
          in begin (Γ.⇐.η _ ∘ A.adj.counit.η (A.F.F₀ _) ∘ A.F.F₁ (A.GF≃M.⇐.η _ C.∘ f))
@@ -134,13 +128,9 @@ Kl-initial = record
                               {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pullˡ A.D A.adj.zig) ⟩
                               {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ A.D.identityˡ) ⟩
                               {!   !} ≈⟨ (refl⟩∘⟨ Γ.⇐.commute _) ⟩
-                              -- {!   !} ≈⟨ (Functor.F-resp-≈ H.H (C.Equiv.sym M.identityˡ) ⟩∘⟨refl) ⟩
                              {!   !} ≈⟨ (refl⟩∘⟨ Functor.F-resp-≈ H.H (M.η.commute _) ⟩∘⟨refl) ⟩
-                             -- {!   !} ≈⟨ (refl⟩∘⟨ {! Functor.homomorphism H.H {f = f} {g = M.η.η _}  !} ⟩∘⟨refl) ⟩
-                              -- {!   !} ≈⟨ {!  Functor.homomorphism H.H !} ⟩
                               {!   !} ≈⟨ Equiv.sym assoc ⟩
                               {!   !} ≈⟨ (Equiv.sym (Functor.homomorphism H.H) ⟩∘⟨refl) ⟩
-                              -- {!   !} ≈⟨ {!   !} ⟩
                               {!   !} ≈⟨ (Functor.F-resp-≈ H.H (elimʳ C M.F.identity CH.⟩∘⟨refl) ⟩∘⟨refl) ⟩
                               {!   !} ≈⟨ (Functor.F-resp-≈ H.H C.sym-assoc ⟩∘⟨refl) ⟩
                               {!   !} ≈⟨ pushˡ A.D (Functor.homomorphism H.H) ⟩
