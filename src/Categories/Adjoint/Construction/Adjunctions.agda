@@ -146,6 +146,12 @@ Split M = record
               {!   !} ≈⟨ ((refl⟩∘⟨ Functor.F-resp-≈ X.G X.D.identityʳ)  ⟩∘⟨refl) ⟩
               {!   !} ≈⟨ (refl⟩∘⟨ (identityˡ ○ (identityˡ ⟩∘⟨refl))) ⟩
               {!   !} ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ (refl⟩∘⟨ (identityʳ ○ identityˡ))) ⟩∘⟨refl) ⟩
+              {!   !} ≈⟨ refl⟩∘⟨ ((refl⟩∘⟨ (Functor.homomorphism X.G ⟩∘⟨refl)) ⟩∘⟨refl) ⟩
+              {!   !} ≈⟨ (refl⟩∘⟨ (((refl⟩∘⟨ (identityˡ ○ Functor.identity X.G)) ⟩∘⟨refl) ⟩∘⟨refl)) ⟩
+              {!   !} ≈⟨ (refl⟩∘⟨ (identityʳ ⟩∘⟨refl) ⟩∘⟨refl) ⟩
+              {!   !} ≈⟨ (refl⟩∘⟨ ((refl⟩∘⟨ ((Functor.homomorphism X.G ⟩∘⟨refl) ⟩∘⟨refl)) ⟩∘⟨refl)) ⟩
+              {!   !} ≈⟨ (refl⟩∘⟨ ((refl⟩∘⟨ ((elimˡ C (Functor.identity X.G) ⟩∘⟨refl) ⟩∘⟨refl)) ⟩∘⟨refl)) ⟩
+              {!   !} ≈⟨ {!   !} ⟩
               {!   !} ≈⟨ {!   !} ⟩
               {!   !} ∎)}
     -- ; G'H≃G = G'H≃Gᵥ ⓘᵥ (G'H≃Gᵤ ⓘʳ Hᵥ) ⓘᵥ sym-associator Hᵥ Hᵤ (SplitObj.G X)
