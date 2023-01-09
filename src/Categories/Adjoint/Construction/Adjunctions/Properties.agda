@@ -134,12 +134,17 @@ Kl-initial = record
                               {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pullˡ A.D A.adj.zig) ⟩
                               {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ A.D.identityˡ) ⟩
                               {!   !} ≈⟨ (refl⟩∘⟨ Γ.⇐.commute _) ⟩
-                              {!   !} ≈⟨ (refl⟩∘⟨ {!  Functor.homomorphism H.H !}) ⟩
-
-                             -- {!   !} ≈⟨ (refl⟩∘⟨ Functor.F-resp-≈ H.H (M.η.commute _) ⟩∘⟨refl) ⟩
+                              -- {!   !} ≈⟨ (Functor.F-resp-≈ H.H (C.Equiv.sym M.identityˡ) ⟩∘⟨refl) ⟩
+                             {!   !} ≈⟨ (refl⟩∘⟨ Functor.F-resp-≈ H.H (M.η.commute _) ⟩∘⟨refl) ⟩
                              -- {!   !} ≈⟨ (refl⟩∘⟨ {! Functor.homomorphism H.H {f = f} {g = M.η.η _}  !} ⟩∘⟨refl) ⟩
-                              {!   !} ≈⟨ {!   !} ⟩
-                              {!   !} ≈⟨ {!   !} ⟩
+                              -- {!   !} ≈⟨ {!  Functor.homomorphism H.H !} ⟩
+                              {!   !} ≈⟨ Equiv.sym assoc ⟩
+                              {!   !} ≈⟨ (Equiv.sym (Functor.homomorphism H.H) ⟩∘⟨refl) ⟩
+                              -- {!   !} ≈⟨ {!   !} ⟩
+                              {!   !} ≈⟨ (Functor.F-resp-≈ H.H (elimʳ C M.F.identity CH.⟩∘⟨refl) ⟩∘⟨refl) ⟩
+                              {!   !} ≈⟨ (Functor.F-resp-≈ H.H C.sym-assoc ⟩∘⟨refl) ⟩
+                              {!   !} ≈⟨ pushˡ A.D (Functor.homomorphism H.H) ⟩
+                              {!   !} ≈⟨ (refl⟩∘⟨ elimˡ A.D (Functor.identity H.H)) ⟩
                               Functor.F₁ H.H f ∘ Γ.⇐.η _ ∎
       ; iso = NaturalIsomorphism.iso (sym H.Γ)
       })
