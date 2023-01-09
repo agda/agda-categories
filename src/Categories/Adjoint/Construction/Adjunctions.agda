@@ -122,8 +122,22 @@ Split M = record
   split-id {A} = record
     { H = Categories.Functor.id
     ; Γ = unitorˡ
-    ; μ-comp = {!   !}
+    ; μ-comp = λ { {x} →
+       Equiv.sym (begin {!   !} ≈⟨ elimˡ C (Functor.identity A.G) ⟩
+             {!   !} ≈⟨ identityˡ ⟩
+             {!   !} ≈⟨ assoc  ⟩
+             {!   !} ≈⟨ identityˡ ⟩
+             {!   !} ≈⟨ ((refl⟩∘⟨ (refl⟩∘⟨ identityʳ)) ⟩∘⟨refl) ⟩
+             {!   !} ≈⟨ (refl⟩∘⟨ elimˡ C (Functor.identity A.G)) ⟩∘⟨refl ⟩
+             {!   !} ≈⟨ ((refl⟩∘⟨ identityˡ) ⟩∘⟨refl) ⟩
+             {!   !} ≈⟨ (((refl⟩∘⟨ identityˡ) ⟩∘⟨refl) ⟩∘⟨refl) ⟩
+             {!   !} ≈⟨ ((elimʳ C (Functor.identity A.G) ⟩∘⟨refl) ⟩∘⟨refl) ⟩
+            --  {!   !} ≈⟨ ({!   !} ⟩∘⟨refl) ⟩
+             {!   !} ≈⟨ elimˡ C A.adj.zag ⟩
+             {!   !} ∎)}
     } where module A = SplitObj A
+            open C
+            open C.HomReasoning
   comp : {A B X : SplitObj} → Split⇒ B X → Split⇒ A B → Split⇒ A X
   comp {A = A} {B = B} {X = X} (split⇒ Hᵤ HF≃F'ᵤ Aμ-comp) (split⇒ Hᵥ HF≃F'ᵥ Bμ-comp) = record
     { H = Hᵤ ∘F Hᵥ
