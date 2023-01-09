@@ -125,7 +125,7 @@ Split M = record
     ; μ-comp = {!   !}
     } where module A = SplitObj A
   comp : {A B X : SplitObj} → Split⇒ B X → Split⇒ A B → Split⇒ A X
-  comp {A = A} {B = B} {X = X} (split⇒ Hᵤ HF≃F'ᵤ μ-comp) (split⇒ Hᵥ HF≃F'ᵥ μ-comp′) = record
+  comp {A = A} {B = B} {X = X} (split⇒ Hᵤ HF≃F'ᵤ Aμ-comp) (split⇒ Hᵥ HF≃F'ᵥ Bμ-comp) = record
     { H = Hᵤ ∘F Hᵥ
     ; Γ = HF≃F'ᵤ ⓘᵥ (Hᵤ ⓘˡ HF≃F'ᵥ) ⓘᵥ associator (SplitObj.F A) Hᵥ Hᵤ
     ; μ-comp = {!   !}
