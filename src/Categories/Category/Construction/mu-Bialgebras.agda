@@ -15,6 +15,10 @@ open import Categories.Category.Construction.F-Coalgebras
 open import Categories.Functor.DistributiveLaw using (DistributiveLaw)
 open import Categories.Functor.Construction.LiftAlgebras using (LiftAlgebras)
 
+open import Categories.Category.Equivalence using (StrongEquivalence;WeakInverse)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism;NIHelper;niHelper)
+open import Categories.NaturalTransformation using (NTHelper;ntHelper)
+
 private
   variable
     o ℓ e : Level
@@ -98,3 +102,46 @@ module _ {C : Category o ℓ e} (T F : Endofunctor C) (μ : DistributiveLaw T F)
     ; F-resp-≈     = λ x → x
     }
 
+  μ-Bialgebras⇔CoalgebrasLiftAlgebrasF : StrongEquivalence μ-Bialgebras (F-Coalgebras (LiftAlgebras T F μ))
+  μ-Bialgebras⇔CoalgebrasLiftAlgebrasF = record
+    { F = μ-Bialgebras⇒CoalgebrasLiftAlgebrasF
+    ; G = CoalgebrasLiftAlgebrasF⇒μ-Bialgebras
+    ; weak-inverse = record
+      { F∘G≈id = niHelper record
+        { η = λ X → record
+          { f = T-Algebras.id
+          ; commutes = commut X
+          }
+        ; η⁻¹ = λ X → record
+          { f = T-Algebras.id
+          ; commutes = commut X
+          }
+        ; commute = λ _ → id-comm-sym
+        ; iso = λ _ → record { isoˡ = identity² ; isoʳ = identity² }
+        }
+      ; G∘F≈id = niHelper record
+        { η = λ X → record
+          { f = id
+          ; f-is-alg-morph = F-Algebra-Morphism.commutes T-Algebras.id
+          ; f-is-coalg-morph = F-Coalgebra-Morphism.commutes F-Coalgebras.id
+          }
+        ; η⁻¹ = λ X → record
+          { f = id
+          ; f-is-alg-morph = F-Algebra-Morphism.commutes T-Algebras.id
+          ; f-is-coalg-morph = F-Coalgebra-Morphism.commutes F-Coalgebras.id
+          }
+        ; commute = λ _ → id-comm-sym
+        ; iso = λ _ → record { isoˡ = identity² ; isoʳ = identity² }
+        }
+      }
+    }
+    where
+      open Functor F using (F₁;identity)
+      module T-Algebras = Category (F-Algebras T)
+      module F-Coalgebras = Category (F-Coalgebras F)
+      commut = λ X →
+            let c = F-Algebra-Morphism.f (F-Coalgebra.α X) in begin
+              c ∘ id ≈⟨ identityʳ ⟩
+              c ≈⟨ ⟺ identityˡ ⟩
+              id ∘ c ≈⟨ ∘-resp-≈ˡ (⟺ identity)⟩
+              F₁ id ∘ c ∎
