@@ -20,6 +20,10 @@ private
     o ℓ e : Level
 
 module _ {C : Category o ℓ e} (T F : Endofunctor C) (μ : DistributiveLaw T F) where
+  open Category C
+  open MR C
+  open HomReasoning
+  open Equiv
 
   μ-Bialgebras : Category (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e) e
   μ-Bialgebras = record
@@ -52,10 +56,6 @@ module _ {C : Category o ℓ e} (T F : Endofunctor C) (μ : DistributiveLaw T F)
    ; ∘-resp-≈  = ∘-resp-≈
    }
      where
-      open Category C
-      open MR C
-      open HomReasoning
-      open Equiv
       open μ-Bialgebra-Morphism
       open μ-Bialgebra
       module T-Algebras = Category (F-Algebras T)
@@ -77,10 +77,6 @@ module _ {C : Category o ℓ e} (T F : Endofunctor C) (μ : DistributiveLaw T F)
     }
     where
       open μ-Bialgebra
-      open Category C
-      open MR C
-      open HomReasoning
-      open Equiv
       open Functor F
       open μ-Bialgebra-Morphism
 
@@ -101,9 +97,4 @@ module _ {C : Category o ℓ e} (T F : Endofunctor C) (μ : DistributiveLaw T F)
     ; homomorphism = refl
     ; F-resp-≈     = λ x → x
     }
-    where
-      open Category C
-      open MR C
-      open HomReasoning
-      open Equiv
 
