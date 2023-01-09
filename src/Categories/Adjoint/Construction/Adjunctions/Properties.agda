@@ -118,23 +118,23 @@ Kl-initial = record
 
          in begin (Γ.⇐.η _ ∘ A.adj.counit.η (A.F.F₀ _) ∘ A.F.F₁ (A.GF≃M.⇐.η _ C.∘ f))
                                         ≈⟨  (refl⟩∘⟨ refl⟩∘⟨ A.F.F-resp-≈ ((useful CH.⟩∘⟨refl) CH.○ (C.assoc CH.○ (CH.refl⟩∘⟨ C.assoc ) CH.○ CH.refl⟩∘⟨ CH.refl⟩∘⟨ C.assoc ))) ⟩
-                              {!   !} ≈⟨ ((refl⟩∘⟨ refl⟩∘⟨ A.F.homomorphism)) ⟩
-                              {!   !} ≈⟨ (refl⟩∘⟨ pullˡ A.D (A.adj.counit.commute _)) ⟩
-                              {!   !} ≈⟨ (refl⟩∘⟨ assoc) ⟩
-                              {!   !} ≈⟨ cancelˡ A.D (Γ.iso.isoˡ _) ⟩
-                              {!   !} ≈⟨ (refl⟩∘⟨ (A.F.homomorphism ○ refl⟩∘⟨ A.F.homomorphism ○ refl⟩∘⟨ refl⟩∘⟨ A.F.homomorphism)) ⟩
-                              {!   !} ≈⟨ extendʳ A.D (A.adj.counit.commute _) ⟩
-                              {!   !} ≈⟨ (refl⟩∘⟨ extendʳ A.D (A.adj.counit.commute _)) ⟩
-                              {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pullˡ A.D A.adj.zig) ⟩
-                              {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ A.D.identityˡ) ⟩
-                              {!   !} ≈⟨ (refl⟩∘⟨ Γ.⇐.commute _) ⟩
-                             {!   !} ≈⟨ (refl⟩∘⟨ Functor.F-resp-≈ H.H (M.η.commute _) ⟩∘⟨refl) ⟩
-                              {!   !} ≈⟨ Equiv.sym assoc ⟩
-                              {!   !} ≈⟨ (Equiv.sym (Functor.homomorphism H.H) ⟩∘⟨refl) ⟩
-                              {!   !} ≈⟨ (Functor.F-resp-≈ H.H (elimʳ C M.F.identity CH.⟩∘⟨refl) ⟩∘⟨refl) ⟩
-                              {!   !} ≈⟨ (Functor.F-resp-≈ H.H C.sym-assoc ⟩∘⟨refl) ⟩
-                              {!   !} ≈⟨ pushˡ A.D (Functor.homomorphism H.H) ⟩
-                              {!   !} ≈⟨ (refl⟩∘⟨ elimˡ A.D (Functor.identity H.H)) ⟩
+                              _ ≈⟨ ((refl⟩∘⟨ refl⟩∘⟨ A.F.homomorphism)) ⟩
+                              _ ≈⟨ (refl⟩∘⟨ pullˡ A.D (A.adj.counit.commute _)) ⟩
+                              _ ≈⟨ (refl⟩∘⟨ assoc) ⟩
+                              _ ≈⟨ cancelˡ A.D (Γ.iso.isoˡ _) ⟩
+                              _ ≈⟨ (refl⟩∘⟨ (A.F.homomorphism ○ refl⟩∘⟨ A.F.homomorphism ○ refl⟩∘⟨ refl⟩∘⟨ A.F.homomorphism)) ⟩
+                              _ ≈⟨ extendʳ A.D (A.adj.counit.commute _) ⟩
+                              _ ≈⟨ (refl⟩∘⟨ extendʳ A.D (A.adj.counit.commute _)) ⟩
+                              _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pullˡ A.D A.adj.zig) ⟩
+                              _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ A.D.identityˡ) ⟩
+                              _ ≈⟨ (refl⟩∘⟨ Γ.⇐.commute _) ⟩
+                              _ ≈⟨ (refl⟩∘⟨ Functor.F-resp-≈ H.H (M.η.commute _) ⟩∘⟨refl) ⟩
+                              _ ≈⟨ Equiv.sym assoc ⟩
+                              _ ≈⟨ (Equiv.sym (Functor.homomorphism H.H) ⟩∘⟨refl) ⟩
+                              _ ≈⟨ (Functor.F-resp-≈ H.H (elimʳ C M.F.identity CH.⟩∘⟨refl) ⟩∘⟨refl) ⟩
+                              _ ≈⟨ (Functor.F-resp-≈ H.H C.sym-assoc ⟩∘⟨refl) ⟩
+                              _ ≈⟨ pushˡ A.D (Functor.homomorphism H.H) ⟩
+                              _ ≈⟨ (refl⟩∘⟨ elimˡ A.D (Functor.identity H.H)) ⟩
                               Functor.F₁ H.H f ∘ Γ.⇐.η _ ∎
       ; iso = NaturalIsomorphism.iso (sym H.Γ)
       })
@@ -154,7 +154,7 @@ Kl-initial = record
               adj.counit.η (F.₀ A) ∘ F.₁ (GF≃M.⇐.η A C.∘ M.η.η A) ≈⟨ refl⟩∘⟨ F.F-resp-≈ η-eq ⟩
               adj.counit.η (F.₀ A) ∘ F.₁ (adj.unit.η A)           ≈⟨ adj.zig ⟩
               D.id                                                ∎
-          ; homomorphism = {!   !} {-λ {X} {Y} {Z} {f} {g} →
+          ; homomorphism = λ {X} {Y} {Z} {f} {g} →
             let ε x = adj.counit.η x in
             begin
               ε _ ∘ F.₁ (GF≃M.⇐.η _ C.∘ (M.μ.η _ C.∘ M.F.₁ g) C.∘ f)                                ≈⟨ refl⟩∘⟨ F.F-resp-≈ (assoc²'' C) ⟩
@@ -167,10 +167,10 @@ Kl-initial = record
               ε _ ∘ ε _ ∘ F.₁ (G.₁ (F.₁ (GF≃M.⇐.η _ C.∘ g)) C.∘ GF≃M.⇐.η _ C.∘ f)                   ≈⟨ refl⟩∘⟨ refl⟩∘⟨ F.homomorphism ⟩
               ε _ ∘ ε _ ∘ F.₁ (G.₁ (F.₁ (GF≃M.⇐.η _ C.∘ g))) ∘ F.₁ (GF≃M.⇐.η _ C.∘ f)               ≈⟨ refl⟩∘⟨ DMR.extendʳ (adj.counit.commute _) ⟩
               ε _ ∘ F.₁ (GF≃M.⇐.η _ C.∘ g) ∘ ε _ ∘ F.₁ (GF≃M.⇐.η _ C.∘ f)                           ≈⟨ sym-assoc ⟩
-              (ε _ ∘ F.₁ (GF≃M.⇐.η _ C.∘ g)) ∘ ε _ ∘ F.₁ (GF≃M.⇐.η _ C.∘ f)                         ∎ -}
+              (ε _ ∘ F.₁ (GF≃M.⇐.η _ C.∘ g)) ∘ ε _ ∘ F.₁ (GF≃M.⇐.η _ C.∘ f)                         ∎
           ; F-resp-≈ = λ x → D.∘-resp-≈ʳ (F.F-resp-≈ (C.∘-resp-≈ʳ x))
           }
-      ; Γ = {!   !} {-
+      ; Γ =
         let open D
             open D.HomReasoning in
         niHelper (record
@@ -186,7 +186,7 @@ Kl-initial = record
               F.₁ f                                                      ≈⟨ D.Equiv.sym identityʳ ⟩
               (F.₁ f ∘ D.id)                                             ∎
           ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityˡ }
-          }) -}
+          })
       ; μ-comp = {!   !}
       } where
         module adj  = Adjoint adj
