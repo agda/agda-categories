@@ -138,9 +138,9 @@ Split M = record
             open C
             open C.HomReasoning
   comp : {A B X : SplitObj} → Split⇒ B X → Split⇒ A B → Split⇒ A X
-  comp {A = A} {B = B} {X = X} (split⇒ Hᵤ HF≃Fᵤ Aμ-comp) (split⇒ Hᵥ HF≃Fᵥ Bμ-comp) = record
+  comp {A = A} {B = B} {X = X} (split⇒ Hᵤ Γᵤ Aμ-comp) (split⇒ Hᵥ Γᵥ Bμ-comp) = record
     { H = Hᵤ ∘F Hᵥ
-    ; Γ = HF≃Fᵤ ⓘᵥ (Hᵤ ⓘˡ HF≃Fᵥ) ⓘᵥ associator (SplitObj.F A) Hᵥ Hᵤ
+    ; Γ = Γᵤ ⓘᵥ (Hᵤ ⓘˡ Γᵥ) ⓘᵥ associator (SplitObj.F A) Hᵥ Hᵤ
     ; μ-comp = λ { {x} →
         Equiv.sym (begin {!   !} ≈⟨ ( Functor.homomorphism X.G ⟩∘⟨refl) ⟩
               {!   !} ≈⟨ ((refl⟩∘⟨ Functor.F-resp-≈ X.G X.D.identityʳ)  ⟩∘⟨refl) ⟩
