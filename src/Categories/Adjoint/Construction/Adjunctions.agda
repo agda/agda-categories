@@ -138,12 +138,20 @@ Split M = record
             open C
             open C.HomReasoning
   comp : {A B X : SplitObj} → Split⇒ B X → Split⇒ A B → Split⇒ A X
-  comp {A = A} {B = B} {X = X} (split⇒ Hᵤ HF≃F'ᵤ Aμ-comp) (split⇒ Hᵥ HF≃F'ᵥ Bμ-comp) = record
+  comp {A = A} {B = B} {X = X} (split⇒ Hᵤ HF≃Fᵤ Aμ-comp) (split⇒ Hᵥ HF≃Fᵥ Bμ-comp) = record
     { H = Hᵤ ∘F Hᵥ
-    ; Γ = HF≃F'ᵤ ⓘᵥ (Hᵤ ⓘˡ HF≃F'ᵥ) ⓘᵥ associator (SplitObj.F A) Hᵥ Hᵤ
-    ; μ-comp = {!   !}
+    ; Γ = HF≃Fᵤ ⓘᵥ (Hᵤ ⓘˡ HF≃Fᵥ) ⓘᵥ associator (SplitObj.F A) Hᵥ Hᵤ
+    ; μ-comp = λ { {x} →
+        Equiv.sym (begin {!   !} ≈⟨ ( Functor.homomorphism X.G ⟩∘⟨refl) ⟩
+              {!   !} ≈⟨ ((refl⟩∘⟨ Functor.F-resp-≈ X.G X.D.identityʳ)  ⟩∘⟨refl) ⟩
+              {!   !} ≈⟨ (refl⟩∘⟨ (identityˡ ○ (identityˡ ⟩∘⟨refl))) ⟩
+              {!   !} ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ (refl⟩∘⟨ (identityʳ ○ identityˡ))) ⟩∘⟨refl) ⟩
+              {!   !} ≈⟨ {!   !} ⟩
+              {!   !} ∎)}
     -- ; G'H≃G = G'H≃Gᵥ ⓘᵥ (G'H≃Gᵤ ⓘʳ Hᵥ) ⓘᵥ sym-associator Hᵥ Hᵤ (SplitObj.G X)
     } where
        module A = SplitObj A
        module B = SplitObj B
        module X = SplitObj X
+       open C
+       open C.HomReasoning
