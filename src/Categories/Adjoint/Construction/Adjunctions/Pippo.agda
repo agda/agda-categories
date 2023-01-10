@@ -43,41 +43,23 @@ Kl-initial = record
       { η   = Γ.⇐.η
       ; η⁻¹ = Γ.⇒.η
       ; commute = λ f → let open A.D.HomReasoning in 
-          begin {!   !} ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ A.F.F-resp-≈ ((H.μ-comp   CH.⟩∘⟨refl) CH.○ (C.assoc CH.○ (CH.refl⟩∘⟨ C.assoc))))) ⟩ 
-                       _ ≈⟨ ((refl⟩∘⟨ refl⟩∘⟨ A.F.homomorphism)) ⟩
-                       _ ≈⟨ (refl⟩∘⟨ pullˡ A.D (A.adj.counit.commute _)) ⟩
-                       _ ≈⟨ (refl⟩∘⟨ assoc) ⟩
-                       _ ≈⟨ cancelˡ A.D (Γ.iso.isoˡ _) ⟩
-                {!   !} ≈⟨ (refl⟩∘⟨ A.F.homomorphism) ⟩ 
-                {!   !} ≈⟨ (refl⟩∘⟨ pushˡ A.D A.F.homomorphism) ⟩ 
-                {!   !} ≈⟨ extendʳ A.D (A.adj.counit.commute _) ⟩ 
-                {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pushˡ A.D A.F.homomorphism) ⟩ -- (refl⟩∘⟨ (refl⟩∘⟨ A.F.homomorphism)) ⟩ 
-                {!   !} ≈⟨ (refl⟩∘⟨ extendʳ A.D (A.adj.counit.commute _)) ⟩ -- (extendʳ A.D (A.adj.counit.commute _)) ⟩ 
-                {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pullˡ A.D A.adj.zig) ⟩ -- (refl⟩∘⟨ refl⟩∘⟨ elimˡ A.D A.adj.zig) ⟩ 
-                {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ (identityˡ ○ A.F.F-resp-≈ (elimˡ C M.F.identity))) ⟩ -- (refl⟩∘⟨ refl⟩∘⟨ A.F.F-resp-≈ {! (elimˡ C M.F.identity) !}) ⟩ 
-                {!   !} ≈⟨ {!   !} ⟩ 
-                {!   !} ∎
-
-    --      in begin (Γ.⇐.η _ ∘ A.adj.counit.η (A.F.F₀ _) ∘ A.F.F₁ (A.GF≃M.⇐.η _ C.∘ f))
-    --                                     ≈⟨  (refl⟩∘⟨ refl⟩∘⟨ A.F.F-resp-≈ ((useful CH.⟩∘⟨refl) CH.○ (C.assoc CH.○ (CH.refl⟩∘⟨ C.assoc ) CH.○ CH.refl⟩∘⟨ CH.refl⟩∘⟨ C.assoc ))) ⟩
-    --                           _ ≈⟨ ((refl⟩∘⟨ refl⟩∘⟨ A.F.homomorphism)) ⟩
-    --                           _ ≈⟨ (refl⟩∘⟨ pullˡ A.D (A.adj.counit.commute _)) ⟩
-    --                           _ ≈⟨ (refl⟩∘⟨ assoc) ⟩
-    --                           _ ≈⟨ cancelˡ A.D (Γ.iso.isoˡ _) ⟩
-    --                           _ ≈⟨ (refl⟩∘⟨ (A.F.homomorphism ○ refl⟩∘⟨ A.F.homomorphism ○ refl⟩∘⟨ refl⟩∘⟨ A.F.homomorphism)) ⟩
-    --                           _ ≈⟨ extendʳ A.D (A.adj.counit.commute _) ⟩
-    --                           _ ≈⟨ (refl⟩∘⟨ extendʳ A.D (A.adj.counit.commute _)) ⟩
-    --                           _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pullˡ A.D A.adj.zig) ⟩
-    --                           _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ A.D.identityˡ) ⟩
-    --                           _ ≈⟨ (refl⟩∘⟨ Γ.⇐.commute _) ⟩
-    --                           _ ≈⟨ (refl⟩∘⟨ Functor.F-resp-≈ H.H (M.η.commute _) ⟩∘⟨refl) ⟩
-    --                           _ ≈⟨ Equiv.sym assoc ⟩
-    --                           _ ≈⟨ (Equiv.sym (Functor.homomorphism H.H) ⟩∘⟨refl) ⟩
-    --                           _ ≈⟨ (Functor.F-resp-≈ H.H (elimʳ C M.F.identity CH.⟩∘⟨refl) ⟩∘⟨refl) ⟩
-    --                           _ ≈⟨ (Functor.F-resp-≈ H.H C.sym-assoc ⟩∘⟨refl) ⟩
-    --                           _ ≈⟨ pushˡ A.D (Functor.homomorphism H.H) ⟩
-    --                           _ ≈⟨ (refl⟩∘⟨ elimˡ A.D (Functor.identity H.H)) ⟩
-    --                           Functor.F₁ H.H f ∘ Γ.⇐.η _ ∎
+          begin _ ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ A.F.F-resp-≈ ((H.μ-comp   CH.⟩∘⟨refl) CH.○ (C.assoc CH.○ (CH.refl⟩∘⟨ C.assoc))))) ⟩ 
+                _ ≈⟨ ((refl⟩∘⟨ refl⟩∘⟨ A.F.homomorphism)) ⟩
+                _ ≈⟨ (refl⟩∘⟨ pullˡ A.D (A.adj.counit.commute _)) ⟩
+                _ ≈⟨ (refl⟩∘⟨ assoc) ⟩
+                _ ≈⟨ cancelˡ A.D (Γ.iso.isoˡ _) ⟩
+                _ ≈⟨ (refl⟩∘⟨ A.F.homomorphism) ⟩ 
+                _ ≈⟨ (refl⟩∘⟨ pushˡ A.D A.F.homomorphism) ⟩ 
+                _ ≈⟨ extendʳ A.D (A.adj.counit.commute _) ⟩ 
+                _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pushˡ A.D A.F.homomorphism) ⟩ -- (refl⟩∘⟨ (refl⟩∘⟨ A.F.homomorphism)) ⟩ 
+                _ ≈⟨ (refl⟩∘⟨ extendʳ A.D (A.adj.counit.commute _)) ⟩ -- (extendʳ A.D (A.adj.counit.commute _)) ⟩ 
+                _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pullˡ A.D A.adj.zig) ⟩ -- (refl⟩∘⟨ refl⟩∘⟨ elimˡ A.D A.adj.zig) ⟩ 
+                _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ (identityˡ ○ A.F.F-resp-≈ (elimˡ C M.F.identity))) ⟩ -- (refl⟩∘⟨ refl⟩∘⟨ A.F.F-resp-≈ {! (elimˡ C M.F.identity) !}) ⟩ 
+                _ ≈⟨ (refl⟩∘⟨ Γ.⇐.commute f) ⟩ 
+                _ ≈⟨ pullˡ A.D (Equiv.sym H.H.homomorphism) ⟩ 
+                _ ≈⟨ (H.H.F-resp-≈ (elimʳ C (M.F.F-resp-≈ M.F.identity CH.○ M.F.identity) CH.⟩∘⟨refl) ⟩∘⟨refl) ⟩ 
+                _ ≈⟨ (H.H.F-resp-≈ (pullˡ C M.identityʳ CH.○ C.identityˡ) ⟩∘⟨refl) ⟩ 
+                _ ∎
       ; iso = NaturalIsomorphism.iso (sym H.Γ)
       })
     }

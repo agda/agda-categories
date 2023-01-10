@@ -73,8 +73,8 @@ record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
     H : Functor X.D Y.D
     Γ : H ∘F X.F ≃ Y.F
 
-  private
-    module Γ = NaturalIsomorphism Γ
+  module Γ = NaturalIsomorphism Γ
+  module H = Functor H
 
   field
     μ-comp : ∀ {x : Obj} → Y.GF≃M.⇐.η x ≈ Y.G.F₁ (Γ.⇒.η x) ∘ ((Y.G.F₁ (Functor.F₁ H (X.adj.counit.η (X.F.F₀ x)))) ∘ Y.G.F₁ (Γ.⇐.η (X.G.F₀ (X.F.F₀ x))) ∘ (Y.adj.unit.η (X.G.F₀ (X.F.F₀ x)))) ∘ X.GF≃M.⇐.η x
