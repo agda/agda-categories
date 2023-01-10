@@ -63,24 +63,6 @@ record SplitObj : Set (suc o ⊔ suc ℓ ⊔ suc e) where
                      GF≃M.⇐.η A
   -}
 
-module _ {X Y : SplitObj} (H : Functor (SplitObj.D X) (SplitObj.D Y)) (Γ : H ∘F (SplitObj.F X) ≃ (SplitObj.F Y)) where
-  private
-    module X = SplitObj X
-    module Y = SplitObj Y
-    module Γ = NaturalIsomorphism Γ
-
-  Γ' : NaturalTransformation X.G (Y.G ∘F H)
-  Γ' = F∘id⇒F ∘ᵥ
-    (((Y.G ∘F H) ∘ˡ X.adj.counit) ∘ᵥ zip ∘ᵥ Y.G ∘ˡ zop)
-              ∘ᵥ (Y.G ∘ˡ Γ.F⇐G ∘ʳ X.G)
-              ∘ᵥ (zap ∘ᵥ Y.adj.unit ∘ʳ X.G)
-              ∘ᵥ F⇒id∘F
-    where
-      open NaturalIsomorphism
-      zip = F⇐G (associator (X.F ∘F X.G) H Y.G)
-      zop = F⇒G (associator X.G X.F H)
-      zap = F⇒G (associator X.G Y.F Y.G)
-
 record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
   constructor split⇒
   private
@@ -95,11 +77,6 @@ record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
     module Γ = NaturalIsomorphism Γ
 
   field
-    -- μ-comp : Y.GF≃M.F⇐G -- Y.GF≃M.F⇒G
-    --        ≅ (Y.G ∘ˡ Γ.F⇒G)
-    --        ∘ᵥ NaturalIsomorphism.F⇒G (associator X.F H Y.G)
-    --        ∘ᵥ (Γ' {X = X} {Y = Y} H Γ ∘ʳ X.F)
-    --        ∘ᵥ X.GF≃M.F⇐G
     μ-comp : ∀ {x : Obj} → Y.GF≃M.⇐.η x ≈ Y.G.F₁ (Γ.⇒.η x) ∘ ((Y.G.F₁ (Functor.F₁ H (X.adj.counit.η (X.F.F₀ x)))) ∘ Y.G.F₁ (Γ.⇐.η (X.G.F₀ (X.F.F₀ x))) ∘ (Y.adj.unit.η (X.G.F₀ (X.F.F₀ x)))) ∘ X.GF≃M.⇐.η x
 
 Split : Monad C → Category _ _ _
@@ -124,21 +101,10 @@ Split M = record
     { H = Categories.Functor.id
     ; Γ = unitorˡ
     ; μ-comp = λ { {x} → 
-      Equiv.sym(begin {!   !} ≈⟨ elimˡ C (Functor.identity A.G) ⟩ 
-                      {!   !} ≈⟨ (refl⟩∘⟨ elimˡ C (Functor.identity A.G)) ⟩∘⟨refl ⟩ 
-                      {!   !} ≈⟨ elimˡ C A.adj.zag ⟩ 
-                      {!   !} ∎)}
-      --  Equiv.sym (begin _ ≈⟨ elimˡ C (Functor.identity A.G) ⟩
-      --        _ ≈⟨ identityˡ ⟩
-      --        _ ≈⟨ assoc  ⟩
-      --        _ ≈⟨ identityˡ ⟩
-      --        _ ≈⟨ ((refl⟩∘⟨ (refl⟩∘⟨ identityʳ)) ⟩∘⟨refl) ⟩
-      --        _ ≈⟨ (refl⟩∘⟨ elimˡ C (Functor.identity A.G)) ⟩∘⟨refl ⟩
-      --        _ ≈⟨ ((refl⟩∘⟨ identityˡ) ⟩∘⟨refl) ⟩
-      --        _ ≈⟨ (((refl⟩∘⟨ identityˡ) ⟩∘⟨refl) ⟩∘⟨refl) ⟩
-      --        _ ≈⟨ ((elimʳ C (Functor.identity A.G) ⟩∘⟨refl) ⟩∘⟨refl) ⟩
-      --        _ ≈⟨ elimˡ C A.adj.zag ⟩
-      --        _ ∎)}
+      Equiv.sym(begin _ ≈⟨ elimˡ C (Functor.identity A.G) ⟩ 
+                      _ ≈⟨ (refl⟩∘⟨ elimˡ C (Functor.identity A.G)) ⟩∘⟨refl ⟩ 
+                      _ ≈⟨ elimˡ C A.adj.zag ⟩ 
+                      _ ∎)}
     } where module A = SplitObj A
             open C
             open C.HomReasoning
@@ -165,7 +131,6 @@ Split M = record
         --       {!   !} ≈⟨ {!   !} ⟩
         --       {!   !} ≈⟨ {!   !} ⟩
         --       {!   !} ∎)}
-    -- ; G'H≃G = G'H≃Gᵥ ⓘᵥ (G'H≃Gᵤ ⓘʳ Hᵥ) ⓘᵥ sym-associator Hᵥ Hᵤ (SplitObj.G X)
     } where
        module A = SplitObj A
        module B = SplitObj B
