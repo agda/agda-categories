@@ -100,10 +100,10 @@ Split M = record
   split-id {A} = record
     { H = Categories.Functor.id
     ; Γ = unitorˡ
-    ; μ-comp = λ { {x} → 
-      Equiv.sym(begin _ ≈⟨ elimˡ C (Functor.identity A.G) ⟩ 
-                      _ ≈⟨ (refl⟩∘⟨ elimˡ C (Functor.identity A.G)) ⟩∘⟨refl ⟩ 
-                      _ ≈⟨ elimˡ C A.adj.zag ⟩ 
+    ; μ-comp = λ { {x} →
+      Equiv.sym(begin _ ≈⟨ elimˡ C (Functor.identity A.G) ⟩
+                      _ ≈⟨ (refl⟩∘⟨ elimˡ C (Functor.identity A.G)) ⟩∘⟨refl ⟩
+                      _ ≈⟨ elimˡ C A.adj.zag ⟩
                       _ ∎)}
     } where module A = SplitObj A
             open C
@@ -112,27 +112,52 @@ Split M = record
   comp {A = A} {B = B} {X = X} (split⇒ Hᵤ Γᵤ Aμ-comp) (split⇒ Hᵥ Γᵥ Bμ-comp) = record
     { H = Hᵤ ∘F Hᵥ
     ; Γ = Γᵤ ⓘᵥ (Hᵤ ⓘˡ Γᵥ) ⓘᵥ associator (SplitObj.F A) Hᵥ Hᵤ
-    ; μ-comp = λ { {x} → 
-        Equiv.sym (begin {!   !} ≈⟨ (X.G.F-resp-≈ (X.D.HomReasoning.refl⟩∘⟨ X.D.identityʳ) ⟩∘⟨refl) ⟩ 
-                         {!   !} ≈⟨ (refl⟩∘⟨ ((refl⟩∘⟨ (X.G.F-resp-≈ (X.D.identityˡ X.D.HomReasoning.⟩∘⟨refl) ⟩∘⟨refl)) ⟩∘⟨refl)) ⟩ 
-                         {!   !} ≈⟨ pushˡ C X.G.homomorphism ⟩ 
-                         {!   !} ≈⟨ {!   !} ⟩ 
+    ; μ-comp = λ { {x} →
+        Equiv.sym (begin {!   !} ≈⟨ (X.G.F-resp-≈ (X.D.HomReasoning.refl⟩∘⟨ X.D.identityʳ) ⟩∘⟨refl) ⟩
+                         {!   !} ≈⟨ (refl⟩∘⟨ ((refl⟩∘⟨ (X.G.F-resp-≈ (X.D.identityˡ X.D.HomReasoning.⟩∘⟨refl) ⟩∘⟨refl)) ⟩∘⟨refl)) ⟩
+                         {!   !} ≈⟨ pushˡ C X.G.homomorphism ⟩
+                         {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ assoc) ⟩
+                         {!   !} ≈⟨ {!  !} ⟩
+                         {!   !} ≈⟨ {!   !} ⟩
+                         {!   !} ≈⟨ {!   !} ⟩
+                         {!   !} ≈⟨ {!  !} ⟩
+                         {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ Equiv.sym Bμ-comp) ⟩
+                         {!   !} ≈⟨ Equiv.sym Aμ-comp ⟩
                          {!   !} ∎) }
-        -- Equiv.sym (begin {!   !} ≈⟨ ( Functor.homomorphism X.G ⟩∘⟨refl) ⟩
-        --       {!   !} ≈⟨ ((refl⟩∘⟨ Functor.F-resp-≈ X.G X.D.identityʳ)  ⟩∘⟨refl) ⟩
-        --       {!   !} ≈⟨ (refl⟩∘⟨ (identityˡ ○ (identityˡ ⟩∘⟨refl))) ⟩
-        --       {!   !} ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ (refl⟩∘⟨ (identityʳ ○ identityˡ))) ⟩∘⟨refl) ⟩
-        --       {!   !} ≈⟨ refl⟩∘⟨ ((refl⟩∘⟨ (Functor.homomorphism X.G ⟩∘⟨refl)) ⟩∘⟨refl) ⟩
-        --       {!   !} ≈⟨ (refl⟩∘⟨ (((refl⟩∘⟨ (identityˡ ○ Functor.identity X.G)) ⟩∘⟨refl) ⟩∘⟨refl)) ⟩
-        --       {!   !} ≈⟨ (refl⟩∘⟨ (identityʳ ⟩∘⟨refl) ⟩∘⟨refl) ⟩
-        --       {!   !} ≈⟨ (refl⟩∘⟨ ((refl⟩∘⟨ ((Functor.homomorphism X.G ⟩∘⟨refl) ⟩∘⟨refl)) ⟩∘⟨refl)) ⟩
-        --       {!   !} ≈⟨ (refl⟩∘⟨ ((refl⟩∘⟨ ((elimˡ C (Functor.identity X.G) ⟩∘⟨refl) ⟩∘⟨refl)) ⟩∘⟨refl)) ⟩
-        --       {!   !} ≈⟨ {!   !} ⟩
-        --       {!   !} ≈⟨ {!   !} ⟩
-        --       {!   !} ∎)}
+
+
+{-
+Have
+
+X.G.F₁ (Γᵤ.⇒.η x) ∘
+      X.G.F₁ (Hᵤ.F₁ (Γᵥ.⇒.η x)) ∘
+      X.G.F₁ (Hᵤ.F₁ (Hᵥ.F₁ (A.adj.counit.η (A.F.F₀ x)))) ∘
+      (X.G.F₁
+       (Hᵤ.F₁ (Γᵥ.⇐.η (A.G.F₀ (A.F.F₀ x))) X.D.∘
+        Γᵤ.⇐.η (A.G.F₀ (A.F.F₀ x)))
+       ∘ X.adj.unit.η (A.G.F₀ (A.F.F₀ x)))
+      ∘ A.GF≃M.⇐.η x
+
+Goal
+
+      X.G.F₁ (Γᵤ.⇒.η x) ∘
+      (X.G.F₁ (Hᵤ.F₁ (B.adj.counit.η (B.F.F₀ x))) ∘
+       X.G.F₁ (Γᵤ.⇐.η (B.G.F₀ (B.F.F₀ x))) ∘
+       X.adj.unit.η (B.G.F₀ (B.F.F₀ x)))
+      ∘
+      B.G.F₁ (Γᵥ.⇒.η x) ∘
+      (B.G.F₁ (Hᵥ.F₁ (A.adj.counit.η (A.F.F₀ x))) ∘
+       B.G.F₁ (Γᵥ.⇐.η (A.G.F₀ (A.F.F₀ x))) ∘
+       B.adj.unit.η (A.G.F₀ (A.F.F₀ x)))
+      ∘ A.GF≃M.⇐.η x
+-}
     } where
        module A = SplitObj A
        module B = SplitObj B
        module X = SplitObj X
        open C
        open C.HomReasoning
+       module Hᵤ = Functor Hᵤ
+       module Hᵥ = Functor Hᵥ
+       module Γᵤ = NaturalIsomorphism Γᵤ
+       module Γᵥ = NaturalIsomorphism Γᵥ
