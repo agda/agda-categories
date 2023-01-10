@@ -147,9 +147,9 @@ Split M = record
     { H = Hᵤ ∘F Hᵥ
     ; Γ = Γᵤ ⓘᵥ (Hᵤ ⓘˡ Γᵥ) ⓘᵥ associator (SplitObj.F A) Hᵥ Hᵤ
     ; μ-comp = λ { {x} → 
-        Equiv.sym (begin {!   !} ≈⟨ {!   !} ⟩ 
-                         {!   !} ≈⟨ {!   !} ⟩ 
-                         {!   !} ≈⟨ {!   !} ⟩ 
+        Equiv.sym (begin {!   !} ≈⟨ (X.G.F-resp-≈ (X.D.HomReasoning.refl⟩∘⟨ X.D.identityʳ) ⟩∘⟨refl) ⟩ 
+                         {!   !} ≈⟨ (refl⟩∘⟨ ((refl⟩∘⟨ (X.G.F-resp-≈ (X.D.identityˡ X.D.HomReasoning.⟩∘⟨refl) ⟩∘⟨refl)) ⟩∘⟨refl)) ⟩ 
+                         {!   !} ≈⟨ pushˡ C X.G.homomorphism ⟩ 
                          {!   !} ≈⟨ {!   !} ⟩ 
                          {!   !} ≈⟨ {!   !} ⟩ 
                          {!   !} ∎) }
