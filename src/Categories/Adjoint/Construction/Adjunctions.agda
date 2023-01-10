@@ -117,7 +117,6 @@ Split M = record
                          {!   !} ≈⟨ (refl⟩∘⟨ ((refl⟩∘⟨ (X.G.F-resp-≈ (X.D.identityˡ X.D.HomReasoning.⟩∘⟨refl) ⟩∘⟨refl)) ⟩∘⟨refl)) ⟩ 
                          {!   !} ≈⟨ pushˡ C X.G.homomorphism ⟩ 
                          {!   !} ≈⟨ {!   !} ⟩ 
-                         {!   !} ≈⟨ {!   !} ⟩ 
                          {!   !} ∎) }
         -- Equiv.sym (begin {!   !} ≈⟨ ( Functor.homomorphism X.G ⟩∘⟨refl) ⟩
         --       {!   !} ≈⟨ ((refl⟩∘⟨ Functor.F-resp-≈ X.G X.D.identityʳ)  ⟩∘⟨refl) ⟩
