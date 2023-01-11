@@ -117,8 +117,8 @@ Split M = record
                          {!   !} ≈⟨ (refl⟩∘⟨ ((refl⟩∘⟨ (X.G.F-resp-≈ (X.D.identityˡ X.D.HomReasoning.⟩∘⟨refl) ⟩∘⟨refl)) ⟩∘⟨refl)) ⟩
                          {!   !} ≈⟨ pushˡ C X.G.homomorphism ⟩
                          {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ assoc) ⟩
-                         {!   !} ≈⟨ {!  !} ⟩
-                         {!   !} ≈⟨ {!   !} ⟩
+                         {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ (refl⟩∘⟨ ((X.G.homomorphism ⟩∘⟨refl) ⟩∘⟨refl))) ⟩
+                         {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ {! A.GF≃M.⇐.η x  !}) ⟩
                          {!   !} ≈⟨ {!   !} ⟩
                          {!   !} ≈⟨ {!  !} ⟩
                          {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ Equiv.sym Bμ-comp) ⟩
