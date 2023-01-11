@@ -12,7 +12,7 @@ private
   module M = Monad M
 
 open import Categories.Adjoint using (Adjoint)
-open import Categories.Functor using (Functor)
+open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Morphism.Reasoning
 open import Categories.NaturalTransformation hiding (id)
 open NaturalTransformation using (η)
@@ -29,29 +29,28 @@ open import Categories.Adjoint.Construction.EilenbergMoore M as EM
 
 open import Categories.Tactic.Category
 
--- EM-object : SplitObj
--- EM-object = record
---   { D = EilenbergMoore M
---   ; F = EM.Free
---   ; G = EM.Forgetful
---   ; adj = EM.Free⊣Forgetful
---   ; GF≃M = EM.FF≃F
---   ; η-eq = begin
---              M.F.₁ id ∘ M.η.η _ ≈⟨ M.F.identity ⟩∘⟨refl ⟩
---              id ∘ M.η.η _       ≈⟨ identityˡ ⟩
---              M.η.η _            ∎
---   ; μ-eq = begin
---              M.F.₁ id ∘ M.μ.η _                    ≈⟨ M.F.identity ⟩∘⟨refl ⟩
---              id ∘ M.μ.η _                          ≈⟨ identityˡ ⟩
---              M.μ.η _                               ≈⟨ Equiv.sym identityʳ ⟩
---              M.μ.η _  ∘ id                         ≈⟨ refl⟩∘⟨ Equiv.sym M.F.identity ⟩
---              M.μ.η _ ∘ M.F.₁ id                    ≈⟨ Equiv.sym identityʳ ⟩
---              (M.μ.η _ ∘ M.F.₁ id) ∘ id             ≈⟨ assoc ⟩
---              M.μ.η _ ∘ M.F.₁ id ∘ id               ≈⟨ refl⟩∘⟨  refl⟩∘⟨ Equiv.sym M.F.identity ⟩
---              M.μ.η _ ∘ M.F.₁ id ∘ M.F.₁ id         ≈⟨ refl⟩∘⟨  refl⟩∘⟨ M.F.F-resp-≈ (Equiv.sym M.F.identity) ⟩
---              M.μ.η _ ∘ M.F.₁ id ∘ M.F.₁ (M.F.₁ id) ∎
---   } where open Category C
---           open HomReasoning
+EM-object : SplitObj
+EM-object = record
+  { D = EilenbergMoore M
+  ; F = EM.Free
+  ; G = EM.Forgetful
+  ; adj = EM.Free⊣Forgetful
+  ; GF≃M = EM.FF≃F
+  ; η-eq = begin
+             M.F.₁ id ∘ M.η.η _ ≈⟨ M.F.identity ⟩∘⟨refl ⟩
+             id ∘ M.η.η _       ≈⟨ identityˡ ⟩
+             M.η.η _            ∎
+  ; μ-eq = begin
+             M.F.₁ id ∘ M.μ.η _                    ≈⟨ M.F.identity ⟩∘⟨refl ⟩
+             id ∘ M.μ.η _                          ≈⟨ id-comm-sym C ⟩
+             M.μ.η _  ∘ id                         ≈⟨ refl⟩∘⟨ Equiv.sym M.F.identity ⟩
+             M.μ.η _ ∘ M.F.₁ id                    ≈⟨ Equiv.sym identityʳ ⟩
+             (M.μ.η _ ∘ M.F.₁ id) ∘ id             ≈⟨ assoc ⟩
+             M.μ.η _ ∘ M.F.₁ id ∘ id               ≈⟨ refl⟩∘⟨ refl⟩∘⟨ Equiv.sym M.F.identity ⟩
+             M.μ.η _ ∘ M.F.₁ id ∘ M.F.₁ id         ≈⟨ refl⟩∘⟨ refl⟩∘⟨ M.F.F-resp-≈ (Equiv.sym M.F.identity) ⟩
+             M.μ.η _ ∘ M.F.₁ id ∘ M.F.₁ (M.F.₁ id) ∎
+  } where open Category C
+          open HomReasoning
 
 Kl-object : SplitObj
 Kl-object = record
@@ -126,19 +125,27 @@ Kl-object = record
           (F.₁ f ∘ D.id)                                             ∎
       ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityˡ }
       })
-  ; μ-comp = λ { {x} → let open C
-                           open C.HomReasoning in
-                            Equiv.sym
-                              (begin
-                                 _ ≈⟨ elimˡ C G.identity ⟩
-                                 _ ≈⟨ elimʳ C M.F.identity ⟩
-                                 _ ≈⟨ (refl⟩∘⟨ elimˡ C G.identity) ⟩
-                                 _ ≈⟨ (G.homomorphism ⟩∘⟨refl) ⟩
-                                 _ ≈⟨ pullʳ C (adj.unit.sym-commute _) ⟩
-                                 _ ≈⟨ sym-assoc ⟩
-                                 _ ≈⟨ elimˡ C adj.zag ⟩
-                                 _ ≈⟨ elimʳ C M.F.identity ⟩
-                                 _ ∎) }
+  ; μ-comp = λ { {x} →
+    let open C
+        open C.HomReasoning in
+      Equiv.sym (begin
+        G.F₁ D.id ∘ (G.F₁ (adj.counit.η (F.₀ x) D.∘ F.₁ (GF≃M.⇐.η x ∘ M.F.F₁ id)) ∘ G.F₁ D.id ∘ adj.unit.η (M.F.F₀ x)) ∘ M.F.F₁ id
+          ≈⟨ elimˡ C G.identity ⟩
+        (G.F₁ (adj.counit.η (F.₀ x) D.∘ F.₁ (GF≃M.⇐.η x ∘ M.F.F₁ id)) ∘ G.F₁ D.id ∘ adj.unit.η (M.F.F₀ x)) ∘ M.F.F₁ id
+          ≈⟨ elimʳ C M.F.identity ⟩
+        G.F₁ (adj.counit.η (F.₀ x) D.∘ F.₁ (GF≃M.⇐.η x ∘ M.F.F₁ id)) ∘ G.F₁ D.id ∘ adj.unit.η (M.F.F₀ x)
+          ≈⟨ refl⟩∘⟨ elimˡ C G.identity ⟩
+        (G.F₁ ( adj.counit.η (F.₀ x) D.∘  F.₁ (GF≃M.⇐.η x ∘ M.F.F₁ id)) ∘ adj.unit.η (M.F.F₀ x))
+          ≈⟨ (G.homomorphism ⟩∘⟨refl) ⟩
+        ((G.F₁ (adj.counit.η (F.₀ x)) ∘ Functor.F₁ (G ∘F F) (GF≃M.⇐.η x ∘ M.F.F₁ id)) ∘ adj.unit.η (M.F.F₀ x))
+          ≈⟨ pullʳ C (adj.unit.sym-commute _) ⟩
+        (G.F₁ (adj.counit.η (F.₀ x)) ∘ adj.unit.η (G.F₀ (F.₀ x)) ∘ GF≃M.⇐.η x ∘ M.F.F₁ id)
+          ≈⟨ sym-assoc ⟩
+        (G.F₁ (adj.counit.η (F.₀ x)) ∘ adj.unit.η (G.F₀ (F.₀ x))) ∘ GF≃M.⇐.η x ∘ M.F.F₁ id
+          ≈⟨ elimˡ C adj.zag ⟩
+        (GF≃M.⇐.η x ∘ M.F.F₁ id)
+          ≈⟨ elimʳ C M.F.identity ⟩
+        GF≃M.⇐.η x ∎) }
   } where
     module adj  = Adjoint adj
     module F    = Functor F
@@ -165,23 +172,39 @@ Kl-initial = record
       ; η⁻¹ = Γ.⇒.η
       ; commute = λ f → let open A.D.HomReasoning in
           begin
-            _ ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ A.F.F-resp-≈ ((H.μ-comp   CH.⟩∘⟨refl) CH.○ (C.assoc CH.○ (CH.refl⟩∘⟨ C.assoc))))) ⟩
-            _ ≈⟨ ((refl⟩∘⟨ refl⟩∘⟨ A.F.homomorphism)) ⟩
-            _ ≈⟨ (refl⟩∘⟨ pullˡ A.D (A.adj.counit.commute _)) ⟩
-            _ ≈⟨ (refl⟩∘⟨ assoc) ⟩
-            _ ≈⟨ cancelˡ A.D (Γ.iso.isoˡ _) ⟩
-            _ ≈⟨ (refl⟩∘⟨ A.F.homomorphism) ⟩
-            _ ≈⟨ (refl⟩∘⟨ pushˡ A.D A.F.homomorphism) ⟩
-            _ ≈⟨ extendʳ A.D (A.adj.counit.commute _) ⟩
-            _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pushˡ A.D A.F.homomorphism) ⟩
-            _ ≈⟨ (refl⟩∘⟨ extendʳ A.D (A.adj.counit.commute _)) ⟩
-            _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pullˡ A.D A.adj.zig) ⟩
-            _ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ (identityˡ ○ A.F.F-resp-≈ (elimˡ C M.F.identity))) ⟩
-            _ ≈⟨ (refl⟩∘⟨ Γ.⇐.commute f) ⟩
-            _ ≈⟨ pullˡ A.D (Equiv.sym H.H.homomorphism) ⟩
-            _ ≈⟨ (H.H.F-resp-≈ (elimʳ C (M.F.F-resp-≈ M.F.identity CH.○ M.F.identity) CH.⟩∘⟨refl) ⟩∘⟨refl) ⟩
-            _ ≈⟨ (H.H.F-resp-≈ (pullˡ C M.identityʳ CH.○ C.identityˡ) ⟩∘⟨refl) ⟩
-            _ ∎
+            Γ.⇐.η _ ∘ A.adj.counit.η (A.F.F₀ _) ∘ A.F.F₁ (A.GF≃M.⇐.η _ C.∘ f)
+              ≈⟨ refl⟩∘⟨ refl⟩∘⟨ A.F.F-resp-≈ ((H.μ-comp CH.⟩∘⟨refl) CH.○ (C.assoc CH.○ (CH.refl⟩∘⟨ C.assoc))) ⟩
+            Γ.⇐.η _ ∘ A.adj.counit.η (A.F.F₀ _) ∘ A.F.F₁ (A.G.₁ (Γ.⇒.η _) C.∘ (A.G.₁ (H.H.F₁ (M.F.F₁ C.id)) C.∘ (A.G.₁ (Γ.⇐.η (M.F.F₀ _)) C.∘ A.adj.unit.η (M.F.F₀ _))) C.∘ M.F.F₁ C.id C.∘ f)
+              ≈⟨ refl⟩∘⟨ refl⟩∘⟨ A.F.homomorphism ⟩
+            Γ.⇐.η _ ∘ A.adj.counit.η (A.F.F₀ _) ∘ Functor.F₁ (A.F Categories.Functor.∘F A.G) (Γ.⇒.η _) ∘ A.F.F₁ ((A.G.₁ (H.H.F₁ (M.F.F₁ C.id)) C.∘ A.G.₁ (Γ.⇐.η (M.F.F₀ _)) C.∘ A.adj.unit.η (M.F.F₀ _)) C.∘ M.F.F₁ C.id C.∘ f)
+              ≈⟨ refl⟩∘⟨ pullˡ A.D (A.adj.counit.commute _) ⟩
+            Γ.⇐.η _ ∘ (Γ.⇒.η _ ∘ A.adj.counit.η (H.H.F₀ (Functor.₀ K.F _))) ∘ A.F.F₁ ((A.G.₁ (H.H.F₁ (M.F.F₁ C.id)) C.∘ (A.G.₁ (Γ.⇐.η (M.F.F₀ _)) C.∘ A.adj.unit.η (M.F.F₀ _))) C.∘ M.F.F₁ C.id C.∘ f)
+              ≈⟨ refl⟩∘⟨ assoc ⟩
+            Γ.⇐.η _ ∘ Γ.⇒.η _ ∘ A.adj.counit.η (H.H.F₀ (Functor.₀ K.F _)) ∘ A.F.F₁ ((A.G.₁ (H.H.F₁ (M.F.F₁ C.id)) C.∘ A.G.₁ (Γ.⇐.η (M.F.F₀ _)) C.∘ A.adj.unit.η (M.F.F₀ _)) C.∘ M.F.F₁ C.id C.∘ f)
+              ≈⟨ cancelˡ A.D (Γ.iso.isoˡ _) ⟩
+            A.adj.counit.η (H.H.F₀ (Functor.₀ K.F _)) ∘ A.F.F₁ ((A.G.₁ (H.H.F₁ (M.F.F₁ C.id)) C.∘ (A.G.₁ (Γ.⇐.η (M.F.F₀ _)) C.∘ A.adj.unit.η (M.F.F₀ _))) C.∘ M.F.F₁ C.id C.∘ f)
+              ≈⟨ refl⟩∘⟨ A.F.homomorphism ⟩
+            A.adj.counit.η (H.H.F₀ (Functor.₀ K.F _)) ∘ A.F.F₁ (A.G.₁ (H.H.F₁ (M.F.F₁ C.id)) C.∘ A.G.₁ (Γ.⇐.η (M.F.F₀ _)) C.∘ A.adj.unit.η (M.F.F₀ _)) ∘ A.F.F₁ (M.F.F₁ C.id C.∘ f)
+              ≈⟨ refl⟩∘⟨ pushˡ A.D A.F.homomorphism ⟩
+            A.adj.counit.η (H.H.F₀ (Functor.₀ K.F _)) ∘ Functor.F₁ (A.F Categories.Functor.∘F A.G) (H.H.F₁ (M.F.F₁ C.id)) ∘ A.F.F₁ (A.G.₁ (Γ.⇐.η (M.F.F₀ _)) C.∘ A.adj.unit.η (M.F.F₀ _)) ∘ A.F.F₁ (M.F.F₁ C.id C.∘ f)
+              ≈⟨ extendʳ A.D (A.adj.counit.commute _) ⟩
+            H.H.F₁ (M.F.F₁ C.id) ∘ A.adj.counit.η (H.H.F₀ (Functor.₀ K.F (M.F.F₀ _))) ∘ A.F.F₁ (A.G.₁ (Γ.⇐.η (M.F.F₀ _)) C.∘ A.adj.unit.η (M.F.F₀ _)) ∘ A.F.F₁ (M.F.F₁ C.id C.∘ f)
+              ≈⟨ refl⟩∘⟨ refl⟩∘⟨ pushˡ A.D A.F.homomorphism ⟩
+            H.H.F₁ (M.F.F₁ C.id) ∘ A.adj.counit.η (H.H.F₀ (Functor.₀ K.F (M.F.F₀ _))) ∘ Functor.F₁ (A.F Categories.Functor.∘F A.G) (Γ.⇐.η (M.F.F₀ _)) ∘ A.F.F₁ (A.adj.unit.η (M.F.F₀ _)) ∘ A.F.F₁ (M.F.F₁ C.id C.∘ f)
+              ≈⟨ refl⟩∘⟨ extendʳ A.D (A.adj.counit.commute _) ⟩
+            H.H.F₁ (M.F.F₁ C.id) ∘ Γ.⇐.η (M.F.F₀ _) ∘ A.adj.counit.η (A.F.F₀ (M.F.F₀ _)) ∘ A.F.F₁ (A.adj.unit.η (M.F.F₀ _)) ∘ A.F.F₁ (M.F.F₁ C.id C.∘ f)
+              ≈⟨ refl⟩∘⟨ refl⟩∘⟨ pullˡ A.D A.adj.zig ⟩
+            H.H.F₁ (M.F.F₁ C.id) ∘ Γ.⇐.η (M.F.F₀ _) ∘ id ∘ A.F.F₁ (M.F.F₁ C.id C.∘ f)
+              ≈⟨ refl⟩∘⟨ refl⟩∘⟨ (identityˡ ○ A.F.F-resp-≈ (elimˡ C M.F.identity)) ⟩
+            H.H.F₁ (M.F.F₁ C.id) ∘ Γ.⇐.η (M.F.F₀ _) ∘ A.F.F₁ f
+              ≈⟨ refl⟩∘⟨ Γ.⇐.commute f ⟩
+            H.H.F₁ (M.F.F₁ C.id) ∘ H.H.F₁ (M.η.η (M.F.F₀ (Functor.₀ K.F _)) C.∘ f) ∘ Γ.⇐.η _
+              ≈⟨ pullˡ A.D (Equiv.sym H.H.homomorphism) ⟩
+            H.H.F₁ ((M.μ.η (Functor.₀ K.F _) C.∘ M.F.F₁ (M.F.F₁ C.id)) C.∘  M.η.η (M.F.F₀ (Functor.₀ K.F _)) C.∘ f) ∘ Γ.⇐.η _
+              ≈⟨ H.H.F-resp-≈ (elimʳ C (M.F.F-resp-≈ M.F.identity CH.○ M.F.identity) CH.⟩∘⟨refl) ⟩∘⟨refl ⟩
+            H.H.F₁ (M.μ.η (Functor.₀ K.F _) C.∘  M.η.η (M.F.F₀ (Functor.₀ K.F _)) C.∘ f) ∘ Γ.⇐.η _
+              ≈⟨ H.H.F-resp-≈ (pullˡ C M.identityʳ CH.○ C.identityˡ) ⟩∘⟨refl ⟩
+            H.H.F₁ f ∘ Γ.⇐.η _ ∎
       ; iso = NaturalIsomorphism.iso (sym H.Γ)
       })
     }
