@@ -77,10 +77,15 @@ record Split⇒ (X Y : SplitObj) : Set (suc o ⊔ suc ℓ ⊔ suc e) where
   module H = Functor H
 
   field
-    μ-comp : ∀ {x : Obj} → Y.GF≃M.⇐.η x ≈ Y.G.F₁ (Γ.⇒.η x) ∘ ((Y.G.F₁ (Functor.F₁ H (X.adj.counit.η (X.F.F₀ x)))) ∘ Y.G.F₁ (Γ.⇐.η (X.G.F₀ (X.F.F₀ x))) ∘ (Y.adj.unit.η (X.G.F₀ (X.F.F₀ x)))) ∘ X.GF≃M.⇐.η x
+    μ-comp : ∀ {x : Obj} →
+      Y.GF≃M.⇐.η x ≈ Y.G.F₁ (Γ.⇒.η x)
+                   ∘ ((Y.G.F₁ (Functor.F₁ H (X.adj.counit.η (X.F.F₀ x))))
+                     ∘ Y.G.F₁ (Γ.⇐.η (X.G.F₀ (X.F.F₀ x)))
+                     ∘ Y.adj.unit.η (X.G.F₀ (X.F.F₀ x)))
+                   ∘ X.GF≃M.⇐.η x
 
-Split : Monad C → Category _ _ _
-Split M = record
+Split : Category _ _ _
+Split = record
   { Obj = SplitObj
   ; _⇒_ = Split⇒
   ; _≈_ = λ U V → Split⇒.H U ≃ Split⇒.H V
@@ -118,14 +123,12 @@ Split M = record
                          {!   !} ≈⟨ pushˡ C X.G.homomorphism ⟩
                          {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ assoc) ⟩
                          {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ (refl⟩∘⟨ ((X.G.homomorphism ⟩∘⟨refl) ⟩∘⟨refl))) ⟩
-                         {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ {! A.GF≃M.⇐.η x  !}) ⟩
+                         {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ {!   !}) ⟩
                          {!   !} ≈⟨ {!   !} ⟩
                          {!   !} ≈⟨ {!  !} ⟩
                          {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ Equiv.sym Bμ-comp) ⟩
                          {!   !} ≈⟨ Equiv.sym Aμ-comp ⟩
                          {!   !} ∎) }
-
-
 {-
 Have
 
