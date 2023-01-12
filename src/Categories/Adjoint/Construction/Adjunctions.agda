@@ -123,12 +123,22 @@ Split = record
                          {!   !} ≈⟨ pushˡ C X.G.homomorphism ⟩
                          {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ assoc) ⟩
                          {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ (refl⟩∘⟨ ((X.G.homomorphism ⟩∘⟨refl) ⟩∘⟨refl))) ⟩
-                         {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ {!   !}) ⟩
+                         {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ (assoc ○ assoc)) ⟩
+                         {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ X.adj.unit.commute _) ⟩
+                         {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ (refl⟩∘⟨ extendʳ C (Equiv.sym X.G.homomorphism ○ X.G.F-resp-≈ (Γᵤ.⇐.commute _) ○ X.G.homomorphism))) ⟩
+                         {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ (extendʳ C (Equiv.sym (Functor.homomorphism (X.G ∘F Hᵤ)) ○ Functor.F-resp-≈ ((X.G ∘F Hᵤ)) (Γᵥ.⇐.commute _) ○ Functor.homomorphism ((X.G ∘F Hᵤ))))) ⟩
                          {!   !} ≈⟨ {!   !} ⟩
-                         {!   !} ≈⟨ {!  !} ⟩
+                         {!   !} ≈⟨ {!   !} ⟩
+                         {!   !} ≈⟨ {!   !} ⟩
+
                          {!   !} ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ Equiv.sym Bμ-comp) ⟩
                          {!   !} ≈⟨ Equiv.sym Aμ-comp ⟩
                          {!   !} ∎) }
+{-
+Equiv.sym X.G.homomorphism ○ X.G.F-resp-≈ (Γᵤ.⇐.commute _) ○ X.G.homomorphism
+-}
+
+
 {-
 Have
 
