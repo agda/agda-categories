@@ -66,6 +66,8 @@ module _ {o ℓ e} (G : Functor C D) where
 module _ {F : Endofunctor C} where
   open Functor F renaming (op to Fop)
 
+  -- Obj conversions
+
   coF-Algebra⇒F-Coalgebra : F-Algebra Fop → F-Coalgebra F
   coF-Algebra⇒F-Coalgebra algOp = record { A = A algOp; α = α algOp } where
     open F-Algebra
@@ -74,9 +76,7 @@ module _ {F : Endofunctor C} where
   F-Coalgebra⇒coF-Algebra algOp = record { A = A algOp; α = α algOp } where
     open F-Coalgebra
 
-  coF-Algebra⇔F-Coalgebra : ∀ (coF-Algebra : F-Algebra Fop) →
-    F-Coalgebra⇒coF-Algebra (coF-Algebra⇒F-Coalgebra coF-Algebra ) ≡ coF-Algebra
-  coF-Algebra⇔F-Coalgebra _ = refl
+  -- Mor conversions
 
   coF-Algebra-Morphism⇒F-Coalgebra-Morphism : ∀ {X Y : F-Algebra Fop} →
     F-Algebra-Morphism X Y →
