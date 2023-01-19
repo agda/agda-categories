@@ -14,11 +14,16 @@ import Categories.Morphism.Reasoning as MR
 open import Categories.Functor.Bialgebra
 open import Categories.Category.Construction.F-Algebras
 open import Categories.Category.Construction.F-Coalgebras
-open import Categories.Functor.Construction.LiftAlgebras using (LiftAlgebras)
+open import Categories.Functor.Construction.LiftAlgebras using (LiftAlgebras;liftInitial)
+open import Categories.Functor.Construction.LiftCoalgebras using (LiftCoalgebras;liftTerminal)
 
 open import Categories.Category.Equivalence using (StrongEquivalence;WeakInverse)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism;NIHelper;niHelper)
-open import Categories.NaturalTransformation using (NTHelper;ntHelper)
+open import Categories.NaturalTransformation using (NaturalTransformation;NTHelper;ntHelper)
+
+open import Categories.Object.Initial
+open import Categories.Object.Terminal
+
 
 
 module _ where
@@ -65,6 +70,8 @@ module _ where
       open Functor F
       open F-Coalgebra-Morphism
       open F-Coalgebra
+
+-- begin Bialgs≅Coalgs(F̂)
 
   μ-Bialgebras⇒CoalgebrasLiftAlgebrasF : Functor μ-Bialgebras (F-Coalgebras (LiftAlgebras T F μ))
   μ-Bialgebras⇒CoalgebrasLiftAlgebrasF = record
@@ -143,3 +150,107 @@ module _ where
               c ≈⟨ ⟺ identityˡ ⟩
               id ∘ c ≈⟨ ∘-resp-≈ˡ (⟺ identity)⟩
               F₁ id ∘ c ∎
+
+-- end Bialgs≅Coalgs(F̂)
+-- begin Coalgs(F̂)≅Algs(T̂)
+
+  AlgebrasT̂⇒CoalgebrasF̂ : Functor (F-Algebras (LiftCoalgebras T F μ)) (F-Coalgebras (LiftAlgebras T F μ))
+  AlgebrasT̂⇒CoalgebrasF̂ = record
+      { F₀           = λ X → record
+        { A = to-Algebra $ F-Coalgebra-Morphism.f $ F-Algebra.α X
+        ; α = record
+          { f = F-Coalgebra.α $ F-Algebra.A X
+          ; commutes = F-Coalgebra-Morphism.commutes (F-Algebra.α X) ○ sym-assoc
+          }
+        }
+      ; F₁           = λ {X Y} β → record
+        { f = record
+          { f = F-Coalgebra-Morphism.f $ F-Algebra-Morphism.f β
+          ; commutes = F-Algebra-Morphism.commutes β
+          }
+        ; commutes = F-Coalgebra-Morphism.commutes $ F-Algebra-Morphism.f β
+        }
+      ; identity     = refl
+      ; homomorphism = refl
+      ; F-resp-≈     = λ x → x
+      }
+
+  CoalgebrasF̂⇒AlgebrasT̂ : Functor (F-Coalgebras (LiftAlgebras T F μ)) (F-Algebras (LiftCoalgebras T F μ))
+  CoalgebrasF̂⇒AlgebrasT̂ = record
+      { F₀           = λ X → record
+        { A = to-Coalgebra $ F-Algebra-Morphism.f $ F-Coalgebra.α X
+        ; α = record
+          { f = F-Algebra.α $ F-Coalgebra.A X
+          ; commutes = F-Algebra-Morphism.commutes (F-Coalgebra.α X) ○ assoc
+          }
+        }
+      ; F₁           = λ {X Y} β → record
+        { f = record
+          { f = F-Algebra-Morphism.f $ F-Coalgebra-Morphism.f β
+          ; commutes = F-Coalgebra-Morphism.commutes β
+          }
+        ; commutes = F-Algebra-Morphism.commutes $ F-Coalgebra-Morphism.f β
+        }
+      ; identity     = refl
+      ; homomorphism = refl
+      ; F-resp-≈     = λ x → x
+      }
+
+  CoalgebrasF̂⇔AlgebrasT̂ : StrongEquivalence (F-Coalgebras (LiftAlgebras T F μ)) (F-Algebras (LiftCoalgebras T F μ))
+  CoalgebrasF̂⇔AlgebrasT̂ = record
+    { F = CoalgebrasF̂⇒AlgebrasT̂ -- C2A
+    ; G = AlgebrasT̂⇒CoalgebrasF̂ -- A2C
+    ; weak-inverse = record
+      { F∘G≈id = niHelper record --F∘G = C2A ∘ A2C thus `id` in C
+      -- it may look like we can use T̂-Algs.id here, but we can't because of objects being unequal
+        { η = λ X → record
+          { f = record { f = id ; commutes = F-Coalgebra-Morphism.commutes F-Coalgebras.id }
+          ; commutes = F-Algebra-Morphism.commutes T-Algebras.id
+          }
+        ; η⁻¹ = λ X → record
+          { f = record
+            { f = id ; commutes = F-Coalgebra-Morphism.commutes F-Coalgebras.id }
+          ; commutes = F-Algebra-Morphism.commutes T-Algebras.id
+          }
+        ; commute = λ _ → id-comm-sym
+        ; iso = λ _ → record { isoˡ = identity² ; isoʳ = identity² }
+        }
+      ; G∘F≈id = niHelper record
+        { η = λ X → record
+          { f = record
+            { f = id ; commutes = F-Algebra-Morphism.commutes T-Algebras.id }
+          ; commutes = F-Coalgebra-Morphism.commutes F-Coalgebras.id
+          }
+        ; η⁻¹ = λ X → record
+            { f = record
+              { f = id ; commutes = F-Algebra-Morphism.commutes T-Algebras.id }
+            ; commutes = F-Coalgebra-Morphism.commutes F-Coalgebras.id
+            }
+        ; commute = λ _ → id-comm-sym
+        ; iso = λ _ → record { isoˡ = identity² ; isoʳ = identity² }
+        }
+      }
+    }
+    where
+      module T-Algebras = Category (F-Algebras T)
+      module F-Coalgebras = Category (F-Coalgebras F)
+
+-- end Coalgs(F̂)≅Algs(T̂)
+
+module _ (μT : Initial (F-Algebras T)) (νF : Terminal (F-Coalgebras F)) where
+  open Functor
+  open Initial (liftInitial T F μ μT)
+  open Terminal (liftTerminal T F μ νF)
+  open Category (F-Coalgebras (LiftAlgebras T F μ))
+  open StrongEquivalence CoalgebrasF̂⇔AlgebrasT̂
+  private
+    module μT̂ = IsInitial ⊥-is-initial
+    module νF̂ = IsTerminal ⊤-is-terminal
+    A2C = AlgebrasT̂⇒CoalgebrasF̂
+    C2A = CoalgebrasF̂⇒AlgebrasT̂
+    id⇒A2C∘C2A : ∀ ( X : Obj ) → X ⇒ ((A2C ∘F C2A) .F₀ X)
+    id⇒A2C∘C2A X = G∘F≈id.⇐.η X
+
+  -- implicit args to `!` supplied here for clarity
+  centralTheorem : μT̂.! {A = A2C .F₀ ⊤} ≈ A2C. F₁ (νF̂.! {A = C2A .F₀ ⊥}) ∘ id⇒A2C∘C2A ⊥
+  centralTheorem = μT̂.!-unique (A2C. F₁ νF̂.! ∘ id⇒A2C∘C2A ⊥)
