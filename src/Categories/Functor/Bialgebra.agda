@@ -19,6 +19,8 @@ transformation μ:TF→FT.  A μ-bialgebra is a (T,F)-bialgebra (A,a,c)
 such that c∘a=Fa∘μ_A∘Tc [category theory - How are F-bialgebras
 defined? - Mathematics Stack Exchange]
 (https://math.stackexchange.com/questions/3057781/how-are-f-bialgebras-defined#answer-3057859)
+
+See also: header comment in `Categories.Category.Construction.mu-Bialgebras`
 -}
 
 private

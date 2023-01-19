@@ -18,6 +18,11 @@ open import Categories.Object.Terminal
 
 import Categories.Morphism.Reasoning as MR
 
+{-
+For theoretical background, see header comment in
+`Categories.Category.Construction.mu-Bialgebras`
+-}
+
 LiftCoalgebras : Endofunctor (F-Coalgebras F)
 LiftCoalgebras = record
   { F₀           = λ X → record { A = (T .F₀) (X .A);  α = (μ .η) (X .A) ∘ (F₁ T) (X .α) }

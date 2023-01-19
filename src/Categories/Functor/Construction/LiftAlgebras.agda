@@ -18,6 +18,10 @@ open import Categories.Object.Initial
 
 import Categories.Morphism.Reasoning as MR
 
+{-
+For theoretical background, see header comment in
+`Categories.Category.Construction.mu-Bialgebras`
+-}
 
 LiftAlgebras : Endofunctor (F-Algebras T)
 LiftAlgebras = record

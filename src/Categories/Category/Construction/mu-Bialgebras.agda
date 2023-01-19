@@ -24,6 +24,41 @@ open import Categories.NaturalTransformation using (NaturalTransformation;NTHelp
 open import Categories.Object.Initial
 open import Categories.Object.Terminal
 
+{-
+See also comment in `Categories.Functor.Bialgebra`.
+μ-Bialgebras is the category of T-F-μ Bialgebras. T is the functor
+which provides the algebraic structure, whereas F provides the
+coalgebraic structure.
+In addition to the explicit construction of μ-Bialgebras given in this
+module there are two other ways to construct this:
+
+  We can lift F via μ to the category of T-Algebras (see
+`Categories.Functor.Construction.LiftAlgebras`), giving us the
+functor:
+  F̂ : T-Algebras → T-Algebras.
+  Dually we can lift T via μ to the category of F-Coalgebras (see
+`Categories.Functor.Construction.LiftCoalgebras`), giving us the
+functor:
+  T̂ : F-Coalgebra → F-Coalgebras
+
+Then the categories of F̂-Coalgebras and T̂-Algebras are two other ways
+of constructing the category μ-Bialgebras.  We show here that these
+three constructions are equivalent.
+
+We see in the above modules that initial T-Algebras may be lifted to
+initial F̂-Coalgebras, and terminal F-Coalgebras to terminal
+T̂-Algebras. In this module we prove what I (CA) call the "central
+theorem" of bialgebras: That the bialgebra-maps from a lifted initial
+T-Algebra to a lifted final F-Algebra by ititiality and finality are
+equal.
+
+A good theoretical reference work for the theories:
+[On generalised coinduction and probabilistic specification formats:
+Distributive laws in coalgebraic modelling — Vrije Universiteit
+Amsterdam (Bartels, 2004)]
+(https://research.vu.nl/en/publications/on-generalised-coinduction-and-probabilistic-specification-format-2)
+Starting at Definition 3.2.2
+-}
 
 
 module _ where
