@@ -1,29 +1,27 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Category.Construction.mu-Bialgebras where
+open import Categories.Category
+open import Categories.Functor hiding (id)
+open import Categories.Functor.DistributiveLaw using (DistributiveLaw)
+
+module Categories.Category.Construction.mu-Bialgebras {o ℓ e} {C : Category o ℓ e} (T F : Endofunctor C) (μ : DistributiveLaw T F) where
 
 open import Level
 open import Function using (_$_)
 
-open import Categories.Category
-open import Categories.Functor hiding (id)
 open import Categories.Functor.Algebra
 open import Categories.Functor.Coalgebra
 import Categories.Morphism.Reasoning as MR
 open import Categories.Functor.Bialgebra
 open import Categories.Category.Construction.F-Algebras
 open import Categories.Category.Construction.F-Coalgebras
-open import Categories.Functor.DistributiveLaw using (DistributiveLaw)
 open import Categories.Functor.Construction.LiftAlgebras using (LiftAlgebras)
 
 open import Categories.Category.Equivalence using (StrongEquivalence;WeakInverse)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism;NIHelper;niHelper)
 open import Categories.NaturalTransformation using (NTHelper;ntHelper)
 
-private
-  variable
-    o ℓ e : Level
 
-module _ {C : Category o ℓ e} (T F : Endofunctor C) (μ : DistributiveLaw T F) where
+module _ where
   open Category C
   open MR C
   open HomReasoning
