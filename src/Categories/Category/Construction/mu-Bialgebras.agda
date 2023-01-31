@@ -108,8 +108,8 @@ module _ where
 
 -- begin Bialgs≅Coalgs(F̂)
 
-  μ-Bialgebras⇒CoalgebrasLiftAlgebrasF : Functor μ-Bialgebras (F-Coalgebras (LiftAlgebras T F μ))
-  μ-Bialgebras⇒CoalgebrasLiftAlgebrasF = record
+  μ-Bialgebras⇒CoalgebrasF̂ : Functor μ-Bialgebras (F-Coalgebras (LiftAlgebras T F μ))
+  μ-Bialgebras⇒CoalgebrasF̂ = record
     { F₀           = λ X → record { A = alg X ; α = record { f = c₁ X ; commutes = respects-μ X ○ sym-assoc } }
     ; F₁           = λ {X Y} β → record
       { f = alg-morph β
@@ -124,8 +124,8 @@ module _ where
       open Functor F
       open μ-Bialgebra-Morphism
 
-  CoalgebrasLiftAlgebrasF⇒μ-Bialgebras : Functor (F-Coalgebras (LiftAlgebras T F μ)) μ-Bialgebras
-  CoalgebrasLiftAlgebrasF⇒μ-Bialgebras = record
+  CoalgebrasF̂⇒μ-Bialgebras : Functor (F-Coalgebras (LiftAlgebras T F μ)) μ-Bialgebras
+  CoalgebrasF̂⇒μ-Bialgebras = record
     { F₀           = λ X → record
       { A = F-Algebra.A (F-Coalgebra.A X)
       ; a₁ = F-Algebra.α (F-Coalgebra.A X)
@@ -142,10 +142,10 @@ module _ where
     ; F-resp-≈     = λ x → x
     }
 
-  μ-Bialgebras⇔CoalgebrasLiftAlgebrasF : StrongEquivalence μ-Bialgebras (F-Coalgebras (LiftAlgebras T F μ))
-  μ-Bialgebras⇔CoalgebrasLiftAlgebrasF = record
-    { F = μ-Bialgebras⇒CoalgebrasLiftAlgebrasF
-    ; G = CoalgebrasLiftAlgebrasF⇒μ-Bialgebras
+  μ-Bialgebras⇔CoalgebrasF̂ : StrongEquivalence μ-Bialgebras (F-Coalgebras (LiftAlgebras T F μ))
+  μ-Bialgebras⇔CoalgebrasF̂ = record
+    { F = μ-Bialgebras⇒CoalgebrasF̂
+    ; G = CoalgebrasF̂⇒μ-Bialgebras
     ; weak-inverse = record
       { F∘G≈id = niHelper record
         { η = λ X → record
