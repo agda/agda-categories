@@ -8,7 +8,7 @@ open import Level
 open import Function using (_$_)
 
 open import Categories.Functor.Algebra using (F-Algebra;F-Algebra-Morphism)
-open import Categories.Functor.Coalgebra using (F-Coalgebra; F-Coalgebra-Morphism)
+open import Categories.Functor.Coalgebra using (F-Coalgebra;F-Coalgebra-Morphism)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Category.Construction.F-Algebras using (F-Algebras)
 open import Categories.Category.Construction.F-Coalgebras using (F-Coalgebras)

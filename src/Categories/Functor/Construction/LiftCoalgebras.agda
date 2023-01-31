@@ -7,7 +7,7 @@ module Categories.Functor.Construction.LiftCoalgebras {o ℓ e} {C : Category o 
 open import Level
 
 open import Categories.Functor.Algebra using (F-Algebra;F-Algebra-Morphism)
-open import Categories.Functor.Coalgebra using (F-Coalgebra; F-Coalgebra-Morphism)
+open import Categories.Functor.Coalgebra using (F-Coalgebra;F-Coalgebra-Morphism)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Category.Construction.F-Coalgebras using (F-Coalgebras)
 open import Categories.Category.Construction.F-Algebras using (F-Algebras)
@@ -69,5 +69,5 @@ liftTerminal νF = record
     open HomReasoning
     open Equiv
     private
-      〖_〗 = λ X → ! {A = X} -- -- "lenses" (Meijer 1991)
+      〖_〗 = λ X → ! {A = X} -- "lenses" (Meijer 1991)
     open Functor LiftCoalgebras

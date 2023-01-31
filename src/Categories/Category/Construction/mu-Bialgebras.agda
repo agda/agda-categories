@@ -278,8 +278,9 @@ module _ (μT : Initial (F-Algebras T)) (νF : Terminal (F-Coalgebras F)) where
     A2C = AlgebrasT̂⇒CoalgebrasF̂
     C2A = CoalgebrasF̂⇒AlgebrasT̂
     id⇒A2C∘C2A : ∀ ( X : Obj ) → X ⇒ ((A2C ∘F C2A) .F₀ X)
-    id⇒A2C∘C2A X = G∘F≈id.⇐.η X
+    id⇒A2C∘C2A = G∘F≈id.⇐.η
 
   -- implicit args to `!` supplied here for clarity
+  -- ⦅ A2C₀ ⊤ ⦆ ≈ A2C₁ 〖 C2A₀ ⊥ 〗 ∘ id⇒A2C∘C2A ⊥
   centralTheorem : μT̂.! {A = A2C .F₀ ⊤} ≈ A2C. F₁ (νF̂.! {A = C2A .F₀ ⊥}) ∘ id⇒A2C∘C2A ⊥
   centralTheorem = μT̂.!-unique (A2C. F₁ νF̂.! ∘ id⇒A2C∘C2A ⊥)
