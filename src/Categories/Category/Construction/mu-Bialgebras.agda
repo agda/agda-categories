@@ -150,11 +150,11 @@ module _ where
       { F∘G≈id = niHelper record
         { η = λ X → record
           { f = T-Algebras.id
-          ; commutes = commut X
+          ; commutes = F-Coalgebra-Morphism.commutes F-Coalgebras.id
           }
         ; η⁻¹ = λ X → record
           { f = T-Algebras.id
-          ; commutes = commut X
+          ; commutes = F-Coalgebra-Morphism.commutes F-Coalgebras.id
           }
         ; commute = λ _ → id-comm-sym
         ; iso = λ _ → record { isoˡ = identity² ; isoʳ = identity² }
@@ -179,12 +179,6 @@ module _ where
       open Functor F using (F₁;identity)
       module T-Algebras = Category (F-Algebras T)
       module F-Coalgebras = Category (F-Coalgebras F)
-      commut = λ X →
-            let c = F-Algebra-Morphism.f (F-Coalgebra.α X) in begin
-              c ∘ id ≈⟨ identityʳ ⟩
-              c ≈⟨ ⟺ identityˡ ⟩
-              id ∘ c ≈⟨ ∘-resp-≈ˡ (⟺ identity)⟩
-              F₁ id ∘ c ∎
 
 -- end Bialgs≅Coalgs(F̂)
 -- begin Coalgs(F̂)≅Algs(T̂)
