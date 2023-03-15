@@ -1,0 +1,39 @@
+abstract: "A Category Theory library for Agda."
+authors:
+  - family-names: Carette
+    given-names: Jacques
+    orcid: "https://orcid.org/0000-0001-8993-9804"
+    website: "https://www.cas.mcmaster.ca/~carette/"
+    affiliation: "McMaster University, Computing and Software Department"
+    email: "carette@mcmaster.ca"
+  - family-names: Hu
+    given-names: Jason
+    orcid: "https://orcid.org/0000-0001-6710-6262"
+    affiliation: "McGill University"
+    email:: "zhong.s.hu@mail.mcgill.ca"
+cff-version: 1.2.0
+keywords:
+  - "agda-categories"
+  - research
+  - "Category Theory"
+license: MIT
+message: "If you use this software, please cite both the article from preferred-citation and the software itself."
+repository-code: "https://github.com/agda/agda-categories"
+title: "agda-categories"
+version: 1.7.1
+preferred-citation:
+  authors:
+    - family-names: Carette
+      given-names: Jacques
+      orcid: "https://orcid.org/0000-0001-8993-9804"
+      affiliation: "McMaster University, Computing and Software Department"
+      email: "carette@mcmaster.ca"
+    - family-names: Hu
+      given-names: Jason
+      orcid: "https://orcid.org/0000-0001-6710-6262"
+      affiliation: "McGill University"
+      email:: "zhong.s.hu@mail.mcgill.ca"
+  title: "Formalizing Category Theory in Agda"
+  year: 2021
+  type: article
+  doi: 10.1145/3437992.3439922
