@@ -11,6 +11,11 @@ authors:
     orcid: "https://orcid.org/0000-0001-6710-6262"
     affiliation: "McGill University"
     email:: "zhong.s.hu@mail.mcgill.ca"
+  - family-names: Mullanix
+    given-names: Reed
+    orcid: "https://orcid.org/0000-0002-7970-4961"
+  - family-names: "van Doorn"
+    given-names: Nathan
 cff-version: 1.2.0
 keywords:
   - "agda-categories"
