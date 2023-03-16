@@ -16,6 +16,9 @@ authors:
     orcid: "https://orcid.org/0000-0002-7970-4961"
   - family-names: "van Doorn"
     given-names: Nathan
+  - family-names: Goncharov
+    given-names: Sergey
+    orcid: "https://orcid.org/0000-0001-6924-8766"
 cff-version: 1.2.0
 keywords:
   - "agda-categories"
