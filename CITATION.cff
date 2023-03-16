@@ -19,6 +19,9 @@ authors:
   - family-names: Goncharov
     given-names: Sergey
     orcid: "https://orcid.org/0000-0001-6924-8766"
+  - family-names: Stucki
+    given-names: Sandro
+    orcid: "https://orcid.org/0000-0001-5608-8273"
 cff-version: 1.2.0
 keywords:
   - "agda-categories"
