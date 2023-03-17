@@ -132,7 +132,7 @@ module _ {A : Obj} where
     Free = record
       { F₀ = λ X → sliceobj [ product X ]π₁
       ; F₁ = λ {X} {Y} f → slicearr ([ product X ⇒ product Y ]π₁∘× ○ identityˡ)
-      ; identity = Product.⟨⟩-cong₂ (product _) identityˡ identityˡ ○ Product.η (product _)
+      ; identity = id×id (product _)
       ; homomorphism = λ {X} {Y} {Z} → sym [ product X ⇒ product Y ⇒ product Z ]id×∘id×
       ; F-resp-≈ = λ f≈g → Product.⟨⟩-cong₂ (product _) refl (∘-resp-≈ˡ f≈g)
       }
