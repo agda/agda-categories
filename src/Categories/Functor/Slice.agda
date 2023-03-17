@@ -9,10 +9,11 @@ open import Data.Product using (_,_)
 open import Categories.Adjoint
 open import Categories.Category.CartesianClosed
 open import Categories.Category.CartesianClosed.Locally
-open import Categories.Functor
+open import Categories.Functor hiding (id)
 open import Categories.Functor.Properties
 open import Categories.Morphism.Reasoning C
-open import Categories.NaturalTransformation
+open import Categories.NaturalTransformation hiding (id)
+open import Categories.Object.Product C
 
 import Categories.Category.Slice as S
 import Categories.Diagram.Pullback as P
@@ -124,3 +125,37 @@ module _ {A : Obj} where
                       ; commute₁ = identityʳ
                       ; commute₂ = △ g
                       }
+
+  module _ (product : (X : Obj) → Product A X) where
+
+    Free : Functor C (Slice A)
+    Free = record
+      { F₀ = λ X → sliceobj [ product X ]π₁
+      ; F₁ = λ {X} {Y} f → slicearr ([ product X ⇒ product Y ]π₁∘× ○ identityˡ)
+      ; identity = Product.⟨⟩-cong₂ (product _) identityˡ identityˡ ○ Product.η (product _)
+      ; homomorphism = λ {X} {Y} {Z} → sym [ product X ⇒ product Y ⇒ product Z ]id×∘id×
+      ; F-resp-≈ = λ f≈g → Product.⟨⟩-cong₂ (product _) refl (∘-resp-≈ˡ f≈g)
+      }
+
+    Forgetful⊣Free : Forgetful ⊣ Free
+    Forgetful⊣Free = record
+      { unit = ntHelper record
+        { η = λ X → slicearr (Product.project₁ (product _))
+        ; commute = λ {X} {Y} f → begin
+          [ product _ ]⟨ arr Y , id ⟩ ∘ h f                                ≈⟨ [ product _ ]⟨⟩∘ ⟩
+          [ product _ ]⟨ arr Y ∘ h f , id ∘ h f ⟩                          ≈⟨ Product.⟨⟩-cong₂ (product _) (△ f) identityˡ ⟩
+          [ product _ ]⟨ arr X , h f ⟩                                     ≈˘⟨ Product.⟨⟩-cong₂ (product _) identityˡ identityʳ ⟩
+          [ product _ ]⟨ id ∘ arr X , h f ∘ id ⟩                           ≈˘⟨ [ product _ ⇒ product _ ]×∘⟨⟩ ⟩
+          [ product _ ⇒ product _ ] id × h f ∘ [ product _ ]⟨ arr X , id ⟩ ∎
+        }
+      ; counit = ntHelper record
+        { η = λ X → Product.π₂ (product X)
+        ; commute = λ _ → Product.project₂ (product _)
+        }
+      ; zig = Product.project₂ (product _)
+      ; zag = λ {X} → begin
+        [ product _ ⇒ product X ]id× [ product X ]π₂ ∘ [ product _ ]⟨ [ product X ]π₁ , id ⟩ ≈⟨ [ product _ ⇒ product X ]×∘⟨⟩ ⟩
+        [ product X ]⟨ id ∘ [ product X ]π₁ , [ product X ]π₂ ∘ id ⟩                         ≈⟨ Product.⟨⟩-cong₂ (product X) identityˡ identityʳ ⟩
+        [ product X ]⟨ [ product X ]π₁ , [ product X ]π₂ ⟩                                   ≈⟨ Product.η (product X) ⟩
+        id                                                                                   ∎
+      }
