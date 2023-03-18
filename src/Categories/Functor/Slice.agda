@@ -126,36 +126,36 @@ module _ {A : Obj} where
                       ; commute₂ = △ g
                       }
 
-  module _ (product : (X : Obj) → Product A X) where
+  module _ (product : {X : Obj} → Product A X) where
 
     Free : Functor C (Slice A)
     Free = record
-      { F₀ = λ X → sliceobj [ product X ]π₁
-      ; F₁ = λ {X} {Y} f → slicearr ([ product X ⇒ product Y ]π₁∘× ○ identityˡ)
-      ; identity = id×id (product _)
-      ; homomorphism = λ {X} {Y} {Z} → sym [ product X ⇒ product Y ⇒ product Z ]id×∘id×
-      ; F-resp-≈ = λ f≈g → Product.⟨⟩-cong₂ (product _) refl (∘-resp-≈ˡ f≈g)
+      { F₀ = λ _ → sliceobj [ product ]π₁
+      ; F₁ = λ f → slicearr ([ product ⇒ product ]π₁∘× ○ identityˡ)
+      ; identity = id×id product
+      ; homomorphism = sym [ product ⇒ product ⇒ product ]id×∘id×
+      ; F-resp-≈ = λ f≈g → Product.⟨⟩-cong₂ product refl (∘-resp-≈ˡ f≈g)
       }
 
     Forgetful⊣Free : Forgetful ⊣ Free
     Forgetful⊣Free = record
       { unit = ntHelper record
-        { η = λ X → slicearr (Product.project₁ (product _))
+        { η = λ _ → slicearr (Product.project₁ product)
         ; commute = λ {X} {Y} f → begin
-          [ product _ ]⟨ arr Y , id ⟩ ∘ h f                                ≈⟨ [ product _ ]⟨⟩∘ ⟩
-          [ product _ ]⟨ arr Y ∘ h f , id ∘ h f ⟩                          ≈⟨ Product.⟨⟩-cong₂ (product _) (△ f) identityˡ ⟩
-          [ product _ ]⟨ arr X , h f ⟩                                     ≈˘⟨ Product.⟨⟩-cong₂ (product _) identityˡ identityʳ ⟩
-          [ product _ ]⟨ id ∘ arr X , h f ∘ id ⟩                           ≈˘⟨ [ product _ ⇒ product _ ]×∘⟨⟩ ⟩
-          [ product _ ⇒ product _ ] id × h f ∘ [ product _ ]⟨ arr X , id ⟩ ∎
+          [ product ]⟨ arr Y , id ⟩ ∘ h f                            ≈⟨ [ product ]⟨⟩∘ ⟩
+          [ product ]⟨ arr Y ∘ h f , id ∘ h f ⟩                      ≈⟨ Product.⟨⟩-cong₂ product (△ f) identityˡ ⟩
+          [ product ]⟨ arr X , h f ⟩                                 ≈˘⟨ Product.⟨⟩-cong₂ product identityˡ identityʳ ⟩
+          [ product ]⟨ id ∘ arr X , h f ∘ id ⟩                       ≈˘⟨ [ product ⇒ product ]×∘⟨⟩ ⟩
+          [ product ⇒ product ] id × h f ∘ [ product ]⟨ arr X , id ⟩ ∎
         }
       ; counit = ntHelper record
-        { η = λ X → Product.π₂ (product X)
-        ; commute = λ _ → Product.project₂ (product _)
+        { η = λ _ → Product.π₂ product
+        ; commute = λ _ → Product.project₂ product
         }
-      ; zig = Product.project₂ (product _)
-      ; zag = λ {X} → begin
-        [ product _ ⇒ product X ]id× [ product X ]π₂ ∘ [ product _ ]⟨ [ product X ]π₁ , id ⟩ ≈⟨ [ product _ ⇒ product X ]×∘⟨⟩ ⟩
-        [ product X ]⟨ id ∘ [ product X ]π₁ , [ product X ]π₂ ∘ id ⟩                         ≈⟨ Product.⟨⟩-cong₂ (product X) identityˡ identityʳ ⟩
-        [ product X ]⟨ [ product X ]π₁ , [ product X ]π₂ ⟩                                   ≈⟨ Product.η (product X) ⟩
-        id                                                                                   ∎
+      ; zig = Product.project₂ product
+      ; zag = begin
+        [ product ⇒ product ]id× [ product ]π₂ ∘ [ product ]⟨ [ product ]π₁ , id ⟩ ≈⟨ [ product ⇒ product ]×∘⟨⟩ ⟩
+        [ product ]⟨ id ∘ [ product ]π₁ , [ product ]π₂ ∘ id ⟩                     ≈⟨ Product.⟨⟩-cong₂ product identityˡ identityʳ ⟩
+        [ product ]⟨ [ product ]π₁ , [ product ]π₂ ⟩                               ≈⟨ Product.η product ⟩
+        id                                                                         ∎
       }
