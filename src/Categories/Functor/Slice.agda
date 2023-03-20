@@ -128,6 +128,7 @@ module _ {A : Obj} where
 
   module _ (product : {X : Obj} → Product A X) where
 
+    -- this is adapted from proposition 1.33 of Aspects of Topoi (Freyd, 1972)
     Free : Functor C (Slice A)
     Free = record
       { F₀ = λ _ → sliceobj [ product ]π₁
