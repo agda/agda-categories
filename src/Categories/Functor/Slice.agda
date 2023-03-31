@@ -7,6 +7,8 @@ module Categories.Functor.Slice {o ℓ e} (C : Category o ℓ e) where
 open import Data.Product using (_,_)
 
 open import Categories.Adjoint
+open import Categories.Category.BinaryProducts
+open import Categories.Category.Cartesian
 open import Categories.Category.CartesianClosed
 open import Categories.Category.CartesianClosed.Locally
 open import Categories.Functor hiding (id)
@@ -14,6 +16,7 @@ open import Categories.Functor.Properties
 open import Categories.Morphism.Reasoning C
 open import Categories.NaturalTransformation hiding (id)
 open import Categories.Object.Product C
+open import Categories.Object.Terminal C
 
 import Categories.Category.Slice as S
 import Categories.Diagram.Pullback as P
@@ -160,3 +163,127 @@ module _ {A : Obj} where
         [ product ]⟨ [ product ]π₁ , [ product ]π₂ ⟩                               ≈⟨ Product.η product ⟩
         id                                                                         ∎
       }
+
+  module _ (CCC : CartesianClosed C) (pullbacks : ∀ {X Y Z} (h : X ⇒ Z) (i : Y ⇒ Z) → P.Pullback C h i) where
+
+    open CartesianClosed CCC renaming (cartesian to C-cartesian)
+    open Cartesian C-cartesian
+    open Terminal terminal
+    open BinaryProducts products hiding (unique)
+    open P C hiding (swap)
+    private module pullbacks {X Y Z} h i = Pullback (pullbacks {X} {Y} {Z} h i)
+    private module A⇨ = Functor (A ⇨-)
+    open pullbacks
+
+    Coforgetful : Functor (Slice A) C
+    Coforgetful = record
+      { F₀ = F₀
+      ; F₁ = F₁
+      ; identity = sym (unique (λg π₂) (A⇨.₁ _) !-unique₂ (id-comm ○ (∘-resp-≈ˡ (sym A⇨.identity))))
+      ; homomorphism = sym (unique (λg π₂) (A⇨.₁ _) !-unique₂ (homomorphism-lemma _ _))
+      ; F-resp-≈ = λ p → universal-resp-≈ (λg π₂) (A⇨.₁ _) !-unique₂ (∘-resp-≈ˡ (A⇨.F-resp-≈ p))
+      }
+      module Coforgetful where 
+        F₀ : SliceObj A → Obj
+        F₀ (sliceobj arr) = P (λg π₂) (A⇨.₁ arr)
+
+        F₁-lemma : ∀ {X Y} (f : Slice⇒ X Y) → λg π₂ ∘ p₁ (λg π₂) (A⇨.₁ (arr X)) ≈ A⇨.₁ (arr Y) ∘ A⇨.₁ (h f) ∘ p₂ (λg π₂) (A⇨.₁ (arr X))
+        F₁-lemma (slicearr {h} △) = begin
+          λg π₂ ∘ p₁ (λg π₂) (A⇨.₁ _)           ≈⟨ commute (λg π₂) (A⇨.₁ _) ⟩
+          A⇨.₁ _ ∘ p₂ (λg π₂) (A⇨.₁ _)          ≈˘⟨ A⇨.F-resp-≈ △ ⟩∘⟨refl ⟩
+          A⇨.₁ (_ ∘ h) ∘ p₂ (λg π₂) (A⇨.₁ _)    ≈⟨ pushˡ A⇨.homomorphism ⟩
+          A⇨.₁ _ ∘ A⇨.₁ h ∘ p₂ (λg π₂) (A⇨.₁ _) ∎
+
+        F₁ : ∀ {X Y} → Slice⇒ X Y → F₀ X ⇒ F₀ Y
+        F₁ f = universal (λg π₂) (A⇨.₁ _) (F₁-lemma f)
+
+        homomorphism-lemma : ∀ {X Y Z} (f : Slice⇒ X Y) (g : Slice⇒ Y Z) → p₂ (λg π₂) (A⇨.₁ (arr Z)) ∘ F₁ g ∘ F₁ f ≈ A⇨.₁ (h g ∘ h f) ∘ p₂ (λg π₂) (A⇨.₁ (arr X))
+        homomorphism-lemma f g = begin
+          p₂ (λg π₂) (A⇨.₁ _) ∘ F₁ g ∘ F₁ f             ≈⟨ extendʳ (p₂∘universal≈h₂ (λg π₂) (A⇨.₁ _)) ⟩
+          A⇨.₁ (h g) ∘ p₂ (λg π₂) (A⇨.₁ _) ∘ F₁ f       ≈⟨ refl⟩∘⟨ (p₂∘universal≈h₂ (λg π₂) (A⇨.₁ _)) ⟩
+          A⇨.₁ (h g) ∘ A⇨.₁ (h f) ∘ p₂ (λg π₂) (A⇨.₁ _) ≈˘⟨ pushˡ A⇨.homomorphism ⟩
+          A⇨.₁ (h g ∘ h f) ∘ p₂ (λg π₂) (A⇨.₁ _)        ∎
+
+
+    Free⊣Coforgetful : Free product ⊣ Coforgetful
+    Free⊣Coforgetful = record
+      { unit = ntHelper record
+        { η = unit/η
+        ; commute = {!!}
+        }
+      ; counit = ntHelper record
+        { η = {!!}
+        ; commute = {!!}
+        }
+      ; zig = {!!}
+      ; zag = {!!}
+      }
+      where
+        s : ∀ α → eval′ ∘ first (λg π₂ ∘ !) ≈ eval′ ∘ first (λg (π₁ {A} {α} ∘ eval′ ∘ second id) ∘ λg swap)
+        s α = begin
+          eval′ ∘ first (λg π₂ ∘ !)                                     ≈˘⟨ refl⟩∘⟨ first∘first ⟩
+          eval′ ∘ first (λg π₂) ∘ first !                               ≈⟨ pullˡ β′ ⟩
+          π₂ ∘ first !                                                  ≈⟨ project₂ ⟩
+          id ∘ π₂                                                       ≈⟨ identityˡ ⟩
+          π₂                                                            ≈˘⟨ project₁ ⟩
+          π₁ ∘ swap                                                     ≈˘⟨ refl⟩∘⟨ β′ ⟩
+          π₁ ∘ eval′ ∘ first (λg swap)                                  ≈˘⟨ pull-last second∘first ⟩
+          (π₁ ∘ eval′ ∘ second id) ∘ first (λg swap)                    ≈˘⟨ pullˡ β′ ⟩
+          eval′ ∘ first (λg (π₁ ∘ eval′ ∘ second id)) ∘ first (λg swap) ≈⟨ refl ⟩∘⟨ first∘first ⟩
+          eval′ ∘ first (λg (π₁ ∘ eval′ ∘ second id) ∘ λg swap)         ∎
+
+        unit/η : ∀ α → α ⇒ P {X = ⊤} (λg π₂) (A⇨.₁ (π₁ {A} {α}))
+        unit/η α = universal (λg π₂) (A⇨.₁ π₁) (λ-unique₂′ (s α))
+
+        unit/commute : ∀ {α β} (f : α ⇒ β) → unit/η β ∘ f ≈ Functor.₁ Coforgetful (Functor.₁ (Free product) f) ∘ unit/η α
+        unit/commute {α} {β} f = begin
+          universal (λg π₂) (A⇨.₁ π₁) (λ-unique₂′ (s β)) ∘ f
+            ≈⟨ unique (λg π₂) (A⇨.₁ π₁) (sym (!-unique (p₁ (λg π₂) (A⇨.₁ π₁) ∘ universal (λg π₂) (A⇨.₁ π₁) (λ-unique₂′ (s β)) ∘ f))) l₁ ⟩
+          universal (λg π₂) (A⇨.₁ π₁) (λ-unique₂′ p)
+            ≈˘⟨ unique (λg π₂) (A⇨.₁ π₁) (sym (!-unique (p₁ (λg π₂) (A⇨.₁ π₁) ∘ universal (λg π₂) (A⇨.₁ π₁) (Coforgetful.F₁-lemma (Functor.₁ (Free product) f)) ∘ universal (λg π₂) (A⇨.₁ π₁) (λ-unique₂′ (s α))))) l₂ ⟩
+          universal (λg π₂) (A⇨.₁ π₁) (Coforgetful.F₁-lemma (Functor.₁ (Free product) f)) ∘ universal (λg π₂) (A⇨.₁ π₁) (λ-unique₂′ (s α))
+            ∎
+            where
+            p : eval′ ∘ first (λg π₂ ∘ !) ≈ eval′ ∘ first (A⇨.₁ π₁ ∘ λg swap ∘ f)
+            p = begin
+              eval′ ∘ first (λg π₂ ∘ !)                                         ≈˘⟨ refl⟩∘⟨ first∘first ⟩
+              eval′ ∘ first (λg π₂) ∘ first !                                   ≈⟨ pullˡ β′ ⟩
+              π₂ ∘ first !                                                      ≈⟨ project₂ ⟩
+              id ∘ π₂                                                           ≈˘⟨ project₂ ⟩
+              π₂ ∘ first f                                                      ≈˘⟨ pullˡ project₁ ⟩
+              π₁ ∘ swap ∘ first f                                               ≈⟨ push-center β′ ⟩
+              π₁ ∘ eval′ ∘ first (λg swap) ∘ first f                            ≈⟨ refl⟩∘⟨ refl⟩∘⟨ first∘first ⟩
+              π₁ ∘ eval′ ∘ first (λg swap ∘ f)                                  ≈˘⟨ pull-last second∘first ⟩
+              (π₁ ∘ eval′ ∘ second id) ∘ first (λg swap ∘ f)                    ≈˘⟨ pullˡ β′ ⟩
+              eval′ ∘ first (λg (π₁ ∘ eval′ ∘ second id)) ∘ first (λg swap ∘ f) ≈⟨ refl⟩∘⟨ first∘first ⟩
+              eval′ ∘ first (λg (π₁ ∘ eval′ ∘ second id) ∘ λg swap ∘ f)         ∎
+            
+            l₁ : p₂ (λg π₂) (A⇨.₁ π₁) ∘ universal (λg π₂) (A⇨.₁ π₁) (λ-unique₂′ (s β)) ∘ f ≈ λg swap ∘ f
+            l₁ = begin
+              p₂ (λg π₂) (A⇨.₁ π₁) ∘ universal (λg π₂) (A⇨.₁ π₁) (λ-unique₂′ (s β)) ∘ f ≈⟨ pullˡ (p₂∘universal≈h₂ (λg π₂) (A⇨.₁ π₁)) ⟩
+              λg swap ∘ f                                                 ∎
+
+            l₂ : p₂ (λg π₂) (A⇨.₁ π₁) ∘ universal (λg π₂) (A⇨.₁ π₁) (Coforgetful.F₁-lemma (Functor.₁ (Free product) f)) ∘ universal (λg π₂) (A⇨.₁ π₁) (λ-unique₂′ (s α)) ≈ λg swap ∘ f
+            l₂ = begin
+              p₂ (λg π₂) (A⇨.₁ π₁) ∘ universal (λg π₂) (A⇨.₁ π₁) (Coforgetful.F₁-lemma (Functor.₁ (Free product) f)) ∘ universal (λg π₂) (A⇨.₁ π₁) (λ-unique₂′ (s α))  ≈⟨ extendʳ (p₂∘universal≈h₂ (λg π₂) (A⇨.₁ π₁)) ⟩
+              λg (second f ∘ eval′ ∘ second id) ∘ p₂ (λg π₂) (A⇨.₁ π₁) ∘ universal (λg π₂) (A⇨.₁ π₁) (λ-unique₂′ (s α)) ≈⟨ refl⟩∘⟨ p₂∘universal≈h₂ (λg π₂) (A⇨.₁ π₁) ⟩
+              λg (second f ∘ eval′ ∘ second id)  ∘ λg swap                                                              ≈⟨ λ-unique₂′ t ⟩
+              λg swap ∘ f                                                                                               ∎
+              where
+                t : eval′ ∘ first (λg (second f ∘ eval′ ∘ second id) ∘ λg swap) ≈ eval′ ∘ first (λg swap ∘ f)
+                t = begin
+                  eval′ ∘ first (λg (second f ∘ eval′ ∘ second id) ∘ λg swap)         ≈˘⟨ refl⟩∘⟨ first∘first ⟩
+                  eval′ ∘ first (λg (second f ∘ eval′ ∘ second id)) ∘ first (λg swap) ≈⟨ pullˡ β′ ⟩
+                  (second f ∘ eval′ ∘ second id) ∘ first (λg swap)                    ≈⟨ pull-last second∘first ⟩
+                  second f ∘ eval′ ∘ first (λg swap)                                  ≈⟨ refl⟩∘⟨ β′ ⟩
+                  second f ∘ swap                                                     ≈˘⟨ swap∘⁂ ⟩
+                  swap ∘ first f                                                      ≈˘⟨ pullˡ β′ ⟩
+                  eval′ ∘ first (λg swap) ∘ first f                                   ≈⟨ refl⟩∘⟨ first∘first ⟩
+                  eval′ ∘ first (λg swap ∘ f)                                         ∎
+    {-
+        counit/η : (X : SliceObj A) → Slice⇒ (sliceobj {Y = A × P {X = ⊤} (λg π₂) (A⇨.₁ (arr X))} π₁) X 
+        counit/η X = record
+          { h = {!A⇨.₁ (arr X)!}
+          ; △ = {!!}
+          }
+    -}
