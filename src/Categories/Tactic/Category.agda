@@ -35,21 +35,21 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) where
       f g   : A ⇒ B
 
   --------------------------------------------------------------------------------
-  -- An 'Expr' reifies the parentheses/identity morphisms of some series of 
+  -- An 'Expr' reifies the parentheses/identity morphisms of some series of
   -- compositions of morphisms into a data structure. In fact, this is also
   -- a category!
   --------------------------------------------------------------------------------
   data Expr : Obj → Obj → Set (o ⊔ ℓ) where
-    _∘′_ : ∀ {A B C} → Expr B C → Expr A B → Expr A C 
+    _∘′_ : ∀ {A B C} → Expr B C → Expr A B → Expr A C
     id′  : ∀ {A} → Expr A A
     [_↑] : ∀ {A B} → A ⇒ B → Expr A B
-  
+
   -- Embed a morphism in 'Expr' back into '𝒞' without normalizing.
-  [_↓] : Expr A B → A ⇒ B 
+  [_↓] : Expr A B → A ⇒ B
   [ f ∘′ g ↓] = [ f ↓] ∘ [ g ↓]
   [ id′ ↓]    = id
   [ [ f ↑] ↓] = f
-  
+
   -- Convert an 'Expr' back into a morphism, while normalizing
   --
   -- This actually embeds the morphism into the category of copresheaves
@@ -60,7 +60,7 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) where
   embed id′ h       = h
   embed [ f ↑] h    = f ∘ h
 
-  
+
   preserves-≈′ : ∀ (f : Expr B C) → (h : A ⇒ B) → embed f id ∘ h ≈ embed f h
   preserves-≈′ id′ f      = identityˡ
   preserves-≈′ [ x ↑] f   = ∘-resp-≈ˡ identityʳ
@@ -71,7 +71,7 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) where
     embed f id ∘ embed g id ∘ h   ≈⟨ refl⟩∘⟨ preserves-≈′ g h ⟩
     embed f id ∘ embed g h        ≈⟨ preserves-≈′ f (embed g h) ⟩
     embed (f ∘′ g) h              ∎
-  
+
   preserves-≈ : ∀ (f : Expr A B) → embed f id ≈ [ f ↓]
   preserves-≈ id′      = refl
   preserves-≈ [ x ↑]   = identityʳ
@@ -181,4 +181,3 @@ solve-macro mon hole = do
 macro
   solve : Term → Term → TC _
   solve = solve-macro
-
