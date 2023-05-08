@@ -45,8 +45,8 @@ on:
 ########################################################################
 
 env:
-  AGDA_COMMIT: tags/v2.6.2
-  STDLIB_VERSION: 1.7.1
+  AGDA_COMMIT: tags/v2.6.3
+  STDLIB_VERSION: 1.7.2
 
   GHC_VERSION: 8.6.5
   CABAL_VERSION: 3.2.0.0

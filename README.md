@@ -2,7 +2,7 @@
 
 Welcome to what will hopefully become the standard Category Theory library for Agda.
 
-The current library release, v0.1.7, works with Agda-2.6.2 and stdlib-1.7.1.  The master
+The current library release, v0.1.8, works with Agda-2.6.3 and stdlib-1.7.2.  The master
 branch should also work with same, but may contain various incompatibilities.
 
 Note that this should be considered pre-beta software, and that backwards compability
@@ -68,10 +68,6 @@ Some of the lower-level design decisions (naming conventions, organization) are 
 documented in the proto-contributor's guide.
 
 ### Some design decisions
-- The library relies on eta expansion of records. However, due to a bug in Agda
-  2.6.0.1, we need to switch this on in related records. In the next release of Agda,
-  hopefully we can remove these switches. See also [this agda
-  issue](https://github.com/agda/agda/issues/4142).
 - We add `sym-assoc` and `identity²` in order to achieve better definitional equality
   of `Category`. The rationale can be found in [this
   paper](https://arxiv.org/pdf/1401.7694.pdf). 
