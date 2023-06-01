@@ -37,16 +37,16 @@ Restriction-PF {o} = record
     _↓ = λ f x → map (const x) (f x)
 
     pidʳ : {f : A → Maybe B} → f ∘ f ↓ ≈ f
-    pidʳ {f = f} x with f x | inspect f x
-    ... | just z | [ eq ] = eq
-    ... | nothing | _ = refl
+    pidʳ {f = f} x with f x in eq
+    ... | just z  = eq
+    ... | nothing = refl
 
     ↓-comm : {g : A → Maybe C} {f : A → Maybe B} → g ↓ ∘ f ↓ ≈ f ↓ ∘ g ↓
-    ↓-comm {g = g} {f} x with f x | g x | inspect f x | inspect g x
-    ... | just b | just b′  | [ fx=jb ] | [ gx=jb′ ] rewrite fx=jb | gx=jb′ = refl
-    ... | just b | nothing  | _         | [ eq ]     rewrite eq = refl
-    ... | nothing | just b′ | [ eq ]    | _          rewrite eq = refl
-    ... | nothing | nothing | _         | _                     = refl
+    ↓-comm {g = g} {f} x with f x in eq₁ | g x in eq₂
+    ... | just b  | just b′ rewrite eq₁ | eq₂ = refl
+    ... | just b  | nothing rewrite eq₂ = refl
+    ... | nothing | just b′ rewrite eq₁ = refl
+    ... | nothing | nothing = refl
 
     ↓-denestʳ : {A B C : Obj} {f : A ⇒ B} {g : A ⇒ C} → (g ∘ f ↓) ↓ ≈ g ↓ ∘ f ↓
     ↓-denestʳ {f = f} a with f a
@@ -54,11 +54,11 @@ Restriction-PF {o} = record
     ... | nothing = refl
 
     ↓-skew-comm : {A B C : Obj} {g : A ⇒ B} {f : C ⇒ A} → g ↓ ∘ f ≈ f ∘ (g ∘ f) ↓
-    ↓-skew-comm {g = g} {f = f} a with f a | inspect f a
-    ... | just b | [ eq ] with g b
-    ... | just c = sym eq
+    ↓-skew-comm {g = g} {f = f} a with f a in eq
     ... | nothing = refl
-    ↓-skew-comm _ | nothing | _ = refl
+    ... | just b with g b
+    ... | nothing = refl
+    ... | just c = sym eq
 
     ↓-cong : {A B : Obj} {f g : A ⇒ B} → f ≈ g → f ↓ ≈ g ↓
     ↓-cong eq a rewrite eq a = refl

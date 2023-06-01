@@ -62,10 +62,10 @@ Coprod m n = record
     uniq : {o : ℕ} {h : Fin (m + n) → Fin o} {f : Fin m → Fin o} {g : Fin n → Fin o} →
       h ∘′ (_↑ˡ n) ≗ f → h ∘′ (m ↑ʳ_) ≗ g → (λ z → [ f , g ]′ (splitAt m z)) ≗ h
     uniq {_} {h} {f} {g} h≗f h≗g w = begin
-      [ f , g ]′ (splitAt m w)                         ≡⟨ [,]-cong (λ x → sym (h≗f x)) (λ x → sym (h≗g x)) (splitAt m w) ⟩
-      [ h ∘′ (_↑ˡ n) , h ∘′ (m ↑ʳ_) ]′ (splitAt m w) ≡˘⟨ [,]-∘-distr h (splitAt m w) ⟩
+      [ f , g ]′ (splitAt m w)                       ≡⟨ [,]-cong (λ x → sym (h≗f x)) (λ x → sym (h≗g x)) (splitAt m w) ⟩
+      [ h ∘′ (_↑ˡ n) , h ∘′ (m ↑ʳ_) ]′ (splitAt m w) ≡˘⟨ [,]-∘ h (splitAt m w) ⟩
       h ([ (_↑ˡ n) , (m ↑ʳ_) ]′ (splitAt m w))       ≡⟨ cong h (join-splitAt m n w) ⟩
-      h w                                              ∎
+      h w                                            ∎
 
 Nat-Cocartesian : Cocartesian Nat
 Nat-Cocartesian = record
