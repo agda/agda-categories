@@ -17,15 +17,22 @@ open import Categories.NaturalTransformation.NaturalIsomorphism
 open import Categories.NaturalTransformation using (_∘ᵥ_; _∘ₕ_; _∘ˡ_; _∘ʳ_; NaturalTransformation)
 open import Categories.Morphism C
 
+private
+  module C = Category C
+  
+open C hiding (_≈_)
+
+private
+  variable
+    X Y Z W A B : Obj
+    f g h i a b : X ⇒ Y
+
 -- Should probably split out Distributive Category out and make this be 'over' that.
 record RigCategory {M⊎ M× : Monoidal C} (S⊎ : Symmetric M⊎)
-   (S× : Symmetric M×) : Set (o ⊔ ℓ ⊔ e) where
+   (S× : Symmetric M×) : Set (o ⊔ ℓ ⊔ e) where      
 
-  private
-    module C = Category C
-
-  open C hiding (_≈_)
   open Commutation C
+  open Definitions C
   module M⊎ = Monoidal M⊎
   module M× = Monoidal M×
   module S⊎ = Symmetric S⊎
@@ -40,7 +47,7 @@ record RigCategory {M⊎ M× : Monoidal C} (S⊎ : Symmetric M⊎)
     1C = M×.unit
 
   private
-    B⊗ : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X
+    B⊗ : X ⊗₀ Y ⇒ Y ⊗₀ X
     B⊗ {X} {Y} = S×.braiding.⇒.η (X , Y)
     B⊕ : ∀ {X Y} → X ⊕₀ Y ⇒ Y ⊕₀ X
     B⊕ {X} {Y} = S⊎.braiding.⇒.η (X , Y)
@@ -72,6 +79,13 @@ record RigCategory {M⊎ M× : Monoidal C} (S⊎ : Symmetric M⊎)
     ⊕α⇐ = M⊎.associator.to
 
 
+  -- that ann and distrib are natural was missing
+  field
+    annₗ-commute : CommutativeSquare (id ⊗₁ f) λ* λ* id
+    annᵣ-commute : CommutativeSquare (f ⊗₁ id) ρ* ρ* id
+    dl-commute : CommutativeSquare (f ⊗₁ (g ⊕₁ h)) dl.from dl.from ((f ⊗₁ g) ⊕₁ (f ⊗₁ h))
+    dr-commute : CommutativeSquare ((f ⊕₁ g) ⊗₁ h) dr.from dr.from ((f ⊗₁ h) ⊕₁ (g ⊗₁ h))
+    
   -- need II, IX, X, XV
   -- choose I, IV, VI, XI, XIII, XIX, XXIII and (XVI, XVII)
   field
