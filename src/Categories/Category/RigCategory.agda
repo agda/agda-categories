@@ -29,7 +29,7 @@ private
 
 -- Should probably split out Distributive Category out and make this be 'over' that.
 record RigCategory {M⊎ M× : Monoidal C} (S⊎ : Symmetric M⊎)
-   (S× : Symmetric M×) : Set (o ⊔ ℓ ⊔ e) where      
+   (S× : Symmetric M×) : Set (o ⊔ ℓ ⊔ e) where
 
   open Commutation C
   open Definitions C
@@ -79,7 +79,7 @@ record RigCategory {M⊎ M× : Monoidal C} (S⊎ : Symmetric M⊎)
     ⊕α⇐ = M⊎.associator.to
 
 
-  -- that ann and distrib are natural was missing
+  -- Naturality conditions for ann and distrib
   field
     annₗ-commute : CommutativeSquare (id ⊗₁ f) λ* λ* id
     annᵣ-commute : CommutativeSquare (f ⊗₁ id) ρ* ρ* id
