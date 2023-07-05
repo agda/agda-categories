@@ -29,7 +29,7 @@ module _ ℓ where
   open import Categories.Category.Instance.Properties.Setoids.Exact
   open import Categories.Object.InternalRelation using (Relation) 
 
-  -- Presentation axiom, aka CoSHEP (http://nlab-pages.s3.us-east-2.amazonaws.com/nlab/show/presentation+axiom)
+  -- Presentation axiom, aka CoSHEP (https://ncatlab.org/nlab/show/presentation+axiom)
   record CoSHEP (A : Setoid ℓ ℓ) : Set (Level.suc ℓ) where
     field
       {P} : Setoid ℓ ℓ
@@ -58,6 +58,10 @@ module _ ℓ where
 
   entire : {A B : Setoid ℓ ℓ} → (R : Relation S A B) → Set ℓ
   entire {A} R = ∀ (x : ∣ A ∣) →  Σ[ e ∈ ∣ dom ∣ ]  [ A ][ p₁ ⟨$⟩ e ≈ x ]  
+    where open Relation R
+
+  functional : {A B : Setoid ℓ ℓ} → (R : Relation S A B) → Set ℓ
+  functional {A}{B} R = ∀ (e₁ e₂ : ∣ dom ∣) → [ A ][ p₁ ⟨$⟩ e₁ ≈ p₁ ⟨$⟩ e₂ ] → [ B ][ p₂ ⟨$⟩ e₁ ≈ p₂ ⟨$⟩ e₂ ]
     where open Relation R
 
   ℕ-Setoid : Setoid ℓ ℓ
@@ -94,3 +98,32 @@ module _ ℓ where
     ; cong = λ {n}{m} eq → let x , _ = surj n; y , _ = surj m in P.subst (λ m → [ A ][ proj₁ (surj n) ≈ proj₁ (surj m) ]) eq (refl A) 
     }
     , λ {n}{m} n≡m → let _ , eq = surj n in P.trans eq n≡m
+
+  -- principle of unique choice for setoids
+  -- https://ncatlab.org/nlab/show/principle+of+unique+choice
+  record UniqueChoice {A B : Setoid ℓ ℓ} (R : Relation S A B) (ent : entire R) (frel : functional R) : Set ℓ where
+    open Relation R
+
+    field
+      fun    : A ⇒ B
+      isfun  : ∀ (e : ∣ dom ∣) →  [ B ][ fun ⟨$⟩ (p₁ ⟨$⟩ e) ≈  p₂ ⟨$⟩ e ]
+
+  Setoid-UniqueChoice :  {A B : Setoid ℓ ℓ} (R : Relation S A B) (ent : entire R) (frel : functional R) → UniqueChoice R ent frel
+  _⟨$⟩_ (UniqueChoice.fun (Setoid-UniqueChoice R ent frel)) x =  p₂ ⟨$⟩ proj₁ (ent x)
+        where open Relation R
+
+  cong (UniqueChoice.fun (Setoid-UniqueChoice {A} {B} R ent frel)) {n} {m} n≈m =
+     let (en , p₁en≈n) = ent n
+         (em , p₁em≈m) = ent m in frel en em
+     (begin
+        p₁ ⟨$⟩ en  ≈⟨ p₁en≈n ⟩
+               n   ≈⟨ n≈m ⟩
+               m  ≈˘⟨ p₁em≈m ⟩
+        p₁ ⟨$⟩ em
+     ∎)
+       where
+         open Relation R
+         open SR A
+
+  UniqueChoice.isfun (Setoid-UniqueChoice R ent frel) e = let (e' , p₁e'≈p₁e) = ent (p₁ ⟨$⟩ e) in frel e' e p₁e'≈p₁e
+      where open Relation R
