@@ -70,7 +70,7 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
       open S using () renaming (F₀ to S₀; F₁ to S₁)
       open Comma⇒
       id-comm : {E : CommaObj T S} → let open CommaObj E in
-         (S₁ B.id C.∘ f) C.≈ f C.∘ T₁ A.id
+         S₁ B.id C.∘ f C.≈ f C.∘ T₁ A.id
       id-comm {E} = begin
         S₁ B.id C.∘ f ≈⟨ elimˡ S.identity ⟩
         f             ≈⟨ introʳ T.identity ⟩
