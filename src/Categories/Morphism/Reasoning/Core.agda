@@ -157,6 +157,16 @@ glue {c′ = c′} {a′ = a′} {a = a} {c″ = c″} {c = c} {b′ = b′} {b 
   (c″ ∘ a′) ∘ b′ ≈⟨ assoc ⟩
   c″ ∘ (a′ ∘ b′) ∎
 
+-- A "rotated" version of glue′. Equivalent to 'Equiv.sym (glue (Equiv.sym sq-a) (Equiv.sym sq-b))'
+glue′ : CommutativeSquare a′ c′ c″ a →
+        CommutativeSquare b′ c c′ b →
+        CommutativeSquare (a′ ∘ b′) c c″ (a ∘ b)
+glue′ {a′ = a′} {c′ = c′} {c″ = c″} {a = a} {b′ = b′} {c = c} {b = b} sq-a sq-b = begin
+  c″ ∘ (a′ ∘ b′) ≈⟨ pullˡ sq-a ⟩
+  (a ∘ c′) ∘ b′  ≈⟨ pullʳ sq-b ⟩
+  a ∘ (b ∘ c)    ≈⟨ sym-assoc ⟩
+  (a ∘ b) ∘ c    ∎
+
 glue◃◽ : a ∘ c′ ≈ c″ → CommutativeSquare c b′ b c′ → CommutativeSquare c b′ (a ∘ b) c″
 glue◃◽ {a = a} {c′ = c′} {c″ = c″} {c = c} {b′ = b′} {b = b} tri-a sq-b = begin
   (a ∘ b) ∘ c   ≈⟨ pullʳ sq-b ⟩
