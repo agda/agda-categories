@@ -94,7 +94,6 @@ module _ (p : Pullback id f) where
     universal commute          ≈˘⟨ Pullback.id-unique p ⟩
     id ∎
     where
-      -- open Identity
       eq : id ∘ f ∘ p₂ ≈ f ∘ id ∘ p₂
       eq = begin
         (id ∘ f ∘ p₂) ≈⟨ elimˡ Equiv.refl ⟩
