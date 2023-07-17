@@ -5,11 +5,16 @@ open import Categories.Category
   Helper routines most often used in reasoning with commutative squares,
   at the level of arrows in categories.
 
-  Basic  : reasoning about identity
+  Identity : reasoning about identity
+  Assoc4   : associativity short-cuts for 4-term
   Pulls  : use a ∘ b ≈ c as left-to-right rewrite
   Pushes : use c ≈ a ∘ b as a left-to-right rewrite
   IntroElim : introduce/eliminate an equivalent-to-id arrow
   Extend : 'extends' a commutative square with an equality on left/right/both
+
+  Convention - in this file, extra parentheses are used to clearly show
+    associativity. This makes reading the source more pedagogical as to the
+    intent of each routine.
 -}
 module Categories.Morphism.Reasoning.Core {o ℓ e} (C : Category o ℓ e) where
 
@@ -29,7 +34,7 @@ private
 
 open HomReasoning
 
-module Basic where
+module Identity where
   id-unique : ∀ {o} {f : o ⇒ o} → (∀ g → g ∘ f ≈ g) → f ≈ id
   id-unique g∘f≈g = Equiv.trans (Equiv.sym identityˡ) (g∘f≈g id)
 
@@ -39,9 +44,9 @@ module Basic where
   id-comm-sym : ∀ {a b} {f : a ⇒ b} → id ∘ f ≈ f ∘ id
   id-comm-sym = Equiv.trans identityˡ (Equiv.sym identityʳ)
 
-open Basic public
+open Identity public
 
-module Utils where
+module Assoc4 where
   assoc² : ((i ∘ h) ∘ g) ∘ f ≈ i ∘ (h ∘ (g ∘ f))
   assoc² = Equiv.trans assoc assoc
 
@@ -51,8 +56,10 @@ module Utils where
   assoc²'' : i ∘ ((h ∘ g) ∘ f) ≈ (i ∘ h) ∘ (g ∘ f)
   assoc²'' = Equiv.trans (∘-resp-≈ʳ assoc) sym-assoc
 
-open Utils public
+open Assoc4 public
 
+-- Pulls use "a ∘ b ≈ c" as left-to-right rewrite
+-- pull to the right / left of something existing
 module Pulls (ab≡c : a ∘ b ≈ c) where
 
   pullʳ : (f ∘ a) ∘ b ≈ f ∘ c
@@ -61,7 +68,7 @@ module Pulls (ab≡c : a ∘ b ≈ c) where
     f ∘ (a ∘ b) ≈⟨ refl⟩∘⟨ ab≡c ⟩
     f ∘ c       ∎
 
-  pullˡ : a ∘ b ∘ f ≈ c ∘ f
+  pullˡ : a ∘ (b ∘ f) ≈ c ∘ f
   pullˡ {f = f} = begin
     a ∘ b ∘ f   ≈⟨ sym-assoc ⟩
     (a ∘ b) ∘ f ≈⟨ ab≡c ⟩∘⟨refl ⟩
@@ -69,6 +76,8 @@ module Pulls (ab≡c : a ∘ b ≈ c) where
 
 open Pulls public
 
+-- Pushes use "c ≈ a ∘ b" as a left-to-right rewrite
+-- push to the right / left of something existing
 module Pushes (c≡ab : c ≈ a ∘ b) where
   pushʳ : f ∘ c ≈ (f ∘ a) ∘ b
   pushʳ {f = f} = begin
@@ -84,6 +93,8 @@ module Pushes (c≡ab : c ≈ a ∘ b) where
 
 open Pushes public
 
+-- Introduce/Elimilate an equivalent-to-identity
+-- on left, right or 'in the middle' of something existing
 module IntroElim (a≡id : a ≈ id) where
   elimʳ : f ∘ a ≈ f
   elimʳ {f = f} = begin
@@ -103,27 +114,31 @@ module IntroElim (a≡id : a ≈ id) where
   introˡ : f ≈ a ∘ f
   introˡ = Equiv.sym elimˡ
 
-  intro-center : f ∘ g ≈ f ∘ a ∘ g
+  intro-center : f ∘ g ≈ f ∘ (a ∘ g)
   intro-center = ∘-resp-≈ʳ introˡ
 
-  elim-center : f ∘ a ∘ g ≈ f ∘ g
+  elim-center : f ∘ (a ∘ g) ≈ f ∘ g
   elim-center = ∘-resp-≈ʳ elimˡ
 
 open IntroElim public
 
+-- given h ∘ f ≈ i ∘ g
 module Extends (s : CommutativeSquare f g h i) where
+  -- rewrite (a ∘ h) ∘ f to (a ∘ i) ∘ g
   extendˡ : CommutativeSquare f g (a ∘ h) (a ∘ i)
   extendˡ {a = a} = begin
     (a ∘ h) ∘ f ≈⟨ pullʳ s ⟩
-    a ∘ i ∘ g   ≈⟨ sym-assoc ⟩
+    a ∘ (i ∘ g) ≈⟨ sym-assoc ⟩
     (a ∘ i) ∘ g ∎
 
+  -- rewrite h ∘ (f ∘ a) to i ∘ (g ∘ a)
   extendʳ : CommutativeSquare (f ∘ a) (g ∘ a) h i
   extendʳ {a = a} = begin
     h ∘ (f ∘ a) ≈⟨ pullˡ s ⟩
     (i ∘ g) ∘ a ≈⟨ assoc ⟩
     i ∘ (g ∘ a) ∎
 
+  -- rewrite (a ∘ h) ∘ (f ∘ b) to (a ∘ i) ∘ (g ∘ b)
   extend² : CommutativeSquare (f ∘ b) (g ∘ b) (a ∘ h) (a ∘ i)
   extend² {b = b} {a = a } = begin
     (a ∘ h) ∘ (f ∘ b) ≈⟨ pullʳ extendʳ ⟩
@@ -153,8 +168,7 @@ glue : CommutativeSquare c′ a′ a c″ →
        CommutativeSquare c (a′ ∘ b′) (a ∘ b) c″
 glue {c′ = c′} {a′ = a′} {a = a} {c″ = c″} {c = c} {b′ = b′} {b = b} sq-a sq-b = begin
   (a ∘ b) ∘ c    ≈⟨ pullʳ sq-b ⟩
-  a ∘ (c′ ∘ b′)  ≈⟨ pullˡ sq-a ⟩
-  (c″ ∘ a′) ∘ b′ ≈⟨ assoc ⟩
+  a ∘ (c′ ∘ b′)  ≈⟨ extendʳ sq-a ⟩
   c″ ∘ (a′ ∘ b′) ∎
 
 -- A "rotated" version of glue′. Equivalent to 'Equiv.sym (glue (Equiv.sym sq-a) (Equiv.sym sq-b))'
@@ -163,10 +177,10 @@ glue′ : CommutativeSquare a′ c′ c″ a →
         CommutativeSquare (a′ ∘ b′) c c″ (a ∘ b)
 glue′ {a′ = a′} {c′ = c′} {c″ = c″} {a = a} {b′ = b′} {c = c} {b = b} sq-a sq-b = begin
   c″ ∘ (a′ ∘ b′) ≈⟨ pullˡ sq-a ⟩
-  (a ∘ c′) ∘ b′  ≈⟨ pullʳ sq-b ⟩
-  a ∘ (b ∘ c)    ≈⟨ sym-assoc ⟩
+  (a ∘ c′) ∘ b′  ≈⟨ extendˡ sq-b ⟩
   (a ∘ b) ∘ c    ∎
 
+-- Various gluings of triangles onto sides of squares
 glue◃◽ : a ∘ c′ ≈ c″ → CommutativeSquare c b′ b c′ → CommutativeSquare c b′ (a ∘ b) c″
 glue◃◽ {a = a} {c′ = c′} {c″ = c″} {c = c} {b′ = b′} {b = b} tri-a sq-b = begin
   (a ∘ b) ∘ c   ≈⟨ pullʳ sq-b ⟩
@@ -175,9 +189,9 @@ glue◃◽ {a = a} {c′ = c′} {c″ = c″} {c = c} {b′ = b′} {b = b} tri
 
 glue◃◽′ : c ∘ c′ ≈ a′ → CommutativeSquare a b a′ b′ → CommutativeSquare (c′ ∘ a) b c b′
 glue◃◽′ {c = c} {c′ = c′} {a′ = a′} {a = a} {b = b} {b′ = b′} tri sq = begin
-  c ∘ c′ ∘ a ≈⟨ pullˡ tri ⟩
-  a′ ∘ a     ≈⟨ sq ⟩
-  b′ ∘ b     ∎
+  c ∘ (c′ ∘ a) ≈⟨ pullˡ tri ⟩
+  a′ ∘ a       ≈⟨ sq ⟩
+  b′ ∘ b       ∎
 
 glue◽◃ : CommutativeSquare a b a′ b′ → b ∘ c ≈ c′ → CommutativeSquare (a ∘ c) c′ a′ b′
 glue◽◃ {a = a} {b = b} {a′ = a′} {b′ = b′} {c = c} {c′ = c′} sq tri = begin
@@ -205,6 +219,7 @@ glueTrianglesˡ {a′ = a′} {b′ = b′} {b″ = b″} {a = a} {b = b} a′�
   a′ ∘ b′      ≈⟨ a′∘b′≡b″ ⟩
   b″           ∎
 
+-- Cancel (or insert) inverses on right/left/middle
 module Cancellers (inv : h ∘ i ≈ id) where
 
   cancelʳ : (f ∘ h) ∘ i ≈ f
@@ -214,7 +229,7 @@ module Cancellers (inv : h ∘ i ≈ id) where
     f           ∎
 
   insertʳ : f ≈ (f ∘ h) ∘ i
-  insertʳ = Equiv.sym cancelʳ
+  insertʳ = ⟺ cancelʳ
 
   cancelˡ : h ∘ (i ∘ f) ≈ f
   cancelˡ {f = f} = begin
@@ -223,55 +238,51 @@ module Cancellers (inv : h ∘ i ≈ id) where
     f           ∎
 
   insertˡ : f ≈ h ∘ (i ∘ f)
-  insertˡ = Equiv.sym cancelˡ
+  insertˡ = ⟺ cancelˡ
 
   cancelInner : (f ∘ h) ∘ (i ∘ g) ≈ f ∘ g
-  cancelInner {f = f} {g = g} = begin
-    (f ∘ h) ∘ (i ∘ g) ≈⟨ pullˡ cancelʳ ⟩
-    f ∘ g             ∎
+  cancelInner = pullˡ cancelʳ
 
+  insertInner : f ∘ g ≈ (f ∘ h) ∘ (i ∘ g)
+  insertInner = ⟺ cancelInner
+  
 open Cancellers public
 
-center : g ∘ h ≈ a → (f ∘ g) ∘ h ∘ i ≈ f ∘ a ∘ i
-center {g = g} {h = h} {a = a} {f = f} {i = i} eq = begin
-  (f ∘ g) ∘ h ∘ i ≈⟨ assoc ⟩
-  f ∘ g ∘ h ∘ i   ≈⟨ refl⟩∘⟨ pullˡ eq ⟩
-  f ∘ a ∘ i       ∎
+-- operate in the 'center' instead (like pull/push)
+center : g ∘ h ≈ a → (f ∘ g) ∘ (h ∘ i) ≈ f ∘ (a ∘ i)
+center eq = pullʳ (pullˡ eq)
 
-center⁻¹ : f ∘ g ≈ a → h ∘ i ≈ b →  f ∘ (g ∘ h) ∘ i ≈ a ∘ b
+-- operate on the left part, then the right part
+center⁻¹ : f ∘ g ≈ a → h ∘ i ≈ b →  f ∘ ((g ∘ h) ∘ i) ≈ a ∘ b
 center⁻¹ {f = f} {g = g} {a = a} {h = h} {i = i} {b = b} eq eq′ = begin
   f ∘ (g ∘ h) ∘ i ≈⟨ refl⟩∘⟨ pullʳ eq′ ⟩
-  f ∘ g ∘ b       ≈⟨ pullˡ eq ⟩
+  f ∘ (g ∘ b)     ≈⟨ pullˡ eq ⟩
   a ∘ b           ∎
 
+-- could be called pull₃ʳ
 pull-last : h ∘ i ≈ a → (f ∘ g ∘ h) ∘ i ≈ f ∘ g ∘ a
-pull-last {h = h} {i = i} {a = a} {f = f} {g = g} eq = begin
-  (f ∘ g ∘ h) ∘ i ≈⟨ assoc ⟩
-  f ∘ (g ∘ h) ∘ i ≈⟨ refl⟩∘⟨ pullʳ eq ⟩
-  f ∘ g ∘ a       ∎
+pull-last eq = pullʳ (pullʳ eq)
 
-pull-first : f ∘ g ≈ a → f ∘ (g ∘ h) ∘ i ≈ a ∘ h ∘ i
+pull-first : f ∘ g ≈ a → f ∘ ((g ∘ h) ∘ i) ≈ a ∘ (h ∘ i)
 pull-first {f = f} {g = g} {a = a} {h = h} {i = i} eq = begin
   f ∘ (g ∘ h) ∘ i ≈⟨ refl⟩∘⟨ assoc ⟩
   f ∘ g ∘ h ∘ i   ≈⟨ pullˡ eq ⟩
   a ∘ h ∘ i       ∎
 
-pull-center : g ∘ h ≈ a → f ∘ g ∘ h ∘ i ≈ f ∘ a ∘ i
+pull-center : g ∘ h ≈ a → f ∘ (g ∘ (h ∘ i)) ≈ f ∘ (a ∘ i)
 pull-center eq = ∘-resp-≈ʳ (pullˡ eq)
 
-push-center : g ∘ h ≈ a → f ∘ a ∘ i ≈ f ∘ g ∘ h ∘ i
+push-center : g ∘ h ≈ a → f ∘ (a ∘ i) ≈ f ∘ (g ∘ (h ∘ i))
 push-center eq = Equiv.sym (pull-center eq)
 
-intro-first : a ∘ b ≈ id → f ∘ g ≈ a ∘ (b ∘ f) ∘ g
+intro-first : a ∘ b ≈ id → f ∘ g ≈ a ∘ ((b ∘ f) ∘ g)
 intro-first {a = a} {b = b} {f = f} {g = g} eq = begin
-  f ∘ g           ≈⟨ introˡ eq ⟩
-  (a ∘ b) ∘ f ∘ g ≈⟨ assoc ⟩
-  a ∘ b ∘ f ∘ g   ≈˘⟨ refl⟩∘⟨ assoc ⟩
-  a ∘ (b ∘ f) ∘ g ∎
+  f ∘ g             ≈⟨ introˡ eq ⟩
+  (a ∘ b) ∘ (f ∘ g) ≈⟨ pullʳ sym-assoc ⟩
+  a ∘ ((b ∘ f) ∘ g) ∎
 
 intro-last : a ∘ b ≈ id → f ∘ g ≈ f ∘ (g ∘ a) ∘ b
 intro-last {a = a} {b = b} {f = f} {g = g} eq = begin
   f ∘ g           ≈⟨ introʳ eq ⟩
-  (f ∘ g) ∘ a ∘ b ≈⟨ assoc ⟩
-  f ∘ g ∘ a ∘ b   ≈˘⟨ refl⟩∘⟨ assoc ⟩
+  (f ∘ g) ∘ a ∘ b ≈⟨ pullʳ sym-assoc ⟩
   f ∘ (g ∘ a) ∘ b ∎
