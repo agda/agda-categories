@@ -6,7 +6,7 @@ open import Categories.Category
   at the level of arrows in categories.
 
   Identity : reasoning about identity
-  Assoc4   : associativity short-cuts for 4-term
+  Assoc4   : associativity combinators for composites of 4 morphisms
   Pulls  : use a ∘ b ≈ c as left-to-right rewrite
   Pushes : use c ≈ a ∘ b as a left-to-right rewrite
   IntroElim : introduce/eliminate an equivalent-to-id arrow
