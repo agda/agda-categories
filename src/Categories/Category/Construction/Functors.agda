@@ -24,7 +24,7 @@ import Categories.Morphism.Reasoning as MR
 private
   variable
     o ℓ e o′ ℓ′ e′ : Level
-    C D C₁ C₂ : Category o ℓ e
+    A B C D C₁ C₂ : Category o ℓ e
 
 -- The reason the proofs below are so easy is that _∘ᵥ_ 'computes' all the way down into
 -- expressions in D, from which the properties follow.
@@ -263,8 +263,8 @@ module _ {o₁ e₁ ℓ₁} {C₁ : Category o₁ e₁ ℓ₁}
             open MR D
 
 -- Godement product ?
-product : {A B C : Category o ℓ e} → Bifunctor (Functors B C) (Functors A B) (Functors A C)
-product {A = A} {B = B} {C = C} = record
+product : Bifunctor (Functors B C) (Functors A B) (Functors A C)
+product {B = B} {C = C} {A = A} = record
   { F₀ = uncurry′ _∘F_
   ; F₁ = uncurry′ _∘ₕ_
   ; identity = λ {f} → identityʳ ○ identity {D = C} (proj₁ f)
@@ -291,9 +291,8 @@ product {A = A} {B = B} {C = C} = record
 -- op induces a Functor on the Functors category.
 -- This is an instance where the proof-irrelevant version is simpler because (op op C) is
 -- just C. Here we rather need to be more explicit.
-opF⇒ : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
-      Functor (Category.op (Functors (Category.op A) (Category.op B))) (Functors A B)
-opF⇒ {A = A} {B} = record
+opF⇒ : Functor (Category.op (Functors (Category.op A) (Category.op B))) (Functors A B)
+opF⇒ {A = A} {B = B} = record
   { F₀           = Functor.op
   ; F₁           = NaturalTransformation.op
   ; identity     = Equiv.refl
@@ -302,9 +301,8 @@ opF⇒ {A = A} {B} = record
   }
   where open Category B
 
-opF⇐ : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
-      Functor (Functors A B) (Category.op (Functors (Category.op A) (Category.op B)))
-opF⇐ {A = A} {B} = record
+opF⇐ : Functor (Functors A B) (Category.op (Functors (Category.op A) (Category.op B)))
+opF⇐ {A = A} {B = B} = record
   { F₀           = Functor.op
   ; F₁           = NaturalTransformation.op
   ; identity     = Equiv.refl
