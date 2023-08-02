@@ -31,6 +31,8 @@ record Comonad {C : Category o ℓ e} {D : Category o′ ℓ′ e′} (J : Funct
     identityˡ : {x : C.Obj} → cobind {x} counit ≈ D.id
     assoc : {x y z : C.Obj} {k : F₀ x ⇒ J.₀ y} {l : F₀ y ⇒ J.₀ z} →
       cobind (l ∘ cobind k) ≈ cobind l ∘ cobind k
+    sym-assoc : {x y z : C.Obj} {k : F₀ x ⇒ J.₀ y} {l : F₀ y ⇒ J.₀ z} →
+      cobind l ∘ cobind k ≈ cobind (l ∘ cobind k)
     cobind-≈ : {x y : C.Obj} {k h : F₀ x ⇒ J.₀ y} → k ≈ h → cobind k ≈ cobind h
 
 -- From a Relative Comonad, we can extract a functor
