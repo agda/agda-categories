@@ -9,6 +9,7 @@ open import Level
 
 open import Categories.Functor.Core
 open import Relation.Binary.Displayed
+import Relation.Binary.Displayed.Reasoning.Setoid as DisplayedSetoidR
 
 open Category B
 open Equiv
@@ -65,3 +66,8 @@ record Displayed o′ ℓ′ e′ : Set (o ⊔ ℓ ⊔ e ⊔ suc (o′ ⊔ ℓ�
     ; _≈[_]_ = _≈[_]_
     ; isDisplayedEquivalence = equiv′
     }
+
+  module HomReasoning′ {A B : Obj} {X : Obj[ A ]} {Y : Obj[ B ]} where
+    open DisplayedSetoidR (hom-setoid′ {X = X} {Y = Y}) public
+
+    -- more stuff
