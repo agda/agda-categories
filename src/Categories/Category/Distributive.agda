@@ -1,10 +1,10 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Level
-open import Categories.Category
-open import Categories.Category.Cartesian
-open import Categories.Category.BinaryProducts
-open import Categories.Category.Cocartesian
+open import Categories.Category.Core
+open import Categories.Category.Cartesian using (Cartesian)
+open import Categories.Category.BinaryProducts using (BinaryProducts)
+open import Categories.Category.Cocartesian using (Cocartesian)
 import Categories.Morphism as M
 import Categories.Morphism.Reasoning as MR
 

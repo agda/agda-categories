@@ -19,7 +19,7 @@ record ExtensiveCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
   open Category U public
   open Extensive extensive public
 
--- Am extensive category with finite products
+-- An extensive category with finite products
 record ExtensiveDistributiveCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
   field
     U           : Category o ℓ e  -- U for underlying
