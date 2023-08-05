@@ -34,6 +34,15 @@ record DisplayedFunctor {B₁ : Category o ℓ e} {B₂ : Category o′ ℓ′ e
   ₀′ = F₀′
   ₁′ = F₁′
 
+  op′ : DisplayedFunctor C.op′ D.op′ F.op
+  op′ = record
+    { F₀′ = F₀′
+    ; F₁′ = F₁′
+    ; identity′ = identity′
+    ; homomorphism′ = homomorphism′
+    ; F′-resp-≈[] = F′-resp-≈[]
+    }
+
 id′ : ∀ {B : Category o ℓ e} {C : Displayed B o′ ℓ′ e′} → DisplayedFunctor C C id
 id′ {C = C} = record
   { F₀′ = id→

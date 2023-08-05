@@ -2,7 +2,7 @@
 
 open import Categories.Category
 
-module Categories.Category.Displayed {o ℓ e} (B : Category o ℓ e) where
+module Categories.Category.Displayed where
 
 open import Data.Product
 open import Level
@@ -11,16 +11,17 @@ open import Categories.Functor.Core
 open import Relation.Binary.Displayed
 import Relation.Binary.Displayed.Reasoning.Setoid as DisplayedSetoidR
 
-open Category B
-open Equiv
-
 -- A displayed category captures the idea of placing extra structure
 -- over a base category. For example, the category of monoids can be
 -- considered as the category of setoids with extra structure on the
 -- objects and extra conditions on the morphisms.
-record Displayed o′ ℓ′ e′ : Set (o ⊔ ℓ ⊔ e ⊔ suc (o′ ⊔ ℓ′ ⊔ e′)) where
+record Displayed {o ℓ e} (B : Category o ℓ e) o′ ℓ′ e′ : Set (o ⊔ ℓ ⊔ e ⊔ suc (o′ ⊔ ℓ′ ⊔ e′)) where
+  open Category B
+  open Equiv
+
   infix 4 _⇒[_]_ _≈[_]_
   infixr 9 _∘′_
+
   field
     Obj[_] : Obj → Set o′
     _⇒[_]_ : ∀ {X Y} → Obj[ X ] → X ⇒ Y → Obj[ Y ] → Set ℓ′
@@ -88,4 +89,30 @@ record Displayed o′ ℓ′ e′ : Set (o ⊔ ℓ ⊔ e ⊔ suc (o′ ⊔ ℓ�
                  → f′ ≈[ f≈h ] h′ → f′ ∘′ g′ ≈[ f≈h ⟩∘⟨refl ] h′ ∘′ g′
     _⟩∘′⟨refl′ = ∘′-resp-≈[]ˡ
 
-    -- more stuff
+  op′ : Displayed op o′ ℓ′ e′
+  op′ = record
+    { Obj[_] = Obj[_]
+    ; _⇒[_]_ = λ X f Y → Y ⇒[ f ] X
+    ; _≈[_]_ = _≈[_]_
+    ; id′ = id′
+    ; _∘′_ = λ f′ g′ → g′ ∘′ f′
+    ; identityʳ′ = identityˡ′
+    ; identityˡ′ = identityʳ′
+    ; identity²′ = identity²′
+    ; assoc′ = sym-assoc′
+    ; sym-assoc′ = assoc′
+    ; equiv′ = equiv′
+    ; ∘′-resp-≈[] = λ p q → ∘′-resp-≈[] q p
+    }
+
+module Definitions′ {o ℓ e} {B : Category o ℓ e} {o′ ℓ′ e′} (C : Displayed B o′ ℓ′ e′) where
+  open Category B
+  open Displayed C
+  open Definitions B
+
+  CommutativeSquare′ : ∀ {A B C D : Obj} {A′ : Obj[ A ]} {B′ : Obj[ B ]} {C′ : Obj[ C ]} {D′ : Obj[ D ]}
+                         {f : A ⇒ B} {g : A ⇒ C} {h : B ⇒ D} {i : C ⇒ D}
+                         (f′ : A′ ⇒[ f ] B′) (g′ : A′ ⇒[ g ] C′) (h′ : B′ ⇒[ h ] D′) (i′ : C′ ⇒[ i ] D′)
+                         (sq : CommutativeSquare f g h i)
+                       → Set _
+  CommutativeSquare′ f′ g′ h′ i′ sq = h′ ∘′ f′ ≈[ sq ] i′ ∘′ g′
