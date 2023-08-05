@@ -43,7 +43,7 @@ record Displayed o′ ℓ′ e′ : Set (o ⊔ ℓ ⊔ e ⊔ suc (o′ ⊔ ℓ�
 
     equiv′ : ∀ {A B X Y} → IsDisplayedEquivalence equiv (_≈[_]_ {A} {B} {X} {Y})
 
-    ∘′-resp-[]≈ : ∀ {A B C X Y Z} {f h : B ⇒ C} {g i : A ⇒ B}
+    ∘′-resp-≈[] : ∀ {A B C X Y Z} {f h : B ⇒ C} {g i : A ⇒ B}
                     {f′ : Y ⇒[ f ] Z} {h′ : Y ⇒[ h ] Z} {g′ : X ⇒[ g ] Y} {i′ : X ⇒[ i ] Y}
                     {p : f ≈ h} {q : g ≈ i}
                 → f′ ≈[ p ] h′ → g′ ≈[ q ] i′ → f′ ∘′ g′ ≈[ ∘-resp-≈ p q ] h′ ∘′ i′
@@ -52,13 +52,13 @@ record Displayed o′ ℓ′ e′ : Set (o ⊔ ℓ ⊔ e ⊔ suc (o′ ⊔ ℓ�
 
   open Equiv′
 
-  ∘′-resp-[]≈ˡ : ∀ {A B C X Y Z} {f h : B ⇒ C} {g : A ⇒ B} {f′ : Y ⇒[ f ] Z} {h′ : Y ⇒[ h ] Z} {g′ : X ⇒[ g ] Y}
+  ∘′-resp-≈[]ˡ : ∀ {A B C X Y Z} {f h : B ⇒ C} {g : A ⇒ B} {f′ : Y ⇒[ f ] Z} {h′ : Y ⇒[ h ] Z} {g′ : X ⇒[ g ] Y}
                  → {p : f ≈ h} → f′ ≈[ p ] h′ → f′ ∘′ g′ ≈[ ∘-resp-≈ˡ p ] h′ ∘′ g′
-  ∘′-resp-[]≈ˡ pf = ∘′-resp-[]≈ pf refl′
+  ∘′-resp-≈[]ˡ pf = ∘′-resp-≈[] pf refl′
 
-  ∘′-resp-[]≈ʳ : ∀ {A B C X Y Z} {f : B ⇒ C} {g i : A ⇒ B} {f′ : Y ⇒[ f ] Z} {g′ : X ⇒[ g ] Y} {i′ : X ⇒[ i ] Y}
+  ∘′-resp-≈[]ʳ : ∀ {A B C X Y Z} {f : B ⇒ C} {g i : A ⇒ B} {f′ : Y ⇒[ f ] Z} {g′ : X ⇒[ g ] Y} {i′ : X ⇒[ i ] Y}
                  → {p : g ≈ i} → g′ ≈[ p ] i′ → f′ ∘′ g′ ≈[ ∘-resp-≈ʳ p ] f′ ∘′ i′
-  ∘′-resp-[]≈ʳ pf = ∘′-resp-[]≈ refl′ pf
+  ∘′-resp-≈[]ʳ pf = ∘′-resp-≈[] refl′ pf
 
   hom-setoid′ : ∀ {A B} {X : Obj[ A ]} {Y : Obj[ B ]} → DisplayedSetoid hom-setoid _ _
   hom-setoid′ {X = X} {Y = Y} = record
@@ -69,5 +69,23 @@ record Displayed o′ ℓ′ e′ : Set (o ⊔ ℓ ⊔ e ⊔ suc (o′ ⊔ ℓ�
 
   module HomReasoning′ {A B : Obj} {X : Obj[ A ]} {Y : Obj[ B ]} where
     open DisplayedSetoidR (hom-setoid′ {X = X} {Y = Y}) public
+    open HomReasoning
+
+    infixr 4 _⟩∘′⟨_ refl′⟩∘′⟨_
+    infixl 5 _⟩∘′⟨refl′
+    _⟩∘′⟨_ : ∀ {M} {f h : M ⇒ B} {g i : A ⇒ M} {f≈h : f ≈ h} {g≈i : g ≈ i}
+               {M′ : Obj[ M ]} {f′ : M′ ⇒[ f ] Y} {h′ : M′ ⇒[ h ] Y} {g′ : X ⇒[ g ] M′} {i′ : X ⇒[ i ] M′}
+             → f′ ≈[ f≈h ] h′ → g′ ≈[ g≈i ] i′ → f′ ∘′ g′ ≈[ f≈h ⟩∘⟨ g≈i ] h′ ∘′ i′
+    _⟩∘′⟨_ = ∘′-resp-≈[]
+
+    refl′⟩∘′⟨_ : ∀ {M} {f : M ⇒ B} {g i : A ⇒ M} {g≈i : g ≈ i}
+                  {M′ : Obj[ M ]} {f′ : M′ ⇒[ f ] Y} {g′ : X ⇒[ g ] M′} {i′ : X ⇒[ i ] M′}
+                → g′ ≈[ g≈i ] i′ → f′ ∘′ g′ ≈[ refl⟩∘⟨ g≈i ] f′ ∘′ i′
+    refl′⟩∘′⟨_ = ∘′-resp-≈[]ʳ
+
+    _⟩∘′⟨refl′ : ∀ {M} {f h : M ⇒ B} {g : A ⇒ M} {f≈h : f ≈ h}
+                   {M′ : Obj[ M ]} {f′ : M′ ⇒[ f ] Y} {h′ : M′ ⇒[ h ] Y} {g′ : X ⇒[ g ] M′}
+                 → f′ ≈[ f≈h ] h′ → f′ ∘′ g′ ≈[ f≈h ⟩∘⟨refl ] h′ ∘′ g′
+    _⟩∘′⟨refl′ = ∘′-resp-≈[]ˡ
 
     -- more stuff
