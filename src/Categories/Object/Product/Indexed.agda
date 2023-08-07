@@ -37,16 +37,5 @@ record IndexedProductOf {i} {I : Set i} (P : I → Obj) : Set (i ⊔ o ⊔ e ⊔
   unique′ : ∀ {Y} (h h′ : Y ⇒ X) → (∀ i → π i ∘ h′ ≈ π i ∘ h) → h′ ≈ h
   unique′ h h′ f = trans (⟺ (unique _ _ f)) (η _)
 
-
-record IndexedProduct {i} (I : Set i) : Set (i ⊔ o ⊔ e ⊔ ℓ) where
-  field
-    P         : I → Obj
-    productOf : IndexedProductOf P
-
-  open IndexedProductOf productOf public
-
-AllProducts : ∀ i → Set (o ⊔ ℓ ⊔ e ⊔ suc i)
-AllProducts i = (I : Set i) → IndexedProduct I
-
 AllProductsOf : ∀ i → Set (o ⊔ ℓ ⊔ e ⊔ suc i)
 AllProductsOf i = ∀ {I : Set i} (P : I → Obj) → IndexedProductOf P

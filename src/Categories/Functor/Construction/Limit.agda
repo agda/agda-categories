@@ -143,7 +143,7 @@ module _ {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (Coc : Cocomplete o�
   ColimitF⊣Δ = ⊣×≃⇒⊣ helper ≃.refl ΔF≃
     where Δ⊣LimitFᵒᵖ : ΔF J.op ⊣ LF
           Δ⊣LimitFᵒᵖ = Δ⊣LimitF op Com {J.op}
-          opF⊣ : opF⇐ {A = J} {C} ⊣ opF⇒
+          opF⊣ : opF⇐ {A = J} {B = C} ⊣ opF⇒
           opF⊣ = ⊣Equivalence.R⊣L (Functorsᵒᵖ-equiv J C)
           helper : ColimitF ⊣ opF⇒ ∘F Functor.op (ΔF J.op)
           helper = opF⊣ ∘⊣ Adjoint.op Δ⊣LimitFᵒᵖ
