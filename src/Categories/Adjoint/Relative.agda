@@ -68,6 +68,7 @@ RA⇒RMonad {C = C} {D} {E} {J} RA = record
   ; identityʳ = idʳ
   ; identityˡ = R.F-resp-≈ (iso.isoʳ _ D.Equiv.refl) ○ R.identity
   ; assoc = a
+  ; sym-assoc = sym a
   ; extend-≈ = λ k≈h → F-resp-≈ R (Π.cong (⇒.η _) k≈h)
   }
   where
@@ -82,6 +83,7 @@ RA⇒RMonad {C = C} {D} {E} {J} RA = record
   open Category C
   open HomReasoning
   open MR C
+  open Equiv using (sym)
   idʳ : {x y : E.Obj} {k : J.₀ x ⇒ F₀ (R ∘F L) y} → R.₁ (⇒.η (x , L.₀ y) ⟨$⟩ k) ∘ (⇐.η (x , L.₀ x) ⟨$⟩ D.id) ≈ k
   idʳ {x} {y} {k} = begin
     R.₁ (⇒.η (x , L.₀ y) ⟨$⟩ k) ∘ (⇐.η (x , L.₀ x) ⟨$⟩ D.id)               ≈⟨ introʳ J.identity ⟩

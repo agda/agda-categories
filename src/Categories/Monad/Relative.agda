@@ -30,6 +30,7 @@ record Monad {C : Category o ℓ e} {D : Category o′ ℓ′ e′} (J : Functor
     identityʳ : {x y : C.Obj} { k : J.₀ x ⇒ F₀ y} → extend k ∘ unit ≈ k
     identityˡ : {x : C.Obj} → extend {x} unit ≈ D.id
     assoc : {x y z : C.Obj} {k : J.₀ x ⇒ F₀ y} {l : J.₀ y ⇒ F₀ z} → extend (extend l ∘ k) ≈ extend l ∘ extend k
+    sym-assoc : {x y z : C.Obj} {k : J.₀ x ⇒ F₀ y} {l : J.₀ y ⇒ F₀ z} → extend l ∘ extend k ≈ extend (extend l ∘ k)
     extend-≈ : {x y : C.Obj} {k h : J.₀ x ⇒ F₀ y} → k ≈ h → extend k ≈ extend h
 
 -- From a Relative Monad, we can extract a functor
