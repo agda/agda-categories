@@ -152,7 +152,7 @@ jobs:
           ${{ env.AGDA }} --html --html-dir html index.agda
 
       - name: Deploy HTML
-        uses: JamesIves/github-pages-deploy-action@4.1.3
+        uses: JamesIves/github-pages-deploy-action@v4.4.3
         if: ${{ success() && env.AGDA_DEPLOY }}
 
         with:
