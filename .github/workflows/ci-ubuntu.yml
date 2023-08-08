@@ -87,10 +87,10 @@ jobs:
         id: cache-cabal
         with:
           path: |
-            ~/.local/state/cabal/packages
-            ~/.local/state/cabal/store
-            ~/.local/state/cabal/bin
-            ~/.local/bin
+            ~/.cabal/packages
+            ~/.cabal/store
+            ~/.cabal/bin
+            ~/.cabal/share
           key: ${{ runner.os }}-${{ env.GHC_VERSION }}-${{ env.CABAL_VERSION }}-${{ env.AGDA_COMMIT }}
 
 ########################################################################
