@@ -90,6 +90,7 @@ jobs:
             ~/.local/state/cabal/packages
             ~/.local/state/cabal/store
             ~/.local/state/cabal/bin
+            ~/.local/bin
           key: ${{ runner.os }}-${{ env.GHC_VERSION }}-${{ env.CABAL_VERSION }}-${{ env.AGDA_COMMIT }}
 
 ########################################################################
