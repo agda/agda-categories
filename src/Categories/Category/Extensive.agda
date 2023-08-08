@@ -37,14 +37,15 @@ record Extensive {o ℓ e : Level} (𝒞 : Category o ℓ e) : Set (suc (o ⊔ �
 
   -- a version with non-canonical pullbacks
   module _ {A B C : Obj} {f : A ⇒ B + C} (pb₁ : Pullback 𝒞 f i₁) (pb₂ : Pullback 𝒞 f i₂) where
-      open IsCoproduct (pullback-of-cp-is-cp f)
-      open HomReasoning; open MR 𝒞
+      private 
+        open IsCoproduct (pullback-of-cp-is-cp f)
+        open HomReasoning; open MR 𝒞
       
-      open IsoPb 𝒞 (pullback₁ f) pb₁ renaming (P₀⇒P₁ to pb₁-to-can; p₁-≈ to p₁-≈₁)
-      open IsoPb 𝒞 (pullback₂ f) pb₂ renaming (P₀⇒P₁ to pb₂-to-can; p₁-≈ to p₁-≈₂)
+        open IsoPb 𝒞 (pullback₁ f) pb₁ renaming (P₀⇒P₁ to pb₁-to-can; p₁-≈ to p₁-≈₁)
+        open IsoPb 𝒞 (pullback₂ f) pb₂ renaming (P₀⇒P₁ to pb₂-to-can; p₁-≈ to p₁-≈₂)
 
-      can-to-pb₁ = _≅_.from $ up-to-iso 𝒞 pb₁ (pullback₁ f)
-      can-to-pb₂ = _≅_.from $ up-to-iso 𝒞 pb₂ (pullback₂ f)
+        can-to-pb₁ = _≅_.from $ up-to-iso 𝒞 pb₁ (pullback₁ f)
+        can-to-pb₂ = _≅_.from $ up-to-iso 𝒞 pb₂ (pullback₂ f)
 
       pullback-of-cp-is-cp' : IsCoproduct 𝒞 (p₁ pb₁) (p₁ pb₂)
       
