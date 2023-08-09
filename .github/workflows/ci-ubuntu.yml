@@ -50,7 +50,7 @@ env:
 
   GHC_VERSION: 8.10.7
   CABAL_VERSION: 3.6.2.0
-  CABAL_INSTALL: cabal install --overwrite-policy=always --ghc-options='-O1 +RTS -M6G -RTS' --installdir ~/.local/state/cabal/bin
+  CABAL_INSTALL: cabal install --overwrite-policy=always --ghc-options='-O1 +RTS -M6G -RTS' --installdir $HOME/.local/state/cabal/bin
   AGDA: agda --auto-inline -Werror +RTS -M6G -H3.5G -A128M -RTS -i. -i src/
 
 jobs:
@@ -116,6 +116,8 @@ jobs:
           git checkout ${{ env.AGDA_COMMIT }}
           mkdir -p doc
           touch doc/user-manual.pdf
+          # make sure it exists
+          mkdir -p $HOME/.local/state/cabal/bin
           ${{ env.CABAL_INSTALL }}
           cd ..
 
