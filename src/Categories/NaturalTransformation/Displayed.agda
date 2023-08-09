@@ -7,9 +7,9 @@ open import Level
 open import Categories.Category.Core
 open import Categories.Category.Displayed
 open import Categories.Functor hiding (id)
-open import Categories.Functor.Displayed hiding (id′)
+open import Categories.Functor.Displayed renaming (id′ to idF′)
 open import Categories.Functor.Displayed.Properties
-import Categories.Morphism.Displayed.Reasoning as DPR
+import Categories.Morphism.Displayed.Reasoning as DMR
 open import Categories.NaturalTransformation
 
 private
@@ -17,6 +17,7 @@ private
     o ℓ e o′ ℓ′ e′ o″ ℓ″ e″ o‴ ℓ‴ e‴ : Level
     C D E : Category o ℓ e
     F G H : Functor C D
+    C′ D′ : Displayed C o ℓ e
 
 record DisplayedNaturalTransformation
   {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {F G : Functor C D}
@@ -52,7 +53,7 @@ id′ {D′ = D′} = record
   }
   where
     module D′ = Displayed D′
-    open DPR D′
+    open DMR D′
 
 _∘′ᵥ_ : ∀ {S : NaturalTransformation G H} {T : NaturalTransformation F G}
           {C′ : Displayed C o″ ℓ″ e″} {D′ : Displayed D o‴ ℓ‴ e‴}
@@ -68,7 +69,7 @@ _∘′ᵥ_ {D′ = D′} S′ T′ = record
     module D′ = Displayed D′
     module S′ = DisplayedNaturalTransformation S′
     module T′ = DisplayedNaturalTransformation T′
-    open DPR D′
+    open DMR D′
 
 _∘′ₕ_ : ∀ {F G : Functor C D} {H I : Functor D E}
           {S : NaturalTransformation H I} {T : NaturalTransformation F G}
@@ -82,11 +83,41 @@ _∘′ₕ_ {E′ = E′} {F′ = F′} {I′ = I′} S′ T′ = record
   { η′ = λ X → I′.₁′ (T′.η′ X) E′.∘′ S′.η′ (F′.₀′ X)
   ; commute′ = λ f → glue′ ([ I′ ]-resp-square′ (T′.commute′ f)) (S′.commute′ (F′.₁′ f))
   ; sym-commute′ = λ f → sym-glue′ ([ I′ ]-resp-square′ (T′.sym-commute′ f)) (S′.sym-commute′ (F′.₁′ f)) 
-  }
+  } 
   where
     module S′ = DisplayedNaturalTransformation S′
     module T′ = DisplayedNaturalTransformation T′
     module E′ = Displayed E′
     module F′ = DisplayedFunctor F′
     module I′ = DisplayedFunctor I′
-    open DPR E′
+    open DMR E′
+
+id′∘id′⇒id′ : ∀ {C′ : Displayed C o ℓ e} → DisplayedNaturalTransformation {C′ = C′} {D′ = C′} (idF′ ∘F′ idF′) idF′ id∘id⇒id
+id′∘id′⇒id′ {C′ = C′} = record
+  { η′ = λ _ → Displayed.id′ C′
+  ; commute′ = λ _ → DMR.id′-comm-sym C′
+  ; sym-commute′ = λ _ → DMR.id′-comm C′
+  }
+
+id′⇒id′∘id′ : ∀ {C′ : Displayed C o ℓ e} → DisplayedNaturalTransformation {C′ = C′} {D′ = C′} idF′ (idF′ ∘F′ idF′) id⇒id∘id
+id′⇒id′∘id′ {C′ = C′} = record
+  { η′ = λ _ → Displayed.id′ C′
+  ; commute′ = λ _ → DMR.id′-comm-sym C′
+  ; sym-commute′ = λ _ → DMR.id′-comm C′
+  }
+
+module _ {F′ : DisplayedFunctor C′ D′ F} where
+  open DMR D′
+  private module D′ = Displayed D′
+
+  F′⇒F′∘id′ : DisplayedNaturalTransformation F′ (F′ ∘F′ idF′) F⇒F∘id
+  F′⇒F′∘id′ = record { η′ = λ _ → D′.id′; commute′ = λ _ → id′-comm-sym ; sym-commute′ = λ _ → id′-comm }
+
+  F′⇒id′∘F′ : DisplayedNaturalTransformation F′ (idF′ ∘F′ F′) F⇒id∘F
+  F′⇒id′∘F′ = record { η′ = λ _ → D′.id′ ; commute′ = λ _ → id′-comm-sym ; sym-commute′ = λ _ → id′-comm }
+
+  F′∘id′⇒F′ : DisplayedNaturalTransformation (F′ ∘F′ idF′) F′ F∘id⇒F
+  F′∘id′⇒F′ = record { η′ = λ _ → D′.id′ ; commute′ = λ _ → id′-comm-sym ; sym-commute′ = λ _ → id′-comm }
+
+  id′∘F′⇒F′ : DisplayedNaturalTransformation (idF′ ∘F′ F′) F′ id∘F⇒F
+  id′∘F′⇒F′ = record { η′ = λ _ → D′.id′ ; commute′ = λ _ → id′-comm-sym ; sym-commute′ = λ _ → id′-comm }

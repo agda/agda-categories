@@ -86,3 +86,22 @@ sym-glue′ {f′ = f′} {g′ = g′} {h′ = h′} {i′ = i′} {j′ = j′
   h′ ∘′ (f′ ∘′ j′) ≈[]⟨ pullˡ′ sq₁′ ⟩
   (i′ ∘′ g′) ∘′ j′ ≈[]⟨ extendˡ′ sq₂′ ⟩
   (i′ ∘′ l′) ∘′ k′ ∎′
+
+module Cancellers′ {inv : h ∘ i ≈ id} (inv′ : h′ ∘′ i′ ≈[ inv ] id′) where
+
+  cancelʳ′ : (f′ ∘′ h′) ∘′ i′ ≈[ cancelʳ inv ] f′
+  cancelʳ′ {f′ = f′} = begin′
+    (f′ ∘′ h′) ∘′ i′ ≈[]⟨ pullʳ′ inv′ ⟩
+    f′ ∘′ id′        ≈[]⟨ identityʳ′ ⟩
+    f′               ∎′
+
+  cancelˡ′ : h′ ∘′ (i′ ∘′ f′) ≈[ cancelˡ inv ] f′
+  cancelˡ′ {f′ = f′} = begin′
+    h′ ∘′ (i′ ∘′ f′) ≈[]⟨ pullˡ′ inv′ ⟩
+    id′ ∘′ f′        ≈[]⟨ identityˡ′ ⟩
+    f′               ∎′
+
+  cancelInner′ : (f′ ∘′ h′) ∘′ (i′ ∘′ g′) ≈[ cancelInner inv ] f′ ∘′ g′
+  cancelInner′ = pullˡ′ cancelʳ′
+
+open Cancellers′ public
