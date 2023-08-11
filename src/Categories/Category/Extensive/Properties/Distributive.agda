@@ -7,11 +7,10 @@ open import Categories.Category.BinaryProducts using (BinaryProducts)
 open import Categories.Category.Cocartesian using (Cocartesian)
 open import Categories.Category.Distributive using (Distributive)
 open import Categories.Category.Extensive using (Extensive)
+open import Categories.Diagram.Pullback using (Pullback)
 
 import Categories.Morphism as M
 import Categories.Morphism.Reasoning as MR
-import Categories.Diagram.Pullback as PB
-open PB using (Pullback)
 import Categories.Object.Coproduct as CP
 open CP using (Coproduct; IsCoproduct; IsCoproduct⇒Coproduct)
 
@@ -41,10 +40,8 @@ module Categories.Category.Extensive.Properties.Distributive {o ℓ e} (𝒞 : C
   Extensive×Cartesian⇒Distributive extensive cartesian = record 
     { cartesian = cartesian 
     ; cocartesian = cocartesian 
-    ; isIsoˡ = λ {A B C} → record { inv = distrib.to ; iso = record 
-      { isoˡ = trans (∘-resp-≈ʳ (sym distrib-canon)) distrib.isoˡ 
-      ; isoʳ = trans (∘-resp-≈ˡ (sym distrib-canon)) distrib.isoʳ 
-      } } }
+    ; isIsoˡ = record { inv = distrib.to ; iso = distrib.iso }
+    }
     where
       open Extensive extensive
       open Cocartesian cocartesian
@@ -73,16 +70,9 @@ module Categories.Category.Extensive.Properties.Distributive {o ℓ e} (𝒞 : C
           ; p₂∘universal≈h₂ = project₂
           } }
         
-        -- by the diagram we gain a distributivity (iso-)morphism
+        -- by the diagram we get the canonical distributivity (iso-)morphism
         distrib : (A × B) + (A × C) ≅ A × (B + C)
-        distrib = CP.up-to-iso 𝒞 coproduct (CP.Mobile 𝒞 
-          (IsCoproduct⇒Coproduct 𝒞 (pullback-of-cp-is-cp (π₂ {A = A} {B = B + C}))) 
-          (PB.up-to-iso 𝒞 (pullback₁ (π₂ {A = A} {B = B + C})) (pb i₁)) 
-          (PB.up-to-iso 𝒞 (pullback₂ (π₂ {A = A} {B = B + C})) (pb i₂)))
+        distrib = CP.up-to-iso 𝒞
+          coproduct
+          (IsCoproduct⇒Coproduct 𝒞 (pullback-of-cp-is-cp' (pb i₁) (pb i₂)))
         module distrib  = _≅_ distrib
-        
-        -- which is actually the canonical distributivity morphism
-        distrib-canon : distrib.from ≈ [ id ⁂ i₁ , id ⁂ i₂ ]
-        distrib-canon = sym (Coproduct.unique coproduct 
-          (trans inject₁ (p₁∘universal≈h₁ (pullback₁ (π₂ {A = A} {B = B + C}))))
-          (trans inject₂ (p₁∘universal≈h₁ (pullback₂ (π₂ {A = A} {B = B + C})))))
