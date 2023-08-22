@@ -36,56 +36,41 @@ record Extensive {o ℓ e : Level} (𝒞 : Category o ℓ e) : Set (suc (o ⊔ �
     disjoint : ∀ {A B : Obj} → IsPullback 𝒞 ¡ ¡ (i₁ {A = A}{B = B}) i₂
 
   -- a version with non-canonical pullbacks
-  pullback-of-cp-is-cp' : {A B C : Obj} {f : A ⇒ B + C} (pb₁ : Pullback 𝒞 f i₁) (pb₂ : Pullback 𝒞 f i₂) → IsCoproduct 𝒞 (p₁ pb₁) (p₁ pb₂)
-  IsCoproduct.[_,_] (pullback-of-cp-is-cp' {f = f} pb₁ pb₂) g h = [ g ∘ pb₁-to-can , h ∘ pb₂-to-can ]
-       where
-          open IsCoproduct (pullback-of-cp-is-cp f)
-          pb₁-to-can = _≅_.to (up-to-iso 𝒞 pb₁ (pullback₁ f))
-          pb₂-to-can = _≅_.to (up-to-iso 𝒞 pb₂ (pullback₂ f))
-          
-  IsCoproduct.inject₁ (pullback-of-cp-is-cp' {f = f} pb₁ pb₂) {_}{g}{h} = begin
-     [ g ∘ pb₁-to-can , h ∘ pb₂-to-can ] ∘ p₁ pb₁                            ≈˘⟨ refl⟩∘⟨ p₁-≈ ⟩
-     [ g ∘ pb₁-to-can , h ∘ pb₂-to-can ] ∘ p₁ (pullback₁ f) ∘ can-to-pb₁     ≈⟨ pullˡ inject₁ ⟩
-     (g ∘ pb₁-to-can) ∘ can-to-pb₁                                           ≈⟨ pullʳ $ Iso.isoˡ $ _≅_.iso (up-to-iso 𝒞 pb₁ (pullback₁ f)) ⟩ 
-     g ∘ id ≈⟨ identityʳ ⟩
-     g                                                                       ∎
-       where
-          open IsCoproduct (pullback-of-cp-is-cp f)
-          open HomReasoning; open MR 𝒞
-          open IsoPb 𝒞 pb₁ (pullback₁ f) using (p₁-≈) renaming (P₀⇒P₁ to can-to-pb₁)  
+  module _ {A B C : Obj} {f : A ⇒ B + C} (pb₁ : Pullback 𝒞 f i₁) (pb₂ : Pullback 𝒞 f i₂) where
+      private 
+        open IsCoproduct (pullback-of-cp-is-cp f)
+        open HomReasoning; open MR 𝒞
+      
+        open IsoPb 𝒞 (pullback₁ f) pb₁ renaming (P₀⇒P₁ to pb₁-to-can; p₁-≈ to p₁-≈₁)
+        open IsoPb 𝒞 (pullback₂ f) pb₂ renaming (P₀⇒P₁ to pb₂-to-can; p₁-≈ to p₁-≈₂)
 
-          pb₁-to-can = _≅_.to (up-to-iso 𝒞 pb₁ (pullback₁ f))
-          pb₂-to-can = _≅_.to (up-to-iso 𝒞 pb₂ (pullback₂ f))
+        can-to-pb₁ = _≅_.from $ up-to-iso 𝒞 pb₁ (pullback₁ f)
+        can-to-pb₂ = _≅_.from $ up-to-iso 𝒞 pb₂ (pullback₂ f)
 
-  IsCoproduct.inject₂ (pullback-of-cp-is-cp' {f = f} pb₁ pb₂) {_}{g}{h} = begin
-     [ g ∘ pb₁-to-can , h ∘ pb₂-to-can ] ∘ p₁ pb₂                            ≈˘⟨ refl⟩∘⟨ p₁-≈ ⟩
-     [ g ∘ pb₁-to-can , h ∘ pb₂-to-can ] ∘ p₁ (pullback₂ f) ∘ can-to-pb₂     ≈⟨ pullˡ inject₂ ⟩
-     (h ∘ pb₂-to-can) ∘ can-to-pb₂                                           ≈⟨ pullʳ $ Iso.isoˡ $ _≅_.iso (up-to-iso 𝒞 pb₂ (pullback₂ f)) ⟩ 
-     h ∘ id ≈⟨ identityʳ ⟩
-     h                                                                       ∎
-       where
-          open IsCoproduct (pullback-of-cp-is-cp f) 
-          open HomReasoning; open MR 𝒞
-          open IsoPb 𝒞 pb₂ (pullback₂ f) using (p₁-≈) renaming (P₀⇒P₁ to can-to-pb₂)  
+      pullback-of-cp-is-cp' : IsCoproduct 𝒞 (p₁ pb₁) (p₁ pb₂)
+      
+      IsCoproduct.[_,_] pullback-of-cp-is-cp' g h  = [ g ∘ pb₁-to-can , h ∘ pb₂-to-can ]
+      IsCoproduct.inject₁ pullback-of-cp-is-cp' {_}{g}{h}  = begin
+         [ g ∘ pb₁-to-can , h ∘ pb₂-to-can ] ∘ p₁ pb₁                               ≈˘⟨ refl⟩∘⟨ cancelʳ (Iso.isoˡ $ _≅_.iso $ up-to-iso 𝒞 pb₁ (pullback₁ f)) ⟩ 
+         [ g ∘ pb₁-to-can , h ∘ pb₂-to-can ] ∘ (p₁ pb₁ ∘ pb₁-to-can) ∘ can-to-pb₁    ≈⟨ refl⟩∘⟨ p₁-≈₁ ⟩∘⟨refl ⟩
+         [ g ∘ pb₁-to-can , h ∘ pb₂-to-can ] ∘ p₁ (pullback₁ f) ∘ can-to-pb₁         ≈⟨ pullˡ inject₁ ⟩
+         (g ∘ pb₁-to-can) ∘ can-to-pb₁                                               ≈⟨ cancelʳ (Iso.isoˡ $ _≅_.iso $ up-to-iso 𝒞 pb₁ (pullback₁ f)) ⟩ 
+         g                                                                           ∎
 
-          pb₁-to-can = _≅_.to $ up-to-iso 𝒞 pb₁ (pullback₁ f)
-          pb₂-to-can = _≅_.to $ up-to-iso 𝒞 pb₂ (pullback₂ f)
-  
-  IsCoproduct.unique (pullback-of-cp-is-cp' {f = f} pb₁ pb₂) {_}{u}{g}{h} u∘p₁pb₁≈g u∘p₁pb₂≈h = unique
-    (begin
-                 u ∘ p₁ (pullback₁ f)            ≈˘⟨ pullʳ p₁-≈₁ ⟩ 
-                 (u ∘ p₁ pb₁) ∘ pb₁-to-can       ≈⟨ u∘p₁pb₁≈g ⟩∘⟨refl ⟩
-                 g ∘ pb₁-to-can                  ∎)
-    (begin
-                 u ∘ p₁ (pullback₂ f)           ≈˘⟨ pullʳ p₁-≈₂ ⟩ 
-                 (u ∘ p₁ pb₂) ∘ pb₂-to-can       ≈⟨ u∘p₁pb₂≈h ⟩∘⟨refl ⟩
-                 h ∘ pb₂-to-can                  ∎)
-
-
-    where
-          open IsCoproduct (pullback-of-cp-is-cp f)
-          open HomReasoning; open MR 𝒞
-          open IsoPb 𝒞 (pullback₁ f) pb₁ renaming (P₀⇒P₁ to pb₁-to-can; p₁-≈ to p₁-≈₁)
-          open IsoPb 𝒞 (pullback₂ f) pb₂ renaming (P₀⇒P₁ to pb₂-to-can; p₁-≈ to p₁-≈₂)
-
+      IsCoproduct.inject₂ pullback-of-cp-is-cp' {_}{g}{h} = begin
+         [ g ∘ pb₁-to-can , h ∘ pb₂-to-can ] ∘ p₁ pb₂                               ≈˘⟨ refl⟩∘⟨ cancelʳ (Iso.isoˡ $ _≅_.iso $ up-to-iso 𝒞 pb₂ (pullback₂ f)) ⟩ 
+         [ g ∘ pb₁-to-can , h ∘ pb₂-to-can ] ∘ (p₁ pb₂ ∘ pb₂-to-can) ∘ can-to-pb₂    ≈⟨ refl⟩∘⟨ p₁-≈₂ ⟩∘⟨refl ⟩
+         [ g ∘ pb₁-to-can , h ∘ pb₂-to-can ] ∘ p₁ (pullback₂ f) ∘ can-to-pb₂         ≈⟨ pullˡ inject₂ ⟩
+         (h ∘ pb₂-to-can) ∘ can-to-pb₂                                               ≈⟨ cancelʳ (Iso.isoˡ $ _≅_.iso $ up-to-iso 𝒞 pb₂ (pullback₂ f)) ⟩ 
+         h                                                                           ∎
+        
+      IsCoproduct.unique pullback-of-cp-is-cp'   {_}{u}{g}{h}  u∘p₁pb₁≈g u∘p₁pb₂≈h  = unique
+        (begin
+                     u ∘ p₁ (pullback₁ f)            ≈˘⟨ pullʳ p₁-≈₁ ⟩ 
+                     (u ∘ p₁ pb₁) ∘ pb₁-to-can       ≈⟨ u∘p₁pb₁≈g ⟩∘⟨refl ⟩
+                     g ∘ pb₁-to-can                  ∎)
+        (begin
+                     u ∘ p₁ (pullback₂ f)           ≈˘⟨ pullʳ p₁-≈₂ ⟩ 
+                     (u ∘ p₁ pb₂) ∘ pb₂-to-can       ≈⟨ u∘p₁pb₂≈h ⟩∘⟨refl ⟩
+                     h ∘ pb₂-to-can                  ∎)
 
