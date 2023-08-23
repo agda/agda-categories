@@ -193,6 +193,8 @@ module _ {o ℓ e} (CC : CartesianCategory o ℓ e) (𝒞-Coproducts : BinaryCop
   PNNO⇒Initial₁ : ParametrizedNaturalNumber → Initial (F-Algebras (Maybe 𝒞 terminal 𝒞-Coproducts))
   PNNO⇒Initial₁ pnno = (NNO⇒Initial 𝒞 terminal 𝒞-Coproducts) (PNNO⇒NNO pnno)
 
+-- TODO fix definition to use IsInitial
+  -- every PNNO is also a NNO (the other direction only holds in CCCs)
   PNNO⇒Initial₂ : ParametrizedNaturalNumber → (∀ A → Initial (F-Algebras (coproductF A)))
   PNNO⇒Initial₂ pnno A = record 
     { ⊥ = record 

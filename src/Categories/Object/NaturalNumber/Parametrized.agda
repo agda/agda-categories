@@ -5,6 +5,8 @@ open import Categories.Object.Terminal hiding (up-to-iso)
 open import Categories.Category.Cartesian.Bundle
 open import Categories.Category.BinaryProducts
 
+-- Parametrized natural numbers object as described here https://ncatlab.org/nlab/show/natural+numbers+object#withparams
+
 module Categories.Object.NaturalNumber.Parametrized {o ℓ e} (CC : CartesianCategory o ℓ e) where
 
 open import Level
@@ -74,6 +76,7 @@ record ParametrizedNaturalNumber : Set (o ⊔ ℓ ⊔ e) where
 
   open IsParametrizedNaturalNumber isParametrizedNaturalNumber public
 
+-- every PNNO is also a NNO (the other direction only holds in CCCs)
 PNNO⇒NNO : ParametrizedNaturalNumber → NaturalNumber
 PNNO⇒NNO pnno = record { N = N ; isNaturalNumber = isNaturalNumber }
   where open ParametrizedNaturalNumber pnno
