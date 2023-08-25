@@ -4,16 +4,15 @@ module Categories.Object.NaturalNumber.Properties.F-Algebras where
 open import Level
 open import Function using (_$_)
 
-open import Categories.Category
-open import Categories.Category.Construction.F-Algebras
-open import Categories.Category.Cocartesian
-open import Categories.Category.Cartesian
-open import Categories.Category.Cartesian.Bundle
-open import Categories.Category.BinaryProducts
-open import Categories.Functor renaming (id to idF)
-open import Categories.Functor.Algebra
-open import Categories.Object.Terminal renaming (up-to-iso to ⊤-up-to-iso)
-open import Categories.Object.Initial
+open import Categories.Category.Core
+open import Categories.Category.Construction.F-Algebras using (F-Algebras)
+open import Categories.Category.Cocartesian using (BinaryCoproducts)
+open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
+open import Categories.Category.BinaryProducts using (BinaryProducts)
+open import Categories.Functor using (Endofunctor; Functor)
+open import Categories.Functor.Algebra using (F-Algebra; F-Algebra-Morphism)
+open import Categories.Object.Terminal using (Terminal)
+open import Categories.Object.Initial using (Initial; IsInitial)
 
 import Categories.Morphism.Reasoning as MR
 import Categories.Object.NaturalNumber as NNO
@@ -91,7 +90,8 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (�
         { f = universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂)
         ; commutes = begin
           universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ∘ [ z , s ]                                         ≈⟨ ∘-distribˡ-[] ⟩
-          [ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ∘ z , universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ∘ s ]                         ≈⟨ []-cong₂ (⟺ z-commute) (⟺ s-commute ○ assoc) ⟩
+          [ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ∘ z 
+          , universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ∘ s ]                                             ≈⟨ []-cong₂ (⟺ z-commute) (⟺ s-commute ○ assoc) ⟩
           [ F-Algebra.α alg ∘ i₁ , F-Algebra.α alg ∘ (i₂ ∘ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂)) ] ≈˘⟨ ∘-distribˡ-[] ⟩
           F-Algebra.α alg ∘ [ i₁ , i₂ ∘ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ]                     ∎
         }
@@ -112,7 +112,7 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (�
     where
       open NaturalNumber NNO
 
--- A parametrized NNO is an initial algebra for the 'X ↦ A + X' endofunctor.
+-- A parametrized NNO corresponds to existence of a Maybe algebra and initiality of the PNNO algebra
 module _ {o ℓ e} (CC : CartesianCategory o ℓ e) (𝒞-Coproducts : BinaryCoproducts (CartesianCategory.U CC)) where
   open CartesianCategory CC renaming (U to 𝒞)
   open BinaryCoproducts 𝒞-Coproducts
@@ -146,8 +146,10 @@ module _ {o ℓ e} (CC : CartesianCategory o ℓ e) (𝒞-Coproducts : BinaryCop
     ; α = [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ] 
     }
 
-  -- existence of a Maybe-algebra and initiality of the PNNO-Algebra corresponds to a PNNO
-  Initial⇒PNNO : (algebra : F-Algebra (Maybe 𝒞 terminal 𝒞-Coproducts)) → (∀ A → IsInitial (F-Algebras (coproductF A)) (PNNO-Algebra A (F-Algebra.A algebra) (F-Algebra.α algebra ∘ i₁) (F-Algebra.α algebra ∘ i₂))) → ParametrizedNaturalNumber
+  Initial⇒PNNO : (algebra : F-Algebra (Maybe 𝒞 terminal 𝒞-Coproducts)) 
+    → (∀ A → IsInitial (F-Algebras (coproductF A)) 
+                       (PNNO-Algebra A (F-Algebra.A algebra) (F-Algebra.α algebra ∘ i₁) (F-Algebra.α algebra ∘ i₂))) 
+    → ParametrizedNaturalNumber
   Initial⇒PNNO algebra isInitial = record 
     { N = N
     ; isParametrizedNaturalNumber = record
@@ -169,22 +171,21 @@ module _ {o ℓ e} (CC : CartesianCategory o ℓ e) (𝒞-Coproducts : BinaryCop
       ; unique = λ {A} {X} {f} {g} {u} eqᶻ eqˢ → ⟺ $ isInitial.!-unique A {A = alg′ f g} (record 
         { f = u 
         ; commutes = begin 
-          u ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ]                                                         ≈⟨ ⟺ +-g-η ⟩ 
-          [ ((u ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ]) ∘ i₁) , ((u ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ]) ∘ i₂) ] ≈⟨ []-cong₂ (pullʳ inject₁) (pullʳ inject₂) ⟩ 
-          [ u ∘ ⟨ id , z ∘ ! ⟩ , u ∘ (id ⁂ s) ]                                                   ≈˘⟨ []-cong₂ eqᶻ eqˢ ⟩ 
-          [ f , g ∘ u ]                                                                           ≈⟨ +-unique (pullʳ inject₁ ○ inject₁) (pullʳ inject₂ ○ pullˡ inject₂) ⟩ 
-          [ f , g ] ∘ [ i₁ , i₂ ∘ u ]                                                             ∎ 
+          u ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ]              ≈⟨ ⟺ +-g-η ⟩ 
+          [ ((u ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ]) ∘ i₁) 
+          , ((u ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ]) ∘ i₂) ] ≈⟨ []-cong₂ (pullʳ inject₁) (pullʳ inject₂) ⟩ 
+          [ u ∘ ⟨ id , z ∘ ! ⟩ , u ∘ (id ⁂ s) ]        ≈˘⟨ []-cong₂ eqᶻ eqˢ ⟩ 
+          [ f , g ∘ u ]                                ≈⟨ +-unique (pullʳ inject₁ ○ inject₁) (pullʳ inject₂ ○ pullˡ inject₂) ⟩ 
+          [ f , g ] ∘ [ i₁ , i₂ ∘ u ]                  ∎ 
         })
       } 
     }
     where
-      module algebra = F-Algebra algebra
-      -- 
       open F-Algebra algebra using (α) renaming (A to N)
       z = α ∘ i₁
       s = α ∘ i₂
+
       module isInitial A = IsInitial (isInitial A)
-      -- open NaturalNumber (Initial⇒NNO 𝒞 terminal 𝒞-Coproducts initial)
 
       alg′  : ∀ {A X} → (f : A ⇒ X) → (g : X ⇒ X) → F-Algebra (coproductF A)
       alg′ {A} {X} f g = record 
@@ -195,27 +196,31 @@ module _ {o ℓ e} (CC : CartesianCategory o ℓ e) (𝒞-Coproducts : BinaryCop
   PNNO⇒Initial₁ : ParametrizedNaturalNumber → Initial (F-Algebras (Maybe 𝒞 terminal 𝒞-Coproducts))
   PNNO⇒Initial₁ pnno = (NNO⇒Initial 𝒞 terminal 𝒞-Coproducts) (PNNO⇒NNO pnno)
 
-  PNNO⇒Initial₂ : (pnno : ParametrizedNaturalNumber) → (∀ A → IsInitial (F-Algebras (coproductF A)) (PNNO-Algebra A (ParametrizedNaturalNumber.N pnno) (ParametrizedNaturalNumber.z pnno) (ParametrizedNaturalNumber.s pnno)))
+  PNNO⇒Initial₂ : (pnno : ParametrizedNaturalNumber)
+    → (∀ A → IsInitial (F-Algebras (coproductF A)) 
+                       (PNNO-Algebra A (ParametrizedNaturalNumber.N pnno) (ParametrizedNaturalNumber.z pnno) (ParametrizedNaturalNumber.s pnno)))
   PNNO⇒Initial₂ pnno A = record 
     { ! = λ {alg} → record 
       { f = universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) 
       ; commutes = begin 
-        universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ]                         ≈⟨ ∘-distribˡ-[] ⟩ 
-        [ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ∘ ⟨ id , z ∘ ! ⟩ , universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ∘ (id ⁂ s) ]       ≈⟨ []-cong₂ (⟺ commute₁) (⟺ commute₂) ⟩
-        [ F-Algebra.α alg ∘ i₁ , ((F-Algebra.α alg ∘ i₂) ∘ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂)) ] ≈˘⟨ trans ∘-distribˡ-[] ([]-congˡ sym-assoc) ⟩
-        F-Algebra.α alg ∘ [ i₁ , i₂ ∘ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ]                       ∎ 
+        universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ]   ≈⟨ ∘-distribˡ-[] ⟩ 
+        [ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ∘ ⟨ id , z ∘ ! ⟩ 
+        , universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ∘ (id ⁂ s) ]                  ≈⟨ []-cong₂ (⟺ commute₁) (⟺ commute₂) ⟩
+        [ F-Algebra.α alg ∘ i₁ 
+        , ((F-Algebra.α alg ∘ i₂) ∘ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂)) ]  ≈˘⟨ trans ∘-distribˡ-[] ([]-congˡ sym-assoc) ⟩
+        F-Algebra.α alg ∘ [ i₁ , i₂ ∘ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ] ∎ 
       } 
     ; !-unique = λ {X} f → 
       let commute₁ = begin 
-            F-Algebra.α X ∘ i₁ ≈⟨ pushʳ (⟺ inject₁) ⟩ 
+            F-Algebra.α X ∘ i₁                                            ≈⟨ pushʳ (⟺ inject₁) ⟩ 
             ((F-Algebra.α X ∘ [ i₁ , i₂ ∘ F-Algebra-Morphism.f f ]) ∘ i₁) ≈˘⟨ F-Algebra-Morphism.commutes f ⟩∘⟨refl ⟩
             ((F-Algebra-Morphism.f f ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ]) ∘ i₁) ≈⟨ pullʳ inject₁ ⟩
-            F-Algebra-Morphism.f f ∘ ⟨ id , z ∘ ! ⟩ ∎
+            F-Algebra-Morphism.f f ∘ ⟨ id , z ∘ ! ⟩                       ∎
           commute₂ = begin 
-            (F-Algebra.α X ∘ i₂) ∘ F-Algebra-Morphism.f f ≈⟨ (pullʳ (⟺ inject₂) ○ ⟺ assoc) ⟩ 
+            (F-Algebra.α X ∘ i₂) ∘ F-Algebra-Morphism.f f                 ≈⟨ (pullʳ (⟺ inject₂) ○ ⟺ assoc) ⟩ 
             ((F-Algebra.α X ∘ [ i₁ , i₂ ∘ F-Algebra-Morphism.f f ]) ∘ i₂) ≈˘⟨ F-Algebra-Morphism.commutes f ⟩∘⟨refl ⟩
             ((F-Algebra-Morphism.f f ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ]) ∘ i₂) ≈⟨ pullʳ inject₂ ⟩
-            F-Algebra-Morphism.f f ∘ (id ⁂ s) ∎
+            F-Algebra-Morphism.f f ∘ (id ⁂ s)                             ∎
       in ⟺ $ unique commute₁ commute₂
     }
     where
