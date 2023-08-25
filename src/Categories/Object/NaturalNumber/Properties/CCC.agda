@@ -33,8 +33,8 @@ open Equiv
 
 open Terminal terminal
 
-NNO×CCC⇒PNNO' : NaturalNumber → ParametrizedNaturalNumber
-NNO×CCC⇒PNNO' nno = record 
+NNO×CCC⇒PNNO : NaturalNumber → ParametrizedNaturalNumber
+NNO×CCC⇒PNNO nno = record 
   { N = N 
   ; isParametrizedNaturalNumber = record
     { z = z
@@ -58,60 +58,87 @@ NNO×CCC⇒PNNO' nno = record
       (eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ∘ s ⁂ id ∘ id)) ∘ swap ≈˘⟨ pullˡ (pullʳ ⁂∘⁂) ⟩
       (eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ (s ⁂ id) ∘ swap ≈˘⟨ pullʳ (swap∘⁂) ⟩
       ((eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap) ∘ (id ⁂ s) ∎
-    ; unique = λ {A} {X} {f} {g} {u} eqᶻ eqˢ → begin 
-      u ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ {!   !} ⟩
-      {!   !} ≈⟨ {!   !} ⟩
-      {!   !} ≈⟨ {!   !} ⟩
-      (eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap ∎
+    ; unique = λ {A} {X} {f} {g} {u} eqᶻ eqˢ → swap-prop (λ-rev (begin 
+      λg (u ∘ swap) ≈⟨ nno-unique (sym (λ-unique′ 
+      (begin 
+        eval′ ∘ (λg (u ∘ swap) ∘ z ⁂ id) ≈⟨ refl⟩∘⟨ (sym (trans ⁂∘⁂ (⁂-cong₂ refl identity²))) ⟩ 
+        eval′ ∘ (λg (u ∘ swap) ⁂ id) ∘ (z ⁂ id) ≈⟨ pullˡ β′ ⟩
+        (u ∘ swap) ∘ (z ⁂ id) ≈⟨ pullʳ swap∘⁂ ⟩
+        u ∘ (id ⁂ z) ∘ swap ≈⟨ pushʳ (unique′ 
+        (begin 
+          π₁ ∘ (id ⁂ z) ∘ swap ≈⟨ pullˡ project₁ ⟩ 
+          (id ∘ π₁) ∘ swap ≈⟨ pullʳ project₁ ⟩ 
+          id ∘ π₂ ≈˘⟨ pullˡ project₁ ⟩ 
+          π₁ ∘ ⟨ id , z ∘ ! ⟩ ∘ π₂ ∎) 
+        (trans (pullˡ project₂) (trans (pullʳ project₂) (trans (sym (pullʳ !-unique₂)) (sym (pullˡ project₂)))))) ⟩
+        (u ∘ ⟨ id , z ∘ ! ⟩) ∘ π₂ ≈⟨ sym (∘-resp-≈ˡ eqᶻ) ⟩
+        f ∘ π₂ ∎))) 
+      (begin 
+        λg (g ∘ eval′) ∘ λg (u ∘ swap) ≈⟨ exp.subst product product ⟩ 
+        λg ((g ∘ eval′) ∘ (λg (u ∘ swap) ⁂ id)) ≈⟨ λ-cong (pullʳ β′) ⟩
+        λg (g ∘ u ∘ swap) ≈⟨ λ-cong (pullˡ eqˢ) ⟩
+        λg ((u ∘ (id ⁂ s)) ∘ swap) ≈⟨ λ-cong (trans (pullʳ (sym swap∘⁂)) sym-assoc) ⟩
+        λg ((u ∘ swap) ∘ (s ⁂ id)) ≈˘⟨ exp.subst product product ⟩
+        λg (u ∘ swap) ∘ s ∎) ⟩ 
+      universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ≈˘⟨ η-exp′ ⟩
+      λg (eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ≈˘⟨ λ-cong (cancelʳ swap∘swap) ⟩
+      λg (((eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap) ∘ swap) ∎))
     } 
   }
   where
-    open NaturalNumber nno
+    open NaturalNumber nno renaming (unique to nno-unique)
     open Initial (NNO⇒Initial 𝒞 terminal 𝒞-Coproducts nno) using (⊥) renaming (! to ¡)
+    λg' : ∀ {A B C} → A × C ⇒ B → C ⇒ B ^ A
+    λg' = λ g → λg (g ∘ swap)
+    λ-rev : ∀ {A B C} {f g : C × A ⇒ B} → λg f ≈ λg g → f ≈ g
+    λ-rev {f = f} {g = g} eq = trans (sym β′) (trans (∘-resp-≈ʳ (⟨⟩-congʳ (∘-resp-≈ˡ eq))) β′) 
+    swap-prop : ∀ {A B C : Obj} {f g : A × B ⇒ C} → f ∘ swap ≈ g ∘ swap → f ≈ g
+    swap-prop {A} {B} {C} {f} {g} eq = trans ( introʳ swap∘swap) (trans (pullˡ eq) (cancelʳ swap∘swap))
+    -- λg'-prop : ∀ {A B C} {f : } {g : } → λg' f ≈ λg' g → f ≈ g
+    -- λg'-prop = {!   !}
 
-NNO×CCC⇒PNNO : NaturalNumber → ParametrizedNaturalNumber
-NNO×CCC⇒PNNO nno = Initial⇒PNNO cartesianCategory 𝒞-Coproducts ⊥ λ A → record 
-  { ! = λ {X} → !' A X
-  ; !-unique = {!   !} 
-  }
-  where
-    open NaturalNumber nno
-    open Initial (NNO⇒Initial 𝒞 terminal 𝒞-Coproducts nno) using (⊥) renaming (! to ¡)
-    !' : ∀ (A : Obj) (algebra : F-Algebra (coproductF cartesianCategory 𝒞-Coproducts A)) → F-Algebra-Morphism  (PNNO-Algebra cartesianCategory 𝒞-Coproducts A (F-Algebra.A ⊥) (F-Algebra.α ⊥ ∘ i₁) (F-Algebra.α ⊥ ∘ i₂)) algebra
-    !' A algebra = record 
-      { f = (eval′ ∘ (F-Algebra-Morphism.f (¡ {A = alg}) ⁂ id)) ∘ swap 
-      ; commutes = begin 
-        ((eval′ ∘ (F-Algebra-Morphism.f (¡ {A = alg}) ⁂ id)) ∘ swap) ∘ [ ⟨ id , ([ z , s ] ∘ i₁) ∘ ! ⟩ , id ⁂ ([ z , s ] ∘ i₂) ]                                                                                                                                               ≈⟨ pullʳ (⟺ swap∘⁂) ⟩∘⟨refl ⟩ 
-        ((eval′ ∘ (swap ∘ (id ⁂ F-Algebra-Morphism.f (¡ {A = alg}))))) ∘ [ ⟨ id , ([ z , s ] ∘ i₁) ∘ ! ⟩ , id ⁂ ([ z , s ] ∘ i₂) ]                                                                                                                                             ≈⟨ pullʳ (pullʳ ∘[]) ⟩
-        eval′ ∘ swap ∘ [ (id ⁂ F-Algebra-Morphism.f (¡ {A = alg})) ∘ ⟨ id , ([ z , s ] ∘ i₁) ∘ ! ⟩ , (id ⁂ F-Algebra-Morphism.f (¡ {A = alg})) ∘ (id ⁂ ([ z , s ] ∘ i₂)) ]                                                                                             ≈⟨ refl⟩∘⟨ refl⟩∘⟨ []-cong₂ ⁂∘⟨⟩ ⁂∘⁂ ⟩
-        eval′ ∘ swap ∘ [ ⟨ id ∘ id , F-Algebra-Morphism.f (¡ {A = alg}) ∘ ([ z , s ] ∘ i₁) ∘ ! ⟩ , (id ∘ id ⁂ F-Algebra-Morphism.f (¡ {A = alg}) ∘ ([ z , s ] ∘ i₂)) ]                                                                                                 ≈⟨ refl⟩∘⟨ refl⟩∘⟨ []-cong₂ (⟨⟩-cong₂ identity² (pullˡ (pullˡ (F-Algebra-Morphism.commutes ¡)))) (⟨⟩-cong₂ (∘-resp-≈ˡ identity²) (∘-resp-≈ˡ (pullˡ (F-Algebra-Morphism.commutes ¡)))) ⟩
-        eval′ ∘ swap ∘ [ ⟨ id , (([ (λg (α ∘ i₁ ∘ π₂)) , λg (α ∘ i₂ ∘ eval′) ] ∘ [ i₁ , i₂ ∘ F-Algebra-Morphism.f (¡ {A = alg})]) ∘ i₁) ∘ ! ⟩ , id ⁂ (([ (λg (α ∘ i₁ ∘ π₂)) , λg (α ∘ i₂ ∘ eval′) ] ∘ [ i₁ , i₂ ∘ F-Algebra-Morphism.f (¡ {A = alg})]) ∘ i₂) ] ≈⟨ refl⟩∘⟨ refl⟩∘⟨ []-cong₂ (⟨⟩-congˡ (∘-resp-≈ˡ (pullʳ inject₁))) (⟨⟩-congˡ (∘-resp-≈ˡ (pullʳ inject₂))) ⟩
-        eval′ ∘ swap ∘ [ ⟨ id , ([ (λg (α ∘ i₁ ∘ π₂)) , λg (α ∘ i₂ ∘ eval′) ] ∘ i₁) ∘ ! ⟩ , id ⁂ ([ (λg (α ∘ i₁ ∘ π₂)) , λg (α ∘ i₂ ∘ eval′) ] ∘ i₂ ∘ F-Algebra-Morphism.f (¡ {A = alg})) ]                                                                            ≈⟨ refl⟩∘⟨ refl⟩∘⟨ []-cong₂ (⟨⟩-congˡ (∘-resp-≈ˡ inject₁)) (⟨⟩-congˡ (∘-resp-≈ˡ (pullˡ inject₂))) ⟩
-        eval′ ∘ swap ∘ [ ⟨ id , λg (α ∘ i₁ ∘ π₂) ∘ ! ⟩ , id ⁂ (λg (α ∘ i₂ ∘ eval′) ∘ F-Algebra-Morphism.f (¡ {A = alg})) ]                                                                                                                                                 ≈⟨ trans sym-assoc ∘[] ⟩
-        [ (eval′ ∘ swap) ∘ ⟨ id , λg (α ∘ i₁ ∘ π₂) ∘ ! ⟩ , (eval′ ∘ swap) ∘ (id ⁂ (λg (α ∘ i₂ ∘ eval′) ∘ F-Algebra-Morphism.f (¡ {A = alg}))) ]                                                                                                                            ≈⟨ []-cong₂ (pullʳ swap∘⟨⟩) (pullʳ swap∘⁂) ⟩
-        [ eval′ ∘ ⟨ λg (α ∘ i₁ ∘ π₂) ∘ ! , id ⟩ , eval′ ∘ ((λg (α ∘ i₂ ∘ eval′) ∘ F-Algebra-Morphism.f (¡ {A = alg})) ⁂ id) ∘ swap ]                                                                                                                                       ≈˘⟨ []-cong₂ (∘-resp-≈ʳ (⁂∘⟨⟩ ○ ⟨⟩-congˡ identity²)) (refl⟩∘⟨ ((⁂∘⁂ ○ ⟨⟩-congˡ ((∘-resp-≈ˡ identity²))) ⟩∘⟨refl)) ⟩ -- ∘-resp-≈ʳ (⁂∘⟨⟩ ○ ⟨⟩-congˡ identity²)
-        [ eval′ ∘ (λg (α ∘ i₁ ∘ π₂) ⁂ id) ∘ ⟨ ! , id ⟩ , eval′ ∘ ((λg (α ∘ i₂ ∘ eval′) ⁂ id) ∘ ((F-Algebra-Morphism.f (¡ {A = alg})) ⁂ id)) ∘ swap ] ≈⟨ []-cong₂ (pullˡ β′) (pullˡ (pullˡ β′)) ⟩
-        [ (α ∘ i₁ ∘ π₂) ∘ ⟨ ! , id ⟩ , ((α ∘ i₂ ∘ eval′) ∘ ((F-Algebra-Morphism.f (¡ {A = alg})) ⁂ id)) ∘ swap ] ≈⟨ []-cong₂ assoc (assoc ○ assoc) ○ ⟺ ∘[] ⟩
-        α ∘ [ (i₁ ∘ π₂) ∘ ⟨ ! , id ⟩ , (i₂ ∘ eval′) ∘ ((F-Algebra-Morphism.f (¡ {A = alg})) ⁂ id) ∘ swap ] ≈⟨ refl⟩∘⟨ []-cong₂ (pullʳ project₂) assoc ⟩
-        α ∘ [ i₁ ∘ id , i₂ ∘ eval′ ∘ ((F-Algebra-Morphism.f (¡ {A = alg})) ⁂ id) ∘ swap ] ≈⟨ refl⟩∘⟨ []-cong₂ identityʳ (∘-resp-≈ʳ sym-assoc) ⟩
-        α ∘ [ i₁ , i₂ ∘ (eval′ ∘ (F-Algebra-Morphism.f (¡ {A = alg}) ⁂ id)) ∘ swap ] ∎
-      }
-      where
-        open F-Algebra algebra renaming (A to X)
-        alg : F-Algebra (Maybe 𝒞 terminal 𝒞-Coproducts)
-        alg = record 
-          { A = X ^ A 
-          ; α = [ (λg (α ∘ i₁ ∘ π₂)) , λg (α ∘ i₂ ∘ eval′) ] 
-          }
-    !-unique' : ∀ (A : Obj) (algebra : F-Algebra (coproductF cartesianCategory 𝒞-Coproducts A)) → (f : F-Algebra-Morphism  (PNNO-Algebra cartesianCategory 𝒞-Coproducts A (F-Algebra.A ⊥) (F-Algebra.α ⊥ ∘ i₁) (F-Algebra.α ⊥ ∘ i₂)) algebra) → (F-Algebras (coproductF cartesianCategory 𝒞-Coproducts A)) [ !' A algebra ≈ f ]
-    !-unique' A algebra f = begin 
-      (eval′ ∘ (universal _ _ ⁂ id)) ∘ swap ≈⟨ {!   !} ⟩ 
-      F-Algebra-Morphism.f f ∎
-      where
-        open F-Algebra algebra renaming (A to X)
-        alg : F-Algebra (Maybe 𝒞 terminal 𝒞-Coproducts)
-        alg = record 
-          { A = X ^ A 
-          ; α = [ (λg (α ∘ i₁ ∘ π₂)) , λg (α ∘ i₂ ∘ eval′) ] 
-          }
+-- NNO×CCC⇒PNNO : NaturalNumber → ParametrizedNaturalNumber
+-- NNO×CCC⇒PNNO nno = Initial⇒PNNO cartesianCategory 𝒞-Coproducts ⊥ λ A → record 
+--   { ! = λ {X} → !' A X
+--   ; !-unique = λ f → {! sym nno-unique  !}
+--   }
+--   where
+--     open NaturalNumber nno renaming (unique to nno-unique)
+--     open Initial (NNO⇒Initial 𝒞 terminal 𝒞-Coproducts nno) using (⊥) renaming (! to ¡)
+--     !' : ∀ (A : Obj) (algebra : F-Algebra (coproductF cartesianCategory 𝒞-Coproducts A)) → F-Algebra-Morphism  (PNNO-Algebra cartesianCategory 𝒞-Coproducts A (F-Algebra.A ⊥) (F-Algebra.α ⊥ ∘ i₁) (F-Algebra.α ⊥ ∘ i₂)) algebra
+--     !' A algebra = record 
+--       { f = (eval′ ∘ (F-Algebra-Morphism.f (¡ {A = alg}) ⁂ id)) ∘ swap 
+--       ; commutes = begin 
+--         ((eval′ ∘ (F-Algebra-Morphism.f (¡ {A = alg}) ⁂ id)) ∘ swap) ∘ [ ⟨ id , ([ z , s ] ∘ i₁) ∘ ! ⟩ , id ⁂ ([ z , s ] ∘ i₂) ]                                                                                                                                               ≈⟨ pullʳ (⟺ swap∘⁂) ⟩∘⟨refl ⟩ 
+--         ((eval′ ∘ (swap ∘ (id ⁂ F-Algebra-Morphism.f (¡ {A = alg}))))) ∘ [ ⟨ id , ([ z , s ] ∘ i₁) ∘ ! ⟩ , id ⁂ ([ z , s ] ∘ i₂) ]                                                                                                                                             ≈⟨ pullʳ (pullʳ ∘[]) ⟩
+--         eval′ ∘ swap ∘ [ (id ⁂ F-Algebra-Morphism.f (¡ {A = alg})) ∘ ⟨ id , ([ z , s ] ∘ i₁) ∘ ! ⟩ , (id ⁂ F-Algebra-Morphism.f (¡ {A = alg})) ∘ (id ⁂ ([ z , s ] ∘ i₂)) ]                                                                                             ≈⟨ refl⟩∘⟨ refl⟩∘⟨ []-cong₂ ⁂∘⟨⟩ ⁂∘⁂ ⟩
+--         eval′ ∘ swap ∘ [ ⟨ id ∘ id , F-Algebra-Morphism.f (¡ {A = alg}) ∘ ([ z , s ] ∘ i₁) ∘ ! ⟩ , (id ∘ id ⁂ F-Algebra-Morphism.f (¡ {A = alg}) ∘ ([ z , s ] ∘ i₂)) ]                                                                                                 ≈⟨ refl⟩∘⟨ refl⟩∘⟨ []-cong₂ (⟨⟩-cong₂ identity² (pullˡ (pullˡ (F-Algebra-Morphism.commutes ¡)))) (⟨⟩-cong₂ (∘-resp-≈ˡ identity²) (∘-resp-≈ˡ (pullˡ (F-Algebra-Morphism.commutes ¡)))) ⟩
+--         eval′ ∘ swap ∘ [ ⟨ id , (([ (λg (α ∘ i₁ ∘ π₂)) , λg (α ∘ i₂ ∘ eval′) ] ∘ [ i₁ , i₂ ∘ F-Algebra-Morphism.f (¡ {A = alg})]) ∘ i₁) ∘ ! ⟩ , id ⁂ (([ (λg (α ∘ i₁ ∘ π₂)) , λg (α ∘ i₂ ∘ eval′) ] ∘ [ i₁ , i₂ ∘ F-Algebra-Morphism.f (¡ {A = alg})]) ∘ i₂) ] ≈⟨ refl⟩∘⟨ refl⟩∘⟨ []-cong₂ (⟨⟩-congˡ (∘-resp-≈ˡ (pullʳ inject₁))) (⟨⟩-congˡ (∘-resp-≈ˡ (pullʳ inject₂))) ⟩
+--         eval′ ∘ swap ∘ [ ⟨ id , ([ (λg (α ∘ i₁ ∘ π₂)) , λg (α ∘ i₂ ∘ eval′) ] ∘ i₁) ∘ ! ⟩ , id ⁂ ([ (λg (α ∘ i₁ ∘ π₂)) , λg (α ∘ i₂ ∘ eval′) ] ∘ i₂ ∘ F-Algebra-Morphism.f (¡ {A = alg})) ]                                                                            ≈⟨ refl⟩∘⟨ refl⟩∘⟨ []-cong₂ (⟨⟩-congˡ (∘-resp-≈ˡ inject₁)) (⟨⟩-congˡ (∘-resp-≈ˡ (pullˡ inject₂))) ⟩
+--         eval′ ∘ swap ∘ [ ⟨ id , λg (α ∘ i₁ ∘ π₂) ∘ ! ⟩ , id ⁂ (λg (α ∘ i₂ ∘ eval′) ∘ F-Algebra-Morphism.f (¡ {A = alg})) ]                                                                                                                                                 ≈⟨ trans sym-assoc ∘[] ⟩
+--         [ (eval′ ∘ swap) ∘ ⟨ id , λg (α ∘ i₁ ∘ π₂) ∘ ! ⟩ , (eval′ ∘ swap) ∘ (id ⁂ (λg (α ∘ i₂ ∘ eval′) ∘ F-Algebra-Morphism.f (¡ {A = alg}))) ]                                                                                                                            ≈⟨ []-cong₂ (pullʳ swap∘⟨⟩) (pullʳ swap∘⁂) ⟩
+--         [ eval′ ∘ ⟨ λg (α ∘ i₁ ∘ π₂) ∘ ! , id ⟩ , eval′ ∘ ((λg (α ∘ i₂ ∘ eval′) ∘ F-Algebra-Morphism.f (¡ {A = alg})) ⁂ id) ∘ swap ]                                                                                                                                       ≈˘⟨ []-cong₂ (∘-resp-≈ʳ (⁂∘⟨⟩ ○ ⟨⟩-congˡ identity²)) (refl⟩∘⟨ ((⁂∘⁂ ○ ⟨⟩-congˡ ((∘-resp-≈ˡ identity²))) ⟩∘⟨refl)) ⟩ -- ∘-resp-≈ʳ (⁂∘⟨⟩ ○ ⟨⟩-congˡ identity²)
+--         [ eval′ ∘ (λg (α ∘ i₁ ∘ π₂) ⁂ id) ∘ ⟨ ! , id ⟩ , eval′ ∘ ((λg (α ∘ i₂ ∘ eval′) ⁂ id) ∘ ((F-Algebra-Morphism.f (¡ {A = alg})) ⁂ id)) ∘ swap ] ≈⟨ []-cong₂ (pullˡ β′) (pullˡ (pullˡ β′)) ⟩
+--         [ (α ∘ i₁ ∘ π₂) ∘ ⟨ ! , id ⟩ , ((α ∘ i₂ ∘ eval′) ∘ ((F-Algebra-Morphism.f (¡ {A = alg})) ⁂ id)) ∘ swap ] ≈⟨ []-cong₂ assoc (assoc ○ assoc) ○ ⟺ ∘[] ⟩
+--         α ∘ [ (i₁ ∘ π₂) ∘ ⟨ ! , id ⟩ , (i₂ ∘ eval′) ∘ ((F-Algebra-Morphism.f (¡ {A = alg})) ⁂ id) ∘ swap ] ≈⟨ refl⟩∘⟨ []-cong₂ (pullʳ project₂) assoc ⟩
+--         α ∘ [ i₁ ∘ id , i₂ ∘ eval′ ∘ ((F-Algebra-Morphism.f (¡ {A = alg})) ⁂ id) ∘ swap ] ≈⟨ refl⟩∘⟨ []-cong₂ identityʳ (∘-resp-≈ʳ sym-assoc) ⟩
+--         α ∘ [ i₁ , i₂ ∘ (eval′ ∘ (F-Algebra-Morphism.f (¡ {A = alg}) ⁂ id)) ∘ swap ] ∎
+--       }
+--       where
+--         open F-Algebra algebra renaming (A to X)
+--         alg : F-Algebra (Maybe 𝒞 terminal 𝒞-Coproducts)
+--         alg = record 
+--           { A = X ^ A 
+--           ; α = [ (λg (α ∘ i₁ ∘ π₂)) , λg (α ∘ i₂ ∘ eval′) ] 
+--           }
+--     !-unique' : ∀ (A : Obj) (algebra : F-Algebra (coproductF cartesianCategory 𝒞-Coproducts A)) → (f : F-Algebra-Morphism  (PNNO-Algebra cartesianCategory 𝒞-Coproducts A (F-Algebra.A ⊥) (F-Algebra.α ⊥ ∘ i₁) (F-Algebra.α ⊥ ∘ i₂)) algebra) → (F-Algebras (coproductF cartesianCategory 𝒞-Coproducts A)) [ !' A algebra ≈ f ]
+--     !-unique' A algebra f = begin 
+--       (eval′ ∘ (universal _ _ ⁂ id)) ∘ swap ≈⟨ {! F-Algebra-Morphism.commutes f  !} ⟩ 
+--       F-Algebra-Morphism.f f ∎
+--       where
+--         open F-Algebra algebra renaming (A to X)
+--         alg : F-Algebra (Maybe 𝒞 terminal 𝒞-Coproducts)
+--         alg = record 
+--           { A = X ^ A 
+--           ; α = [ (λg (α ∘ i₁ ∘ π₂)) , λg (α ∘ i₂ ∘ eval′) ] 
+--           }
