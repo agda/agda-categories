@@ -47,6 +47,9 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
              f ≈ g → λg X×A f ≈ λg X×A g
   λ-cong X×A {f = f} {g = g} f≡g = λ-unique X×A (β X×A ○ f≡g)
 
+  λ-inj : ∀ {X : Obj} (X×A : Product X A) {f g} → λg X×A f ≈ λg X×A g → f ≈ g
+  λ-inj X×A {f = f} {g = g} eq = (⟺ (β X×A)) ○ (∘-resp-≈ʳ ([ X×A ⇒ product  ]×-cong₂ eq (Equiv.refl))) ○ β X×A
+
   subst : ∀ (p₂ : Product C A) (p₃ : Product D A) {f g} →
             λg p₃ f ∘ g ≈ λg p₂ (f ∘ [ p₂ ⇒ p₃ ] g ×id)
   subst p₂ p₃ {f} {g} = λ-unique p₂ (begin
