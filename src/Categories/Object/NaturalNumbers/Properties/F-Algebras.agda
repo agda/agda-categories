@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Object.NaturalNumber.Properties.F-Algebras where
+module Categories.Object.NaturalNumbers.Properties.F-Algebras where
 
 open import Level
 open import Function using (_$_)
@@ -13,7 +13,7 @@ open import Categories.Object.Terminal renaming (up-to-iso to ⊤-up-to-iso)
 open import Categories.Object.Initial
 
 import Categories.Morphism.Reasoning as MR
-import Categories.Object.NaturalNumber as NNO
+import Categories.Object.NaturalNumbers as NNOs
 
 -- A NNO is an inital algebra for the 'X ↦ ⊤ + X' endofunctor.
 module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (𝒞-Coproducts : BinaryCoproducts 𝒞) where
@@ -24,7 +24,7 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (�
   open HomReasoning
   open Equiv
   open MR 𝒞
-  open NNO 𝒞 𝒞-Terminal
+  open NNOs 𝒞 𝒞-Terminal
   
   Maybe : Functor 𝒞 𝒞
   Maybe = record
@@ -38,10 +38,10 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (�
   private
     module Maybe = Functor Maybe
 
-  Initial⇒NNO : Initial (F-Algebras Maybe) → NaturalNumber
+  Initial⇒NNO : Initial (F-Algebras Maybe) → NNO
   Initial⇒NNO initial = record
     { N = ⊥.A
-    ; isNaturalNumber = record
+    ; isNNO = record
       { z = ⊥.α ∘ i₁
       ; s = ⊥.α ∘ i₂
       ; universal = λ {A} q f →
@@ -76,8 +76,8 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (�
         ; α = [ q , f ]
         }
 
-  NNO⇒Initial : NaturalNumber → Initial (F-Algebras Maybe)
-  NNO⇒Initial NNO = record
+  NNO⇒Initial : NNO → Initial (F-Algebras Maybe)
+  NNO⇒Initial nno = record
     { ⊥ = record
       { A = N 
       ; α = [ z , s ]
@@ -106,4 +106,4 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (�
       }
     }
     where
-      open NaturalNumber NNO
+      open NNO nno

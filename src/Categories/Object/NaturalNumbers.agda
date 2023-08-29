@@ -3,7 +3,7 @@
 open import Categories.Category.Core
 open import Categories.Object.Terminal hiding (up-to-iso)
 
-module Categories.Object.NaturalNumber {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) where
+module Categories.Object.NaturalNumbers {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) where
 
 open import Level
 
@@ -21,7 +21,7 @@ private
     A B C D X Y Z : Obj
     h i j : A ⇒ B
 
-record IsNaturalNumber (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
+record IsNNO (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
     z : ⊤ ⇒ N
     s : N ⇒ N
@@ -36,19 +36,19 @@ record IsNaturalNumber (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
   universal-cong : ∀ {A} → {f f′ : ⊤ ⇒ A} → {g g′ : A ⇒ A} → f ≈ f′ → g ≈ g′ → universal f g ≈ universal f′ g′
   universal-cong f≈f′ g≈g′ = unique (⟺ f≈f′ ○  z-commute) (∘-resp-≈ˡ (⟺ g≈g′) ○ s-commute)
 
-record NaturalNumber : Set (o ⊔ ℓ ⊔ e) where
+record NNO : Set (o ⊔ ℓ ⊔ e) where
   field
     N : Obj
-    isNaturalNumber : IsNaturalNumber N
+    isNNO : IsNNO N
 
-  open IsNaturalNumber isNaturalNumber public
+  open IsNNO isNNO public
 
-open NaturalNumber
+open NNO
 
-module _ (N : NaturalNumber) (N′ : NaturalNumber) where
+module _ (N : NNO) (N′ : NNO) where
   private
-    module N = NaturalNumber N
-    module N′ = NaturalNumber N′
+    module N = NNO N
+    module N′ = NNO N′
 
   up-to-iso : N.N ≅ N′.N
   up-to-iso = record
@@ -60,6 +60,6 @@ module _ (N : NaturalNumber) (N′ : NaturalNumber) where
       }
     }
     where
-      universal-∘ : ∀ (N N′ : NaturalNumber) → universal N′ (z N) (s N) ∘ universal N (z N′) (s N′) ≈ id  
+      universal-∘ : ∀ (N N′ : NNO) → universal N′ (z N) (s N) ∘ universal N (z N′) (s N′) ≈ id  
       universal-∘ N N′ = unique N (z-commute N′ ○ pushʳ (z-commute N)) (pullˡ (s-commute N′) ○ assoc ○ ∘-resp-≈ʳ (s-commute N) ○ ⟺ assoc) ○ (η N)
       
