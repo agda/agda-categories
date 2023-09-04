@@ -7,27 +7,26 @@ open import Categories.Category.BinaryProducts using (BinaryProducts)
 
 -- Parametrized natural numbers object as described here https://ncatlab.org/nlab/show/natural+numbers+object#withparams
 
-module Categories.Object.NaturalNumber.Parametrized {o ℓ e} (CC : CartesianCategory o ℓ e) where
+module Categories.Object.NaturalNumbers.Parametrized {o ℓ e} (CC : CartesianCategory o ℓ e) where
 
 open import Level
 open CartesianCategory CC renaming (U to 𝒞)
-open BinaryProducts products hiding (η; unique)
-
-open import Categories.Object.NaturalNumber 𝒞 terminal using (IsNaturalNumber; NaturalNumber) renaming (up-to-iso to nno-up-to-iso)
-open import Categories.Morphism 𝒞 using (_≅_)
-open import Categories.Morphism.Reasoning 𝒞
-
 open HomReasoning
 open Equiv
+
+open BinaryProducts products hiding (η; unique)
+open import Categories.Object.NaturalNumbers 𝒞 terminal using (IsNNO; NNO) renaming (up-to-iso to nno-up-to-iso)
 open Terminal terminal using (⊤; !; !-unique₂)
 
+open import Categories.Morphism 𝒞 using (_≅_)
+open import Categories.Morphism.Reasoning 𝒞
 
 private
   variable
     A B C D X Y Z : Obj
     h i j : A ⇒ B
 
-record IsParametrizedNaturalNumber (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
+record IsParametrizedNNO (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
     z : ⊤ ⇒ N
     s : N ⇒ N
@@ -42,8 +41,8 @@ record IsParametrizedNaturalNumber (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
   universal-cong : ∀ {A} → {f f′ : ⊤ ⇒ A} → {g g′ : A ⇒ A} → f ≈ f′ → g ≈ g′ → universal f g ≈ universal f′ g′
   universal-cong f≈f′ g≈g′ = unique (⟺ f≈f′ ○  commute₁) (∘-resp-≈ˡ (⟺ g≈g′) ○ commute₂)
 
-  isNaturalNumber : IsNaturalNumber N
-  isNaturalNumber = record
+  isNNO : IsNNO N
+  isNNO = record
     { z = z
     ; s = s
     ; universal = λ {A} q f → universal q f ∘ ⟨ ! , id ⟩
@@ -69,16 +68,16 @@ record IsParametrizedNaturalNumber (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
       z∘! : z ≈ z ∘ !
       z∘! = ⟺ identityʳ ○ ∘-resp-≈ʳ !-unique₂
 
-record ParametrizedNaturalNumber : Set (o ⊔ ℓ ⊔ e) where
+record ParametrizedNNO : Set (o ⊔ ℓ ⊔ e) where
   field
     N : Obj
-    isParametrizedNaturalNumber : IsParametrizedNaturalNumber N
+    isParametrizedNNO : IsParametrizedNNO N
 
-  open IsParametrizedNaturalNumber isParametrizedNaturalNumber public
+  open IsParametrizedNNO isParametrizedNNO public
 
 -- every PNNO is also a NNO (the other direction only holds in CCCs)
-PNNO⇒NNO : ParametrizedNaturalNumber → NaturalNumber
-PNNO⇒NNO pnno = record { N = ParametrizedNaturalNumber.N pnno ; isNaturalNumber = ParametrizedNaturalNumber.isNaturalNumber pnno }
+PNNO⇒NNO : ParametrizedNNO → NNO
+PNNO⇒NNO pnno = record { N = ParametrizedNNO.N pnno ; isNNO = ParametrizedNNO.isNNO pnno }
 
-up-to-iso : ∀ (N N′ : ParametrizedNaturalNumber) → ParametrizedNaturalNumber.N N ≅ ParametrizedNaturalNumber.N N′
+up-to-iso : ∀ (N N′ : ParametrizedNNO) → ParametrizedNNO.N N ≅ ParametrizedNNO.N N′
 up-to-iso N N′ = nno-up-to-iso (PNNO⇒NNO N) (PNNO⇒NNO N′)

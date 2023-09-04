@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Object.NaturalNumber.Properties.F-Algebras where
+module Categories.Object.NaturalNumbers.Properties.F-Algebras where
 
 open import Level
 open import Function using (_$_)
@@ -15,8 +15,8 @@ open import Categories.Object.Terminal using (Terminal)
 open import Categories.Object.Initial using (Initial; IsInitial)
 
 import Categories.Morphism.Reasoning as MR
-import Categories.Object.NaturalNumber as NNO
-import Categories.Object.NaturalNumber.Parametrized as PNNO
+import Categories.Object.NaturalNumbers as NNOs
+import Categories.Object.NaturalNumbers.Parametrized as PNNO
 
 -- A NNO is an inital algebra for the 'X ↦ ⊤ + X' endofunctor.
 module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (𝒞-Coproducts : BinaryCoproducts 𝒞) where
@@ -27,8 +27,8 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (�
   open HomReasoning
   open Equiv
   open MR 𝒞
-  open NNO 𝒞 𝒞-Terminal
-  
+  open NNOs 𝒞 𝒞-Terminal
+
   Maybe : Functor 𝒞 𝒞
   Maybe = record
     { F₀ = λ X → ⊤ + X
@@ -41,10 +41,10 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (�
   private
     module Maybe = Functor Maybe
 
-  Initial⇒NNO : Initial (F-Algebras Maybe) → NaturalNumber
+  Initial⇒NNO : Initial (F-Algebras Maybe) → NNO
   Initial⇒NNO initial = record
     { N = ⊥.A
-    ; isNaturalNumber = record
+    ; isNNO = record
       { z = ⊥.α ∘ i₁
       ; s = ⊥.α ∘ i₂
       ; universal = λ {A} q f →
@@ -79,8 +79,8 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (�
         ; α = [ q , f ]
         }
 
-  NNO⇒Initial : NaturalNumber → Initial (F-Algebras Maybe)
-  NNO⇒Initial NNO = record
+  NNO⇒Initial : NNO → Initial (F-Algebras Maybe)
+  NNO⇒Initial nno = record
     { ⊥ = record
       { A = N 
       ; α = [ z , s ]
@@ -110,7 +110,7 @@ module _ {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (�
       }
     }
     where
-      open NaturalNumber NNO
+      open NNO nno
 
 -- A parametrized NNO corresponds to existence of a Maybe algebra and initiality of the PNNO algebra
 module _ {o ℓ e} (CC : CartesianCategory o ℓ e) (𝒞-Coproducts : BinaryCoproducts (CartesianCategory.U CC)) where
@@ -121,7 +121,7 @@ module _ {o ℓ e} (CC : CartesianCategory o ℓ e) (𝒞-Coproducts : BinaryCop
   open Equiv
   open MR 𝒞
   open PNNO CC
-  open NNO 𝒞 terminal
+  open NNOs 𝒞 terminal
   open Terminal terminal
 
   coproductF : Obj → Endofunctor 𝒞
@@ -138,7 +138,7 @@ module _ {o ℓ e} (CC : CartesianCategory o ℓ e) (𝒞-Coproducts : BinaryCop
 
   private
     module coproductF A = Functor (coproductF A)
- 
+
   -- the algebra that corresponds to a PNNO (if it is initial)
   PNNO-Algebra : ∀ A N → ⊤ ⇒ N → N ⇒ N → F-Algebra (coproductF A)
   PNNO-Algebra A N z s = record
@@ -149,10 +149,10 @@ module _ {o ℓ e} (CC : CartesianCategory o ℓ e) (𝒞-Coproducts : BinaryCop
   Initial⇒PNNO : (algebra : F-Algebra (Maybe 𝒞 terminal 𝒞-Coproducts)) 
     → (∀ A → IsInitial (F-Algebras (coproductF A)) 
                        (PNNO-Algebra A (F-Algebra.A algebra) (F-Algebra.α algebra ∘ i₁) (F-Algebra.α algebra ∘ i₂))) 
-    → ParametrizedNaturalNumber
+    → ParametrizedNNO
   Initial⇒PNNO algebra isInitial = record 
     { N = N
-    ; isParametrizedNaturalNumber = record
+    ; isParametrizedNNO = record
       { z = z
       ; s = s
       ; universal = λ {A} {X} f g → F-Algebra-Morphism.f (isInitial.! A {A = alg′ f g})
@@ -193,12 +193,12 @@ module _ {o ℓ e} (CC : CartesianCategory o ℓ e) (𝒞-Coproducts : BinaryCop
         ; α = [ f , g ] 
         }
 
-  PNNO⇒Initial₁ : ParametrizedNaturalNumber → Initial (F-Algebras (Maybe 𝒞 terminal 𝒞-Coproducts))
+  PNNO⇒Initial₁ : ParametrizedNNO → Initial (F-Algebras (Maybe 𝒞 terminal 𝒞-Coproducts))
   PNNO⇒Initial₁ pnno = (NNO⇒Initial 𝒞 terminal 𝒞-Coproducts) (PNNO⇒NNO pnno)
 
-  PNNO⇒Initial₂ : (pnno : ParametrizedNaturalNumber)
+  PNNO⇒Initial₂ : (pnno : ParametrizedNNO)
     → (∀ A → IsInitial (F-Algebras (coproductF A)) 
-                       (PNNO-Algebra A (ParametrizedNaturalNumber.N pnno) (ParametrizedNaturalNumber.z pnno) (ParametrizedNaturalNumber.s pnno)))
+                       (PNNO-Algebra A (ParametrizedNNO.N pnno) (ParametrizedNNO.z pnno) (ParametrizedNNO.s pnno)))
   PNNO⇒Initial₂ pnno A = record 
     { ! = λ {alg} → record 
       { f = universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) 
@@ -224,6 +224,4 @@ module _ {o ℓ e} (CC : CartesianCategory o ℓ e) (𝒞-Coproducts : BinaryCop
       in ⟺ $ unique commute₁ commute₂
     }
     where
-      open ParametrizedNaturalNumber pnno
-
-  
+      open ParametrizedNNO pnno

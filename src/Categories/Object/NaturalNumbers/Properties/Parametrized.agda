@@ -10,7 +10,7 @@ open import Categories.Category.CartesianClosed using (CartesianClosed)
 
 -- In CCCs NNOs and PNNOs coincide
 
-module Categories.Object.NaturalNumber.Properties.Parametrized {o ℓ e} (CCC : CartesianClosedCategory o ℓ e) (𝒞-Coproducts : BinaryCoproducts (CartesianClosedCategory.U CCC)) where
+module Categories.Object.NaturalNumbers.Properties.Parametrized {o ℓ e} (CCC : CartesianClosedCategory o ℓ e) (𝒞-Coproducts : BinaryCoproducts (CartesianClosedCategory.U CCC)) where
 
 open import Level
 
@@ -19,21 +19,20 @@ open CartesianClosed cartesianClosed using (cartesian; λg; eval′; β′; λ-i
 open Cartesian cartesian using (terminal; products)
 open BinaryProducts products renaming (unique′ to bp-unique′)
 
-open import Categories.Object.NaturalNumber 𝒞 terminal using (NaturalNumber)
-open import Categories.Object.NaturalNumber.Parametrized cartesianCategory using (ParametrizedNaturalNumber)
+open import Categories.Object.NaturalNumbers 𝒞 terminal using (NNO)
+open import Categories.Object.NaturalNumbers.Parametrized cartesianCategory using (ParametrizedNNO)
 open import Categories.Morphism 𝒞
 open import Categories.Morphism.Reasoning 𝒞
-
 
 open HomReasoning
 open Equiv
 
 open Terminal terminal
 
-NNO×CCC⇒PNNO : NaturalNumber → ParametrizedNaturalNumber
+NNO×CCC⇒PNNO : NNO → ParametrizedNNO
 NNO×CCC⇒PNNO nno = record 
   { N = N 
-  ; isParametrizedNaturalNumber = record
+  ; isParametrizedNNO = record
     { z = z
     ; s = s
     ; universal = λ {A} {X} f g → (eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap
@@ -83,4 +82,4 @@ NNO×CCC⇒PNNO nno = record
     } 
   }
   where
-    open NaturalNumber nno renaming (unique to nno-unique)
+    open NNO nno renaming (unique to nno-unique)
