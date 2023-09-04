@@ -21,11 +21,6 @@ open Terminal terminal using (⊤; !; !-unique₂)
 open import Categories.Morphism 𝒞 using (_≅_)
 open import Categories.Morphism.Reasoning 𝒞
 
-private
-  variable
-    A B C D X Y Z : Obj
-    h i j : A ⇒ B
-
 record IsParametrizedNNO (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
     z : ⊤ ⇒ N
