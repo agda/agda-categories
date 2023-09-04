@@ -157,11 +157,11 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   swap∘swap : (swap {A}{B}) ∘ (swap {B}{A}) ≈ id
   swap∘swap = Equiv.trans swap∘⟨⟩ η
 
-  ∘swap-inj : ∀ {A B C : Obj} {f g : A × B ⇒ C} → f ∘ swap ≈ g ∘ swap → f ≈ g
-  ∘swap-inj {A} {B} {C} {f} {g} eq = (introʳ swap∘swap) ○ (pullˡ eq) ○ (cancelʳ swap∘swap)
+  ∘swap-inj : f ∘ swap ≈ g ∘ swap → f ≈ g
+  ∘swap-inj eq = (introʳ swap∘swap) ○ (pullˡ eq) ○ (cancelʳ swap∘swap)
 
-  swap∘-inj : ∀ {A B C : Obj} {f g : A ⇒ B × C} → swap ∘ f ≈ swap ∘ g → f ≈ g
-  swap∘-inj {A} {B} {C} {f} {g} eq = (introˡ swap∘swap) ○ (pullʳ eq) ○ (cancelˡ swap∘swap)
+  swap∘-inj : swap ∘ f ≈ swap ∘ g → f ≈ g
+  swap∘-inj eq = (introˡ swap∘swap) ○ (pullʳ eq) ○ (cancelˡ swap∘swap)
 
   assocʳ∘⟨⟩ : assocʳ ∘ ⟨ f , ⟨ g , h ⟩ ⟩ ≈ ⟨ ⟨ f , g ⟩ , h ⟩
   assocʳ∘⟨⟩ {f = f} {g = g} {h = h} = begin
