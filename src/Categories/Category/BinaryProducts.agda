@@ -13,8 +13,8 @@ open Category 𝒞
 open HomReasoning
 
 open import Categories.Object.Product 𝒞
-open import Categories.Morphism 𝒞 using (_≅_; module Iso)
-open import Categories.Morphism.Reasoning 𝒞 using (pullʳ; pullˡ; elimʳ; cancelˡ)
+open import Categories.Morphism 𝒞 using (_≅_; module Iso; Mono; Epi)
+open import Categories.Morphism.Reasoning 𝒞 using (pullʳ; pullˡ; elimʳ; cancelˡ; cancelʳ; introˡ; introʳ)
 open import Categories.Category.Monoidal.Core using (Monoidal)
 
 open import Categories.Functor using (Functor) renaming (id to idF)
@@ -156,6 +156,12 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
 
   swap∘swap : (swap {A}{B}) ∘ (swap {B}{A}) ≈ id
   swap∘swap = Equiv.trans swap∘⟨⟩ η
+
+  swap-epi : Epi (swap {A} {B})
+  swap-epi f g eq = (introʳ swap∘swap) ○ (pullˡ eq) ○ (cancelʳ swap∘swap)
+
+  swap-mono : Mono (swap {A} {B})
+  swap-mono f g eq = (introˡ swap∘swap) ○ (pullʳ eq) ○ (cancelˡ swap∘swap)
 
   assocʳ∘⟨⟩ : assocʳ ∘ ⟨ f , ⟨ g , h ⟩ ⟩ ≈ ⟨ ⟨ f , g ⟩ , h ⟩
   assocʳ∘⟨⟩ {f = f} {g = g} {h = h} = begin

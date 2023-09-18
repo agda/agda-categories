@@ -16,11 +16,6 @@ open Equiv
 
 open Terminal 𝒞-Terminal
 
-private
-  variable
-    A B C D X Y Z : Obj
-    h i j : A ⇒ B
-
 record IsNNO (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
     z : ⊤ ⇒ N
