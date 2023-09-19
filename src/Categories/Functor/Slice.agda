@@ -82,13 +82,17 @@ module _ {A : Obj} where
 
   module _ (product : {X : Obj} → Product A X) where
 
+    private
+      module product {X} = Product (product {X})
+      open product
+
     -- this is adapted from proposition 1.33 of Aspects of Topoi (Freyd, 1972)
     Free : Functor C (Slice A)
     Free = record
-      { F₀ = λ _ → sliceobj [ product ]π₁
+      { F₀ = λ _ → sliceobj π₁
       ; F₁ = λ f → slicearr ([ product ⇒ product ]π₁∘× ○ identityˡ)
       ; identity = id×id product
       ; homomorphism = sym [ product ⇒ product ⇒ product ]id×∘id×
-      ; F-resp-≈ = λ f≈g → Product.⟨⟩-cong₂ product refl (∘-resp-≈ˡ f≈g)
+      ; F-resp-≈ = λ f≈g → ⟨⟩-cong₂ refl (∘-resp-≈ˡ f≈g)
       }
 
