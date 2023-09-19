@@ -6,13 +6,13 @@ module Categories.Functor.Slice {o ℓ e} (C : Category o ℓ e) where
 
 open import Function using () renaming (id to id→)
 
+open import Categories.Diagram.Pullback C using (Pullback; unglue; Pullback-resp-≈)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Properties using ([_]-resp-∘)
 open import Categories.Morphism.Reasoning C
 open import Categories.Object.Product C
 
 import Categories.Category.Slice as S
-import Categories.Diagram.Pullback as P
 import Categories.Category.Construction.Pullbacks as Pbs
 
 open Category C
@@ -45,10 +45,8 @@ module _ {A : Obj} where
     ; F-resp-≈     = id→
     }
 
-  module _ (pullback : ∀ {X} {Y} {Z} (h : X ⇒ Z) (i : Y ⇒ Z) → P.Pullback C h i) where
+  module _ (pullback : ∀ {X} {Y} {Z} (h : X ⇒ Z) (i : Y ⇒ Z) → Pullback h i) where
     private
-      open P C using (Pullback; unglue; Pullback-resp-≈)
-      -- open Pullbacks pb using (pullback)
       module pullbacks {X Y Z} h i = Pullback (pullback {X} {Y} {Z} h i)
       open pullbacks using (p₂; p₂∘universal≈h₂; unique; unique-diagram; p₁∘universal≈h₁)
 
