@@ -2,12 +2,32 @@
 
 Welcome to what will hopefully become the standard Category Theory library for Agda.
 
-The current library release, v0.1.7, works with Agda-2.6.2 and stdlib-1.7.  The master
+The current library release, v0.1.8, works with Agda-2.6.3 and stdlib-1.7.2.  The master
 branch should also work with same, but may contain various incompatibilities.
 
 Note that this should be considered pre-beta software, and that backwards compability
 is not assured (although we don't intend to break things whimsically).
 
+When citing this library, please link to the github repo and also cite
+```bibtex
+@inproceedings{10.1145/3437992.3439922,
+  author = {Hu, Jason Z. S. and Carette, Jacques},
+  title = {Formalizing Category Theory in Agda},
+  year = {2021},
+  isbn = {9781450382991},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3437992.3439922},
+  doi = {10.1145/3437992.3439922},
+  abstract = {The generality and pervasiveness of category theory in modern mathematics makes it a frequent and useful target of formalization. It is however quite challenging to formalize, for a variety of reasons. Agda currently (i.e. in 2020) does not have a standard, working formalization of category theory. We document our work on solving this dilemma. The formalization revealed a number of potential design choices, and we present, motivate and explain the ones we picked. In particular, we find that alternative definitions or alternative proofs from those found in standard textbooks can be advantageous, as well as "fit" Agda's type theory more smoothly. Some definitions regarded as equivalent in standard textbooks turn out to make different "universe level" assumptions, with some being more polymorphic than others. We also pay close attention to engineering issues so that the library integrates well with Agda's own standard library, as well as being compatible with as many of supported type theories in Agda as possible.},
+  booktitle = {Proceedings of the 10th ACM SIGPLAN International Conference on Certified Programs and Proofs},
+  pages = {327–342},
+  numpages = {16},
+  keywords = {formal mathematics, Agda, category theory},
+  location = {Virtual, Denmark},
+  series = {CPP 2021}
+}
+```
 ## Origins
 
 This library is a rewrite of [copumpkin's version](https://github.com/copumpkin/categories)
@@ -48,10 +68,6 @@ Some of the lower-level design decisions (naming conventions, organization) are 
 documented in the proto-contributor's guide.
 
 ### Some design decisions
-- The library relies on eta expansion of records. However, due to a bug in Agda
-  2.6.0.1, we need to switch this on in related records. In the next release of Agda,
-  hopefully we can remove these switches. See also [this agda
-  issue](https://github.com/agda/agda/issues/4142).
 - We add `sym-assoc` and `identity²` in order to achieve better definitional equality
   of `Category`. The rationale can be found in [this
   paper](https://arxiv.org/pdf/1401.7694.pdf). 

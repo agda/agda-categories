@@ -5,7 +5,6 @@ open import Categories.Category using (Category)
 module Categories.Adjoint.Instance.BaseChange {o ℓ e} (C : Category o ℓ e) where
 
 open import Categories.Adjoint using (_⊣_)
-open import Categories.Category.Pullbacks
 import Categories.Functor.Slice as Sl
 open import Categories.Morphism.Reasoning C
 open import Categories.NaturalTransformation using (ntHelper)
@@ -18,13 +17,13 @@ open HomReasoning
 open Equiv
 open Sl C using (BaseChange!; BaseChange*)
 
-module _ {A : Obj} (pb : Pullbacks C) where
+module _ {A : Obj} (pb : ∀ {X Y Z} (h : X ⇒ Z) (i : Y ⇒ Z) → PB.Pullback C h i) where
   open S.SliceObj
   open S.Slice⇒
   open S C
   private
     open PB C
-    module pullbacks {X Y Z} h i = Pullback (Pullbacks.pullback pb {X} {Y} {Z} h i)
+    module pullbacks {X Y Z} h i = Pullback (pb {X} {Y} {Z} h i)
 
   !⊣* : ∀ {B} (f : B ⇒ A) →  BaseChange! f ⊣ BaseChange* pb f
   !⊣* {B} f = record

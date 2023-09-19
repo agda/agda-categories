@@ -28,7 +28,7 @@ module _ {A : Category o ℓ e} {B : Category o′ ℓ′ e′} {C : Category o�
     ; F⇐G = ntHelper record { η = λ _ → id ; commute = λ _ → id-comm-sym }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ }
     }
-    where open Category A; open MR.Basic A
+    where open Category A; open MR.Identity A
 
   project₂ : πʳ ∘F (i ※ j) ≃ j
   project₂ = record
@@ -36,7 +36,7 @@ module _ {A : Category o ℓ e} {B : Category o′ ℓ′ e′} {C : Category o�
     ; F⇐G = ntHelper record { η = λ _ → id ; commute = λ _ → id-comm-sym }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ }
     }
-    where open Category B; open MR.Basic B
+    where open Category B; open MR.Identity B
 
   unique : {h : Functor C (Product A B)} →
         πˡ ∘F h ≃ i → πʳ ∘F h ≃ j → (i ※ j) ≃ h

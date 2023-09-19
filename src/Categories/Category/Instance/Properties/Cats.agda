@@ -148,7 +148,6 @@ module CanonicallyCartesianClosed {l} where
     ; eval         = eval
     ; curry        = curry.F₀
     ; eval-comp    = λ {_} {_} {_} {G} → eval-comp {G = G}
-    ; curry-resp-≈ = λ {_} {_} {_} {G} {H} → curry.resp-NI {F = G} {H}
     ; curry-unique = λ {_} {_} {_} {G} {H} → curry-unique {G = G} {H}
     }
 

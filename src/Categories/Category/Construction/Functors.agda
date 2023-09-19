@@ -10,11 +10,12 @@ open import Categories.Adjoint.Equivalence using (⊣Equivalence)
 open import Categories.Adjoint.TwoSided using (withZig)
 open import Categories.Category using (Category; _[_∘_])
 open import Categories.Category.Product using (_※ⁿ_) renaming (Product to _×_)
-open import Categories.Functor using (Functor; _∘F_)
+open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor
+open import Categories.Functor.Bifunctor.Properties using ([_]-decompose₂)
 open import Categories.Functor.Construction.Constant using (constNat)
 open import Categories.NaturalTransformation
-  using (NaturalTransformation; _∘ᵥ_; _∘ˡ_; _∘ₕ_) renaming (id to idN)
+  using (NaturalTransformation; ntHelper; _∘ᵥ_; _∘ˡ_; _∘ₕ_) renaming (id to idN)
 open import Categories.NaturalTransformation.Equivalence using (_≃_; ≃-isEquivalence)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (NaturalIsomorphism)
@@ -23,7 +24,7 @@ import Categories.Morphism.Reasoning as MR
 private
   variable
     o ℓ e o′ ℓ′ e′ : Level
-    C D C₁ C₂ : Category o ℓ e
+    A B C D C₁ C₂ : Category o ℓ e
 
 -- The reason the proofs below are so easy is that _∘ᵥ_ 'computes' all the way down into
 -- expressions in D, from which the properties follow.
@@ -143,9 +144,127 @@ module curry {o₁ e₁ ℓ₁} {C₁ : Category o₁ e₁ ℓ₁}
       }
     }
 
+uncurry : Functor (Functors C₁ (Functors C₂ D)) (Functors (C₁ × C₂) D)
+uncurry {C₁ = C₁} {C₂ = C₂} {D = D} = record
+  { F₀ = uncurry₀
+  ; F₁ = uncurry₁
+  ; identity = refl
+  ; homomorphism = refl
+  ; F-resp-≈ = λ f≈g → f≈g
+  } where
+      open Category D
+      open HomReasoning
+      open MR D
+      open Functor
+      open Equiv
+      open NaturalTransformation
+      uncurry₀ : Functor C₁ (Functors C₂ D) → Bifunctor C₁ C₂ D
+      uncurry₀ F = record
+        { F₀ = λ {(x , y) → F₀ (F.F₀ x) y}
+        ; F₁ = λ { {(x , a)} {(y , b)} (f , g) → D [ F₁ (F.F₀ y) g ∘ η (F.F₁ f) a ]}
+        ; identity = λ { {x , y} → elimʳ F.identity ○ identity (F.F₀ x) {y} }
+        ; homomorphism = λ { {x , y} {a , b} {c , d} {f1 , f2} {g1 , g2} →
+          begin _ ≈⟨ (homomorphism (F.F₀ c) ⟩∘⟨refl) ⟩
+                _ ≈⟨ assoc ⟩
+                _ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ F.homomorphism ⟩
+                _ ≈⟨ refl⟩∘⟨ pullˡ (sym-commute (F.F₁ g1) f2) ⟩
+                _ ≈⟨ assoc²'' ⟩
+                _ ∎ }
+        ; F-resp-≈ = λ (f≈f₁ , f≈f₂) → F-resp-≈ (F.F₀ _) f≈f₂ ⟩∘⟨ F.F-resp-≈ f≈f₁
+        } where module F = Functor F
+
+      uncurry₁ : ∀ {A B}
+               → NaturalTransformation A B
+               → NaturalTransformation (uncurry₀ A) (uncurry₀ B)
+      uncurry₁ t = ntHelper record
+          { η = λ _ → η (t.η _) _
+          ; commute = λ { (f , g) →
+                            begin _ ≈⟨ pullˡ (commute (t.η _) _) ⟩
+                                  _ ≈⟨ assoc ⟩
+                                  _ ≈⟨ pushʳ (t.commute _) ⟩
+                                  _ ∎ }
+          } where module t = NaturalTransformation t
+                  open NaturalTransformation
+
+module _ {o₁ e₁ ℓ₁} {C₁ : Category o₁ e₁ ℓ₁}
+         {o₂ e₂ ℓ₂} {C₂ : Category o₂ e₂ ℓ₂}
+         {o′ e′ ℓ′} {D  : Category o′ e′ ℓ′} where
+  curry∘uncurry≅id : NaturalIsomorphism (curry {C₁ = C₁} {C₂ = C₂} {D = D} ∘F uncurry {C₁ = C₁} {C₂ = C₂} {D = D}) idF
+  curry∘uncurry≅id = record
+    { F⇒G = ntHelper (record
+      { η = λ X → ntHelper (record
+        { η = λ Y → ntHelper (record
+          { η = λ _ → D.id
+          ; commute = λ f →
+             begin _ ≈⟨ D.identityˡ ⟩
+                   _ ≈⟨ refl⟩∘⟨ Functor.identity X ⟩
+                   _ ∎
+          })
+        ; commute = λ {A} {B} f →
+             begin _ ≈⟨ D.identityˡ ⟩
+                   _ ≈⟨ Functor.identity (Functor.F₀ X B) ⟩∘⟨refl ⟩
+                   _ ≈⟨ id-comm-sym ⟩
+                   _ ∎
+        })
+      ; commute = λ f → id-comm-sym
+      })
+    ; F⇐G = ntHelper (record
+      { η = λ X → ntHelper (record
+        { η = λ Y → ntHelper (record
+          { η = λ _ → D.id
+          ; commute = λ f →
+             begin _ ≈⟨ id-comm-sym ⟩
+                   _ ≈⟨ introʳ (Functor.identity X) ⟩∘⟨refl ⟩
+                   _ ∎
+          })
+        ; commute = λ {A} {B} f →
+             begin _ ≈⟨ id-comm-sym ⟩
+                   _ ≈⟨ introˡ (Functor.identity (Functor.F₀ X B)) ⟩∘⟨refl ⟩
+                   _ ∎
+        })
+      ; commute = λ f → id-comm-sym
+      })
+    ; iso = λ X → record
+      { isoˡ = D.identity²
+      ; isoʳ = D.identity²
+      }
+    } where module D = Category D
+            open D.HomReasoning
+            open MR D
+
+  uncurry∘curry≅id : NaturalIsomorphism (uncurry {C₁ = C₁} {C₂ = C₂} {D = D} ∘F curry {C₁ = C₁} {C₂ = C₂} {D = D}) idF
+  uncurry∘curry≅id = record
+    { F⇒G = ntHelper (record
+      { η = λ X → ntHelper (record
+        { η = λ Y → D.id
+        ; commute = λ (f₁ , f₂) →
+            begin _ ≈⟨ refl⟩∘⟨ D.Equiv.sym [ X ]-decompose₂ ⟩
+                  _ ≈⟨ id-comm-sym ⟩
+                  _ ∎
+        })
+      ; commute = λ f → id-comm-sym
+      })
+    ; F⇐G = ntHelper (record
+      { η = λ X → ntHelper (record
+        { η = λ Y → D.id
+        ; commute = λ (f₁ , f₂) →
+            begin _ ≈⟨ id-comm-sym ⟩
+                  _ ≈⟨ ([ X ]-decompose₂ ⟩∘⟨refl) ⟩
+                  _ ∎
+        })
+      ; commute = λ f → id-comm-sym
+      })
+    ; iso = λ X → record
+      { isoˡ = D.identity²
+      ; isoʳ = D.identity²
+      }
+    } where module D = Category D
+            open D.HomReasoning
+            open MR D
+
 -- Godement product ?
-product : {A B C : Category o ℓ e} → Bifunctor (Functors B C) (Functors A B) (Functors A C)
-product {A = A} {B = B} {C = C} = record
+product : Bifunctor (Functors B C) (Functors A B) (Functors A C)
+product {B = B} {C = C} {A = A} = record
   { F₀ = uncurry′ _∘F_
   ; F₁ = uncurry′ _∘ₕ_
   ; identity = λ {f} → identityʳ ○ identity {D = C} (proj₁ f)
@@ -172,9 +291,8 @@ product {A = A} {B = B} {C = C} = record
 -- op induces a Functor on the Functors category.
 -- This is an instance where the proof-irrelevant version is simpler because (op op C) is
 -- just C. Here we rather need to be more explicit.
-opF⇒ : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
-      Functor (Category.op (Functors (Category.op A) (Category.op B))) (Functors A B)
-opF⇒ {A = A} {B} = record
+opF⇒ : Functor (Category.op (Functors (Category.op A) (Category.op B))) (Functors A B)
+opF⇒ {A = A} {B = B} = record
   { F₀           = Functor.op
   ; F₁           = NaturalTransformation.op
   ; identity     = Equiv.refl
@@ -183,9 +301,8 @@ opF⇒ {A = A} {B} = record
   }
   where open Category B
 
-opF⇐ : {A : Category o ℓ e} {B : Category o′ ℓ′ e′} →
-      Functor (Functors A B) (Category.op (Functors (Category.op A) (Category.op B)))
-opF⇐ {A = A} {B} = record
+opF⇐ : Functor (Functors A B) (Category.op (Functors (Category.op A) (Category.op B)))
+opF⇐ {A = A} {B = B} = record
   { F₀           = Functor.op
   ; F₁           = NaturalTransformation.op
   ; identity     = Equiv.refl

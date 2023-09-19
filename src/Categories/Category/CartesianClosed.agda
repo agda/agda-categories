@@ -55,7 +55,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
 
   open CartesianMonoidal cartesian using (A×⊤≅A)
   open BinaryProducts cartesian.products using (_×_; product; π₁; π₂; ⟨_,_⟩;
-    project₁; project₂; η; ⟨⟩-cong₂; ⟨⟩∘; _⁂_; ⟨⟩-congˡ;
+    project₁; project₂; η; ⟨⟩-cong₂; ⟨⟩∘; _⁂_; ⟨⟩-congˡ; ⟨⟩-congʳ;
     first∘first; firstid; first; second; first↔second; second∘second; ⁂-cong₂; -×_)
   open Terminal cartesian.terminal using (⊤; !; !-unique₂; ⊤-id)
 
@@ -71,11 +71,17 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   λ-cong : f ≈ g → λg f ≈ λg g
   λ-cong eq = exp.λ-cong product eq
 
+  λ-inj : λg f ≈ λg g → f ≈ g
+  λ-inj = exp.λ-inj product
+
   _×id : (f : C ⇒ B ^ A) → C × A ⇒ [[ B^A×A B A ]]
   f ×id = [ product ⇒ exp.product ] f ×id
 
   β : eval ∘ λg f ×id ≈ f
   β = exp.β product
+
+  subst : λg f ∘ g ≈ λg (f ∘ (g ⁂ id))
+  subst = exp.subst product product
 
   η-exp : λg (eval ∘ f ×id) ≈ f
   η-exp = exp.η product

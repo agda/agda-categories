@@ -45,12 +45,12 @@ on:
 ########################################################################
 
 env:
-  AGDA_COMMIT: tags/v2.6.2
-  STDLIB_VERSION: 1.7
+  AGDA_COMMIT: tags/v2.6.3
+  STDLIB_VERSION: 1.7.2
 
-  GHC_VERSION: 8.6.5
-  CABAL_VERSION: 3.2.0.0
-  CABAL_INSTALL: cabal install --overwrite-policy=always --ghc-options='-O1 +RTS -M6G -RTS'
+  GHC_VERSION: 8.10.7
+  CABAL_VERSION: 3.6.2.0
+  CABAL_INSTALL: cabal install --overwrite-policy=always --ghc-options='-O1 +RTS -M6G -RTS' --installdir $HOME/.local/state/cabal/bin
   AGDA: agda --auto-inline -Werror +RTS -M6G -H3.5G -A128M -RTS -i. -i src/
 
 jobs:
@@ -72,7 +72,7 @@ jobs:
       # The script won't be able to find Agda if we don't tell it to look at the
       # content of ~/.cabal/bin
       - name: Put cabal programs in PATH
-        run: echo "~/.cabal/bin" >> $GITHUB_PATH
+        run: echo "$HOME/.local/state/cabal/bin" >> $GITHUB_PATH
 
 ########################################################################
 ## CACHING
@@ -83,13 +83,14 @@ jobs:
       # i.e. if we change either the version of Agda, ghc, or cabal that we want
       # to use for the build.
       - name: Cache cabal packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-cabal
         with:
           path: |
-            ~/.cabal/packages
-            ~/.cabal/store
-            ~/.cabal/bin
+            ~/.local/state/cabal/packages
+            ~/.local/state/cabal/store
+            ~/.local/state/cabal/bin
+            ~/.local/state/cabal/share
           key: ${{ runner.os }}-${{ env.GHC_VERSION }}-${{ env.CABAL_VERSION }}-${{ env.AGDA_COMMIT }}
 
 ########################################################################
@@ -98,7 +99,7 @@ jobs:
 
       - name: Install ghc and cabal
         if: steps.cache-cabal.outputs.cache-hit != 'true'
-        uses: actions/setup-haskell@v1.1.3
+        uses: haskell/actions/setup@v2
         with:
           ghc-version: ${{ env.GHC_VERSION }}
           cabal-version: ${{ env.CABAL_VERSION }}
@@ -115,6 +116,8 @@ jobs:
           git checkout ${{ env.AGDA_COMMIT }}
           mkdir -p doc
           touch doc/user-manual.pdf
+          # make sure it exists
+          mkdir -p $HOME/.local/state/cabal/bin
           ${{ env.CABAL_INSTALL }}
           cd ..
 
@@ -134,7 +137,7 @@ jobs:
 
       # By default github actions do not pull the repo
       - name: Checkout agda-categories
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       # Generate a fresh Everything.agda & index.agda and start building!
       - name: Test agda-categories
@@ -152,7 +155,7 @@ jobs:
           ${{ env.AGDA }} --html --html-dir html index.agda
 
       - name: Deploy HTML
-        uses: JamesIves/github-pages-deploy-action@4.1.3
+        uses: JamesIves/github-pages-deploy-action@v4.4.3
         if: ${{ success() && env.AGDA_DEPLOY }}
 
         with:

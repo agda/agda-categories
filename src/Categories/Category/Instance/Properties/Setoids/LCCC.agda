@@ -363,7 +363,6 @@ module _ {o} where
           in Π.cong α.h λ { center → trans (arr₁ span-arrˡ) (eq center)
                           ; left   → eq left
                           ; right  → eq right } }
-        ; curry-resp-≈ = λ {_ _ _} {α β} → curry-resp-≈ {_} {_} {_} {α} {β}
         ; curry-unique = λ {_ _ _} {α β} → curry-unique {_} {_} {_} {α} {β}
         }
 

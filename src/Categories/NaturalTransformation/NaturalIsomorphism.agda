@@ -71,6 +71,24 @@ record NaturalIsomorphism {C : Category o ℓ e}
       }
     }
 
+-- Like IsIso for morphisms, a natural transformation may be an isomorphism
+-- if there exists some inverse to it.
+-- To be consistent, there's also an IsNI for natural isomorphisms
+record IsNI {C : Category o ℓ e}
+            {D : Category o′ ℓ′ e′}
+            {F G : Functor C D}
+            (F⇒G : NaturalTransformation F G) : Set (o ⊔ ℓ ⊔ ℓ′ ⊔ e′) where
+  field
+    F⇐G : NaturalTransformation G F
+    iso : ∀ X → Morphism.Iso D (NaturalTransformation.η F⇒G X) (NaturalTransformation.η F⇐G X)
+
+  natiso : NaturalIsomorphism F G
+  natiso = record
+    { F⇒G = F⇒G
+    ; F⇐G = F⇐G
+    ; iso = iso
+    }
+
 -- This helper definition lets us specify only one of the commuting
 -- squares and have the other one derived.
 

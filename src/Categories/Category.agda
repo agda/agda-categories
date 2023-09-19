@@ -10,10 +10,10 @@ private
   variable
     o ℓ e : Level
 
--- Convenience functions for working over mupliple categories at once:
+-- Convenience functions for working over multiple categories at once:
 -- C [ x , y ] (for x y objects of C) - Hom_C(x , y)
 -- C [ f ≈ g ] (for f g arrows of C)  - that f and g are equivalent arrows
--- C [ f ∘ g ] (for f g composables arrows of C) - composition in C
+-- C [ f ∘ g ] (for f g composable arrows of C) - composition in C
 infix 10  _[_,_] _[_≈_] _[_∘_]
 
 _[_,_] : (C : Category o ℓ e) → (X : Category.Obj C) → (Y : Category.Obj C) → Set ℓ

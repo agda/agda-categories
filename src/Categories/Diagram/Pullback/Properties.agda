@@ -89,9 +89,9 @@ module _ (p : Pullback id f) where
   -- This is a more subtle way of saying that 'p₂ ≈ id', without involving heterogenous equality.
   pullback-identity : universal id-comm-sym ∘ p₂ ≈ id
   pullback-identity = begin
-    universal Basic.id-comm-sym ∘ p₂ ≈⟨ unique ( pullˡ p₁∘universal≈h₁ ) (pullˡ p₂∘universal≈h₂)  ⟩
-    universal eq                     ≈⟨ universal-resp-≈ (⟺ commute ○ identityˡ) identityˡ ⟩
-    universal commute                ≈˘⟨ Pullback.id-unique p ⟩
+    universal id-comm-sym ∘ p₂ ≈⟨ unique ( pullˡ p₁∘universal≈h₁ ) (pullˡ p₂∘universal≈h₂)  ⟩
+    universal eq               ≈⟨ universal-resp-≈ (⟺ commute ○ identityˡ) identityˡ ⟩
+    universal commute          ≈˘⟨ Pullback.id-unique p ⟩
     id ∎
     where
       eq : id ∘ f ∘ p₂ ≈ f ∘ id ∘ p₂

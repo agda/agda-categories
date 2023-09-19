@@ -3,6 +3,7 @@ module Categories.Functor.Bifunctor where
 
 -- Bifunctor, aka a Functor from C × D to E
 open import Level
+open import Data.Product using (_,_)
 
 open import Categories.Category
 open import Categories.Functor
@@ -11,23 +12,62 @@ open import Categories.Category.Product
 
 private
   variable
-    o ℓ e o′ ℓ′ e′ o″ ℓ″ e″ : Level
-    C D D₁ D₂ E E₁ E₂ : Category o ℓ e
+    o ℓ e o′ ℓ′ e′ o″ ℓ″ e″ o‴ ℓ‴ e‴ o⁗ ℓ⁗ e⁗ : Level
+    C D E A B : Category o ℓ e
 
 Bifunctor : Category o ℓ e → Category o′ ℓ′ e′ → Category o″ ℓ″ e″ → Set _
 Bifunctor C D E = Functor (Product C D) E
 
-overlap-× : ∀ (H : Bifunctor D₁ D₂ C) (F : Functor E D₁) (G : Functor E D₂) → Functor E C
-overlap-× H F G = H ∘F (F ※ G)
+module Bifunctor (H : Bifunctor C D E) where
+  open Functor H public
 
-reduce-× : ∀ (H : Bifunctor D₁ D₂ C) (F : Functor E₁ D₁) (G : Functor E₂ D₂) → Bifunctor E₁ E₂ C
-reduce-× H F G = H ∘F (F ⁂ G)
+  overlap-× : ∀ (F : Functor A C) (G : Functor A D) → Functor A E
+  overlap-× F G = H ∘F (F ※ G)
 
-flip-bifunctor : Bifunctor C D E → Bifunctor D C E
-flip-bifunctor b = b ∘F Swap
+  reduce-× : ∀ (F : Functor A C) (G : Functor B D) → Bifunctor A B E
+  reduce-× F G = H ∘F (F ⁂ G)
 
-appˡ : Bifunctor C D E → Category.Obj C → Functor D E
-appˡ F c = F ∘F constˡ c
+  flip : Bifunctor D C E
+  flip = H ∘F Swap
 
-appʳ : Bifunctor C D E → Category.Obj D → Functor C E
-appʳ F d = F ∘F constʳ d
+  appˡ : Category.Obj C → Functor D E
+  appˡ c = H ∘F constˡ c
+
+  appʳ : Category.Obj D → Functor C E
+  appʳ d = H ∘F constʳ d
+
+  ₁ˡ : ∀ {A B d} (f : C [ A , B ]) → E [ F₀ (A , d) , F₀ (B , d) ]
+  ₁ˡ f = ₁ (f , Category.id D)
+
+  ₁ʳ : ∀ {A B c} (f : D [ A , B ]) → E [ F₀ (c , A) , F₀ (c , B) ]
+  ₁ʳ f = ₁ (Category.id C , f)
+
+  homomorphismˡ : ∀ {X Y Z d} {f : C [ X , Y ]} {g : C [ Y , Z ]} →
+                     E [ ₁ˡ {d = d} (C [ g ∘ f ]) ≈ E [ ₁ˡ g ∘ ₁ˡ f ] ]
+  homomorphismˡ = trans E
+      (F-resp-≈ (refl C , sym D (Category.identity² D)))
+      homomorphism
+    where open Category.Equiv
+
+  homomorphismʳ : ∀ {X Y Z c} {f : D [ X , Y ]} {g : D [ Y , Z ]} →
+                     E [ ₁ʳ {c = c} (D [ g ∘ f ]) ≈ E [ ₁ʳ g ∘ ₁ʳ f ] ]
+  homomorphismʳ = trans E
+      (F-resp-≈ (sym C (Category.identity² C) , refl D))
+      homomorphism
+    where open Category.Equiv
+
+  resp-≈ˡ : ∀ {A B d} {f g : C [ A , B ]} → C [ f ≈ g ] →
+               E [ ₁ˡ {d = d} f ≈ ₁ˡ g ]
+  resp-≈ˡ f≈g = F-resp-≈ (f≈g , Category.Equiv.refl D)
+
+  resp-≈ʳ : ∀ {A B c} {f g : D [ A , B ]} → D [ f ≈ g ] →
+               E [ ₁ʳ {c = c} f ≈ ₁ʳ g ]
+  resp-≈ʳ f≈g = F-resp-≈ (Category.Equiv.refl C , f≈g)
+
+open Bifunctor public using (appˡ; appʳ) renaming (flip to flip-bifunctor)
+
+overlap-× : ∀ (H : Bifunctor C D E) (F : Functor A C) (G : Functor A D) → Functor A E
+overlap-× H = Bifunctor.overlap-× H
+
+reduce-× : ∀ (H : Bifunctor C D E) (F : Functor A C) (G : Functor B D) -> Bifunctor A B E
+reduce-× H = Bifunctor.reduce-× H
