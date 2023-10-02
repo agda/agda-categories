@@ -150,3 +150,66 @@ _∘↠_ : B ↠ C → A ↠ B → A ↠ C
 f ∘↠ g = record { mor = mor f ∘ mor g ; epi = Epi-∘ (epi f) (epi g) }
   where
     open _↠_
+
+--------------------------------------------------------------------------------
+-- Isomorphism from a section and a retraction
+
+EpicRetract⇒Iso : ∀ {X Y} {f : Y ⇒ X} {r : X ⇒ Y} → 
+                   r RetractOf f → Epi f → Iso f r
+EpicRetract⇒Iso {X} {Y} {f} {r} rf≈id e = record { 
+  isoˡ = rf≈id ; 
+  isoʳ = e (f ∘ r) id (begin
+    (f ∘ r) ∘ f ≈⟨ assoc ⟩
+    f ∘ (r ∘ f) ≈⟨ refl⟩∘⟨ rf≈id ⟩
+    f ∘ id      ≈⟨ identityʳ ⟩
+    f           ≈⟨ Equiv.sym identityˡ ⟩
+    id ∘ f ∎) }
+
+MonicSection⇒Iso : ∀ {X Y} {f : Y ⇒ X} {s : X ⇒ Y} → 
+                   s SectionOf f → Mono f → Iso f s
+MonicSection⇒Iso {X} {Y} {f} {s} fs≈id m = record { 
+  isoˡ = m (s ∘ f) id (begin 
+    f ∘ (s ∘ f) ≈⟨ sym-assoc ⟩
+    (f ∘ s) ∘ f ≈⟨ fs≈id ⟩∘⟨refl ⟩
+    id ∘ f      ≈⟨ identityˡ ⟩
+    f           ≈⟨ Equiv.sym identityʳ ⟩
+    f ∘ id ∎) ; 
+  isoʳ = fs≈id }
+
+≈-SectionRetraction : ∀ {X Y} {f : Y ⇒ X} {s r : X ⇒ Y} → 
+                      s SectionOf f → r RetractOf f → s ≈ r
+≈-SectionRetraction {X} {Y} {f} {s} {r} fs≈id rf≈id = begin
+  s           ≈⟨ Equiv.sym identityˡ ⟩
+  id ∘ s      ≈⟨ Equiv.sym rf≈id ⟩∘⟨refl ⟩
+  (r ∘ f) ∘ s ≈⟨ assoc ⟩
+  r ∘ (f ∘ s) ≈⟨ refl⟩∘⟨ fs≈id ⟩
+  r ∘ id      ≈⟨ identityʳ ⟩
+  r ∎
+
+SectionRetraction⇒Isoˡ : ∀ {X Y} {f : Y ⇒ X} {s r : X ⇒ Y} → 
+                         s SectionOf f → r RetractOf f → Iso f s
+SectionRetraction⇒Isoˡ {X} {Y} {f} {s} {r} fs≈id rf≈id = record { 
+  isoˡ = begin
+    s ∘ f ≈⟨ ≈-SectionRetraction fs≈id rf≈id ⟩∘⟨refl ⟩
+    r ∘ f ≈⟨ rf≈id ⟩
+    id ∎ ; 
+  isoʳ = fs≈id }
+
+SectionRetraction⇒Isoʳ : ∀ {X Y} {f : Y ⇒ X} {s r : X ⇒ Y} → 
+                         s SectionOf f → r RetractOf f → Iso f r
+SectionRetraction⇒Isoʳ {X} {Y} {f} {s} {r} fs≈id rf≈id = record { 
+  isoˡ = rf≈id ; 
+  isoʳ = begin
+    f ∘ r ≈⟨ refl⟩∘⟨ Equiv.sym (≈-SectionRetraction fs≈id rf≈id) ⟩
+    f ∘ s ≈⟨ fs≈id ⟩
+    id ∎ }
+
+
+
+    
+
+
+
+
+
+ 
