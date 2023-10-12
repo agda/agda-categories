@@ -86,9 +86,9 @@ jobs:
       # downloading ghc and cabal and rebuilding Agda if absolutely necessary
       # i.e. if we change either the version of Agda, ghc, or cabal that we want
       # to use for the build.
-      - name: Cache cabal packages
+      - name: Open cache
         uses: actions/cache@v3
-        id: cache-cabal
+        id: cache-everything
         with:
           path: |
             ~/.cabal/packages
@@ -98,8 +98,10 @@ jobs:
             ~/.agda-build-cache
           key: ${{ runner.os }}-${{ env.GHC_VERSION }}-${{ env.CABAL_VERSION }}-${{ env.AGDA_COMMIT }}
 
+      # If a build cache exists for agda-categories, use it, but don't fail if
+      # there isn't.
       - name: Unpack agda-categories build cache
-        if: steps.cache-cabal.outputs.cache-hit == 'true'
+        if: steps.cache-everything.outputs.cache-hit == 'true'
         run: |
           cp -rpv ~/.agda-build-cache/agda-categories ./_build/ || exit 0
 
@@ -108,18 +110,18 @@ jobs:
 ########################################################################
 
       - name: Install ghc and cabal
-        if: steps.cache-cabal.outputs.cache-hit != 'true'
+        if: steps.cache-everything.outputs.cache-hit != 'true'
         uses: haskell-actions/setup@v2
         with:
           ghc-version: ${{ env.GHC_VERSION }}
           cabal-version: ${{ env.CABAL_VERSION }}
 
       - name: Cabal update
-        if: steps.cache-cabal.outputs.cache-hit != 'true'
+        if: steps.cache-everything.outputs.cache-hit != 'true'
         run: cabal update
 
       - name: Download and install Agda from github
-        if: steps.cache-cabal.outputs.cache-hit != 'true'
+        if: steps.cache-everything.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/agda/agda
           cd agda
@@ -141,8 +143,10 @@ jobs:
           echo "~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
           cd -
 
+      # If a build cache exists for agda-stdlib, use it, but don't fail if there
+      # isn't.
       - name: Unpack agda-stdlib build cache
-        if: steps.cache-cabal.outputs.cache-hit == 'true'
+        if: steps.cache-everything.outputs.cache-hit == 'true'
         run: |
           cp -rpv ~/.agda-build-cache/agda-stdlib ~/.agda/agda-stdlib/_build/ || exit 0
 
@@ -166,9 +170,11 @@ jobs:
           ${{ env.AGDA }} --html --html-dir html index.agda
 
 ########################################################################
-## PKG BUILD CACHING
+## PACKAGE BUILD CACHING
 ########################################################################
 
+      # Package type-checked agda-stdlib and agda-categories libraries for
+      # future CI runs.
       - name: "Pack Agda build cache"
         run: |
           mkdir -p ~/.agda-build-cache/
