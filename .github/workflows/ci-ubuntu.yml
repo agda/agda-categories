@@ -51,12 +51,16 @@ env:
   GHC_VERSION: 8.10.7
   CABAL_VERSION: 3.6.2.0
   CABAL_INSTALL: cabal install --overwrite-policy=always --ghc-options='-O1 +RTS -M6G -RTS' --installdir $HOME/.cabal/bin
-  AGDA: agda --auto-inline -Werror +RTS -M6G -H3.5G -A128M -RTS -i. -i src/
+  AGDA: agda --auto-inline -Werror +RTS -M6G -H3.5G -A128M -RTS -i . -i src/
 
 jobs:
   test-categories:
     runs-on: ubuntu-latest
     steps:
+
+      # By default github actions do not pull the repo
+      - name: Checkout agda-categories
+        uses: actions/checkout@v4
 
 ########################################################################
 ## SETTINGS
@@ -91,7 +95,13 @@ jobs:
             ~/.cabal/store
             ~/.cabal/bin
             ~/.cabal/share
+            ~/.agda-build-cache
           key: ${{ runner.os }}-${{ env.GHC_VERSION }}-${{ env.CABAL_VERSION }}-${{ env.AGDA_COMMIT }}
+
+      - name: Unpack agda-categories build cache
+        if: steps.cache-cabal.outputs.cache-hit == 'true'
+        run: |
+          cp -rpv ~/.agda-build-cache/agda-categories ./_build/ || exit 0
 
 ########################################################################
 ## INSTALLATION STEPS
@@ -131,13 +141,14 @@ jobs:
           echo "~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
           cd -
 
-########################################################################
-## TESTING AND DEPLOYMENT
-########################################################################
+      - name: Unpack agda-stdlib build cache
+        if: steps.cache-cabal.outputs.cache-hit == 'true'
+        run: |
+          cp -rpv ~/.agda-build-cache/agda-stdlib ~/.agda/agda-stdlib/_build/ || exit 0
 
-      # By default github actions do not pull the repo
-      - name: Checkout agda-categories
-        uses: actions/checkout@v4
+########################################################################
+## TESTING
+########################################################################
 
       # Generate a fresh Everything.agda & index.agda and start building!
       - name: Test agda-categories
@@ -154,10 +165,23 @@ jobs:
         run: |
           ${{ env.AGDA }} --html --html-dir html index.agda
 
+########################################################################
+## PKG BUILD CACHING
+########################################################################
+
+      - name: "Pack Agda build cache"
+        run: |
+          mkdir -p ~/.agda-build-cache/
+          cp -rpv ./_build/ ~/.agda-build-cache/agda-categories/ || exit 0
+          cp -rpv ~/.agda/agda-stdlib/_build/ ~/.agda-build-cache/agda-stdlib/ || exit 0
+
+########################################################################
+## DEPLOYMENT
+########################################################################
+
       - name: Deploy HTML
         uses: JamesIves/github-pages-deploy-action@v4.4.3
         if: ${{ success() && env.AGDA_DEPLOY }}
-
         with:
           branch: gh-pages
           folder: html
