@@ -150,3 +150,57 @@ _∘↠_ : B ↠ C → A ↠ B → A ↠ C
 f ∘↠ g = record { mor = mor f ∘ mor g ; epi = Epi-∘ (epi f) (epi g) }
   where
     open _↠_
+
+--------------------------------------------------------------------------------
+-- Isomorphism from a section and a retraction
+
+EpicRetract⇒Iso : ∀ {X Y} {f : Y ⇒ X} {r : X ⇒ Y} → 
+                   r RetractOf f → Epi f → Iso f r
+EpicRetract⇒Iso {f = f} {r} rf≈id epi = record { 
+  isoˡ = rf≈id ; 
+  isoʳ = epi (f ∘ r) id frf≈idf }
+  where frf≈idf : (f ∘ r) ∘ f ≈ id ∘ f
+        frf≈idf = begin
+          (f ∘ r) ∘ f ≈⟨ pullʳ rf≈id ⟩
+          f ∘ id    ≈⟨ id-comm ⟩
+          id ∘ f ∎
+
+MonicSection⇒Iso : ∀ {X Y} {f : Y ⇒ X} {s : X ⇒ Y} → 
+                   s SectionOf f → Mono f → Iso f s
+MonicSection⇒Iso {f = f} {s} fs≈id mono = record { 
+  isoˡ = mono (s ∘ f) id fsf≈fid ;
+  isoʳ = fs≈id }
+  where fsf≈fid : f ∘ (s ∘ f) ≈ f ∘ id
+        fsf≈fid = begin 
+          f ∘ (s ∘ f) ≈⟨ pullˡ fs≈id ⟩
+          id ∘ f      ≈⟨ id-comm-sym ⟩
+          f ∘ id ∎
+
+≈-SectionRetraction : ∀ {X Y} {f : Y ⇒ X} {s r : X ⇒ Y} → 
+                      s SectionOf f → r RetractOf f → s ≈ r
+≈-SectionRetraction {f = f} {s} {r} fs≈id rf≈id = begin
+  s           ≈⟨ insertˡ rf≈id ⟩
+  r ∘ (f ∘ s) ≈⟨ elimʳ fs≈id ⟩
+  r ∎
+
+SectionRetraction⇒Isoˡ : ∀ {X Y} {f : Y ⇒ X} {s r : X ⇒ Y} → 
+                         s SectionOf f → r RetractOf f → Iso f s
+SectionRetraction⇒Isoˡ {f = f} {s} {r} fs≈id rf≈id = record { 
+  isoˡ = sf≈id ; 
+  isoʳ = fs≈id }
+  where sf≈id : s ∘ f ≈ id
+        sf≈id = begin
+          s ∘ f  ≈⟨ ≈-SectionRetraction fs≈id rf≈id ⟩∘⟨refl ⟩
+          r ∘ f  ≈⟨ rf≈id ⟩
+          id ∎
+
+SectionRetraction⇒Isoʳ : ∀ {X Y} {f : Y ⇒ X} {s r : X ⇒ Y} → 
+                         s SectionOf f → r RetractOf f → Iso f r
+SectionRetraction⇒Isoʳ {f = f} {s} {r} fs≈id rf≈id = record { 
+  isoˡ = rf≈id ; 
+  isoʳ = fr≈id }
+  where fr≈id : f ∘ r ≈ id
+        fr≈id = begin
+          f ∘ r ≈⟨ refl⟩∘⟨ ⟺ (≈-SectionRetraction fs≈id rf≈id) ⟩
+          f ∘ s ≈⟨ fs≈id ⟩
+          id ∎

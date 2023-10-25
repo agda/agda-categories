@@ -50,13 +50,17 @@ env:
 
   GHC_VERSION: 8.10.7
   CABAL_VERSION: 3.6.2.0
-  CABAL_INSTALL: cabal install --overwrite-policy=always --ghc-options='-O1 +RTS -M6G -RTS' --installdir $HOME/.local/state/cabal/bin
-  AGDA: agda --auto-inline -Werror +RTS -M6G -H3.5G -A128M -RTS -i. -i src/
+  CABAL_INSTALL: cabal install --overwrite-policy=always --ghc-options='-O1 +RTS -M6G -RTS' --installdir $HOME/.cabal/bin
+  AGDA: agda --auto-inline -Werror +RTS -M6G -H3.5G -A128M -RTS -i . -i src/
 
 jobs:
   test-categories:
     runs-on: ubuntu-latest
     steps:
+
+      # By default github actions do not pull the repo
+      - name: Checkout agda-categories
+        uses: actions/checkout@v4
 
 ########################################################################
 ## SETTINGS
@@ -72,7 +76,7 @@ jobs:
       # The script won't be able to find Agda if we don't tell it to look at the
       # content of ~/.cabal/bin
       - name: Put cabal programs in PATH
-        run: echo "$HOME/.local/state/cabal/bin" >> $GITHUB_PATH
+        run: echo "$HOME/.cabal/bin" >> $GITHUB_PATH
 
 ########################################################################
 ## CACHING
@@ -82,34 +86,42 @@ jobs:
       # downloading ghc and cabal and rebuilding Agda if absolutely necessary
       # i.e. if we change either the version of Agda, ghc, or cabal that we want
       # to use for the build.
-      - name: Cache cabal packages
+      - name: Open cache
         uses: actions/cache@v3
-        id: cache-cabal
+        id: cache-everything
         with:
           path: |
-            ~/.local/state/cabal/packages
-            ~/.local/state/cabal/store
-            ~/.local/state/cabal/bin
-            ~/.local/state/cabal/share
+            ~/.cabal/packages
+            ~/.cabal/store
+            ~/.cabal/bin
+            ~/.cabal/share
+            ~/.agda-build-cache
           key: ${{ runner.os }}-${{ env.GHC_VERSION }}-${{ env.CABAL_VERSION }}-${{ env.AGDA_COMMIT }}
+
+      # If a build cache exists for agda-categories, use it, but don't fail if
+      # there isn't.
+      - name: Unpack agda-categories build cache
+        if: steps.cache-everything.outputs.cache-hit == 'true'
+        run: |
+          cp -rpv ~/.agda-build-cache/agda-categories ./_build/ || exit 0
 
 ########################################################################
 ## INSTALLATION STEPS
 ########################################################################
 
       - name: Install ghc and cabal
-        if: steps.cache-cabal.outputs.cache-hit != 'true'
-        uses: haskell/actions/setup@v2
+        if: steps.cache-everything.outputs.cache-hit != 'true'
+        uses: haskell-actions/setup@v2
         with:
           ghc-version: ${{ env.GHC_VERSION }}
           cabal-version: ${{ env.CABAL_VERSION }}
 
       - name: Cabal update
-        if: steps.cache-cabal.outputs.cache-hit != 'true'
+        if: steps.cache-everything.outputs.cache-hit != 'true'
         run: cabal update
 
       - name: Download and install Agda from github
-        if: steps.cache-cabal.outputs.cache-hit != 'true'
+        if: steps.cache-everything.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/agda/agda
           cd agda
@@ -117,7 +129,7 @@ jobs:
           mkdir -p doc
           touch doc/user-manual.pdf
           # make sure it exists
-          mkdir -p $HOME/.local/state/cabal/bin
+          mkdir -p $HOME/.cabal/bin
           ${{ env.CABAL_INSTALL }}
           cd ..
 
@@ -131,13 +143,16 @@ jobs:
           echo "~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
           cd -
 
-########################################################################
-## TESTING AND DEPLOYMENT
-########################################################################
+      # If a build cache exists for agda-stdlib, use it, but don't fail if there
+      # isn't.
+      - name: Unpack agda-stdlib build cache
+        if: steps.cache-everything.outputs.cache-hit == 'true'
+        run: |
+          cp -rpv ~/.agda-build-cache/agda-stdlib ~/.agda/agda-stdlib/_build/ || exit 0
 
-      # By default github actions do not pull the repo
-      - name: Checkout agda-categories
-        uses: actions/checkout@v4
+########################################################################
+## TESTING
+########################################################################
 
       # Generate a fresh Everything.agda & index.agda and start building!
       - name: Test agda-categories
@@ -154,10 +169,25 @@ jobs:
         run: |
           ${{ env.AGDA }} --html --html-dir html index.agda
 
+########################################################################
+## PACKAGE BUILD CACHING
+########################################################################
+
+      # Package type-checked agda-stdlib and agda-categories libraries for
+      # future CI runs.
+      - name: "Pack Agda build cache"
+        run: |
+          mkdir -p ~/.agda-build-cache/
+          cp -rpv ./_build/ ~/.agda-build-cache/agda-categories/ || exit 0
+          cp -rpv ~/.agda/agda-stdlib/_build/ ~/.agda-build-cache/agda-stdlib/ || exit 0
+
+########################################################################
+## DEPLOYMENT
+########################################################################
+
       - name: Deploy HTML
         uses: JamesIves/github-pages-deploy-action@v4.4.3
         if: ${{ success() && env.AGDA_DEPLOY }}
-
         with:
           branch: gh-pages
           folder: html
