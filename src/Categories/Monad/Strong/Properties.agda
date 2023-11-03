@@ -85,25 +85,32 @@ module _ {C : Category o ℓ e} (V : Monoidal C) (S : Symmetric V) where
         η' (A , B) ∘ μ.η A ⊗₁ id ∎
       strength-assoc' : {X Y Z : Obj} → F.₁ associator.to ∘ η' (X , Y ⊗₀ Z) ≈ η' (X ⊗₀ Y , Z) ∘ η' (X , Y) ⊗₁ id ∘ associator.to
       strength-assoc' {X} {Y} {Z} = begin 
-        F.₁ associator.to ∘ F.₁ (braiding.⇐.η (X , Y ⊗₀ Z)) ∘ t.η (Y ⊗₀ Z , X) ∘ braiding.⇒.η (F.₀ X , Y ⊗₀ Z) ≈⟨ pullˡ (sym F.homomorphism) ⟩ 
-        F.₁ (associator.to ∘ braiding.⇐.η (X , Y ⊗₀ Z)) ∘ t.η (Y ⊗₀ Z , X) ∘ braiding.⇒.η (F.₀ X , Y ⊗₀ Z) ≈⟨ {!   !} ⟩ 
-        F.₁ ((associator.to ∘ braiding.⇐.η (X , Y ⊗₀ Z)) ∘ associator.to ∘ associator.from) ∘ t.η (Y ⊗₀ Z , X) ∘ braiding.⇒.η (F.₀ X , Y ⊗₀ Z) ≈⟨ {!   !} ⟩ 
-        F.₁ (((braiding.⇒.η (Y , X) ⊗₁ id) ∘ associator.to ∘ (id ⊗₁ braiding.⇒.η (Z , X))) ∘ associator.from) ∘ t.η (Y ⊗₀ Z , X) ∘ braiding.⇒.η (F.₀ X , Y ⊗₀ Z) ≈⟨ {!   !} ⟩ 
+        F.₁ α ∘ F.₁ (braiding.⇐.η (X , Y ⊗₀ Z)) ∘ t.η (Y ⊗₀ Z , X) ∘ B ≈⟨ {!   !} ⟩ 
+        (F.₁ α ∘ F.₁ B ∘ τ ∘ B) ≈⟨ {!   !} ⟩
         {!   !} ≈⟨ {!   !} ⟩
-        F.₁ (braiding.⇒.η (Y , X) ⊗₁ id) ∘ F.₁ associator.to ∘ F.₁ (id ⊗₁ braiding.⇒.η (Z , X)) ∘ F.₁ associator.from ∘ t.η (Y ⊗₀ Z , X) ∘ braiding.⇒.η (F.₀ X , Y ⊗₀ Z) ≈⟨ {!   !} ⟩ 
-        F.₁ (braiding.⇒.η (Y , X) ⊗₁ id) ∘ F.₁ associator.to ∘ F.₁ (id ⊗₁ braiding.⇒.η (Z , X)) ∘ (t.η (Y , Z ⊗₀ X) ∘ (id ⊗₁ t.η (Z , X)) ∘ associator.from) ∘ braiding.⇒.η (F.₀ X , Y ⊗₀ Z) ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pullˡ (pullˡ (sym (t.commute (id , braiding.⇒.η (Z , X)))))) ⟩ 
-        F.₁ (braiding.⇒.η (Y , X) ⊗₁ id) ∘ F.₁ associator.to ∘ ((t.η (Y , (X ⊗₀ Z)) ∘ (id ⊗₁ F.₁ (braiding.⇒.η (Z , X)))) ∘ ((id ⊗₁ t.η (Z , X)) ∘ associator.from)) ∘ braiding.⇒.η (F.₀ X , Y ⊗₀ Z) ≈⟨ {!   !} ⟩ 
-        (F.₁ (braiding.⇒.η (Y , X) ⊗₁ id) ∘ F.₁ associator.to ∘ ((t.η (Y , (X ⊗₀ Z)) ∘ (id ⊗₁ F.₁ (braiding.⇒.η (Z , X)))) ∘ ((id ⊗₁ t.η (Z , X)) ∘ associator.from)) ∘ braiding.⇒.η (F.₀ X , Y ⊗₀ Z)) ∘ associator.from ∘ associator.to ≈⟨ pullʳ (pullʳ (pullˡ assoc²)) ⟩ 
-        F.₁ (braiding.⇒.η (Y , X) ⊗₁ id) ∘ F.₁ associator.to ∘ (((t.η (Y , X ⊗₀ Z) ∘ (id ⊗₁ F.₁ (braiding.⇒.η (Z , X)))) ∘ (id ⊗₁ t.η (Z , X) ∘ associator.from) ∘ braiding.⇒.η (F.₀ X , Y ⊗₀ Z) ∘ associator.from) ∘ associator.to) ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ (pullʳ (refl⟩∘⟨ pullʳ (sym hexagon₁)) ⟩∘⟨refl)) ⟩ 
-        F.₁ (braiding.⇒.η (Y , X) ⊗₁ id) ∘ F.₁ associator.to ∘ (t.η (Y , X ⊗₀ Z) ∘ (id ⊗₁ F.₁ (braiding.⇒.η (Z , X))) ∘ (id ⊗₁ t.η (Z , X)) ∘ (id ⊗₁ braiding.⇒.η (F.₀ X , Z)) ∘ associator.from ∘ (braiding.⇒.η (F.₀ X , Y) ⊗₁ id)) ∘ associator.to ≈⟨ {!   !} ⟩ 
-        {!   !} ≈⟨ {!   !} ⟩ 
-        (F.₁ (braiding.⇒.η (Y , X) ⊗₁ id) ∘ F.₁ associator.to ∘ (t.η (Y , X ⊗₀ Z) ∘ (id ⊗₁ η' (X , Z)) ∘ associator.from ∘ (braiding.⇒.η (F.₀ X , Y) ⊗₁ id)) ∘ associator.to) ≈⟨ {! t.commute  !} ⟩ 
-        {!   !} ≈⟨ {!   !} ⟩ 
-        {!   !} ≈⟨ {!   !} ⟩ 
-        {!   !} ≈˘⟨ {!   !} ⟩ 
-        ((F.₁ (braiding.⇐.η (X ⊗₀ Y , Z)) ∘ t.η (Z , X ⊗₀ Y)) ∘ ((id ⊗₁ η' (X , Y)) ∘ braiding.⇒.η (F.₀ X ⊗₀ Y , Z)) ∘ associator.to) ≈˘⟨ {!   !} ⟩ 
+        {!   !} ≈⟨ {!   !} ⟩
+        {!   !} ≈⟨ {!   !} ⟩
+        {!   !} ≈⟨ {!   !} ⟩
+        -- TODO check what id × B ∘ B ∘ α corresponds to, maybe i can rewrite it somehow
+        F.₁ B ∘ F.₁ (id ⊗₁ B) ∘ ((F.₁ α⁻¹ ∘ τ) ∘ α) ∘ (id ⊗₁ B) ∘ B ∘ α ≈⟨ {!   !} ⟩
+        F.₁ B ∘ F.₁ (id ⊗₁ B) ∘ τ ∘ (id ⊗₁ τ) ∘ (α⁻¹ ∘ α) ∘ (id ⊗₁ B) ∘ B ∘ α ≈⟨ {!   !} ⟩ -- all steps below work
+        F.₁ B ∘ F.₁ (id ⊗₁ B) ∘ τ ∘ (id ⊗₁ τ) ∘ (id ⊗₁ B) ∘ B ∘ α ≈⟨ {!   !} ⟩
+        F.₁ B ∘ (F.₁ (id ⊗₁ B) ∘ τ ∘ ((id ⊗₁ τ) ∘ (id ⊗₁ B)) ∘ B) ∘ α ≈⟨ {!   !} ⟩
+        F.₁ B ∘ (F.₁ (id ⊗₁ B) ∘ τ ∘ (id ⊗₁ (τ ∘ B)) ∘ B) ∘ α ≈⟨ {!   !} ⟩
+        F.₁ B ∘ τ ∘ ((id ⊗₁ F.₁ B) ∘ (id ⊗₁ (τ ∘ B)) ∘ B) ∘ α ≈⟨ {!   !} ⟩
+        F.₁ B ∘ τ ∘ ((id ⊗₁ (F.₁ B ∘ τ ∘ B)) ∘ B) ∘ α ≈⟨ {!   !} ⟩ -- B swap
+        (F.₁ B ∘ τ ∘ B) ∘ (σ ⊗₁ id) ∘ α ≈⟨ {!   !} ⟩
         (F.₁ (braiding.⇐.η (X ⊗₀ Y , Z)) ∘ t.η (Z , X ⊗₀ Y) ∘ braiding.⇒.η (F.₀ (X ⊗₀ Y) , Z)) ∘ (η' (X , Y) ⊗₁ id) ∘ associator.to ∎ 
         where
+          α = associator.to
+          α⁻¹ = associator.from
+          B : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X
+          B {X} {Y} = braiding.⇒.η (X , Y)
+          τ : ∀ {X Y} → X ⊗₀ F.₀ Y ⇒ F.₀ (X ⊗₀ Y)
+          τ {X} {Y} = t.η (X , Y)
+          σ : ∀ {X Y} → F.₀ X ⊗₀ Y ⇒ F.₀ (X ⊗₀ Y)
+          σ {X} {Y} = η' (X , Y)
+          -- strength.strength-assoc : F.₁ α⁻¹ ∘ τ ≈ τ ∘ (id × τ) ∘ α⁻¹
           braiding-eq : ∀ {X Y} → braiding.⇐.η (X , Y) ≈ braiding.⇒.η (Y , X)
           braiding-eq = introʳ commutative ○ cancelˡ (braiding.iso.isoˡ _)
         
