@@ -8,7 +8,7 @@ module Categories.Functor.Instance.0-Truncation where
 -- Groupoids (see Categories.Functor.Adjoint.Instance.ZeroTruncation)
 
 import Function
-open import Function.Equality using (_⟶_)
+open import Function.Bundles using (Func)
 open import Relation.Binary using (Setoid)
 
 open import Categories.Category using (Category; _[_≈_])
@@ -44,8 +44,8 @@ Trunc {o} {ℓ} {e} = record
        where open Groupoid G
 
      TruncMap : ∀ {G H} → Functor (category G) (category H) →
-                TruncSetoid G ⟶ TruncSetoid H
-     TruncMap F = record { _⟨$⟩_ = F₀ F ; cong  = F₁ F }
+                Func (TruncSetoid G) (TruncSetoid H)
+     TruncMap F = record { to = F₀ F ; cong  = F₁ F }
 
      TruncRespNI : ∀ {G H : Groupoid o ℓ e}
                    {E F : Functor (category G) (category H)} →
