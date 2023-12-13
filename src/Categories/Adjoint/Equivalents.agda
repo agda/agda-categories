@@ -8,8 +8,7 @@ open import Level
 
 open import Data.Product using (_,_; _×_)
 open import Function using (_$_) renaming (_∘_ to _∙_)
-open import Function.Equality using (Π; _⟶_)
-import Function.Inverse as FI
+open import Function.Bundles
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
 -- be explicit in imports to 'see' where the information comes from
@@ -50,11 +49,11 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
     Hom-NI′ : NaturalIsomorphism Hom[L-,-] Hom[-,R-]
     Hom-NI′ = record
       { F⇒G = ntHelper record
-        { η       = λ _ → Hom-inverse.to
+        { η       = λ _ → Equivalence.toFunction (LeftInverse.equivalence Hom-inverse.leftInverse)
         ; commute = λ _ eq → Ladjunct-comm eq
         }
       ; F⇐G = ntHelper record
-        { η       = λ _ → Hom-inverse.from
+        { η       = λ _ → Equivalence.fromFunction (LeftInverse.equivalence Hom-inverse.leftInverse)
         ; commute = λ _ eq → Radjunct-comm eq
         }
       ; iso = λ _ → record
@@ -78,10 +77,10 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
     open NaturalIsomorphism Hni
     open NaturalTransformation
     open Functor
-    open Π
+    open Func
 
     private
-      unitη : ∀ X → F₀ Hom[L-,-] (X , L.F₀ X) ⟶ F₀ Hom[-,R-] (X , L.F₀ X)
+      unitη : ∀ X → Func (F₀ Hom[L-,-] (X , L.F₀ X)) (F₀ Hom[-,R-] (X , L.F₀ X))
       unitη X = ⇒.η (X , L.F₀ X)
 
       unit : NaturalTransformation idF (R ∘F L)
@@ -100,7 +99,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
               open HomReasoning
               open MR C
 
-      counitη : ∀ X → F₀ Hom[-,R-] (R.F₀ X , X) ⟶ F₀ Hom[L-,-] (R.F₀ X , X)
+      counitη : ∀ X → Func (F₀ Hom[-,R-] (R.F₀ X , X)) (F₀ Hom[L-,-] (R.F₀ X , X))
       counitη X = ⇐.η (R.F₀ X , X)
 
       counit : NaturalTransformation (L ∘F R) idF
@@ -160,7 +159,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
     module L = Functor L
     module R = Functor R
     open Functor
-    open Π
+    open Func
 
     Hom[L-,-] : Bifunctor C.op D (Setoids _ _)
     Hom[L-,-] = LiftSetoids ℓ e ∘F Hom[ D ][-,-] ∘F (L.op ⁂ idF)
@@ -171,7 +170,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
   module _ (Hni : Hom[L-,-] ≃ Hom[-,R-]) where
     open NaturalIsomorphism Hni using (module ⇒; module ⇐; iso)
     private
-      unitη : ∀ X → F₀ Hom[L-,-] (X , L.F₀ X) ⟶ F₀ Hom[-,R-] (X , L.F₀ X)
+      unitη : ∀ X → Func (F₀ Hom[L-,-] (X , L.F₀ X)) (F₀ Hom[-,R-] (X , L.F₀ X))
       unitη X = ⇒.η (X , L.F₀ X)
 
       unit : NaturalTransformation idF (R ∘F L)
@@ -196,7 +195,7 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
               open HomReasoning
               open MR C
 
-      counitη : ∀ X → F₀ Hom[-,R-] (R.F₀ X , X) ⟶ F₀ Hom[L-,-] (R.F₀ X , X)
+      counitη : ∀ X → Func (F₀ Hom[-,R-] (R.F₀ X , X)) (F₀ Hom[L-,-] (R.F₀ X , X))
       counitη X = ⇐.η (R.F₀ X , X)
 
       counit : NaturalTransformation (L ∘F R) idF
