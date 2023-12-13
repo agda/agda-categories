@@ -26,8 +26,8 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
     { F₀           = F₀′
     ; F₁           = λ where
       (f , g) → record
-        { _⟨$⟩_ = λ h → g ∘ h ∘ f
-        ; cong  = ∘-resp-≈ʳ ∙ ∘-resp-≈ˡ
+        { to = λ h → g ∘ h ∘ f
+        ; cong = ∘-resp-≈ʳ ∙ ∘-resp-≈ˡ
         }
     ; identity     = identity′
     ; homomorphism = homomorphism′
