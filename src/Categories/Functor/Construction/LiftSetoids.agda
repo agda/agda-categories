@@ -4,7 +4,7 @@ module Categories.Functor.Construction.LiftSetoids where
 
 open import Level
 open import Relation.Binary
-open import Function.Equality
+open import Function.Bundles
 open import Function using (_$_) renaming (id to idf)
 
 open import Categories.Category
@@ -34,10 +34,10 @@ LiftSetoids : ∀ c′ ℓ′ → Functor (Setoids c ℓ) (Setoids (c ⊔ c′) 
 LiftSetoids c′ ℓ′ = record
   { F₀           = LiftedSetoid c′ ℓ′
   ; F₁           = λ f → record
-    { _⟨$⟩_  = λ where (lift x)  → lift $ f ⟨$⟩ x
-    ; cong  = λ where (lift eq) → lift $ cong f eq
+    { to    = λ where (lift x)  → lift $ f ⟨$⟩ x
+    ; cong  = λ where (lift eq) → lift $ Func.cong f eq
     }
   ; identity     = idf
-  ; homomorphism = λ where {f = f} {g = g} (lift eq) → lift $ cong g $ cong f eq
+  ; homomorphism = λ where {f = f} {g = g} (lift eq) → lift $ Func.cong g $ Func.cong f eq
   ; F-resp-≈     = λ where fx≈gy (lift x≈y)          → lift $ fx≈gy x≈y
   }
