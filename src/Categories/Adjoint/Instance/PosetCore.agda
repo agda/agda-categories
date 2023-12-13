@@ -7,7 +7,7 @@ module Categories.Adjoint.Instance.PosetCore where
 
 open import Level using (_⊔_)
 import Function
-open import Function.Equality using (Π; _⟶_)
+open import Function.Bundles
 open import Relation.Binary using (Setoid; Poset)
 open import Relation.Binary.Morphism.Bundles using (PosetHomomorphism; mkPosetHomo)
 import Relation.Binary.Morphism.Construct.Composition as Comp
@@ -28,15 +28,16 @@ open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (_≃_; niHelper)
 
-open Π
 open PosetHomomorphism using (⟦_⟧; cong)
 
 -- The "forgetful" functor from Setoids to Posets (forgetting symmetry).
 
+open Func
+
 Forgetful : ∀ {c ℓ} → Functor (Setoids c ℓ) (Posets c ℓ ℓ)
 Forgetful = record
   { F₀           = Forgetful₀
-  ; F₁           = λ f → mkPosetHomo _ _ (f ⟨$⟩_) (cong f)
+  ; F₁           = λ f → mkPosetHomo _ _ (to f) (cong f)
   ; identity     = λ {S}       → refl S
   ; homomorphism = λ {_ _ S}   → refl S
   ; F-resp-≈     = λ {S _} f≗g → f≗g (refl S)
@@ -70,7 +71,7 @@ Forgetful = record
 Core : ∀ {c ℓ₁ ℓ₂} → Functor (Posets c ℓ₁ ℓ₂) (Setoids c ℓ₁)
 Core = record
   { F₀           = λ A → record { isEquivalence = isEquivalence A }
-  ; F₁           = λ f → record { _⟨$⟩_ = ⟦ f ⟧ ; cong = cong f }
+  ; F₁           = λ f → record { to = ⟦ f ⟧ ; cong = cong f }
   ; identity     = Function.id
   ; homomorphism = λ {_ _ _ f g} → cong (Comp.posetHomomorphism f g)
   ; F-resp-≈     = λ {_ B} {f _} f≗g x≈y → Eq.trans B (cong f x≈y) f≗g
@@ -91,8 +92,8 @@ CoreAdj = record
     open Functor Core      using () renaming (F₀ to Core₀; F₁ to Core₁)
     open Functor Forgetful using () renaming (F₀ to U₀   ; F₁ to U₁)
 
-    unit : ∀ S → S ⟶ Core₀ (U₀ S)
-    unit S = record { _⟨$⟩_ = Function.id ; cong = Function.id }
+    unit : ∀ S → Func S (Core₀ (U₀ S))
+    unit S = record { to = Function.id ; cong = Function.id }
 
     counit : ∀ A → PosetHomomorphism (U₀ (Core₀ A)) A
     counit A = mkPosetHomo (U₀ (Core₀ A)) A Function.id (reflexive A)
