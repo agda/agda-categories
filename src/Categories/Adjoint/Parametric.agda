@@ -3,6 +3,7 @@ module Categories.Adjoint.Parametric where
 open import Level
 
 open import Data.Product using (_×_; _,_)
+open import Function.Consequences using (inverseʳ⇒injective)
 open import Categories.Category.Core using (Category)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open Categories.Functor.Functor using (F₀; F₁; homomorphism; identity; F-resp-≈)
@@ -124,7 +125,10 @@ record ParametricAdjoint {C D E : Category o ℓ e} (L : Functor C (Functors D E
 
           is-cowedge : A.Radjunct X (η (R.₁ f) A)
                    E.≈ A.counit.η Y A E.∘ η (L.₁ f) (RR.₀ Y A)
-          is-cowedge = Adjoint.Hom-inverse.injective (areAdjoint X) adjunction-iso
+          is-cowedge = inverseʳ⇒injective
+            D._≈_ (Adjoint.Hom-inverse.to (areAdjoint X)) D.Equiv.refl E.Equiv.sym E.Equiv.trans
+            (Adjoint.Hom-inverse.inverseʳ (areAdjoint X))
+            adjunction-iso
 
           -- in the proof the meat is in `is-cowedge`; but due to the definition of
           -- cowedge using the constant bifunctor, Agda wants the proof term wrapped
