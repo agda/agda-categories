@@ -15,8 +15,8 @@ private
 
 open import Level
 open import Data.Product using (Σ; _,_)
-open import Function.Equality using (_⟶_)
-open import Function.Inverse using (_InverseOf_; Inverse)
+open import Function.Bundles using (Func; Inverse)
+open import Function.Definitions using (Inverseᵇ)
 
 open import Categories.Category.Product
 open import Categories.Functor renaming (id to idF)
@@ -120,19 +120,21 @@ record Closed : Set (levelOfTerm C) where
 
   open Functor
 
-  γ : hom-setoid {X} {Y} ⟶ hom-setoid {unit} {[ X , Y ]₀}
+  γ : Func (hom-setoid {X} {Y}) (hom-setoid {unit} {[ X , Y ]₀})
   γ {X} = record
-    { _⟨$⟩_ = λ f → [ C.id , f ]₁ ∘ diagonal.α _
+    { to = λ f → [ C.id , f ]₁ ∘ diagonal.α _
     ; cong  = λ eq → ∘-resp-≈ˡ (F-resp-≈ [ X ,-] eq)
     }
 
   field
-    γ⁻¹             : hom-setoid {unit} {[ X , Y ]₀} ⟶ hom-setoid {X} {Y}
-    γ-inverseOf-γ⁻¹ : γ {X} {Y} InverseOf γ⁻¹
+    γ⁻¹            : Func (hom-setoid {unit} {[ X , Y ]₀}) (hom-setoid {X} {Y})
+    γ-γ⁻¹-inverseᵇ : Inverseᵇ _≈_ _≈_ (Func.to γ⁻¹) (Func.to (γ {X} {Y}))
 
   γ-inverse : Inverse (hom-setoid {unit} {[ X , Y ]₀}) (hom-setoid {X} {Y})
   γ-inverse = record
-    { to         = γ⁻¹
-    ; from       = γ
-    ; inverse-of = γ-inverseOf-γ⁻¹
+    { to        = Func.to γ⁻¹
+    ; to-cong   = Func.cong γ⁻¹
+    ; from      = Func.to γ
+    ; from-cong = Func.cong γ
+    ; inverse   = γ-γ⁻¹-inverseᵇ
     }
