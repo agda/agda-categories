@@ -3,7 +3,11 @@
 module Categories.Category.Concrete.Properties where
 
 open import Data.Unit.Polymorphic
-open import Function.Equality using (Π; _⟨$⟩_; const; _∘_)
+open import Function.Base using (const; _∘_)
+open import Function.Bundles using (Func; _⟨$⟩_)
+import Function.Construct.Constant as Const
+import Function.Construct.Composition as Comp
+-- open import Function.Equality using (Π; _⟨$⟩_; const; _∘_)
 open import Level
 open import Relation.Binary using (Setoid)
 import Relation.Binary.Reasoning.Setoid as SR
@@ -29,20 +33,20 @@ open Concrete
     ; Iso = record
       { F⇒G = ntHelper record
         { η = λ X → record
-          { _⟨$⟩_ = λ x → L.counit.η X C.∘ F.₁ (const x)
+          { to = λ x → L.counit.η X C.∘ F.₁ (Const.function OneS (U.F₀ X) x)
           ; cong = λ i≈j → C.∘-resp-≈ʳ (F.F-resp-≈ λ _ → i≈j)
           }
         ; commute = λ {X} {Y} f {x} {y} x≈y →
             let open C.HomReasoning in begin
-            L.counit.η Y C.∘ F.₁ (const (U.₁ f ⟨$⟩ x))          ≈⟨ refl⟩∘⟨ F.F-resp-≈ (λ _ → Π.cong (U.₁ f) x≈y) ⟩
-            L.counit.η Y C.∘ F.₁ (U.F₁ f ∘ const y)            ≈⟨ pushʳ F.homomorphism ⟩
-            ((L.counit.η Y C.∘ F.₁ (U.₁ f)) C.∘ F.₁ (const y)) ≈⟨ pushˡ (commute L.counit f) ⟩
-            f C.∘ L.counit.η X C.∘ F.₁ (const y)               ≈˘⟨ C.identityʳ ⟩
-            (f C.∘ L.counit.η X C.∘ F.₁ (const y)) C.∘ C.id    ∎
+            L.counit.η Y C.∘ F.₁ (Const.function OneS (U.F₀ Y) (U.₁ f ⟨$⟩ x))              ≈⟨ refl⟩∘⟨ F.F-resp-≈ (λ _ → Func.cong (U.₁ f) x≈y) ⟩
+            L.counit.η Y C.∘ F.₁ (Comp.function (Const.function OneS (U.F₀ X) y) (U.F₁ f)) ≈⟨ pushʳ F.homomorphism ⟩
+            ((L.counit.η Y C.∘ F.₁ (U.₁ f)) C.∘ F.₁ (Const.function OneS (U.F₀ X) y))      ≈⟨ pushˡ (commute L.counit f) ⟩
+            f C.∘ L.counit.η X C.∘ F.₁ (Const.function OneS (U.F₀ X) y)                    ≈˘⟨ C.identityʳ ⟩
+            (f C.∘ L.counit.η X C.∘ F.₁ (Const.function OneS (U.F₀ X) y)) C.∘ C.id         ∎
         }
       ; F⇐G = ntHelper record
         { η = λ c → record
-          { _⟨$⟩_ = λ 1⇒c → U.₁ 1⇒c ⟨$⟩ η1
+          { to = λ 1⇒c → U.₁ 1⇒c ⟨$⟩ η1
           ; cong = λ i≈j → U.F-resp-≈ i≈j (Setoid.refl (U.₀ (F.₀ OneS)))
           }
         ; commute = λ {X} {Y} f {x} {y} x≈y →
@@ -54,11 +58,11 @@ open Concrete
              U.₁ f ⟨$⟩ (U.₁ y ⟨$⟩ η1)         ∎
         }
       ; iso = λ X → record
-        { isoˡ = λ {x} {y} x≈y → Setoid.trans (U.₀ X) (L.LRadjunct≈id {OneS} {X} {const x} tt) x≈y
+        { isoˡ = λ {x} {y} x≈y → Setoid.trans (U.₀ X) (L.LRadjunct≈id {OneS} {X} {Const.function OneS (U.F₀ X) x} tt) x≈y
         ; isoʳ = λ {1⇒x} {1⇒y} x≈y →
           let open C.HomReasoning in begin
-          L.counit.η X C.∘ F.₁ (const (U.₁ 1⇒x ⟨$⟩ η1))   ≈⟨ (refl⟩∘⟨ F.F-resp-≈ λ _ → U.F-resp-≈ x≈y Srefl) ⟩
-          L.counit.η X C.∘ F.₁ (U.₁ 1⇒y ∘ L.unit.η OneS)  ≈⟨ L.RLadjunct≈id {OneS} {X} {1⇒y}  ⟩
+          L.counit.η X C.∘ F.₁ (Const.function OneS (U.F₀ X) (U.₁ 1⇒x ⟨$⟩ η1)) ≈⟨ (refl⟩∘⟨ F.F-resp-≈ λ _ → U.F-resp-≈ x≈y Srefl) ⟩
+          L.counit.η X C.∘ F.₁ (Comp.function (L.unit.η OneS) (U.₁ 1⇒y))       ≈⟨ L.RLadjunct≈id {OneS} {X} {1⇒y}  ⟩
           1⇒y ∎
         }
       }
