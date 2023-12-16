@@ -8,7 +8,7 @@ open import Level
 open import Data.Unit
 open import Data.Product using (_,_)
 open import Data.Product.Relation.Binary.Pointwise.NonDependent
-open import Function.Equality using (Π) renaming (_∘_ to _∙_)
+open import Function.Bundles using (Func; _⟨$⟩_)
 open import Relation.Binary
 
 open import Categories.Category.Cartesian
@@ -22,16 +22,14 @@ open import Categories.NaturalTransformation
 import Categories.Object.Product as Prod
 import Categories.Morphism.Reasoning as MR
 
-open Π using (_⟨$⟩_)
-
 module _ {o′ ℓ′ o″ ℓ″} where
 
   Presheaves× : ∀ (A : Presheaf C (Setoids o′ ℓ′)) (A : Presheaf C (Setoids o″ ℓ″)) → Presheaf C (Setoids (o′ ⊔ o″) (ℓ′ ⊔ ℓ″))
   Presheaves× A B = record
     { F₀           = λ X → ×-setoid (A.₀ X) (B.₀ X)
     ; F₁           = λ f → record
-      { _⟨$⟩_ = λ { (a , b) → A.₁ f ⟨$⟩ a , B.₁ f ⟨$⟩ b }
-      ; cong  = λ { (eq₁ , eq₂) → Π.cong (A.₁ f) eq₁ , Π.cong (B.₁ f) eq₂ }
+      { to = λ { (a , b) → A.₁ f ⟨$⟩ a , B.₁ f ⟨$⟩ b }
+      ; cong  = λ { (eq₁ , eq₂) → Func.cong (A.₁ f) eq₁ , Func.cong (B.₁ f) eq₂ }
       }
     ; identity     = λ { (eq₁ , eq₂)    → A.identity eq₁ , B.identity eq₂ }
     ; homomorphism = λ { (eq₁ , eq₂)    → A.homomorphism eq₁ , B.homomorphism eq₂ }
@@ -72,17 +70,17 @@ module IsCartesian o′ ℓ′ where
         { A×B      = Presheaves× A B
         ; π₁       = ntHelper record
           { η       = λ X → record
-            { _⟨$⟩_ = λ { (fst , _) → fst }
+            { to = λ { (fst , _) → fst }
             ; cong  = λ { (eq , _)  → eq }
             }
-          ; commute = λ { f (eq , _) → Π.cong (A.F₁ f) eq }
+          ; commute = λ { f (eq , _) → Func.cong (A.F₁ f) eq }
           }
         ; π₂       = ntHelper record
           { η       = λ X → record
-            { _⟨$⟩_ = λ { (_ , snd) → snd }
+            { to = λ { (_ , snd) → snd }
             ; cong  = λ { (_ , eq)  → eq }
             }
-          ; commute = λ { f (_ , eq) → Π.cong (B.F₁ f) eq }
+          ; commute = λ { f (_ , eq) → Func.cong (B.F₁ f) eq }
           }
         ; ⟨_,_⟩    = λ {F} α β →
           let module F = Functor F
@@ -90,8 +88,8 @@ module IsCartesian o′ ℓ′ where
               module β = NaturalTransformation β
           in ntHelper record
           { η       = λ Y → record
-            { _⟨$⟩_ = λ S → α.η Y ⟨$⟩ S , β.η Y ⟨$⟩ S
-            ; cong  = λ eq → Π.cong (α.η Y) eq , Π.cong (β.η Y) eq
+            { to = λ S → α.η Y ⟨$⟩ S , β.η Y ⟨$⟩ S
+            ; cong  = λ eq → Func.cong (α.η Y) eq , Func.cong (β.η Y) eq
             }
           ; commute = λ f eq → α.commute f eq , β.commute f eq
           }
@@ -99,12 +97,12 @@ module IsCartesian o′ ℓ′ where
           let module F = Functor F
               module α = NaturalTransformation α
               module β = NaturalTransformation β
-          in Π.cong (α.η x) eq
+          in Func.cong (α.η x) eq
         ; project₂ = λ {F α β x} eq →
           let module F = Functor F
               module α = NaturalTransformation α
               module β = NaturalTransformation β
-          in Π.cong (β.η x) eq
+          in Func.cong (β.η x) eq
         ; unique   = λ {F α β δ} eq₁ eq₂ {x} eq →
           let module F = Functor F
               module α = NaturalTransformation α
