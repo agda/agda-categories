@@ -43,16 +43,10 @@ private
   module KaroubiEmbedding = Functor KaroubiEmbedding
 
 karoubi-embedding-full : Full KaroubiEmbedding
-karoubi-embedding-full = record
-  { from = record
-    { _⟨$⟩_ = λ f → BundledIdem.Idempotent⇒.hom f
-    ; cong = λ eq → eq
-    }
-  ; right-inverse-of = λ _ → refl
-  }
+karoubi-embedding-full f = BundledIdem.Idempotent⇒.hom f , λ eq → eq
 
 karoubi-embedding-faithful : Faithful KaroubiEmbedding
-karoubi-embedding-faithful f g eq = eq
+karoubi-embedding-faithful eq = eq
 
 karoubi-embedding-fully-faithful : FullyFaithful KaroubiEmbedding
 karoubi-embedding-fully-faithful = karoubi-embedding-full , karoubi-embedding-faithful
