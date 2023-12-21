@@ -11,13 +11,23 @@ open import Level
 open import Relation.Binary
   using (Rel; Setoid; module Setoid; Reflexive; Symmetric; Transitive)
 open import Function.Base renaming (id to idf; _∘_ to _⊚_)
-open import Function.Equality
-open import Function.Inverse using (_InverseOf_)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Construct.Identity using () renaming (function to idF)
+open import Function.Construct.Composition using (function)
+open import Function.Construct.Setoid renaming (function to func-setoid)
+open import Function.Structures using (IsInverse)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
 open import Categories.Category
 
 module _ {a b c d : Level} where
+
+  private
+    infixr 9 _∙_
+    _∙_ : {a₁ a₂ b₁ b₂ c₁ c₂ : Level} {A : Setoid a₁ a₂} {B : Setoid b₁ b₂}
+      {C : Setoid c₁ c₂} → Func B C → Func A B → Func A C
+    f ∙ g = function g f
+    
   record Fam : Set (suc (a ⊔ b ⊔ c ⊔ d)) where
     constructor fam
     open Setoid using () renaming (Carrier to ∣_∣; _≈_ to _≈≈_)
@@ -26,14 +36,14 @@ module _ {a b c d : Level} where
     open Setoid U hiding (Carrier)
     field
       T : ∣ U ∣ → Setoid c d
-      reindex : {x y : ∣ U ∣} (P : x ≈ y) → T y ⟶ T x
+      reindex : {x y : ∣ U ∣} (P : x ≈ y) → Func (T y) (T x)
 
       -- the following coherence laws are needed to make _≃_ below an equivalence
       reindex-refl : {x : ∣ U ∣} {bx : ∣ T x ∣} → _≈≈_ (T x) (reindex refl ⟨$⟩ bx) bx
-      reindex-sym : {x y : ∣ U ∣} → (p : x ≈ y) → (reindex (sym p)) InverseOf (reindex p)
+      reindex-sym : {x y : ∣ U ∣} → (p : x ≈ y) → IsInverse (_≈≈_ (T x)) (_≈≈_ (T y)) (Func.to (reindex (sym p))) (Func.to (reindex p))
       reindex-trans : {x y z : ∣ U ∣} {b : ∣ T z ∣} → (p : x ≈ y) → (q : y ≈ z) →
         Setoid._≈_ (T x) (reindex (trans p q) ⟨$⟩ b)
-                         (reindex p ∘ reindex q ⟨$⟩ b)
+                         (reindex p ∙ reindex q ⟨$⟩ b)
   open Fam
 
 
@@ -41,12 +51,12 @@ module _ {a b c d : Level} where
     constructor fhom
     open Setoid (U B) using (_≈_)
     field
-      map : U B ⟶ U B′
-      transport : (x : Setoid.Carrier (U B)) → T B x ⟶ T B′ (map ⟨$⟩ x)
+      map : Func (U B) (U B′)
+      transport : (x : Setoid.Carrier (U B)) → Func (T B x) (T B′ (map ⟨$⟩ x))
       transport-coh : {x y : Setoid.Carrier (U B)} → (p : x ≈ y) →
-        Setoid._≈_ (T B y ⇨ T B′ (map ⟨$⟩ x))
-          (transport x ∘ reindex B p)
-          (reindex B′ (Π.cong map p) ∘ transport y)
+        Setoid._≈_ (func-setoid (T B y) (T B′ (map ⟨$⟩ x)))
+          (transport x ∙ reindex B p)
+          (reindex B′ (Func.cong map p) ∙ transport y)
 
   record _≈≈_ {X Y} (F F′ : (Hom X Y)) : Set (a ⊔ b ⊔ c ⊔ d) where
     constructor feq
@@ -58,17 +68,17 @@ module _ {a b c d : Level} where
       g≈f : {x : A} → map F ⟨$⟩ x ≈ map F′ ⟨$⟩ x
       φ≈γ : {x : A} → let C = T X x
                           D = T Y (map F ⟨$⟩ x) in
-            {bx : Setoid.Carrier C} → Setoid._≈_ D ((reindex Y g≈f ∘ transport F′ x) ⟨$⟩ bx) (transport F x ⟨$⟩ bx)
+            {bx : Setoid.Carrier C} → Setoid._≈_ D ((reindex Y g≈f ∙ transport F′ x) ⟨$⟩ bx) (transport F x ⟨$⟩ bx)
 
   fam-id : {A : Fam} → Hom A A
-  fam-id {A} = fhom id (λ _ → id) λ p x≈y → Π.cong (reindex A p) x≈y
+  fam-id {A} = fhom (idF (U A)) (λ x → idF (T A x)) λ p x≈y → Func.cong (reindex A p) x≈y
   comp : {A B C : Fam} → Hom B C → Hom A B → Hom A C
   comp {B = B} {C} (fhom map₀ trans₀ coh₀) (fhom map₁ trans₁ coh₁) =
-    fhom (map₀ ∘ map₁) (λ x → trans₀ (map₁ ⟨$⟩ x) ∘ (trans₁ x))
+    fhom (map₀ ∙ map₁) (λ x → trans₀ (map₁ ⟨$⟩ x) ∙ (trans₁ x))
          λ {a} {b} p {x} {y} x≈y →
-           let open Setoid (T C (map₀ ∘ map₁ ⟨$⟩ a)) renaming (trans to _⟨≈⟩_) in
-           Π.cong (trans₀ (map₁ ⟨$⟩ a)) (coh₁ p x≈y) ⟨≈⟩
-           coh₀ (Π.cong map₁ p) (Setoid.refl (T B (map₁ ⟨$⟩ b)))
+           let open Setoid (T C (map₀ ∙ map₁ ⟨$⟩ a)) renaming (trans to _⟨≈⟩_) in
+           Func.cong (trans₀ (map₁ ⟨$⟩ a)) (coh₁ p x≈y) ⟨≈⟩
+           coh₀ (Func.cong map₁ p) (Setoid.refl (T B (map₁ ⟨$⟩ b)))
 
   ≈≈-refl : ∀ {A B} → Reflexive (_≈≈_ {A} {B})
   ≈≈-refl {B = B} = feq refl (reindex-refl B)
@@ -77,30 +87,30 @@ module _ {a b c d : Level} where
   ≈≈-sym : ∀ {A B} → Symmetric (_≈≈_ {A} {B})
   ≈≈-sym {A} {B} {F} {G} (feq g≈f φ≈γ) = feq (sym g≈f)
     λ {x} {bx} → Setoid.trans ( T B (map G ⟨$⟩ x) )
-      (Π.cong (reindex B (sym g≈f)) (Setoid.sym (T B (map F ⟨$⟩ x)) φ≈γ))
-      (left-inverse-of (reindex-sym B g≈f) (transport G x ⟨$⟩ bx))
+      (Func.cong (reindex B (sym g≈f)) (Setoid.sym (T B (map F ⟨$⟩ x)) φ≈γ))
+      (strictlyInverseˡ (reindex-sym B g≈f) (transport G x ⟨$⟩ bx) )
     where
     open Setoid (U B) using (sym; Carrier)
     open Hom
-    open _InverseOf_
+    open IsInverse
 
   ≈≈-trans : ∀ {A B} → Transitive (_≈≈_ {A} {B})
   ≈≈-trans {A} {B} {F} {G} {H}  (feq ≈₁ t₁) (feq ≈₂ t₂) =
     feq (trans ≈₁ ≈₂) (λ {x} {bx} →
       let open Setoid (T B (Hom.map F ⟨$⟩ x)) renaming (trans to _⟨≈⟩_) in
-      reindex-trans B ≈₁ ≈₂ ⟨≈⟩ (Π.cong (reindex B ≈₁) t₂ ⟨≈⟩ t₁))
+      reindex-trans B ≈₁ ≈₂ ⟨≈⟩ (Func.cong (reindex B ≈₁) t₂ ⟨≈⟩ t₁))
     where
     open Setoid (U B) using (trans)
 
   comp-resp-≈≈ : {A B C : Fam} {f h : Hom B C} {g i : Hom A B} →
       f ≈≈ h → g ≈≈ i → comp f g ≈≈ comp h i
   comp-resp-≈≈ {A} {B} {C} {f} {h} {g} {i} (feq f≈h t-f≈h) (feq g≈i t-g≈i) =
-    feq (trans (Π.cong (map f) g≈i) f≈h)
+    feq (trans (Func.cong (map f) g≈i) f≈h)
         λ {x} → let open Setoid (T C (map (comp f g) ⟨$⟩ x)) renaming (trans to _⟨≈⟩_; sym to ≈sym) in
-        reindex-trans C (cong (map f) g≈i) f≈h ⟨≈⟩
-        (Π.cong (reindex C (cong (map f) g≈i)) t-f≈h ⟨≈⟩
+        reindex-trans C (Func.cong (map f) g≈i) f≈h ⟨≈⟩
+        (Func.cong (reindex C (Func.cong (map f) g≈i)) t-f≈h ⟨≈⟩
         (≈sym (transport-coh {B} {C} f g≈i (Setoid.refl (T B (map i ⟨$⟩ x)))) ⟨≈⟩
-        Π.cong (transport f (map g ⟨$⟩ x)) t-g≈i))
+        Func.cong (transport f (map g ⟨$⟩ x)) t-g≈i))
     where
     open _≈≈_
     open Setoid (U C)
@@ -126,7 +136,7 @@ module _ {a b c d : Level} where
     ; ∘-resp-≈ = comp-resp-≈≈
     }
     where
-    open _InverseOf_
+    -- open _InverseOf_
     assoc′ : {A B C D : Fam} {f : Hom A B} {g : Hom B C} {h : Hom C D} →
       comp (comp h g) f ≈≈ comp h (comp g f)
     assoc′ {D = D} = feq (Setoid.refl (U D)) (reindex-refl D)
