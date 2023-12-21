@@ -9,7 +9,6 @@ module Categories.Category.Monoidal.Closed.IsClosed.Dinatural
 
 open import Data.Product using (Σ; _,_)
 open import Function using (_$_) renaming (_∘_ to _∙_)
-open import Function.Equality as Π using (Π)
 
 open import Categories.Category.Product
 open import Categories.Category.Monoidal.Properties M
@@ -34,7 +33,6 @@ private
 
 open HomReasoning
 open Equiv
-open Π.Π
 open adjoint renaming (unit to η; counit to ε; Ladjunct to 𝕃; Ladjunct-comm′ to 𝕃-comm′;
  Ladjunct-resp-≈ to 𝕃-resp-≈)
 
