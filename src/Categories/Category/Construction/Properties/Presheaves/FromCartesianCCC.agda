@@ -5,7 +5,8 @@ module Categories.Category.Construction.Properties.Presheaves.FromCartesianCCC w
 open import Level
 open import Data.Unit
 open import Data.Product using (_,_; proj₁; proj₂)
-open import Function.Equality using (Π) renaming (_∘_ to _∙_)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Construct.Composition using (function)
 open import Relation.Binary
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
@@ -27,8 +28,6 @@ import Categories.Category.Construction.Properties.Presheaves.Cartesian as Pre�
 import Categories.Object.Product as Prod
 import Categories.Morphism.Reasoning as MR
 
-open Π using (_⟨$⟩_)
-
 module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesian C) where
   private
     module C = Category C
@@ -38,6 +37,12 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
     open Cartesian Car
     open BinaryProducts products
 
+    -- this should be back-ported to stdlib
+    infixr 9 _∙_
+    _∙_ : {a₁ a₂ b₁ b₂ c₁ c₂ : Level} {A : Setoid a₁ a₂} {B : Setoid b₁ b₂}
+      {C : Setoid c₁ c₂} → Func B C → Func A B → Func A C
+    f ∙ g = function g f
+    
   Pres-exp : (F : Presheaf C S) (X : C.Obj) → Presheaf C S
   Pres-exp F X = record
     { F₀           = λ Y → F.₀ (X × Y)
@@ -93,18 +98,18 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
     Presheaf^ = record
       { F₀           = λ X → Hom[ Presheaves C ][ G , Pres-exp F X ]
       ; F₁           = λ {A B} f → record
-        { _⟨$⟩_ = λ α →
+        { to = λ α →
           let module α = NaturalTransformation α
           in ntHelper record
           { η       = λ X → F.₁ (first f) ∙ α.η X
           ; commute = λ {X Y} g  {x y} eq →
             let open SetoidR (F.₀ (B × Y))
             in begin
-              F.₁ (first f) ⟨$⟩ (α.η Y ⟨$⟩ (G.₁ g ⟨$⟩ x))          ≈⟨ Π.cong (F.₁ (first f)) (α.commute g eq) ⟩
+              F.₁ (first f) ⟨$⟩ (α.η Y ⟨$⟩ (G.₁ g ⟨$⟩ x))          ≈⟨ Func.cong (F.₁ (first f)) (α.commute g eq) ⟩
               F.₁ (first f) ⟨$⟩ (F.₁ (second g) ⟨$⟩ (α.η X ⟨$⟩ y)) ≈˘⟨ [ F ]-resp-square first↔second (Setoid.refl (F.₀ (A × X))) ⟩
               F.₁ (second g) ⟨$⟩ (F.₁ (first f) ⟨$⟩ (α.η X ⟨$⟩ y)) ∎
           }
-        ; cong  = λ eq eq′ → Π.cong (F.₁ (first f)) (eq eq′)
+        ; cong  = λ eq eq′ → Func.cong (F.₁ (first f)) (eq eq′)
         }
       ; identity     = λ {X} {α β} eq {Y} {x y} eq′ →
         let module α = NaturalTransformation α
@@ -133,6 +138,11 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
     module PPC = BinaryProducts PC.products using (π₁; π₂; _×_; project₁; project₂; ⟨_,_⟩; unique)
     module TPC = Terminal PC.terminal using (⊤; !; !-unique)
 
+    infixr 9 _∙_
+    _∙_ : {a₁ a₂ b₁ b₂ c₁ c₂ : Level} {A : Setoid a₁ a₂} {B : Setoid b₁ b₂}
+      {C : Setoid c₁ c₂} → Func B C → Func A B → Func A C
+    f ∙ g = function g f
+    
   CanonicalCCC : CCartesianClosed P
   CanonicalCCC = record
     { ⊤            = TPC.⊤
@@ -151,10 +161,10 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
           module G = Functor G using (₀; ₁)
       in ntHelper record
         { η       = λ X → record
-          { _⟨$⟩_ = λ { (α , x) →
+          { to = λ { (α , x) →
             let module α = NaturalTransformation α using (η)
             in F.₁ Δ ⟨$⟩ (α.η X ⟨$⟩ x) }
-          ; cong  = λ { (eq , eq′) → Π.cong (F.₁ Δ) (eq eq′) }
+          ; cong  = λ { (eq , eq′) → Func.cong (F.₁ Δ) (eq eq′) }
           }
         ; commute = λ {X Y} f → λ { {α , x} {β , y} (eq , eq′) →
           let module α = NaturalTransformation α using (η; commute)
@@ -162,8 +172,8 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
               open Setoid  (F.₀ (X × X)) using (sym; refl)
               open SetoidR (F.₀ Y)
           in  begin
-            F.₁ Δ ⟨$⟩ (F.₁ (first f) ⟨$⟩ (α.η Y ⟨$⟩ (G.₁ f ⟨$⟩ x)))    ≈⟨ Π.cong (F.₁ Δ ∙ F.₁ (first f)) (α.commute f eq′) ⟩
-            F.₁ Δ ∙ F.₁ (first f) ∙ F.₁ (second f) ⟨$⟩ (α.η X ⟨$⟩ y) ≈⟨ Π.cong (F.₁ Δ) ([ F ]-resp-∘ second∘first refl) ⟩
+            F.₁ Δ ⟨$⟩ (F.₁ (first f) ⟨$⟩ (α.η Y ⟨$⟩ (G.₁ f ⟨$⟩ x)))    ≈⟨ Func.cong (F.₁ Δ ∙ F.₁ (first f)) (α.commute f eq′) ⟩
+            F.₁ Δ ∙ (F.₁ (first f) ∙ F.₁ (second f)) ⟨$⟩ (α.η X ⟨$⟩ y) ≈⟨ Func.cong (F.₁ Δ) ([ F ]-resp-∘ second∘first refl) ⟩
             F.₁ Δ ⟨$⟩ (F.₁ (f ⁂ f) ⟨$⟩ (α.η X ⟨$⟩ y))                 ≈⟨ [ F ]-resp-∘ ⁂∘Δ refl ⟩
             F.₁ ⟨ f , f ⟩ ⟨$⟩ (α.η X ⟨$⟩ y)                           ≈˘⟨ [ F ]-resp-∘ Δ∘ (sym (eq (Setoid.refl (G.₀ X)))) ⟩
             F.₁ f ⟨$⟩ (F.₁ Δ ⟨$⟩ (β.η X ⟨$⟩ y))
@@ -176,32 +186,32 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
           module α = NaturalTransformation α
       in ntHelper record
         { η       = λ X → record
-          { _⟨$⟩_ = λ x → ntHelper record
+          { to = λ x → ntHelper record
             { η       = λ Y → record
-              { _⟨$⟩_ = λ y → α.η (X × Y) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ y)
-              ; cong  = λ eq → Π.cong (α.η (X × Y)) (Setoid.refl (F.₀ (X × Y)) , Π.cong (G.₁ π₂) eq)
+              { to = λ y → α.η (X × Y) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ y)
+              ; cong  = λ eq → Func.cong (α.η (X × Y)) (Setoid.refl (F.₀ (X × Y)) , Func.cong (G.₁ π₂) eq)
               }
             ; commute = λ {Y Z} f {y z} eq →
               let open SetoidR (H.₀ (X × Z))
               in begin
                 α.η (X × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ (G.₁ f ⟨$⟩ y))
-                  ≈˘⟨ Π.cong (α.η (X × Z)) ( [ F ]-resp-∘ (π₁∘⁂ CH.○ C.identityˡ) (Setoid.refl (F.₀ X))
+                  ≈˘⟨ Func.cong (α.η (X × Z)) ( [ F ]-resp-∘ (π₁∘⁂ CH.○ C.identityˡ) (Setoid.refl (F.₀ X))
                                            , [ G ]-resp-square π₂∘⁂ (Setoid.refl (G.₀ Y))) ⟩
                 α.η (X × Z) ⟨$⟩ (F.₁ (second f) ∙ F.₁ π₁ ⟨$⟩ x , G.₁ (second f) ⟨$⟩ (G.₁ π₂ ⟨$⟩ y))
-                  ≈⟨ α.commute (second f) (Setoid.refl (F.₀ (X × Y)) , Π.cong (G.₁ π₂) eq) ⟩
+                  ≈⟨ α.commute (second f) (Setoid.refl (F.₀ (X × Y)) , Func.cong (G.₁ π₂) eq) ⟩
                 H.₁ (second f) ⟨$⟩ (α.η (X × Y) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ z))
                   ∎
             }
-          ; cong  = λ eq₁ eq₂ → Π.cong (α.η _) (Π.cong (F.F₁ π₁) eq₁ , Π.cong (G.₁ π₂) eq₂)
+          ; cong  = λ eq₁ eq₂ → Func.cong (α.η _) (Func.cong (F.F₁ π₁) eq₁ , Func.cong (G.₁ π₂) eq₂)
           }
         ; commute = λ {X Y} f {x y} eq₁ {Z} {z w} eq₂ →
           let open SetoidR (H.₀ (Y × Z))
           in begin
             α.η (Y × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ (F.₁ f ⟨$⟩ x) , G.₁ π₂ ⟨$⟩ z)
-              ≈˘⟨ Π.cong (α.η _) ( [ F ]-resp-square π₁∘⁂ (Setoid.refl (F.₀ X))
+              ≈˘⟨ Func.cong (α.η _) ( [ F ]-resp-square π₁∘⁂ (Setoid.refl (F.₀ X))
                                  , [ G ]-resp-∘ (π₂∘⁂ CH.○ C.identityˡ) (Setoid.refl (G.₀ Z))) ⟩
             α.η (Y × Z) ⟨$⟩ (F.₁ (first f) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x) , G.₁ (first f) ⟨$⟩ (G.₁ π₂ ⟨$⟩ z))
-              ≈⟨ α.commute (first f) (Π.cong (F.₁ π₁) eq₁ , Π.cong (G.₁ π₂) eq₂) ⟩
+              ≈⟨ α.commute (first f) (Func.cong (F.₁ π₁) eq₁ , Func.cong (G.₁ π₂) eq₂) ⟩
             H.₁ (first f) ⟨$⟩ (α.η (X × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ y , G.₁ π₂ ⟨$⟩ w))
               ∎
         }
@@ -215,11 +225,11 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
           open SetoidR (F.₀ X)
       in begin
         F.₁ Δ ⟨$⟩ (α.η (X × X) ⟨$⟩ (H.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ y))
-          ≈⟨ α.sym-commute Δ (Π.cong (H.₁ π₁) eq₁ , Π.cong (G.₁ π₂) eq₂) ⟩
+          ≈⟨ α.sym-commute Δ (Func.cong (H.₁ π₁) eq₁ , Func.cong (G.₁ π₂) eq₂) ⟩
         α.η X ⟨$⟩ (H.₁ Δ ⟨$⟩ (H.F₁ π₁ ⟨$⟩ z) , G.₁ Δ ⟨$⟩ (G.₁ π₂ ⟨$⟩ w))
-          ≈⟨ Π.cong (α.η X) ([ H ]-resp-∘ project₁ HX.refl , [ G ]-resp-∘ project₂ GX.refl) ⟩
+          ≈⟨ Func.cong (α.η X) ([ H ]-resp-∘ project₁ HX.refl , [ G ]-resp-∘ project₂ GX.refl) ⟩
         α.η X ⟨$⟩ (H.F₁ C.id ⟨$⟩ z , G.F₁ C.id ⟨$⟩ w)
-          ≈⟨ Π.cong (α.η X) (H.identity HX.refl , G.identity GX.refl) ⟩
+          ≈⟨ Func.cong (α.η X) (H.identity HX.refl , G.identity GX.refl) ⟩
         α.η X ⟨$⟩ (z , w)
           ∎ }
     ; curry-unique = λ {F G H} {α β} eq {X} {x y} eq₁ {Y} {z w} eq₂ →
@@ -237,13 +247,13 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
         G.₁ C.id ⟨$⟩ (αXx.η Y ⟨$⟩ z)
           ≈˘⟨ [ G ]-resp-∘ (⁂∘Δ CH.○ η) GXY.refl ⟩
         G.₁ Δ ⟨$⟩ (G.F₁ (π₁ ⁂ π₂) ⟨$⟩ (αXx.η Y ⟨$⟩ z))
-          ≈˘⟨ Π.cong (G.₁ Δ) ([ G ]-resp-∘ second∘first GXY.refl) ⟩
+          ≈˘⟨ Func.cong (G.₁ Δ) ([ G ]-resp-∘ second∘first GXY.refl) ⟩
         G.₁ Δ ⟨$⟩ (G.₁ (first π₁) ⟨$⟩ (G.₁ (second π₂) ⟨$⟩ (αXx.η Y ⟨$⟩ z)))
-          ≈⟨ Π.cong (G.₁ Δ ∙ G.₁ (first π₁)) (αXx.sym-commute π₂ (Setoid.refl (H.₀ Y))) ⟩
+          ≈⟨ Func.cong (G.₁ Δ ∙ G.₁ (first π₁)) (αXx.sym-commute π₂ (Setoid.refl (H.₀ Y))) ⟩
         G.₁ Δ ⟨$⟩ (G.₁ (first π₁) ⟨$⟩ (αXx.η (X × Y) ⟨$⟩ (H.₁ π₂ ⟨$⟩ z)))
-          ≈⟨ Π.cong (G.₁ Δ) (α.sym-commute π₁ (Setoid.refl (F.₀ X)) (Setoid.refl (H.₀ (X × Y)))) ⟩
+          ≈⟨ Func.cong (G.₁ Δ) (α.sym-commute π₁ (Setoid.refl (F.₀ X)) (Setoid.refl (H.₀ (X × Y)))) ⟩
         G.₁ Δ ⟨$⟩ (NaturalTransformation.η (α.η (X × Y) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x)) (X × Y) ⟨$⟩ (H.₁ π₂ ⟨$⟩ z))
-          ≈⟨ eq (Π.cong (F.₁ π₁) eq₁ , Π.cong (H.₁ π₂) eq₂) ⟩
+          ≈⟨ eq (Func.cong (F.₁ π₁) eq₁ , Func.cong (H.₁ π₂) eq₂) ⟩
         β.η (X × Y) ⟨$⟩ (F.₁ π₁ ⟨$⟩ y , H.₁ π₂ ⟨$⟩ w)
           ∎
     }

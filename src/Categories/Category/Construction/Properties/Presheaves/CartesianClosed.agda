@@ -6,7 +6,6 @@ open import Level
 open import Data.Unit
 open import Data.Product using (_,_; proj₁; proj₂)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Function.Construct.Composition using (function)
 open import Relation.Binary
 
 open import Categories.Category.BinaryProducts using (BinaryProducts)
