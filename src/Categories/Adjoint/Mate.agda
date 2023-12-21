@@ -6,7 +6,8 @@ module Categories.Adjoint.Mate where
 
 open import Level
 open import Data.Product using (Σ; _,_)
-open import Function.Equality using (Π; _⟶_; _⇨_) renaming (_∘_ to _∙_)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Construct.Composition using (function)
 open import Relation.Binary using (Setoid; IsEquivalence)
 
 open import Categories.Category
@@ -107,14 +108,47 @@ module _ {L L′ : Functor C D} {R R′ : Functor D C}
 
   -- there are two squares to show
   module _ {X : C.Obj} {Y : D.Obj} where
-    open Setoid (L′⊣R′.Hom[L-,-].F₀ (X , Y) ⇨ L⊣R.Hom[-,R-].F₀ (X , Y))
+    private
+      From : Setoid _ _
+      From = L′⊣R′.Hom[L-,-].F₀ (X , Y)
+      To : Setoid _ _
+      To = L⊣R.Hom[-,R-].F₀ (X , Y)
+      module From = Setoid From
+      module To = Setoid To
+      -- this construction should be made generic
+      SS : Setoid _ _
+      SS = record
+        { Carrier = Func From To
+        ; _≈_ = λ f g → ∀ {x y} → x ≈₁ y → f ⟨$⟩ x ≈₂ g ⟨$⟩ y
+        ; isEquivalence = record
+          { refl = λ {f} x≈y → Func.cong f x≈y
+          ; sym = λ {f} {g} fx≈gy x≈y → To.sym (fx≈gy (From.sym x≈y))
+          ; trans = λ {f} {g} {h} fx≈gy gx≈hy x≈y → To.trans (fx≈gy x≈y) (gx≈hy From.refl)
+          }
+        }
+        where
+          open Setoid From using () renaming (_≈_ to _≈₁_)
+          open Setoid To   using () renaming (_≈_ to _≈₂_)
+    open Setoid SS using (_≈_)
     open C hiding (_≈_)
     open MR C
     open C.HomReasoning
     module DH = D.HomReasoning
+    private
+      -- annoyingly the new bundles don't export this
+      D⟶C : Func (D.hom-setoid {F₀ L′ X} {Y}) (C.hom-setoid {X} {F₀ R′ Y})
+      D⟶C = record
+        { to = L′⊣R′.Hom-inverse.to {X} {Y}
+        ; cong = L′⊣R′.Hom-inverse.to-cong
+        }
+      D⟶C′ : Func D.hom-setoid C.hom-setoid
+      D⟶C′ = record
+        { to = L⊣R.Hom-inverse.to {X} {Y}
+        ; cong = L⊣R.Hom-inverse.to-cong
+        }
 
-    mate-commute₁ : F₁ Hom[ C ][-,-] (C.id , β.η Y) ∙ L′⊣R′.Hom-inverse.to {X} {Y}
-                  ≈ L⊣R.Hom-inverse.to {X} {Y} ∙ F₁ Hom[ D ][-,-] (α.η X , D.id)
+    mate-commute₁ : function D⟶C (F₁ Hom[ C ][-,-] (C.id , β.η Y))
+                  ≈ function (F₁ Hom[ D ][-,-] (α.η X , D.id)) D⟶C′
     mate-commute₁ {f} {g} f≈g = begin
       β.η Y ∘ (F₁ R′ f ∘ L′⊣R′.unit.η X) ∘ C.id  ≈⟨ refl⟩∘⟨ identityʳ ⟩
       β.η Y ∘ F₁ R′ f ∘ L′⊣R′.unit.η X           ≈⟨ pullˡ (β.commute f) ⟩
@@ -124,14 +158,46 @@ module _ {L L′ : Functor C D} {R R′ : Functor D C}
       F₁ R (D.id D.∘ g D.∘ α.η X) ∘ L⊣R.unit.η X ∎
 
   module _ {X : C.Obj} {Y : D.Obj} where
-    open Setoid (L′⊣R′.Hom[-,R-].F₀ (X , Y) ⇨ L⊣R.Hom[L-,-].F₀ (X , Y))
     open D hiding (_≈_)
     open MR D
     open D.HomReasoning
     module CH = C.HomReasoning
+    private
+      From : Setoid _ _
+      From = L′⊣R′.Hom[-,R-].F₀ (X , Y)
+      To : Setoid _ _
+      To = L⊣R.Hom[L-,-].F₀ (X , Y)
+      module From = Setoid From
+      module To = Setoid To
+      SS : Setoid _ _
+      SS = record
+        { Carrier = Func From To
+        ; _≈_ = λ f g → ∀ {x y} → x ≈₁ y → f ⟨$⟩ x ≈₂ g ⟨$⟩ y
+        ; isEquivalence = record
+          { refl = λ {f} x≈y → Func.cong f x≈y
+          ; sym = λ {f} {g} fx≈gy x≈y → To.sym (fx≈gy (From.sym x≈y))
+          ; trans = λ {f} {g} {h} fx≈gy gx≈hy x≈y → To.trans (fx≈gy x≈y) (gx≈hy From.refl)
+          }
+        }
+        where
+          open Setoid From using () renaming (_≈_ to _≈₁_)
+          open Setoid To   using () renaming (_≈_ to _≈₂_)
+    open Setoid SS using (_≈_)
+    private
+      -- annoyingly the new bundles don't export this
+      C⟶D : Func C.hom-setoid D.hom-setoid
+      C⟶D = record
+        { to = L′⊣R′.Hom-inverse.from {X} {Y}
+        ; cong = L′⊣R′.Hom-inverse.from-cong
+        }
+      C⟶D′ : Func C.hom-setoid D.hom-setoid
+      C⟶D′ = record
+        { to = L⊣R.Hom-inverse.from {X} {Y}
+        ; cong = L⊣R.Hom-inverse.from-cong
+        }
 
-    mate-commute₂ : F₁ Hom[ D ][-,-] (α.η X , D.id) ∙ L′⊣R′.Hom-inverse.from {X} {Y}
-                  ≈ L⊣R.Hom-inverse.from {X} {Y} ∙ F₁ Hom[ C ][-,-] (C.id , β.η Y)
+    mate-commute₂ : function C⟶D (F₁ Hom[ D ][-,-] (α.η X , D.id))
+                  ≈ function (F₁ Hom[ C ][-,-] (C.id , β.η Y)) C⟶D′
     mate-commute₂ {f} {g} f≈g = begin
       D.id ∘ (L′⊣R′.counit.η Y ∘ F₁ L′ f) ∘ α.η X  ≈⟨ identityˡ ⟩
       (L′⊣R′.counit.η Y ∘ F₁ L′ f) ∘ α.η X         ≈˘⟨ pushʳ (α.commute f) ⟩
