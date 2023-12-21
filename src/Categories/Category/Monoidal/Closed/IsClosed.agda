@@ -80,15 +80,3 @@ closed = record
       Ladjunct (Radjunct y)                                                             ≈⟨ LRadjunct≈id ⟩
       y ∎
   }
-{-
-    ; right-inverse-of = λ f → begin
-      Radjunct ([ id , f ]₁ ∘ [ id , unitorˡ.from ]₁ ∘ η.η unit) ∘ unitorˡ.to
-        ≈˘⟨ ∘-resp-≈ʳ (ℱ.F-resp-≈ (-⊗ X) (pushˡ (ℱ.homomorphism [ X ,-]))) ⟩∘⟨refl ⟩
-      Radjunct (Ladjunct (f ∘ unitorˡ.from)) ∘ unitorˡ.to
-        ≈⟨ RLadjunct≈id ⟩∘⟨refl ⟩
-      (f ∘ unitorˡ.from) ∘ unitorˡ.to
-        ≈⟨ cancelʳ unitorˡ.isoʳ ⟩
-      f
-        ∎
-    }
-    -}
