@@ -7,7 +7,9 @@ open import Data.Product using (∃; Σ; proj₁; proj₂; _,_; _×_)
 open import Data.Sum.Base as Sum using (_⊎_; inj₁; inj₂)
 open import Data.Sum.Relation.Binary.Pointwise using (inj₁; inj₂; _⊎ₛ_; drop-inj₁; drop-inj₂)
 open import Data.Unit.Polymorphic using (tt)
-open import Function.Equality using (Π; _⟶_; _⇨_; _∘_)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Construct.Composition using (function)
+open import Function.Construct.Setoid using () renaming (function to f-setoid)
 open import Relation.Binary using (Setoid)
 import  Relation.Binary.Reasoning.Setoid as SetoidR
 
@@ -19,7 +21,6 @@ open import Categories.Diagram.Pullback using (Pullback)
 open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical using (pullback; FiberProduct)
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-Cocartesian)
 
-open Π
 open Pullback
 
 -- Note the Setoids is extensive if the two levels coincide.  Whether it happens more generally
@@ -33,18 +34,18 @@ Setoids-Extensive ℓ = record
    ; pullback-of-cp-is-cp = λ f → record
         { [_,_] = λ g h → copair f g h
         ; inject₁ = λ {X g h z} eq →
-             trans (isEquivalence X) (copair-inject₁ f g h z) (cong g eq)
+             trans (isEquivalence X) (copair-inject₁ f g h z) (Func.cong g eq)
         ; inject₂ = λ {X g h z} eq →
-             trans (isEquivalence X) (copair-inject₂ f g h z) (cong h eq)
+             trans (isEquivalence X) (copair-inject₂ f g h z) (Func.cong h eq)
         ; unique = λ {X u g h} feq₁ feq₂ {z} eq →
-             trans (isEquivalence X) (copair-unique f g h u z (λ {z} → feq₁ {z}) (λ {z} → feq₂ {z})) (cong u eq)
+             trans (isEquivalence X) (copair-unique f g h u z (λ {z} → feq₁ {z}) (λ {z} → feq₂ {z})) (Func.cong u eq)
         }
    ; pullback₁-is-mono = λ _ _ eq x≈y → drop-inj₁ (eq x≈y)
    ; pullback₂-is-mono = λ _ _ eq x≈y → drop-inj₂ (eq x≈y)
    ; disjoint = λ {A B} → record
         { commute = λ { {()} _}
         ; universal = λ {C f g} eq → record
-           { _⟨$⟩_ = λ z → conflict A B (eq {x = z} (refl (isEquivalence C)))
+           { to = λ z → conflict A B (eq {x = z} (refl (isEquivalence C)))
            ; cong = λ z → tt
            }
         ; unique = λ _ _ _ → tt
@@ -53,6 +54,11 @@ Setoids-Extensive ℓ = record
         }
    }
      where
+       infixr 9 _∙_
+       _∙_ : {a₁ a₂ b₁ b₂ c₁ c₂ : Level} {A : Setoid a₁ a₂} {B : Setoid b₁ b₂}
+         {C : Setoid c₁ c₂} → Func B C → Func A B → Func A C
+       f ∙ g = function g f
+
        open Cocartesian (Setoids-Cocartesian {ℓ} {ℓ})
        open Relation.Binary.IsEquivalence
        open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence)
@@ -62,8 +68,8 @@ Setoids-Extensive ℓ = record
          {x : ∣ X ∣} {y : ∣ Y ∣} → [ X ⊎ₛ Y ][ inj₁ x ≈ inj₂ y ] → Z
        conflict X Y ()
 
-       module Diagram {A B C X : Setoid ℓ ℓ} (f : C ⟶ A ⊎ₛ B)
-         (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X) where
+       module Diagram {A B C X : Setoid ℓ ℓ} (f : Func C (A ⊎ₛ B))
+         (g : Func (P (pullback ℓ ℓ f i₁)) X) (h : Func (P (pullback ℓ ℓ f i₂)) X) where
 
          private
            module A = Setoid A
@@ -80,10 +86,10 @@ Setoids-Extensive ℓ = record
            open SetoidR A⊎B′
 
          _⊎⟶_ : {o₁ o₂ o₃ ℓ₁ ℓ₂ ℓ₃ : Level} {X : Setoid o₁ ℓ₁} {Y : Setoid o₂ ℓ₂} {Z : Setoid o₃ ℓ₃} →
-           (X ⟶ Z) → (Y ⟶ Z) → (X ⊎ₛ Y) ⟶ Z
+           (Func X Z) → (Func Y Z) → Func (X ⊎ₛ Y) Z
          f₁ ⊎⟶ f₂ = record
-           { _⟨$⟩_ = Sum.[ f₁ ⟨$⟩_ , f₂ ⟨$⟩_ ]
-           ; cong = λ { (inj₁ x) → cong f₁ x ; (inj₂ x) → cong f₂ x}
+           { to = Sum.[ f₁ ⟨$⟩_ , f₂ ⟨$⟩_ ]
+           ; cong = λ { (inj₁ x) → Func.cong f₁ x ; (inj₂ x) → Func.cong f₂ x}
            }
 
          to-⊎ₛ : (z : ∣ C ∣) → (w : ∣ A ⊎ₛ B ∣) → (eq : [ A⊎B ][ f ⟨$⟩ z ≈ w ]) → ∣ A′ ⊎ₛ B′ ∣
@@ -103,42 +109,42 @@ Setoids-Extensive ℓ = record
          f⟨$⟩-cong′ {z} {z′} z≈z′ (inj₁ x) (inj₁ x₁) fz≈w fz′≈w′ = begin
            f⟨$⟩→ z                       ≈⟨ A⊎B′.refl ⟩
            to-⊎ₛ z (f ⟨$⟩ z) A⊎B.refl   ≈⟨ to-⊎ₛ-cong fz≈w ⟩
-           to-⊎ₛ z (inj₁ x) fz≈w       ≈⟨ inj₁ (z≈z′ , (drop-inj₁ (A⊎B.trans (A⊎B.sym fz≈w) (A⊎B.trans (cong f z≈z′) fz′≈w′)))) ⟩
+           to-⊎ₛ z (inj₁ x) fz≈w       ≈⟨ inj₁ (z≈z′ , (drop-inj₁ (A⊎B.trans (A⊎B.sym fz≈w) (A⊎B.trans (Func.cong f z≈z′) fz′≈w′)))) ⟩
            to-⊎ₛ z′ (inj₁ x₁) fz′≈w′   ≈⟨ to-⊎ₛ-cong (A⊎B.sym fz′≈w′) ⟩
            to-⊎ₛ z′ (f ⟨$⟩ z′) A⊎B.refl ≈⟨ A⊎B′.refl ⟩
            f⟨$⟩→ z′ ∎
-         f⟨$⟩-cong′ z≈z′ (inj₁ x) (inj₂ y) fz≈w fz′≈w′ = conflict A B (A⊎B.trans (A⊎B.sym fz≈w) (A⊎B.trans (cong f z≈z′) fz′≈w′))
-         f⟨$⟩-cong′ z≈z′ (inj₂ y) (inj₁ x) fz≈w fz′≈w′ = conflict A B (A⊎B.trans (A⊎B.sym fz′≈w′) (A⊎B.trans (cong f (C.sym z≈z′)) fz≈w))
+         f⟨$⟩-cong′ z≈z′ (inj₁ x) (inj₂ y) fz≈w fz′≈w′ = conflict A B (A⊎B.trans (A⊎B.sym fz≈w) (A⊎B.trans (Func.cong f z≈z′) fz′≈w′))
+         f⟨$⟩-cong′ z≈z′ (inj₂ y) (inj₁ x) fz≈w fz′≈w′ = conflict A B (A⊎B.trans (A⊎B.sym fz′≈w′) (A⊎B.trans (Func.cong f (C.sym z≈z′)) fz≈w))
          f⟨$⟩-cong′ {z} {z′} z≈z′ (inj₂ y) (inj₂ y₁) fz≈w fz′≈w′ = begin
            to-⊎ₛ z (f ⟨$⟩ z) A⊎B.refl   ≈⟨ to-⊎ₛ-cong fz≈w ⟩
-           to-⊎ₛ z (inj₂ y) fz≈w       ≈⟨ inj₂ (z≈z′ , (drop-inj₂ (A⊎B.trans (A⊎B.sym fz≈w) (A⊎B.trans (cong f z≈z′) fz′≈w′)))) ⟩
+           to-⊎ₛ z (inj₂ y) fz≈w       ≈⟨ inj₂ (z≈z′ , (drop-inj₂ (A⊎B.trans (A⊎B.sym fz≈w) (A⊎B.trans (Func.cong f z≈z′) fz′≈w′)))) ⟩
            to-⊎ₛ z′ (inj₂ y₁) fz′≈w′   ≈⟨ to-⊎ₛ-cong (A⊎B.sym fz′≈w′) ⟩
            to-⊎ₛ z′ (f ⟨$⟩ z′) A⊎B.refl ∎
 
          f⟨$⟩-cong : {i j : ∣ C ∣} → i C.≈ j → [ A′ ⊎ₛ B′ ][ f⟨$⟩→ i ≈ f⟨$⟩→ j ]
          f⟨$⟩-cong {i} {j} i≈j = f⟨$⟩-cong′ i≈j (f ⟨$⟩ i) (f ⟨$⟩ j) A⊎B.refl A⊎B.refl
 
-         f⟨$⟩ : C ⟶ A′ ⊎ₛ B′
-         f⟨$⟩ = record { _⟨$⟩_ = f⟨$⟩→ ; cong = f⟨$⟩-cong }
+         f⟨$⟩ : Func C (A′ ⊎ₛ B′)
+         f⟨$⟩ = record { to = f⟨$⟩→ ; cong = f⟨$⟩-cong }
 
          -- copairing of g : A′ → X and h : B′ → X, resulting in C → X
-         copair : C ⟶ X
-         copair = (g ⊎⟶ h) ∘ f⟨$⟩
+         copair : Func C X
+         copair = (g ⊎⟶ h) ∙ f⟨$⟩
 
          copair-inject₁ : (z : FiberProduct f i₁) → [ X ][ copair ⟨$⟩ (FiberProduct.elem₁ z) ≈ g ⟨$⟩ z ]
-         copair-inject₁ record { elem₁ = z ; elem₂ = x ; commute = eq } = cong (g ⊎⟶ h) (to-⊎ₛ-cong eq)
+         copair-inject₁ record { elem₁ = z ; elem₂ = x ; commute = eq } = Func.cong (g ⊎⟶ h) (to-⊎ₛ-cong eq)
 
          copair-inject₂ : (z : FiberProduct f i₂) → [ X ][ copair ⟨$⟩ (FiberProduct.elem₁ z) ≈ h ⟨$⟩ z ]
-         copair-inject₂ record { elem₁ = z ; elem₂ = y ; commute = eq } = cong (g ⊎⟶ h) (to-⊎ₛ-cong eq)
+         copair-inject₂ record { elem₁ = z ; elem₂ = y ; commute = eq } = Func.cong (g ⊎⟶ h) (to-⊎ₛ-cong eq)
 
-         copair-unique′ : (u : C ⟶ X) (z : ∣ C ∣) →
-           [ A′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₁) ≈ g ] →
-           [ B′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₂) ≈ h ] →
+         copair-unique′ : (u : Func C X) (z : ∣ C ∣) →
+           [ f-setoid A′ X ][ u ∙ p₁ (pullback ℓ ℓ f i₁) ≈ g ] →
+           [ f-setoid B′ X ][ u ∙ p₁ (pullback ℓ ℓ f i₂) ≈ h ] →
            (w : ∣ A⊎B ∣) → [ A⊎B ][ f ⟨$⟩ z ≈ w ] →
            [ X ][ copair ⟨$⟩ z ≈ u ⟨$⟩ z ]
          copair-unique′ u z feq₁ feq₂ (inj₁ x) fz≈w = XR.begin
            copair ⟨$⟩ z                                XR.≈⟨ X.refl ⟩
-           g ⊎⟶ h ⟨$⟩ (to-⊎ₛ z (f ⟨$⟩ z) A⊎B.refl)     XR.≈⟨ cong (g ⊎⟶ h) (to-⊎ₛ-cong fz≈w) ⟩
+           g ⊎⟶ h ⟨$⟩ (to-⊎ₛ z (f ⟨$⟩ z) A⊎B.refl)     XR.≈⟨ Func.cong (g ⊎⟶ h) (to-⊎ₛ-cong fz≈w) ⟩
            g ⊎⟶ h ⟨$⟩ (to-⊎ₛ z (inj₁ x) fz≈w)         XR.≈⟨ X.refl ⟩
            g ⟨$⟩ fb                                    XR.≈⟨ X.sym (feq₁ {x = fb} (C.refl , A.refl)) ⟩
            u ⟨$⟩ z                                     XR.∎
@@ -148,7 +154,7 @@ Setoids-Extensive ℓ = record
              fb = record {elem₁ = z ; elem₂ = x; commute = fz≈w }
          copair-unique′ u z feq₁ feq₂ (inj₂ y) fz≈w = XR.begin
            copair ⟨$⟩ z                                XR.≈⟨ X.refl ⟩
-           g ⊎⟶ h ⟨$⟩ (to-⊎ₛ z (f ⟨$⟩ z) A⊎B.refl)     XR.≈⟨ cong (g ⊎⟶ h) (to-⊎ₛ-cong fz≈w) ⟩
+           g ⊎⟶ h ⟨$⟩ (to-⊎ₛ z (f ⟨$⟩ z) A⊎B.refl)     XR.≈⟨ Func.cong (g ⊎⟶ h) (to-⊎ₛ-cong fz≈w) ⟩
            g ⊎⟶ h ⟨$⟩ (to-⊎ₛ z (inj₂ y) fz≈w)         XR.≈⟨ X.refl ⟩
            h ⟨$⟩ fb                                    XR.≈⟨ X.sym (feq₂ {x = fb} {y = fb} (C.refl , B.refl)) ⟩
            u ⟨$⟩ z                                     XR.∎
@@ -156,9 +162,9 @@ Setoids-Extensive ℓ = record
              module XR = SetoidR X
              fb = record {elem₁ = z ; elem₂ = y; commute = fz≈w }
 
-         copair-unique : (u : C ⟶ X) (z : ∣ C ∣) →
-           [ A′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₁) ≈ g ] →
-           [ B′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₂) ≈ h ] →
+         copair-unique : (u : Func C X) (z : ∣ C ∣) →
+           [ f-setoid A′ X ][ u ∙ p₁ (pullback ℓ ℓ f i₁) ≈ g ] →
+           [ f-setoid B′ X ][ u ∙ p₁ (pullback ℓ ℓ f i₂) ≈ h ] →
            [ X ][ copair ⟨$⟩ z ≈ u ⟨$⟩ z ]
          copair-unique u z feq₁ feq₂ = copair-unique′ u z (λ {x} {y} → feq₁ {x} {y}) (λ {x} {y} → feq₂ {x} {y}) (f ⟨$⟩ z) A⊎B.refl
 

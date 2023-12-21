@@ -8,7 +8,8 @@ open import Categories.Category.Instance.Setoids using (Setoids)
 
 open import Data.Product using (∃; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_; map; zip; swap; map₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Function.Equality as SΠ using (Π; _⇨_) renaming (id to ⟶-id; _∘_ to _∘⟶_)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Construct.Setoid using () renaming (function to f-setoid)
 
 open import Level
 open import Relation.Binary using (Setoid; Rel; REL; IsEquivalence)
@@ -18,7 +19,6 @@ open import Data.Nat.Base
 import Relation.Binary.PropositionalEquality.Core as P
 
 open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence; refl; sym; trans)
-open Π using (_⟨$⟩_; cong)
 
 module _ ℓ where
   private
@@ -35,7 +35,7 @@ module _ ℓ where
       {P} : Setoid ℓ ℓ
       pre   : P ⇒ A
       surj  : SSurj ℓ pre
-      split : {X : Setoid ℓ ℓ} (f : X ⇒ P) → SSurj ℓ f → Σ[ g ∈ ∣ P ⇨ X ∣ ] [ P ⇨ P ][ f ∘ g ≈ id ]
+      split : {X : Setoid ℓ ℓ} (f : X ⇒ P) → SSurj ℓ f → Σ[ g ∈ ∣ f-setoid P X ∣ ] [ f-setoid P P ][ f ∘ g ≈ id ]
 
   Setoid-CoSHEP : (A : Setoid ℓ ℓ) → CoSHEP A
   Setoid-CoSHEP A = record
@@ -45,12 +45,12 @@ module _ ℓ where
            ; isEquivalence = record { refl = P.refl ; sym = P.sym ; trans = P.trans }
            }
     ; pre = record
-           { _⟨$⟩_ = λ x → x
+           { to = λ x → x
            ; cong = λ {x} eq → P.subst (λ z → [ A ][ x ≈ z ]) eq (refl A)
            }
     ; surj = λ x → x , refl A
     ; split = λ {X} f surj → record
-           { _⟨$⟩_ = λ y → let x , _ = surj y in x
+           { to = λ y → let x , _ = surj y in x
            ; cong = λ {x}{y} x≡y → P.subst (λ z → [ X ][ proj₁ (surj x) ≈ proj₁ (surj z) ]) x≡y (refl X)
            }
            , λ {x}{y} x≡y → let z , eq = surj x in P.trans eq x≡y
@@ -92,9 +92,9 @@ module _ ℓ where
         chain (ℕ.suc n) = let x , eq = ent (p₂ ⟨$⟩ proj₁ (ent (p₂ ⟨$⟩ pair n))) in eq
 
   -- Countable choice for setoids 
-  ℕ-Choice :  ∀ {A : Setoid ℓ ℓ} (f : A ⇒ ℕ-Setoid) → SSurj ℓ f → Σ[ g ∈ ∣ ℕ-Setoid ⇨ A ∣ ] [ ℕ-Setoid ⇨ ℕ-Setoid ][ f ∘ g ≈ id ]
+  ℕ-Choice :  ∀ {A : Setoid ℓ ℓ} (f : A ⇒ ℕ-Setoid) → SSurj ℓ f → Σ[ g ∈ ∣ f-setoid ℕ-Setoid A ∣ ] [ f-setoid ℕ-Setoid ℕ-Setoid ][ f ∘ g ≈ id ]
   ℕ-Choice {A} f surj = record
-    { _⟨$⟩_ = λ n → let x , eq = surj n in x
+    { to = λ n → let x , eq = surj n in x
     ; cong = λ {n}{m} eq → let x , _ = surj n; y , _ = surj m in P.subst (λ m → [ A ][ proj₁ (surj n) ≈ proj₁ (surj m) ]) eq (refl A) 
     }
     , λ {n}{m} n≡m → let _ , eq = surj n in P.trans eq n≡m
@@ -109,10 +109,10 @@ module _ ℓ where
       isfun  : ∀ (e : ∣ dom ∣) →  [ B ][ fun ⟨$⟩ (p₁ ⟨$⟩ e) ≈  p₂ ⟨$⟩ e ]
 
   Setoid-UniqueChoice :  {A B : Setoid ℓ ℓ} (R : Relation S A B) (ent : entire R) (frel : functional R) → UniqueChoice R ent frel
-  _⟨$⟩_ (UniqueChoice.fun (Setoid-UniqueChoice R ent frel)) x =  p₂ ⟨$⟩ proj₁ (ent x)
+  Func.to (UniqueChoice.fun (Setoid-UniqueChoice R ent frel)) x =  p₂ ⟨$⟩ proj₁ (ent x)
         where open Relation R
 
-  cong (UniqueChoice.fun (Setoid-UniqueChoice {A} {B} R ent frel)) {n} {m} n≈m =
+  Func.cong (UniqueChoice.fun (Setoid-UniqueChoice {A} {B} R ent frel)) {n} {m} n≈m =
      let (en , p₁en≈n) = ent n
          (em , p₁em≈m) = ent m in frel en em
      (begin
