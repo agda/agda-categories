@@ -8,6 +8,7 @@ open import Level
 open import Data.Product using (Σ; _,_)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Function.Construct.Composition using (function)
+open import Function.Construct.Setoid using () renaming (function to _⇨_)
 open import Relation.Binary using (Setoid; IsEquivalence)
 
 open import Categories.Category
@@ -113,22 +114,7 @@ module _ {L L′ : Functor C D} {R R′ : Functor D C}
       From = L′⊣R′.Hom[L-,-].F₀ (X , Y)
       To : Setoid _ _
       To = L⊣R.Hom[-,R-].F₀ (X , Y)
-      module From = Setoid From
-      module To = Setoid To
-      -- this construction should be made generic
-      SS : Setoid _ _
-      SS = record
-        { Carrier = Func From To
-        ; _≈_ = λ f g → ∀ {x y} → x ≈₁ y → f ⟨$⟩ x ≈₂ g ⟨$⟩ y
-        ; isEquivalence = record
-          { refl = λ {f} x≈y → Func.cong f x≈y
-          ; sym = λ {f} {g} fx≈gy x≈y → To.sym (fx≈gy (From.sym x≈y))
-          ; trans = λ {f} {g} {h} fx≈gy gx≈hy x≈y → To.trans (fx≈gy x≈y) (gx≈hy From.refl)
-          }
-        }
-        where
-          open Setoid From using () renaming (_≈_ to _≈₁_)
-          open Setoid To   using () renaming (_≈_ to _≈₂_)
+      SS = From ⇨ To
     open Setoid SS using (_≈_)
     open C hiding (_≈_)
     open MR C
@@ -170,18 +156,7 @@ module _ {L L′ : Functor C D} {R R′ : Functor D C}
       module From = Setoid From
       module To = Setoid To
       SS : Setoid _ _
-      SS = record
-        { Carrier = Func From To
-        ; _≈_ = λ f g → ∀ {x y} → x ≈₁ y → f ⟨$⟩ x ≈₂ g ⟨$⟩ y
-        ; isEquivalence = record
-          { refl = λ {f} x≈y → Func.cong f x≈y
-          ; sym = λ {f} {g} fx≈gy x≈y → To.sym (fx≈gy (From.sym x≈y))
-          ; trans = λ {f} {g} {h} fx≈gy gx≈hy x≈y → To.trans (fx≈gy x≈y) (gx≈hy From.refl)
-          }
-        }
-        where
-          open Setoid From using () renaming (_≈_ to _≈₁_)
-          open Setoid To   using () renaming (_≈_ to _≈₂_)
+      SS = From ⇨ To
     open Setoid SS using (_≈_)
     private
       -- annoyingly the new bundles don't export this
