@@ -7,7 +7,7 @@ open import Data.Product
 open import Data.Product.Relation.Binary.Pointwise.NonDependent
 open import Data.Sum
 open import Data.Sum.Relation.Binary.Pointwise
-open import Function.Equality
+open import Function.Bundles using (_⟨$⟩_; Func)
 open import Relation.Binary using (Setoid)
 
 open import Categories.Category
@@ -31,19 +31,19 @@ module _ {o ℓ} where
          in record
           { A×B      = ×-setoid A B -- the stdlib doesn't provide projections!
           ; π₁       = record
-            { _⟨$⟩_ = proj₁
+            { to = proj₁
             ; cong  = proj₁
             }
           ; π₂       = record
-            { _⟨$⟩_ = proj₂
+            { to = proj₂
             ; cong  = proj₂
             }
           ; ⟨_,_⟩    = λ f g → record
-            { _⟨$⟩_ = λ x → f ⟨$⟩ x , g ⟨$⟩ x
-            ; cong  = λ eq → cong f eq , cong g eq
+            { to = λ x → f ⟨$⟩ x , g ⟨$⟩ x
+            ; cong  = λ eq → Func.cong f eq , Func.cong g eq
             }
-          ; project₁ = λ {_ h i} eq → cong h eq
-          ; project₂ = λ {_ h i} eq → cong i eq
+          ; project₁ = λ {_ h i} eq → Func.cong h eq
+          ; project₂ = λ {_ h i} eq → Func.cong i eq
           ; unique   = λ {W h i j} eq₁ eq₂ eq → A.sym (eq₁ (Setoid.sym W eq)) , B.sym (eq₂ (Setoid.sym W eq))
           }
       }
@@ -60,14 +60,14 @@ module _ {o ℓ} where
     ; coproducts = record
       { coproduct = λ {A} {B} → record
         { A+B = ⊎-setoid A B
-        ; i₁ = record { _⟨$⟩_ = inj₁ ; cong = inj₁ }
-        ; i₂ = record { _⟨$⟩_ = inj₂ ; cong = inj₂ }
+        ; i₁ = record { to = inj₁ ; cong = inj₁ }
+        ; i₂ = record { to = inj₂ ; cong = inj₂ }
         ; [_,_] = λ f g → record
-          { _⟨$⟩_ = [ f ⟨$⟩_ , g ⟨$⟩_ ]
-          ; cong = λ { (inj₁ x) → Π.cong f x ; (inj₂ x) → Π.cong g x }
+          { to = [ f ⟨$⟩_ , g ⟨$⟩_ ]
+          ; cong = λ { (inj₁ x) → Func.cong f x ; (inj₂ x) → Func.cong g x }
           }
-        ; inject₁ = λ {_} {f} → Π.cong f
-        ; inject₂ = λ {_} {_} {g} → Π.cong g
+        ; inject₁ = λ {_} {f} → Func.cong f
+        ; inject₂ = λ {_} {_} {g} → Func.cong g
         ; unique = λ { {C} h≈f h≈g (inj₁ x) → Setoid.sym C (h≈f (Setoid.sym A x))
                      ; {C} h≈f h≈g (inj₂ x) → Setoid.sym C (h≈g (Setoid.sym B x)) }
         }
