@@ -10,7 +10,8 @@ open import Relation.Binary.Bundles
 open import Categories.Category
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Functor hiding (id)
-open import Function.Equality using (Π; _⟨$⟩_; cong)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open Func using (cong)
 
 open Setoid renaming (_≈_ to _[[_≈_]])
 

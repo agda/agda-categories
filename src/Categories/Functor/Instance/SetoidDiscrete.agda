@@ -15,7 +15,9 @@ import Categories.Category.Construction.SetoidDiscrete as D
 
 open import Relation.Binary using (Setoid)
 open import Function using () renaming (id to idf; _∘_ to _●_)
-open import Function.Equality using (_⟨$⟩_; _⟶_; cong; _∘_) renaming (id to id⟶)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Construct.Identity using () renaming (function to id⟶)
+open import Function.Construct.Composition using (function)
 
 Discrete : ∀ {o ℓ e} → Functor (Setoids o ℓ) (Cats o ℓ e)
 Discrete {o} {ℓ} {e} = record
@@ -27,27 +29,27 @@ Discrete {o} {ℓ} {e} = record
    }
    where
      open DiscreteCategory
-     DiscreteFunctor : {A B : Setoid o ℓ} → (A ⟶ B) → Cats o ℓ e [ category (D.Discrete A) , category (D.Discrete B) ]
+     DiscreteFunctor : {A B : Setoid o ℓ} → (Func A B) → Cats o ℓ e [ category (D.Discrete A) , category (D.Discrete B) ]
      DiscreteFunctor f = record
        { F₀ = f ⟨$⟩_
-       ; F₁ = cong f
+       ; F₁ = Func.cong f
        ; identity = _
        ; homomorphism = _
        ; F-resp-≈ = _
        }
-     DiscreteId : {A : Setoid o ℓ} → NaturalIsomorphism (DiscreteFunctor {A} id⟶) id
+     DiscreteId : {A : Setoid o ℓ} → NaturalIsomorphism (DiscreteFunctor {A} (id⟶ A)) id
      DiscreteId {A} = record
        { F⇒G = record { η = λ _ → refl ; commute = _ }
        ; F⇐G = record { η = λ _ → refl ; commute = _ }
        } where open Setoid A
-     PointwiseHom : {X Y Z : Setoid o ℓ} {g : X ⟶ Y} {h : Y ⟶ Z} →
-       NaturalIsomorphism (DiscreteFunctor (h ∘ g)) (DiscreteFunctor h ∘F DiscreteFunctor g)
+     PointwiseHom : {X Y Z : Setoid o ℓ} {g : Func X Y} {h : Func Y Z} →
+       NaturalIsomorphism (DiscreteFunctor (function g h)) (DiscreteFunctor h ∘F DiscreteFunctor g)
      PointwiseHom {_} {_} {Z} = record
        { F⇒G = record { η = λ _ → refl }
        ; F⇐G = record { η = λ _ → refl }
        }
        where open Setoid Z
-     ExtensionalityNI : {A B : Setoid o ℓ} {f g : A ⟶ B} → let open Setoid A in
+     ExtensionalityNI : {A B : Setoid o ℓ} {f g : Func A B} → let open Setoid A in
       ({x y : Carrier} → x ≈ y → Setoid._≈_ B (f ⟨$⟩ x) (g ⟨$⟩ y)) →
       NaturalIsomorphism (DiscreteFunctor f) (DiscreteFunctor g)
      ExtensionalityNI {A} {B} cong≈ = record

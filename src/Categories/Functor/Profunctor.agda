@@ -5,7 +5,8 @@ module Categories.Functor.Profunctor where
 open import Level
 open import Data.Product using (_,_; _×_)
 open import Function using () -- renaming (_∘′_ to _∙_)
-open import Function.Equality using (_⟨$⟩_; cong)
+open import Function.Bundles using (_⟨$⟩_; Func)
+open Func using (cong)
 open import Relation.Binary using (Setoid; module Setoid)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
@@ -220,7 +221,7 @@ _▻_ {oC} {ℓC} {eC} {oD} {ℓD} {eD} {oE} {ℓE} {eE} {ℓP} {eP} {ℓQ} {eQ}
       {LiftSetoids (ℓC ⊔ ℓQ) (eC ⊔ eQ) ∘F appʳ P.bimodule d}
       {LiftSetoids (ℓC ⊔ ℓP) (eC ⊔ eP) ∘F appʳ Q.bimodule c}
   ; F₁ = λ (df , cf) → record
-    { _⟨$⟩_ = λ ϕ →
+    { to = λ ϕ →
         (LiftSetoids (ℓC ⊔ ℓP) (eC ⊔ eP) ∘ˡ appʳ-nat Q.bimodule cf)
         ∘ᵥ ϕ
         ∘ᵥ (LiftSetoids (ℓC ⊔ ℓQ) (eC ⊔ eQ) ∘ˡ appʳ-nat P.bimodule df)
@@ -249,7 +250,7 @@ _◅_ {oC} {ℓC} {eC} {oD} {ℓD} {eD} {oE} {ℓE} {eE} {ℓP} {eP} {ℓQ} {eQ}
       {LiftSetoids (ℓE ⊔ ℓP) (eE ⊔ eP) ∘F appˡ Q.bimodule d}
       {LiftSetoids (ℓE ⊔ ℓQ) (eE ⊔ eQ) ∘F appˡ P.bimodule e}
   ; F₁ = λ (ef , df) → record
-    { _⟨$⟩_ = λ ϕ →
+    { to = λ ϕ →
         (LiftSetoids (ℓE ⊔ ℓQ) (eE ⊔ eQ) ∘ˡ appˡ-nat P.bimodule ef)
         ∘ᵥ ϕ
         ∘ᵥ (LiftSetoids (ℓE ⊔ ℓP) (eE ⊔ eP) ∘ˡ appˡ-nat Q.bimodule df)
@@ -287,7 +288,7 @@ module _ {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ e) where
       ; isEquivalence = D.equiv
       }
     ; F₁ = λ (f , g) → record
-      { _⟨$⟩_ = λ x → g ∘ x ∘ F₁ f
+      { to = λ x → g ∘ x ∘ F₁ f
       ; cong  = λ x → begin _ ≈⟨ refl⟩∘⟨ x ⟩∘⟨refl ⟩ _ ∎
       }
     ; identity = λ {x} {y} {y'} y≈y' → begin
@@ -318,7 +319,7 @@ module _ {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ e) where
       ; isEquivalence = D.equiv
       }
     ; F₁ = λ (f , g) → record
-      { _⟨$⟩_ = λ x → F₁ g ∘ x ∘ f
+      { to = λ x → F₁ g ∘ x ∘ f
       ; cong  = λ x → begin _ ≈⟨ refl⟩∘⟨ x ⟩∘⟨refl ⟩ _ ∎
       }
     ; identity = λ {x} {y} {y'} y≈y' → begin
