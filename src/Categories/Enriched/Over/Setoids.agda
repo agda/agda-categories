@@ -6,7 +6,7 @@ module Categories.Enriched.Over.Setoids where
 open import Level
 open import Data.Product using (uncurry; proj₁; proj₂; Σ; _,_)
 open import Data.Unit using (tt)
-open import Function.Equality using (_⟨$⟩_; cong)
+open import Function.Bundles using (_⟨$⟩_; Func)
 open import Relation.Binary.Bundles using (Setoid)
 
 open import Categories.Category.Core using () renaming (Category to SCategory)
@@ -30,11 +30,11 @@ Cat→Cat′ C = record
     ; isEquivalence = equiv
     }
   ; id = record
-    { _⟨$⟩_ = λ _ → id
+    { to = λ _ → id
     ; cong = λ _ → Equiv.refl
     }
   ; ⊚ = record
-    { _⟨$⟩_ = uncurry _∘_
+    { to = uncurry _∘_
     ; cong = uncurry ∘-resp-≈
     }
   ; ⊚-assoc = λ { {x = (x₁ , x₂) , x₃} {(y₁ , y₂) , y₃} ((x₁≈y₁ , x₂≈y₂) , x₃≈y₃) → begin
@@ -65,7 +65,7 @@ Cat′→Cat 𝓒 = record
     ; sym = sym (hom A B)
     ; trans = trans (hom A B)
     }
-  ; ∘-resp-≈ = λ f≈h g≈i → cong ⊚ (f≈h , g≈i)
+  ; ∘-resp-≈ = λ f≈h g≈i → Func.cong ⊚ (f≈h , g≈i)
   }
   where
   open Category 𝓒
