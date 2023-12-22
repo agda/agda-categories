@@ -5,7 +5,7 @@ open import Categories.Category
 module Categories.Functor.Hom.Properties.Covariant {o ℓ e} (C : Category o ℓ e) where
 
 open import Level
-open import Function.Equality using (Π)
+open import Function.Bundles using (Func; _⟨$⟩_)
 open import Relation.Binary using (Setoid)
 
 open import Categories.Category.Construction.Cones
@@ -26,7 +26,6 @@ private
 
 open Category C
 open Hom C
-open Π
 
 -- Hom functor preserves limits in C
 module _ (W : Obj) {F : Functor J C} (lim : Limit F) where
@@ -58,21 +57,21 @@ module _ (W : Obj) {F : Functor J C} (lim : Limit F) where
       ! : Cones HomF [ K , ⊤ ]
       ! = record
         { arr     = record
-          { _⟨$⟩_ = λ x → rep (KW x)
+          { to = λ x → rep (KW x)
           ; cong  = λ {x y} eq → ψ-≈⇒rep-≈ F W (Cone.apex (KW x)) (Cone.apex (KW y)) lim
-                                              (λ A → cong (K.ψ A) eq)
+                                              (λ A → Func.cong (K.ψ A) eq)
           }
         ; commute = λ {X} {x y} eq → begin
           proj X ∘ rep (KW x) ∘ C.id ≈⟨ refl⟩∘⟨ C.identityʳ ⟩
           proj X ∘ rep (KW x)        ≈⟨ lim.commute ⟩
-          K.ψ X ⟨$⟩ x                ≈⟨ cong (K.ψ X) eq ⟩
+          K.ψ X ⟨$⟩ x                ≈⟨ Func.cong (K.ψ X) eq ⟩
           K.ψ X ⟨$⟩ y                ∎
         }
 
     !-unique : ∀ {K : Cone HomF} (f : Cones HomF [ K , ⊤ ]) → Cones HomF [ ! K ≈ f ]
     !-unique {K} f {x} {y} x≈y = begin
       rep (KW K x) ≈⟨ terminal.!-unique f′ ⟩
-      f.arr ⟨$⟩ x  ≈⟨ cong f.arr x≈y ⟩
+      f.arr ⟨$⟩ x  ≈⟨ Func.cong f.arr x≈y ⟩
       f.arr ⟨$⟩ y  ∎
       where module K = Cone _ K
             module f = Cone⇒ _ f
