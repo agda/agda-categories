@@ -6,7 +6,8 @@ open import Level
 open import Data.Empty.Polymorphic using (⊥)
 open import Data.Product using (_,_; _×_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Function.Equality using (_⟨$⟩_; cong)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open Func using (cong)
 open import Relation.Binary using (Setoid; module Setoid)
 
 open import Categories.Category
