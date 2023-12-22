@@ -19,9 +19,9 @@ open import Data.List    as List    using (List; _∷_; [])
 open import Data.Product as Product using (_×_; _,_)
 
 open import Agda.Builtin.Reflection
-open import Reflection.Argument
-open import Reflection.Term using (getName; _⋯⟅∷⟆_)
-open import Reflection.TypeChecking.Monad.Syntax
+open import Reflection.AST.Argument
+open import Reflection.AST.Term using (getName; _⋯⟅∷⟆_)
+open import Reflection.TCM.Syntax
 
 module _ {o ℓ e} (𝒞 : Category o ℓ e) where
 
