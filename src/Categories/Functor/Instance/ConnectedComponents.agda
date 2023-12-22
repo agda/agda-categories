@@ -17,7 +17,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIs
 Π₀ = record
   { F₀ = λ C → ST.setoid (Category._⇒_ C) (Category.id C)
   ; F₁ = λ F → record
-    { _⟨$⟩_ = Functor.F₀ F
+    { to = Functor.F₀ F
     ; cong = ST.gmap (Functor.F₀ F) (Functor.F₁ F)
     }
   ; identity = λ x → x
