@@ -34,4 +34,4 @@ RF-Faithful : {E : Pred (Category.Obj C) ℓ′} → Faithful (RestrictionFuncto
 RF-Faithful = id→
 
 RF-Full : {E : Pred (Category.Obj C) ℓ′} → Full (RestrictionFunctor C E)
-RF-Full {C = C} f = f , id→
+RF-Full {C = C} f = f , Category.Equiv.refl C

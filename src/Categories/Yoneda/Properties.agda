@@ -40,8 +40,8 @@ private
   module C = Category C using (op; id)
 
 YoFull : Full embed
-YoFull {X} {Y} ε = Func.to (η ε X) id , λ {f} p {A} {x} {y} x≈y → begin
-  f ∘ x                         ≈⟨ p ⟩∘⟨ x≈y ⟩
+YoFull {X} {Y} ε = Func.to (η ε X) id , λ {A} {x} {y} x≈y → begin
+  Func.to (η ε X) id ∘ x        ≈⟨ refl⟩∘⟨ x≈y ⟩
   Func.to (η ε X) id ∘ y        ≈˘⟨ identityˡ ⟩
   id ∘ Func.to (η ε X) id ∘ y   ≈⟨ sym-commute ε y CE.refl ⟩
   Func.to (η ε A) (id ∘ id ∘ y) ≈⟨ Func.cong (η ε A) (identityˡ ○ identityˡ) ⟩

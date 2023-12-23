@@ -29,4 +29,4 @@ FullSubFaithful : Faithful (FullSub {U = U})
 FullSubFaithful = id→
 
 FullSubFull : Full (FullSub {U = U})
-FullSubFull f = f , id→
+FullSubFull f = f , refl

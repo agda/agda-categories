@@ -43,7 +43,7 @@ private
   module KaroubiEmbedding = Functor KaroubiEmbedding
 
 karoubi-embedding-full : Full KaroubiEmbedding
-karoubi-embedding-full f = BundledIdem.Idempotent⇒.hom f , λ eq → eq
+karoubi-embedding-full f = BundledIdem.Idempotent⇒.hom f , refl
 
 karoubi-embedding-faithful : Faithful KaroubiEmbedding
 karoubi-embedding-faithful eq = eq

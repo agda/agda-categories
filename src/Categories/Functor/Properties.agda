@@ -2,16 +2,16 @@
 module Categories.Functor.Properties where
 
 -- Properties valid of all Functors
-open import Level
+open import Level using (Level)
 open import Data.Product using (proj₁; proj₂; _,_; _×_; Σ)
 open import Function.Base using (_$_)
-open import Function.Definitions using (Injective; Surjective)
+open import Function.Definitions using (Injective; StrictlySurjective)
 open import Relation.Binary using (_Preserves_⟶_)
 open import Relation.Nullary
 
-open import Categories.Category
+open import Categories.Category using (Category; _[_,_]; _[_≈_]; _[_∘_]; module Definitions)
 open import Categories.Category.Construction.Core using (module Shorthands)
-open import Categories.Functor
+open import Categories.Functor.Core using (Functor)
 import Categories.Morphism as Morphism
 import Categories.Morphism.Reasoning as Reas
 open import Categories.Morphism.IsoEquiv as IsoEquiv
@@ -28,12 +28,11 @@ Contravariant : ∀ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → S
 Contravariant C D = Functor (Category.op C) D
 
 Faithful : Functor C D → Set _
--- Faithful {C = C} {D = D} F = ∀ {X Y} → (f g : C [ X , Y ]) → D [ F₁ f ≈ F₁ g ] → C [ f ≈ g ]
 Faithful {C = C} {D = D} F = ∀ {X Y} → Injective {A = C [ X , Y ]} (C [_≈_]) (D [_≈_]) F₁
   where open Functor F
 
 Full : Functor C D → Set _
-Full {C = C} {D = D} F = ∀ {X Y} → Surjective {A = C [ X , Y ]} (C [_≈_]) (D [_≈_]) F₁
+Full {C = C} {D = D} F = ∀ {X Y} → StrictlySurjective {A = C [ X , Y ]} (D [_≈_]) F₁
   where open Functor F
 
 FullyFaithful : Functor C D → Set _
@@ -126,7 +125,7 @@ module _ (F : Functor C D) where
       let (a , sa) = surj A
           (f , p) = full (_≅_.to sa ∘ D.id ∘ _≅_.from sa)
       in faith $ begin
-        F₁ f                           ≈⟨ p C.Equiv.refl ⟩
+        F₁ f                           ≈⟨ p ⟩
         _≅_.to sa ∘ D.id ∘ _≅_.from sa ≈⟨ refl⟩∘⟨ D.identityˡ ⟩
         _≅_.to sa ∘ _≅_.from sa        ≈⟨ _≅_.isoˡ sa ⟩
         D.id                           ≈˘⟨ identity ⟩
@@ -139,22 +138,22 @@ module _ (F : Functor C D) where
           (⟨f⟩ , q) = full (_≅_.to sb ∘ f ∘ _≅_.from sa)
           (⟨g⟩ , r) = full (_≅_.to sc ∘ g ∘ _≅_.from sb)
       in faith $ begin
-        F₁ ⟨g∘f⟩                          ≈⟨ p C.Equiv.refl ⟩
+        F₁ ⟨g∘f⟩                                                         ≈⟨ p ⟩
         _≅_.to sc ∘ (g ∘ f) ∘ _≅_.from sa                               ≈⟨ assoc²'' ⟩
         (_≅_.to sc ∘ g) ∘ (f ∘ _≅_.from sa)                             ≈⟨ insertInner (_≅_.isoʳ sb) ⟩
         ((_≅_.to sc ∘ g) ∘ _≅_.from sb) ∘ (_≅_.to sb ∘ f ∘ _≅_.from sa) ≈⟨ D.assoc ⟩∘⟨refl ⟩
-        (_≅_.to sc ∘ g ∘ _≅_.from sb) ∘ (_≅_.to sb ∘ f ∘ _≅_.from sa)   ≈˘⟨ r C.Equiv.refl ⟩∘⟨ q C.Equiv.refl ⟩
-        F₁ ⟨g⟩ ∘ F₁ ⟨f⟩                                                 ≈˘⟨ homomorphism ⟩
-        F₁ (⟨g⟩ C.∘ ⟨f⟩)                                                ∎
+        (_≅_.to sc ∘ g ∘ _≅_.from sb) ∘ (_≅_.to sb ∘ f ∘ _≅_.from sa)   ≈˘⟨ (r ⟩∘⟨ q ) ⟩
+        F₁ ⟨g⟩ ∘ F₁ ⟨f⟩                                                   ≈˘⟨ homomorphism ⟩
+        F₁ (⟨g⟩ C.∘ ⟨f⟩)                                                  ∎
     ; F-resp-≈ = λ {X} {Y} {f} {g} f≈g →
       let sa = proj₂ (surj X)
           sb = proj₂ (surj Y)
           (⟨f⟩ , p) = full (_≅_.to sb ∘ f ∘ _≅_.from sa)
           (⟨g⟩ , q) = full (_≅_.to sb ∘ g ∘ _≅_.from sa)
       in faith $ begin
-        F₁ ⟨f⟩                      ≈⟨ p C.Equiv.refl ⟩
+        F₁ ⟨f⟩                      ≈⟨ p ⟩
         _≅_.to sb ∘ f ∘ _≅_.from sa ≈⟨ refl⟩∘⟨ f≈g ⟩∘⟨refl ⟩
-        _≅_.to sb ∘ g ∘ _≅_.from sa ≈˘⟨ q C.Equiv.refl ⟩
+        _≅_.to sb ∘ g ∘ _≅_.from sa ≈˘⟨ q ⟩
         F₁ ⟨g⟩                      ∎
     }
     where
