@@ -3,7 +3,9 @@ module Categories.Adjoint.Parametric where
 open import Level
 
 open import Data.Product using (_×_; _,_)
-open import Function.Consequences using (inverseʳ⇒injective)
+open import Function.Bundles using (Injection; Inverse)
+open import Function.Properties.Inverse using (Inverse⇒Injection)
+
 open import Categories.Category.Core using (Category)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open Categories.Functor.Functor using (F₀; F₁; homomorphism; identity; F-resp-≈)
@@ -71,14 +73,14 @@ record ParametricAdjoint {C D E : Category o ℓ e} (L : Functor C (Functors D E
     ; F₁ = λ { {a , a'} {b , b'} (f , f') →
         η (L.₁ f') (RR.₀ b X) E.∘ LL.₁ a' (η (R.₁ f) X)}
     ; identity = λ { {a , a'} →
-        begin _ ≈⟨ L.identity ⟩∘⟨ Functor.F-resp-≈ (L.₀ a') R.identity ⟩
-              _ ≈⟨ refl⟩∘⟨ Functor.identity (L.₀ a') ⟩
+        begin _ ≈⟨ L.identity ⟩∘⟨ LL.F-resp-≈ a' R.identity ⟩
+              _ ≈⟨ refl⟩∘⟨ LL.identity a' ⟩
               _ ≈⟨ E.identity² ⟩
               _ ∎ }
     ; homomorphism = λ { {a , a'} {b , b'} →
         begin _ ≈⟨ pushˡ L.homomorphism ⟩
-              _ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ Functor.F-resp-≈ (L.₀ a') R.homomorphism ⟩
-              _ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ Functor.homomorphism (L.₀ a') ⟩
+              _ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ LL.F-resp-≈ a' R.homomorphism ⟩
+              _ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ LL.homomorphism a' ⟩
               _ ≈⟨ refl⟩∘⟨ pullˡ (commute (L.₁ _) _) ⟩
               _ ≈⟨ MR.assoc²'' E ⟩
               _ ∎ }
@@ -94,50 +96,49 @@ record ParametricAdjoint {C D E : Category o ℓ e} (L : Functor C (Functors D E
   counitCowedge {A} = record
     { E = A
     ; dinatural = dtHelper record
-      { α = λ c → A.counit.η c _
-      ; commute = λ {X} {Y} f →
-        let
-          open Adjoint
-
-          adjunction-isoˡ : A.Ladjunct X (A.counit.η X A E.∘ LL.₁ X (η (R.₁ f) A)) D.≈
-                            η (R.₁ f) A
-          adjunction-isoˡ = let open D.HomReasoning; open MR D in
-            begin _ ≈⟨ pushˡ (homomorphism (R.₀ X)) ⟩
-                  _ ≈⟨ pushʳ (D.Equiv.sym (A.unit.commute X _)) ⟩
-                  _ ≈⟨ A.zag X ⟩∘⟨refl ⟩
-                  _ ≈⟨ D.identityˡ ⟩
-                  _ ∎
-
-          adjunction-isoʳ : A.Ladjunct X (A.counit.η Y A E.∘ η (L.₁ f) (RR.₀ Y A)) D.≈
-                            η (R.₁ f) A
-          adjunction-isoʳ = let open D.HomReasoning; open MR D in
-            begin _ ≈⟨ pushˡ (homomorphism (R.₀ X)) ⟩
-                  _ ≈⟨ param-nat ⟩
-                  _ ≈⟨ refl⟩∘⟨ zag (areAdjoint Y) ⟩
-                  _ ≈⟨ refl⟩∘⟨ D.Equiv.sym (identity (R.₀ Y)) ⟩
-                  _ ≈⟨ refl⟩∘⟨ identity (R.₀ Y) ⟩
-                  _ ≈⟨ D.identityʳ ⟩
-                  _ ∎
-
-          adjunction-iso : A.Ladjunct X (A.Radjunct X (η (R.₁ f) A))
-                       D.≈ A.Ladjunct X (A.counit.η Y A E.∘ η (L.₁ f) (RR.₀ Y A))
-          adjunction-iso = D.Equiv.trans adjunction-isoˡ (D.Equiv.sym adjunction-isoʳ)
-
-          is-cowedge : A.Radjunct X (η (R.₁ f) A)
-                   E.≈ A.counit.η Y A E.∘ η (L.₁ f) (RR.₀ Y A)
-          is-cowedge = inverseʳ⇒injective
-            D._≈_ (Adjoint.Hom-inverse.to (areAdjoint X)) D.Equiv.refl E.Equiv.sym E.Equiv.trans
-            (Adjoint.Hom-inverse.inverseʳ (areAdjoint X))
-            adjunction-iso
-
-          -- in the proof the meat is in `is-cowedge`; but due to the definition of
-          -- cowedge using the constant bifunctor, Agda wants the proof term wrapped
-          -- in some identities.
-       in let open E.HomReasoning; open MR E in begin
-            _ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ elimˡ L.identity ⟩
-            _ ≈⟨ refl⟩∘⟨ is-cowedge ⟩
-            _ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ introʳ (identity (L.₀ _)) ⟩
-            _ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ F-resp-≈ (L.₀ _) (D.Equiv.sym R.identity) ⟩
-            _ ∎
+      { α = λ c → A.counit.η c A
+      ; commute = λ {X} {Y} f → comm′ {X} {Y} f
       }
     }
+    where
+      open Adjoint
+      adjunction-isoˡ : ∀ {X Y} (f : X C.⇒ Y) → A.Ladjunct X (A.counit.η X A E.∘ LL.₁ X (η (R.₁ f) A)) D.≈ η (R.₁ f) A
+      adjunction-isoˡ {X} {Y} f = LRadjunct≈id (areAdjoint X)
+
+      -- note how the part inside the Ladjunct is not Radjunct
+      adjunction-isoʳ : ∀ {X Y} (f : X C.⇒ Y) → A.Ladjunct X (A.counit.η Y A E.∘ η (L.₁ f) (RR.₀ Y A)) D.≈ η (R.₁ f) A
+      adjunction-isoʳ {X} {Y} f = begin
+        A.Ladjunct X (A.counit.η Y A E.∘ η (L.₁ f) (RR.₀ Y A))                                      ≈⟨ D.Equiv.refl ⟩
+        F₁ (R.₀ X) (A.counit.η Y A E.∘ η (L.₁ f) (RR.₀ Y A)) D.∘ A.unit.η X (RR.₀ Y A)              ≈⟨ pushˡ (homomorphism (R.₀ X)) ⟩
+        F₁ (R.₀ X) (A.counit.η Y A) D.∘ F₁ (R.₀ X) (η (L.₁ f) (RR.₀ Y A)) D.∘ A.unit.η X (RR.₀ Y A) ≈⟨ param-nat ⟩
+        η (R.₁ f) _ D.∘ F₁ (R.₀ Y) (A.counit.η Y A) D.∘ A.unit.η Y (RR.₀ Y A)                       ≈⟨ (refl⟩∘⟨ zag (areAdjoint Y)) ⟩
+        η (R.₁ f) _ D.∘ D.id                                                                        ≈⟨ D.identityʳ ⟩
+        η (R.₁ f) A                                            ∎
+        where
+          open D.HomReasoning
+          open MR D
+      
+      adjunction-iso : ∀ {X Y} (f : X C.⇒ Y) → A.Ladjunct X (A.Radjunct X (η (R.₁ f) A))
+                       D.≈ A.Ladjunct X (A.counit.η Y A E.∘ η (L.₁ f) (RR.₀ Y A))
+      adjunction-iso {X} {Y} f = adjunction-isoˡ f ○ ⟺ (adjunction-isoʳ f)
+        where open D.HomReasoning
+
+      is-cowedge : ∀ {X Y} (f : X C.⇒ Y) → A.Radjunct X (η (R.₁ f) A) E.≈ A.counit.η Y A E.∘ η (L.₁ f) (RR.₀ Y A)
+      is-cowedge {X} {Y} f = Injection.injective (Inverse⇒Injection (Hom-inverse (areAdjoint X) (RR.₀ Y A) A)) (adjunction-iso f)
+      
+      -- the dinat needed is  DinaturalTransformation F (const E)
+      -- where F = PABifunctor {A} and E is A and G = const E
+      -- here we inline the definitions
+      comm′ : {X Y : C.Obj} (f : X C.⇒ Y) →
+         E.id {A} E.∘ A.counit.η X A E.∘ (F₁ (PABifunctor {A}) (f , C.id))
+           E.≈
+         E.id {A} E.∘ A.counit.η Y A E.∘ F₁ (PABifunctor {A}) (C.id , f)
+      comm′ {X} {Y} f = begin
+        E.id {A} E.∘ A.counit.η X A E.∘ (F₁ (PABifunctor {A}) (f , C.id))        ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ elimˡ L.identity) ⟩
+        E.id {A} E.∘ A.Radjunct X (η (R.₁ f) A)                                  ≈⟨ (refl⟩∘⟨ is-cowedge f) ⟩
+        E.id {A} E.∘ A.counit.η Y A E.∘ η (L.₁ f) (RR.₀ Y A)                     ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ introʳ (identity (L.₀ X))) ⟩
+        E.id {A} E.∘ A.counit.η Y A E.∘ η (L.₁ f) (RR.₀ Y A) E.∘ F₁ (L.₀ X) D.id ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ F-resp-≈ (L.₀ X) (D.Equiv.sym R.identity)) ⟩
+        E.id {A} E.∘ A.counit.η Y A E.∘ F₁ (PABifunctor {A}) (C.id , f)          ∎
+        where
+          open E.HomReasoning
+          open MR E
