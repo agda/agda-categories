@@ -2,14 +2,14 @@
 
 module Categories.Functor.Profunctor.FormalComposite where
 
-open import Level
+open import Level using (Level; _⊔_)
+open import Relation.Binary.Bundles using (Setoid)
 open import Relation.Binary.Construct.Closure.SymmetricTransitive as ST using (Plus⇔; minimal)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
-open import Relation.Binary.Bundles
-open import Categories.Category
+open import Categories.Category using (Category; _[_,_]; _[_∘_]; _[_≈_])
 open import Categories.Category.Instance.Setoids using (Setoids)
-open import Categories.Functor hiding (id)
+open import Categories.Functor.Core using (Functor)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open Func using (cong)
 

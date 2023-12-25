@@ -33,6 +33,8 @@ import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
 import Categories.NaturalTransformation.Hom as NT-Hom
 
+open Func
+
 private
   variable
     o ℓ e : Level
@@ -83,9 +85,9 @@ module Yoneda (C : Category o ℓ e) where
         let module S = Setoid (F.₀ x) in
         S.trans
           (S.trans
-            (Func.cong (F.₁ f) p)
+            (cong (F.₁ f) p)
             (sym-commute nat f CE.refl))
-          (Func.cong (η nat x) (identityˡ ○ identityˡ ○ f≈g))
+          (cong (η nat x) (identityˡ ○ identityˡ ○ f≈g))
       }
     }
     where
@@ -116,7 +118,7 @@ module Yoneda (C : Category o ℓ e) where
           ; cong  = λ i≈j → lift (i≈j CE.refl)
           }
       ; commute = λ where
-        {_} {G , B} (α , f) {β} {γ} β≈γ → lift $ Func.cong (η α B) (helper f β γ β≈γ)
+        {_} {G , B} (α , f) {β} {γ} β≈γ → lift $ cong (η α B) (helper f β γ β≈γ)
       }
     ; F⇐G = ntHelper record
       { η       = λ (F , A) → record
@@ -137,9 +139,9 @@ module Yoneda (C : Category o ℓ e) where
                    Setoid._≈_ (Functor.F₀ Nat[Hom[C][-,c],F] (F , A)) β γ →
                    Setoid._≈_ (Functor.F₀ F B) (η β B ⟨$⟩ f ∘ id) (Functor.F₁ F f ⟨$⟩ (η γ A ⟨$⟩ id))
           helper {F} {A} {B} f β γ β≈γ = S.begin
-            η β B ⟨$⟩ f ∘ id         S.≈⟨ Func.cong (η β B) (id-comm ○ (⟺ identityˡ)) ⟩
+            η β B ⟨$⟩ f ∘ id         S.≈⟨ cong (η β B) (id-comm ○ (⟺ identityˡ)) ⟩
             η β B ⟨$⟩ id ∘ id ∘ f    S.≈⟨ commute β f CE.refl ⟩
-            F.₁ f ⟨$⟩ (η β A ⟨$⟩ id) S.≈⟨ Func.cong (F.₁ f) (β≈γ CE.refl) ⟩
+            F.₁ f ⟨$⟩ (η β A ⟨$⟩ id) S.≈⟨ cong (F.₁ f) (β≈γ CE.refl) ⟩
             F.₁ f ⟨$⟩ (η γ A ⟨$⟩ id) S.∎
             where
             module F = Functor F using (₀;₁)
@@ -156,9 +158,9 @@ module Yoneda (C : Category o ℓ e) where
                       Setoid._≈_ (Functor.F₀ G Z) (Functor.F₁ G h ⟨$⟩ (η α B ⟨$⟩ (Functor.F₁ F f ⟨$⟩ X)))
                                           (η α Z ⟨$⟩ (Functor.F₁ F (f ∘ i) ⟨$⟩ Y))
           helper′ {F} {G} {A} {B} {Z} {h} {i} {X} {Y} α f eq eq′ = S.begin
-            G.₁ h ⟨$⟩ (η α B ⟨$⟩ (F.₁ f ⟨$⟩ X)) S.≈˘⟨ commute α h (S′.sym (Func.cong (F.₁ f) eq)) ⟩
-            η α Z ⟨$⟩ (F.₁ h ⟨$⟩ (F.₁ f ⟨$⟩ Y)) S.≈⟨ Func.cong (η α Z) (F.F-resp-≈ eq′ S′.refl) ⟩
-            η α Z ⟨$⟩ (F.₁ i ⟨$⟩ (F.₁ f ⟨$⟩ Y)) S.≈˘⟨ Func.cong (η α Z) (F.homomorphism (Setoid.refl (F.₀ A))) ⟩
+            G.₁ h ⟨$⟩ (η α B ⟨$⟩ (F.₁ f ⟨$⟩ X)) S.≈˘⟨ commute α h (S′.sym (cong (F.₁ f) eq)) ⟩
+            η α Z ⟨$⟩ (F.₁ h ⟨$⟩ (F.₁ f ⟨$⟩ Y)) S.≈⟨ cong (η α Z) (F.F-resp-≈ eq′ S′.refl) ⟩
+            η α Z ⟨$⟩ (F.₁ i ⟨$⟩ (F.₁ f ⟨$⟩ Y)) S.≈˘⟨ cong (η α Z) (F.homomorphism (Setoid.refl (F.₀ A))) ⟩
             η α Z ⟨$⟩ (F.₁ (f ∘ i) ⟨$⟩ Y)       S.∎
             where
               module F = Functor F using (₀; ₁; homomorphism; F-resp-≈)

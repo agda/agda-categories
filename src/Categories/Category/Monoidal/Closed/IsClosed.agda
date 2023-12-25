@@ -24,7 +24,7 @@ private
   module ℱ = Functor
 
 open HomReasoning
-open adjoint using (Radjunct; Ladjunct; LRadjunct≈id; RLadjunct≈id) renaming (unit to η; counit to ε)
+open adjoint using (Radjunct; Ladjunct; LRadjunct≈id; RLadjunct≈id; Radjunct-resp-≈) renaming (unit to η; counit to ε)
 
 -- and here we use sub-modules in the hopes of making things go faster
 open import Categories.Category.Monoidal.Closed.IsClosed.Identity Cl using (identity; diagonal)
@@ -67,10 +67,10 @@ closed = record
     }
   ; γ-γ⁻¹-inverseᵇ  = λ {X Y} →
     (λ {f} {y} eq →  begin
-      Radjunct y ∘ unitorˡ.to                                                     ≈⟨ (refl⟩∘⟨ ℱ.F-resp-≈ (-⊗ X) eq) ⟩∘⟨refl ⟩
-      Radjunct ( [ id , f ]₁ ∘ [ id , unitorˡ.from ]₁ ∘ η.η unit) ∘ unitorˡ.to    ≈˘⟨ (refl⟩∘⟨ ℱ.F-resp-≈ (-⊗ X) (pushˡ (ℱ.homomorphism [ X ,-]))) ⟩∘⟨refl ⟩
-      Radjunct (Ladjunct (f ∘ unitorˡ.from)) ∘ unitorˡ.to                         ≈⟨ RLadjunct≈id ⟩∘⟨refl ⟩
-      (f ∘ unitorˡ.from) ∘ unitorˡ.to                                             ≈⟨ cancelʳ unitorˡ.isoʳ ⟩
+      Radjunct y ∘ unitorˡ.to                                                    ≈⟨ Radjunct-resp-≈ eq ⟩∘⟨refl ⟩
+      Radjunct ( [ id , f ]₁ ∘ [ id , unitorˡ.from ]₁ ∘ η.η unit) ∘ unitorˡ.to   ≈˘⟨ Radjunct-resp-≈ (pushˡ (ℱ.homomorphism [ X ,-])) ⟩∘⟨refl ⟩
+      Radjunct (Ladjunct (f ∘ unitorˡ.from)) ∘ unitorˡ.to                        ≈⟨ RLadjunct≈id ⟩∘⟨refl ⟩
+      (f ∘ unitorˡ.from) ∘ unitorˡ.to                                            ≈⟨ cancelʳ unitorˡ.isoʳ ⟩
       f ∎
       ) ,
     λ {y} {f} eq → begin

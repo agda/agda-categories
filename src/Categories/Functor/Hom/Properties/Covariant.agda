@@ -4,19 +4,20 @@ open import Categories.Category
 
 module Categories.Functor.Hom.Properties.Covariant {o ℓ e} (C : Category o ℓ e) where
 
-open import Level
+open import Level using (Level)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Relation.Binary using (Setoid)
 
-open import Categories.Category.Construction.Cones
-open import Categories.Category.Instance.Setoids
-open import Categories.Diagram.Cone.Properties
-open import Categories.Diagram.Limit
-open import Categories.Functor
-open import Categories.Functor.Limits
-open import Categories.Functor.Hom
+open import Categories.Category.Construction.Cones using (Cone; Cone⇒; Cones)
+open import Categories.Category.Instance.Setoids using (Setoids)
+open import Categories.Diagram.Cone.Properties using (F-map-Coneˡ)
+open import Categories.Diagram.Limit using (Limit; ψ-≈⇒rep-≈)
+open import Categories.Functor using (Functor; _∘F_)
+open import Categories.Functor.Limits using (Continuous)
+open import Categories.Functor.Hom using (module Hom)
 
 import Categories.Morphism.Reasoning as MR
+open Func
 
 private
   variable

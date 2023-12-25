@@ -13,19 +13,15 @@ open import Relation.Binary.Bundles using (module Setoid)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 open import Data.Product using (_,_; Σ)
 
-open import Categories.Category.Product
-open import Categories.Category.Construction.Presheaves
-open import Categories.Category.Construction.Functors
-open import Categories.Category.Instance.Setoids
-open import Categories.Functor renaming (id to idF)
+open import Categories.Category.Product using (_⁂_)
+open import Categories.Category.Instance.Setoids using (Setoids)
+open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Properties using (Full; Faithful; FullyFaithful)
 open import Categories.Functor.Hom using (module Hom; Hom[_][-,_]; Hom[_][-,-])
-open import Categories.Functor.Bifunctor
-open import Categories.Functor.Presheaf
-open import Categories.Functor.Construction.LiftSetoids
+open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper) renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
-open import Categories.Yoneda
+open import Categories.Yoneda using (module Yoneda)
 
 import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR

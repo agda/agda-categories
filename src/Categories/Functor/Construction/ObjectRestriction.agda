@@ -4,7 +4,7 @@
 
 module Categories.Functor.Construction.ObjectRestriction where
 
-open import Level
+open import Level using (Level)
 open import Data.Product using (proj₁; _,_)
 open import Relation.Unary using (Pred)
 open import Function using () renaming (id to id→)
@@ -20,7 +20,7 @@ private
     C : Category o ℓ e
 
 RestrictionFunctor : {ℓ′ : Level} → (C : Category o ℓ e) → (E : Pred (Category.Obj C) ℓ′) → Functor (ObjectRestriction C E) C
-RestrictionFunctor C E = record
+RestrictionFunctor C _ = record
   { F₀ = proj₁
   ; F₁ = id→
   ; identity = Equiv.refl

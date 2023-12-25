@@ -3,11 +3,10 @@ module Categories.Functor.Properties where
 
 -- Properties valid of all Functors
 open import Level using (Level)
-open import Data.Product using (proj₁; proj₂; _,_; _×_; Σ)
+open import Data.Product using (_×_; Σ; _,_; proj₁; proj₂)
 open import Function.Base using (_$_)
 open import Function.Definitions using (Injective; StrictlySurjective)
 open import Relation.Binary using (_Preserves_⟶_)
-open import Relation.Nullary
 
 open import Categories.Category using (Category; _[_,_]; _[_≈_]; _[_∘_]; module Definitions)
 open import Categories.Category.Construction.Core using (module Shorthands)
@@ -47,7 +46,7 @@ EssentiallySurjective {C = C} {D = D} F = (d : Category.Obj D) → Σ C.Obj (λ 
   module C = Category C
 
 Conservative : Functor C D → Set _
-Conservative {C = C} {D = D} F = ∀ {A B} {f : C [ A , B ]} {g : D [ F₀ B , F₀ A ]} → Iso D (F₁ f) g → Σ (C [ B , A ]) (λ h → Iso C f h)
+Conservative {C = C} {D = D} F = ∀ {A B} {f : C [ A , B ]} {g : D [ F₀ B , F₀ A ]} → Iso D (F₁ f) g → Σ (C [ B , A ]) (Iso C f)
   where
     open Functor F
     open Morphism
