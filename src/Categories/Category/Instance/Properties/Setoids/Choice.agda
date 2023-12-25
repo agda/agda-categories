@@ -5,18 +5,18 @@ module Categories.Category.Instance.Properties.Setoids.Choice where
 open import Categories.Category using (Category)
 open import Categories.Category.Exact using (Exact)
 open import Categories.Category.Instance.Setoids using (Setoids)
+open import Categories.Category.Instance.Properties.Setoids.Exact using (SSurj)
+open import Categories.Object.InternalRelation using (Relation) 
 
+open import Data.Nat.Base using (ℕ)
 open import Data.Product using (∃; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_; map; zip; swap; map₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Function.Construct.Setoid using () renaming (function to f-setoid)
-
-open import Level
+open import Function.Construct.Setoid using () renaming (function to _⇨_)
+open import Level using (Level; Lift)
 open import Relation.Binary using (Setoid; Rel; REL; IsEquivalence)
-import Relation.Binary.Reasoning.Setoid as SR
-
-open import Data.Nat.Base
 import Relation.Binary.PropositionalEquality.Core as P
+import Relation.Binary.Reasoning.Setoid as SR
 
 open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence; refl; sym; trans)
 
@@ -26,16 +26,13 @@ module _ ℓ where
     open Category S hiding (_≈_)
     module S = Category S
 
-  open import Categories.Category.Instance.Properties.Setoids.Exact
-  open import Categories.Object.InternalRelation using (Relation) 
-
   -- Presentation axiom, aka CoSHEP (https://ncatlab.org/nlab/show/presentation+axiom)
   record CoSHEP (A : Setoid ℓ ℓ) : Set (Level.suc ℓ) where
     field
       {P} : Setoid ℓ ℓ
       pre   : P ⇒ A
       surj  : SSurj ℓ pre
-      split : {X : Setoid ℓ ℓ} (f : X ⇒ P) → SSurj ℓ f → Σ[ g ∈ ∣ f-setoid P X ∣ ] [ f-setoid P P ][ f ∘ g ≈ id ]
+      split : {X : Setoid ℓ ℓ} (f : X ⇒ P) → SSurj ℓ f → Σ[ g ∈ ∣ P ⇨ X ∣ ] [ P ⇨ P ][ f ∘ g ≈ id ]
 
   Setoid-CoSHEP : (A : Setoid ℓ ℓ) → CoSHEP A
   Setoid-CoSHEP A = record
@@ -65,7 +62,9 @@ module _ ℓ where
     where open Relation R
 
   ℕ-Setoid : Setoid ℓ ℓ
-  ℕ-Setoid = record { Carrier = Lift _ ℕ ; _≈_ = P._≡_  ; isEquivalence = record { refl = P.refl ; sym = P.sym ; trans = P.trans } }
+  ℕ-Setoid = record { Carrier = Lift _ ℕ ; _≈_ = P._≡_
+                    ; isEquivalence = record { refl = P.refl ; sym = P.sym ; trans = P.trans }
+                    }
 
   record DepChoice {A : Setoid ℓ ℓ} (R : Relation S A A) (inhb : ∣ A ∣) (ent : entire R) : Set (Level.suc ℓ) where
     open Relation R
@@ -92,7 +91,7 @@ module _ ℓ where
         chain (ℕ.suc n) = let x , eq = ent (p₂ ⟨$⟩ proj₁ (ent (p₂ ⟨$⟩ pair n))) in eq
 
   -- Countable choice for setoids 
-  ℕ-Choice :  ∀ {A : Setoid ℓ ℓ} (f : A ⇒ ℕ-Setoid) → SSurj ℓ f → Σ[ g ∈ ∣ f-setoid ℕ-Setoid A ∣ ] [ f-setoid ℕ-Setoid ℕ-Setoid ][ f ∘ g ≈ id ]
+  ℕ-Choice :  ∀ {A : Setoid ℓ ℓ} (f : A ⇒ ℕ-Setoid) → SSurj ℓ f → Σ[ g ∈ ∣ ℕ-Setoid ⇨ A ∣ ] [ ℕ-Setoid ⇨ ℕ-Setoid ][ f ∘ g ≈ id ]
   ℕ-Choice {A} f surj = record
     { to = λ n → let x , eq = surj n in x
     ; cong = λ {n}{m} eq → let x , _ = surj n; y , _ = surj m in P.subst (λ m → [ A ][ proj₁ (surj n) ≈ proj₁ (surj m) ]) eq (refl A) 

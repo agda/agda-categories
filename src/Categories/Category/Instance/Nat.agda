@@ -22,9 +22,9 @@ open import Categories.Category.Cocartesian using (Cocartesian)
 open import Categories.Category.Cocartesian.Bundle using (CocartesianCategory)
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Duality using (Cocartesian⇒coCartesian; coCartesian⇒Cocartesian)
-open import Categories.Object.Coproduct
+open import Categories.Object.Coproduct using (Coproduct)
 open import Categories.Object.Duality using (Coproduct⇒coProduct; coProduct⇒Coproduct)
-open import Categories.Object.Product
+open import Categories.Object.Product using (Product)
 
 Nat : Category 0ℓ 0ℓ 0ℓ
 Nat = record

@@ -2,10 +2,12 @@
 
 module Categories.Category.Instance.Properties.Setoids.Complete where
 
-open import Level
+open import Level using (Level; _⊔_)
 open import Data.Product using (Σ; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Relation.Binary using (Setoid; Rel)
+open import Relation.Binary.Bundles using (Setoid)
+open import Relation.Binary.Core using (Rel)
+open Func
 
 open import Categories.Category using (Category; _[_,_])
 open import Categories.Functor
@@ -43,9 +45,9 @@ Setoids-Complete o ℓ e c ℓ′ {J} F =
         in record
         { arr     = record
           { to = λ x → (λ j → K.ψ j ⟨$⟩ x) , λ f → K.commute f (Setoid.refl K.N)
-          ; cong  = λ a≈b j → Func.cong (K.ψ j) a≈b
+          ; cong  = λ a≈b j → cong (K.ψ j) a≈b
           }
-        ; commute = λ x≈y → Func.cong (K.ψ _) x≈y
+        ; commute = λ x≈y → cong (K.ψ _) x≈y
         }
       ; !-unique = λ {K} f x≈y j →
         let module K = Cone K

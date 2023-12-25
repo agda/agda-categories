@@ -2,32 +2,32 @@
 
 module Categories.Category.Instance.Properties.Setoids.LCCC where
 
-open import Level
-open import Data.Product using (Σ; _,_)
+open import Level using (Level; _⊔_; 0ℓ; suc)
+open import Data.Product using (_,_)
 open import Function.Bundles using (Func; _⟨$⟩_)
 import Function.Construct.Identity as FId
 open import Relation.Binary using (Setoid)
-import Relation.Binary.PropositionalEquality as ≡
+import Relation.Binary.PropositionalEquality.Core as ≡
 
-open import Categories.Category
-open import Categories.Category.BinaryProducts
-open import Categories.Category.CartesianClosed
+open import Categories.Category.Core using (Category)
+open import Categories.Category.BinaryProducts using (BinaryProducts)
+open import Categories.Category.CartesianClosed using (CartesianClosed)
 open import Categories.Category.CartesianClosed.Canonical
   using (module Equivalence)
   renaming (CartesianClosed to Canonical)
 open import Categories.Category.CartesianClosed.Locally using (Locally)
-open import Categories.Category.Cartesian
+open import Categories.Category.Cartesian using (Cartesian)
 open import Categories.Category.Instance.Span
-open import Categories.Category.Instance.Setoids
+  using (SpanObj; Span; span-id; left; right; span-arrʳ; span-arrˡ; center)
+open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.Instance.Properties.Setoids.Complete
-open import Categories.Category.Monoidal.Instance.Setoids
-open import Categories.Category.Slice
-open import Categories.Category.Slice.Properties
-open import Categories.Functor
-
-open import Categories.Object.Terminal
-open import Categories.Diagram.Pullback
-open import Categories.Diagram.Pullback.Limit
+  using (Setoids-Complete)
+open import Categories.Category.Slice using (Slice; sliceobj; slicearr; SliceObj; Slice⇒)
+open import Categories.Category.Slice.Properties using (pullback⇒product)
+open import Categories.Functor.Core using (Functor)
+open import Categories.Object.Terminal using (Terminal)
+open import Categories.Diagram.Pullback using (Pullback)
+open import Categories.Diagram.Pullback.Limit using (limit⇒pullback)
 import Categories.Object.Product as Prod
 
 module _ {o ℓ} where
