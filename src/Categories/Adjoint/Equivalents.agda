@@ -8,15 +8,15 @@ open import Level
 
 open import Data.Product using (_,_; _×_)
 open import Function using (_$_) renaming (_∘_ to _∙_)
-open import Function.Bundles
+open import Function.Bundles using (Equivalence; LeftInverse; Func; _⟨$⟩_)
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
 -- be explicit in imports to 'see' where the information comes from
 open import Categories.Adjoint using (Adjoint; _⊣_)
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Product using (Product; _⁂_)
-open import Categories.Category.Instance.Setoids
-open import Categories.Morphism
+open import Categories.Category.Instance.Setoids using (Setoids)
+open import Categories.Morphism using (Iso)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Functor.Hom using (Hom[_][-,-])
@@ -49,11 +49,11 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
     Hom-NI′ : NaturalIsomorphism Hom[L-,-] Hom[-,R-]
     Hom-NI′ = record
       { F⇒G = ntHelper record
-        { η       = λ _ → Equivalence.toFunction (LeftInverse.equivalence Hom-inverse.leftInverse)
+        { η       = λ _ → record { to = Hom-inverse.to ; cong = Hom-inverse.to-cong }
         ; commute = λ _ eq → Ladjunct-comm eq
         }
       ; F⇐G = ntHelper record
-        { η       = λ _ → Equivalence.fromFunction (LeftInverse.equivalence Hom-inverse.leftInverse)
+        { η       = λ _ → record { to = Hom-inverse.from ; cong = Hom-inverse.from-cong }
         ; commute = λ _ eq → Radjunct-comm eq
         }
       ; iso = λ _ → record

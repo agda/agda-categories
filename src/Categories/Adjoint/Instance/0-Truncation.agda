@@ -7,8 +7,8 @@ module Categories.Adjoint.Instance.0-Truncation where
 
 open import Level using (Lift)
 open import Data.Unit using (⊤)
-import Function
-open import Function.Bundles
+open import Function.Base renaming (id to id→)
+open import Function.Bundles using (Func)
 import Function.Construct.Identity as Id
 open import Relation.Binary using (Setoid)
 
@@ -46,7 +46,7 @@ TruncAdj : ∀ {o ℓ e} → Trunc ⊣ Inclusion {o} {ℓ} e
 TruncAdj {o} {ℓ} {e} = record
   { unit   = unit
   ; counit = counit
-  ; zig    = Function.id
+  ; zig    = id→
   ; zag    = refl
   }
   where
@@ -55,7 +55,7 @@ TruncAdj {o} {ℓ} {e} = record
 
     unit : NaturalTransformation idF (Inclusion e ∘F Trunc)
     unit = record
-      { η           = λ _ → record { F₀ = Function.id ; F₁ = Function.id }
+      { η           = λ _ → record { F₀ = id→ ; F₁ = id→ }
       ; commute     = λ _ → refl
       ; sym-commute = λ _ → refl
       }

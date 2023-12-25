@@ -7,7 +7,7 @@ module Categories.Adjoint.Instance.PosetCore where
 
 open import Level using (_⊔_)
 import Function
-open import Function.Bundles
+open import Function.Bundles using (Func)
 open import Relation.Binary using (Setoid; Poset)
 open import Relation.Binary.Morphism.Bundles using (PosetHomomorphism; mkPosetHomo)
 import Relation.Binary.Morphism.Construct.Composition as Comp
@@ -15,8 +15,8 @@ import Relation.Binary.Morphism.Construct.Composition as Comp
 open import Categories.Adjoint using (_⊣_)
 import Categories.Adjoint.Instance.0-Truncation as Setd
 import Categories.Adjoint.Instance.01-Truncation as Pos
-open import Categories.Category using (Category)
-open import Categories.Category.Construction.Thin
+open import Categories.Category.Core using (Category)
+open import Categories.Category.Construction.Thin using (Thin; module EqIsIso)
 open import Categories.Category.Instance.Posets using (Posets)
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Functor.Instance.Core using () renaming (Core to CatCore)

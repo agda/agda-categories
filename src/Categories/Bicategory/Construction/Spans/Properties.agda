@@ -9,15 +9,14 @@ open import Function.Bundles using (Func; _⟨$⟩_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.Reasoning.Setoid as SR
 
-open import Categories.Category
-open import Categories.Category.Helper
-open import Categories.Category.Instance.Setoids
+open import Categories.Category.Core using (Category)
+open import Categories.Category.Helper using (categoryHelper)
+open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical
+  using (pullback; FiberProduct)
 
-open import Categories.Diagram.Pullback
-
-open import Categories.Bicategory
-open import Categories.Bicategory.Monad
+open import Categories.Bicategory using (Bicategory)
+open import Categories.Bicategory.Monad using (Monad)
 
 import Categories.Category.Diagram.Span as Span
 import Categories.Bicategory.Construction.Spans as Spans
@@ -36,6 +35,7 @@ module _ {o ℓ : Level} (T : Monad (Spans.Spans (pullback o ℓ))) where
     open Bicategory Spans
 
     open Setoid renaming (_≈_ to [_][_≈_])
+    open Func
 
 
   -- We can view the roof of the span as a hom set! However, we need to partition
@@ -110,16 +110,16 @@ module _ {o ℓ : Level} (T : Monad (Spans.Spans (pullback o ℓ))) where
             ; commute = FiberProduct.commute (h ×ₚ g)
             }
       in begin
-        arr T.μ ⟨$⟩ ((h ∘⇒ g) ×ₚ f) ≈⟨ Func.cong (arr T.μ) (HomSetoid.refl , Func.cong (arr T.μ) (HomSetoid.refl , HomSetoid.refl)) ⟩
+        arr T.μ ⟨$⟩ ((h ∘⇒ g) ×ₚ f) ≈⟨ cong (arr T.μ) (HomSetoid.refl , cong (arr T.μ) (HomSetoid.refl , HomSetoid.refl)) ⟩
         arr T.μ ⟨$⟩ _                ≈⟨ T.sym-assoc {f×ₚ⟨g×ₚh⟩} {f×ₚ⟨g×ₚh⟩} ((HomSetoid.refl , HomSetoid.refl) , HomSetoid.refl) ⟩
-        arr T.μ ⟨$⟩ _                ≈⟨ (Func.cong (arr T.μ) (Func.cong (arr T.μ) (HomSetoid.refl , HomSetoid.refl) , HomSetoid.refl)) ⟩
+        arr T.μ ⟨$⟩ _                ≈⟨ (cong (arr T.μ) (cong (arr T.μ) (HomSetoid.refl , HomSetoid.refl) , HomSetoid.refl)) ⟩
         arr T.μ ⟨$⟩ (h ×ₚ (g ∘⇒ f)) ∎
     ; identityˡ = λ {A} {B} {f} → begin
-      arr T.μ ⟨$⟩ (id⇒ B ×ₚ f) ≈⟨ Func.cong (arr T.μ) (HomSetoid.refl , Func.cong (arr T.η) (ObjSetoid.sym (cod-eq f))) ⟩
+      arr T.μ ⟨$⟩ (id⇒ B ×ₚ f) ≈⟨ cong (arr T.μ) (HomSetoid.refl , cong (arr T.η) (ObjSetoid.sym (cod-eq f))) ⟩
       arr T.μ ⟨$⟩ _             ≈⟨ T.identityʳ HomSetoid.refl ⟩
       hom f                     ∎
     ; identityʳ = λ {A} {B} {f} → begin
-      arr T.μ ⟨$⟩ (f ×ₚ id⇒ A) ≈⟨ Func.cong (arr T.μ) (Func.cong (arr T.η) (ObjSetoid.sym (dom-eq f)) , HomSetoid.refl) ⟩
+      arr T.μ ⟨$⟩ (f ×ₚ id⇒ A) ≈⟨ cong (arr T.μ) (cong (arr T.η) (ObjSetoid.sym (dom-eq f)) , HomSetoid.refl) ⟩
       arr T.μ ⟨$⟩ _             ≈⟨ T.identityˡ HomSetoid.refl ⟩
       hom f                     ∎
     ; equiv = record
