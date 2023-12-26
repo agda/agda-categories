@@ -2,17 +2,15 @@
 module Categories.Functor.Properties where
 
 -- Properties valid of all Functors
-open import Level
-open import Data.Product using (proj₁; proj₂; _,_; _×_; Σ)
-open import Function.Surjection using (Surjective)
-open import Function.Equivalence using (Equivalence)
-open import Function.Equality using (Π; _⟶_; _⟨$⟩_; cong)
+open import Level using (Level)
+open import Data.Product using (_×_; Σ; _,_; proj₁; proj₂)
+open import Function.Base using (_$_)
+open import Function.Definitions using (Injective; StrictlySurjective)
 open import Relation.Binary using (_Preserves_⟶_)
-open import Relation.Nullary
 
-open import Categories.Category
+open import Categories.Category using (Category; _[_,_]; _[_≈_]; _[_∘_]; module Definitions)
 open import Categories.Category.Construction.Core using (module Shorthands)
-open import Categories.Functor
+open import Categories.Functor.Core using (Functor)
 import Categories.Morphism as Morphism
 import Categories.Morphism.Reasoning as Reas
 open import Categories.Morphism.IsoEquiv as IsoEquiv
@@ -29,17 +27,12 @@ Contravariant : ∀ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) → S
 Contravariant C D = Functor (Category.op C) D
 
 Faithful : Functor C D → Set _
-Faithful {C = C} {D = D} F = ∀ {X Y} → (f g : C [ X , Y ]) → D [ F₁ f ≈ F₁ g ] → C [ f ≈ g ]
+Faithful {C = C} {D = D} F = ∀ {X Y} → Injective {A = C [ X , Y ]} (C [_≈_]) (D [_≈_]) F₁
   where open Functor F
 
 Full : Functor C D → Set _
-Full {C = C} {D = D} F = ∀ {X Y} → Surjective {To = D.hom-setoid {F₀ X} {F₀ Y}} G
-  where
-    module C = Category C
-    module D = Category D
-    open Functor F
-    G : ∀ {X Y} → (C.hom-setoid {X} {Y}) ⟶ D.hom-setoid {F₀ X} {F₀ Y}
-    G = record { _⟨$⟩_ = F₁ ; cong = F-resp-≈ }
+Full {C = C} {D = D} F = ∀ {X Y} → StrictlySurjective {A = C [ X , Y ]} (D [_≈_]) F₁
+  where open Functor F
 
 FullyFaithful : Functor C D → Set _
 FullyFaithful F = Full F × Faithful F
@@ -53,7 +46,7 @@ EssentiallySurjective {C = C} {D = D} F = (d : Category.Obj D) → Σ C.Obj (λ 
   module C = Category C
 
 Conservative : Functor C D → Set _
-Conservative {C = C} {D = D} F = ∀ {A B} {f : C [ A , B ]} {g : D [ F₀ B , F₀ A ]} → Iso D (F₁ f) g → Σ (C [ B , A ]) (λ h → Iso C f h)
+Conservative {C = C} {D = D} F = ∀ {A B} {f : C [ A , B ]} {g : D [ F₀ B , F₀ A ]} → Iso D (F₁ f) g → Σ (C [ B , A ]) (Iso C f)
   where
     open Functor F
     open Morphism
@@ -62,7 +55,7 @@ Conservative {C = C} {D = D} F = ∀ {A B} {f : C [ A , B ]} {g : D [ F₀ B , F
 
 module _ (F : Functor C D) where
   private
-    module C = Category C using (Obj; _∘_; _⇒_; id; module HomReasoning)
+    module C = Category C
     module D = Category D
     module IsoC = IsoEquiv C
     module IsoD = IsoEquiv D
@@ -124,46 +117,48 @@ module _ (F : Functor C D) where
   EssSurj×Full×Faithful⇒Invertible surj full faith = record
     { F₀ = λ d → proj₁ (surj d)
     ; F₁ = λ {A} {B} f →
-      let (a , sa) = surj A in
-      let (b , sb) = surj B in
-      let module S = Surjective (full {a} {b}) in
-      S.from ⟨$⟩ (_≅_.to sb) ∘ f ∘ (_≅_.from sa)
+      let (a , sa) = surj A
+          (b , sb) = surj B
+      in proj₁ (full (_≅_.to sb ∘ f ∘ _≅_.from sa))
     ; identity = λ {A} →
-      let ff = from full
-          (a , sa) = surj A in begin
-      ff ⟨$⟩ _≅_.to sa ∘ D.id ∘ _≅_.from sa ≈⟨ cong ff (E.refl⟩∘⟨ D.identityˡ) ⟩
-      ff ⟨$⟩ _≅_.to sa ∘ _≅_.from sa        ≈⟨ cong ff (_≅_.isoˡ sa) ⟩
-      ff ⟨$⟩ D.id                           ≈˘⟨ cong ff identity ⟩
-      ff ⟨$⟩ F₁ C.id                        ≈⟨ faith _ _ (right-inverse-of full (F₁ C.id)) ⟩
-      C.id ∎
+      let (a , sa) = surj A
+          (f , p) = full (_≅_.to sa ∘ D.id ∘ _≅_.from sa)
+      in faith $ begin
+        F₁ f                           ≈⟨ p ⟩
+        _≅_.to sa ∘ D.id ∘ _≅_.from sa ≈⟨ refl⟩∘⟨ D.identityˡ ⟩
+        _≅_.to sa ∘ _≅_.from sa        ≈⟨ _≅_.isoˡ sa ⟩
+        D.id                           ≈˘⟨ identity ⟩
+        F₁ C.id                        ∎
     ; homomorphism = λ {X} {Y} {Z} {f} {g} →
-      let
-          (x , sx) = surj X
-          (y , sy) = surj Y
-          (z , sz) = surj Z
-          fsx      = from sx
-          tsz      = to sz
-          ff {T₁} {T₂} = from (full {T₁} {T₂}) in
-      faith _ _ (E.begin
-      F₁ (ff ⟨$⟩ tsz ∘ (g ∘ f) ∘ fsx)                             E.≈⟨ right-inverse-of full _ ⟩
-      (tsz ∘ (g ∘ f) ∘ fsx)                                      E.≈⟨ pullˡ (E.refl⟩∘⟨ (E.refl⟩∘⟨ introˡ (isoʳ sy))) ⟩
-      (tsz ∘ g ∘ ((from sy ∘ to sy) ∘ f)) ∘ fsx                  E.≈⟨ pushʳ (E.refl⟩∘⟨ D.assoc) E.⟩∘⟨refl ⟩
-      ((tsz ∘ g) ∘ (from sy ∘ (to sy ∘ f))) ∘ fsx                E.≈⟨ D.sym-assoc E.⟩∘⟨refl ⟩
-      (((tsz ∘ g) ∘ from sy) ∘ (to sy ∘ f)) ∘ fsx                E.≈⟨ D.assoc ⟩
-      ((tsz ∘ g) ∘ from sy) ∘ ((to sy ∘ f) ∘ fsx)                E.≈⟨ D.assoc E.⟩∘⟨ D.assoc  ⟩
-      (tsz ∘ g ∘ from sy) ∘ (to sy ∘ f ∘ fsx)                    E.≈˘⟨ right-inverse-of full _ E.⟩∘⟨ right-inverse-of full _ ⟩
-      F₁ (ff ⟨$⟩ tsz ∘ g ∘ from sy) ∘ F₁ (ff ⟨$⟩ to sy ∘ f ∘ fsx)  E.≈˘⟨ homomorphism ⟩
-      F₁ ((ff ⟨$⟩ tsz ∘ g ∘ from sy) C.∘ (ff ⟨$⟩ to sy ∘ f ∘ fsx)) E.∎)
-    ; F-resp-≈ = λ f≈g → cong (from full) (D.∘-resp-≈ʳ (D.∘-resp-≈ˡ f≈g))
+      let (a , sa) = surj X
+          (b , sb) = surj Y
+          (c , sc) = surj Z
+          (⟨g∘f⟩ , p) = full (_≅_.to sc ∘ (g ∘ f) ∘ _≅_.from sa)
+          (⟨f⟩ , q) = full (_≅_.to sb ∘ f ∘ _≅_.from sa)
+          (⟨g⟩ , r) = full (_≅_.to sc ∘ g ∘ _≅_.from sb)
+      in faith $ begin
+        F₁ ⟨g∘f⟩                                                         ≈⟨ p ⟩
+        _≅_.to sc ∘ (g ∘ f) ∘ _≅_.from sa                               ≈⟨ assoc²'' ⟩
+        (_≅_.to sc ∘ g) ∘ (f ∘ _≅_.from sa)                             ≈⟨ insertInner (_≅_.isoʳ sb) ⟩
+        ((_≅_.to sc ∘ g) ∘ _≅_.from sb) ∘ (_≅_.to sb ∘ f ∘ _≅_.from sa) ≈⟨ D.assoc ⟩∘⟨refl ⟩
+        (_≅_.to sc ∘ g ∘ _≅_.from sb) ∘ (_≅_.to sb ∘ f ∘ _≅_.from sa)   ≈˘⟨ (r ⟩∘⟨ q ) ⟩
+        F₁ ⟨g⟩ ∘ F₁ ⟨f⟩                                                   ≈˘⟨ homomorphism ⟩
+        F₁ (⟨g⟩ C.∘ ⟨f⟩)                                                  ∎
+    ; F-resp-≈ = λ {X} {Y} {f} {g} f≈g →
+      let sa = proj₂ (surj X)
+          sb = proj₂ (surj Y)
+          (⟨f⟩ , p) = full (_≅_.to sb ∘ f ∘ _≅_.from sa)
+          (⟨g⟩ , q) = full (_≅_.to sb ∘ g ∘ _≅_.from sa)
+      in faith $ begin
+        F₁ ⟨f⟩                      ≈⟨ p ⟩
+        _≅_.to sb ∘ f ∘ _≅_.from sa ≈⟨ refl⟩∘⟨ f≈g ⟩∘⟨refl ⟩
+        _≅_.to sb ∘ g ∘ _≅_.from sa ≈˘⟨ q ⟩
+        F₁ ⟨g⟩                      ∎
     }
     where
-    open Morphism._≅_
-    open Morphism D
-    open Reas D
-    open Category D
-    open Surjective
-    open C.HomReasoning
-    module E = D.HomReasoning
+      open Category D
+      open D.HomReasoning
+      open Reas D
 
 -- Functor Composition is Associative and the unit laws are found in
 -- NaturalTransformation.NaturalIsomorphism, reified as associator, unitorˡ and unitorʳ.

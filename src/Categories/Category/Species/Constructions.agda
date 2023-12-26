@@ -7,22 +7,17 @@ open import Level
 open import Data.Empty
 open import Data.Fin.Base as Fin using (Fin)
 open import Data.Fin.Properties using (¬Fin0)
-open import Data.Fin.Permutation using (↔⇒≡)
 open import Data.Nat.Base using (ℕ; suc; zero)
-open import Data.Nat.Properties using (_≟_)
 open import Data.Product as × using (Σ; proj₁; proj₂; _,_)
-open import Data.Product.Relation.Binary.Pointwise.NonDependent
+open import Data.Product.Relation.Binary.Pointwise.NonDependent using (×-setoid)
 open import Data.Sum.Base as ⊎ using (inj₁; inj₂)
 open import Data.Sum.Relation.Binary.Pointwise using (_⊎ₛ_; inj₁; inj₂)
 open import Data.Unit.Polymorphic using (⊤; tt)
 open import Function.Base using () renaming (id to id→)
-open import Function.Equality using (_⟨$⟩_; cong; Π) renaming (id to idΠ)
-open import Function.Bundles using (Inverse)
+open import Function.Bundles using (Func; _⟨$⟩_)
 open import Relation.Nullary using (Dec; yes; no)
-import Function.Inverse as Inv
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.PropositionalEquality as ≡
-open import Relation.Binary.Indexed.Heterogeneous.Construct.Trivial using (indexedSetoid)
 
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Construction.ObjectRestriction using (ObjectRestriction)
@@ -56,11 +51,11 @@ module _ {o ℓ : Level} where
     ⊤-Setoid ,
     1 ,
     record
-      { f = λ _ → Fin.zero
-      ; f⁻¹ = λ _ → tt
-      ; cong₁ = λ _ → ≡.refl
-      ; cong₂ = λ _ → tt
-      ; inverse = (λ { Fin.zero → ≡.refl}) , λ _ → tt
+      { to = λ _ → Fin.zero
+      ; from = λ _ → tt
+      ; to-cong = λ _ → ≡.refl
+      ; from-cong = λ _ → tt
+      ; inverse = (λ { {Fin.zero} _ → ≡.refl }) , λ _ → tt
       }
 
 -- We could have 4 levels, and still define Zero and One′.
@@ -84,73 +79,8 @@ module _ (o : Level) where
   Zero = const ⊥-Setoid
 
   -- One can be specified in two ways.  The traditional one (which doesn't generalize as well)
-  -- uses 'counting' directly.
-  One′ : Structure
-  One′ = record
-    { F₀ = on-singleton
-    ; F₁ = map-singleton
-    ; identity = λ {A} x≈y → identity′ {A} x≈y -- eta expansion needed
-    ; homomorphism = λ {X} {Y} {Z} → homomorphism′ {X} {Y} {Z} -- eta needed
-    ; F-resp-≈ = resp
-    }
-    where
-
-    iso⇒Inverse : (A B : Σ S IsFiniteSetoid) (A≅B : A ≅ B) → Inverse (proj₁ A) (proj₁ B)
-    iso⇒Inverse (s , n , p) (s′ , n′ , p′) A≅B = record
-      { f = from A≅B ⟨$⟩_
-      ; f⁻¹ = to A≅B ⟨$⟩_
-      ; cong₁ = cong (from A≅B)
-      ; cong₂ = cong (to A≅B)
-      ; inverse = (λ x → isoʳ A≅B (Setoid.refl s′ {x})) , λ x → isoˡ A≅B (Setoid.refl s {x})
-      }
-
-    iso⇒≡ : {A B : Σ S IsFiniteSetoid} (A≅B : A ≅ B) → proj₁ (proj₂ A) ≡.≡ proj₁ (proj₂ B)
-    iso⇒≡ {A@(s , n , p)} {B@(s′ , n′ , p′)} A≅B = ↔⇒≡ ( (translate p′) Inv.∘ (translate X Inv.∘ Inv.sym (translate p)))
-      where
-      X : Inverse (proj₁ A) (proj₁ B)
-      X = iso⇒Inverse A B A≅B
-      translate : {a b c d : Level} {X : Setoid a b} {Y : Setoid c d} → Inverse X Y → Inv.Inverse X Y
-      translate I = record
-        { to = record { _⟨$⟩_ = Inverse.f I ; cong = Inverse.cong₁ I }
-        ; from = record { _⟨$⟩_ = Inverse.f⁻¹ I ; cong = Inverse.cong₂ I }
-        ; inverse-of = record
-          { left-inverse-of = Inverse.inverseʳ I
-          ; right-inverse-of = Inverse.inverseˡ I
-          }
-        }
-
-    -- one can do this in 3 cases structurally, but that leads to 9 cases elsewhere
-    -- so a dispatch on size makes sense
-    on-singleton : Σ S IsFiniteSetoid → S
-    on-singleton (s , n , _) with n ≟ 1
-    ... | yes p = s
-    ... | no ¬p = ⊥-Setoid
-
-    map-singleton : {A B : Σ S IsFiniteSetoid} → A ≅ B → Π (on-singleton A) (indexedSetoid (on-singleton B))
-    map-singleton {s , n , p} {s′ , n′ , p′} A≅B with n ≟ 1 | n′ ≟ 1
-    map-singleton A≅B | yes ≡.refl | yes ≡.refl = from A≅B
-    map-singleton A≅B | yes ≡.refl | no  n′≢1    = ⊥-elim (n′≢1 (≡.sym (iso⇒≡ A≅B)))
-    map-singleton A≅B | no  n≢1    | yes n′≡1    = ⊥-elim (n≢1 (≡.trans (iso⇒≡ A≅B) n′≡1))
-    map-singleton A≅B | no  n≢1    | no  n′≢1    = idΠ
-
-    identity′ : {A : Σ S IsFiniteSetoid} {x y : Setoid.Carrier (on-singleton A)} →
-      let SA = on-singleton A in
-      Setoid._≈_ SA x y → Setoid._≈_ SA (map-singleton {A} {A} ≅.refl ⟨$⟩ x) y
-    identity′ {s , ℕ.suc ℕ.zero , p} x≈y = x≈y
-
-    homomorphism′ : {X Y Z : Σ S IsFiniteSetoid} {f : X ≅ Y} {g : Y ≅ Z} {x y : Setoid.Carrier (on-singleton X)} →
-      Setoid._≈_ (on-singleton X) x y →
-      Setoid._≈_ (on-singleton Z) (map-singleton (≅.trans f g) ⟨$⟩ x) (map-singleton g ⟨$⟩ (map-singleton f ⟨$⟩ y))
-    homomorphism′ {f = f} {g} x≈y with iso⇒≡ f | iso⇒≡ g
-    homomorphism′ {_ , 1 , _} {f = f} {g} x≈y | ≡.refl | ≡.refl = cong (from g) (cong (from f) x≈y)
-
-    resp : {A B : Σ S IsFiniteSetoid} {f g : A ≅ B} →
-      (_≃_ FinSet f g) →
-      {x y : Setoid.Carrier (on-singleton A)} →
-      Setoid._≈_ (on-singleton A) x y → Setoid._≈_ (on-singleton B) (map-singleton f ⟨$⟩ x) (map-singleton g ⟨$⟩ y)
-    resp {_ , 1 , _} {f = f} {g} f≈g x≈y with iso⇒≡ f
-    resp {_ , 1 , _} {f = f} {g} f≈g x≈y | ≡.refl = _≃_.from-≈ f≈g x≈y
-
+  -- uses 'counting' directly. Don't even try it here, it just leads to much pain.
+  
   -- There is a much nicer specification.
   One : Structure
   One = Hom[ 𝔹 ][ ⊤-FinSetoid ,-]
@@ -160,10 +90,10 @@ module _ (o : Level) where
   X = record
     { F₀ = proj₁
     ; F₁ = λ f → record
-        { _⟨$⟩_ = from f ⟨$⟩_
-        ; cong = cong (from f) }
+        { to = from f ⟨$⟩_
+        ; cong = Func.cong (from f) }
     ; identity = id→
-    ; homomorphism = λ { {f = f} {g} x≈y → cong (from g) (cong (from f) x≈y)}
+    ; homomorphism = λ { {f = f} {g} x≈y → Func.cong (from g) (Func.cong (from f) x≈y)}
     ; F-resp-≈ = _≃_.from-≈
     }
 
@@ -172,9 +102,9 @@ module _ (o : Level) where
   A + B = record
     { F₀ = λ x → A.₀ x ⊎ₛ B.₀ x
     ; F₁ = λ X≅Y → record
-      { _⟨$⟩_ = ⊎.map (A.₁ X≅Y ⟨$⟩_) (B.₁ X≅Y ⟨$⟩_)
-      ; cong = λ { (inj₁ x≈y) → inj₁ (cong (A.₁ X≅Y) x≈y )
-                 ; (inj₂ x≈y) → inj₂ (cong (B.₁ X≅Y) x≈y)}
+      { to = ⊎.map (A.₁ X≅Y ⟨$⟩_) (B.₁ X≅Y ⟨$⟩_)
+      ; cong = λ { (inj₁ x≈y) → inj₁ (Func.cong (A.₁ X≅Y) x≈y )
+                 ; (inj₂ x≈y) → inj₂ (Func.cong (B.₁ X≅Y) x≈y)}
       }
     ; identity = λ { (inj₁ x) → inj₁ (A.identity x)
                    ; (inj₂ x) → inj₂ (B.identity x)}
@@ -192,8 +122,8 @@ module _ (o : Level) where
   A × B = record
     { F₀ = λ x → ×-setoid (A.₀ x) (B.₀ x)
     ; F₁ = λ X≅Y → record
-      { _⟨$⟩_ = ×.map (A.₁ X≅Y ⟨$⟩_) (B.₁ X≅Y ⟨$⟩_)
-      ; cong = ×.map (cong (A.₁ X≅Y)) (cong (B.₁ X≅Y))
+      { to = ×.map (A.₁ X≅Y ⟨$⟩_) (B.₁ X≅Y ⟨$⟩_)
+      ; cong = ×.map (Func.cong (A.₁ X≅Y)) (Func.cong (B.₁ X≅Y))
       }
     ; identity = ×.map A.identity B.identity
     ; homomorphism = ×.map A.homomorphism B.homomorphism

@@ -6,7 +6,7 @@ module Categories.Category.Unbundled.Properties where
 
 open import Data.Product using (Σ; _,_)
 open import Level
-open import Function using (_↔_; mk↔′)
+open import Function.Bundles using (_↔_; mk↔ₛ′)
 open import Relation.Binary.PropositionalEquality using (refl)
 
 open import Categories.Category.Core using (Category)
@@ -33,4 +33,4 @@ pack′ {Obj = o} uc  = record { Obj = o; UC }
   where module UC = Unb-Cat uc
 
 equiv : (Category o ℓ e) ↔ (Σ (Set o) (λ Obj → Unb-Cat Obj ℓ e))
-equiv = mk↔′ unpack pack (λ _ → refl) λ _ → refl
+equiv = mk↔ₛ′ unpack pack (λ _ → refl) λ _ → refl

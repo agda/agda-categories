@@ -8,8 +8,6 @@ module Categories.Category.Instance.EmptySet where
 
 open import Data.Unit
 open import Data.Empty using (⊥; ⊥-elim)
-open import Function.Equality using (Π)
-open Π using (_⟨$⟩_)
 
 open import Relation.Binary using (Setoid)
 open import Relation.Binary.PropositionalEquality using (refl)
@@ -38,7 +36,7 @@ module _ {c ℓ : Level} where
     { ⊥            = EmptySetoid
     ; ⊥-is-initial = record
       { !        = record
-        { _⟨$⟩_ = λ { () }
+        { to = λ { () }
         ; cong  = λ { {()} }
         }
       ; !-unique = λ { _ {()} }

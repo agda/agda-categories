@@ -9,9 +9,7 @@ open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂; uncurry; map; <
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]′)
 open import Data.Unit using (⊤)
 open import Relation.Binary.PropositionalEquality.Core
-open import Function.Inverse using (module Inverse; _↔_)
 open import Function.Related.TypeIsomorphisms
-open import Function.Equality using () renaming (_⟨$⟩_ to fun)
 open import Function using (_$_)
 
 open import Categories.Category.BinaryProducts using (BinaryProducts)

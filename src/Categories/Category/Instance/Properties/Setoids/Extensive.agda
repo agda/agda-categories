@@ -2,12 +2,14 @@
 
 module Categories.Category.Instance.Properties.Setoids.Extensive where
 
-open import Level
-open import Data.Product using (∃; Σ; proj₁; proj₂; _,_; _×_)
+open import Level using (Level)
+open import Data.Product using (_,_)
 open import Data.Sum.Base as Sum using (_⊎_; inj₁; inj₂)
 open import Data.Sum.Relation.Binary.Pointwise using (inj₁; inj₂; _⊎ₛ_; drop-inj₁; drop-inj₂)
 open import Data.Unit.Polymorphic using (tt)
-open import Function.Equality using (Π; _⟶_; _⇨_; _∘_)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Construct.Composition using (function)
+open import Function.Construct.Setoid using () renaming (function to _⇨_)
 open import Relation.Binary using (Setoid)
 import  Relation.Binary.Reasoning.Setoid as SetoidR
 
@@ -19,8 +21,8 @@ open import Categories.Diagram.Pullback using (Pullback)
 open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical using (pullback; FiberProduct)
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-Cocartesian)
 
-open Π
 open Pullback
+open Func
 
 -- Note the Setoids is extensive if the two levels coincide.  Whether it happens more generally
 -- is unknown at this point.
@@ -44,7 +46,7 @@ Setoids-Extensive ℓ = record
    ; disjoint = λ {A B} → record
         { commute = λ { {()} _}
         ; universal = λ {C f g} eq → record
-           { _⟨$⟩_ = λ z → conflict A B (eq {x = z} (refl (isEquivalence C)))
+           { to = λ z → conflict A B (eq {x = z} (refl (isEquivalence C)))
            ; cong = λ z → tt
            }
         ; unique = λ _ _ _ → tt
@@ -53,6 +55,11 @@ Setoids-Extensive ℓ = record
         }
    }
      where
+       infixr 9 _∙_
+       _∙_ : {a₁ a₂ b₁ b₂ c₁ c₂ : Level} {A : Setoid a₁ a₂} {B : Setoid b₁ b₂}
+         {C : Setoid c₁ c₂} → Func B C → Func A B → Func A C
+       f ∙ g = function g f
+
        open Cocartesian (Setoids-Cocartesian {ℓ} {ℓ})
        open Relation.Binary.IsEquivalence
        open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence)
@@ -62,8 +69,8 @@ Setoids-Extensive ℓ = record
          {x : ∣ X ∣} {y : ∣ Y ∣} → [ X ⊎ₛ Y ][ inj₁ x ≈ inj₂ y ] → Z
        conflict X Y ()
 
-       module Diagram {A B C X : Setoid ℓ ℓ} (f : C ⟶ A ⊎ₛ B)
-         (g : P (pullback ℓ ℓ f i₁) ⟶ X) (h : P (pullback ℓ ℓ f i₂) ⟶ X) where
+       module Diagram {A B C X : Setoid ℓ ℓ} (f : Func C (A ⊎ₛ B))
+         (g : Func (P (pullback ℓ ℓ f i₁)) X) (h : Func (P (pullback ℓ ℓ f i₂)) X) where
 
          private
            module A = Setoid A
@@ -80,9 +87,9 @@ Setoids-Extensive ℓ = record
            open SetoidR A⊎B′
 
          _⊎⟶_ : {o₁ o₂ o₃ ℓ₁ ℓ₂ ℓ₃ : Level} {X : Setoid o₁ ℓ₁} {Y : Setoid o₂ ℓ₂} {Z : Setoid o₃ ℓ₃} →
-           (X ⟶ Z) → (Y ⟶ Z) → (X ⊎ₛ Y) ⟶ Z
+           (Func X Z) → (Func Y Z) → Func (X ⊎ₛ Y) Z
          f₁ ⊎⟶ f₂ = record
-           { _⟨$⟩_ = Sum.[ f₁ ⟨$⟩_ , f₂ ⟨$⟩_ ]
+           { to = Sum.[ f₁ ⟨$⟩_ , f₂ ⟨$⟩_ ]
            ; cong = λ { (inj₁ x) → cong f₁ x ; (inj₂ x) → cong f₂ x}
            }
 
@@ -118,12 +125,12 @@ Setoids-Extensive ℓ = record
          f⟨$⟩-cong : {i j : ∣ C ∣} → i C.≈ j → [ A′ ⊎ₛ B′ ][ f⟨$⟩→ i ≈ f⟨$⟩→ j ]
          f⟨$⟩-cong {i} {j} i≈j = f⟨$⟩-cong′ i≈j (f ⟨$⟩ i) (f ⟨$⟩ j) A⊎B.refl A⊎B.refl
 
-         f⟨$⟩ : C ⟶ A′ ⊎ₛ B′
-         f⟨$⟩ = record { _⟨$⟩_ = f⟨$⟩→ ; cong = f⟨$⟩-cong }
+         f⟨$⟩ : Func C (A′ ⊎ₛ B′)
+         f⟨$⟩ = record { to = f⟨$⟩→ ; cong = f⟨$⟩-cong }
 
          -- copairing of g : A′ → X and h : B′ → X, resulting in C → X
-         copair : C ⟶ X
-         copair = (g ⊎⟶ h) ∘ f⟨$⟩
+         copair : Func C X
+         copair = (g ⊎⟶ h) ∙ f⟨$⟩
 
          copair-inject₁ : (z : FiberProduct f i₁) → [ X ][ copair ⟨$⟩ (FiberProduct.elem₁ z) ≈ g ⟨$⟩ z ]
          copair-inject₁ record { elem₁ = z ; elem₂ = x ; commute = eq } = cong (g ⊎⟶ h) (to-⊎ₛ-cong eq)
@@ -131,9 +138,9 @@ Setoids-Extensive ℓ = record
          copair-inject₂ : (z : FiberProduct f i₂) → [ X ][ copair ⟨$⟩ (FiberProduct.elem₁ z) ≈ h ⟨$⟩ z ]
          copair-inject₂ record { elem₁ = z ; elem₂ = y ; commute = eq } = cong (g ⊎⟶ h) (to-⊎ₛ-cong eq)
 
-         copair-unique′ : (u : C ⟶ X) (z : ∣ C ∣) →
-           [ A′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₁) ≈ g ] →
-           [ B′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₂) ≈ h ] →
+         copair-unique′ : (u : Func C X) (z : ∣ C ∣) →
+           [ A′ ⇨ X ][ u ∙ p₁ (pullback ℓ ℓ f i₁) ≈ g ] →
+           [ B′ ⇨ X ][ u ∙ p₁ (pullback ℓ ℓ f i₂) ≈ h ] →
            (w : ∣ A⊎B ∣) → [ A⊎B ][ f ⟨$⟩ z ≈ w ] →
            [ X ][ copair ⟨$⟩ z ≈ u ⟨$⟩ z ]
          copair-unique′ u z feq₁ feq₂ (inj₁ x) fz≈w = XR.begin
@@ -156,9 +163,9 @@ Setoids-Extensive ℓ = record
              module XR = SetoidR X
              fb = record {elem₁ = z ; elem₂ = y; commute = fz≈w }
 
-         copair-unique : (u : C ⟶ X) (z : ∣ C ∣) →
-           [ A′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₁) ≈ g ] →
-           [ B′ ⇨ X ][ u ∘ p₁ (pullback ℓ ℓ f i₂) ≈ h ] →
+         copair-unique : (u : Func C X) (z : ∣ C ∣) →
+           [ A′ ⇨ X ][ u ∙ p₁ (pullback ℓ ℓ f i₁) ≈ g ] →
+           [ B′ ⇨ X ][ u ∙ p₁ (pullback ℓ ℓ f i₂) ≈ h ] →
            [ X ][ copair ⟨$⟩ z ≈ u ⟨$⟩ z ]
          copair-unique u z feq₁ feq₂ = copair-unique′ u z (λ {x} {y} → feq₁ {x} {y}) (λ {x} {y} → feq₂ {x} {y}) (f ⟨$⟩ z) A⊎B.refl
 

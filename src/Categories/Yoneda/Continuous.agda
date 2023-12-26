@@ -4,7 +4,7 @@ open import Categories.Category
 
 module Categories.Yoneda.Continuous {o ℓ e} (C : Category o ℓ e) where
 
-open import Function.Equality using (Π)
+open import Function.Bundles using (Func; _⟨$⟩_)
 open import Relation.Binary using (Setoid)
 
 open import Categories.Category.Construction.Cones
@@ -22,7 +22,6 @@ import Categories.Morphism.Reasoning as MR
 
 open Hom C
 open Yoneda C
-open Π using (_⟨$⟩_)
 
 private
   module C = Category C
@@ -74,7 +73,7 @@ module _ {o′ ℓ′ e′} {J : Category o′ ℓ′ e′} {F : Functor J C} (L
               K.ψ.η j Y ⟨$⟩ (K.N.₁ f ⟨$⟩ x)       ∎
             }
           }
-        ; commute = λ eq → L.commute ○ Π.cong (K.ψ.η _ _) eq
+        ; commute = λ eq → L.commute ○ Func.cong (K.ψ.η _ _) eq
         }
 
       module _ (f : Cones yF [ K , ⊤ ]) where

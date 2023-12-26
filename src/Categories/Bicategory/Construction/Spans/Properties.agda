@@ -5,19 +5,18 @@ module Categories.Bicategory.Construction.Spans.Properties where
 open import Level
 
 open import Data.Product using (_,_; _×_)
+open import Function.Bundles using (Func; _⟨$⟩_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.Reasoning.Setoid as SR
-open import Function.Equality as SΠ renaming (id to ⟶-id)
 
-open import Categories.Category
-open import Categories.Category.Helper
-open import Categories.Category.Instance.Setoids
+open import Categories.Category.Core using (Category)
+open import Categories.Category.Helper using (categoryHelper)
+open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical
+  using (pullback; FiberProduct)
 
-open import Categories.Diagram.Pullback
-
-open import Categories.Bicategory
-open import Categories.Bicategory.Monad
+open import Categories.Bicategory using (Bicategory)
+open import Categories.Bicategory.Monad using (Monad)
 
 import Categories.Category.Diagram.Span as Span
 import Categories.Bicategory.Construction.Spans as Spans
@@ -36,6 +35,7 @@ module _ {o ℓ : Level} (T : Monad (Spans.Spans (pullback o ℓ))) where
     open Bicategory Spans
 
     open Setoid renaming (_≈_ to [_][_≈_])
+    open Func
 
 
   -- We can view the roof of the span as a hom set! However, we need to partition
@@ -127,7 +127,7 @@ module _ {o ℓ : Level} (T : Monad (Spans.Spans (pullback o ℓ))) where
       ; sym = HomSetoid.sym
       ; trans = HomSetoid.trans
       }
-    ; ∘-resp-≈ = λ f≈h g≈i → cong (arr T.μ) (g≈i , f≈h)
+    ; ∘-resp-≈ = λ f≈h g≈i → Func.cong (arr T.μ) (g≈i , f≈h)
     }
       where
         open SR HomSetoid

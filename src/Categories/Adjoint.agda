@@ -7,16 +7,14 @@ open import Level
 
 open import Data.Product using (_,_; _×_)
 open import Function using (_$_) renaming (_∘_ to _∙_)
-open import Function.Equality using (Π; _⟶_)
-import Function.Inverse as FI
+open import Function.Bundles using (Inverse)
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 -- be explicit in imports to 'see' where the information comes from
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Product using (Product; _⁂_)
-open import Categories.Category.Instance.Setoids
-open import Categories.Morphism
+open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Functor.Hom using (Hom[_][-,-])
@@ -91,23 +89,19 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
   module Hom[-,R-] = Functor Hom[-,R-]
 
   -- Inverse is more 'categorical' than bijection defined via injection/surjection
-  Hom-inverse : ∀ A B → FI.Inverse (Hom[L-,-].F₀ (A , B)) (Hom[-,R-].F₀ (A , B))
+  Hom-inverse : ∀ A B → Inverse (Hom[L-,-].F₀ (A , B)) (Hom[-,R-].F₀ (A , B))
   Hom-inverse A B = record
-    { to = record
-      { _⟨$⟩_ = Ladjunct {A} {B}
-      ; cong = C.∘-resp-≈ˡ ∙ R.F-resp-≈
-      }
-    ; from = record
-      { _⟨$⟩_ = Radjunct {A} {B}
-      ; cong = D.∘-resp-≈ʳ ∙ L.F-resp-≈
-      }
-    ; inverse-of = record
-      { left-inverse-of = λ _ → RLadjunct≈id
-      ; right-inverse-of = λ _ → LRadjunct≈id
+    { to = Ladjunct {A} {B}
+    ; to-cong = C.∘-resp-≈ˡ ∙ R.F-resp-≈
+    ; from = Radjunct {A} {B}
+    ; from-cong = D.∘-resp-≈ʳ ∙ L.F-resp-≈
+    ; inverse = record
+      { fst = λ p → C.∘-resp-≈ˡ (R.F-resp-≈ p) C.HomReasoning.○ LRadjunct≈id
+      ; snd = λ p → D.∘-resp-≈ʳ (L.F-resp-≈ p) D.HomReasoning.○ RLadjunct≈id
       }
     }
 
-  module Hom-inverse {A} {B} = FI.Inverse (Hom-inverse A B)
+  module Hom-inverse {A} {B} = Inverse (Hom-inverse A B)
 
   op : Adjoint R.op L.op
   op = record
@@ -188,15 +182,15 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
     Hom-NI = record
       { F⇒G = ntHelper record
         { η       = λ _ → record
-          { _⟨$⟩_ = λ f → lift (Ladjunct (lower f))
-          ; cong  = λ eq → lift (Ladjunct-resp-≈ (lower eq))
+          { to = λ f → lift (Ladjunct (lower f))
+          ; cong = λ eq → lift (Ladjunct-resp-≈ (lower eq))
           }
         ; commute = λ _ eq → lift $ Ladjunct-comm (lower eq)
         }
       ; F⇐G = ntHelper record
         { η       = λ _ → record
-          { _⟨$⟩_ = λ f → lift (Radjunct (lower f))
-          ; cong  = λ eq → lift (Radjunct-resp-≈ (lower eq))
+          { to = λ f → lift (Radjunct (lower f))
+          ; cong = λ eq → lift (Radjunct-resp-≈ (lower eq))
           }
         ; commute = λ _ eq → lift $ Radjunct-comm (lower eq)
         }

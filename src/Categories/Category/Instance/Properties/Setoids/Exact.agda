@@ -2,10 +2,27 @@
 
 module Categories.Category.Instance.Properties.Setoids.Exact where
 
+open import Data.Bool.Base using (Bool; true; false; T)
+open import Data.Empty.Polymorphic using (⊥)
+open import Data.Fin using (Fin; zero) renaming (suc to nzero)
+open import Data.Product using (∃; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_; map; zip; swap; map₂)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Data.Unit.Polymorphic.Base using (⊤; tt)
+open import Function using (flip) renaming (id to id→; _∘′_ to _∘→_)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Construct.Identity using () renaming (function to ⟶-id)
+open import Function.Construct.Composition using (function)
+open import Function.Construct.Setoid using () renaming (function to _⇨_)
+open import Function.Definitions using (StrictlySurjective)
+open import Level using (Level)
+open import Relation.Binary using (Setoid; Rel; IsEquivalence)
+import Relation.Binary.Reasoning.Setoid as SR
+
 open import Categories.Category using (Category)
 open import Categories.Category.Exact using (Exact)
 open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical using (pullback; FiberProduct; mk-×; FP-≈)
 open import Categories.Category.Instance.Setoids using (Setoids)
+open import Categories.Category.Instance.SingletonSet using (SingletonSetoid)
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-Cartesian)
 open import Categories.Category.Regular using (Regular)
 open import Categories.Diagram.Coequalizer using (Coequalizer; IsCoequalizer; Coequalizer⇒Epi)
@@ -17,30 +34,19 @@ open import Categories.Morphism using (_≅_; Epi)
 open import Categories.Morphism.Regular using (RegularEpi)
 open import Categories.Object.InternalRelation using (Equivalence; EqSpan; KP⇒Relation; KP⇒EqSpan; KP⇒Equivalence; module Relation; rel)
 
-open import Data.Bool.Base using (Bool; true; false; T)
-open import Data.Empty.Polymorphic using (⊥)
-open import Data.Fin using (Fin; zero) renaming (suc to nzero)
-open import Data.Product using (∃; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_; map; zip; swap; map₂)
-open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Unit.Polymorphic.Base using (⊤; tt)
-open import Function using (flip) renaming (id to id→; _∘′_ to _∘→_)
-open import Function.Equality as SΠ using (Π; _⇨_) renaming (id to ⟶-id; _∘_ to _∘⟶_)
-open import Function.Definitions using (Surjective)
-open import Level
-open import Relation.Binary using (Setoid; Rel; IsEquivalence)
-import Relation.Binary.Reasoning.Setoid as SR
-
-open import Categories.Category.Instance.SingletonSet
-
 open Setoid renaming (_≈_ to [_][_≈_]; Carrier to ∣_∣) using (isEquivalence; refl; sym; trans)
-open Π using (_⟨$⟩_; cong)
-
+open Func
 
 module _ ℓ where
   private
     S = Setoids ℓ ℓ
     open Category S hiding (_≈_)
     module S = Category S
+
+    infixr 9 _∙_
+    _∙_ : {a₁ a₂ b₁ b₂ c₁ c₂ : Level} {A : Setoid a₁ a₂} {B : Setoid b₁ b₂}
+      {C : Setoid c₁ c₂} → Func B C → Func A B → Func A C
+    f ∙ g = function g f
 
   open Pullback using (P; p₁; p₂)
 
@@ -77,8 +83,8 @@ module _ ℓ where
 
     quotient-trans {x₁} {x₂} {y₁} {y₂} (eqn eq x₁≈ ≈y₁) (eqn eq′ x₂≈ ≈y₂) x₁≈x₂ y₁≈y₂ =
       R.relation {SingletonSetoid}
-      (record { _⟨$⟩_ = λ _ → eq  ; cong = λ _ → refl R.dom})
-      (record { _⟨$⟩_ = λ _ → eq′ ; cong = λ _ → refl R.dom})
+      (record { to = λ _ → eq  ; cong = λ _ → refl R.dom})
+      (record { to = λ _ → eq′ ; cong = λ _ → refl R.dom})
       (λ { zero      _ → x₁≈ ○ x₁≈x₂ ○ ⟺ x₂≈
          ; (nzero _) _ → ≈y₁ ○ y₁≈y₂ ○ ⟺ ≈y₂}) tt
 
@@ -90,7 +96,7 @@ module _ ℓ where
         ; trans = λ { (eqn r x≈ ≈y) (eqn s y≈ ≈z) →
            let t = record { elem₁ = _ ; elem₂ = _ ; commute = y≈ ○ ⟺ ≈y } in
              eqn
-               (ES.trans ∘⟶ P₀⇒P₁ ⟨$⟩ t)
+               (ES.trans ∙ P₀⇒P₁ ⟨$⟩ t)
                (ES.is-trans₁ R×R.refl ○ (cong R.p₁ (p₂-≈ {t} {t} (D.refl , D.refl)) ○ x≈))
                (ES.is-trans₂ R×R.refl ○ (cong R.p₂ (p₁-≈ {t} {t} (D.refl , D.refl)) ○ ≈z))
            }
@@ -123,7 +129,7 @@ module _ ℓ where
 
         inj : X ⇒ X∼
         inj = record
-         { _⟨$⟩_ = id→
+         { to = id→
          ; cong = λ {x₁} eq → eqn (ES.refl ⟨$⟩ x₁) (ES.is-refl₁ X.refl) (ES.is-refl₂ X.refl ○ eq)
          }
 
@@ -133,7 +139,7 @@ module _ ℓ where
         -- coEqualizer wants the 'h' to be implicit, but can't figure it out, so make it explicit here
         quotient : {C : Obj} (h : X ⇒ C) → h ∘ R.p₁ S.≈ h ∘ R.p₂ → X∼ ⇒ C
         quotient {C} h eq = record
-          { _⟨$⟩_ = h ⟨$⟩_
+          { to = h ⟨$⟩_
           ; cong = λ { (eqn r x≈ ≈y) → trans C (cong h (X.sym x≈)) (trans C (eq (refl R.dom)) (cong h ≈y))}
           }
 
@@ -146,14 +152,13 @@ module _ ℓ where
           h ⟨$⟩ y ∎
           where open SR C
 
-  -- Setoid Surjectivity
+  -- Setoid (strict) Surjectivity
   SSurj : {A B : Setoid ℓ ℓ} (f : A ⇒ B) → Set ℓ
-  SSurj {A} {B} f = Surjective (Setoid._≈_ A) (Setoid._≈_ B) (f ⟨$⟩_)
+  SSurj {A} {B} f = StrictlySurjective (Setoid._≈_ B) (f ⟨$⟩_)
 
   -- Proposition 1 from "Olov Wilander, Setoids and universes"
   Epi⇒Surjective : ∀ {A B : Setoid ℓ ℓ} (f : A ⇒ B) → Epi S f → SSurj f
-  Epi⇒Surjective {A}{B} f epi y = g≈h (refl B {y}) .proj₁ (λ ()) _
-
+  Epi⇒Surjective {A} {B} f epi y = g≈h (refl B {y}) .proj₁ (λ ()) _
     where
       infix 3 _↔_
 
@@ -172,11 +177,11 @@ module _ ℓ where
         }
 
       g : B ⇒ B′
-      g = record { _⟨$⟩_ = λ x → false , x ; cong = λ _ → (λ _ ()) , (λ _ ()) }
+      g = record { to = λ x → false , x ; cong = λ _ → (λ _ ()) , (λ _ ()) }
 
       h : B ⇒ B′
       h = record
-          { _⟨$⟩_ = true ,_
+          { to = true ,_
           ; cong = λ x≈y →
                 (λ eq _ → map₂ (λ z → trans B z x≈y) (eq _))
               , (λ eq _ → let (a , eq′) = eq _ in a , (trans B eq′ (sym B x≈y)))
@@ -218,7 +223,7 @@ module _ ℓ where
               pt₁ : FiberProduct f f
               pt₁ = mk-× x₁ x₂ (trans B eq₁ (trans B y₁≈y₂ (sym B eq₂)))
           coeq : B S.⇒ C
-          coeq = record { _⟨$⟩_ = f⁻¹∘h ; cong = cong′ }
+          coeq = record { to = f⁻¹∘h ; cong = cong′ }
           universal′ : h S.≈ coeq S.∘ f
           universal′ {x} {y} x≈y = begin
             h ⟨$⟩ x                     ≈⟨ cong h x≈y ⟩
@@ -263,10 +268,10 @@ module _ ℓ where
       pb-of-re-is-re : {A B D : Setoid ℓ ℓ} (f : B ⇒ A) {u : D ⇒ A} →
         RegularEpi S f → (pb : Pullback S f u) → RegularEpi S (p₂ pb)
       pb-of-re-is-re {A}{B}{D} f {u} record { C = C ; h = _ ; g = _ ; coequalizer = coeq } pb =
-        Surjective⇒RegularEpi (p₂ pb) λ y →
+        Surjective⇒RegularEpi (p₂ pb) λ y → 
           let (x , eq) = Epi⇒Surjective f (Coequalizer⇒Epi S record { arr = f ; isCoequalizer = coeq }) (u ⟨$⟩ y) in
           let pt = mk-× x y eq in
-          P₀⇒P₁ ⟨$⟩ pt , p₂-≈ {pt} {pt} (refl B , refl D)
+          P₀⇒P₁ ⟨$⟩ pt , p₂-≈ {pt} {pt} (refl B , refl D) 
          where
 
            pb-fu : Pullback S f u
@@ -302,7 +307,7 @@ module _ ℓ where
           (eq : [ Z ⇨ Quotient-Setoid E ][ arr (Quotient-Coequalizer E) ∘ h₁ ≈ arr (Quotient-Coequalizer E) ∘ h₂ ]) →
           Z ⇒ Relation.dom (R E)
         universal {X}{Z} E h₁ h₂ eq = record
-          { _⟨$⟩_ = λ z → let (eqn eq _ _) = eq {z}{z} (refl Z) in eq
+          { to = λ z → let (eqn eq _ _) = eq {z}{z} (refl Z) in eq
           ; cong = λ {z}{z′} z≈z′ → quotient-trans E (eq {z}{z} (refl Z)) (eq {z′}{z′} (refl Z)) (cong h₁ z≈z′) (cong h₂ z≈z′)
           }
         p₁∘universal≈h₁ : {X Z : Setoid ℓ ℓ} → (E : Equivalence S X) → (h₁ h₂ : Z ⇒ X) →

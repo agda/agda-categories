@@ -3,10 +3,9 @@ module Categories.CoYoneda where
 
 -- CoYoneda Lemma.  See Yoneda for more documentation
 
-open import Level
+open import Level using (Level; _⊔_; lift; lower)
 open import Function.Base using (_$_)
-open import Function.Bundles using (Inverse)
-open import Function.Equality using (Π; _⟨$⟩_; cong)
+open import Function.Bundles using (Inverse; Func; _⟨$⟩_)
 open import Relation.Binary.Bundles using (module Setoid)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 open import Data.Product using (_,_; Σ)
@@ -15,7 +14,7 @@ open import Categories.Category using (Category; _[_,_])
 open import Categories.Category.Product using (πʳ; πˡ; _※_)
 open import Categories.Category.Construction.Presheaves using (CoPresheaves)
 open import Categories.Category.Construction.Functors using (eval)
-open import Categories.Category.Construction.Functors
+open import Categories.Category.Construction.Functors using (Functors)
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Hom using (module Hom; Hom[_][_,-]; Hom[_][-,-])
@@ -28,15 +27,17 @@ import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning as MR
 import Categories.NaturalTransformation.Hom as NT-Hom
 
+open Func
+
 private
   variable
     o ℓ e : Level
 
 module Yoneda (C : Category o ℓ e) where
   open Category C hiding (op) -- uses lots
-  open HomReasoning using (_○_; ⟺)
+  open HomReasoning using (_○_; ⟺; refl⟩∘⟨_)
   open MR C using (id-comm)
-  open NaturalTransformation using (η; commute)
+  open NaturalTransformation using (η; commute; sym-commute)
   open NT-Hom C using (Hom[C,A]⇒Hom[C,B])
   private
     module CE = Category.Equiv C using (refl)
@@ -56,10 +57,10 @@ module Yoneda (C : Category o ℓ e) where
   yoneda-inverse : (a : Obj) (F : Functor C (Setoids ℓ e)) →
     Inverse (Category.hom-setoid (CoPresheaves C) {Functor.F₀ embed a} {F}) (Functor.F₀ F a)
   yoneda-inverse a F = record
-    { f = λ nat → η nat a ⟨$⟩ id
-    ; f⁻¹ = λ x → ntHelper record
+    { to = λ nat → η nat a ⟨$⟩ id
+    ; from = λ x → ntHelper record
         { η       = λ X → record
-          { _⟨$⟩_ = λ X⇒a → F.₁ X⇒a ⟨$⟩ x
+          { to = λ X⇒a → F.₁ X⇒a ⟨$⟩ x
           ; cong  = λ i≈j → F.F-resp-≈ i≈j SE.refl
           }
         ; commute = λ {X} {Y} X⇒Y {f} {g} f≈g →
@@ -70,19 +71,28 @@ module Yoneda (C : Category o ℓ e) where
              F.₁ X⇒Y ⟨$⟩ (F.₁ g ⟨$⟩ x)
            SR.∎
         }
-    ; cong₁ = λ i≈j → i≈j CE.refl
-    ; cong₂ = λ i≈j y≈z → F.F-resp-≈ y≈z i≈j
-    ; inverse = (λ Fa → F.identity SE.refl) , λ nat {x} {z} {y} z≈y →
-        let module SR     = SetoidR (F.₀ x) in
-        SR.begin
-          F.₁ z ⟨$⟩ (η nat a ⟨$⟩ id) SR.≈˘⟨ commute nat z (CE.refl {a}) ⟩
-          η nat x ⟨$⟩ z ∘ id ∘ id SR.≈⟨ cong (η nat x) (∘-resp-≈ʳ identity² ○ identityʳ ○ z≈y ) ⟩
-          η nat x ⟨$⟩ y
-        SR.∎
+    ; to-cong = λ i≈j → i≈j CE.refl
+    ; from-cong = λ i≈j y≈z → F.F-resp-≈ y≈z i≈j
+    ; inverse =
+       ( λ {b} {nat} eq → 
+          let module SR = SetoidR (F.₀ a) in
+          let open SR in begin
+          to (η nat a) id ≈⟨ eq {a} {id} {id} CE.refl ⟩
+          to (F.₁ id) b    ≈⟨ F.identity (Setoid.refl (F.₀ a) {b}) ⟩
+           b                    ∎)
+       , λ {nat} {y} eq {b} {f} {g} f≈g →
+          let open Setoid (F.₀ b) in
+          let module SR = SetoidR (F.₀ b) in
+          let open SR in
+          begin
+            to (F.₁ f) y                      ≈⟨ cong (F.₁ f) eq ⟩
+            to (F.₁ f) (to (η nat a) id) ≈⟨ sym-commute nat f CE.refl  ⟩
+            to (η nat b) (f ∘ id ∘ id)        ≈⟨ cong (η nat b) (refl⟩∘⟨ identity² ○ (identityʳ ○ f≈g)) ⟩
+            to (η nat b) g                    ∎ 
     }
     where
     module F = Functor F using (₀; ₁; F-resp-≈; homomorphism; identity)
-    module SE = Setoid (F.₀ a) using (refl)
+    module SE = Setoid (F.₀ a)
 
   private
     Nat[Hom[C][c,-],F] : Bifunctor (CoPresheaves C) C (Setoids (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e))
@@ -100,7 +110,7 @@ module Yoneda (C : Category o ℓ e) where
     { F⇒G = ntHelper record
       { η       = λ where
         (F , A) → record
-          { _⟨$⟩_ = λ α → lift (yoneda-inverse.f α)
+          { to = λ α → lift (yoneda-inverse.to α)
           ; cong  = λ i≈j → lift (i≈j CE.refl)
           }
       ; commute = λ where
@@ -108,15 +118,15 @@ module Yoneda (C : Category o ℓ e) where
       }
     ; F⇐G = ntHelper record
       { η       = λ (F , A) → record
-          { _⟨$⟩_ = λ x → yoneda-inverse.f⁻¹ (lower x)
+          { to = λ x → yoneda-inverse.from (lower x)
           ; cong  = λ i≈j y≈z → Functor.F-resp-≈ F y≈z (lower i≈j)
           }
       ; commute = λ { {F , A} {G , B} (α , f) {X} {Y} eq {Z} {h} {i} eq′ → helper′ α f (lower eq) eq′}
       }
     ; iso = λ (F , A) → record
         { isoˡ = λ {α β} i≈j {X} y≈z →
-          Setoid.trans (Functor.F₀ F X) ( yoneda-inverse.inverseʳ α {x = X} y≈z) (i≈j CE.refl)
-        ; isoʳ = λ eq → lift (Setoid.trans (Functor.F₀ F A) ( yoneda-inverse.inverseˡ {F = F} _) (lower eq))
+          Setoid.trans (Functor.F₀ F X) ( yoneda-inverse.strictlyInverseʳ α {x = X} y≈z ) (i≈j CE.refl)
+        ; isoʳ = λ eq → lift (Setoid.trans (Functor.F₀ F A) ( yoneda-inverse.strictlyInverseˡ {F = F} _) (lower eq))
         }
     }
     where helper : {F : Functor C (Setoids ℓ e)}

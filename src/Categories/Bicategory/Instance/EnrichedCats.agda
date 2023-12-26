@@ -80,7 +80,7 @@ EnrichedCats = record
           open UnderlyingReasoning B
       in niHelper record
         { η       = λ {(_ , F) → from (NI.unitorˡ {C = A} {B} {F})}
-        ; η⁻¹     = λ {(lift tt , F) → to (NI.unitorˡ {C = A} {B} {F})}
+        ; η⁻¹     = λ {(lift _ , F) → to (NI.unitorˡ {C = A} {B} {F})}
         ; commute = λ { {_ , F} {_ , G} (_ , α) {X} →
           begin
             B.id ∘ (V.id V.∘ α [ X ]) ∘ B.id   ≈⟨ identityˡ ⟩
@@ -93,15 +93,15 @@ EnrichedCats = record
           module B = Underlying B
           open UnderlyingReasoning B
       in niHelper record
-        { η =  λ {(F , lift tt) → from (NI.unitorʳ {C = A} {B} {F}) }
+        { η =  λ {(F , lift _) → from (NI.unitorʳ {C = A} {B} {F}) }
         ; commute =  λ{ {_} {G , _} (α , _) {X} →
             begin
               B.id ∘ G $₁ A.id ∘ α [ X ]  ≈⟨ identityˡ ⟩
               G $₁ A.id ∘ α [ X ]         ≈⟨ UF.identity G ⟩∘⟨refl ⟩
               B.id ∘ α [ X ]              ≈⟨ id-comm-sym ⟩
               α [ X ] ∘ B.id              ∎ }
-        ; η⁻¹  = λ { (F , lift tt) → to (NI.unitorʳ {C = A} {B} {F}) }
-        ; iso  = λ { (F , lift tt) → iso (NI.unitorʳ {C = A} {B} {F}) }
+        ; η⁻¹  = λ { (F , lift _) → to (NI.unitorʳ {C = A} {B} {F}) }
+        ; iso  = λ { (F , lift _) → iso (NI.unitorʳ {C = A} {B} {F}) }
         }
     }
   ; triangle = λ {_ _ C f g X} → UnderlyingReasoning.identityʳ C
