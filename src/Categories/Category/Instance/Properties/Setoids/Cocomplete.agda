@@ -40,11 +40,11 @@ module _ {o ℓ e} c ℓ′ {J : Category o ℓ e} (F : Functor J (Setoids (o �
     ; _≲_        = coc
     ; isPreorder = record
       { isEquivalence = ≡.isEquivalence
-      ; reflexive     = λ { {j , _} ≡.refl → J.id , (identity (F₀.refl j)) }
+      ; reflexive     = λ { {j , _} ≡.refl → J.id , identity }
       ; trans         = λ { {a , Sa} {b , Sb} {c , Sc} (f , eq₁) (g , eq₂) →
         let open RS (F₀ c)
         in g J.∘ f , (begin
-        F₁ (g J.∘ f) ⟨$⟩ Sa    ≈⟨ homomorphism (F₀.refl a) ⟩
+        F₁ (g J.∘ f) ⟨$⟩ Sa    ≈⟨ homomorphism ⟩
         F₁ g ⟨$⟩ (F₁ f ⟨$⟩ Sa) ≈⟨ cong (F₁ g) eq₁ ⟩
         F₁ g ⟨$⟩ Sb            ≈⟨ eq₂ ⟩
         Sc                     ∎) }
@@ -60,9 +60,9 @@ Setoids-Cocomplete o ℓ e c ℓ′ {J} F = record
       ; coapex = record
         { ψ       = λ j → record
           { to = j ,_
-          ; cong  = λ i≈k → forth (-, identity i≈k)
+          ; cong  = λ i≈k → forth (J.id , Setoid.trans (F₀ _) identity i≈k)
           }
-        ; commute = λ {X} X⇒Y x≈y → back (-, cong (F₁ X⇒Y) (F₀.sym X x≈y))
+        ; commute = λ {X} {Y} X⇒Y → back (X⇒Y , Setoid.refl (F₀ Y))
         }
       }
     ; ⊥-is-initial = record
@@ -73,16 +73,15 @@ Setoids-Cocomplete o ℓ e c ℓ′ {J} F = record
           { to = to-coapex K
           ; cong  = minimal (coc c ℓ′ F) K.N (to-coapex K) (coapex-cong K)
           }
-        ; commute = λ {X} x≈y → cong (Coapex.ψ (Cocone.coapex K) X) x≈y
+        ; commute = Setoid.refl K.N
         }
-      ; !-unique = λ { {K} f {a , Sa} {b , Sb} eq →
+      ; !-unique = λ { {K} f {a , Sa} →
         let module K = Cocone K
             module f = Cocone⇒ f
             open RS K.N
         in begin
-          K.ψ a ⟨$⟩ Sa       ≈˘⟨ f.commute (F₀.refl a) ⟩
-          f.arr ⟨$⟩ (a , Sa) ≈⟨ cong f.arr eq ⟩
-          f.arr ⟨$⟩ (b , Sb) ∎ }
+          K.ψ a ⟨$⟩ Sa       ≈˘⟨ f.commute ⟩
+          f.arr ⟨$⟩ (a , Sa) ∎ }
       }
     }
   }
@@ -101,7 +100,7 @@ Setoids-Cocomplete o ℓ e c ℓ′ {J} F = record
           where module K = Cocone K
         coapex-cong : ∀ K → coc c ℓ′ F =[ to-coapex K ]⇒ (Setoid._≈_ (Cocone.N K))
         coapex-cong K {X , x} {Y , y} (f , fx≈y) = begin
-          K.ψ X ⟨$⟩ x            ≈˘⟨ K.commute f (F₀.refl X) ⟩
+          K.ψ X ⟨$⟩ x            ≈˘⟨ K.commute f ⟩
           K.ψ Y ⟨$⟩ (F₁ f ⟨$⟩ x)  ≈⟨ cong (K.ψ Y) fx≈y ⟩
           K.ψ Y ⟨$⟩ y            ∎
           where module K = Cocone K

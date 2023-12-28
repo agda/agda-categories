@@ -108,5 +108,5 @@ module _ {c ℓ ℓ′ e} {F G : Functor C (Setoids c ℓ)} (α : NaturalTransfo
       { to = λ x → lower (to (η X) (lift x))
       ; cong = λ eq → lower (cong (η X) (lift eq))
       }
-    ; commute = λ f eq → lower (commute f (lift eq))
+    ; commute = λ f → lower (commute f)
     }

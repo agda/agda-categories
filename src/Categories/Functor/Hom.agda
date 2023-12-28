@@ -29,41 +29,13 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
         { to = λ h → g ∘ h ∘ f
         ; cong = ∘-resp-≈ʳ ∙ ∘-resp-≈ˡ
         }
-    ; identity     = identity′
-    ; homomorphism = homomorphism′
-    ; F-resp-≈     = F-resp-≈′
+    ; identity     = identityˡ ○ identityʳ
+    ; homomorphism = refl⟩∘⟨ sym-assoc ○ ⟺ assoc²''
+    ; F-resp-≈     = λ { (f₁≈g₁ , f₂≈g₂) → f₂≈g₂ ⟩∘⟨ refl⟩∘⟨ f₁≈g₁}
     }
     where F₀′ : Obj × Obj → Setoid ℓ e
           F₀′ (A , B) = hom-setoid {A} {B}
           open HomReasoning
-
-          identity′ : {A : Obj × Obj} {x y : uncurry _⇒_ A} → x ≈ y → id ∘ x ∘ id ≈ y
-          identity′ {A} {x} {y} x≈y = begin
-            id ∘ x ∘ id ≈⟨ identityˡ ⟩
-            x ∘ id      ≈⟨ identityʳ ⟩
-            x           ≈⟨ x≈y ⟩
-            y           ∎
-
-          homomorphism′ : ∀ {X Y Z : Σ Obj (λ x → Obj)}
-                            {f : proj₁ Y ⇒ proj₁ X × proj₂ X ⇒ proj₂ Y}
-                            {g : proj₁ Z ⇒ proj₁ Y × proj₂ Y ⇒ proj₂ Z}
-                            {x y : proj₁ X ⇒ proj₂ X} →
-                            x ≈ y →
-                            (proj₂ g ∘ proj₂ f) ∘ x ∘ proj₁ f ∘ proj₁ g ≈
-                            proj₂ g ∘ (proj₂ f ∘ y ∘ proj₁ f) ∘ proj₁ g
-          homomorphism′ {f = f₁ , f₂} {g₁ , g₂} {x} {y} x≈y = begin
-            (g₂ ∘ f₂) ∘ x ∘ f₁ ∘ g₁   ≈⟨ refl⟩∘⟨ sym-assoc ⟩
-            (g₂ ∘ f₂) ∘ (x ∘ f₁) ∘ g₁ ≈⟨ pullʳ (pullˡ (∘-resp-≈ʳ (∘-resp-≈ˡ x≈y))) ⟩
-            g₂ ∘ (f₂ ∘ y ∘ f₁) ∘ g₁   ∎
-
-          F-resp-≈′ : ∀ {A B : Σ Obj (λ x → Obj)}
-                        {f g : Σ (proj₁ B ⇒ proj₁ A) (λ x → proj₂ A ⇒ proj₂ B)} →
-                        Σ (proj₁ f ≈ proj₁ g) (λ x → proj₂ f ≈ proj₂ g) →
-                        {x y : proj₁ A ⇒ proj₂ A} →
-                        x ≈ y → proj₂ f ∘ x ∘ proj₁ f ≈ proj₂ g ∘ y ∘ proj₁ g
-          F-resp-≈′ {f = f₁ , f₂} {g₁ , g₂} (f₁≈g₁ , f₂≈g₂) {x} {y} x≈y = begin
-            f₂ ∘ x ∘ f₁ ≈⟨ f₂≈g₂ ⟩∘⟨ x≈y ⟩∘⟨ f₁≈g₁ ⟩
-            g₂ ∘ y ∘ g₁ ∎
 
   Hom[_,-] : Obj → Functor C (Setoids ℓ e)
   Hom[_,-] = appˡ Hom[-,-]

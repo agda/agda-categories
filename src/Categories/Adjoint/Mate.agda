@@ -8,7 +8,7 @@ open import Level
 open import Data.Product using (Σ; _,_)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Function.Construct.Composition using (function)
-open import Function.Construct.Setoid using () renaming (function to _⇨_)
+open import Function.Construct.Setoid using () renaming (setoid to _⇨_)
 open import Relation.Binary using (Setoid; IsEquivalence)
 
 open import Categories.Category
@@ -135,13 +135,13 @@ module _ {L L′ : Functor C D} {R R′ : Functor D C}
 
     mate-commute₁ : function D⟶C (F₁ Hom[ C ][-,-] (C.id , β.η Y))
                   ≈ function (F₁ Hom[ D ][-,-] (α.η X , D.id)) D⟶C′
-    mate-commute₁ {f} {g} f≈g = begin
+    mate-commute₁ {f} = begin
       β.η Y ∘ (F₁ R′ f ∘ L′⊣R′.unit.η X) ∘ C.id  ≈⟨ refl⟩∘⟨ identityʳ ⟩
       β.η Y ∘ F₁ R′ f ∘ L′⊣R′.unit.η X           ≈⟨ pullˡ (β.commute f) ⟩
       (F₁ R f ∘ β.η (F₀ L′ X)) ∘ L′⊣R′.unit.η X  ≈˘⟨ pushʳ commute₁ ⟩
       F₁ R f ∘ F₁ R (α.η X) ∘ L⊣R.unit.η X       ≈˘⟨ pushˡ (homomorphism R) ⟩
-      F₁ R (f D.∘ α.η X) ∘ L⊣R.unit.η X          ≈⟨ F-resp-≈ R (D.∘-resp-≈ˡ f≈g DH.○ DH.⟺ D.identityˡ) ⟩∘⟨refl ⟩
-      F₁ R (D.id D.∘ g D.∘ α.η X) ∘ L⊣R.unit.η X ∎
+      F₁ R (f D.∘ α.η X) ∘ L⊣R.unit.η X          ≈⟨ F-resp-≈ R (DH.⟺ D.identityˡ) ⟩∘⟨refl ⟩
+      F₁ R (D.id D.∘ f D.∘ α.η X) ∘ L⊣R.unit.η X ∎
 
   module _ {X : C.Obj} {Y : D.Obj} where
     open D hiding (_≈_)
@@ -173,13 +173,13 @@ module _ {L L′ : Functor C D} {R R′ : Functor D C}
 
     mate-commute₂ : function C⟶D (F₁ Hom[ D ][-,-] (α.η X , D.id))
                   ≈ function (F₁ Hom[ C ][-,-] (C.id , β.η Y)) C⟶D′
-    mate-commute₂ {f} {g} f≈g = begin
+    mate-commute₂ {f} = begin
       D.id ∘ (L′⊣R′.counit.η Y ∘ F₁ L′ f) ∘ α.η X  ≈⟨ identityˡ ⟩
       (L′⊣R′.counit.η Y ∘ F₁ L′ f) ∘ α.η X         ≈˘⟨ pushʳ (α.commute f) ⟩
       L′⊣R′.counit.η Y ∘ α.η (F₀ R′ Y) ∘ F₁ L f    ≈˘⟨ pushˡ commute₂ ⟩
       (L⊣R.counit.η Y ∘ F₁ L (β.η Y)) ∘ F₁ L f     ≈˘⟨ pushʳ (homomorphism L) ⟩
-      L⊣R.counit.η Y ∘ F₁ L (β.η Y C.∘ f)          ≈⟨ refl⟩∘⟨ F-resp-≈ L (C.∘-resp-≈ʳ (f≈g CH.○ CH.⟺ C.identityʳ)) ⟩
-      L⊣R.counit.η Y ∘ F₁ L (β.η Y C.∘ g C.∘ C.id) ∎
+      L⊣R.counit.η Y ∘ F₁ L (β.η Y C.∘ f)          ≈⟨ refl⟩∘⟨ F-resp-≈ L (C.∘-resp-≈ʳ (CH.⟺ C.identityʳ)) ⟩
+      L⊣R.counit.η Y ∘ F₁ L (β.η Y C.∘ f C.∘ C.id) ∎
 
 -- alternatively, if commute₃ and commute₄ are shown, then a Mate can be constructed.
 
