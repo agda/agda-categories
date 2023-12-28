@@ -48,9 +48,9 @@ module Yoneda (C : Category o ℓ e) where
   embed = record
     { F₀           = Hom[ C ][_,-]
     ; F₁           = Hom[C,A]⇒Hom[C,B] -- B⇒A induces a NatTrans on the Homs.
-    ; identity     = identityʳ
-    ; homomorphism = sym-assoc
-    ; F-resp-≈     = λ f≈g → refl⟩∘⟨ f≈g
+    ; identity     = identityʳ ○_
+    ; homomorphism = λ h₁≈h₂ → ∘-resp-≈ˡ h₁≈h₂ ○ sym-assoc
+    ; F-resp-≈     = λ f≈g h≈i → ∘-resp-≈ h≈i f≈g
     }
 
   -- Using the adjunction between product and product, we get a kind of contravariant Bifunctor
@@ -61,34 +61,34 @@ module Yoneda (C : Category o ℓ e) where
     ; from = λ x → ntHelper record
         { η       = λ X → record
           { to = λ X⇒a → F.₁ X⇒a ⟨$⟩ x
-          ; cong  = λ i≈j → F.F-resp-≈ i≈j
+          ; cong  = λ i≈j → F.F-resp-≈ i≈j SE.refl
           }
-        ; commute = λ {X} {Y} X⇒Y {f} →
+        ; commute = λ {X} {Y} X⇒Y {f} {g} f≈g →
           let module SR = SetoidR (F.₀ Y) in
           SR.begin
-             F.₁ (X⇒Y ∘ f ∘ id) ⟨$⟩ x   SR.≈⟨ F.F-resp-≈ (∘-resp-≈ʳ identityʳ) ⟩
-             F.₁ (X⇒Y ∘ f) ⟨$⟩ x        SR.≈⟨ F.homomorphism ⟩
-             F.₁ X⇒Y ⟨$⟩ (F.₁ f ⟨$⟩ x)
+             F.₁ (X⇒Y ∘ f ∘ id) ⟨$⟩ x   SR.≈⟨ F.F-resp-≈ (∘-resp-≈ʳ (identityʳ ○ f≈g)) SE.refl ⟩
+             F.₁ (X⇒Y ∘ g) ⟨$⟩ x        SR.≈⟨ F.homomorphism SE.refl ⟩
+             F.₁ X⇒Y ⟨$⟩ (F.₁ g ⟨$⟩ x)
            SR.∎
         }
-    ; to-cong = λ i≈j → i≈j
-    ; from-cong = λ i≈j → cong (F.₁ _) i≈j
+    ; to-cong = λ i≈j → i≈j CE.refl
+    ; from-cong = λ i≈j y≈z → F.F-resp-≈ y≈z i≈j
     ; inverse =
        ( λ {b} {nat} eq → 
           let module SR = SetoidR (F.₀ a) in
           let open SR in begin
-          to (η nat a) id ≈⟨ eq ⟩
-          to (F.₁ id) b    ≈⟨ F.identity ⟩
+          to (η nat a) id ≈⟨ eq {a} {id} {id} CE.refl ⟩
+          to (F.₁ id) b    ≈⟨ F.identity (Setoid.refl (F.₀ a) {b}) ⟩
            b                    ∎)
-       , λ {nat} {y} eq {b} {f} →
+       , λ {nat} {y} eq {b} {f} {g} f≈g →
           let open Setoid (F.₀ b) in
           let module SR = SetoidR (F.₀ b) in
           let open SR in
           begin
-            to (F.₁ f) y                 ≈⟨ cong (F.₁ f) eq ⟩
-            to (F.₁ f) (to (η nat a) id) ≈⟨ sym-commute nat f  ⟩
-            to (η nat b) (f ∘ id ∘ id)   ≈⟨ cong (η nat b) (refl⟩∘⟨ identity² ○ identityʳ) ⟩
-            to (η nat b) f               ∎ 
+            to (F.₁ f) y                      ≈⟨ cong (F.₁ f) eq ⟩
+            to (F.₁ f) (to (η nat a) id) ≈⟨ sym-commute nat f CE.refl  ⟩
+            to (η nat b) (f ∘ id ∘ id)        ≈⟨ cong (η nat b) (refl⟩∘⟨ identity² ○ (identityʳ ○ f≈g)) ⟩
+            to (η nat b) g                    ∎ 
     }
     where
     module F = Functor F using (₀; ₁; F-resp-≈; homomorphism; identity)
@@ -111,50 +111,57 @@ module Yoneda (C : Category o ℓ e) where
       { η       = λ where
         (F , A) → record
           { to = λ α → lift (yoneda-inverse.to α)
-          ; cong  = λ i≈j → lift i≈j
+          ; cong  = λ i≈j → lift (i≈j CE.refl)
           }
       ; commute = λ where
-        {_} {G , B} (α , f) {β} → lift $ cong (η α B) (helper f β)
+        {_} {G , B} (α , f) {β} {γ} β≈γ → lift $ cong (η α B) (helper f β γ β≈γ)
       }
     ; F⇐G = ntHelper record
-      { η       = λ { (F , A) → record
+      { η       = λ (F , A) → record
           { to = λ x → yoneda-inverse.from (lower x)
-          ; cong  = λ i≈j → cong (Functor.F₁ F _) (lower i≈j)
-          } }
-      ; commute = λ { {F , A} {G , B} (α , f) {X} {Z} {h} → helper′ α f}
+          ; cong  = λ i≈j y≈z → Functor.F-resp-≈ F y≈z (lower i≈j)
+          }
+      ; commute = λ { {F , A} {G , B} (α , f) {X} {Y} eq {Z} {h} {i} eq′ → helper′ α f (lower eq) eq′}
       }
-    ; iso = λ { (F , A) → record
-        { isoˡ = λ {α} → yoneda-inverse.strictlyInverseʳ α
-        ; isoʳ = lift (Functor.identity F)
-        } }
+    ; iso = λ (F , A) → record
+        { isoˡ = λ {α β} i≈j {X} y≈z →
+          Setoid.trans (Functor.F₀ F X) ( yoneda-inverse.strictlyInverseʳ α {x = X} y≈z ) (i≈j CE.refl)
+        ; isoʳ = λ eq → lift (Setoid.trans (Functor.F₀ F A) ( yoneda-inverse.strictlyInverseˡ {F = F} _) (lower eq))
+        }
     }
     where helper : {F : Functor C (Setoids ℓ e)}
                    {A B : Obj} (f : A ⇒ B)
-                   (β : NaturalTransformation Hom[ C ][ A ,-] F) →
-                   Setoid._≈_ (Functor.F₀ F B) (η β B ⟨$⟩ id ∘ f) (Functor.F₁ F f ⟨$⟩ (η β A ⟨$⟩ id))
-          helper {F} {A} {B} f β = S.begin
+                   (β γ : NaturalTransformation Hom[ C ][ A ,-] F) →
+                   Setoid._≈_ (Functor.F₀ Nat[Hom[C][c,-],F] (F , A)) β γ →
+                   Setoid._≈_ (Functor.F₀ F B) (η β B ⟨$⟩ id ∘ f) (Functor.F₁ F f ⟨$⟩ (η γ A ⟨$⟩ id))
+          helper {F} {A} {B} f β γ β≈γ = S.begin
             η β B ⟨$⟩ id ∘ f        S.≈⟨ cong (η β B) (MR.id-comm-sym C ○ ∘-resp-≈ʳ (⟺ identity²)) ⟩
-            η β B ⟨$⟩ f ∘ id ∘ id   S.≈⟨ commute β f ⟩
-            F.₁ f ⟨$⟩ (η β A ⟨$⟩ id) S.∎
+            η β B ⟨$⟩ f ∘ id ∘ id   S.≈⟨ commute β f CE.refl ⟩
+            F.₁ f ⟨$⟩ (η β A ⟨$⟩ id) S.≈⟨ cong (F.₁ f) (β≈γ CE.refl) ⟩
+            F.₁ f ⟨$⟩ (η γ A ⟨$⟩ id) S.∎
             where
             module F = Functor F using (₀;₁)
             module S = SetoidR (F.₀ B)
 
           helper′ : ∀ {F G : Functor C (Setoids ℓ e)}
                       {A B Z : Obj}
-                      {h : B ⇒ Z}
-                      {X : Setoid.Carrier (Functor.F₀ F A)}
+                      {h i : B ⇒ Z}
+                      {X Y : Setoid.Carrier (Functor.F₀ F A)}
                       (α : NaturalTransformation F G)
                       (f : A ⇒ B) →
+                      Setoid._≈_ (Functor.F₀ F A) X Y →
+                      h ≈ i →
                       Setoid._≈_ (Functor.F₀ G Z) (Functor.F₁ G h ⟨$⟩ (η α B ⟨$⟩ (Functor.F₁ F f ⟨$⟩ X)))
-                                          (η α Z ⟨$⟩ (Functor.F₁ F (h ∘ f) ⟨$⟩ X))
-          helper′ {F} {G} {A} {B} {Z} {h} {X} α f = S.begin
-            G.₁ h ⟨$⟩ (η α B ⟨$⟩ (F.₁ f ⟨$⟩ X))  S.≈˘⟨ commute α h ⟩
-            η α Z ⟨$⟩ (F.₁ h ⟨$⟩ (F.₁ f ⟨$⟩ X))  S.≈˘⟨ cong (η α Z) F.homomorphism ⟩
-            η α Z ⟨$⟩ (F.₁ (h ∘ f) ⟨$⟩ X)       S.∎
+                                          (η α Z ⟨$⟩ (Functor.F₁ F (i ∘ f) ⟨$⟩ Y))
+          helper′ {F} {G} {A} {B} {Z} {h} {i} {X} {Y} α f eq eq′ = S.begin
+            G.₁ h ⟨$⟩ (η α B ⟨$⟩ (F.₁ f ⟨$⟩ X))  S.≈˘⟨ commute α h ((S′.sym (cong (F.₁ f) eq))) ⟩
+            η α Z ⟨$⟩ (F.₁ h ⟨$⟩ (F.₁ f ⟨$⟩ Y))  S.≈⟨ cong (η α Z) ((F.F-resp-≈ eq′ S′.refl)) ⟩
+            η α Z ⟨$⟩ (F.₁ i ⟨$⟩ (F.₁ f ⟨$⟩ Y))  S.≈˘⟨ cong (η α Z) ((F.homomorphism (Setoid.refl (F.₀ A)))) ⟩
+            η α Z ⟨$⟩ (F.₁ (i ∘ f) ⟨$⟩ Y)        S.∎
             where
               module F = Functor F using (₀; ₁; homomorphism; F-resp-≈)
               module G = Functor G using (₀; ₁)
               module S = SetoidR (G.₀ Z)
+              module S′ = Setoid (F.₀ B) using (refl; sym)
 
   module yoneda = NaturalIsomorphism yoneda

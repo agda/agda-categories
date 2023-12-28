@@ -8,7 +8,6 @@ open import Function.Bundles using (Func; _⟨$⟩_)
 import Function.Construct.Identity as FId
 open import Relation.Binary using (Setoid)
 import Relation.Binary.PropositionalEquality.Core as ≡
-import  Relation.Binary.Reasoning.Setoid as SetoidR
 
 open import Categories.Category.Core using (Category)
 open import Categories.Category.BinaryProducts using (BinaryProducts)
@@ -153,10 +152,10 @@ module _ {o} where
           ; cong  = λ eq → eq
           }
         ; ⊤-is-terminal = record
-          { !        = λ { {sliceobj f} → slicearr {h = f} refl }
-          ; !-unique = λ { {X} (slicearr △) →
+          { !        = λ { {sliceobj f} → slicearr {h = f} (Func.cong f) }
+          ; !-unique = λ { {X} (slicearr △) eq →
                          let module X = SliceObj X
-                         in sym △ }
+                         in sym (△ (Setoid.sym X.Y eq)) }
           }
         }
 
@@ -170,25 +169,23 @@ module _ {o} where
         where module X = SliceObj X
               module Y = SliceObj Y
 
-              f : SpanObj → Setoid o o
-              f = F₀ X Y
               F : Functor (Category.op Span) (Setoids o o)
               F = record
-                { F₀           = f
-                ; F₁           = λ { (span-id {B}) → FId.function (f B)
+                { F₀           = F₀ X Y
+                ; F₁           = λ { (span-id {B}) → FId.function (F₀ X Y B)
                                    ; span-arrˡ → X.arr
                                    ; span-arrʳ → Y.arr
                                    }
-                ; identity     = λ {Z} → S.Equiv.refl {f Z} {f Z} {FId.function _}
-                ; homomorphism = λ { {Z} {_} {_} {span-id}   {span-id}    → Setoid.refl (f Z)
-                                   ; {_} {_} {_} {span-id}   {span-arrˡ}  → refl
-                                   ; {_} {_} {_} {span-id}   {span-arrʳ}  → refl
-                                   ; {_} {_} {_} {span-arrˡ} {span-id}    → refl
-                                   ; {_} {_} {_} {span-arrʳ} {span-id}    → refl
+                ; identity     = λ {Z} → S.Equiv.refl {F₀ X Y Z} {F₀ X Y Z} {FId.function _}
+                ; homomorphism = λ { {_} {_} {_} {span-id}   {span-id}   eq → eq
+                                   ; {_} {_} {_} {span-id}   {span-arrˡ}    → Func.cong X.arr
+                                   ; {_} {_} {_} {span-id}   {span-arrʳ}    → Func.cong Y.arr
+                                   ; {_} {_} {_} {span-arrˡ} {span-id}      → Func.cong X.arr
+                                   ; {_} {_} {_} {span-arrʳ} {span-id}      → Func.cong Y.arr
                                    }
-                ; F-resp-≈     = λ { {Z} {_} {span-id}   ≡.refl    → Setoid.refl (f Z)
-                                   ; {_} {_} {span-arrˡ} ≡.refl    → refl
-                                   ; {_} {_} {span-arrʳ} ≡.refl    → refl
+                ; F-resp-≈     = λ { {_} {_} {span-id}   ≡.refl eq → eq
+                                   ; {_} {_} {span-arrˡ} ≡.refl    → Func.cong X.arr
+                                   ; {_} {_} {span-arrʳ} ≡.refl    → Func.cong Y.arr
                                    }
                 }
 
@@ -220,11 +217,12 @@ module _ {o} where
       prod = slice-product.A×B
 
       eval : {f g : Sl.Obj} → prod (f ^ g) g Sl.⇒ f
-      eval {f} {g} = slicearr {h = h} λ { {J₁ , arr₁} →
+      eval {f} {g} = slicearr {h = h} λ { {J₁ , arr₁} {J₂ , arr₂} eq →
         let open SlExp (J₁ left)
         in trans (InverseImage.fx≈a (f⇒g (pack (J₁ right) _)))
           (trans (arr₁ span-arrˡ)
-          (sym (arr₁ span-arrʳ))) }
+          (trans (eq center)
+                 (sym (arr₂ span-arrʳ)))) }
         where module f  = SliceObj f
               module g  = SliceObj g
               module fY = Setoid f.Y
@@ -274,7 +272,7 @@ module _ {o} where
                 { f⇒g  = λ img →
                   let open InverseImage img renaming (x to y)
                   in pack (α.h ⟨$⟩ xypb x img)
-                          (trans (α.△ {xypb x img})
+                          (trans (α.△ {xypb x img} {xypb x img} (Setoid.refl (SliceObj.Y (prod f g)) {xypb x img}))
                                  fx≈a)
                 ; cong = λ img img′ eq →
                   let module img  = InverseImage img
@@ -302,29 +300,22 @@ module _ {o} where
               }
 
           curry : f Sl.⇒ (h ^ g)
-          curry = slicearr {h = β} refl
+          curry = slicearr {h = β} (Func.cong f.arr)
 
       module _ {f g h : Sl.Obj} {α β : prod f g Sl.⇒ h} where
         private
           module f  = SliceObj f
           module g  = SliceObj g
-          module h  = SliceObj h
           module gY = Setoid g.Y
 
         curry-resp-≈ : α Sl.≈ β → curry α Sl.≈ curry β
-        curry-resp-≈ hα≈hβ {z} = record
-          { idx≈ = refl
+        curry-resp-≈ eq eq′ = record
+          { idx≈ = Func.cong f.arr eq′
           ; map≈ = λ img →
-            let open InverseImage img in
-            let open SetoidR h.Y
-            in begin
-              InverseImage.x (SlExp.f⇒g (Slice⇒.h (curry α) ⟨$⟩ z) img) ≈⟨ hα≈hβ ⟩
-              InverseImage.x (SlExp.f⇒g (Slice⇒.h (curry β) ⟨$⟩ z) img) ≈⟨ Func.cong (Slice⇒.h β) (
-                λ { center → refl
-                  ; left → Setoid.refl f.Y
-                  ; right → gY.refl
-                  }) ⟩
-              InverseImage.x (SlExp.f⇒g (Slice⇒.h (curry β) ⟨$⟩ z) (inverseImage-transport refl img)) ∎
+            let open InverseImage img
+            in eq λ { center → Func.cong f.arr eq′
+                    ; left   → eq′
+                    ; right  → gY.refl }
           }
 
       module _ {f g h : Sl.Obj} {α : f Sl.⇒ (g ^ h)} {β : prod f h Sl.⇒ g} where
@@ -339,15 +330,16 @@ module _ {o} where
           module hY = Setoid h.Y
 
         curry-unique : eval Sl.∘ (α products.⁂ Sl.id) Sl.≈ β → α Sl.≈ curry β
-        curry-unique eq {z} = record
-          { idx≈ = α.△
+        curry-unique eq {z} {w} eq′ = record
+          { idx≈ = α.△ eq′
           ; map≈ = λ img →
             let open InverseImage img
             in gY.trans (InverseImageMap.cong (SlExp.map (α.h ⟨$⟩ z)) img _ hY.refl)
-                        (eq {xypb z (inverseImage-transport α.△  img)}
-                            {-λ { center → Func.cong f.arr eq′
+                        (eq {xypb z (inverseImage-transport (trans (α.△ eq′) (Func.cong f.arr (fY.sym eq′))) img)}
+                            {xypb w (inverseImage-transport (α.△ eq′) img)}
+                            λ { center → Func.cong f.arr eq′
                               ; left   → eq′
-                              ; right  → hY.refl }-})
+                              ; right  → hY.refl })
           }
 
       slice-canonical : Canonical Sl
@@ -365,12 +357,11 @@ module _ {o} where
         ; _^_          = _^_
         ; eval         = eval
         ; curry        = curry
-        ; eval-comp    = λ { {_} {A1} {A2} {α} {J , arr₁} →
+        ; eval-comp    = λ { {_} {_} {_} {α} {J , arr₁} eq →
           let module α = Slice⇒ α
-          in Func.cong α.h λ { center → arr₁ span-arrˡ
-                             ; left → Setoid.refl (SliceObj.Y A2)
-                             ; right → Setoid.refl (SliceObj.Y A1)
-                             } }
+          in Func.cong α.h λ { center → trans (arr₁ span-arrˡ) (eq center)
+                          ; left   → eq left
+                          ; right  → eq right } }
         ; curry-unique = λ {_ _ _} {α β} → curry-unique {_} {_} {_} {α} {β}
         }
 

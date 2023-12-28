@@ -110,7 +110,7 @@ module _ {c ℓ ℓ′ e} {F G : Functor C (Setoids c ℓ)} (α : LiftSetoids �
     { F⇒G = unlift-nat F⇒G
     ; F⇐G = unlift-nat F⇐G
     ; iso = λ X → record
-      { isoˡ = lower (iso.isoˡ X)
-      ; isoʳ = lower (iso.isoʳ X)
+      { isoˡ = λ eq → lower (iso.isoˡ X (lift eq))
+      ; isoʳ = λ eq → lower (iso.isoʳ X (lift eq))
       }
     }

@@ -185,18 +185,18 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
           { to = λ f → lift (Ladjunct (lower f))
           ; cong = λ eq → lift (Ladjunct-resp-≈ (lower eq))
           }
-        ; commute = λ _ → lift $ Ladjunct-comm D.Equiv.refl
+        ; commute = λ _ eq → lift $ Ladjunct-comm (lower eq)
         }
       ; F⇐G = ntHelper record
         { η       = λ _ → record
           { to = λ f → lift (Radjunct (lower f))
           ; cong = λ eq → lift (Radjunct-resp-≈ (lower eq))
           }
-        ; commute = λ _ → lift $ Radjunct-comm C.Equiv.refl
+        ; commute = λ _ eq → lift $ Radjunct-comm (lower eq)
         }
       ; iso = λ X → record
-        { isoˡ = lift RLadjunct≈id
-        ; isoʳ = lift LRadjunct≈id
+        { isoˡ = λ eq → let open D.HomReasoning in lift (RLadjunct≈id ○ lower eq)
+        ; isoʳ = λ eq → let open C.HomReasoning in lift (LRadjunct≈id ○ lower eq)
         }
       }
 

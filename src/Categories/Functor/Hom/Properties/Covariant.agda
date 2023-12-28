@@ -51,7 +51,7 @@ module _ (W : Obj) {F : Functor J C} (lim : Limit F) where
         { N    = W
         ; apex = record
           { ψ       = λ X → K.ψ X ⟨$⟩ x
-          ; commute = λ f → ⟺ (∘-resp-≈ʳ identityʳ) ○ K.commute f
+          ; commute = λ f → ⟺ (∘-resp-≈ʳ identityʳ) ○ K.commute f (Setoid.refl K.N)
           }
         }
 
@@ -62,21 +62,25 @@ module _ (W : Obj) {F : Functor J C} (lim : Limit F) where
           ; cong  = λ {x y} eq → ψ-≈⇒rep-≈ F W (Cone.apex (KW x)) (Cone.apex (KW y)) lim
                                               (λ A → Func.cong (K.ψ A) eq)
           }
-        ; commute = λ {X} {x} → begin
+        ; commute = λ {X} {x y} eq → begin
           proj X ∘ rep (KW x) ∘ C.id ≈⟨ refl⟩∘⟨ C.identityʳ ⟩
           proj X ∘ rep (KW x)        ≈⟨ lim.commute ⟩
-          K.ψ X ⟨$⟩ x                 ∎
+          K.ψ X ⟨$⟩ x                ≈⟨ Func.cong (K.ψ X) eq ⟩
+          K.ψ X ⟨$⟩ y                ∎
         }
 
     !-unique : ∀ {K : Cone HomF} (f : Cones HomF [ K , ⊤ ]) → Cones HomF [ ! K ≈ f ]
-    !-unique {K} f {x} = terminal.!-unique f′
+    !-unique {K} f {x} {y} x≈y = begin
+      rep (KW K x) ≈⟨ terminal.!-unique f′ ⟩
+      f.arr ⟨$⟩ x  ≈⟨ Func.cong f.arr x≈y ⟩
+      f.arr ⟨$⟩ y  ∎
       where module K = Cone _ K
             module f = Cone⇒ _ f
 
             f′ : Cones F [ KW K x , limit ]
             f′ = record
               { arr     = f.arr ⟨$⟩ x
-              ; commute = ⟺ (∘-resp-≈ʳ C.identityʳ) ○ f.commute
+              ; commute = ⟺ (∘-resp-≈ʳ C.identityʳ) ○ f.commute (Setoid.refl K.N)
               }
 
   hom-resp-limit : Limit HomF

@@ -40,7 +40,7 @@ Forgetful = record
   ; F₁           = λ f → mkPosetHomo _ _ (to f) (cong f)
   ; identity     = λ {S}       → refl S
   ; homomorphism = λ {_ _ S}   → refl S
-  ; F-resp-≈     = λ {S _} f≗g → f≗g
+  ; F-resp-≈     = λ {S _} f≗g → f≗g (refl S)
   }
   where
     Forgetful₀ : ∀ {c ℓ} → Setoid c ℓ → Poset c ℓ ℓ
@@ -72,9 +72,9 @@ Core : ∀ {c ℓ₁ ℓ₂} → Functor (Posets c ℓ₁ ℓ₂) (Setoids c ℓ
 Core = record
   { F₀           = λ A → record { isEquivalence = isEquivalence A }
   ; F₁           = λ f → record { to = ⟦ f ⟧ ; cong = cong f }
-  ; identity     = λ {A} → Eq.refl A
-  ; homomorphism = λ {_ _ Z} → Eq.refl Z
-  ; F-resp-≈     = λ f≗g → f≗g
+  ; identity     = Function.id
+  ; homomorphism = λ {_ _ _ f g} → cong (Comp.posetHomomorphism f g)
+  ; F-resp-≈     = λ {_ B} {f _} f≗g x≈y → Eq.trans B (cong f x≈y) f≗g
   }
   where open Poset
 
@@ -82,10 +82,10 @@ Core = record
 
 CoreAdj : ∀ {o ℓ} → Forgetful ⊣ Core {o} {ℓ} {ℓ}
 CoreAdj = record
-  { unit   = ntHelper record { η = unit   ; commute = λ {_} {Y} _ → Setoid.refl Y}
+  { unit   = ntHelper record { η = unit   ; commute = cong                  }
   ; counit = ntHelper record { η = counit ; commute = λ {_ B} _ → Eq.refl B }
   ; zig    = λ {S} → Setoid.refl S
-  ; zag    = λ {B} → Eq.refl B
+  ; zag    = Function.id
   }
   where
     open Poset

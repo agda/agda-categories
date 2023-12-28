@@ -50,15 +50,15 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
     Hom-NI′ = record
       { F⇒G = ntHelper record
         { η       = λ _ → record { to = Hom-inverse.to ; cong = Hom-inverse.to-cong }
-        ; commute = λ _ → Ladjunct-comm D.Equiv.refl
+        ; commute = λ _ eq → Ladjunct-comm eq
         }
       ; F⇐G = ntHelper record
         { η       = λ _ → record { to = Hom-inverse.from ; cong = Hom-inverse.from-cong }
-        ; commute = λ _ → Radjunct-comm C.Equiv.refl
+        ; commute = λ _ eq → Radjunct-comm eq
         }
       ; iso = λ _ → record
-        { isoˡ = RLadjunct≈id
-        ; isoʳ = LRadjunct≈id
+        { isoˡ = λ eq → let open D.HomReasoning in RLadjunct≈id ○ eq
+        ; isoʳ = λ eq → let open C.HomReasoning in LRadjunct≈id ○ eq
         }
       }
 
@@ -88,10 +88,10 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
         { η       = λ X → unitη X ⟨$⟩ D.id
         ; commute = λ {X} {Y} f → begin
           (unitη Y ⟨$⟩ D.id) ∘ f                             ≈⟨ introˡ R.identity ⟩
-          R.F₁ D.id ∘ (unitη Y  ⟨$⟩ D.id) ∘ f                ≈˘⟨ ⇒.commute (f , D.id) ⟩
+          R.F₁ D.id ∘ (unitη Y  ⟨$⟩ D.id) ∘ f                ≈˘⟨ ⇒.commute (f , D.id) D.Equiv.refl ⟩
           ⇒.η (X , L.F₀ Y) ⟨$⟩ (D.id D.∘ D.id D.∘ L.F₁ f)    ≈⟨ cong (⇒.η (X , L.F₀ Y)) (D.Equiv.trans D.identityˡ D.identityˡ) ⟩
           ⇒.η (X , L.F₀ Y) ⟨$⟩ L.F₁ f                        ≈⟨ cong (⇒.η (X , L.F₀ Y)) (MR.introʳ D (MR.elimʳ D L.identity)) ⟩
-          ⇒.η (X , L.F₀ Y) ⟨$⟩ (L.F₁ f D.∘ D.id D.∘ L.F₁ id) ≈⟨ ⇒.commute (C.id , L.F₁ f) ⟩
+          ⇒.η (X , L.F₀ Y) ⟨$⟩ (L.F₁ f D.∘ D.id D.∘ L.F₁ id) ≈⟨ ⇒.commute (C.id , L.F₁ f) D.Equiv.refl ⟩
           R.F₁ (L.F₁ f) ∘ (unitη X ⟨$⟩ D.id) ∘ id            ≈⟨ refl⟩∘⟨ identityʳ ⟩
           R.F₁ (L.F₁ f) ∘ (unitη X ⟨$⟩ D.id)                 ∎
         }
@@ -107,10 +107,10 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
         { η       = λ X → counitη X ⟨$⟩ C.id
         ; commute = λ {X} {Y} f → begin
           (counitη Y ⟨$⟩ C.id) ∘ L.F₁ (R.F₁ f)               ≈˘⟨ identityˡ ⟩
-          id ∘ (counitη Y ⟨$⟩ C.id) ∘ L.F₁ (R.F₁ f)          ≈˘⟨ ⇐.commute (R.F₁ f , D.id) ⟩
+          id ∘ (counitη Y ⟨$⟩ C.id) ∘ L.F₁ (R.F₁ f)          ≈˘⟨ ⇐.commute (R.F₁ f , D.id) C.Equiv.refl ⟩
           ⇐.η (R.F₀ X , Y) ⟨$⟩ (R.F₁ id C.∘ C.id C.∘ R.F₁ f) ≈⟨ cong (⇐.η (R.F₀ X , Y)) (C.Equiv.trans (MR.elimˡ C R.identity) C.identityˡ) ⟩
           ⇐.η (R.F₀ X , Y) ⟨$⟩ R.F₁ f                        ≈⟨ cong (⇐.η (R.F₀ X , Y)) (MR.introʳ C C.identityˡ) ⟩
-          ⇐.η (R.F₀ X , Y) ⟨$⟩ (R.F₁ f C.∘ C.id C.∘ C.id)    ≈⟨ ⇐.commute (C.id , f) ⟩
+          ⇐.η (R.F₀ X , Y) ⟨$⟩ (R.F₁ f C.∘ C.id C.∘ C.id)    ≈⟨ ⇐.commute (C.id , f) C.Equiv.refl ⟩
           f ∘ (counitη X ⟨$⟩ C.id) ∘ L.F₁ C.id               ≈⟨ refl⟩∘⟨ elimʳ L.identity ⟩
           f ∘ (counitη X ⟨$⟩ C.id)                           ∎
         }
@@ -129,10 +129,10 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
             open MR D
         in begin
           η counit (L.F₀ A) ∘ L.F₁ (η unit A)      ≈˘⟨ identityˡ ⟩
-          id ∘ η counit (L.F₀ A) ∘ L.F₁ (η unit A) ≈˘⟨ ⇐.commute (η unit A , id) ⟩
+          id ∘ η counit (L.F₀ A) ∘ L.F₁ (η unit A) ≈˘⟨ ⇐.commute (η unit A , id) C.Equiv.refl ⟩
           ⇐.η (A , L.F₀ A) ⟨$⟩ (R.F₁ id C.∘ C.id C.∘ η unit A)
                                                    ≈⟨ cong (⇐.η (A , L.F₀ A)) (C.Equiv.trans (MR.elimˡ C R.identity) C.identityˡ) ⟩
-          ⇐.η (A , L.F₀ A) ⟨$⟩ η unit A            ≈⟨ isoˡ ⟩
+          ⇐.η (A , L.F₀ A) ⟨$⟩ η unit A            ≈⟨ isoˡ refl ⟩
           id
                                                    ∎
       ; zag    = λ {B} →
@@ -142,10 +142,10 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
             open MR C
         in begin
           R.F₁ (η counit B) ∘ η unit (R.F₀ B)      ≈˘⟨ refl⟩∘⟨ identityʳ ⟩
-          R.F₁ (η counit B) ∘ η unit (R.F₀ B) ∘ id ≈˘⟨ ⇒.commute (id , η counit B) ⟩
+          R.F₁ (η counit B) ∘ η unit (R.F₀ B) ∘ id ≈˘⟨ ⇒.commute (id , η counit B) D.Equiv.refl ⟩
           ⇒.η (R.F₀ B , B) ⟨$⟩ (η counit B D.∘ D.id D.∘ L.F₁ id)
                                                    ≈⟨ cong (⇒.η (R.F₀ B , B)) (MR.elimʳ D (MR.elimʳ D L.identity)) ⟩
-          ⇒.η (R.F₀ B , B) ⟨$⟩ η counit B          ≈⟨ isoʳ ⟩
+          ⇒.η (R.F₀ B , B) ⟨$⟩ η counit B          ≈⟨ isoʳ refl ⟩
           id                                       ∎
       }
       where module i {X} = Iso (iso X)
@@ -180,13 +180,13 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
           lower (unitη Y ⟨$⟩ lift D.id) ∘ f
             ≈⟨ introˡ R.identity ⟩
           R.F₁ D.id ∘ lower (unitη Y ⟨$⟩ lift D.id) ∘ f
-            ≈˘⟨ lower (⇒.commute (f , D.id)) ⟩
+            ≈˘⟨ lower (⇒.commute (f , D.id) (lift D.Equiv.refl)) ⟩
           lower (⇒.η (X , L.F₀ Y) ⟨$⟩ lift (D.id D.∘ D.id D.∘ L.F₁ f))
             ≈⟨ lower (cong (⇒.η (X , L.F₀ Y)) (lift (D.Equiv.trans D.identityˡ D.identityˡ))) ⟩
           lower (⇒.η (X , L.F₀ Y) ⟨$⟩ lift (L.F₁ f))
             ≈⟨ lower (cong (⇒.η (X , L.F₀ Y)) (lift (MR.introʳ D (MR.elimʳ D L.identity)))) ⟩
           lower (⇒.η (X , L.F₀ Y) ⟨$⟩ lift (L.F₁ f D.∘ D.id D.∘ L.F₁ id))
-            ≈⟨ lower (⇒.commute (C.id , L.F₁ f)) ⟩
+            ≈⟨ lower (⇒.commute (C.id , L.F₁ f) (lift D.Equiv.refl)) ⟩
           R.F₁ (L.F₁ f) ∘ lower (⇒.η (X , L.F₀ X) ⟨$⟩ lift D.id) ∘ id
             ≈⟨ refl⟩∘⟨ identityʳ ⟩
           F₁ (R ∘F L) f ∘ lower (unitη X ⟨$⟩ lift D.id)                ∎
@@ -205,13 +205,13 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
           lower (⇐.η (R.F₀ Y , Y) ⟨$⟩ lift C.id) ∘ L.F₁ (R.F₁ f)
             ≈˘⟨ identityˡ ⟩
           id ∘ lower (⇐.η (R.F₀ Y , Y) ⟨$⟩ lift C.id) ∘ L.F₁ (R.F₁ f)
-            ≈˘⟨ lower (⇐.commute (R.F₁ f , D.id)) ⟩
+            ≈˘⟨ lower (⇐.commute (R.F₁ f , D.id) (lift C.Equiv.refl)) ⟩
           lower (⇐.η (R.F₀ X , Y) ⟨$⟩ lift (R.F₁ id C.∘ C.id C.∘ R.F₁ f))
             ≈⟨ lower (cong (⇐.η (R.F₀ X , Y)) (lift (C.Equiv.trans (MR.elimˡ C R.identity) C.identityˡ))) ⟩
           lower (⇐.η (R.F₀ X , Y) ⟨$⟩ lift (R.F₁ f))
             ≈⟨ lower (cong (⇐.η (R.F₀ X , Y)) (lift (MR.introʳ C C.identityˡ))) ⟩
           lower (⇐.η (R.F₀ X , Y) ⟨$⟩ lift (R.F₁ f C.∘ C.id C.∘ C.id))
-            ≈⟨ lower (⇐.commute (C.id , f)) ⟩
+            ≈⟨ lower (⇐.commute (C.id , f) (lift C.Equiv.refl)) ⟩
           f ∘ lower (⇐.η (R.F₀ X , X) ⟨$⟩ lift C.id) ∘ L.F₁ C.id
             ≈⟨ refl⟩∘⟨ elimʳ L.identity ⟩
           f ∘ lower (⇐.η (R.F₀ X , X) ⟨$⟩ lift C.id)
@@ -234,11 +234,11 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
           lower (counitη (L.F₀ A) ⟨$⟩ lift C.id) ∘ L.F₁ (η unit A)
             ≈˘⟨ identityˡ ⟩
           id ∘ lower (counitη (L.F₀ A) ⟨$⟩ lift C.id) ∘ L.F₁ (η unit A)
-            ≈˘⟨ lower (⇐.commute (η unit A , id)) ⟩
+            ≈˘⟨ lower (⇐.commute (η unit A , id) (lift C.Equiv.refl)) ⟩
           lower (⇐.η (A , L.F₀ A) ⟨$⟩ lift (R.F₁ id C.∘ C.id C.∘ lower (⇒.η (A , L.F₀ A) ⟨$⟩ lift id)))
             ≈⟨ lower (cong (⇐.η (A , L.F₀ A)) (lift (C.Equiv.trans (MR.elimˡ C R.identity) C.identityˡ))) ⟩
           lower (⇐.η (A , L.F₀ A) ⟨$⟩ (⇒.η (A , L.F₀ A) ⟨$⟩ lift id))
-            ≈⟨ lower (isoˡ) ⟩
+            ≈⟨ lower (isoˡ (lift refl)) ⟩
           id ∎
       ; zag    = λ {B} →
         let open C
@@ -249,11 +249,11 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
           R.F₁ (lower (⇐.η (R.F₀ B , B) ⟨$⟩ lift id)) ∘ lower (⇒.η (R.F₀ B , L.F₀ (R.F₀ B)) ⟨$⟩ lift D.id)
             ≈˘⟨ refl⟩∘⟨ identityʳ ⟩
           R.F₁ (lower (⇐.η (R.F₀ B , B) ⟨$⟩ lift id)) ∘ lower (⇒.η (R.F₀ B , L.F₀ (R.F₀ B)) ⟨$⟩ lift D.id) ∘ id
-            ≈˘⟨ lower (⇒.commute (id , η counit B)) ⟩
+            ≈˘⟨ lower (⇒.commute (id , η counit B) (lift D.Equiv.refl)) ⟩
           lower (⇒.η (R.F₀ B , B) ⟨$⟩ lift (lower (⇐.η (R.F₀ B , B) ⟨$⟩ lift id) D.∘ D.id D.∘ L.F₁ id))
             ≈⟨ lower (cong (⇒.η (R.F₀ B , B)) (lift (MR.elimʳ D (MR.elimʳ D L.identity)))) ⟩
           lower (⇒.η (R.F₀ B , B) ⟨$⟩ lift (lower (⇐.η (R.F₀ B , B) ⟨$⟩ lift id)))
-            ≈⟨ lower isoʳ ⟩
+            ≈⟨ lower (isoʳ (lift refl)) ⟩
           id ∎
       }
       where open NaturalTransformation

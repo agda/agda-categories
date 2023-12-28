@@ -91,10 +91,9 @@ module _ (o : Level) where
     { F₀ = proj₁
     ; F₁ = λ f → record
         { to = from f ⟨$⟩_
-        ; cong = Func.cong (from f)
-        }
-    ; identity = λ { {(S , _)} → Setoid.refl S }
-    ; homomorphism = λ {_} {_} {Z} → Setoid.refl (proj₁ Z)
+        ; cong = Func.cong (from f) }
+    ; identity = id→
+    ; homomorphism = λ { {f = f} {g} x≈y → Func.cong (from g) (Func.cong (from f) x≈y)}
     ; F-resp-≈ = _≃_.from-≈
     }
 
@@ -107,12 +106,12 @@ module _ (o : Level) where
       ; cong = λ { (inj₁ x≈y) → inj₁ (Func.cong (A.₁ X≅Y) x≈y )
                  ; (inj₂ x≈y) → inj₂ (Func.cong (B.₁ X≅Y) x≈y)}
       }
-    ; identity = λ { {S , n , pf} {inj₁ x} → inj₁ (A.identity {x = x})
-                   ; {S , n , pf} {inj₂ y} → inj₂ B.identity} 
-    ; homomorphism = λ { {x = inj₁ x} → inj₁ A.homomorphism
-                       ; {x = inj₂ y} → inj₂ B.homomorphism}
-    ; F-resp-≈ = λ { f≈g {inj₁ x} → inj₁ (A.F-resp-≈ f≈g)
-                   ; f≈g {inj₂ y} → inj₂ (B.F-resp-≈ f≈g)}
+    ; identity = λ { (inj₁ x) → inj₁ (A.identity x)
+                   ; (inj₂ x) → inj₂ (B.identity x)}
+    ; homomorphism = λ { (inj₁ x) → inj₁ (A.homomorphism x)
+                       ; (inj₂ x) → inj₂ (B.homomorphism x) }
+    ; F-resp-≈ = λ { f≃g (inj₁ x) → inj₁ (A.F-resp-≈ f≃g x)
+                   ; f≃g (inj₂ x) → inj₂ (B.F-resp-≈ f≃g x)}
     }
     where
     module A = Functor A
@@ -126,9 +125,9 @@ module _ (o : Level) where
       { to = ×.map (A.₁ X≅Y ⟨$⟩_) (B.₁ X≅Y ⟨$⟩_)
       ; cong = ×.map (Func.cong (A.₁ X≅Y)) (Func.cong (B.₁ X≅Y))
       }
-    ; identity = A.identity , B.identity
-    ; homomorphism = A.homomorphism , B.homomorphism
-    ; F-resp-≈ = λ f≈g → (A.F-resp-≈ f≈g) , (B.F-resp-≈ f≈g)
+    ; identity = ×.map A.identity B.identity
+    ; homomorphism = ×.map A.homomorphism B.homomorphism
+    ; F-resp-≈ = λ f≈g → ×.map (A.F-resp-≈ f≈g) (B.F-resp-≈ f≈g)
     }
     where
     module A = Functor A

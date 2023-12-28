@@ -66,7 +66,7 @@ RA⇒RMonad {C = C} {D} {E} {J} RA = record
   ; unit = λ {c} → ⇐.η (c , F₀ L c) ⟨$⟩ D.id {F₀ L c}
   ; extend = λ {X} {Y} k → F₁ R (⇒.η (X , F₀ L Y) ⟨$⟩ k)
   ; identityʳ = idʳ
-  ; identityˡ = R.F-resp-≈ (iso.isoʳ _) ○ R.identity
+  ; identityˡ = R.F-resp-≈ (iso.isoʳ _ D.Equiv.refl) ○ R.identity
   ; assoc = a
   ; sym-assoc = sym a
   ; extend-≈ = λ k≈h → F-resp-≈ R (Func.cong (⇒.η _) k≈h)
@@ -88,9 +88,9 @@ RA⇒RMonad {C = C} {D} {E} {J} RA = record
   idʳ {x} {y} {k} = begin
     R.₁ (⇒.η (x , L.₀ y) ⟨$⟩ k) ∘ (⇐.η (x , L.₀ x) ⟨$⟩ D.id)               ≈⟨ introʳ J.identity ⟩
     (R.₁ (⇒.η (x , L.₀ y) ⟨$⟩ k) ∘ (⇐.η (x , L.₀ x) ⟨$⟩ D.id)) ∘ J.₁ E.id  ≈⟨ assoc ⟩
-    R.₁ (⇒.η (x , L.₀ y) ⟨$⟩ k) ∘ (⇐.η (x , L.₀ x) ⟨$⟩ D.id) ∘ J.₁ E.id    ≈⟨ ⇐.sym-commute (E.id , ⇒.η (x , L.₀ y) ⟨$⟩ k) ⟩
+    R.₁ (⇒.η (x , L.₀ y) ⟨$⟩ k) ∘ (⇐.η (x , L.₀ x) ⟨$⟩ D.id) ∘ J.₁ E.id    ≈⟨ ⇐.sym-commute (E.id , ⇒.η (x , L.₀ y) ⟨$⟩ k) (D.Equiv.refl) ⟩
     ⇐.η (x , L.₀ y) ⟨$⟩ ((⇒.η (x , L.₀ y) ⟨$⟩ k) D.∘ D.id D.∘ L.F₁ E.id)   ≈⟨ Func.cong (⇐.η _) (MR.elimʳ D (MR.elimʳ D L.identity)) ⟩
-    ⇐.η (x , L.₀ y) ⟨$⟩ (⇒.η (x , L.₀ y) ⟨$⟩ k)                            ≈⟨ iso.isoˡ (x , _) ⟩
+    ⇐.η (x , L.₀ y) ⟨$⟩ (⇒.η (x , L.₀ y) ⟨$⟩ k)                            ≈⟨ iso.isoˡ (x , _) Equiv.refl ⟩
     k            ∎
   a : {x y z : E.Obj} {k : J.₀ x ⇒ R.₀ (L.₀ y)} {l : J.₀ y ⇒ R.₀ (L.₀ z)} →
       R.₁ (⇒.η (x , L.₀ z) ⟨$⟩ R.₁ (⇒.η (y , L.₀ z) ⟨$⟩ l) ∘ k) ≈
@@ -107,7 +107,7 @@ RA⇒RMonad {C = C} {D} {E} {J} RA = record
     lemma : ⇒.η xz ⟨$⟩ R.₁ (⇒.η yz ⟨$⟩ l) ∘ k D.≈ (⇒.η yz ⟨$⟩ l) D.∘ (⇒.η xy ⟨$⟩ k)
     lemma = DR.begin
       ⇒.η xz ⟨$⟩ R.₁ (⇒.η yz ⟨$⟩ l) ∘ k                DR.≈⟨ Func.cong (⇒.η xz) (refl⟩∘⟨ introʳ J.identity ) ⟩
-      ⇒.η xz ⟨$⟩ R.₁ (⇒.η yz ⟨$⟩ l) ∘ (k ∘ J.₁ E.id)   DR.≈⟨ ⇒.commute (E.id , ⇒.η yz ⟨$⟩ l) ⟩
+      ⇒.η xz ⟨$⟩ R.₁ (⇒.η yz ⟨$⟩ l) ∘ (k ∘ J.₁ E.id)   DR.≈⟨ ⇒.commute (E.id , ⇒.η yz ⟨$⟩ l) Equiv.refl ⟩
       (⇒.η yz ⟨$⟩ l) D.∘ (⇒.η xy ⟨$⟩ k) D.∘ L.₁ E.id   DR.≈⟨ D.sym-assoc  ⟩
       ((⇒.η yz ⟨$⟩ l) D.∘ (⇒.η xy ⟨$⟩ k)) D.∘ L.₁ E.id DR.≈⟨ MR.elimʳ D L.identity ⟩
       (⇒.η yz ⟨$⟩ l) D.∘ (⇒.η xy ⟨$⟩ k) DR.∎
@@ -119,15 +119,15 @@ RA⇒RMonad {C = C} {D} {E} {J} RA = record
   ; Hom-NI = record
     { F⇒G = ntHelper record
       { η = λ _ → record { to = Radjunct ; cong = ∘-resp-≈ʳ ∙ L.F-resp-≈ }
-      ; commute = λ _ → Radjunct-comm C.Equiv.refl
+      ; commute = λ _ x≈y → Radjunct-comm x≈y
       }
     ; F⇐G = ntHelper record
       { η = λ _ → record { to = Ladjunct ; cong = C.∘-resp-≈ˡ ∙ R.F-resp-≈ }
-      ; commute = λ _ → Ladjunct-comm Equiv.refl
+      ; commute = λ _ x≈y → Ladjunct-comm x≈y
       }
     ; iso = λ X → record
-      { isoˡ = LRadjunct≈id
-      ; isoʳ = RLadjunct≈id
+      { isoˡ = λ eq → LRadjunct≈id ○ eq
+      ; isoʳ = Equiv.trans RLadjunct≈id
       }
     }
   }

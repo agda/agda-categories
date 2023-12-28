@@ -37,9 +37,12 @@ Cat→Cat′ C = record
     { to = uncurry _∘_
     ; cong = uncurry ∘-resp-≈
     }
-  ; ⊚-assoc = assoc
-  ; unitˡ = identityˡ
-  ; unitʳ = identityʳ
+  ; ⊚-assoc = λ { {x = (x₁ , x₂) , x₃} {(y₁ , y₂) , y₃} ((x₁≈y₁ , x₂≈y₂) , x₃≈y₃) → begin
+    (x₁ ∘ x₂) ∘ x₃ ≈⟨ assoc {h = x₁} ⟩
+    x₁ ∘ x₂ ∘ x₃   ≈⟨ (x₁≈y₁ ⟩∘⟨ x₂≈y₂ ⟩∘⟨ x₃≈y₃) ⟩
+    y₁ ∘ y₂ ∘ y₃   ∎ }
+  ; unitˡ = λ { {_} {_} {_ , x} {_ , y} (_ , x≈y) → Equiv.trans (identityˡ {f = x}) x≈y }
+  ; unitʳ = λ z → Equiv.trans identityʳ (proj₁ z)
   }
   where
   open SCategory C
@@ -52,11 +55,11 @@ Cat′→Cat 𝓒 = record
   ; _≈_ = λ {a} {b} f g → _≈_ (hom a b) f g
   ; id = id ⟨$⟩ lift tt
   ; _∘_ = λ f g → ⊚ ⟨$⟩ (f , g)
-  ; assoc = λ {A} {B} {C} {D} → ⊚-assoc
-  ; sym-assoc = λ {A} {B} {C} {D} → sym (hom A D) ⊚-assoc
-  ; identityˡ = λ {A} {B} → unitˡ
-  ; identityʳ = λ {A} {B} → unitʳ
-  ; identity² = λ {A} → unitˡ -- Enriched doesn't have a unit²
+  ; assoc = λ {A} {B} {C} {D} → ⊚-assoc ((refl (hom C D) , refl (hom B C)) , refl (hom A B))
+  ; sym-assoc = λ {A} {B} {C} {D} → sym (hom A D) (⊚-assoc ((refl (hom C D) , refl (hom B C)) , refl (hom A B)))
+  ; identityˡ = λ {A} {B} → unitˡ (lift tt , refl (hom A B))
+  ; identityʳ = λ {A} {B} → unitʳ (refl (hom A B) , lift tt)
+  ; identity² = λ {A} → unitˡ (lift tt , refl (hom A A)) -- Enriched doesn't have a unit²
   ; equiv = λ {A} {B} → record
     { refl = refl (hom A B)
     ; sym = sym (hom A B)

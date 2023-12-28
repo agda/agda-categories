@@ -26,10 +26,7 @@ open import Categories.NaturalTransformation using (NaturalTransformation; _∘�
 open import Categories.NaturalTransformation.Equivalence using (_≃_; ≃-isEquivalence)
 open import Categories.NaturalTransformation.Properties using (appˡ-nat; appʳ-nat)
 
-import Relation.Binary.Reasoning.Setoid as SetoidR
-
 open Setoid renaming (_≈_ to _[[_≈_]])
-open Func
 
 record Profunctor {o ℓ e} {o′ ℓ′ e′} ℓ″ e″
          (C : Category o ℓ e) (D : Category o′ ℓ′ e′)
@@ -44,6 +41,7 @@ record Profunctor {o ℓ e} {o′ ℓ′ e′} ℓ″ e″
 
   cod : Category o′ ℓ′ e′
   cod = D
+
 private variable
   o ℓ e o′ ℓ′ e′ o″ ℓ″ e″ o‴ ℓ‴ e‴ ℓP eP ℓQ eQ : Level
   C D E : Category o ℓ e
@@ -89,7 +87,7 @@ _ⓟ′_ {C = C} {D} {E} P Q = record
           P.₁ˡ g ⟨$⟩ in-side y
         ≈⟨ cong (P.₁ˡ g) (FormalComposite.Twines.in-tertwines h) ⟩
           P.₁ˡ g ⟨$⟩ (P.₁ʳ (FormalComposite.Twines.twiner h) ⟨$⟩ in-side x)
-        ≈˘⟨ [ P.bimodule ]-commute ⟩
+        ≈˘⟨ [ P.bimodule ]-commute (refl (P.₀ _)) ⟩
           P.₁ʳ (FormalComposite.Twines.twiner h) ⟨$⟩ (P.₁ˡ g ⟨$⟩ in-side x)
         ∎
       ; out-ertwines = let open SetoidR (Q.₀ (rendezvous x , _)) in
@@ -97,7 +95,7 @@ _ⓟ′_ {C = C} {D} {E} P Q = record
           Q.₁ʳ f ⟨$⟩ out-side x
         ≈⟨ cong (Q.₁ (D.id , f)) (FormalComposite.Twines.out-ertwines h) ⟩
           Q.₁ʳ f ⟨$⟩ (Q.₁ˡ (FormalComposite.Twines.twiner h) ⟨$⟩ out-side y)
-        ≈⟨ [ Q.bimodule ]-commute ⟩
+        ≈⟨ [ Q.bimodule ]-commute (refl (Q.₀ _)) ⟩
           Q.₁ˡ (FormalComposite.Twines.twiner h) ⟨$⟩ (Q.₁ʳ f ⟨$⟩ out-side y)
         ∎
       }
@@ -111,12 +109,7 @@ _ⓟ′_ {C = C} {D} {E} P Q = record
     { F⇒G = record
       { η = λ x → record
         { twiner = D.id
-        ; in-tertwines = 
-          let module SR = SetoidR (P.₀ (e , rendezvous x)) in
-          let open SR in begin
-          in-side x                                                     ≈˘⟨ P.identity ⟩
-          to (P.F₁ (E.id , D.id)) (in-side x)                           ≈˘⟨ cong (P.F₁ (E.id , D.id)) P.identity ⟩
-          to (P.F₁ (E.id , D.id)) (to (P.F₁ (E.id , D.id)) (in-side x)) ∎
+        ; in-tertwines = Setoid.sym (P.₀ _) (P.identity (P.identity (Setoid.refl (P.₀ _))))
         ; out-ertwines = Setoid.refl (Q.₀ _)
         }
       ; commute = λ f → id-comm-sym D
@@ -126,12 +119,7 @@ _ⓟ′_ {C = C} {D} {E} P Q = record
       { η = λ x → record
         { twiner = D.id
         ; in-tertwines = Setoid.refl (P.₀ _)
-        ; out-ertwines = 
-          let module SR = SetoidR (Q.₀ (rendezvous x , c)) in
-          let open SR in begin
-          out-side x                                                     ≈˘⟨ Q.identity ⟩
-          to (Q.F₁ (D.id , C.id)) (out-side x)                           ≈˘⟨ cong (Q.F₁ (D.id , C.id)) Q.identity ⟩
-          to (Q.F₁ (D.id , C.id)) (to (Q.F₁ (D.id , C.id)) (out-side x)) ∎
+        ; out-ertwines = Setoid.sym (Q.₀ _) (Q.identity (Q.identity (Setoid.refl (Q.₀ _))))
         }
       ; commute = λ f → id-comm-sym D
       ; sym-commute = λ f → id-comm D
@@ -151,14 +139,20 @@ _ⓟ′_ {C = C} {D} {E} P Q = record
         { twiner = D.id
         ; in-tertwines = let open SetoidR (P.₀ (eZ , rendezvous X)) in
           begin
-            P.₁ˡ eg ⟨$⟩ (P.₁ˡ ef ⟨$⟩ in-side X)                    ≈˘⟨ P.homomorphismˡ ⟩
-            P.₁ˡ (P.cod [ ef ∘ eg ]) ⟨$⟩ in-side X                ≈˘⟨ P.identity ⟩
-            P.₁ʳ D.id ⟨$⟩ (P.₁ˡ (P.cod [ ef ∘ eg ]) ⟨$⟩ in-side X) ∎
+            P.₁ˡ eg ⟨$⟩ (P.₁ˡ ef ⟨$⟩ in-side X)
+          ≈˘⟨ P.homomorphismˡ (Setoid.refl (P.₀ _)) ⟩
+            P.₁ˡ (P.cod [ ef ∘ eg ]) ⟨$⟩ in-side X
+          ≈˘⟨ P.identity (Setoid.refl (P.₀ _)) ⟩
+            P.₁ʳ D.id ⟨$⟩ (P.₁ˡ (P.cod [ ef ∘ eg ]) ⟨$⟩ in-side X)
+          ∎
         ; out-ertwines = let open SetoidR (Q.₀ (rendezvous X , cZ)) in
           begin
-            Q.₁ʳ (C [ cg ∘ cf ]) ⟨$⟩ out-side X                ≈⟨ Q.homomorphismʳ ⟩
-            Q.₁ʳ cg ⟨$⟩ (Q.₁ʳ cf ⟨$⟩ out-side X)                ≈˘⟨ Q.identity ⟩
-            Q.₁ˡ D.id ⟨$⟩ (Q.₁ʳ cg ⟨$⟩ (Q.₁ʳ cf ⟨$⟩ out-side X)) ∎
+            Q.₁ʳ (C [ cg ∘ cf ]) ⟨$⟩ out-side X
+          ≈⟨ Q.homomorphismʳ (Setoid.refl (Q.₀ _)) ⟩
+            Q.₁ʳ cg ⟨$⟩ (Q.₁ʳ cf ⟨$⟩ out-side X)
+          ≈˘⟨ Q.identity (Setoid.refl (Q.₀ _)) ⟩
+            Q.₁ˡ D.id ⟨$⟩ (Q.₁ʳ cg ⟨$⟩ (Q.₁ʳ cf ⟨$⟩ out-side X))
+          ∎
         }
       ; commute = λ f → id-comm-sym D
       ; sym-commute = λ f → id-comm D
@@ -169,17 +163,17 @@ _ⓟ′_ {C = C} {D} {E} P Q = record
         ; in-tertwines = let open SetoidR (P.₀ (eZ , rendezvous X)) in
           begin
             P.₁ˡ (E [ ef ∘ eg ]) ⟨$⟩ in-side X
-          ≈⟨ P.homomorphismˡ ⟩
+          ≈⟨ P.homomorphismˡ (Setoid.refl (P.₀ _)) ⟩
             P.₁ˡ eg ⟨$⟩ (P.₁ˡ ef ⟨$⟩ in-side X)
-          ≈˘⟨ P.identity ⟩
+          ≈˘⟨ P.identity (Setoid.refl (P.₀ _)) ⟩
             P.₁ʳ D.id ⟨$⟩ (P.₁ˡ eg ⟨$⟩ (P.₁ˡ ef ⟨$⟩ in-side X))
           ∎
         ; out-ertwines = let open SetoidR (Q.₀ (rendezvous X , cZ)) in
           begin
             Q.₁ʳ cg ⟨$⟩ (Q.₁ʳ cf ⟨$⟩ out-side X)
-          ≈˘⟨ Q.homomorphismʳ ⟩
+          ≈˘⟨ Q.homomorphismʳ (Setoid.refl (Q.₀ _)) ⟩
             Q.₁ʳ (C [ cg ∘ cf ]) ⟨$⟩ out-side X
-          ≈˘⟨ Q.identity ⟩
+          ≈˘⟨ Q.identity (Setoid.refl (Q.₀ _)) ⟩
             Q.₁ˡ D.id ⟨$⟩ (Q.₁ʳ (C [ cg ∘ cf ]) ⟨$⟩ out-side X)
           ∎
         }
@@ -195,19 +189,8 @@ _ⓟ′_ {C = C} {D} {E} P Q = record
     { F⇒G = record
       { η = λ X → record
         { twiner = D.id
-        ; in-tertwines = 
-          let module SR = SetoidR (P.₀ (eB , rendezvous X)) in
-          let open SR in begin
-          to (P.F₁ (eg , D.id)) (in-side X)                           ≈⟨ P.F-resp-≈ ((E.Equiv.sym ef≈eg) , D.Equiv.refl) ⟩
-          to (P.F₁ (ef , D.id)) (in-side X)                           ≈˘⟨ P.identity ⟩
-          to (P.F₁ (E.id , D.id)) (to (P.F₁ (ef , D.id)) (in-side X)) ∎
-           -- Setoid.sym (P.₀ _) P.identity
-        ; out-ertwines = 
-          let module SR = SetoidR (Q.₀ (rendezvous X , cB)) in
-          let open SR in begin
-          to (Q.F₁ (D.id , cf)) (out-side X)                           ≈⟨ Q.F-resp-≈ (D.Equiv.refl , cf≈cg) ⟩
-          to (Q.F₁ (D.id , cg)) (out-side X)                           ≈˘⟨ Q.identity ⟩
-          to (Q.F₁ (D.id , C.id)) (to (Q.F₁ (D.id , cg)) (out-side X)) ∎ -- Setoid.sym (Q.₀ _) (Q.identity (Q.resp-≈ʳ (C.Equiv.sym cf≈cg) (Setoid.refl (Q.₀ _))))
+        ; in-tertwines = Setoid.sym (P.₀ _) (P.identity (P.resp-≈ˡ ef≈eg (Setoid.refl (P.₀ _))))
+        ; out-ertwines = Setoid.sym (Q.₀ _) (Q.identity (Q.resp-≈ʳ (C.Equiv.sym cf≈cg) (Setoid.refl (Q.₀ _))))
         }
       ; commute = λ f → id-comm-sym D
       ; sym-commute = λ f → id-comm D
@@ -215,18 +198,8 @@ _ⓟ′_ {C = C} {D} {E} P Q = record
     ; F⇐G = record
       { η = λ X → record
         { twiner = D.id
-        ; in-tertwines = 
-          let module SR = SetoidR (P.₀ (eB , rendezvous X)) in
-          let open SR in begin
-          to (P.F₁ (ef , D.id)) (in-side X)                         ≈⟨ P.F-resp-≈ (ef≈eg , D.Equiv.refl) ⟩
-          to (P.F₁ (eg , D.id)) (in-side X)                         ≈˘⟨ P.identity ⟩
-          to (P.F₁ (E.id , D.id)) (to (P.F₁ (eg , D.id)) (in-side X)) ∎ 
-        ; out-ertwines = 
-          let module SR = SetoidR (Q.₀ (rendezvous X , cB)) in
-          let open SR in begin
-          to (Q.F₁ (D.id , cg)) (out-side X)                           ≈⟨ Q.F-resp-≈ (D.Equiv.refl , C.Equiv.sym cf≈cg) ⟩
-          to (Q.F₁ (D.id , cf)) (out-side X)                           ≈˘⟨ Q.identity ⟩
-          to (Q.F₁ (D.id , C.id)) (to (Q.F₁ (D.id , cf)) (out-side X)) ∎
+        ; in-tertwines = Setoid.sym (P.₀ _) (P.identity (P.resp-≈ˡ (E.Equiv.sym ef≈eg) (Setoid.refl (P.₀ _))))
+        ; out-ertwines = Setoid.sym (Q.₀ _) (Q.identity (Q.resp-≈ʳ cf≈cg (Setoid.refl (Q.₀ _))))
         }
       ; commute = λ f → id-comm-sym D
       ; sym-commute = λ f → id-comm D
@@ -252,22 +225,15 @@ _▻_ {oC} {ℓC} {eC} {oD} {ℓD} {eD} {oE} {ℓE} {eE} {ℓP} {eP} {ℓQ} {eQ}
         (LiftSetoids (ℓC ⊔ ℓP) (eC ⊔ eP) ∘ˡ appʳ-nat Q.bimodule cf)
         ∘ᵥ ϕ
         ∘ᵥ (LiftSetoids (ℓC ⊔ ℓQ) (eC ⊔ eQ) ∘ˡ appʳ-nat P.bimodule df)
-    ; cong = λ {σ τ} σ≈τ {e x} → lift (cong (Q.₁ʳ cf) (lower σ≈τ))
+    ; cong = λ {σ τ} σ≈τ {e x y} x≈y →
+        lift (cong (Q.₁ʳ cf) (lower (σ≈τ (lift (cong (P.₁ʳ df) (lower x≈y))))))
     }
-  ; identity = λ { {(d , c)} {σ} {e} {x} → lift 
-    let module SR = SetoidR (Q.₀ (e , c)) in let open SR in begin
-    to (Q.F₁ (E.id , C.id))
-      (lower (to (η σ e) (lift (to (P.F₁ (E.id , D.id)) (lower x))))) ≈⟨ Q.identity ⟩
-    lower (to (η σ e) (lift (to (P.F₁ (E.id , D.id)) (lower x))))     ≈⟨ lower (cong (η σ e) (lift P.identity)) ⟩
-    lower (to (η σ e) x)                                              ∎}
-  ; homomorphism = λ { {(dX , cX)} {(dY , cY)} {(dZ , cZ)} {(df , cf)} {(dg , cg)} {σ} {e} {x} →
-      let module S = Setoid (Q.₀ (e , cZ)) in
-      lift (S.trans Q.homomorphismʳ
-                    (cong (Q.₁ (E.id , cg)) (cong (Q.₁ (E.id , cf)) (lower (cong (η σ e) (lift P.homomorphismʳ))))))}
-  ; F-resp-≈ = λ { {_} {(dB , cB)} {(df , cf)} {(dg , cg)} (df≈dg , cf≈cg) {σ} {e} {x} →
-      let module S = Setoid (Q.₀ (e , cB)) in
-      lift (S.trans (Q.resp-≈ʳ cf≈cg)
-                    (cong (Q.₁ (E.id , cg)) (lower (cong (η σ e) (lift (P.resp-≈ʳ df≈dg))))))}
+  ; identity = λ {(d , c)} {σ τ} σ≈τ {e x y} x≈y →
+      lift (Q.identity (lower (σ≈τ (lift (P.identity (lower x≈y))))))
+  ; homomorphism = λ {(dX , cX) (dY , cY) (dZ , cZ) (df , cf) (dg , cg) σ τ} σ≈τ {e x y} x≈y →
+      lift (Q.homomorphismʳ (lower (σ≈τ (lift (P.homomorphismʳ (lower x≈y))))))
+  ; F-resp-≈ = λ {(dA , cA) (dB , cB) (df , cf) (dg , cg)} (df≈dg , cf≈cg) {σ τ} σ≈τ {e x y} x≈y →
+      lift (Q.resp-≈ʳ cf≈cg (lower (σ≈τ (lift (P.resp-≈ʳ df≈dg (lower x≈y))))))
   })
   where
   module P = Profunctor P
@@ -275,7 +241,6 @@ _▻_ {oC} {ℓC} {eC} {oD} {ℓD} {eD} {oE} {ℓE} {eE} {ℓP} {eP} {ℓQ} {eQ}
   module C = Category C
   module D = Category D
   module E = Category E
-  open NaturalTransformation using (η)
 
 _◅_ : ∀ {oC ℓC eC oD ℓD eD oE ℓE eE ℓP eP ℓQ eQ}
   {C : Category oC ℓC eC} {D : Category oD ℓD eD} {E : Category oE ℓE eE}
@@ -289,19 +254,15 @@ _◅_ {oC} {ℓC} {eC} {oD} {ℓD} {eD} {oE} {ℓE} {eE} {ℓP} {eP} {ℓQ} {eQ}
         (LiftSetoids (ℓE ⊔ ℓQ) (eE ⊔ eQ) ∘ˡ appˡ-nat P.bimodule ef)
         ∘ᵥ ϕ
         ∘ᵥ (LiftSetoids (ℓE ⊔ ℓP) (eE ⊔ eP) ∘ˡ appˡ-nat Q.bimodule df)
-    ; cong = λ {σ} {τ} σ≈τ {e} {x} → lift (cong (P.₁ˡ ef) (lower σ≈τ ))
+    ; cong = λ {σ τ} σ≈τ {e x y} x≈y →
+        lift (cong (P.₁ˡ ef) (lower (σ≈τ (lift (cong (Q.₁ˡ df) (lower x≈y))))))
     }
-  ; identity = λ { {(d , c)} {σ} {e} {x} → 
-      let module S = Setoid (P.₀ (d , e)) in
-      lift (S.trans P.identity
-                   (lower (cong (η σ e) (lift Q.identity))))}
-  ; homomorphism = λ { {_} {_} {(eZ , dZ)} {(ef , _)} {(eg , _)} {σ} {c} → 
-      let module S = Setoid (P.₀ (eZ , c)) in
-      lift (S.trans P.homomorphismˡ
-                    (cong (P.F₁ (eg , C.id)) (cong (P.F₁ (ef , C.id)) (lower (cong (η σ c) (lift Q.homomorphismˡ))))))} 
-  ; F-resp-≈ = λ { {(eA , dA)} {(eB , dB)} {(ef , df)} {(eg , dg)} (ef≈eg , df≈dg) {σ} {c} →
-      let module S = Setoid (P.₀ (eB , c)) in
-      lift (S.trans (P.resp-≈ˡ ef≈eg) (cong (P.₁ (eg , C.id)) (lower (cong (η σ c) (lift (Q.resp-≈ˡ df≈dg))))))} 
+  ; identity = λ {(d , c)} {σ τ} σ≈τ {e x y} x≈y →
+      lift (P.identity (lower (σ≈τ (lift (Q.identity (lower x≈y))))))
+  ; homomorphism = λ {(eX , dX) (eY , dY) (eZ , dZ) (ef , df) (eg , dg) σ τ} σ≈τ {c x y} x≈y →
+      lift (P.homomorphismˡ (lower (σ≈τ (lift (Q.homomorphismˡ (lower x≈y))))))
+  ; F-resp-≈ = λ {(eA , dA) (eB , dB) (ef , df) (eg , dg)} (ef≈eg , df≈dg) {σ τ} σ≈τ {c x y} x≈y →
+      lift (P.resp-≈ˡ ef≈eg (lower (σ≈τ (lift (Q.resp-≈ˡ df≈dg (lower x≈y))))))
   })
   where
   module P = Profunctor P
@@ -309,7 +270,6 @@ _◅_ {oC} {ℓC} {eC} {oD} {ℓD} {eD} {oE} {ℓE} {eE} {ℓP} {eP} {ℓQ} {eQ}
   module C = Category C
   module D = Category D
   module E = Category E
-  open NaturalTransformation using (η)
 
 module _ {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ e) where
   private
@@ -331,19 +291,20 @@ module _ {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ e) where
       { to = λ x → g ∘ x ∘ F₁ f
       ; cong  = λ x → begin _ ≈⟨ refl⟩∘⟨ x ⟩∘⟨refl ⟩ _ ∎
       }
-    ; identity = λ {x} {y} → begin
+    ; identity = λ {x} {y} {y'} y≈y' → begin
         D.id ∘ y ∘ F₁ C.id ≈⟨ D.identityˡ ⟩
         y ∘ F₁ C.id        ≈⟨ elimʳ identity ⟩
-        y                  ∎
-    ; homomorphism = λ { {f = f0 , f1} {g = g0 , g1} {x} → begin
-        (g1 ∘ f1) ∘ x ∘ F₁ (f0 C.∘ g0)  ≈⟨ refl⟩∘⟨ refl⟩∘⟨ F.homomorphism ⟩
-        (g1 ∘ f1) ∘ x ∘ F₁ f0 ∘ F₁ g0   ≈⟨ refl⟩∘⟨ D.sym-assoc ⟩
-        (g1 ∘ f1) ∘ (x ∘ F₁ f0) ∘ F₁ g0 ≈⟨ Equiv.sym assoc²'' ⟩
-        g1 ∘ (f1 ∘ x ∘ F₁ f0) ∘ F₁ g0   ∎
+        y                  ≈⟨ y≈y' ⟩
+        y'                 ∎
+    ; homomorphism = λ { {f = f0 , f1} {g = g0 , g1} {x} {y} x≈y → begin
+        (g1 ∘ f1) ∘ x ∘ F₁ (f0 C.∘ g0)  ≈⟨ refl⟩∘⟨ x≈y ⟩∘⟨ F.homomorphism ⟩
+        (g1 ∘ f1) ∘ y ∘ F₁ f0 ∘ F₁ g0   ≈⟨ refl⟩∘⟨ D.sym-assoc ⟩
+        (g1 ∘ f1) ∘ (y ∘ F₁ f0) ∘ F₁ g0 ≈⟨ Equiv.sym assoc²'' ⟩
+        g1 ∘ (f1 ∘ y ∘ F₁ f0) ∘ F₁ g0   ∎
       }
-    ; F-resp-≈ = λ { {f = f0 , f1} {g = g0 , g1} (f0≈g0 , f1≈g1) {x} → begin
-        f1 ∘ x ∘ F₁ f0 ≈⟨ f1≈g1 ⟩∘⟨ refl⟩∘⟨ F-resp-≈ f0≈g0 ⟩
-        g1 ∘ x ∘ F₁ g0 ∎
+    ; F-resp-≈ = λ { {f = f0 , f1} {g = g0 , g1} (f0≈g0 , f1≈g1) {x} {y} x≈y → begin
+        f1 ∘ x ∘ F₁ f0 ≈⟨ f1≈g1 ⟩∘⟨ x≈y ⟩∘⟨ F-resp-≈ f0≈g0 ⟩
+        g1 ∘ y ∘ F₁ g0 ∎
       }
     }
     where
@@ -361,19 +322,20 @@ module _ {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ e) where
       { to = λ x → F₁ g ∘ x ∘ f
       ; cong  = λ x → begin _ ≈⟨ refl⟩∘⟨ x ⟩∘⟨refl ⟩ _ ∎
       }
-    ; identity = λ {x} {y} → begin
+    ; identity = λ {x} {y} {y'} y≈y' → begin
         F₁ C.id ∘ y ∘ D.id ≈⟨ elimˡ identity ⟩
         y ∘ D.id           ≈⟨ D.identityʳ ⟩
-        y                  ∎
-    ; homomorphism = λ { {f = f0 , f1} {g = g0 , g1} {x} → begin
-        F₁ (g1 C.∘ f1) ∘ x ∘ f0 ∘ g0    ≈⟨ F.homomorphism ⟩∘⟨refl ⟩
-        (F₁ g1 ∘ F₁ f1) ∘ x ∘ f0 ∘ g0   ≈⟨ refl⟩∘⟨ D.sym-assoc ⟩
-        (F₁ g1 ∘ F₁ f1) ∘ (x ∘ f0) ∘ g0 ≈⟨ Equiv.sym assoc²'' ⟩
-        F₁ g1 ∘ (F₁ f1 ∘ x ∘ f0) ∘ g0   ∎
+        y                  ≈⟨ y≈y' ⟩
+        y'                 ∎
+    ; homomorphism = λ { {f = f0 , f1} {g = g0 , g1} {x} {y} x≈y → begin
+        F₁ (g1 C.∘ f1) ∘ x ∘ f0 ∘ g0    ≈⟨ F.homomorphism ⟩∘⟨ x≈y ⟩∘⟨refl ⟩
+        (F₁ g1 ∘ F₁ f1) ∘ y ∘ f0 ∘ g0   ≈⟨ refl⟩∘⟨ D.sym-assoc ⟩
+        (F₁ g1 ∘ F₁ f1) ∘ (y ∘ f0) ∘ g0 ≈⟨ Equiv.sym assoc²'' ⟩
+        F₁ g1 ∘ (F₁ f1 ∘ y ∘ f0) ∘ g0   ∎
       }
-    ; F-resp-≈ = λ { {f = f0 , f1} {g = g0 , g1} (f0≈g0 , f1≈g1) {x} → begin
-        F₁ f1 ∘ x ∘ f0 ≈⟨ F-resp-≈ f1≈g1 ⟩∘⟨ refl⟩∘⟨ f0≈g0 ⟩
-        F₁ g1 ∘ x ∘ g0 ∎
+    ; F-resp-≈ = λ { {f = f0 , f1} {g = g0 , g1} (f0≈g0 , f1≈g1) {x} {y} x≈y → begin
+        F₁ f1 ∘ x ∘ f0 ≈⟨ F-resp-≈ f1≈g1 ⟩∘⟨ x≈y ⟩∘⟨ f0≈g0 ⟩
+        F₁ g1 ∘ y ∘ g0 ∎
       }
     }
     where
@@ -391,7 +353,7 @@ homProf {ℓ = ℓ} {e} C D = record
   ; sym-assoc = λ { {f = f} {g} {h} → sym-assoc-lemma {f = f} {g} {h}}
   ; identityˡ = λ { {f = f} → id-lemmaˡ {f = f} }
   ; identityʳ = λ { {f = f} → id-lemmaʳ {f = f} }
-  ; identity² = λ {A} {x} → Setoid.refl (Functor.F₀ (Profunctor.bimodule A) x)
+  ; identity² = λ z → z
   ; equiv = ≃-isEquivalence
   ; ∘-resp-≈ = λ { {f = f} {h} {g} {i} eq eq' → ∘ᵥ-resp-≃ {f = f} {h} {g} {i} eq eq' }
   }

@@ -61,8 +61,8 @@ module _ {o ℓ : Level} (T : Monad (Spans.Spans (pullback o ℓ))) where
     id⇒ : (X : Carrier T.C) → Hom X X
     id⇒ X = record
       { hom = arr T.η ⟨$⟩ X
-      ; dom-eq = commute-dom T.η
-      ; cod-eq = commute-cod T.η
+      ; dom-eq = commute-dom T.η (refl T.C)
+      ; cod-eq = commute-cod T.η (refl T.C)
       }
 
     _×ₚ_ : ∀ {A B C} → (f : Hom B C) → (g : Hom A B) → FiberProduct (Span.cod T.T) (Span.dom T.T)
@@ -81,11 +81,11 @@ module _ {o ℓ : Level} (T : Monad (Spans.Spans (pullback o ℓ))) where
     _∘⇒_ {A = A} {C = C} f g = record
       { hom = arr T.μ ⟨$⟩ (f ×ₚ g)
       ; dom-eq = begin
-        Span.dom T.T ⟨$⟩ (arr T.μ ⟨$⟩ (f ×ₚ g)) ≈⟨ commute-dom T.μ {f ×ₚ g} ⟩
+        Span.dom T.T ⟨$⟩ (arr T.μ ⟨$⟩ (f ×ₚ g)) ≈⟨ (commute-dom T.μ {f ×ₚ g} {f ×ₚ g} (HomSetoid.refl , HomSetoid.refl)) ⟩
         Span.dom T.T ⟨$⟩ hom g                  ≈⟨ dom-eq g ⟩
         A                                       ∎
       ; cod-eq = begin
-        Span.cod T.T ⟨$⟩ (arr T.μ ⟨$⟩ (f ×ₚ g)) ≈⟨ commute-cod T.μ {f ×ₚ g} ⟩
+        Span.cod T.T ⟨$⟩ (arr T.μ ⟨$⟩ (f ×ₚ g)) ≈⟨ commute-cod T.μ {f ×ₚ g} {f ×ₚ g} (HomSetoid.refl , HomSetoid.refl) ⟩
         Span.cod T.T ⟨$⟩ hom f                  ≈⟨ cod-eq f ⟩
         C                                       ∎
       }
@@ -111,16 +111,16 @@ module _ {o ℓ : Level} (T : Monad (Spans.Spans (pullback o ℓ))) where
             }
       in begin
         arr T.μ ⟨$⟩ ((h ∘⇒ g) ×ₚ f) ≈⟨ cong (arr T.μ) (HomSetoid.refl , cong (arr T.μ) (HomSetoid.refl , HomSetoid.refl)) ⟩
-        arr T.μ ⟨$⟩ _                ≈⟨ T.sym-assoc {f×ₚ⟨g×ₚh⟩} ⟩
+        arr T.μ ⟨$⟩ _                ≈⟨ T.sym-assoc {f×ₚ⟨g×ₚh⟩} {f×ₚ⟨g×ₚh⟩} ((HomSetoid.refl , HomSetoid.refl) , HomSetoid.refl) ⟩
         arr T.μ ⟨$⟩ _                ≈⟨ (cong (arr T.μ) (cong (arr T.μ) (HomSetoid.refl , HomSetoid.refl) , HomSetoid.refl)) ⟩
         arr T.μ ⟨$⟩ (h ×ₚ (g ∘⇒ f)) ∎
     ; identityˡ = λ {A} {B} {f} → begin
       arr T.μ ⟨$⟩ (id⇒ B ×ₚ f) ≈⟨ cong (arr T.μ) (HomSetoid.refl , cong (arr T.η) (ObjSetoid.sym (cod-eq f))) ⟩
-      arr T.μ ⟨$⟩ _             ≈⟨ T.identityʳ ⟩
+      arr T.μ ⟨$⟩ _             ≈⟨ T.identityʳ HomSetoid.refl ⟩
       hom f                     ∎
     ; identityʳ = λ {A} {B} {f} → begin
       arr T.μ ⟨$⟩ (f ×ₚ id⇒ A) ≈⟨ cong (arr T.μ) (cong (arr T.η) (ObjSetoid.sym (dom-eq f)) , HomSetoid.refl) ⟩
-      arr T.μ ⟨$⟩ _             ≈⟨ T.identityˡ ⟩
+      arr T.μ ⟨$⟩ _             ≈⟨ T.identityˡ HomSetoid.refl ⟩
       hom f                     ∎
     ; equiv = record
       { refl = HomSetoid.refl

@@ -44,9 +44,9 @@ module _ {o ℓ} where
             { to = λ x → f ⟨$⟩ x , g ⟨$⟩ x
             ; cong  = λ eq → cong f eq , cong g eq
             }
-          ; project₁ = A.refl
-          ; project₂ = B.refl
-          ; unique   = λ eq₁ eq₂ → A.sym eq₁ , B.sym eq₂
+          ; project₁ = λ {_ h i} eq → cong h eq
+          ; project₂ = λ {_ h i} eq → cong i eq
+          ; unique   = λ {W h i j} eq₁ eq₂ eq → A.sym (eq₁ (Setoid.sym W eq)) , B.sym (eq₂ (Setoid.sym W eq))
           }
       }
     }
@@ -68,10 +68,10 @@ module _ {o ℓ} where
           { to = [ f ⟨$⟩_ , g ⟨$⟩_ ]
           ; cong = λ { (inj₁ x) → cong f x ; (inj₂ x) → cong g x }
           }
-        ; inject₁ = λ {C} → Setoid.refl C
-        ; inject₂ = λ {C} → Setoid.refl C
-        ; unique = λ {C} h₁≈f h₂≈g → λ { {inj₁ x} → Setoid.sym C h₁≈f
-                                       ; {inj₂ y} → Setoid.sym C h₂≈g}
+        ; inject₁ = λ {_} {f} → cong f
+        ; inject₂ = λ {_} {_} {g} → cong g
+        ; unique = λ { {C} h≈f h≈g (inj₁ x) → Setoid.sym C (h≈f (Setoid.sym A x))
+                     ; {C} h≈f h≈g (inj₂ x) → Setoid.sym C (h≈g (Setoid.sym B x)) }
         }
       }
     }

@@ -12,7 +12,7 @@ open import Function.Base renaming (id to idf; _∘_ to _⊚_)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Function.Construct.Identity using () renaming (function to idF)
 open import Function.Construct.Composition using (function)
-open import Function.Construct.Setoid using (_∙_) renaming (setoid to _⇨_)
+open import Function.Construct.Setoid using (_∙_) renaming (function to _⇨_)
 open import Function.Structures using (IsInverse)
 open import Relation.Binary
   using (Rel; Setoid; module Setoid; Reflexive; Symmetric; Transitive)
@@ -66,14 +66,14 @@ module _ {a b c d : Level} where
             {bx : Setoid.Carrier C} → Setoid._≈_ D ((reindex Y g≈f ∙ transport F′ x) ⟨$⟩ bx) (transport F x ⟨$⟩ bx)
 
   fam-id : {A : Fam} → Hom A A
-  fam-id {A} = fhom (idF (U A)) (λ x → idF (T A x)) λ p → Setoid.refl (T A _)
+  fam-id {A} = fhom (idF (U A)) (λ x → idF (T A x)) λ p x≈y → cong (reindex A p) x≈y
   comp : {A B C : Fam} → Hom B C → Hom A B → Hom A C
   comp {B = B} {C} (fhom map₀ trans₀ coh₀) (fhom map₁ trans₁ coh₁) =
     fhom (map₀ ∙ map₁) (λ x → trans₀ (map₁ ⟨$⟩ x) ∙ (trans₁ x))
-         λ {a} {b} p {x} →
+         λ {a} {b} p {x} {y} x≈y →
            let open Setoid (T C (map₀ ∙ map₁ ⟨$⟩ a)) renaming (trans to _⟨≈⟩_) in
-           cong (trans₀ (map₁ ⟨$⟩ a)) (coh₁ p) ⟨≈⟩
-           coh₀ (cong map₁ p)
+           cong (trans₀ (map₁ ⟨$⟩ a)) (coh₁ p x≈y) ⟨≈⟩
+           coh₀ (cong map₁ p) (Setoid.refl (T B (map₁ ⟨$⟩ b)))
 
   ≈≈-refl : ∀ {A B} → Reflexive (_≈≈_ {A} {B})
   ≈≈-refl {B = B} = feq refl (reindex-refl B)
@@ -104,7 +104,7 @@ module _ {a b c d : Level} where
         λ {x} → let open Setoid (T C (map (comp f g) ⟨$⟩ x)) renaming (trans to _⟨≈⟩_; sym to ≈sym) in
         reindex-trans C (cong (map f) g≈i) f≈h ⟨≈⟩
         (cong (reindex C (cong (map f) g≈i)) t-f≈h ⟨≈⟩
-        (≈sym (transport-coh {B} {C} f g≈i) ⟨≈⟩
+        (≈sym (transport-coh {B} {C} f g≈i (Setoid.refl (T B (map i ⟨$⟩ x)))) ⟨≈⟩
         cong (transport f (map g ⟨$⟩ x)) t-g≈i))
     where
     open _≈≈_

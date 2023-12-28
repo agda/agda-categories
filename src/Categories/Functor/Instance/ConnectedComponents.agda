@@ -20,7 +20,26 @@ open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIs
     { to = Functor.F₀ F
     ; cong = ST.gmap (Functor.F₀ F) (Functor.F₁ F)
     }
-  ; identity = λ {A} → Plus⇔.forth (Category.id A)
-  ; homomorphism = λ {_ _ Z F G x} → Plus⇔.forth (Category.id Z)
-  ; F-resp-≈ = λ {A} {B} {f} {g} α {a} → Plus⇔.forth (NaturalIsomorphism.⇒.η α a)
+  ; identity = λ x → x
+  ; homomorphism = λ {_ _ _ F G} → ST.gmap
+      (Functor.F₀ G ∙ Functor.F₀ F)
+      (Functor.F₁ G ∙ Functor.F₁ F)
+  ; F-resp-≈ = my-resp _ _
   }
+  where
+  my-resp : ∀ {A B : Category _ _ _} (f g : Functor A B)
+    (f≅g : NaturalIsomorphism f g) {x y} →
+    Plus⇔ (Category._⇒_ A) x y →
+    Plus⇔ (Category._⇒_ B) (Functor.F₀ f x) (Functor.F₀ g y)
+  my-resp {A} {B} f g f≅g {x} {y} (Plus⇔.forth m)
+    = Plus⇔.forth (B [ NaturalIsomorphism.⇒.η f≅g _ ∘ Functor.F₁ f m ])
+  my-resp {A} {B} f g f≅g {x} {y} (Plus⇔.back m)
+    = Plus⇔.back (B [ Functor.F₁ f m ∘ NaturalIsomorphism.⇐.η f≅g _ ])
+  my-resp {A} {B} f g f≅g {x} {y} (Plus⇔.forth⁺ m ms)
+    = Plus⇔.forth⁺
+        (B [ NaturalIsomorphism.⇒.η f≅g _ ∘ Functor.F₁ f m ])
+        (ST.gmap (Functor.F₀ g) (Functor.F₁ g) ms)
+  my-resp {A} {B} f g f≅g {x} {y} (Plus⇔.back⁺ m ms)
+    = Plus⇔.back⁺
+        (B [ Functor.F₁ f m ∘ NaturalIsomorphism.⇐.η f≅g _ ])
+        (ST.gmap (Functor.F₀ g) (Functor.F₁ g) ms)
