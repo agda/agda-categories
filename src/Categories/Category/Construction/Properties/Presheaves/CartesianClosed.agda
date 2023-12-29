@@ -49,19 +49,22 @@ module HasClosed {o ℓ e} (C : Category o ℓ e) where
             { to = λ where (g , S) → α.η X ⟨$⟩ (f ∘ g , S)
             ; cong  = λ where (eq₁ , eq₂) → cong (α.η X) (∘-resp-≈ʳ eq₁ , eq₂)
             }
-          ; commute = λ { {Z} {W} g {h , x} {i , y} (eq₁ , eq₂) →
+          ; commute = λ { {Z} {W} g {h , x} →
             let open SetoidR (F.₀ W)
             in begin
               α.η W ⟨$⟩ (f ∘ C.id ∘ h ∘ g , G.₁ g ⟨$⟩ x)   ≈⟨ cong (α.η W) (Equiv.trans (pullˡ id-comm) (center Equiv.refl) , Setoid.refl (G.₀ W)) ⟩
-              α.η W ⟨$⟩ (C.id ∘ (f ∘ h) ∘ g , G.₁ g ⟨$⟩ x) ≈⟨ α.commute g (∘-resp-≈ʳ eq₁ , eq₂) ⟩
-              F.₁ g ⟨$⟩ (α.η Z ⟨$⟩ (f ∘ i , y))            ∎ }
+              α.η W ⟨$⟩ (C.id ∘ (f ∘ h) ∘ g , G.₁ g ⟨$⟩ x) ≈⟨ α.commute g ⟩
+              F.₁ g ⟨$⟩ (α.η Z ⟨$⟩ (f ∘ h , x))            ∎ }
           }
-        ; cong  = λ eq (eq₁ , eq₂) → eq (∘-resp-≈ʳ eq₁ , eq₂)
+        ; cong  = λ eq → eq
         }
-      ; identity     = λ eq (eq₁ , eq₂) → eq (Equiv.trans identityˡ eq₁ , eq₂)
-      ; homomorphism = λ eq (eq₁ , eq₂) → eq (pullʳ (∘-resp-≈ʳ eq₁) , eq₂)
-      ; F-resp-≈     = λ where eq eq′ (eq₁ , eq₂) → eq′ (∘-resp-≈ eq eq₁ , eq₂)
-      } where open MR C
+      ; identity     = λ {A} {α} {x} → cong (η α x) (identityˡ , Setoid.refl (G.F₀ x))
+      ; homomorphism = λ {_} {_} {_} {f} {g} {α} {A} → cong (η α _) (assoc , Setoid.refl (G.F₀ _))
+      ; F-resp-≈     = λ eq {α} {A} {x} → cong (η α _) (∘-resp-≈ˡ eq , Setoid.refl (G.F₀ _))
+      }
+      where
+        open MR C
+        open NaturalTransformation
 
 module IsCartesianClosed {o} (C : Category o o o) where
   private
@@ -92,16 +95,22 @@ module IsCartesianClosed {o} (C : Category o o o) where
         { to = λ { (α , x) →
           let module α = NaturalTransformation α
           in α.η X ⟨$⟩ (C.id , x) }
-        ; cong  = λ where (eq₁ , eq₂) → eq₁ (C.Equiv.refl , eq₂)
+        ; cong  = λ { {α₁ , f₁} {α₂ , f₂} (eq₁ , eq₂) → 
+            let module SR = SetoidR (F.F₀ X) in
+            let open SR
+                open NaturalTransformation
+            in begin
+              to (η α₁ X) (C.id , f₁) ≈⟨ eq₁ ⟩
+              to (η α₂ X) (C.id , f₁) ≈⟨ cong (η α₂ X) (C.Equiv.refl , eq₂) ⟩
+              to (η α₂ X) (C.id , f₂) ∎ }
         }
-      ; commute = λ { {Y} {Z} f {α , x} {β , y} (eq₁ , eq₂) →
+      ; commute = λ { {Y} {Z} f {α , x} →
         let module α = NaturalTransformation α
-            module β = NaturalTransformation β
             open SetoidR (F.₀ Z)
         in begin
-        α.η Z ⟨$⟩ (f C.∘ C.id , G.₁ f ⟨$⟩ x)          ≈⟨ eq₁ ((C.Equiv.trans id-comm (C.Equiv.sym C.identityˡ)) , Setoid.refl (G.₀ Z)) ⟩
-        β.η Z ⟨$⟩ (C.id C.∘ C.id C.∘ f , G.₁ f ⟨$⟩ x) ≈⟨ β.commute f (C.Equiv.refl , eq₂) ⟩
-        F.₁ f ⟨$⟩ (β.η Y ⟨$⟩ (C.id , y))              ∎ }
+        α.η Z ⟨$⟩ (f C.∘ C.id , G.₁ f ⟨$⟩ x)          ≈⟨ cong (α.η Z) (C.Equiv.trans id-comm (C.Equiv.sym C.identityˡ) , Setoid.refl (G.F₀ Z)) ⟩
+        α.η Z ⟨$⟩ (C.id C.∘ C.id C.∘ f , G.₁ f ⟨$⟩ x) ≈⟨ α.commute f ⟩
+        F.₁ f ⟨$⟩ (α.η Y ⟨$⟩ (C.id , x))              ∎ }
       }
     ; curry        = λ {F G H} α →
       let module F = Functor F
@@ -113,54 +122,44 @@ module IsCartesianClosed {o} (C : Category o o o) where
         { to = λ x → ntHelper record
           { η       = λ Y → record
             { to = λ where (f , y) → α.η Y ⟨$⟩ (F.₁ f ⟨$⟩ x , y)
-            ; cong  = λ where (eq₁ , eq₂) → cong (α.η _) (F.F-resp-≈ eq₁ (Setoid.refl (F.₀ _)) , eq₂)
+            ; cong  = λ {(eq₁ , eq₂) → cong (α.η Y) ((F.F-resp-≈ eq₁) , eq₂) }
             }
-          ; commute = λ { {Y} {Z} f {g , y} {h , z} (eq₁ , eq₂) →
+          ; commute = λ { {Y} {Z} f {g , y} →
             let open SetoidR (H.₀ Z)
                 open Setoid  (G.₀ Z)
             in begin
               α.η Z ⟨$⟩ (F.F₁ (C.id C.∘ g C.∘ f) ⟨$⟩ x , G.F₁ f ⟨$⟩ y)
-                ≈⟨ cong (α.η Z) (F.F-resp-≈ C.identityˡ (Setoid.refl (F.₀ X)) , refl) ⟩
+                ≈⟨ cong (α.η Z) (F.F-resp-≈ C.identityˡ , refl) ⟩
               α.η Z ⟨$⟩ (F.F₁ (g C.∘ f) ⟨$⟩ x , G.F₁ f ⟨$⟩ y)
-                ≈⟨ cong (α.η Z) (F.homomorphism (Setoid.refl (F.₀ X)) , refl) ⟩
+                ≈⟨ cong (α.η Z) (F.homomorphism , refl) ⟩
               α.η Z ⟨$⟩ (F.F₁ f ⟨$⟩ (F.F₁ g ⟨$⟩ x) , G.F₁ f ⟨$⟩ y)
-                ≈⟨ α.commute f (F.F-resp-≈ eq₁ (Setoid.refl (F.₀ X)) , eq₂) ⟩
-              H.F₁ f ⟨$⟩ (α.η Y ⟨$⟩ (F.F₁ h ⟨$⟩ x , z))
+                ≈⟨ α.commute f ⟩
+              H.F₁ f ⟨$⟩ (α.η Y ⟨$⟩ (F.F₁ g ⟨$⟩ x , y))
                 ∎ }
           }
-          ; cong  = λ where eq (eq₁ , eq₂) → cong (α.η _) (F.F-resp-≈ eq₁ eq , eq₂)
+          ; cong  = λ eq → cong (α.η _) ((cong (F.F₁ _) eq) , (Setoid.refl (G.F₀ _)))
         }
-      ; commute = λ { {X} {Y} f {x} {y} eq {Z} {g , z} {h , w} (eq₁ , eq₂) →
-        let open SetoidR (F.₀ Z)
-            helper : g C.≈ h → Setoid._≈_ (F.₀ X) x y →
-                     Setoid._≈_ (F.₀ Z) (F.₁ g ⟨$⟩ (F.₁ f ⟨$⟩ x)) (F.₁ (f C.∘ h) ⟨$⟩ y)
-            helper eq eq′ = begin
-              F.₁ g ⟨$⟩ (F.₁ f ⟨$⟩ x) ≈⟨ F.F-resp-≈ eq (Setoid.refl (F.₀ Y)) ⟩
-              F.₁ h ⟨$⟩ (F.₁ f ⟨$⟩ x) ≈˘⟨ F.homomorphism (Setoid.sym (F.₀ X) eq′) ⟩
-              F.₁ (f C.∘ h) ⟨$⟩ y     ∎
-        in cong (α.η _) (helper eq₁ eq , eq₂) }
+      ; commute = λ { {X} {Y} f {x} {A} {g , z} →
+            let open Setoid (F.₀ A) in
+            cong (NaturalTransformation.η α A) (sym (F.homomorphism) , Setoid.refl (G.F₀ A)) }
       }
-    ; eval-comp    = λ {F G H} {α} → λ { (eq₁ , eq₂) →
+    ; eval-comp    = λ {F G H} {α} →
       let module H  = Functor H
           module α  = NaturalTransformation α
-      in cong (α.η _) (H.identity eq₁ , eq₂) }
-    ; curry-unique = λ {F G H} {α β} eq {X} {x y} eq₁ → λ { {Y} {f , z} {g , w} (eq₂ , eq₃) →
+      in cong (α.η _) (H.identity , (Setoid.refl (Functor.F₀ G _)))
+    ; curry-unique = λ {F G H} {α β} eq {X} {x y} → λ { {f , z} → 
       let module F = Functor F
           module G = Functor G
-          module H = Functor H
           module α = NaturalTransformation α
           module β = NaturalTransformation β
           module αXx = NaturalTransformation (α.η X ⟨$⟩ x)
-          open Setoid  (H.₀ Y)
-          open SetoidR (G.₀ Y)
+          open Setoid  (Functor.₀ H y)
+          open SetoidR (G.₀ y)
       in begin
-        αXx.η Y ⟨$⟩ (f , z)
-          ≈⟨ cong (αXx.η _) (C.Equiv.sym C.identityʳ , refl) ⟩
-        αXx.η Y ⟨$⟩ (f C.∘ C.id , z)
-          ≈⟨ α.sym-commute f (Setoid.refl (F.₀ X)) (C.Equiv.refl , refl) ⟩
-        NaturalTransformation.η (α.η Y ⟨$⟩ (F.F₁ f ⟨$⟩ x)) Y ⟨$⟩ (C.id , z)
-          ≈⟨ eq (F.F-resp-≈ eq₂ eq₁ , eq₃) ⟩
-        β.η Y ⟨$⟩ (F.F₁ g ⟨$⟩ y , w)
+        αXx.η y ⟨$⟩ (f , z)           ≈⟨ cong (αXx.η _) (C.Equiv.sym C.identityʳ , refl) ⟩
+        αXx.η y ⟨$⟩ (f C.∘ C.id , z)  ≈⟨ α.sym-commute f ⟩
+        NaturalTransformation.η (α.η y ⟨$⟩ (F.F₁ f ⟨$⟩ x)) y ⟨$⟩ (C.id , z) ≈⟨ eq ⟩
+        β.η y ⟨$⟩ (F.F₁ f ⟨$⟩ x , z)
           ∎ }
     }
     where

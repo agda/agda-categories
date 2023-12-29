@@ -49,18 +49,18 @@ pullback _ _ {X = X} {Y = Y} {Z = Z} f g = record
     ; p₁ = record { to = elem₁ ; cong = proj₁ }
     ; p₂ = record { to = elem₂ ; cong = proj₂ }
     ; isPullback = record
-      { commute = λ {p} {q} (eq₁ , eq₂) → trans Z (cong f eq₁) (commute q)
+      { commute = λ { {fg} → commute fg}
       ; universal = λ {A} {h₁} {h₂} eq → record
         { to = λ a → record
           { elem₁ = h₁ ⟨$⟩ a
           ; elem₂ = h₂ ⟨$⟩ a
-          ; commute = eq (refl A)
+          ; commute = eq
           }
         ; cong = < cong h₁ , cong h₂ >
         }
-      ; unique = λ eq₁ eq₂ x≈y → eq₁ x≈y , eq₂ x≈y
-      ; p₁∘universal≈h₁ = λ {_} {h₁} {_} eq → cong h₁ eq
-      ; p₂∘universal≈h₂ = λ {_} {_} {h₂} eq → cong h₂ eq
+      ; unique = λ eq₁ eq₂ → eq₁ , eq₂
+      ; p₁∘universal≈h₁ = X.refl
+      ; p₂∘universal≈h₂ = Y.refl
       }
     }
     where

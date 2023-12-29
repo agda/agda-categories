@@ -12,7 +12,7 @@ open import Data.Nat.Base using (ℕ)
 open import Data.Product using (∃; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_; map; zip; swap; map₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Function.Bundles using (Func; _⟨$⟩_)
-open import Function.Construct.Setoid using () renaming (function to _⇨_)
+open import Function.Construct.Setoid using () renaming (setoid to _⇨_)
 open import Level using (Level; Lift)
 open import Relation.Binary using (Setoid; Rel; REL; IsEquivalence)
 import Relation.Binary.PropositionalEquality.Core as P
@@ -50,7 +50,7 @@ module _ ℓ where
            { to = λ y → let x , _ = surj y in x
            ; cong = λ {x}{y} x≡y → P.subst (λ z → [ X ][ proj₁ (surj x) ≈ proj₁ (surj z) ]) x≡y (refl X)
            }
-           , λ {x}{y} x≡y → let z , eq = surj x in P.trans eq x≡y
+           , λ {x} → proj₂ (surj x)
     }
 
   entire : {A B : Setoid ℓ ℓ} → (R : Relation S A B) → Set ℓ
@@ -96,7 +96,7 @@ module _ ℓ where
     { to = λ n → let x , eq = surj n in x
     ; cong = λ {n}{m} eq → let x , _ = surj n; y , _ = surj m in P.subst (λ m → [ A ][ proj₁ (surj n) ≈ proj₁ (surj m) ]) eq (refl A) 
     }
-    , λ {n}{m} n≡m → let _ , eq = surj n in P.trans eq n≡m
+    , λ {n} → proj₂ (surj n)
 
   -- principle of unique choice for setoids
   -- https://ncatlab.org/nlab/show/principle+of+unique+choice

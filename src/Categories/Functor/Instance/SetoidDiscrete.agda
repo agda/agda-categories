@@ -50,11 +50,11 @@ Discrete {o} {ℓ} {e} = record
        }
        where open Setoid Z
      ExtensionalityNI : {A B : Setoid o ℓ} {f g : Func A B} → let open Setoid A in
-      ({x y : Carrier} → x ≈ y → Setoid._≈_ B (f ⟨$⟩ x) (g ⟨$⟩ y)) →
+      ({x : Carrier} → Setoid._≈_ B (f ⟨$⟩ x) (g ⟨$⟩ x)) →
       NaturalIsomorphism (DiscreteFunctor f) (DiscreteFunctor g)
-     ExtensionalityNI {A} {B} cong≈ = record
-       { F⇒G = record { η = λ X → cong≈ A.refl }
-       ; F⇐G = record { η = λ X → B.sym (cong≈ A.refl) }
+     ExtensionalityNI {A} {B} f≈g = record
+       { F⇒G = record { η = λ X → f≈g {X} }
+       ; F⇐G = record { η = λ X → B.sym (f≈g {X}) }
        }
        where
        module A = Setoid A

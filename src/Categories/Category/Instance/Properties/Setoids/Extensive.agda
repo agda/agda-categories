@@ -9,7 +9,7 @@ open import Data.Sum.Relation.Binary.Pointwise using (inj₁; inj₂; _⊎ₛ_; 
 open import Data.Unit.Polymorphic using (tt)
 open import Function.Bundles using (Func; _⟨$⟩_)
 open import Function.Construct.Composition using (function)
-open import Function.Construct.Setoid using () renaming (function to _⇨_)
+open import Function.Construct.Setoid using () renaming (setoid to _⇨_)
 open import Relation.Binary using (Setoid)
 import  Relation.Binary.Reasoning.Setoid as SetoidR
 
@@ -34,24 +34,21 @@ Setoids-Extensive ℓ = record
    ; pullback₂ = λ f → pullback ℓ ℓ f i₂
    ; pullback-of-cp-is-cp = λ f → record
         { [_,_] = λ g h → copair f g h
-        ; inject₁ = λ {X g h z} eq →
-             trans (isEquivalence X) (copair-inject₁ f g h z) (cong g eq)
-        ; inject₂ = λ {X g h z} eq →
-             trans (isEquivalence X) (copair-inject₂ f g h z) (cong h eq)
-        ; unique = λ {X u g h} feq₁ feq₂ {z} eq →
-             trans (isEquivalence X) (copair-unique f g h u z (λ {z} → feq₁ {z}) (λ {z} → feq₂ {z})) (cong u eq)
+        ; inject₁ = λ {X g h z} → copair-inject₁ f g h z
+        ; inject₂ = λ {X g h z} → copair-inject₂ f g h z
+        ; unique = λ {X u g h} feq₁ feq₂ {z} → copair-unique f g h u z feq₁ feq₂
         }
-   ; pullback₁-is-mono = λ _ _ eq x≈y → drop-inj₁ (eq x≈y)
-   ; pullback₂-is-mono = λ _ _ eq x≈y → drop-inj₂ (eq x≈y)
+   ; pullback₁-is-mono = λ _ _ eq → drop-inj₁ eq
+   ; pullback₂-is-mono = λ _ _ eq → drop-inj₂ eq
    ; disjoint = λ {A B} → record
-        { commute = λ { {()} _}
+        { commute = λ { {()}}
         ; universal = λ {C f g} eq → record
-           { to = λ z → conflict A B (eq {x = z} (refl (isEquivalence C)))
+           { to = λ z → conflict A B (eq {z})
            ; cong = λ z → tt
            }
-        ; unique = λ _ _ _ → tt
-        ; p₁∘universal≈h₁ = λ {_ _ _ eq} x≈y → conflict A B (eq x≈y)
-        ; p₂∘universal≈h₂ = λ {_ _ _ eq} x≈y → conflict A B (eq x≈y)
+        ; unique = λ _ _ → tt
+        ; p₁∘universal≈h₁ = λ {_ _ _ eq x} → conflict A B (eq {x})
+        ; p₂∘universal≈h₂ = λ {_ _ _ eq y} → conflict A B (eq {y})
         }
    }
      where
@@ -147,7 +144,7 @@ Setoids-Extensive ℓ = record
            copair ⟨$⟩ z                                XR.≈⟨ X.refl ⟩
            g ⊎⟶ h ⟨$⟩ (to-⊎ₛ z (f ⟨$⟩ z) A⊎B.refl)     XR.≈⟨ cong (g ⊎⟶ h) (to-⊎ₛ-cong fz≈w) ⟩
            g ⊎⟶ h ⟨$⟩ (to-⊎ₛ z (inj₁ x) fz≈w)         XR.≈⟨ X.refl ⟩
-           g ⟨$⟩ fb                                    XR.≈⟨ X.sym (feq₁ {x = fb} (C.refl , A.refl)) ⟩
+           g ⟨$⟩ fb                                    XR.≈⟨ X.sym (feq₁ {x = fb}) ⟩
            u ⟨$⟩ z                                     XR.∎
 
            where
@@ -157,7 +154,7 @@ Setoids-Extensive ℓ = record
            copair ⟨$⟩ z                                XR.≈⟨ X.refl ⟩
            g ⊎⟶ h ⟨$⟩ (to-⊎ₛ z (f ⟨$⟩ z) A⊎B.refl)     XR.≈⟨ cong (g ⊎⟶ h) (to-⊎ₛ-cong fz≈w) ⟩
            g ⊎⟶ h ⟨$⟩ (to-⊎ₛ z (inj₂ y) fz≈w)         XR.≈⟨ X.refl ⟩
-           h ⟨$⟩ fb                                    XR.≈⟨ X.sym (feq₂ {x = fb} {y = fb} (C.refl , B.refl)) ⟩
+           h ⟨$⟩ fb                                    XR.≈⟨ X.sym feq₂ ⟩
            u ⟨$⟩ z                                     XR.∎
            where
              module XR = SetoidR X
@@ -167,6 +164,6 @@ Setoids-Extensive ℓ = record
            [ A′ ⇨ X ][ u ∙ p₁ (pullback ℓ ℓ f i₁) ≈ g ] →
            [ B′ ⇨ X ][ u ∙ p₁ (pullback ℓ ℓ f i₂) ≈ h ] →
            [ X ][ copair ⟨$⟩ z ≈ u ⟨$⟩ z ]
-         copair-unique u z feq₁ feq₂ = copair-unique′ u z (λ {x} {y} → feq₁ {x} {y}) (λ {x} {y} → feq₂ {x} {y}) (f ⟨$⟩ z) A⊎B.refl
+         copair-unique u z feq₁ feq₂ = copair-unique′ u z feq₁ feq₂ (f ⟨$⟩ z) A⊎B.refl
 
        open Diagram

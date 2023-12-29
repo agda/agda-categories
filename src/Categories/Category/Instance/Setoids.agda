@@ -21,14 +21,14 @@ Setoids : ∀ c ℓ → Category (suc (c ⊔ ℓ)) (c ⊔ ℓ) (c ⊔ ℓ)
 Setoids c ℓ = record
   { Obj       = Setoid c ℓ
   ; _⇒_       = Func
-  ; _≈_       = λ {A} {B} f g → _≈_ (S.function A B) f g
+  ; _≈_       = λ {A} {B} f g → _≈_ (S.setoid A B) f g
   ; id        = Id.function _
   ; _∘_       = λ f g → Comp.function g f
-  ; assoc     = λ {A} {B} {C} {D} {f} {g} {h} x≈y → cong h $ cong g $ cong f x≈y
-  ; sym-assoc = λ {A} {B} {C} {D} {f} {g} {h} x≈y → cong h $ cong g $ cong f x≈y
-  ; identityˡ = λ {A} {B} {f} x≈y → cong f x≈y
-  ; identityʳ = λ {A} {B} {f} x≈y → cong f x≈y
-  ; identity² = λ x≈y → x≈y
-  ; equiv     = λ {A} {B} → isEquivalence (S.function A B)
-  ; ∘-resp-≈  = λ f≈f′ g≈g′ x≈y → f≈f′ (g≈g′ x≈y)
+  ; assoc     = λ {_} {_} {_} {D} → refl D
+  ; sym-assoc = λ {_} {_} {_} {D} → refl D
+  ; identityˡ = λ {_} {B} → refl B
+  ; identityʳ = λ {_} {B} → refl B
+  ; identity² = λ {A} → refl A
+  ; equiv     = λ {A} {B} → isEquivalence (S.setoid A B)
+  ; ∘-resp-≈  = λ {_} {_} {C} {f} {h} {g} {i} f≈h g≈i {x} → trans C f≈h (cong h g≈i)
   }

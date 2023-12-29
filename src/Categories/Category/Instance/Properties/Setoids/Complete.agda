@@ -10,9 +10,9 @@ open import Relation.Binary.Core using (Rel)
 open Func
 
 open import Categories.Category using (Category; _[_,_])
-open import Categories.Functor
-open import Categories.Category.Instance.Setoids
-open import Categories.Category.Complete
+open import Categories.Functor.Core using (Functor)
+open import Categories.Category.Instance.Setoids using (Setoids)
+open import Categories.Category.Complete using (Complete)
 
 import Categories.Category.Construction.Cones as Co
 
@@ -36,7 +36,7 @@ Setoids-Complete o ℓ e c ℓ′ {J} F =
           { to = λ { (S , _) → S j }
           ; cong  = λ eq → eq j
           }
-        ; commute = λ { {X} {Y} X⇒Y {_ , eq} {y} f≈g → F₀.trans Y (eq X⇒Y) (f≈g Y) }
+        ; commute = λ { {X} {Y} X⇒Y {_ , eq} → eq X⇒Y }
         }
       }
     ; ⊤-is-terminal = record
@@ -44,14 +44,12 @@ Setoids-Complete o ℓ e c ℓ′ {J} F =
         let module K = Cone K
         in record
         { arr     = record
-          { to = λ x → (λ j → K.ψ j ⟨$⟩ x) , λ f → K.commute f (Setoid.refl K.N)
+          { to = λ x → (λ j → K.ψ j ⟨$⟩ x) , λ f → K.commute f
           ; cong  = λ a≈b j → cong (K.ψ j) a≈b
           }
-        ; commute = λ x≈y → cong (K.ψ _) x≈y
+        ; commute = λ {X} → Setoid.refl (F₀ X)
         }
-      ; !-unique = λ {K} f x≈y j →
-        let module K = Cone K
-        in F₀.sym j (Cone⇒.commute f (Setoid.sym K.N x≈y))
+      ; !-unique = λ f j → F₀.sym j (Cone⇒.commute f)
       }
     }
   }

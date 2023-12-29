@@ -21,19 +21,17 @@ private
 Hom[A,C]⇒Hom[B,C] : {A B : Obj} → (A ⇒ B) → NaturalTransformation Hom[ C ][-, A ] Hom[ C ][-, B ]
 Hom[A,C]⇒Hom[B,C] {A} A⇒B = ntHelper record
   { η       = λ X → record { to = λ X⇒A → A⇒B ∘ X⇒A ; cong = ∘-resp-≈ʳ }
-  ; commute = λ f {g} {h} g≈h → begin
-      A⇒B ∘ id ∘ g ∘ f   ≈⟨ sym-assoc ⟩
-      (A⇒B ∘ id) ∘ g ∘ f ≈⟨ id-comm ⟩∘⟨ g≈h ⟩∘⟨refl ⟩
-      (id ∘ A⇒B) ∘ h ∘ f ≈⟨ pullʳ sym-assoc ⟩
-      id ∘ (A⇒B ∘ h) ∘ f ∎
+  ; commute = λ f {g} → begin
+      A⇒B ∘ id ∘ g ∘ f   ≈⟨ pullˡ id-comm ⟩
+      (id ∘ A⇒B) ∘ g ∘ f ≈⟨ pullʳ sym-assoc ⟩
+      id ∘ (A⇒B ∘ g) ∘ f ∎
   }
 
 Hom[C,A]⇒Hom[C,B] : {A B : Obj} → (B ⇒ A) → NaturalTransformation Hom[ C ][ A ,-] Hom[ C ][ B ,-]
 Hom[C,A]⇒Hom[C,B] {A} B⇒A = ntHelper record
   { η = λ X → record { to = λ A⇒X → A⇒X ∘ B⇒A ; cong = ∘-resp-≈ˡ }
-  ; commute = λ f {g} {h} g≈h → begin
-      (f ∘ g ∘ id) ∘ B⇒A ≈⟨ pullʳ assoc ⟩
-      f ∘ g ∘ id ∘ B⇒A   ≈⟨ (refl⟩∘⟨ g≈h ⟩∘⟨ id-comm-sym) ⟩
-      f ∘ h ∘ B⇒A ∘ id   ≈⟨ (refl⟩∘⟨ sym-assoc) ⟩
-      f ∘ (h ∘ B⇒A) ∘ id ∎
+  ; commute = λ f {g} → begin
+      (f ∘ g ∘ id) ∘ B⇒A ≈⟨ pullʳ (pullʳ id-comm-sym) ⟩
+      f ∘ g ∘ B⇒A ∘ id   ≈⟨ (refl⟩∘⟨ sym-assoc) ⟩
+      f ∘ (g ∘ B⇒A) ∘ id ∎
   }

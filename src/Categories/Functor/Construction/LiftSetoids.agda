@@ -38,7 +38,9 @@ LiftSetoids c′ ℓ′ = record
     { to    = λ where (lift x)  → lift $ f ⟨$⟩ x
     ; cong  = λ where (lift eq) → lift $ cong f eq
     }
-  ; identity     = idf
-  ; homomorphism = λ where {f = f} {g = g} (lift eq) → lift $ cong g $ cong f eq
-  ; F-resp-≈     = λ where fx≈gy (lift x≈y)          → lift $ fx≈gy x≈y
+  ; identity     = λ {A} → lift $ refl A
+  ; homomorphism = λ {_} {_} {Z} → lift $ refl Z
+  ; F-resp-≈     = λ f≈g → lift f≈g
   }
+  where
+    open Setoid
