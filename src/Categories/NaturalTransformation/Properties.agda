@@ -4,7 +4,7 @@ module Categories.NaturalTransformation.Properties where
 
 open import Level
 open import Data.Product using (Σ; _,_)
-open import Function.Equality using (Π)
+open import Function.Bundles using (Func)
 
 open import Categories.Category
 open import Categories.Category.Product
@@ -100,13 +100,13 @@ module _ {F G : Bifunctor C D E} (α : NaturalTransformation F G) where
 -- unlift universe level
 module _ {c ℓ ℓ′ e} {F G : Functor C (Setoids c ℓ)} (α : NaturalTransformation (LiftSetoids ℓ′ e ∘F F) (LiftSetoids ℓ′ e ∘F G)) where
   open NaturalTransformation α
-  open Π
+  open Func
 
   unlift-nat : NaturalTransformation F G
   unlift-nat = ntHelper record
     { η       = λ X → record
-      { _⟨$⟩_ = λ x → lower (η X ⟨$⟩ lift x)
+      { to = λ x → lower (to (η X) (lift x))
       ; cong = λ eq → lower (cong (η X) (lift eq))
       }
-    ; commute = λ f eq → lower (commute f (lift eq))
+    ; commute = λ f → lower (commute f)
     }

@@ -4,7 +4,8 @@ module Categories.Category.Instance.Properties.Setoids.CCC where
 
 open import Level
 open import Data.Product using (Σ ; _,_)
-open import Function.Equality as ⟶ using (Π; _⟶_)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open import Function.Construct.Setoid using (setoid)
 open import Relation.Binary using (Setoid)
 
 open import Categories.Category.Core using (Category)
@@ -14,8 +15,6 @@ open import Categories.Category.CartesianClosed.Canonical renaming (CartesianClo
 open import Categories.Category.Monoidal.Instance.Setoids using (Setoids-Cartesian)
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Object.Terminal using (Terminal)
-
-open Π
 
 module _ ℓ where
   private
@@ -34,20 +33,22 @@ module _ ℓ where
     ; π₁-comp      = λ {_ _ f _ g} → project₁ {h = f} {g}
     ; π₂-comp      = λ {_ _ f _ g} → project₂ {h = f} {g}
     ; ⟨,⟩-unique   = λ {_ _ _ f g h} → unique {h = h} {f} {g}
-    ; _^_          = λ X Y → Y ⟶.⇨ X
-    ; eval         = λ {X Y} → record
-      { _⟨$⟩_ = λ { (f , x) → f ⟨$⟩ x }
-      ; cong  = λ { (eq₁ , eq₂) → eq₁ eq₂ }
+    ; _^_          = λ X Y → setoid Y X
+    ; eval         = λ {X Y} →
+      let module X = Setoid X in record
+      { to = λ { (f , x) → f ⟨$⟩ x }
+      ; cong  = λ { {( f₁ , x₁)} {(f₂ , x₂)} (eq₁ , eq₂) → 
+          X.trans (eq₁ {x₁}) (Func.cong f₂ eq₂)}
       }
     ; curry        = λ {C A B} f → record
-      { _⟨$⟩_ = λ c → record
-        { _⟨$⟩_ = λ a → f ⟨$⟩ (c , a)
-        ; cong  = λ eq → cong f (Setoid.refl C , eq)
+      { to = λ c → record
+        { to = λ a → f ⟨$⟩ (c , a)
+        ; cong  = λ eq → Func.cong f (Setoid.refl C , eq)
         }
-      ; cong  = λ eq₁ eq₂ → cong f (eq₁ , eq₂)
+      ; cong  = λ eq₁ → Func.cong f (eq₁ , (Setoid.refl A))
       }
-    ; eval-comp    = λ {_ _ _ f} → cong f
-    ; curry-unique = λ eq₁ eq₂ eq → eq₁ (eq₂ , eq)
+    ; eval-comp    = λ {C A B f} → Func.cong f (Setoid.refl B , Setoid.refl A)
+    ; curry-unique = λ eq → eq
     }
     where
       open Setoids-Cartesian

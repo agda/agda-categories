@@ -6,8 +6,6 @@ open import Categories.Functor hiding (id)
 module Categories.Diagram.Colimit.DualProperties
   {o ℓ e} {o′ ℓ′ e′} {C : Category o ℓ e} {J : Category o′ ℓ′ e′} where
 
-open import Function.Equality renaming (id to idFun)
-
 open import Categories.Category.Instance.Setoids
 open import Categories.Diagram.Duality C
 open import Categories.Functor.Hom

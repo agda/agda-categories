@@ -15,7 +15,7 @@ open Equiv
 open import Level using (Level; _⊔_)
 open import Data.Nat.Base using (ℕ; _+_; zero; suc; _<_)
 open import Data.Product using (_,_)
-open import Data.Fin.Base using (Fin; inject+; raise; zero; suc; fromℕ<; splitAt; join)
+open import Data.Fin.Base using (Fin; _↑ˡ_; _↑ʳ_; zero; suc; fromℕ<; splitAt; join)
 open import Data.Sum using (_⊎_; inj₁; inj₂; map) renaming ([_,_] to ⟦_,_⟧; [_,_]′ to ⟦_,_⟧′)
 open import Data.Vec.N-ary hiding (curryⁿ)
 open import Function.Base as Fun using (flip; _$_) renaming (_∘_ to _∙_; id to idf)
@@ -163,7 +163,7 @@ flattenP-assocʳ {n₁} {n₂} {n₃} F = record
   ; F-resp-≈     = λ fs≈gs → F.F-resp-≈ (fs≈gs ∙ pack)
   }
   where module F = Functor F
-        pack = ⟦ inject+ n₃ ∙ inject+ n₂ , ⟦ inject+ n₃ ∙ raise n₁ , raise (n₁ + n₂) ⟧′ ⟧′
+        pack = ⟦ (_↑ˡ n₃) ∙ (_↑ˡ n₂) , ⟦ (_↑ˡ n₃) ∙ (n₁ ↑ʳ_) , (n₁ + n₂) ↑ʳ_ ⟧′ ⟧′
 
 reduce2ʳ : ∀ (G : Bifunctor C C C) {n₁ n₂ n₃} (F₁ : Powerendo n₁) (F₂ : Powerendo n₂) (F₃ : Powerendo n₃) → Powerendo ((n₁ + n₂) + n₃)
 reduce2ʳ G F₁ F₂ F₃ = flattenP-assocʳ $ reduce′ G F₁ $ reduce′ G F₂ F₃
@@ -306,7 +306,7 @@ widenˡ l F = record
   ; F-resp-≈     = λ fs≈gs → F.F-resp-≈ (fs≈gs ∙ pack)
   }
   where module F = Functor F
-        pack = raise l
+        pack = l ↑ʳ_
 
 widenʳ : ∀ (r : ℕ) (F : Powerendo n) → Powerendo (n + r)
 widenʳ r F = record
@@ -317,4 +317,4 @@ widenʳ r F = record
   ; F-resp-≈     = λ fs≈gs → F.F-resp-≈ (fs≈gs ∙ pack)
   }
   where module F = Functor F
-        pack = inject+ r
+        pack = _↑ˡ r

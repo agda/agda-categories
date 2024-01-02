@@ -5,19 +5,18 @@ module Categories.Bicategory.Construction.Spans.Properties where
 open import Level
 
 open import Data.Product using (_,_; _×_)
+open import Function.Bundles using (Func; _⟨$⟩_)
 open import Relation.Binary.Bundles using (Setoid)
 import Relation.Binary.Reasoning.Setoid as SR
-open import Function.Equality as SΠ renaming (id to ⟶-id)
 
-open import Categories.Category
-open import Categories.Category.Helper
-open import Categories.Category.Instance.Setoids
+open import Categories.Category.Core using (Category)
+open import Categories.Category.Helper using (categoryHelper)
+open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.Instance.Properties.Setoids.Limits.Canonical
+  using (pullback; FiberProduct)
 
-open import Categories.Diagram.Pullback
-
-open import Categories.Bicategory
-open import Categories.Bicategory.Monad
+open import Categories.Bicategory using (Bicategory)
+open import Categories.Bicategory.Monad using (Monad)
 
 import Categories.Category.Diagram.Span as Span
 import Categories.Bicategory.Construction.Spans as Spans
@@ -36,6 +35,7 @@ module _ {o ℓ : Level} (T : Monad (Spans.Spans (pullback o ℓ))) where
     open Bicategory Spans
 
     open Setoid renaming (_≈_ to [_][_≈_])
+    open Func
 
 
   -- We can view the roof of the span as a hom set! However, we need to partition
@@ -61,8 +61,8 @@ module _ {o ℓ : Level} (T : Monad (Spans.Spans (pullback o ℓ))) where
     id⇒ : (X : Carrier T.C) → Hom X X
     id⇒ X = record
       { hom = arr T.η ⟨$⟩ X
-      ; dom-eq = commute-dom T.η (refl T.C)
-      ; cod-eq = commute-cod T.η (refl T.C)
+      ; dom-eq = commute-dom T.η
+      ; cod-eq = commute-cod T.η
       }
 
     _×ₚ_ : ∀ {A B C} → (f : Hom B C) → (g : Hom A B) → FiberProduct (Span.cod T.T) (Span.dom T.T)
@@ -81,11 +81,11 @@ module _ {o ℓ : Level} (T : Monad (Spans.Spans (pullback o ℓ))) where
     _∘⇒_ {A = A} {C = C} f g = record
       { hom = arr T.μ ⟨$⟩ (f ×ₚ g)
       ; dom-eq = begin
-        Span.dom T.T ⟨$⟩ (arr T.μ ⟨$⟩ (f ×ₚ g)) ≈⟨ (commute-dom T.μ {f ×ₚ g} {f ×ₚ g} (HomSetoid.refl , HomSetoid.refl)) ⟩
+        Span.dom T.T ⟨$⟩ (arr T.μ ⟨$⟩ (f ×ₚ g)) ≈⟨ commute-dom T.μ {f ×ₚ g} ⟩
         Span.dom T.T ⟨$⟩ hom g                  ≈⟨ dom-eq g ⟩
         A                                       ∎
       ; cod-eq = begin
-        Span.cod T.T ⟨$⟩ (arr T.μ ⟨$⟩ (f ×ₚ g)) ≈⟨ commute-cod T.μ {f ×ₚ g} {f ×ₚ g} (HomSetoid.refl , HomSetoid.refl) ⟩
+        Span.cod T.T ⟨$⟩ (arr T.μ ⟨$⟩ (f ×ₚ g)) ≈⟨ commute-cod T.μ {f ×ₚ g} ⟩
         Span.cod T.T ⟨$⟩ hom f                  ≈⟨ cod-eq f ⟩
         C                                       ∎
       }
@@ -111,23 +111,23 @@ module _ {o ℓ : Level} (T : Monad (Spans.Spans (pullback o ℓ))) where
             }
       in begin
         arr T.μ ⟨$⟩ ((h ∘⇒ g) ×ₚ f) ≈⟨ cong (arr T.μ) (HomSetoid.refl , cong (arr T.μ) (HomSetoid.refl , HomSetoid.refl)) ⟩
-        arr T.μ ⟨$⟩ _                ≈⟨ T.sym-assoc {f×ₚ⟨g×ₚh⟩} {f×ₚ⟨g×ₚh⟩} ((HomSetoid.refl , HomSetoid.refl) , HomSetoid.refl) ⟩
+        arr T.μ ⟨$⟩ _                ≈⟨ T.sym-assoc {f×ₚ⟨g×ₚh⟩} ⟩
         arr T.μ ⟨$⟩ _                ≈⟨ (cong (arr T.μ) (cong (arr T.μ) (HomSetoid.refl , HomSetoid.refl) , HomSetoid.refl)) ⟩
         arr T.μ ⟨$⟩ (h ×ₚ (g ∘⇒ f)) ∎
     ; identityˡ = λ {A} {B} {f} → begin
       arr T.μ ⟨$⟩ (id⇒ B ×ₚ f) ≈⟨ cong (arr T.μ) (HomSetoid.refl , cong (arr T.η) (ObjSetoid.sym (cod-eq f))) ⟩
-      arr T.μ ⟨$⟩ _             ≈⟨ T.identityʳ HomSetoid.refl ⟩
+      arr T.μ ⟨$⟩ _             ≈⟨ T.identityʳ ⟩
       hom f                     ∎
     ; identityʳ = λ {A} {B} {f} → begin
       arr T.μ ⟨$⟩ (f ×ₚ id⇒ A) ≈⟨ cong (arr T.μ) (cong (arr T.η) (ObjSetoid.sym (dom-eq f)) , HomSetoid.refl) ⟩
-      arr T.μ ⟨$⟩ _             ≈⟨ T.identityˡ HomSetoid.refl ⟩
+      arr T.μ ⟨$⟩ _             ≈⟨ T.identityˡ ⟩
       hom f                     ∎
     ; equiv = record
       { refl = HomSetoid.refl
       ; sym = HomSetoid.sym
       ; trans = HomSetoid.trans
       }
-    ; ∘-resp-≈ = λ f≈h g≈i → cong (arr T.μ) (g≈i , f≈h)
+    ; ∘-resp-≈ = λ f≈h g≈i → Func.cong (arr T.μ) (g≈i , f≈h)
     }
       where
         open SR HomSetoid

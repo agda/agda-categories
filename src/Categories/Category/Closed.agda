@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
+open import Categories.Category using (Category; module Commutation)
 
 module Categories.Category.Closed {o ℓ e} (C : Category o ℓ e) where
 
@@ -13,18 +13,19 @@ private
 
   open Commutation C
 
-open import Level
+open import Level using (Level; levelOfTerm)
 open import Data.Product using (Σ; _,_)
-open import Function.Equality using (_⟶_)
-open import Function.Inverse using (_InverseOf_; Inverse)
+open import Function.Bundles using (Func; Inverse)
+open import Function.Definitions using (Inverseᵇ)
 
-open import Categories.Category.Product
+open import Categories.Category.Product using (_⁂_)
 open import Categories.Functor renaming (id to idF)
-open import Categories.Functor.Bifunctor
-open import Categories.Functor.Construction.Constant
-open import Categories.NaturalTransformation
-open import Categories.NaturalTransformation.NaturalIsomorphism
+open import Categories.Functor.Bifunctor using (Bifunctor; appˡ; appʳ; flip-bifunctor)
+open import Categories.Functor.Construction.Constant using (const)
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
 open import Categories.NaturalTransformation.Dinatural
+  using (Extranaturalʳ; extranaturalʳ; DinaturalTransformation)
 
 record Closed : Set (levelOfTerm C) where
   field
@@ -119,20 +120,23 @@ record Closed : Set (levelOfTerm C) where
                ⟩
 
   open Functor
+  open Func
 
-  γ : hom-setoid {X} {Y} ⟶ hom-setoid {unit} {[ X , Y ]₀}
+  γ : Func (hom-setoid {X} {Y}) (hom-setoid {unit} {[ X , Y ]₀})
   γ {X} = record
-    { _⟨$⟩_ = λ f → [ C.id , f ]₁ ∘ diagonal.α _
+    { to = λ f → [ C.id , f ]₁ ∘ diagonal.α _
     ; cong  = λ eq → ∘-resp-≈ˡ (F-resp-≈ [ X ,-] eq)
     }
 
   field
-    γ⁻¹             : hom-setoid {unit} {[ X , Y ]₀} ⟶ hom-setoid {X} {Y}
-    γ-inverseOf-γ⁻¹ : γ {X} {Y} InverseOf γ⁻¹
+    γ⁻¹            : Func (hom-setoid {unit} {[ X , Y ]₀}) (hom-setoid {X} {Y})
+    γ-γ⁻¹-inverseᵇ : Inverseᵇ _≈_ _≈_ (to γ⁻¹) (to (γ {X} {Y}))
 
   γ-inverse : Inverse (hom-setoid {unit} {[ X , Y ]₀}) (hom-setoid {X} {Y})
   γ-inverse = record
-    { to         = γ⁻¹
-    ; from       = γ
-    ; inverse-of = γ-inverseOf-γ⁻¹
+    { to        = to γ⁻¹
+    ; to-cong   = cong γ⁻¹
+    ; from      = to γ
+    ; from-cong = cong γ
+    ; inverse   = γ-γ⁻¹-inverseᵇ
     }

@@ -8,7 +8,7 @@ private
   module C = Category C
 
 open import Level
-open import Function.Equality renaming (id to idFun)
+open import Function.Construct.Identity using () renaming (function to idFun)
 
 open import Categories.Category.Instance.Setoids
 open import Categories.Diagram.Limit
@@ -44,15 +44,15 @@ module _ (W : Obj) {F : Functor J C} (col : Colimit F) where
     where Hom≃ : Hom[ op ][ W ,-] ≃ Hom[-, W ]
           Hom≃ = record
             { F⇒G = ntHelper record
-              { η       = λ _ → idFun
-              ; commute = λ _ eq → C.∘-resp-≈ˡ (C.∘-resp-≈ʳ eq) ○ C.assoc
+              { η       = λ _ → idFun hom-setoid
+              ; commute = λ _ → C.assoc
               }
             ; F⇐G = ntHelper record
-              { η       = λ _ → idFun
-              ; commute = λ _ eq → C.sym-assoc ○ C.∘-resp-≈ˡ (C.∘-resp-≈ʳ eq)
+              { η       = λ _ → idFun hom-setoid
+              ; commute = λ _ → C.sym-assoc
               }
             ; iso = λ _ → record
-              { isoˡ = λ eq → eq
-              ; isoʳ = λ eq → eq
+              { isoˡ = C.Equiv.refl
+              ; isoʳ = C.Equiv.refl
               }
             }

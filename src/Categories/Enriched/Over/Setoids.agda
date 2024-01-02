@@ -6,7 +6,7 @@ module Categories.Enriched.Over.Setoids where
 open import Level
 open import Data.Product using (uncurry; proj₁; proj₂; Σ; _,_)
 open import Data.Unit using (tt)
-open import Function.Equality using (_⟨$⟩_; cong)
+open import Function.Bundles using (_⟨$⟩_; Func)
 open import Relation.Binary.Bundles using (Setoid)
 
 open import Categories.Category.Core using () renaming (Category to SCategory)
@@ -30,19 +30,16 @@ Cat→Cat′ C = record
     ; isEquivalence = equiv
     }
   ; id = record
-    { _⟨$⟩_ = λ _ → id
+    { to = λ _ → id
     ; cong = λ _ → Equiv.refl
     }
   ; ⊚ = record
-    { _⟨$⟩_ = uncurry _∘_
+    { to = uncurry _∘_
     ; cong = uncurry ∘-resp-≈
     }
-  ; ⊚-assoc = λ { {x = (x₁ , x₂) , x₃} {(y₁ , y₂) , y₃} ((x₁≈y₁ , x₂≈y₂) , x₃≈y₃) → begin
-    (x₁ ∘ x₂) ∘ x₃ ≈⟨ assoc {h = x₁} ⟩
-    x₁ ∘ x₂ ∘ x₃   ≈⟨ (x₁≈y₁ ⟩∘⟨ x₂≈y₂ ⟩∘⟨ x₃≈y₃) ⟩
-    y₁ ∘ y₂ ∘ y₃   ∎ }
-  ; unitˡ = λ { {_} {_} {_ , x} {_ , y} (_ , x≈y) → Equiv.trans (identityˡ {f = x}) x≈y }
-  ; unitʳ = λ z → Equiv.trans identityʳ (proj₁ z)
+  ; ⊚-assoc = assoc
+  ; unitˡ = identityˡ
+  ; unitʳ = identityʳ
   }
   where
   open SCategory C
@@ -55,17 +52,17 @@ Cat′→Cat 𝓒 = record
   ; _≈_ = λ {a} {b} f g → _≈_ (hom a b) f g
   ; id = id ⟨$⟩ lift tt
   ; _∘_ = λ f g → ⊚ ⟨$⟩ (f , g)
-  ; assoc = λ {A} {B} {C} {D} → ⊚-assoc ((refl (hom C D) , refl (hom B C)) , refl (hom A B))
-  ; sym-assoc = λ {A} {B} {C} {D} → sym (hom A D) (⊚-assoc ((refl (hom C D) , refl (hom B C)) , refl (hom A B)))
-  ; identityˡ = λ {A} {B} → unitˡ (lift tt , refl (hom A B))
-  ; identityʳ = λ {A} {B} → unitʳ (refl (hom A B) , lift tt)
-  ; identity² = λ {A} → unitˡ (lift tt , refl (hom A A)) -- Enriched doesn't have a unit²
+  ; assoc = λ {A} {B} {C} {D} → ⊚-assoc
+  ; sym-assoc = λ {A} {B} {C} {D} → sym (hom A D) ⊚-assoc
+  ; identityˡ = λ {A} {B} → unitˡ
+  ; identityʳ = λ {A} {B} → unitʳ
+  ; identity² = λ {A} → unitˡ -- Enriched doesn't have a unit²
   ; equiv = λ {A} {B} → record
     { refl = refl (hom A B)
     ; sym = sym (hom A B)
     ; trans = trans (hom A B)
     }
-  ; ∘-resp-≈ = λ f≈h g≈i → cong ⊚ (f≈h , g≈i)
+  ; ∘-resp-≈ = λ f≈h g≈i → Func.cong ⊚ (f≈h , g≈i)
   }
   where
   open Category 𝓒

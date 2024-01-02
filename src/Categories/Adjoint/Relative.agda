@@ -13,7 +13,7 @@ open import Level
 
 open import Data.Product using (_,_; _×_)
 open import Function using (_$_) renaming (_∘_ to _∙_)
-open import Function.Equality using (Π; _⟶_; _⟨$⟩_)
+open import Function.Bundles using (Func; _⟨$⟩_)
 open import Relation.Binary using (Setoid)
 
 -- be explicit in imports to 'see' where the information comes from
@@ -66,10 +66,10 @@ RA⇒RMonad {C = C} {D} {E} {J} RA = record
   ; unit = λ {c} → ⇐.η (c , F₀ L c) ⟨$⟩ D.id {F₀ L c}
   ; extend = λ {X} {Y} k → F₁ R (⇒.η (X , F₀ L Y) ⟨$⟩ k)
   ; identityʳ = idʳ
-  ; identityˡ = R.F-resp-≈ (iso.isoʳ _ D.Equiv.refl) ○ R.identity
+  ; identityˡ = R.F-resp-≈ (iso.isoʳ _) ○ R.identity
   ; assoc = a
   ; sym-assoc = sym a
-  ; extend-≈ = λ k≈h → F-resp-≈ R (Π.cong (⇒.η _) k≈h)
+  ; extend-≈ = λ k≈h → F-resp-≈ R (Func.cong (⇒.η _) k≈h)
   }
   where
   open RelativeAdjoint RA
@@ -88,9 +88,9 @@ RA⇒RMonad {C = C} {D} {E} {J} RA = record
   idʳ {x} {y} {k} = begin
     R.₁ (⇒.η (x , L.₀ y) ⟨$⟩ k) ∘ (⇐.η (x , L.₀ x) ⟨$⟩ D.id)               ≈⟨ introʳ J.identity ⟩
     (R.₁ (⇒.η (x , L.₀ y) ⟨$⟩ k) ∘ (⇐.η (x , L.₀ x) ⟨$⟩ D.id)) ∘ J.₁ E.id  ≈⟨ assoc ⟩
-    R.₁ (⇒.η (x , L.₀ y) ⟨$⟩ k) ∘ (⇐.η (x , L.₀ x) ⟨$⟩ D.id) ∘ J.₁ E.id    ≈⟨ ⇐.sym-commute (E.id , ⇒.η (x , L.₀ y) ⟨$⟩ k) (D.Equiv.refl) ⟩
-    ⇐.η (x , L.₀ y) ⟨$⟩ ((⇒.η (x , L.₀ y) ⟨$⟩ k) D.∘ D.id D.∘ L.F₁ E.id)   ≈⟨ Π.cong (⇐.η _) (MR.elimʳ D (MR.elimʳ D L.identity)) ⟩
-    ⇐.η (x , L.₀ y) ⟨$⟩ (⇒.η (x , L.₀ y) ⟨$⟩ k)                            ≈⟨ iso.isoˡ (x , _) Equiv.refl ⟩
+    R.₁ (⇒.η (x , L.₀ y) ⟨$⟩ k) ∘ (⇐.η (x , L.₀ x) ⟨$⟩ D.id) ∘ J.₁ E.id    ≈⟨ ⇐.sym-commute (E.id , ⇒.η (x , L.₀ y) ⟨$⟩ k) ⟩
+    ⇐.η (x , L.₀ y) ⟨$⟩ ((⇒.η (x , L.₀ y) ⟨$⟩ k) D.∘ D.id D.∘ L.F₁ E.id)   ≈⟨ Func.cong (⇐.η _) (MR.elimʳ D (MR.elimʳ D L.identity)) ⟩
+    ⇐.η (x , L.₀ y) ⟨$⟩ (⇒.η (x , L.₀ y) ⟨$⟩ k)                            ≈⟨ iso.isoˡ (x , _) ⟩
     k            ∎
   a : {x y z : E.Obj} {k : J.₀ x ⇒ R.₀ (L.₀ y)} {l : J.₀ y ⇒ R.₀ (L.₀ z)} →
       R.₁ (⇒.η (x , L.₀ z) ⟨$⟩ R.₁ (⇒.η (y , L.₀ z) ⟨$⟩ l) ∘ k) ≈
@@ -106,8 +106,8 @@ RA⇒RMonad {C = C} {D} {E} {J} RA = record
     module DR = D.HomReasoning
     lemma : ⇒.η xz ⟨$⟩ R.₁ (⇒.η yz ⟨$⟩ l) ∘ k D.≈ (⇒.η yz ⟨$⟩ l) D.∘ (⇒.η xy ⟨$⟩ k)
     lemma = DR.begin
-      ⇒.η xz ⟨$⟩ R.₁ (⇒.η yz ⟨$⟩ l) ∘ k                DR.≈⟨ Π.cong (⇒.η xz) (refl⟩∘⟨ introʳ J.identity ) ⟩
-      ⇒.η xz ⟨$⟩ R.₁ (⇒.η yz ⟨$⟩ l) ∘ (k ∘ J.₁ E.id)   DR.≈⟨ ⇒.commute (E.id , ⇒.η yz ⟨$⟩ l) Equiv.refl ⟩
+      ⇒.η xz ⟨$⟩ R.₁ (⇒.η yz ⟨$⟩ l) ∘ k                DR.≈⟨ Func.cong (⇒.η xz) (refl⟩∘⟨ introʳ J.identity ) ⟩
+      ⇒.η xz ⟨$⟩ R.₁ (⇒.η yz ⟨$⟩ l) ∘ (k ∘ J.₁ E.id)   DR.≈⟨ ⇒.commute (E.id , ⇒.η yz ⟨$⟩ l) ⟩
       (⇒.η yz ⟨$⟩ l) D.∘ (⇒.η xy ⟨$⟩ k) D.∘ L.₁ E.id   DR.≈⟨ D.sym-assoc  ⟩
       ((⇒.η yz ⟨$⟩ l) D.∘ (⇒.η xy ⟨$⟩ k)) D.∘ L.₁ E.id DR.≈⟨ MR.elimʳ D L.identity ⟩
       (⇒.η yz ⟨$⟩ l) D.∘ (⇒.η xy ⟨$⟩ k) DR.∎
@@ -118,16 +118,16 @@ RA⇒RMonad {C = C} {D} {E} {J} RA = record
   ; R = R
   ; Hom-NI = record
     { F⇒G = ntHelper record
-      { η = λ _ → record { _⟨$⟩_ = Radjunct ; cong = ∘-resp-≈ʳ ∙ L.F-resp-≈ }
-      ; commute = λ _ x≈y → Radjunct-comm x≈y
+      { η = λ _ → record { to = Radjunct ; cong = ∘-resp-≈ʳ ∙ L.F-resp-≈ }
+      ; commute = λ _ → Radjunct-comm C.Equiv.refl
       }
     ; F⇐G = ntHelper record
-      { η = λ _ → record { _⟨$⟩_ = Ladjunct ; cong = C.∘-resp-≈ˡ ∙ R.F-resp-≈ }
-      ; commute = λ _ x≈y → Ladjunct-comm x≈y
+      { η = λ _ → record { to = Ladjunct ; cong = C.∘-resp-≈ˡ ∙ R.F-resp-≈ }
+      ; commute = λ _ → Ladjunct-comm Equiv.refl
       }
     ; iso = λ X → record
-      { isoˡ = λ eq → LRadjunct≈id ○ eq
-      ; isoʳ = Equiv.trans RLadjunct≈id
+      { isoˡ = LRadjunct≈id
+      ; isoʳ = RLadjunct≈id
       }
     }
   }

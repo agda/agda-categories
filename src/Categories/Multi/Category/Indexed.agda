@@ -10,11 +10,10 @@ open import Data.Product.Properties
 open import Data.Unit.Polymorphic using (⊤; tt)
 open import Data.Vec.Functional
 open import Function.Base using (const) renaming (_∘_ to _●_; id to id→)
-open import Function.Equality using (_⟨$⟩_)
--- note how this is Function.Inverse instead of the one from Function.
-open import Function.Inverse as Inv renaming (id to id↔; _∘_ to trans)
+open import Function.Bundles using (_⟨$⟩_; _↔_; mk↔ₛ′; Inverse)
+open import Function.Construct.Identity renaming (inverse to id↔)
 open import Relation.Binary.Core using (Rel)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; setoid)
 
 -- any point can be lifted to a function from ⊤
 pointed : {s t : Level} {S : Set s} (x : S) → ⊤ {t} → S
@@ -22,17 +21,17 @@ pointed x _ = x
 
 -- the standard library doesn't seem to have the 'right' version of these.
 ⊤×K↔K : {t k : Level} {K : Set k} → (⊤ {t} × K) ↔ K
-⊤×K↔K = inverse proj₂ (tt ,_) (λ _ → refl) λ _ → refl
+⊤×K↔K = mk↔ₛ′ proj₂ (tt ,_) (λ _ → refl) λ _ → refl
 
 K×⊤↔K : {t k : Level} {K : Set k} → (K × ⊤ {t}) ↔ K
-K×⊤↔K = inverse proj₁ (_, tt) (λ _ → refl) λ _ → refl
+K×⊤↔K = mk↔ₛ′ proj₁ (_, tt) (λ _ → refl) λ _ → refl
 
 ⊤×⊤↔⊤ : {t : Level} → (⊤ {t} × ⊤) ↔ ⊤
-⊤×⊤↔⊤ = inverse proj₁ (λ x → x , x) (λ _ → refl) λ _ → refl
+⊤×⊤↔⊤ = mk↔ₛ′ proj₁ (λ x → x , x) (λ _ → refl) λ _ → refl
 
 Σ-assoc : {a b c : Level} {I : Set a} {J : I → Set b} {K : Σ I J → Set c} →
   Σ (Σ I J) K ↔ Σ I (λ i → Σ (J i) (curry K i))
-Σ-assoc {I = I} {J} {K} = inverse g f (λ _ → refl) λ _ → refl
+Σ-assoc {I = I} {J} {K} = mk↔ₛ′ g f (λ _ → refl) λ _ → refl
   where
   f : Σ I (λ i → Σ (J i) (λ j → K (i , j))) → Σ (Σ I J) K
   f (i , j , k) = (i , j) , k
@@ -68,7 +67,7 @@ record MultiCategory (o ℓ e ı : Level) : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) w
           {v : (i : I) → J i → Obj} →
           Hom {I} aₙ a → ((i : I) → Hom (v i) (aₙ i)) → Hom {Σ I J} (uncurry v) a
     _≈[_]_ : {I J : Set ı} {aₙ : I → Obj} {a : Obj} →
-          Hom {I} aₙ a → (σ : I ↔ J) → Hom {J} (aₙ ● ( Inverse.from σ ⟨$⟩_ )) a → Set e
+          Hom {I} aₙ a → (σ : I ↔ J) → Hom {J} (aₙ ● Inverse.from σ) a → Set e
 
     identityˡ : {K : Set ı} {aₖ : K → Obj} {a : Obj} {f : Hom aₖ a} →
               id a ∘ pointed f ≈[ ⊤×K↔K ]  f
@@ -93,14 +92,15 @@ record MultiCategory (o ℓ e ı : Level) : Set (suc (o ⊔ ℓ ⊔ e ⊔ ı)) w
     -- we also need that _≈[_]_ is, in an appropriate sense, an equivalence relation, which in this case
     -- means that _≈[ id↔ ]_ is.  In other words, we don't care when transport is over 'something else'.
     refl≈ : {I : Set ı} {aₙ : I → Obj} {a : Obj} →
-            {h : Hom {I} aₙ a} → h ≈[ id↔ ] h
+            {h : Hom {I} aₙ a} → h ≈[ id↔ (setoid I) ] h
     sym≈ : {I : Set ı} {aₙ : I → Obj} {a : Obj} →
-           {g h : Hom {I} aₙ a} → g ≈[ id↔ ] h → h ≈[ id↔ ] g
+           {g h : Hom {I} aₙ a} → g ≈[ id↔ (setoid I) ] h → h ≈[ id↔ (setoid I) ] g
     trans≈ : {I : Set ı} {aₙ : I → Obj} {a : Obj} →
-           {f g h : Hom {I} aₙ a} → f ≈[ id↔ ] g → g ≈[ id↔ ] h → f ≈[ id↔ ] h
+           {f g h : Hom {I} aₙ a} → f ≈[ id↔ (setoid I) ] g → g ≈[ id↔ (setoid I) ] h → f ≈[ id↔ (setoid I) ] h
 
     ∘-resp-≈ : {I : Set ı} {J : I → Set ı}
                {a : Obj} {aᵢ : I → Obj} {aᵢⱼ : (i : I) → J i → Obj}
                {g g′ : Hom aᵢ a} {f f′ : (i : I) → Hom (aᵢⱼ i) (aᵢ i)} →
-               g ≈[ id↔ ] g′ → (∀ i → f i ≈[ id↔ ] f′ i) →
-               g ∘ f ≈[ id↔ ] g′ ∘ f′
+               g ≈[ id↔ (setoid I) ] g′ → (∀ i → f i ≈[ id↔ (setoid (J i)) ] f′ i) →
+               g ∘ f ≈[ id↔ (setoid (Σ I J)) ] g′ ∘ f′
+

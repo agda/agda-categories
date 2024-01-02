@@ -45,8 +45,8 @@ on:
 ########################################################################
 
 env:
-  AGDA_COMMIT: tags/v2.6.3
-  STDLIB_VERSION: 1.7.2
+  AGDA_COMMIT: tags/v2.6.4
+  STDLIB_VERSION: "2.0"
 
   GHC_VERSION: 8.10.7
   CABAL_VERSION: 3.6.2.0
@@ -186,7 +186,7 @@ jobs:
 ########################################################################
 
       - name: Deploy HTML
-        uses: JamesIves/github-pages-deploy-action@v4.4.3
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
         if: ${{ success() && env.AGDA_DEPLOY }}
         with:
           branch: gh-pages

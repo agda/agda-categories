@@ -93,15 +93,14 @@ boundary-map {n = n} f b = record
       }
     }
   ; F₁ = λ f → record
-    { _⟨$⟩_ = λ (lift b) → lift (boundary-map f b)
+    { to = λ (lift b) → lift (boundary-map f b)
     ; cong = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
     }
-  ; identity = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
-  ; homomorphism = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
-  ; F-resp-≈ = λ {_} {_} {f} {g} f≈g {b} {b′} eq → lift $ Δ-eq $ λ {x} → begin
-    ⟦ hom (lower b) ⟧  (⟦ f ⟧ x) ≡⟨ Δ-pointwise (lower eq) ⟩
-    ⟦ hom (lower b′) ⟧ (⟦ f ⟧ x) ≡⟨ cong ⟦ hom (lower b′) ⟧ (Δ-pointwise f≈g) ⟩
-    ⟦ hom (lower b′) ⟧ (⟦ g ⟧ x) ∎
+  ; identity = lift (Δ-eq Eq.refl)
+  ; homomorphism = lift (Δ-eq Eq.refl)
+  ; F-resp-≈ = λ {_} {_} {f} {g} f≈g {b} → lift $ Δ-eq $ λ {x} → begin
+    ⟦ hom (lower b) ⟧ (⟦ f ⟧ x) ≡⟨ cong ⟦ hom (lower b) ⟧ (Δ-pointwise f≈g) ⟩
+    ⟦ hom (lower b) ⟧ (⟦ g ⟧ x) ∎
   }
   where
     open Boundary
@@ -135,18 +134,17 @@ record Horn (m n-1 : ℕ) (k : Fin (ℕ.suc n-1)) : Set where
       }
     }
   ; F₁ = λ f → record
-    { _⟨$⟩_ = λ (lift h) → lift record
+    { to = λ (lift h) → lift record
       { horn = boundary-map f (horn h)
       ; is-horn = is-horn h
       }
     ; cong = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
     }
-  ; identity = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
-  ; homomorphism = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
-  ; F-resp-≈ = λ {_} {_} {f} {g} f≈g {h} {h′} eq → lift $ Δ-eq $ λ {x} → begin
-    ⟦ hom (lower h) ⟧  (⟦ f ⟧ x) ≡⟨ Δ-pointwise (lower eq) ⟩
-    ⟦ hom (lower h′) ⟧ (⟦ f ⟧ x) ≡⟨ cong ⟦ hom (lower h′) ⟧ (Δ-pointwise f≈g) ⟩
-    ⟦ hom (lower h′) ⟧ (⟦ g ⟧ x) ∎
+  ; identity = lift (Δ-eq Eq.refl)
+  ; homomorphism = lift (Δ-eq Eq.refl)
+  ; F-resp-≈ = λ {_} {_} {f} {g} f≈g {h} → lift $ Δ-eq $ λ {x} → begin
+    ⟦ hom (lower h) ⟧ (⟦ f ⟧ x) ≡⟨ cong ⟦ hom (lower h) ⟧ (Δ-pointwise f≈g) ⟩
+    ⟦ hom (lower h) ⟧ (⟦ g ⟧ x) ∎
   }
   where
     open Horn
@@ -164,17 +162,17 @@ module _ where
   ∂Δ-inj : ∀ {n} → ∂Δ[ n ] ⇒ Δ[ n ]
   ∂Δ-inj {ℕ.zero} = ntHelper record
     { η = λ X → record
-      { _⟨$⟩_ = ⊥-elim
+      { to = ⊥-elim
       ; cong = λ { {()} }
       }
-    ; commute = λ { _ {()} _ }
+    ; commute = λ { _ {()} }
     }
   ∂Δ-inj {ℕ.suc n} = ntHelper record
     { η = λ X → record
-      { _⟨$⟩_ = λ (lift b) → lift (hom b)
+      { to = λ (lift b) → lift (hom b)
       ; cong = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
       }
-    ; commute = λ f (lift eq) → lift (Δ-eq (Δ-pointwise eq))
+    ; commute = λ f → lift (Δ-eq Eq.refl)
     }
     where
       open Boundary
@@ -183,10 +181,10 @@ module _ where
   Λ-inj : ∀ {n} → (k : Fin n) → Λ[ n , k ] ⇒ Δ[ n ]
   Λ-inj {n = ℕ.suc n} k = ntHelper record
     { η = λ X → record
-      { _⟨$⟩_ = λ (lift h) → lift (hom h)
+      { to = λ (lift h) → lift (hom h)
       ; cong = λ (lift eq) → lift (Δ-eq (Δ-pointwise eq))
       }
-    ; commute = λ f (lift eq) → lift (Δ-eq (Δ-pointwise eq))
+    ; commute = λ _ → lift (Δ-eq Eq.refl)
     }
     where
       open Horn

@@ -6,13 +6,14 @@ open import Level
 open import Data.Empty.Polymorphic using (⊥)
 open import Data.Product using (_,_; _×_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Function.Equality using (_⟨$⟩_; cong)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open Func using (cong)
 open import Relation.Binary using (Setoid; module Setoid)
 
-open import Categories.Category
-open import Categories.Functor hiding (id)
+open import Categories.Category using (Category; _[_,_]; _[_∘_]; _[_≈_])
+open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor.Properties using ([_]-commute)
-open import Categories.Functor.Profunctor
+open import Categories.Functor.Profunctor using (Profunctor)
 
 module _ {o ℓ e o′ ℓ′ e′ ℓ″ e″}
     {C : Category o ℓ e} {D : Category o′ ℓ′ e′} (P : Profunctor ℓ″ e″ C D)
@@ -47,31 +48,29 @@ module _ {o ℓ e o′ ℓ′ e′ ℓ″ e″}
     ; assoc = λ
       { {inj₁ dA} {inj₁ dB} {inj₁ dC} {inj₁ dD} {f} {g} {h} → lift D.assoc
       ; {inj₁ dA} {inj₁ dB} {inj₁ dC} {inj₂ cD} {f} {g} {r} →
-          lift (Setoid.sym (F₀ _) (homomorphismˡ (Setoid.refl (F₀ _))))
+          lift (Setoid.sym (F₀ _) (homomorphismˡ))
       ; {inj₁ dA} {inj₁ dB} {inj₂ cC} {inj₂ cD} {f} {q} {h} →
-          lift (Setoid.sym (F₀ _) ([ bimodule ]-commute (Setoid.refl (F₀ _))))
+          lift (Setoid.sym (F₀ _) ([ bimodule ]-commute))
       ; {inj₁ dA} {inj₂ cB} {inj₂ cC} {inj₂ cD} {p} {g} {h} →
-          lift (homomorphismʳ (Setoid.refl (F₀ _)))
+          lift (homomorphismʳ )
       ; {inj₂ cA} {inj₂ cB} {inj₂ cC} {inj₂ cD} {f} {g} {h} → lift C.assoc
       }
     ; sym-assoc = λ
       { {inj₁ dA} {inj₁ dB} {inj₁ dC} {inj₁ dD} {f} {g} {h} → lift D.sym-assoc
-      ; {inj₁ dA} {inj₁ dB} {inj₁ dC} {inj₂ cD} {f} {g} {r} →
-          lift (homomorphismˡ (Setoid.refl (F₀ _)))
-      ; {inj₁ dA} {inj₁ dB} {inj₂ cC} {inj₂ cD} {f} {q} {h} →
-          lift ([ bimodule ]-commute (Setoid.refl (F₀ _)))
+      ; {inj₁ dA} {inj₁ dB} {inj₁ dC} {inj₂ cD} {f} {g} {r} → lift homomorphismˡ
+      ; {inj₁ dA} {inj₁ dB} {inj₂ cC} {inj₂ cD} {f} {q} {h} → lift ([ bimodule ]-commute )
       ; {inj₁ dA} {inj₂ cB} {inj₂ cC} {inj₂ cD} {p} {g} {h} →
-          lift (Setoid.sym (F₀ _) (homomorphismʳ (Setoid.refl (F₀ _))))
+          lift (Setoid.sym (F₀ _) homomorphismʳ)
       ; {inj₂ cA} {inj₂ cB} {inj₂ cC} {inj₂ cD} {f} {g} {h} → lift C.sym-assoc
       }
     ; identityˡ = λ
       { {inj₁ dA} {inj₁ dB} {f} → lift D.identityˡ
-      ; {inj₁ dA} {inj₂ cB} {p} → lift (identity (Setoid.refl (F₀ _)))
+      ; {inj₁ dA} {inj₂ cB} {p} → lift identity
       ; {inj₂ cA} {inj₂ cB} {f} → lift C.identityˡ
       }
     ; identityʳ = λ
       { {inj₁ dA} {inj₁ dB} {f} → lift D.identityʳ
-      ; {inj₁ dA} {inj₂ cB} {p} → lift (identity (Setoid.refl (F₀ _)))
+      ; {inj₁ dA} {inj₂ cB} {p} → lift identity
       ; {inj₂ cA} {inj₂ cB} {f} → lift C.identityʳ
       }
     ; identity² = λ
@@ -104,9 +103,12 @@ module _ {o ℓ e o′ ℓ′ e′ ℓ″ e″}
       { {inj₁ dA} {inj₁ dB} {inj₁ dC} {f} {h} {g} {i} →
           λ x y → lift (D.∘-resp-≈ (lower x) (lower y))
       ; {inj₁ dA} {inj₁ dB} {inj₂ cC} {f} {h} {g} {i} →
-          λ f≈h g≈i → lift (resp-≈ˡ (lower g≈i) (lower f≈h))
+          λ f≈h g≈i → lift (
+          Setoid.trans (F₀ _) (resp-≈ˡ (lower g≈i))
+                              (cong (F₁ _) (lower f≈h)))
       ; {inj₁ dA} {inj₂ cB} {inj₂ cC} {f} {h} {g} {i} →
-          λ f≈h g≈i → lift (resp-≈ʳ (lower f≈h) (lower g≈i))
+          λ f≈h g≈i → lift (
+          Setoid.trans (F₀ _) (resp-≈ʳ (lower f≈h)) (cong (F₁ _) (lower g≈i)))
       ; {inj₂ cA} {inj₂ cB} {inj₂ cC} {f} {h} {g} {i} →
           λ x y → lift (C.∘-resp-≈ (lower x) (lower y))
       }

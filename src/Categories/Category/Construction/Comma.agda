@@ -43,7 +43,7 @@ module _ {A : Category o₁ ℓ₁ e₁}  {B : Category o₂ ℓ₂ e₂} {C : C
       h       : B [ β₁ , β₂ ]
       commute : CommutativeSquare f₁ (T₁ g) (S₁ h) f₂
 
-  Comma : Functor A C → Functor B C → Category _ _ _
+  Comma : Functor A C → Functor B C → Category (o₁ ⊔ o₂ ⊔ ℓ₃) (ℓ₁ ⊔ ℓ₂ ⊔ e₃) (e₁ ⊔ e₂)
   Comma T S = record
     { Obj         = CommaObj T S
     ; _⇒_         = Comma⇒
@@ -132,8 +132,8 @@ module _ {C : Category o₁ ℓ₁ e₁} {D : Category o₂ ℓ₂ e₂} where
     module C = Category C
 
   infix 4 _↙_ _↘_
-  _↙_ : (X : C.Obj) (T : Functor D C) → Category _ _ _
+  _↙_ : (X : C.Obj) (T : Functor D C) → Category (o₂ ⊔ ℓ₁) (ℓ₂ ⊔ e₁) e₂
   X ↙ T = const! X ↓ T
 
-  _↘_ : (S : Functor D C) (X : C.Obj) → Category _ _ _
+  _↘_ : (S : Functor D C) (X : C.Obj) → Category (o₂ ⊔ ℓ₁) (ℓ₂ ⊔ e₁)  e₂
   S ↘ X = S ↓ const! X

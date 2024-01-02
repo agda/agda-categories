@@ -7,8 +7,6 @@ open import Level
 
 open import Data.Product using (_,_; _×_)
 open import Function using (_$_) renaming (_∘_ to _∙_)
-open import Function.Equality using (Π; _⟶_)
-import Function.Inverse as FI
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
 -- be explicit in imports to 'see' where the information comes from

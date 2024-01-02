@@ -2,19 +2,19 @@
 
 module Categories.Category.Instance.Properties.Setoids.Complete where
 
-open import Level
+open import Level using (Level; _⊔_)
 open import Data.Product using (Σ; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_)
-open import Function.Equality using (Π)
-open import Relation.Binary using (Setoid; Rel)
+open import Function.Bundles using (Func; _⟨$⟩_)
+open import Relation.Binary.Bundles using (Setoid)
+open import Relation.Binary.Core using (Rel)
+open Func
 
 open import Categories.Category using (Category; _[_,_])
-open import Categories.Functor
-open import Categories.Category.Instance.Setoids
-open import Categories.Category.Complete
+open import Categories.Functor.Core using (Functor)
+open import Categories.Category.Instance.Setoids using (Setoids)
+open import Categories.Category.Complete using (Complete)
 
 import Categories.Category.Construction.Cones as Co
-
-open Π using (_⟨$⟩_)
 
 Setoids-Complete : (o ℓ e c ℓ′ : Level) → Complete o ℓ e (Setoids (c ⊔ ℓ ⊔ o ⊔ ℓ′) (o ⊔ ℓ′))
 Setoids-Complete o ℓ e c ℓ′ {J} F =
@@ -33,10 +33,10 @@ Setoids-Complete o ℓ e c ℓ′ {J} F =
         }
       ;  apex = record
         { ψ = λ j → record
-          { _⟨$⟩_ = λ { (S , _) → S j }
+          { to = λ { (S , _) → S j }
           ; cong  = λ eq → eq j
           }
-        ; commute = λ { {X} {Y} X⇒Y {_ , eq} {y} f≈g → F₀.trans Y (eq X⇒Y) (f≈g Y) }
+        ; commute = λ { {X} {Y} X⇒Y {_ , eq} → eq X⇒Y }
         }
       }
     ; ⊤-is-terminal = record
@@ -44,14 +44,12 @@ Setoids-Complete o ℓ e c ℓ′ {J} F =
         let module K = Cone K
         in record
         { arr     = record
-          { _⟨$⟩_ = λ x → (λ j → K.ψ j ⟨$⟩ x) , λ f → K.commute f (Setoid.refl K.N)
-          ; cong  = λ a≈b j → Π.cong (K.ψ j) a≈b
+          { to = λ x → (λ j → K.ψ j ⟨$⟩ x) , λ f → K.commute f
+          ; cong  = λ a≈b j → cong (K.ψ j) a≈b
           }
-        ; commute = λ x≈y → Π.cong (K.ψ _) x≈y
+        ; commute = λ {X} → Setoid.refl (F₀ X)
         }
-      ; !-unique = λ {K} f x≈y j →
-        let module K = Cone K
-        in F₀.sym j (Cone⇒.commute f (Setoid.sym K.N x≈y))
+      ; !-unique = λ f j → F₀.sym j (Cone⇒.commute f)
       }
     }
   }

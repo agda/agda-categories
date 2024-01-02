@@ -2,34 +2,34 @@
 
 module Categories.Category.Instance.Properties.Setoids.LCCC where
 
-open import Level
-open import Data.Product using (Σ; _,_)
-open import Function.Equality as Func using (Π; _⟶_)
+open import Level using (Level; _⊔_; 0ℓ; suc)
+open import Data.Product using (_,_)
+open import Function.Bundles using (Func; _⟨$⟩_)
+import Function.Construct.Identity as FId
 open import Relation.Binary using (Setoid)
-import Relation.Binary.PropositionalEquality as ≡
+import Relation.Binary.PropositionalEquality.Core as ≡
+import  Relation.Binary.Reasoning.Setoid as SetoidR
 
-open import Categories.Category
-open import Categories.Category.BinaryProducts
-open import Categories.Category.CartesianClosed
+open import Categories.Category.Core using (Category)
+open import Categories.Category.BinaryProducts using (BinaryProducts)
+open import Categories.Category.CartesianClosed using (CartesianClosed)
 open import Categories.Category.CartesianClosed.Canonical
   using (module Equivalence)
   renaming (CartesianClosed to Canonical)
 open import Categories.Category.CartesianClosed.Locally using (Locally)
-open import Categories.Category.Cartesian
+open import Categories.Category.Cartesian using (Cartesian)
 open import Categories.Category.Instance.Span
-open import Categories.Category.Instance.Setoids
+  using (SpanObj; Span; span-id; left; right; span-arrʳ; span-arrˡ; center)
+open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.Instance.Properties.Setoids.Complete
-open import Categories.Category.Monoidal.Instance.Setoids
-open import Categories.Category.Slice
-open import Categories.Category.Slice.Properties
-open import Categories.Functor
-
-open import Categories.Object.Terminal
-open import Categories.Diagram.Pullback
-open import Categories.Diagram.Pullback.Limit
+  using (Setoids-Complete)
+open import Categories.Category.Slice using (Slice; sliceobj; slicearr; SliceObj; Slice⇒)
+open import Categories.Category.Slice.Properties using (pullback⇒product)
+open import Categories.Functor.Core using (Functor)
+open import Categories.Object.Terminal using (Terminal)
+open import Categories.Diagram.Pullback using (Pullback)
+open import Categories.Diagram.Pullback.Limit using (limit⇒pullback)
 import Categories.Object.Product as Prod
-
-open Π using (_⟨$⟩_)
 
 module _ {o ℓ} where
 
@@ -38,14 +38,14 @@ module _ {o ℓ} where
       module A = Setoid A
       module X = Setoid X
 
-    record InverseImage (a : Setoid.Carrier A) (f : X ⟶ A) : Set (o ⊔ ℓ) where
+    record InverseImage (a : Setoid.Carrier A) (f : Func X A) : Set (o ⊔ ℓ) where
       constructor pack
 
       field
         x    : X.Carrier
         fx≈a : f ⟨$⟩ x A.≈ a
 
-    inverseImage-transport : ∀ {a a′} {f : X ⟶ A} → a A.≈ a′ → InverseImage a f → InverseImage a′ f
+    inverseImage-transport : ∀ {a a′} {f : Func X A} → a A.≈ a′ → InverseImage a f → InverseImage a′ f
     inverseImage-transport eq img = pack x (A.trans fx≈a eq)
       where open InverseImage img
 
@@ -60,15 +60,15 @@ module _ {o ℓ} where
     --   f⁻¹(a) ⟶ g⁻¹(a)
     -- here, we need to take care of some coherence condition.
     record InverseImageMap (a : Setoid.Carrier A)
-                           (f : X ⟶ A)
-                           (g : Y ⟶ A) : Set (o ⊔ ℓ) where
+                           (f : Func X A)
+                           (g : Func Y A) : Set (o ⊔ ℓ) where
       field
         f⇒g  : InverseImage a f → InverseImage a g
         cong : ∀ (x x′ : InverseImage a f) →
                  InverseImage.x x X.≈ InverseImage.x x′ →
                  InverseImage.x (f⇒g x) Y.≈ InverseImage.x (f⇒g x′)
 
-    inverseImageMap-transport : ∀ {a a′} {f : X ⟶ A} {g : Y ⟶ A} → a A.≈ a′ →
+    inverseImageMap-transport : ∀ {a a′} {f : Func X A} {g : Func Y A} → a A.≈ a′ →
                                   InverseImageMap a f g → InverseImageMap a′ f g
     inverseImageMap-transport eq h = record
       { f⇒g  = λ img → inverseImage-transport eq (f⇒g (inverseImage-transport (A.sym eq) img))
@@ -76,8 +76,8 @@ module _ {o ℓ} where
       }
       where open InverseImageMap h
 
-    record SlExp (f : X ⟶ A)
-                 (g : Y ⟶ A) : Set (o ⊔ ℓ) where
+    record SlExp (f : Func X A)
+                 (g : Func Y A) : Set (o ⊔ ℓ) where
 
       field
         idx : A.Carrier
@@ -85,8 +85,8 @@ module _ {o ℓ} where
 
       open InverseImageMap map public
 
-    record SlExp≈ {f : X ⟶ A}
-                  {g : Y ⟶ A}
+    record SlExp≈ {f : Func X A}
+                  {g : Func Y A}
                   (h i : SlExp f g) : Set (o ⊔ ℓ) where
       private
         module h = SlExp h
@@ -98,7 +98,7 @@ module _ {o ℓ} where
         -- map≈′ : ∀ (img : InverseImage i.idx f) → InverseImage.x (i.f⇒g img) Y.≈ InverseImage.x (h.f⇒g (inverseImage-transport idx≈ img))
 
   SlExp-Setoid : ∀ {A X Y : Setoid o ℓ}
-                   (f : X ⟶ A) (g : Y ⟶ A) → Setoid (o ⊔ ℓ) (o ⊔ ℓ)
+                   (f : Func X A) (g : Func Y A) → Setoid (o ⊔ ℓ) (o ⊔ ℓ)
   SlExp-Setoid {A} {X} {Y} f g = record
     { Carrier       = SlExp f g
     ; _≈_           = SlExp≈
@@ -149,14 +149,14 @@ module _ {o} where
       slice-terminal : Terminal Sl
       slice-terminal = record
         { ⊤             = sliceobj {Y = A} record
-          { _⟨$⟩_ = λ x → x
+          { to = λ x → x
           ; cong  = λ eq → eq
           }
         ; ⊤-is-terminal = record
-          { !        = λ { {sliceobj f} → slicearr {h = f} (Π.cong f) }
-          ; !-unique = λ { {X} (slicearr △) eq →
+          { !        = λ { {sliceobj f} → slicearr {h = f} refl }
+          ; !-unique = λ { {X} (slicearr △) →
                          let module X = SliceObj X
-                         in sym (△ (Setoid.sym X.Y eq)) }
+                         in sym △ }
           }
         }
 
@@ -170,23 +170,25 @@ module _ {o} where
         where module X = SliceObj X
               module Y = SliceObj Y
 
+              f : SpanObj → Setoid o o
+              f = F₀ X Y
               F : Functor (Category.op Span) (Setoids o o)
               F = record
-                { F₀           = F₀ X Y
-                ; F₁           = λ { span-id   → Func.id
+                { F₀           = f
+                ; F₁           = λ { (span-id {B}) → FId.function (f B)
                                    ; span-arrˡ → X.arr
                                    ; span-arrʳ → Y.arr
                                    }
-                ; identity     = λ {Z} → S.Equiv.refl {F₀ X Y Z} {F₀ X Y Z} {Func.id}
-                ; homomorphism = λ { {_} {_} {_} {span-id}   {span-id}   eq → eq
-                                   ; {_} {_} {_} {span-id}   {span-arrˡ}    → Π.cong X.arr
-                                   ; {_} {_} {_} {span-id}   {span-arrʳ}    → Π.cong Y.arr
-                                   ; {_} {_} {_} {span-arrˡ} {span-id}      → Π.cong X.arr
-                                   ; {_} {_} {_} {span-arrʳ} {span-id}      → Π.cong Y.arr
+                ; identity     = λ {Z} → S.Equiv.refl {f Z} {f Z} {FId.function _}
+                ; homomorphism = λ { {Z} {_} {_} {span-id}   {span-id}    → Setoid.refl (f Z)
+                                   ; {_} {_} {_} {span-id}   {span-arrˡ}  → refl
+                                   ; {_} {_} {_} {span-id}   {span-arrʳ}  → refl
+                                   ; {_} {_} {_} {span-arrˡ} {span-id}    → refl
+                                   ; {_} {_} {_} {span-arrʳ} {span-id}    → refl
                                    }
-                ; F-resp-≈     = λ { {_} {_} {span-id}   ≡.refl eq → eq
-                                   ; {_} {_} {span-arrˡ} ≡.refl    → Π.cong X.arr
-                                   ; {_} {_} {span-arrʳ} ≡.refl    → Π.cong Y.arr
+                ; F-resp-≈     = λ { {Z} {_} {span-id}   ≡.refl    → Setoid.refl (f Z)
+                                   ; {_} {_} {span-arrˡ} ≡.refl    → refl
+                                   ; {_} {_} {span-arrʳ} ≡.refl    → refl
                                    }
                 }
 
@@ -209,7 +211,7 @@ module _ {o} where
 
       _^_ : Sl.Obj → Sl.Obj → Sl.Obj
       f ^ g = sliceobj {Y = SlExp-Setoid g.arr f.arr} record
-        { _⟨$⟩_ = SlExp.idx
+        { to = SlExp.idx
         ; cong  = SlExp≈.idx≈
         }
         where module f = SliceObj f
@@ -218,19 +220,18 @@ module _ {o} where
       prod = slice-product.A×B
 
       eval : {f g : Sl.Obj} → prod (f ^ g) g Sl.⇒ f
-      eval {f} {g} = slicearr {h = h} λ { {J₁ , arr₁} {J₂ , arr₂} eq →
+      eval {f} {g} = slicearr {h = h} λ { {J₁ , arr₁} →
         let open SlExp (J₁ left)
         in trans (InverseImage.fx≈a (f⇒g (pack (J₁ right) _)))
           (trans (arr₁ span-arrˡ)
-          (trans (eq center)
-                 (sym (arr₂ span-arrʳ)))) }
+          (sym (arr₁ span-arrʳ))) }
         where module f  = SliceObj f
               module g  = SliceObj g
               module fY = Setoid f.Y
 
               h : SliceObj.Y (prod (f ^ g) g) S.⇒ f.Y
               h = record
-                { _⟨$⟩_ = λ { (J , arr) →
+                { to = λ { (J , arr) →
                   let module exp = SlExp (J left)
                   in InverseImage.x (exp.f⇒g (pack (J right) (trans (arr span-arrʳ) (sym (arr span-arrˡ))))) }
                 ; cong  = λ { {J₁ , arr₁} {J₂ , arr₂} eq →
@@ -273,12 +274,12 @@ module _ {o} where
                 { f⇒g  = λ img →
                   let open InverseImage img renaming (x to y)
                   in pack (α.h ⟨$⟩ xypb x img)
-                          (trans (α.△ {xypb x img} {xypb x img} (Setoid.refl (SliceObj.Y (prod f g)) {xypb x img}))
+                          (trans (α.△ {xypb x img})
                                  fx≈a)
                 ; cong = λ img img′ eq →
                   let module img  = InverseImage img
                       module img′ = InverseImage img′
-                  in Π.cong α.h λ { center → refl
+                  in Func.cong α.h λ { center → refl
                                   ; left   → fY.refl
                                   ; right  → eq }
                 }
@@ -286,37 +287,44 @@ module _ {o} where
 
             βcong : {i j : fY.Carrier} → i fY.≈ j → SlExp≈ (βmap i) (βmap j)
             βcong {i} {j} eq = record
-              { idx≈ = Π.cong f.arr eq
+              { idx≈ = Func.cong f.arr eq
               ; map≈ = λ img →
                 let open InverseImage img
-                in Π.cong α.h λ { center → Π.cong f.arr eq
+                in Func.cong α.h λ { center → Func.cong f.arr eq
                                 ; left   → eq
                                 ; right  → gY.refl }
               }
 
             β : f.Y S.⇒ SliceObj.Y (h ^ g)
             β = record
-              { _⟨$⟩_ = βmap
+              { to = βmap
               ; cong  = βcong
               }
 
           curry : f Sl.⇒ (h ^ g)
-          curry = slicearr {h = β} (Π.cong f.arr)
+          curry = slicearr {h = β} refl
 
       module _ {f g h : Sl.Obj} {α β : prod f g Sl.⇒ h} where
         private
           module f  = SliceObj f
           module g  = SliceObj g
+          module h  = SliceObj h
           module gY = Setoid g.Y
 
         curry-resp-≈ : α Sl.≈ β → curry α Sl.≈ curry β
-        curry-resp-≈ eq eq′ = record
-          { idx≈ = Π.cong f.arr eq′
+        curry-resp-≈ hα≈hβ {z} = record
+          { idx≈ = refl
           ; map≈ = λ img →
-            let open InverseImage img
-            in eq λ { center → Π.cong f.arr eq′
-                    ; left   → eq′
-                    ; right  → gY.refl }
+            let open InverseImage img in
+            let open SetoidR h.Y
+            in begin
+              InverseImage.x (SlExp.f⇒g (Slice⇒.h (curry α) ⟨$⟩ z) img) ≈⟨ hα≈hβ ⟩
+              InverseImage.x (SlExp.f⇒g (Slice⇒.h (curry β) ⟨$⟩ z) img) ≈⟨ Func.cong (Slice⇒.h β) (
+                λ { center → refl
+                  ; left → Setoid.refl f.Y
+                  ; right → gY.refl
+                  }) ⟩
+              InverseImage.x (SlExp.f⇒g (Slice⇒.h (curry β) ⟨$⟩ z) (inverseImage-transport refl img)) ∎
           }
 
       module _ {f g h : Sl.Obj} {α : f Sl.⇒ (g ^ h)} {β : prod f h Sl.⇒ g} where
@@ -331,16 +339,15 @@ module _ {o} where
           module hY = Setoid h.Y
 
         curry-unique : eval Sl.∘ (α products.⁂ Sl.id) Sl.≈ β → α Sl.≈ curry β
-        curry-unique eq {z} {w} eq′ = record
-          { idx≈ = α.△ eq′
+        curry-unique eq {z} = record
+          { idx≈ = α.△
           ; map≈ = λ img →
             let open InverseImage img
             in gY.trans (InverseImageMap.cong (SlExp.map (α.h ⟨$⟩ z)) img _ hY.refl)
-                        (eq {xypb z (inverseImage-transport (trans (α.△ eq′) (Π.cong f.arr (fY.sym eq′))) img)}
-                            {xypb w (inverseImage-transport (α.△ eq′) img)}
-                            λ { center → Π.cong f.arr eq′
+                        (eq {xypb z (inverseImage-transport α.△  img)}
+                            {-λ { center → Func.cong f.arr eq′
                               ; left   → eq′
-                              ; right  → hY.refl })
+                              ; right  → hY.refl }-})
           }
 
       slice-canonical : Canonical Sl
@@ -358,11 +365,12 @@ module _ {o} where
         ; _^_          = _^_
         ; eval         = eval
         ; curry        = curry
-        ; eval-comp    = λ { {_} {_} {_} {α} {J , arr₁} eq →
+        ; eval-comp    = λ { {_} {A1} {A2} {α} {J , arr₁} →
           let module α = Slice⇒ α
-          in Π.cong α.h λ { center → trans (arr₁ span-arrˡ) (eq center)
-                          ; left   → eq left
-                          ; right  → eq right } }
+          in Func.cong α.h λ { center → arr₁ span-arrˡ
+                             ; left → Setoid.refl (SliceObj.Y A2)
+                             ; right → Setoid.refl (SliceObj.Y A1)
+                             } }
         ; curry-unique = λ {_ _ _} {α β} → curry-unique {_} {_} {_} {α} {β}
         }
 

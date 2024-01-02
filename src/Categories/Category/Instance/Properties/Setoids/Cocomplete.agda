@@ -2,25 +2,23 @@
 
 module Categories.Category.Instance.Properties.Setoids.Cocomplete where
 
-open import Level
+open import Level using (Level; _⊔_)
 open import Data.Product using (Σ; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_)
-open import Function.Equality using (Π)
+open import Function.Bundles using (Func; _⟨$⟩_)
 open import Relation.Binary using (Setoid; Preorder; Rel)
 open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 open import Relation.Binary.Indexed.Heterogeneous using (_=[_]⇒_)
 open import Relation.Binary.Construct.Closure.SymmetricTransitive as ST using (Plus⇔; minimal)
 open Plus⇔
+open Func
 
 open import Categories.Category using (Category; _[_,_])
-open import Categories.Functor
-open import Categories.Category.Instance.Setoids
-open import Categories.Category.Cocomplete
+open import Categories.Functor.Core using (Functor)
+open import Categories.Category.Instance.Setoids using (Setoids)
+open import Categories.Category.Cocomplete using (Cocomplete)
 
 import Categories.Category.Construction.Cocones as Coc
 import Relation.Binary.Reasoning.Setoid as RS
-
-
-open Π using (_⟨$⟩_)
 
 module _ {o ℓ e} c ℓ′ {J : Category o ℓ e} (F : Functor J (Setoids (o ⊔ c) (o ⊔ ℓ ⊔ c ⊔ ℓ′))) where
   private
@@ -39,15 +37,15 @@ module _ {o ℓ e} c ℓ′ {J : Category o ℓ e} (F : Functor J (Setoids (o �
   coc-preorder = record
     { Carrier    = vertex-carrier
     ; _≈_        = _≡_
-    ; _∼_        = coc
+    ; _≲_        = coc
     ; isPreorder = record
       { isEquivalence = ≡.isEquivalence
-      ; reflexive     = λ { {j , _} ≡.refl → J.id , (identity (F₀.refl j)) }
+      ; reflexive     = λ { {j , _} ≡.refl → J.id , identity }
       ; trans         = λ { {a , Sa} {b , Sb} {c , Sc} (f , eq₁) (g , eq₂) →
         let open RS (F₀ c)
         in g J.∘ f , (begin
-        F₁ (g J.∘ f) ⟨$⟩ Sa    ≈⟨ homomorphism (F₀.refl a) ⟩
-        F₁ g ⟨$⟩ (F₁ f ⟨$⟩ Sa) ≈⟨ Π.cong (F₁ g) eq₁ ⟩
+        F₁ (g J.∘ f) ⟨$⟩ Sa    ≈⟨ homomorphism ⟩
+        F₁ g ⟨$⟩ (F₁ f ⟨$⟩ Sa) ≈⟨ cong (F₁ g) eq₁ ⟩
         F₁ g ⟨$⟩ Sb            ≈⟨ eq₂ ⟩
         Sc                     ∎) }
       }
@@ -61,10 +59,10 @@ Setoids-Cocomplete o ℓ e c ℓ′ {J} F = record
       { N      = ⇛-Setoid
       ; coapex = record
         { ψ       = λ j → record
-          { _⟨$⟩_ = j ,_
-          ; cong  = λ i≈k → forth (-, identity i≈k)
+          { to = j ,_
+          ; cong  = λ i≈k → forth (J.id , Setoid.trans (F₀ _) identity i≈k)
           }
-        ; commute = λ {X} X⇒Y x≈y → back (-, Π.cong (F₁ X⇒Y) (F₀.sym X x≈y))
+        ; commute = λ {X} {Y} X⇒Y → back (X⇒Y , Setoid.refl (F₀ Y))
         }
       }
     ; ⊥-is-initial = record
@@ -72,19 +70,18 @@ Setoids-Cocomplete o ℓ e c ℓ′ {J} F = record
         let module K = Cocone K
         in record
         { arr     = record
-          { _⟨$⟩_ = to-coapex K
+          { to = to-coapex K
           ; cong  = minimal (coc c ℓ′ F) K.N (to-coapex K) (coapex-cong K)
           }
-        ; commute = λ {X} x≈y → Π.cong (Coapex.ψ (Cocone.coapex K) X) x≈y
+        ; commute = Setoid.refl K.N
         }
-      ; !-unique = λ { {K} f {a , Sa} {b , Sb} eq →
+      ; !-unique = λ { {K} f {a , Sa} →
         let module K = Cocone K
             module f = Cocone⇒ f
             open RS K.N
         in begin
-          K.ψ a ⟨$⟩ Sa       ≈˘⟨ f.commute (F₀.refl a) ⟩
-          f.arr ⟨$⟩ (a , Sa) ≈⟨ Π.cong f.arr eq ⟩
-          f.arr ⟨$⟩ (b , Sb) ∎ }
+          K.ψ a ⟨$⟩ Sa       ≈˘⟨ f.commute ⟩
+          f.arr ⟨$⟩ (a , Sa) ∎ }
       }
     }
   }
@@ -103,8 +100,8 @@ Setoids-Cocomplete o ℓ e c ℓ′ {J} F = record
           where module K = Cocone K
         coapex-cong : ∀ K → coc c ℓ′ F =[ to-coapex K ]⇒ (Setoid._≈_ (Cocone.N K))
         coapex-cong K {X , x} {Y , y} (f , fx≈y) = begin
-          K.ψ X ⟨$⟩ x            ≈˘⟨ K.commute f (F₀.refl X) ⟩
-          K.ψ Y ⟨$⟩ (F₁ f ⟨$⟩ x) ≈⟨ Π.cong (K.ψ Y) fx≈y ⟩
+          K.ψ X ⟨$⟩ x            ≈˘⟨ K.commute f ⟩
+          K.ψ Y ⟨$⟩ (F₁ f ⟨$⟩ x)  ≈⟨ cong (K.ψ Y) fx≈y ⟩
           K.ψ Y ⟨$⟩ y            ∎
           where module K = Cocone K
                 open RS K.N

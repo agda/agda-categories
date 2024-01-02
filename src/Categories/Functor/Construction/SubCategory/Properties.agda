@@ -7,9 +7,10 @@ module Categories.Functor.Construction.SubCategory.Properties {o ℓ e} (C : Cat
 open Category C
 open Equiv
 
+open import Data.Product using (_,_)
 open import Level
-open import Function.Base       using () renaming (id to id→)
-open import Function.Surjection using (Surjection) renaming (id to id↠)
+open import Function.Base    using () renaming (id to id→)
+open import Function.Bundles using (Surjection)
 
 open import Categories.Category.SubCategory C
 open import Categories.Functor.Construction.SubCategory C
@@ -22,10 +23,10 @@ private
     U : I → Obj
 
 SubFaithful : ∀ (sub : SubCat {i} {ℓ′} I) → Faithful (Sub sub)
-SubFaithful _ _ _ = id→
+SubFaithful _ x≈y = x≈y
 
 FullSubFaithful : Faithful (FullSub {U = U})
-FullSubFaithful _ _ = id→
+FullSubFaithful = id→
 
 FullSubFull : Full (FullSub {U = U})
-FullSubFull = Surjection.surjective id↠
+FullSubFull f = f , refl
