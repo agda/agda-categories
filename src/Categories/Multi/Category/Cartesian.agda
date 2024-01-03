@@ -15,26 +15,16 @@ module Categories.Multi.Category.Cartesian where
 
 open import Data.List using (List; []; _∷_; _++_)
 open import Data.List.Membership.Propositional using (_∈_)
-open import Data.Wrap
+open import Data.List.Relation.Unary.All.Functional renaming (All to Env)
+open import Data.Wrap using (get)
 open import Level using (Level; _⊔_; suc)
 open import Relation.Binary using (Rel; Setoid; IsEquivalence)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 
-infix 4 [_]_∼ᵉ_
 
--- `Env` is equivalent to `All`, but biased towards lookup.
--- `Env` is used to define a collection of multimorphisms from a common domain.
+-- We use `Env` (i.e. `All`) to define a collection of multimorphisms from a common domain.
 -- For example, if `Γ ⊢ A` is a type of terms, then `Env (Γ ⊢_) Δ` is a type
 -- of simultaneous substitutions thereof.
-
-Env : ∀ {o ℓ} {X : Set o} (V : X → Set ℓ) (Δ : List X) → Set (o ⊔ ℓ)
-Env V Δ = ∀ {y} → y ∈ Δ → V y
-
--- Pointwise lifting of a binary relation from values to environments.
-
-[_]_∼ᵉ_ : ∀ {o ℓ e} {X : Set o} {V : X → Set ℓ} {Δ} →
-  (∀ {x} → Rel (V x) e) → Rel (Env V Δ) (o ⊔ e)
-[_]_∼ᵉ_ = Wrap λ _≈_ ρ σ → ∀ {y} (i : y ∈ _) → ρ i ≈ σ i
 
 -- The pattern is that we define what a Cartesian multicategory is together
 -- with the category of contexts it yields.
@@ -55,7 +45,7 @@ record CartesianMultiCategory (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) wh
   Γ ⇒ˢ Δ = Env (Γ ⇒_) Δ
 
   _≈ˢ_ : ∀ {Γ Δ} (σ τ : Γ ⇒ˢ Δ) → Set (o ⊔ e)
-  _≈ˢ_ = [ _≈_ ]_∼ᵉ_
+  _≈ˢ_ = [ _≈_ ]_∼_
 
   field
     id : ∀ {Γ A} → A ∈ Γ → Γ ⇒ A
@@ -110,19 +100,19 @@ record CartesianMultiCategory (o ℓ e : Level) : Set (suc (o ⊔ ℓ ⊔ e)) wh
 
   hom-setoid : ∀ {Γ A} → Setoid ℓ e
   hom-setoid {Γ} {A} = record { isEquivalence = equiv {Γ} {A} }
-  homˢ-setoid : ∀ {Γ Δ} → Setoid ℓ e
-  homˢ-setoid {Γ} {Δ} = record { isEquivalence = equiv {Γ} {Δ} }
+  homˢ-setoid : ∀ {Γ Δ} → Setoid (o ⊔ ℓ) (o ⊔ e)
+  homˢ-setoid {Γ} {Δ} = record { isEquivalence = equivˢ {Γ} {Δ} }
 
   module HomReasoning where
     private
       module Hom-setoid {Γ A} = SetoidR (hom-setoid {Γ} {A}) using
-        (step-≈; step-≈˘; step-≡; step-≡˘; _≡⟨⟩_; begin_; _∎)
+        (step-≈; step-≈˘; step-≡; step-≡˘; begin_; _∎)
       module Homˢ-setoid {Γ Δ} = SetoidR (homˢ-setoid {Γ} {Δ}) using () renaming
         ( step-≈ to step-≈ˢ; step-≈˘ to step-≈ˢ˘; step-≡ to step-≡ˢ
-        ; step-≡˘ to step-≡ˢ˘; _≡⟨⟩_ to _≡ˢ⟨⟩_; begin_ to beginˢ_; _∎ to _∎ˢ
+        ; step-≡˘ to step-≡ˢ˘; begin_ to beginˢ_; _∎ to _∎ˢ
         )
     open Hom-setoid public
-    open Homˢ-setoid public using (_≡ˢ⟨⟩_; beginˢ_; _∎ˢ)
+    open Homˢ-setoid public using (beginˢ_; _∎ˢ)
 
     infixr 2 step-≈ˢ step-≈ˢ˘ step-≡ˢ step-≡ˢ˘
 

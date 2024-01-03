@@ -6,17 +6,18 @@ open import Data.List using (List; []; _∷_; _++_)
 open import Data.List.Membership.Propositional using (_∈_)
 open import Data.List.Membership.Propositional.Properties
   using (∈-++⁺ˡ; ∈-++⁺ʳ; ∈-++⁻)
+open import Data.List.Relation.Unary.All.Functional renaming (All to Env)
 open import Data.List.Relation.Unary.Any using (here; there)
 import Data.List.Relation.Unary.Any.Properties as AnyP
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]′)
 open import Data.Wrap
-open import Function.Base as F using (case_return_of_)
+open import Function.Base as F using (case_returning_of_)
 open import Level using (Level; _⊔_)
 open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
-open import Categories.Category
+open import Categories.Category.Core using (Category)
 open import Categories.Category.BinaryProducts using (BinaryProducts)
-open import Categories.Category.Cartesian
+open import Categories.Category.Cartesian using (Cartesian)
 open import Categories.Category.Cartesian.Bundle
 import Categories.Category.Cartesian.Properties as ×P
 open import Categories.Multi.Category.Cartesian
@@ -68,7 +69,7 @@ module _ {C : Category o ℓ e} (cart : Cartesian C) where
   X ⇒Π Δ = Env (X ⇒_) Δ
 
   _≈Π_ : ∀ {X Δ} (fs gs : X ⇒Π Δ) → Set (o ⊔ e)
-  _≈Π_ = [ _≈_ ]_∼ᵉ_
+  _≈Π_ = [ _≈_ ]_∼_
 
   ⟨_⟩Π : ∀ {X Δ} → X ⇒Π Δ → X ⇒ prod Δ
   ⟨_⟩Π {Δ = []} fs = !
