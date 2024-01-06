@@ -1,61 +1,89 @@
 {-# OPTIONS --without-K --safe #-}
 
--- In braided monoidal categories left and right strength imply each other
+open import Categories.Category using (Category; module Commutation)
 
-module Categories.Monad.Strong.Properties where
+module Categories.Monad.Strong.Properties {o ℓ e} {C : Category o ℓ e} where
 
 open import Level
 open import Data.Product using (_,_; _×_)
 
-open import Categories.Category using (Category; module Commutation)
 import Categories.Category.Construction.Core as Core
 open import Categories.Category.Product
 open import Categories.Functor renaming (id to idF)
 open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Category.Monoidal.Braided using (Braided)
+open import Categories.Category.Monoidal.Construction.Reverse
+  using (Reverse-Monoidal; Reverse-Braided)
 import Categories.Category.Monoidal.Braided.Properties as BraidedProps
 import Categories.Category.Monoidal.Reasoning as MonoidalReasoning
 import Categories.Category.Monoidal.Utilities as MonoidalUtils
-open import Categories.Category.Monoidal.Braided using (Braided)
-open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
 open import Categories.Monad using (Monad)
 open import Categories.Monad.Strong using (Strength; RightStrength; StrongMonad; RightStrongMonad)
-
 import Categories.Morphism.Reasoning as MR
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
 
-private
-  variable
-    o ℓ e : Level
+-- A left strength is a right strength in the reversed category.
 
--- FIXME: make these top-level module parameters and remove this anonymous module?
-module _ {C : Category o ℓ e} {V : Monoidal C} (BV : Braided V) where
+rightInReversed : {V : Monoidal C} {M : Monad C} →
+                  Strength V M → RightStrength (Reverse-Monoidal V) M
+rightInReversed left = record
+  { strengthen     = ntHelper (record
+    { η            = λ{ (X , Y) → strengthen.η (Y , X)       }
+    ; commute      = λ{ (f , g) → strengthen.commute (g , f) }
+    })
+  ; identityˡ      = identityˡ
+  ; η-comm         = η-comm
+  ; μ-η-comm       = μ-η-comm
+  ; strength-assoc = strength-assoc
+  }
+  where open Strength left
+
+-- A right strength is a left strength in the reversed category.
+
+leftInReversed : {V : Monoidal C} {M : Monad C} →
+                 RightStrength V M → Strength (Reverse-Monoidal V) M
+leftInReversed right = record
+  { strengthen     = ntHelper (record
+    { η            = λ{ (X , Y) → strengthen.η (Y , X)       }
+    ; commute      = λ{ (f , g) → strengthen.commute (g , f) }
+    })
+  ; identityˡ      = identityˡ
+  ; η-comm         = η-comm
+  ; μ-η-comm       = μ-η-comm
+  ; strength-assoc = strength-assoc
+  }
+  where open RightStrength right
+
+
+module Left {V : Monoidal C} {M : Monad C} (left : Strength V M) where
   open Category C
-  open Braided BV
-  open BraidedProps BV using (braiding-coherence; inv-braiding-coherence)
-  open MonoidalUtils V using (_⊗ᵢ_)
-  open MonoidalUtils.Shorthands V  -- for λ⇒, ρ⇒, α⇒, ...
-  open Core.Shorthands C           -- for idᵢ, _∘ᵢ_, ...
-  open MonoidalReasoning V
+  open Core.Shorthands C             -- for idᵢ, _∘ᵢ_, ...
   open MR C
   open Commutation C
+  open Monoidal V using (_⊗₀_)
+  open MonoidalUtils V using (_⊗ᵢ_)
+  open MonoidalUtils.Shorthands V    -- for λ⇒, ρ⇒, α⇒, ...
+  open MonoidalReasoning V
+  open Monad M using (F; μ; η)
 
   private
+    module left = Strength left
     variable
       X Y Z W : Obj
 
-  module LeftStrength {M : Monad C} (leftStrength : Strength V M) where
+  module Shorthands where
+    module σ = left.strengthen
+
+    σ : ∀ {X Y} → X ⊗₀ F.₀ Y ⇒ F.₀ (X ⊗₀ Y)
+    σ {X} {Y} = σ.η (X , Y)
+
+  open Shorthands
+
+  -- In a braided monoidal category, a left strength induces a right strength.
+
+  module _ (BV : Braided V) where
+    open Braided BV hiding (_⊗₀_)
     open BraidedProps.Shorthands BV renaming (σ to B; σ⇒ to B⇒; σ⇐ to B⇐)
-    open Monad M using (F; μ; η)
-    module leftStrength = Strength leftStrength
-
-    module Shorthands where
-      module σ = leftStrength.strengthen
-
-      σ : ∀ {X Y} → X ⊗₀ F.₀ Y ⇒ F.₀ (X ⊗₀ Y)
-      σ {X} {Y} = σ.η (X , Y)
-
-    open Shorthands
-
-    -- The left strength induces a right strength via braiding.
 
     private
       τ : ∀ {X Y} → F.₀ X ⊗₀ Y ⇒ F.₀ (X ⊗₀ Y)
@@ -143,7 +171,7 @@ module _ {C : Category o ℓ e} {V : Monoidal C} (BV : Braided V) where
         F.₁ B⇐ ∘ F.₁ (id ⊗₁ B⇐) ∘ F.₁ α⇒ ∘ F.₁ B⇒ ∘ τ ∘ F.₁ id ⊗₁ B⇒
       ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ right-left-braiding-comm ⟩
         F.₁ B⇐ ∘ F.₁ (id ⊗₁ B⇐) ∘ F.₁ α⇒ ∘ σ ∘ B⇒ ∘ F.₁ id ⊗₁ B⇒
-      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ leftStrength.strength-assoc ⟩
+      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ left.strength-assoc ⟩
         F.₁ B⇐ ∘ F.₁ (id ⊗₁ B⇐) ∘ σ ∘ (id ⊗₁ σ ∘ α⇒) ∘ B⇒ ∘ F.₁ id ⊗₁ B⇒
       ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ pullʳ (refl⟩∘⟨ refl⟩∘⟨ F.identity ⟩⊗⟨refl) ⟩
         F.₁ B⇐ ∘ F.₁ (id ⊗₁ B⇐) ∘ σ ∘ id ⊗₁ σ ∘ α⇒ ∘ B⇒ ∘ id ⊗₁ B⇒
@@ -161,18 +189,18 @@ module _ {C : Category o ℓ e} {V : Monoidal C} (BV : Braided V) where
         τ ∘ τ ⊗₁ id ∘ α⇐
       ∎
 
-  Strength⇒RightStrength : ∀ {M : Monad C} → Strength V M → RightStrength V M
-  Strength⇒RightStrength {M} strength = record
-    { strengthen = right-strengthen
+  Strength⇒RightStrength : (BV : Braided V) → RightStrength V M
+  Strength⇒RightStrength BV = record
+    { strengthen = right-strengthen BV
     ; identityˡ = identityˡ'
     ; η-comm = η-comm'
     ; μ-η-comm = μ-η-comm'
-    ; strength-assoc = right-strength-assoc
+    ; strength-assoc = right-strength-assoc BV
     }
     where
-      open LeftStrength strength
-      open Monad M using (F; μ; η)
-      module strength = Strength strength
+      open Braided BV hiding (_⊗₀_)
+      open BraidedProps BV using (braiding-coherence; inv-braiding-coherence)
+      module strength = Strength left
       module t = strength.strengthen
       B = braiding.⇒.η
       open BraidedProps.Shorthands BV using () renaming (σ⇐ to B⇐)
@@ -203,16 +231,62 @@ module _ {C : Category o ℓ e} {V : Monoidal C} (BV : Braided V) where
         F.₁ B⇐ ∘ t.η (Y , X) ∘ (id ⊗₁ μ.η X) ∘ B ((F.₀ (F.₀ X)) , Y)                              ≈˘⟨ pullʳ (pullʳ (braiding.⇒.commute (μ.η X , id))) ⟩
         τ (X , Y) ∘ μ.η X ⊗₁ id ∎
 
-  StrongMonad⇒RightStrongMonad : StrongMonad V → RightStrongMonad V
-  StrongMonad⇒RightStrongMonad SM = record { M = M ; rightStrength = Strength⇒RightStrength strength }
+StrongMonad⇒RightStrongMonad : {V : Monoidal C} →
+                               Braided V → StrongMonad V → RightStrongMonad V
+StrongMonad⇒RightStrongMonad BV SM = record
+  { M             = M
+  ; rightStrength = Left.Strength⇒RightStrength strength BV
+  }
+  where open StrongMonad SM
+
+module Right {V : Monoidal C} {M : Monad C} (right : RightStrength V M) where
+
+  open Category C using (_⇒_)
+  open Monoidal V using (_⊗₀_)
+  open Monad M using (F)
+
+  private module right = RightStrength right
+
+  module Shorthands where
+    module τ = right.strengthen
+
+    τ : ∀ {X Y} → F.₀ X ⊗₀ Y ⇒ F.₀ (X ⊗₀ Y)
+    τ {X} {Y} = τ.η (X , Y)
+
+  open Shorthands
+
+  -- In a braided monoidal category, a right strength induces a left strength.
+
+  RightStrength⇒Strength : Braided V → Strength V M
+  RightStrength⇒Strength BV = record
+    { strengthen     = strengthen
+    ; identityˡ      = identityˡ
+    ; η-comm         = η-comm
+    ; μ-η-comm       = μ-η-comm
+    ; strength-assoc = strength-assoc
+    }
     where
-      open StrongMonad SM
+      left₁ : Strength (Reverse-Monoidal V) M
+      left₁ = leftInReversed right
 
-  RightStrength⇒Strength : ∀ {M : Monad C} → RightStrength V M → Strength V M
-  RightStrength⇒Strength {M} rightStrength = {!   !}
+      right₂ : RightStrength (Reverse-Monoidal V) M
+      right₂ = Left.Strength⇒RightStrength left₁ (Reverse-Braided BV)
 
-  RightStrongMonad⇒StrongMonad : RightStrongMonad V → StrongMonad V
-  RightStrongMonad⇒StrongMonad RSM = record { M = M ; strength = RightStrength⇒Strength rightStrength }
-    where
-      open RightStrongMonad RSM
+      -- Note: this is almost what we need, but Reverse-Monoidal is
+      -- not a strict involution (some of the coherence laws are
+      -- have proofs that are not strictly identical to their
+      -- original counterparts). But this does not matter
+      -- structurally, so we can just re-package the components we
+      -- need.
+      left₂ : Strength (Reverse-Monoidal (Reverse-Monoidal V)) M
+      left₂ = leftInReversed right₂
 
+      open Strength left₂
+
+RightStrongMonad⇒StrongMonad : {V : Monoidal C} →
+                               Braided V → RightStrongMonad V → StrongMonad V
+RightStrongMonad⇒StrongMonad BV RSM = record
+  { M        = M
+  ; strength = Right.RightStrength⇒Strength rightStrength BV
+  }
+  where open RightStrongMonad RSM
