@@ -24,9 +24,9 @@ module _ {C : Category o ℓ e} {V : Monoidal C} (S : Symmetric V) where
     open Category C
     open Symmetric S
     open StrongMonad LSM
-    
+
     rightStrength : RightStrength V M
-    rightStrength = Strength⇒RightStrength S strength
+    rightStrength = Strength⇒RightStrength braided strength
 
     private
       module LS = Strength strength
@@ -43,7 +43,7 @@ module _ {C : Category o ℓ e} {V : Monoidal C} (S : Symmetric V) where
     field
       strongMonad : StrongMonad V
       commutative : Commutative strongMonad
-    
+
     open StrongMonad strongMonad public
     open Commutative commutative public
-    
+
