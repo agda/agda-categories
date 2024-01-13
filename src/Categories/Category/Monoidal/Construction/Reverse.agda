@@ -16,6 +16,7 @@ open import Categories.Category using (Category)
 open import Categories.Category.Monoidal
 open import Categories.Category.Monoidal.Braided using (Braided)
 import Categories.Category.Monoidal.Braided.Properties as BraidedProperties
+import Categories.Category.Monoidal.Symmetric.Properties as SymmetricProperties
 open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 import Categories.Category.Monoidal.Utilities as MonoidalUtils
 import Categories.Morphism as Morphism
@@ -91,23 +92,11 @@ module _ {o ℓ e} {C : Category o ℓ e} {M : Monoidal C} where
   Reverse-Symmetric : Symmetric M → Symmetric (Reverse-Monoidal M)
   Reverse-Symmetric SM = record
     { braided     = Reverse-Braided braided
-    ; commutative = commutative′
+    ; commutative = inv-commutative
     }
     where
-      open Symmetric SM
-
-      -- FIXME: the below should probably go into
-      -- Categories.Monoidal.Symmetric.Properties, but we currently
-      -- have no such module.
-
-      open Category C
-      open MorphismReasoning C using (introʳ; cancelˡ)
-
-      braiding-selfInverse : ∀ {X Y} → braiding.⇐.η (X , Y) ≈ braiding.⇒.η (Y , X)
-      braiding-selfInverse = introʳ commutative ○ cancelˡ (braiding.iso.isoˡ _)
-
-      commutative′ : ∀ {X Y} → braiding.⇐.η (X , Y) ∘ braiding.⇐.η (Y , X) ≈ id
-      commutative′ = ∘-resp-≈ braiding-selfInverse braiding-selfInverse ○ commutative
+      open Symmetric SM using (braided)
+      open SymmetricProperties SM using (inv-commutative)
 
 -- Bundled versions of the above
 
