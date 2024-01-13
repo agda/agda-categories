@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
--- Commutative Monad on a symmetric monoidal category
+-- Commutative Monad on a braided monoidal category
 -- https://ncatlab.org/nlab/show/commutative+monad
 
 module Categories.Monad.Commutative where
@@ -10,31 +10,26 @@ open import Data.Product using (_,_)
 
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Monoidal using (Monoidal)
-open import Categories.Category.Monoidal.Symmetric using (Symmetric)
+open import Categories.Category.Monoidal.Braided using (Braided)
 open import Categories.Monad using (Monad)
 open import Categories.Monad.Strong using (StrongMonad; RightStrength; Strength)
-open import Categories.Monad.Strong.Properties using (Strength⇒RightStrength)
+import Categories.Monad.Strong.Properties as StrongProps
 
 private
   variable
     o ℓ e : Level
 
-module _ {C : Category o ℓ e} {V : Monoidal C} (S : Symmetric V) where
+module _ {C : Category o ℓ e} {V : Monoidal C} (B : Braided V) where
   record Commutative (LSM : StrongMonad V) : Set (o ⊔ ℓ ⊔ e) where
-    open Category C
-    open Symmetric S
-    open StrongMonad LSM
+    open Category C using (_⇒_; _∘_; _≈_)
+    open Braided B using (_⊗₀_)
+    open StrongMonad LSM using (M; strength)
+    open StrongProps.Left.Shorthands strength
 
     rightStrength : RightStrength V M
-    rightStrength = Strength⇒RightStrength braided strength
+    rightStrength = StrongProps.Strength⇒RightStrength B strength
 
-    private
-      module LS = Strength strength
-      module RS = RightStrength rightStrength
-      σ : ∀ {X Y} → X ⊗₀ M.F.₀ Y ⇒ M.F.₀ (X ⊗₀ Y)
-      σ {X} {Y} = LS.strengthen.η (X , Y)
-      τ : ∀ {X Y} → M.F.₀ X ⊗₀ Y ⇒ M.F.₀ (X ⊗₀ Y)
-      τ {X} {Y} = RS.strengthen.η (X , Y)
+    open StrongProps.Right.Shorthands rightStrength
 
     field
       commutes : ∀ {X Y} → M.μ.η (X ⊗₀ Y) ∘ M.F.₁ τ ∘ σ ≈ M.μ.η (X ⊗₀ Y) ∘ M.F.₁ σ ∘ τ
