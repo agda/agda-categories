@@ -84,7 +84,7 @@ module Left {V : Monoidal C} {M : Monad C} (left : Strength V M) where
 
   module _ (BV : Braided V) where
     open Braided BV hiding (_⊗₀_)
-    open BraidedProps BV using (braiding-coherence; inv-braiding-coherence)
+    open BraidedProps BV using (braiding-coherence; inv-braiding-coherence; assoc-reverse)
     open BraidedProps.Shorthands BV renaming (σ to B; σ⇒ to B⇒; σ⇐ to B⇐)
 
     private
@@ -153,32 +153,6 @@ module Left {V : Monoidal C} {M : Monad C} (left : Strength V M) where
       F.₁ B⇐ ∘ σ ∘ (id ⊗₁ μ.η X) ∘ B⇒                  ≈˘⟨ pullʳ (pullʳ (braiding.⇒.commute (μ.η X , id))) ⟩
       τ ∘ μ.η X ⊗₁ id ∎
 
-    -- Reversing a ternary product via braiding commutes with the
-    -- associator.
-    --
-    -- FIXME: this is a lemma just about associators and braiding, so
-    -- it should probably be exported to
-    -- Categories.Category.Monoidal.Braided.Properties. There might
-    -- also be a more straight-forward way to state and prove it.
-
-    assoc-reverse : [ X ⊗₀ (Y ⊗₀ Z) ⇒ (X ⊗₀ Y) ⊗₀ Z ]⟨
-                      id ⊗₁ B⇒      ⇒⟨ X ⊗₀ (Z ⊗₀ Y) ⟩
-                      B⇒            ⇒⟨ (Z ⊗₀ Y) ⊗₀ X ⟩
-                      α⇒            ⇒⟨ Z ⊗₀ (Y ⊗₀ X) ⟩
-                      id ⊗₁ B⇐      ⇒⟨ Z ⊗₀ (X ⊗₀ Y) ⟩
-                      B⇐
-                    ≈ α⇐
-                    ⟩
-    assoc-reverse = begin
-      B⇐ ∘ id ⊗₁ B⇐ ∘ α⇒ ∘ B⇒ ∘ id ⊗₁ B⇒    ≈˘⟨ refl⟩∘⟨ assoc²' ⟩
-      B⇐ ∘ (id ⊗₁ B⇐ ∘ α⇒ ∘ B⇒) ∘ id ⊗₁ B⇒  ≈⟨ refl⟩∘⟨ pushˡ hex₁' ⟩
-      B⇐ ∘ (α⇒ ∘ B⇒ ⊗₁ id) ∘ α⇐ ∘ id ⊗₁ B⇒  ≈⟨ refl⟩∘⟨ pullʳ (sym-assoc ○ hexagon₂) ⟩
-      B⇐ ∘ α⇒ ∘ (α⇐ ∘ B⇒) ∘ α⇐              ≈⟨ refl⟩∘⟨ pullˡ (cancelˡ associator.isoʳ) ⟩
-      B⇐ ∘ B⇒ ∘ α⇐                          ≈⟨ cancelˡ (braiding.iso.isoˡ _) ⟩
-      α⇐                                    ∎
-      where
-        hex₁' = conjugate-from associator (idᵢ ⊗ᵢ B) (⟺ (hexagon₁ ○ sym-assoc))
-
     -- The induced right strength commutes with the associator
 
     right-strength-assoc : [ F.₀ X ⊗₀ (Y ⊗₀ Z)  ⇒  F.₀ ((X ⊗₀ Y) ⊗₀ Z) ]⟨
@@ -222,16 +196,20 @@ module Left {V : Monoidal C} {M : Monad C} (left : Strength V M) where
         τ ∘ τ ⊗₁ id ∘ α⇐
       ∎
 
+    -- The induced right strength
+
+    right : RightStrength V M
+    right = record
+      { strengthen     = right-strengthen
+      ; identityˡ      = right-identityˡ
+      ; η-comm         = right-η-comm
+      ; μ-η-comm       = right-μ-η-comm
+      ; strength-assoc = right-strength-assoc
+      }
+
 Strength⇒RightStrength : {V : Monoidal C} {M : Monad C} →
                          Braided V → Strength V M → RightStrength V M
-Strength⇒RightStrength BV left = record
-  { strengthen     = right-strengthen BV
-  ; identityˡ      = right-identityˡ BV
-  ; η-comm         = right-η-comm BV
-  ; μ-η-comm       = right-μ-η-comm BV
-  ; strength-assoc = right-strength-assoc BV
-  }
-  where open Left left
+Strength⇒RightStrength BV left = Left.right left BV
 
 StrongMonad⇒RightStrongMonad : {V : Monoidal C} →
                                Braided V → StrongMonad V → RightStrongMonad V
@@ -245,15 +223,11 @@ module Right {V : Monoidal C} {M : Monad C} (right : RightStrength V M) where
   open Monoidal V using (_⊗₀_)
   open Monad M using (F)
 
-  private module right = RightStrength right
-
   module Shorthands where
-    module τ = right.strengthen
+    module τ = RightStrength.strengthen right
 
     τ : ∀ {X Y} → F.₀ X ⊗₀ Y ⇒ F.₀ (X ⊗₀ Y)
     τ {X} {Y} = τ.η (X , Y)
-
-  open Shorthands
 
 -- In a braided monoidal category, a right strength induces a left strength.
 
