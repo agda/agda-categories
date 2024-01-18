@@ -87,7 +87,7 @@ jobs:
       # i.e. if we change either the version of Agda, ghc, or cabal that we want
       # to use for the build.
       - name: Open cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-everything
         with:
           path: |
