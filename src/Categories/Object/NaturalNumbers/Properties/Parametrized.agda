@@ -59,7 +59,7 @@ NNO×CCC⇒PNNO nno = record
     commute₂' {A} {X} {f} {g} = begin
       g ∘ (eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap                       ≈⟨ pullˡ (pullˡ (⟺ β′)) ⟩
       ((eval′ ∘ (λg (g ∘ eval′) ⁂ id)) ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap ≈⟨ (pullʳ ⁂∘⁂) ⟩∘⟨refl ⟩
-      (eval′ ∘ (λg (g ∘ eval′) ∘  universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id ∘ id)) ∘ swap    ≈⟨ (refl⟩∘⟨ (⁂-cong₂ s-commute refl)) ⟩∘⟨refl ⟩
+      (eval′ ∘ (λg (g ∘ eval′) ∘  universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id ∘ id)) ∘ swap    ≈⟨ (refl⟩∘⟨ (first-cong s-commute)) ⟩∘⟨refl ⟩
       (eval′ ∘ (universal (λg (f ∘ π₂))  (λg (g ∘ eval′)) ∘ s ⁂ id ∘ id)) ∘ swap                 ≈⟨ (refl⟩∘⟨ (⟺ ⁂∘⁂)) ⟩∘⟨refl ⟩
       (eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id) ∘ (s ⁂ id)) ∘ swap                ≈⟨ pullʳ (pullʳ (⟺ swap∘⁂)) ⟩
       eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id) ∘ swap ∘ (id ⁂ s)                  ≈⟨ sym-assoc ○ sym-assoc ⟩
@@ -71,7 +71,7 @@ NNO×CCC⇒PNNO nno = record
       λg (u ∘ swap)                                                                  ≈⟨ nno-unique 
         (⟺ (λ-unique′ 
           (begin 
-            eval′ ∘ (λg (u ∘ swap) ∘ z ⁂ id)        ≈⟨ refl⟩∘⟨ ⟺ (⁂∘⁂ ○ ⁂-cong₂ refl identity²) ⟩ 
+            eval′ ∘ (λg (u ∘ swap) ∘ z ⁂ id)        ≈⟨ refl⟩∘⟨ ⟺ (⁂∘⁂ ○ second-cong identity²) ⟩
             eval′ ∘ (λg (u ∘ swap) ⁂ id) ∘ (z ⁂ id) ≈⟨ pullˡ β′ ⟩
             (u ∘ swap) ∘ (z ⁂ id)                   ≈⟨ pullʳ swap∘⁂ ⟩
             u ∘ (id ⁂ z) ∘ swap                     ≈⟨ pushʳ (bp-unique′ 

@@ -55,7 +55,7 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
       in begin
         F.₁ (second (f C.∘ g)) ⟨$⟩ x                ≈˘⟨ [ F ]-resp-∘ second∘second ⟩
         F.₁ (second g) ⟨$⟩ (F.₁ (second f) ⟨$⟩ x) ∎
-    ; F-resp-≈     = λ {Y Z} {f g} eq → F.F-resp-≈ (⁂-cong₂ C.Equiv.refl eq)
+    ; F-resp-≈     = λ {Y Z} {f g} eq → F.F-resp-≈ (second-cong eq)
     }
     where module F = Functor F
 
@@ -79,7 +79,7 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
       in begin
         F₁ (first (f C.∘ g)) ⟨$⟩ x              ≈˘⟨ [ F ]-resp-∘ first∘first ⟩
         F₁ (first g) ⟨$⟩ (F₁ (first f) ⟨$⟩ x) ∎
-    ; F-resp-≈     = λ {A B} {f g} eq → F-resp-≈ (⁂-cong₂ eq C.Equiv.refl)
+    ; F-resp-≈     = λ {A B} {f g} eq → F-resp-≈ (first-cong eq)
     }
     where open Functor F
 
@@ -113,7 +113,7 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
           F.₁ C.id ⟨$⟩ (α.η Y ⟨$⟩ x)         ≈⟨ F.identity ⟩
           α.η Y ⟨$⟩ x                        ∎
       ; homomorphism = λ {X Y Z} → Setoid.sym (F.₀ (Z × _)) ([ F ]-resp-∘ first∘first)
-      ; F-resp-≈     = λ eq → F.F-resp-≈ (⁂-cong₂ eq C.Equiv.refl)
+      ; F-resp-≈     = λ eq → F.F-resp-≈ (first-cong eq)
       }
 
 module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
