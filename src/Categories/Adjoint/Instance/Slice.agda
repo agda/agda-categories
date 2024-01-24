@@ -99,8 +99,7 @@ module _ {A : Obj} (ccc : CartesianClosed C) (pullback : ∀ {X} {Y} {Z} (h : X 
       λg ((eval′ ∘ first (p.p₂ X) ∘ swap) ∘ eval′) ∘ p.p₂ (sliceobj π₁) ∘ p.universal (sliceobj π₁) _         ≈⟨ refl⟩∘⟨ p.p₂∘universal≈h₂ (sliceobj π₁) ⟩
       λg ((eval′ ∘ first (p.p₂ X) ∘ swap) ∘ eval′) ∘ λg swap                                                  ≈⟨ subst ⟩
       λg (((eval′ ∘ first (p.p₂ X) ∘ swap) ∘ eval′) ∘ first (λg swap))                                        ≈⟨ λ-cong (pullʳ β′) ⟩
-      λg ((eval′ ∘ first (p.p₂ X) ∘ swap) ∘ swap)                                                             ≈⟨ λ-cong (pull-last swap∘swap) ⟩
-      λg (eval′ ∘ first (p.p₂ X) ∘ id)                                                                        ≈⟨ λ-cong (∘-resp-≈ʳ identityʳ) ⟩
+      λg ((eval′ ∘ first (p.p₂ X) ∘ swap) ∘ swap)                                                             ≈⟨ λ-cong (pullʳ (cancelʳ swap∘swap)) ⟩
       λg (eval′ ∘ first (p.p₂ X))                                                                             ≈⟨ η-exp′ ⟩
       p.p₂ X                                                                                                  ≈˘⟨ identityʳ ⟩
       p.p₂ X ∘ id                                                                                             ∎
