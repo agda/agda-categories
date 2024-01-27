@@ -9,7 +9,7 @@ open import Categories.Category.BinaryProducts C
 open import Categories.Category.Cartesian using (Cartesian)
 open import Categories.Category.CartesianClosed using (CartesianClosed)
 open import Categories.Category.Slice C using (SliceObj; sliceobj; Slice⇒; slicearr)
-open import Categories.Functor.Slice C using (Forgetful; Free; Coforgetful)
+open import Categories.Functor.Slice C using (TotalSpace; ConstantFamily; InternalSections)
 open import Categories.Morphism.Reasoning C
 open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.Diagram.Pullback C hiding (swap)
@@ -30,8 +30,8 @@ module _ {A : Obj} (product : ∀ {X} → Product A X) where
     module product {X} = Product (product {X})
     open product
 
-  Forgetful⊣Free : Forgetful ⊣ Free product
-  Forgetful⊣Free = record
+  TotalSpace⊣ConstantFamily : TotalSpace ⊣ ConstantFamily product
+  TotalSpace⊣ConstantFamily = record
     { unit = ntHelper record
       { η = λ _ → slicearr project₁
       ; commute = λ {X} {Y} f → begin
@@ -60,8 +60,8 @@ module _ {A : Obj} (ccc : CartesianClosed C) (pullback : ∀ {X} {Y} {Z} (h : X 
   open Terminal terminal
   open BinaryProducts products
 
-  Free⊣Coforgetful : Free {A = A} product ⊣ Coforgetful ccc pullback
-  Free⊣Coforgetful = record
+  ConstantFamily⊣InternalSections : ConstantFamily {A = A} product ⊣ InternalSections ccc pullback
+  ConstantFamily⊣InternalSections = record
     { unit = ntHelper record
       { η = λ X → p.universal (sliceobj π₁) (λ-unique₂′ (unit-pb X))
       ; commute = λ {S} {T} f → p.unique-diagram (sliceobj π₁) !-unique₂ $ begin

@@ -42,8 +42,8 @@ module _ {A : Obj} where
 
   open S C
 
-  Forgetful : Functor (Slice A) C
-  Forgetful = record
+  TotalSpace : Functor (Slice A) C
+  TotalSpace = record
     { F₀           = Y
     ; F₁           = h
     ; identity     = refl
@@ -56,8 +56,8 @@ module _ {A : Obj} where
       module pullbacks {X Y Z} h i = Pullback (pullback {X} {Y} {Z} h i)
       open pullbacks using (p₂; p₂∘universal≈h₂; unique; unique-diagram; p₁∘universal≈h₁)
 
-    pullback-functorial : ∀ {B} (f : B ⇒ A) → Functor (Slice A) (Slice B)
-    pullback-functorial f = record
+    BaseChange : ∀ {B} (f : B ⇒ A) → Functor (Slice A) (Slice B)
+    BaseChange f = record
       { F₀ = λ X → S.sliceobj (p.p₁ X)
       ; F₁ = λ f → S.slicearr {h = p⇒.pbarr _ _ f} (p.p₁∘universal≈h₁ _ ○ identityˡ)
       ; identity = sym $ p.unique _ id-comm id-comm
@@ -120,8 +120,8 @@ module _ {A : Obj} where
       open product
 
     -- this is adapted from proposition 1.33 of Aspects of Topoi (Freyd, 1972)
-    Free : Functor C (Slice A)
-    Free = record
+    ConstantFamily : Functor C (Slice A)
+    ConstantFamily = record
       { F₀ = λ _ → sliceobj π₁
       ; F₁ = λ f → slicearr ([ product ⇒ product ]π₁∘× ○ identityˡ)
       ; identity = id×id product
@@ -139,9 +139,8 @@ module _ {A : Obj} where
     open Terminal terminal
     open BinaryProducts products
 
-    -- Needs better name!
-    Coforgetful : Functor (Slice A) C
-    Coforgetful = record
+    InternalSections : Functor (Slice A) C
+    InternalSections = record
       { F₀ = p.P
       ; F₁ = λ f → p.universal _ (F₁-lemma f)
       ; identity = λ {X} → sym $ p.unique X (sym (!-unique _)) $ begin
