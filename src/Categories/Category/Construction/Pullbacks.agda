@@ -33,12 +33,16 @@ record Pullback⇒ W (X Y : PullbackObj W) : Set (o ⊔ ℓ ⊔ e) where
     commute₁ : Y.arr₁ ∘ mor₁ ≈ X.arr₁
     commute₂ : Y.arr₂ ∘ mor₂ ≈ X.arr₂
 
+  private abstract
+    pbarrlemma : Y.arr₁ ∘ mor₁ ∘ X.pullback.p₁ ≈ Y.arr₂ ∘ mor₂ ∘ X.pullback.p₂
+    pbarrlemma = begin
+      Y.arr₁ ∘ mor₁ ∘ X.pullback.p₁ ≈⟨ pullˡ commute₁ ⟩
+      X.arr₁ ∘ X.pullback.p₁        ≈⟨ X.pullback.commute ⟩
+      X.arr₂ ∘ X.pullback.p₂        ≈˘⟨ pullˡ commute₂ ⟩
+      Y.arr₂ ∘ mor₂ ∘ X.pullback.p₂ ∎
+
   pbarr : X.pullback.P ⇒ Y.pullback.P
-  pbarr = Y.pullback.universal $ begin
-    Y.arr₁ ∘ mor₁ ∘ X.pullback.p₁ ≈⟨ pullˡ commute₁ ⟩
-    X.arr₁ ∘ X.pullback.p₁        ≈⟨ X.pullback.commute ⟩
-    X.arr₂ ∘ X.pullback.p₂        ≈˘⟨ pullˡ commute₂ ⟩
-    Y.arr₂ ∘ mor₂ ∘ X.pullback.p₂ ∎
+  pbarr = Y.pullback.universal pbarrlemma
 
 open Pullback⇒
 
