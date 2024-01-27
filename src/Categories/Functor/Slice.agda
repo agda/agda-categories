@@ -51,68 +51,6 @@ module _ {A : Obj} where
     ; F-resp-≈     = id→
     }
 
-  module _ (pullback : ∀ {X} {Y} {Z} (h : X ⇒ Z) (i : Y ⇒ Z) → Pullback h i) where
-    private
-      module pullbacks {X Y Z} h i = Pullback (pullback {X} {Y} {Z} h i)
-      open pullbacks using (p₂; p₂∘universal≈h₂; unique; unique-diagram; p₁∘universal≈h₁)
-
-    BaseChange : ∀ {B} (f : B ⇒ A) → Functor (Slice A) (Slice B)
-    BaseChange f = record
-      { F₀ = λ X → S.sliceobj (p.p₁ X)
-      ; F₁ = λ f → S.slicearr {h = p⇒.pbarr _ _ f} (p.p₁∘universal≈h₁ _ ○ identityˡ)
-      ; identity = sym $ p.unique _ id-comm id-comm
-      ; homomorphism = p.unique-diagram _ homomorphism-lemmaˡ homomorphism-lemmaʳ
-      ; F-resp-≈ = λ {_ B} {h i} eq → p.unique-diagram B F-resp-≈-lemmaˡ (F-resp-≈-lemmaʳ eq)
-      }
-      where
-        p : ∀ X → Pullback f (arr X)
-        p X = pullback f (arr X)
-        module p X = Pullback (p X)
-
-        p⇒ : ∀ X Y (g : Slice⇒ X Y) → Pbs.Pullback⇒ C A _ _
-        p⇒ X Y g = pX⇒pY
-          where
-            pX : Pbs.PullbackObj C A
-            pX = record { pullback = p X }
-            pY : Pbs.PullbackObj C A
-            pY = record { pullback = p Y }
-            pX⇒pY : Pbs.Pullback⇒ C A pX pY
-            pX⇒pY = record
-              { mor₁     = Category.id C
-              ; mor₂     = h g
-              ; commute₁ = identityʳ
-              ; commute₂ = △ g
-              }
-
-        module p⇒ X Y g = Pbs.Pullback⇒ (p⇒ X Y g)
-
-        homomorphism-lemmaˡ : ∀ {X Y Z α β} → p.p₁ Z ∘ p⇒.pbarr X Z _ ≈ p.p₁ Z ∘ p⇒.pbarr Y Z β ∘ p⇒.pbarr X Y α
-        homomorphism-lemmaˡ {X} {Y} {Z} {α} {β} = begin
-          p.p₁ Z ∘ p⇒.pbarr X Z _                  ≈⟨ p.p₁∘universal≈h₁ Z ⟩
-          id ∘ p.p₁ X                              ≈˘⟨ identityˡ ⟩
-          id ∘ id ∘ p.p₁ X                         ≈˘⟨ pullʳ (p.p₁∘universal≈h₁ Y) ⟩
-          (id ∘ p.p₁ Y) ∘ p⇒.pbarr X Y α           ≈˘⟨ pullˡ (p.p₁∘universal≈h₁ Z) ⟩
-          p.p₁ Z ∘ p⇒.pbarr Y Z β ∘ p⇒.pbarr X Y α ∎
-
-        homomorphism-lemmaʳ : ∀ {X Y Z α β} → p.p₂ Z ∘ p⇒.pbarr X Z _ ≈ p.p₂ Z ∘ p⇒.pbarr Y Z β ∘ p⇒.pbarr X Y α
-        homomorphism-lemmaʳ {X} {Y} {Z} {α} {β} = begin
-          p.p₂ Z ∘ p⇒.pbarr X Z _                  ≈⟨ p.p₂∘universal≈h₂ Z ⟩
-          (h β ∘ h α) ∘ p.p₂ X                     ≈˘⟨ glue′ (p.p₂∘universal≈h₂ Z) (p.p₂∘universal≈h₂ Y) ⟩
-          p.p₂ Z ∘ p⇒.pbarr Y Z β ∘ p⇒.pbarr X Y α ∎
-
-        F-resp-≈-lemmaˡ : ∀ {A B} {α β : Slice⇒ A B} → p.p₁ B ∘ p⇒.pbarr A B α ≈ p.p₁ B ∘ p⇒.pbarr A B β
-        F-resp-≈-lemmaˡ {A} {B} {α} {β} = begin
-          p.p₁ B ∘ p⇒.pbarr A B α ≈⟨ p.p₁∘universal≈h₁ B ⟩
-          id ∘ p.p₁ A             ≈˘⟨ p.p₁∘universal≈h₁ B ⟩
-          p.p₁ B ∘ p⇒.pbarr A B β ∎
-
-        F-resp-≈-lemmaʳ : ∀ {A B} {α β : Slice⇒ A B} → h α ≈ h β → p.p₂ B ∘ p⇒.pbarr A B α ≈ p.p₂ B ∘ p⇒.pbarr A B β
-        F-resp-≈-lemmaʳ {A} {B} {α} {β} eq = begin
-          p.p₂ B ∘ p⇒.pbarr A B α ≈⟨ p.p₂∘universal≈h₂ B ⟩
-          h α ∘ p.p₂ A            ≈⟨ eq ⟩∘⟨refl ⟩
-          h β ∘ p.p₂ A            ≈˘⟨ p.p₂∘universal≈h₂ B ⟩
-          p.p₂ B ∘ p⇒.pbarr A B β ∎
-
   module _ (product : {X : Obj} → Product A X) where
 
     private
