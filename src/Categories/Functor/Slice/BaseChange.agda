@@ -7,7 +7,7 @@ module Categories.Functor.Slice.BaseChange {o ℓ e} (C : Category o ℓ e) wher
 open import Categories.Category.Slice C using (Slice)
 open import Categories.Category.Slice.Properties C using (pullback⇒product; slice-slice⇒slice; slice⇒slice-slice)
 open import Categories.Functor using (Functor; _∘F_)
-open import Categories.Functor.Slice using (TotalSpace; ConstantFamily; BaseChange)
+open import Categories.Functor.Slice using (TotalSpace; ConstantFamily)
 open import Categories.Diagram.Pullback C using (Pullback)
 
 open Category C
