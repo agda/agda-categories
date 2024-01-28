@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Level
-open import Categories.Category.Core
+open import Level using (levelOfTerm)
+open import Categories.Category.Core using (Category)
 open import Categories.Category.Cartesian using (Cartesian)
 open import Categories.Category.BinaryProducts using (BinaryProducts)
 open import Categories.Category.Cocartesian using (Cocartesian)
@@ -17,7 +17,6 @@ open Category 𝒞
 open M 𝒞
 open MR 𝒞
 open HomReasoning
-open Equiv
 
 record Distributive : Set (levelOfTerm 𝒞) where
   field
@@ -34,7 +33,7 @@ record Distributive : Set (levelOfTerm 𝒞) where
   field
     isIsoˡ : ∀ {A B C : Obj} → IsIso (distributeˡ {A} {B} {C})
 
-  -- the dual to the canonical distributivity morphism is then also an iso
+  -- The following is then also an iso
   distributeʳ : ∀ {A B C : Obj} →  B × A + C × A ⇒ (B + C) × A
   distributeʳ = [ i₁ ⁂ id , i₂ ⁂ id ]
 
@@ -63,3 +62,10 @@ record Distributive : Set (levelOfTerm 𝒞) where
     }
     where
       open IsIso (isIsoˡ {A} {B} {C})
+
+  -- The inverse is what one is usually interested in
+  distributeˡ⁻¹ : ∀ {A B C : Obj} → A × (B + C) ⇒ A × B + A × C
+  distributeˡ⁻¹ = IsIso.inv isIsoˡ
+    
+  distributeʳ⁻¹ : ∀ {A B C : Obj} → (B + C) × A ⇒ B × A + C × A
+  distributeʳ⁻¹ = IsIso.inv isIsoʳ
