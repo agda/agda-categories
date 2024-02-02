@@ -4,9 +4,11 @@ module Categories.Category.Monoidal.Instance.Setoids where
 
 open import Level using (_⊔_; suc)
 open import Data.Product.Base using (proj₁; proj₂; _,_)
-open import Data.Product.Relation.Binary.Pointwise.NonDependent using (×-setoid)
-open import Data.Sum.Base using ([_,_]; inj₁; inj₂)
-open import Data.Sum.Relation.Binary.Pointwise using (⊎-setoid; inj₁; inj₂)
+open import Data.Product.Relation.Binary.Pointwise.NonDependent using (_×ₛ_)
+open import Data.Product.Function.NonDependent.Setoid using (proj₁ₛ; proj₂ₛ; <_,_>ₛ)
+open import Data.Sum.Base using (inj₁; inj₂)
+open import Data.Sum.Relation.Binary.Pointwise using (_⊎ₛ_)
+open import Data.Sum.Function.Setoid using (inj₁ₛ; inj₂ₛ; [_,_]ₛ)
 open import Function.Bundles using (_⟨$⟩_; Func)
 open import Relation.Binary using (Setoid)
 
@@ -31,19 +33,10 @@ module _ {o ℓ} where
         let module A = Setoid A
             module B = Setoid B
          in record
-          { A×B      = ×-setoid A B -- the stdlib doesn't provide projections!
-          ; π₁       = record
-            { to = proj₁
-            ; cong  = proj₁
-            }
-          ; π₂       = record
-            { to = proj₂
-            ; cong  = proj₂
-            }
-          ; ⟨_,_⟩    = λ f g → record
-            { to = λ x → f ⟨$⟩ x , g ⟨$⟩ x
-            ; cong  = λ eq → cong f eq , cong g eq
-            }
+          { A×B      = A ×ₛ B
+          ; π₁       = proj₁ₛ
+          ; π₂       = proj₂ₛ
+          ; ⟨_,_⟩    = λ f g → < f , g >ₛ
           ; project₁ = A.refl
           ; project₂ = B.refl
           ; unique   = λ eq₁ eq₂ → A.sym eq₁ , B.sym eq₂
@@ -61,13 +54,10 @@ module _ {o ℓ} where
     { initial = EmptySetoid-⊥
     ; coproducts = record
       { coproduct = λ {A} {B} → record
-        { A+B = ⊎-setoid A B
-        ; i₁ = record { to = inj₁ ; cong = inj₁ }
-        ; i₂ = record { to = inj₂ ; cong = inj₂ }
-        ; [_,_] = λ f g → record
-          { to = [ f ⟨$⟩_ , g ⟨$⟩_ ]
-          ; cong = λ { (inj₁ x) → cong f x ; (inj₂ x) → cong g x }
-          }
+        { A+B = A ⊎ₛ B
+        ; i₁ = inj₁ₛ
+        ; i₂ = inj₂ₛ
+        ; [_,_] = λ f g → [ f , g ]ₛ
         ; inject₁ = λ {C} → Setoid.refl C
         ; inject₂ = λ {C} → Setoid.refl C
         ; unique = λ {C} h₁≈f h₂≈g → λ { {inj₁ x} → Setoid.sym C h₁≈f
