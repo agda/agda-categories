@@ -171,11 +171,11 @@ glue {c′ = c′} {a′ = a′} {a = a} {c″ = c″} {c = c} {b′ = b′} {b 
   a ∘ (c′ ∘ b′)  ≈⟨ extendʳ sq-a ⟩
   c″ ∘ (a′ ∘ b′) ∎
 
--- A "rotated" version of glue′. Equivalent to 'Equiv.sym (glue (Equiv.sym sq-a) (Equiv.sym sq-b))'
-glue′ : CommutativeSquare a′ c′ c″ a →
-        CommutativeSquare b′ c c′ b →
-        CommutativeSquare (a′ ∘ b′) c c″ (a ∘ b)
-glue′ {a′ = a′} {c′ = c′} {c″ = c″} {a = a} {b′ = b′} {c = c} {b = b} sq-a sq-b = begin
+-- A "rotated" version of glue. Equivalent to 'Equiv.sym (glue (Equiv.sym sq-a) (Equiv.sym sq-b))'
+sym-glue : CommutativeSquare a′ c′ c″ a →
+           CommutativeSquare b′ c c′ b →
+           CommutativeSquare (a′ ∘ b′) c c″ (a ∘ b)
+sym-glue {a′ = a′} {c′ = c′} {c″ = c″} {a = a} {b′ = b′} {c = c} {b = b} sq-a sq-b = begin
   c″ ∘ (a′ ∘ b′) ≈⟨ pullˡ sq-a ⟩
   (a ∘ c′) ∘ b′  ≈⟨ extendˡ sq-b ⟩
   (a ∘ b) ∘ c    ∎

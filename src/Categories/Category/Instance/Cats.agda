@@ -9,7 +9,7 @@ open import Level
 open import Categories.Category using (Category)
 open import Categories.Functor using (Functor; id; _∘F_)
 open import Categories.NaturalTransformation.NaturalIsomorphism
-  using (NaturalIsomorphism; associator; unitorˡ; unitorʳ; unitor²; isEquivalence; _ⓘₕ_; sym)
+  using (NaturalIsomorphism; associator; sym-associator; unitorˡ; unitorʳ; unitor²; isEquivalence; _ⓘₕ_; sym)
 private
   variable
     o ℓ e : Level
@@ -24,7 +24,7 @@ Cats o ℓ e = record
   ; id        = id
   ; _∘_       = _∘F_
   ; assoc     = λ {_ _ _ _ F G H} → associator F G H
-  ; sym-assoc = λ {_ _ _ _ F G H} → sym (associator F G H)
+  ; sym-assoc = λ {_ _ _ _ F G H} → sym-associator F G H
   ; identityˡ = unitorˡ
   ; identityʳ = unitorʳ
   ; identity² = unitor²

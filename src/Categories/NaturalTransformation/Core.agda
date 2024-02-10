@@ -83,7 +83,7 @@ _∘ᵥ_ : ∀ {F G H : Functor C D} →
 _∘ᵥ_ {C = C} {D = D} {F} {G} {H} X Y = record
   { η       = λ q → D [ X.η q ∘ Y.η q ]
   ; commute = λ f → glue (X.commute f) (Y.commute f)
-  ; sym-commute = λ f → Category.Equiv.sym D (glue (X.commute f) (Y.commute f))
+  ; sym-commute = λ f → sym-glue (X.sym-commute f) (Y.sym-commute f)
   }
   where module X = NaturalTransformation X
         module Y = NaturalTransformation Y
@@ -92,9 +92,10 @@ _∘ᵥ_ {C = C} {D = D} {F} {G} {H} X Y = record
 -- "Horizontal composition"
 _∘ₕ_ : ∀ {F G : Functor C D} {H I : Functor D E} →
          NaturalTransformation H I → NaturalTransformation F G → NaturalTransformation (H ∘F F) (I ∘F G)
-_∘ₕ_ {E = E} {F} {I = I} Y X = ntHelper record
+_∘ₕ_ {E = E} {F} {I = I} Y X = record
   { η = λ q → E [ I₁ (X.η q) ∘ Y.η (F.F₀ q) ]
   ; commute = λ f → glue ([ I ]-resp-square (X.commute f)) (Y.commute (F.F₁ f))
+  ; sym-commute = λ f → sym-glue ([ I ]-resp-square (X.sym-commute f)) (Y.sym-commute (F.₁ f))
   }
   where module F = Functor F
         module X = NaturalTransformation X

@@ -41,7 +41,7 @@ Kleisli {𝒞 = 𝒞} M = record
   assoc′ {A} {B} {C} {D} {f} {g} {h} = begin
     (μ.η D ∘ F₁ ((μ.η D ∘ F₁ h) ∘ g)) ∘ f           ≈⟨ pushʳ homomorphism ⟩∘⟨refl ⟩
     ((μ.η D ∘ F₁ (μ.η D ∘ F₁ h)) ∘ F₁ g) ∘ f        ≈⟨ pushˡ (∘-resp-≈ˡ (∘-resp-≈ʳ homomorphism)) ⟩
-    (μ.η D ∘ (F₁ (μ.η D) ∘ F₁ (F₁ h))) ∘ (F₁ g ∘ f) ≈⟨ pushˡ (glue′ M.assoc (μ.commute h)) ⟩
+    (μ.η D ∘ (F₁ (μ.η D) ∘ F₁ (F₁ h))) ∘ (F₁ g ∘ f) ≈⟨ pushˡ (sym-glue M.assoc (μ.commute h)) ⟩
     (μ.η D ∘ F₁ h) ∘ (μ.η C ∘ (F₁ g ∘ f))           ≈⟨ refl⟩∘⟨ sym-assoc ⟩
     (μ.η D ∘ F₁ h) ∘ ((μ.η C ∘ F₁ g) ∘ f)           ∎
 
