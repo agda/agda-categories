@@ -28,3 +28,15 @@ record Monad {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
     sym-assoc : ∀ {X : Obj} → μ.η X ∘ μ.η (F₀ X) ≈ μ.η X ∘ F₁ (μ.η X)
     identityˡ : ∀ {X : Obj} → μ.η X ∘ F₁ (η.η X) ≈ id
     identityʳ : ∀ {X : Obj} → μ.η X ∘ η.η (F₀ X) ≈ id
+
+module _ {o ℓ e} (C : Category o ℓ e) where
+  open Monad
+  open Category C
+  idM : Monad C
+  idM .F = idF
+  idM .η = idN
+  idM .μ = unitor² .F⇒G
+  idM .assoc = Equiv.refl
+  idM .sym-assoc = Equiv.refl
+  idM .identityˡ = identity²
+  idM .identityʳ = identity²
