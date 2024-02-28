@@ -115,9 +115,9 @@ module _ {S R T : Monad C} where
 
   open import Categories.Tactic.Category using (solve)
 
-  Monad⇒-id-∘ : (Monad⇒-id S T) → (Monad⇒-id T R) → (Monad⇒-id S R)
-  Monad⇒-id-∘ τ σ .α = τ .α ∘ᵥ σ .α
-  Monad⇒-id-∘ τ σ .unit-comp {U} = begin
+  Monad⇒-id-∘ : (Monad⇒-id T R) → (Monad⇒-id S T) → (Monad⇒-id S R)
+  Monad⇒-id-∘ σ τ .α = τ .α ∘ᵥ σ .α
+  Monad⇒-id-∘ σ τ .unit-comp {U} = begin
       (τ .α .η U ∘  σ .α .η U) ∘ R .η .η U
       ≈⟨ C.assoc ⟩
       τ .α .η U ∘  (σ .α .η U ∘ R .η .η U)
@@ -126,7 +126,7 @@ module _ {S R T : Monad C} where
       ≈⟨ τ .unit-comp ⟩
       S .η .η U
       ∎
-  Monad⇒-id-∘ τ σ .mult-comp {U} = begin
+  Monad⇒-id-∘ σ τ .mult-comp {U} = begin
       (τ .α .η U ∘ σ .α .η U) ∘ R.μ.η U
       ≈⟨ C.assoc ⟩
       τ .α .η U ∘ (σ .α .η U ∘ R.μ.η U)

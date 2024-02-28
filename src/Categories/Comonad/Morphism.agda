@@ -108,9 +108,9 @@ module _ {S R T : Comonad C} where
 
   open import Categories.Tactic.Category using (solve)
 
-  Comonad⇒-id-∘ : (Comonad⇒-id S T) → (Comonad⇒-id T R) → (Comonad⇒-id S R)
-  Comonad⇒-id-∘ τ σ .α = σ .α ∘ᵥ τ .α
-  Comonad⇒-id-∘ τ σ .counit-comp {U} = begin
+  Comonad⇒-id-∘ : (Comonad⇒-id T R) → (Comonad⇒-id S T) → (Comonad⇒-id S R)
+  Comonad⇒-id-∘ σ τ .α = σ .α ∘ᵥ τ .α
+  Comonad⇒-id-∘ σ τ .counit-comp {U} = begin
     R.ε.η U ∘ (σ .α ∘ᵥ τ .α) .η  U
     ≈⟨ C.sym-assoc ⟩
     (R.ε.η U ∘ σ .α.η U) ∘ τ .α.η  U
@@ -119,7 +119,7 @@ module _ {S R T : Comonad C} where
     ≈⟨ τ .counit-comp ⟩
     S.ε.η U
     ∎
-  Comonad⇒-id-∘ τ σ .comult-comp {U} = begin
+  Comonad⇒-id-∘ σ τ .comult-comp {U} = begin
     R.δ.η U ∘ σ .α.η U ∘ τ .α.η U
     ≈⟨ C.sym-assoc ⟩
     (R.δ.η U ∘ σ .α.η U) ∘ τ .α.η U
