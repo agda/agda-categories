@@ -21,7 +21,7 @@ record Monad {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   module μ = NaturalTransformation μ
 
   open Category C
-  open F
+  open F public
 
   field
     assoc     : ∀ {X : Obj} → μ.η X ∘ F₁ (μ.η X) ≈ μ.η X ∘ μ.η (F₀ X)

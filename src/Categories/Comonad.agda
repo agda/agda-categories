@@ -21,7 +21,7 @@ record Comonad {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   module δ = NaturalTransformation δ
 
   open Category C
-  open Functor F
+  open Functor F public
 
   field
     assoc     : ∀ {X : Obj} → δ.η (F₀ X) ∘ δ.η X ≈ F₁ (δ.η X) ∘ δ.η X
