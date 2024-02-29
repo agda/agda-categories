@@ -99,14 +99,12 @@ module _ {S R T : Comonad C} where
     module S = Comonad S
     module T = Comonad T
     module R = Comonad R
+    module C = Category C
   open Comonad⇒-id
-  module C = Category C
   open C using(_∘_; _≈_)
   open MR C
   open C.HomReasoning
   open Comonad
-
-  open import Categories.Tactic.Category using (solve)
 
   Comonad⇒-id-∘ : (Comonad⇒-id T R) → (Comonad⇒-id S T) → (Comonad⇒-id S R)
   Comonad⇒-id-∘ σ τ .α = σ .α ∘ᵥ τ .α

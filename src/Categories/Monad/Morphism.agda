@@ -106,14 +106,12 @@ module _ {S R T : Monad C} where
     module S = Monad S
     module T = Monad T
     module R = Monad R
+    module C = Category C
   open Monad⇒-id
-  module C = Category C
   open C using(_∘_; _≈_)
   open MR C
   open C.HomReasoning
   open Monad
-
-  open import Categories.Tactic.Category using (solve)
 
   Monad⇒-id-∘ : (Monad⇒-id T R) → (Monad⇒-id S T) → (Monad⇒-id S R)
   Monad⇒-id-∘ σ τ .α = τ .α ∘ᵥ σ .α
