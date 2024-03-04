@@ -87,17 +87,15 @@ module _ {T : Monad C} where
   open Monad⇒-id
   open Category C
   open HomReasoning
+  open MR C
   Monad⇒-id-id : (Monad⇒-id T T)
   Monad⇒-id-id .α = idN
   Monad⇒-id-id .unit-comp {_} = identityˡ
   Monad⇒-id-id .mult-comp {U} = begin
       id ∘ T.μ.η U
-      ≈⟨ identityˡ
-       ○ ⟺ identityʳ
-       ○ refl⟩∘⟨ ⟺ identityʳ
-       ⟩
-      T.μ.η U ∘ id ∘ id
-      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ T.F.identity ⟩
+      ≈⟨ id-comm-sym ⟩
+      T.μ.η U ∘ id
+      ≈⟨ refl⟩∘⟨ introʳ T.F.identity ⟩
       T.μ.η U ∘ id ∘ T.F.₁ id
       ∎
 
@@ -117,29 +115,24 @@ module _ {S R T : Monad C} where
   Monad⇒-id-∘ σ τ .α = τ .α ∘ᵥ σ .α
   Monad⇒-id-∘ σ τ .unit-comp {U} = begin
       (τ .α .η U ∘  σ .α .η U) ∘ R .η .η U
-      ≈⟨ C.assoc ⟩
-      τ .α .η U ∘  (σ .α .η U ∘ R .η .η U)
-      ≈⟨ refl⟩∘⟨ σ .unit-comp ⟩
+      ≈⟨ pullʳ (σ .unit-comp) ⟩
       τ .α .η U ∘ T .η .η U
       ≈⟨ τ .unit-comp ⟩
       S .η .η U
       ∎
   Monad⇒-id-∘ σ τ .mult-comp {U} = begin
       (τ .α .η U ∘ σ .α .η U) ∘ R.μ.η U
-      ≈⟨ C.assoc ⟩
-      τ .α .η U ∘ (σ .α .η U ∘ R.μ.η U)
-      ≈⟨ refl⟩∘⟨ σ .mult-comp ⟩
+      ≈⟨ pullʳ (σ .mult-comp) ⟩
       τ .α .η U ∘ (T.μ.η U ∘ σ .α .η (T.F.₀ U) ∘ R.F.₁ (σ .α .η U))
-      ≈⟨ C.sym-assoc ⟩
-      (τ .α .η U ∘ T.μ.η U) ∘ σ .α .η (T.F.₀ U) ∘ R.F.₁ (σ .α .η U)
-      ≈⟨ τ .mult-comp ⟩∘⟨refl ⟩
+      ≈⟨ pullˡ (τ .mult-comp) ⟩
       (S.μ.η U ∘ τ .α.η (S.F.₀ U) ∘ T.F.₁ (τ .α.η U)) ∘ σ .α.η (T.F.₀ U) ∘ R.F.₁ (σ .α.η U)
+      -- (a ∘ (b ∘ c)) ∘ d ≈ (a ∘ b) ∘ (c ∘ d)
       ≈⟨ pushˡ C.sym-assoc  ⟩
       (S.μ.η U ∘ τ .α.η (S.F.₀ U)) ∘ T.F.₁ (τ .α.η U) ∘ σ .α.η (T.F.₀ U) ∘ R.F.₁ (σ .α.η U)
-      ≈⟨ refl⟩∘⟨ (pullˡ (σ .α .sym-commute (τ .α.η U)) ○ C.assoc ) ⟩
+      ≈⟨ refl⟩∘⟨ extendʳ (σ .α .sym-commute (τ .α.η U)) ⟩
       (S.μ.η U ∘ τ .α.η (S.F.₀ U)) ∘ σ .α.η (S.F.₀ U) ∘ R.F.₁ (τ .α.η U) ∘ R.F.₁ (σ .α.η U)
-      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ R.F.homomorphism ⟩
+      ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ R.F.homomorphism ⟩
       (S.μ.η U ∘ τ .α.η (S.F.₀ U)) ∘ σ .α.η (S.F.₀ U) ∘ R.F.₁ (τ .α.η U ∘ σ .α.η U)
-      ≈⟨ pullˡ C.assoc ○ C.assoc ⟩
+      ≈˘⟨ assoc²'' ⟩
       S.μ.η U ∘ (τ .α.η (S.F.₀ U) ∘ σ .α.η (S.F.₀ U)) ∘ R.F.₁ (τ .α.η U ∘ σ .α.η U)
       ∎
