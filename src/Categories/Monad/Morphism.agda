@@ -3,7 +3,7 @@
 open import Level
 open import Categories.Category
 open import Categories.Functor renaming (id to idF)
-open import Categories.Monad renaming (id to idM)
+open import Categories.Monad using (Monad) renaming (id to idM)
 import Categories.Morphism.Reasoning as MR
 open import Categories.NaturalTransformation renaming (id to idN)
 open NaturalTransformation
