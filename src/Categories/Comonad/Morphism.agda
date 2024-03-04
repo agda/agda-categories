@@ -2,7 +2,7 @@
 
 open import Level
 open import Categories.Category using (Category)
-open import Categories.Comonad
+open import Categories.Comonad using (Comonad) renaming (id to idCM)
 open import Categories.Functor renaming (id to idF)
 import Categories.Morphism.Reasoning as MR
 open import Categories.NaturalTransformation renaming (id to idN)

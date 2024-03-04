@@ -31,12 +31,12 @@ record Monad {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
 
 module _ {o ℓ e} (C : Category o ℓ e) where
   open Monad
-  open Category C
-  idM : Monad C
-  idM .F = idF
-  idM .η = idN
-  idM .μ = unitor² .F⇒G
-  idM .assoc = Equiv.refl
-  idM .sym-assoc = Equiv.refl
-  idM .identityˡ = identity²
-  idM .identityʳ = identity²
+  open Category C hiding (id)
+  id : Monad C
+  id .F = idF
+  id .η = idN
+  id .μ = unitor² .F⇒G
+  id .assoc = Equiv.refl
+  id .sym-assoc = Equiv.refl
+  id .identityˡ = identity²
+  id .identityʳ = identity²

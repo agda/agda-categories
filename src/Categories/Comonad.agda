@@ -31,12 +31,12 @@ record Comonad {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
 
 module _ {o ℓ e} (C : Category o ℓ e) where
   open Comonad
-  open Category C
-  idCM : Comonad C
-  idCM .F = idF
-  idCM .ε = idN
-  idCM .δ = unitor² .F⇐G
-  idCM .assoc = Equiv.refl
-  idCM .sym-assoc = Equiv.refl
-  idCM .identityˡ = identity²
-  idCM .identityʳ = identity²
+  open Category C hiding (id)
+  id : Comonad C
+  id .F = idF
+  id .ε = idN
+  id .δ = unitor² .F⇐G
+  id .assoc = Equiv.refl
+  id .sym-assoc = Equiv.refl
+  id .identityˡ = identity²
+  id .identityʳ = identity²
