@@ -86,12 +86,9 @@ module _ {T : Comonad C} where
   Comonad⇒-id-id .α = idN
   Comonad⇒-id-id .counit-comp {_} = identityʳ
   Comonad⇒-id-id .comult-comp {U} = begin
-    T.δ.η U ∘ id
-    ≈⟨ id-comm ⟩
-    id ∘ T.δ.η U
-    ≈⟨ refl⟩∘⟨ introˡ T.F.identity ⟩
-    id ∘ T.F.F₁ id ∘ T.δ.η U
-    ∎
+    T.δ.η U ∘ id             ≈⟨ id-comm ⟩
+    id ∘ T.δ.η U             ≈⟨ refl⟩∘⟨ introˡ T.F.identity ⟩
+    id ∘ T.F.F₁ id ∘ T.δ.η U ∎
 
 module _ {S R T : Comonad C} where
   private
@@ -108,27 +105,24 @@ module _ {S R T : Comonad C} where
   Comonad⇒-id-∘ : (Comonad⇒-id T R) → (Comonad⇒-id S T) → (Comonad⇒-id S R)
   Comonad⇒-id-∘ σ τ .α = σ .α ∘ᵥ τ .α
   Comonad⇒-id-∘ σ τ .counit-comp {U} = begin
-    R.ε.η U ∘ (σ .α ∘ᵥ τ .α) .η  U
-    ≈⟨ pullˡ (σ .counit-comp) ⟩
-    T.ε.η U ∘ τ .α.η  U
-    ≈⟨ τ .counit-comp ⟩
-    S.ε.η U
-    ∎
+    R.ε.η U ∘ (σ .α ∘ᵥ τ .α) .η  U ≈⟨ pullˡ (σ .counit-comp) ⟩
+    T.ε.η U ∘ τ .α.η  U            ≈⟨ τ .counit-comp ⟩
+    S.ε.η U                        ∎
   Comonad⇒-id-∘ σ τ .comult-comp {U} = begin
     R.δ.η U ∘ σ .α.η U ∘ τ .α.η U
-    ≈⟨ pullˡ (σ .comult-comp) ⟩
+      ≈⟨ pullˡ (σ .comult-comp) ⟩
     (σ .α.η (R.F.₀ U) ∘ T.F.₁ (σ .α.η U) ∘ T.δ.η U) ∘ τ .α.η U
-    -- there is no approx² that witnesses (a ∘ (b ∘ c)) ∘ d ≈ (a ∘ b) ∘ (c ∘ d)
-    ≈⟨ pushˡ C.sym-assoc ⟩
+      -- there is no approx² that witnesses (a ∘ (b ∘ c)) ∘ d ≈ (a ∘ b) ∘ (c ∘ d)
+      ≈⟨ pushˡ C.sym-assoc ⟩
     (σ .α.η (R.F.₀ U) ∘ T.F.₁ (σ .α.η U)) ∘ (T.δ.η U ∘ τ .α.η U)
-    ≈⟨ refl⟩∘⟨ τ .comult-comp ⟩
+      ≈⟨ refl⟩∘⟨ τ .comult-comp ⟩
     (σ .α.η (R.F.₀ U) ∘ T.F.₁ (σ .α.η U)) ∘ (τ .α.η (T.F.₀ U) ∘ S.F.₁ (τ .α.η U) ∘ S.δ.η U)
-    ≈⟨ pullʳ C.sym-assoc ⟩
+      ≈⟨ pullʳ C.sym-assoc ⟩
     σ .α.η (R.F.₀ U) ∘ (T.F.₁ (σ .α.η U) ∘ τ .α.η (T.F.₀ U)) ∘ S.F.₁ (τ .α.η U) ∘ S.δ.η U
-    ≈⟨ refl⟩∘⟨ τ .α .sym-commute (σ .α.η U) ⟩∘⟨refl  ⟩
+      ≈⟨ refl⟩∘⟨ τ .α .sym-commute (σ .α.η U) ⟩∘⟨refl  ⟩
     σ .α.η (R.F.₀ U) ∘ (τ .α.η (R.F.₀ U) ∘ S.F.₁ (σ .α.η U)) ∘ S.F.₁ (τ .α.η U) ∘ S.δ.η U
-    ≈⟨ pushʳ C.assoc ○ refl⟩∘⟨ C.sym-assoc ⟩ -- a ∘ (b ∘ c) ∘ (d ∘ e) ≈ (a ∘ b) ∘ (c ∘ d) ∘ e
+      ≈⟨ pushʳ C.assoc ○ refl⟩∘⟨ C.sym-assoc ⟩ -- a ∘ (b ∘ c) ∘ (d ∘ e) ≈ (a ∘ b) ∘ (c ∘ d) ∘ e
     (σ .α.η (R.F.₀ U) ∘ τ .α.η (R.F.₀ U)) ∘ (S.F.₁ (σ .α.η U) ∘ S.F.₁ (τ .α.η U)) ∘ S.δ.η U
-    ≈⟨ refl⟩∘⟨ ⟺ S.F.homomorphism ⟩∘⟨refl ⟩
+      ≈⟨ refl⟩∘⟨ ⟺ S.F.homomorphism ⟩∘⟨refl ⟩
     (σ .α.η (R.F.₀ U) ∘ τ .α.η (R.F.₀ U)) ∘ S.F.₁ (σ .α.η U ∘ τ .α.η  U) ∘ S.δ.η U
-    ∎
+      ∎
