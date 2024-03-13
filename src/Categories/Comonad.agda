@@ -28,3 +28,15 @@ record Comonad {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
     sym-assoc : ∀ {X : Obj} → F₁ (δ.η X) ∘ δ.η X ≈ δ.η (F₀ X) ∘ δ.η X
     identityˡ : ∀ {X : Obj} → F₁ (ε.η X) ∘ δ.η X ≈ id
     identityʳ : ∀ {X : Obj} → ε.η (F₀ X) ∘ δ.η X ≈ id
+
+module _ {o ℓ e} (C : Category o ℓ e) where
+  open Comonad
+  open Category C hiding (id)
+  id : Comonad C
+  id .F = idF
+  id .ε = idN
+  id .δ = unitor² .F⇐G
+  id .assoc = Equiv.refl
+  id .sym-assoc = Equiv.refl
+  id .identityˡ = identity²
+  id .identityʳ = identity²

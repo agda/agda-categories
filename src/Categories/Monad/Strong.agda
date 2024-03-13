@@ -16,7 +16,7 @@ open import Categories.Functor renaming (id to idF)
 open import Categories.Category.Monoidal
 open import Categories.Category.Product
 open import Categories.NaturalTransformation hiding (id)
-open import Categories.Monad
+open import Categories.Monad hiding (id)
 
 private
   variable
