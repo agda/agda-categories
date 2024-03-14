@@ -30,7 +30,7 @@ module Hom {o ℓ e} (C : Category o ℓ e) where
         ; cong = ∘-resp-≈ʳ ∙ ∘-resp-≈ˡ
         }
     ; identity     = identityˡ ○ identityʳ
-    ; homomorphism = refl⟩∘⟨ sym-assoc ○ ⟺ assoc²''
+    ; homomorphism = ∘-resp-≈ʳ sym-assoc ○ assoc²γδ
     ; F-resp-≈     = λ { (f₁≈g₁ , f₂≈g₂) → f₂≈g₂ ⟩∘⟨ refl⟩∘⟨ f₁≈g₁}
     }
     where F₀′ : Obj × Obj → Setoid ℓ e

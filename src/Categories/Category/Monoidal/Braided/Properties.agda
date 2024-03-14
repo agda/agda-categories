@@ -85,7 +85,7 @@ private
                             ⟩
   braiding-coherence⊗unit = cancel-fromˡ braiding.FX≅GX (begin
     σ⇒ ∘ λ⇒ ⊗₁ id ∘ σ⇒ ⊗₁ id            ≈⟨ pullˡ (⟺ (glue◽◃ unitorˡ-commute-from coherence₁)) ⟩
-    (λ⇒ ∘ id ⊗₁ σ⇒ ∘ α⇒) ∘ σ⇒ ⊗₁ id     ≈⟨ assoc²' ⟩
+    (λ⇒ ∘ id ⊗₁ σ⇒ ∘ α⇒) ∘ σ⇒ ⊗₁ id     ≈⟨ assoc²βε ⟩
     λ⇒ ∘ id ⊗₁ σ⇒ ∘ α⇒ ∘ σ⇒ ⊗₁ id       ≈⟨ refl⟩∘⟨ hexagon₁ ⟩
     λ⇒ ∘ α⇒ ∘ σ⇒ ∘ α⇒                   ≈⟨ pullˡ coherence₁ ⟩
     λ⇒ ⊗₁ id ∘ σ⇒ ∘ α⇒                  ≈˘⟨ pushˡ (braiding.⇒.commute _) ⟩
@@ -168,7 +168,7 @@ assoc-reverse : [ X ⊗₀ (Y ⊗₀ Z) ⇒ (X ⊗₀ Y) ⊗₀ Z ]⟨
                 ≈ α⇐
                 ⟩
 assoc-reverse = begin
-  σ⇐ ∘ id ⊗₁ σ⇐ ∘ α⇒ ∘ σ⇒ ∘ id ⊗₁ σ⇒    ≈˘⟨ refl⟩∘⟨ assoc²' ⟩
+  σ⇐ ∘ id ⊗₁ σ⇐ ∘ α⇒ ∘ σ⇒ ∘ id ⊗₁ σ⇒    ≈⟨ refl⟩∘⟨ assoc²εβ ⟩
   σ⇐ ∘ (id ⊗₁ σ⇐ ∘ α⇒ ∘ σ⇒) ∘ id ⊗₁ σ⇒  ≈⟨ refl⟩∘⟨ pushˡ hex₁' ⟩
   σ⇐ ∘ (α⇒ ∘ σ⇒ ⊗₁ id) ∘ α⇐ ∘ id ⊗₁ σ⇒  ≈⟨ refl⟩∘⟨ pullʳ (sym-assoc ○ hexagon₂) ⟩
   σ⇐ ∘ α⇒ ∘ (α⇐ ∘ σ⇒) ∘ α⇐              ≈⟨ refl⟩∘⟨ pullˡ (cancelˡ associator.isoʳ) ⟩

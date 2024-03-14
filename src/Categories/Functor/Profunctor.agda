@@ -316,7 +316,7 @@ module _ {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ e) where
     module C = Category C
     open module D = Category D hiding (id)
     open D.HomReasoning
-    open import Categories.Morphism.Reasoning D using (assoc²''; elimˡ; elimʳ)
+    open import Categories.Morphism.Reasoning D using (assoc²γδ; elimˡ; elimʳ)
 
   -- representable profunctors
   -- hom(f,1)
@@ -338,7 +338,7 @@ module _ {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ e) where
     ; homomorphism = λ { {f = f0 , f1} {g = g0 , g1} {x} → begin
         (g1 ∘ f1) ∘ x ∘ F₁ (f0 C.∘ g0)  ≈⟨ refl⟩∘⟨ refl⟩∘⟨ F.homomorphism ⟩
         (g1 ∘ f1) ∘ x ∘ F₁ f0 ∘ F₁ g0   ≈⟨ refl⟩∘⟨ D.sym-assoc ⟩
-        (g1 ∘ f1) ∘ (x ∘ F₁ f0) ∘ F₁ g0 ≈⟨ Equiv.sym assoc²'' ⟩
+        (g1 ∘ f1) ∘ (x ∘ F₁ f0) ∘ F₁ g0 ≈⟨ assoc²γδ ⟩
         g1 ∘ (f1 ∘ x ∘ F₁ f0) ∘ F₁ g0   ∎
       }
     ; F-resp-≈ = λ { {f = f0 , f1} {g = g0 , g1} (f0≈g0 , f1≈g1) {x} → begin
@@ -368,7 +368,7 @@ module _ {o ℓ e} {o′} (C : Category o ℓ e) (D : Category o′ ℓ e) where
     ; homomorphism = λ { {f = f0 , f1} {g = g0 , g1} {x} → begin
         F₁ (g1 C.∘ f1) ∘ x ∘ f0 ∘ g0    ≈⟨ F.homomorphism ⟩∘⟨refl ⟩
         (F₁ g1 ∘ F₁ f1) ∘ x ∘ f0 ∘ g0   ≈⟨ refl⟩∘⟨ D.sym-assoc ⟩
-        (F₁ g1 ∘ F₁ f1) ∘ (x ∘ f0) ∘ g0 ≈⟨ Equiv.sym assoc²'' ⟩
+        (F₁ g1 ∘ F₁ f1) ∘ (x ∘ f0) ∘ g0 ≈⟨ assoc²γδ ⟩
         F₁ g1 ∘ (F₁ f1 ∘ x ∘ f0) ∘ g0   ∎
       }
     ; F-resp-≈ = λ { {f = f0 , f1} {g = g0 , g1} (f0≈g0 , f1≈g1) {x} → begin

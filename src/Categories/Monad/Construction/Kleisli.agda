@@ -111,7 +111,7 @@ module _ (C : Category o ℓ e) where
         (μ.η Z ∘ F₁ (μ.η Z ∘ ₁ l) ∘ F₁ k)           ≈⟨ refl⟩∘⟨ homomorphism ⟩∘⟨refl ⟩ 
         (μ.η Z ∘ (F₁ (μ.η Z) ∘ F₁ (F₁ l)) ∘ F₁ k)   ≈⟨ pullˡ (pullˡ M.assoc) ⟩ 
         (((μ.η Z ∘ μ.η (F₀ Z)) ∘ F₁ (F₁ l)) ∘ F₁ k) ≈⟨ pullʳ (μ.commute l) ⟩∘⟨refl ⟩
-        (μ.η Z ∘ F₁ l ∘ μ.η Y) ∘ F₁ k               ≈⟨ trans assoc²' sym-assoc ⟩
+        (μ.η Z ∘ F₁ l ∘ μ.η Y) ∘ F₁ k               ≈⟨ assoc²βγ ⟩
         (μ.η Z ∘ F₁ l) ∘ μ.η Y ∘ F₁ k               ∎
 
 
