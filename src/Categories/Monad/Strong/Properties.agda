@@ -148,7 +148,7 @@ module Left {V : Monoidal C} {M : Monad C} (left : Strength V M) where
       μ.η (X ⊗₀ Y) ∘ F.₁ (τ ∘ B⇐) ∘ σ ∘ B⇒             ≈⟨ refl⟩∘⟨ (F.F-resp-≈ (pullʳ (cancelʳ (braiding.iso.isoʳ _))) ⟩∘⟨refl) ⟩
       μ.η (X ⊗₀ Y) ∘ F.₁ (F.₁ B⇐ ∘ σ) ∘ σ ∘ B⇒         ≈⟨ refl⟩∘⟨ F.homomorphism ⟩∘⟨refl ⟩
       μ.η (X ⊗₀ Y) ∘ (F.₁ (F.₁ B⇐) ∘ F.₁ σ) ∘ σ ∘ B⇒   ≈⟨ pullˡ (pullˡ (μ.commute B⇐)) ⟩
-      ((F.₁ B⇐ ∘ μ.η (Y ⊗₀ X)) ∘ F.₁ σ) ∘ σ ∘ B⇒       ≈⟨ assoc² ○ (refl⟩∘⟨ ⟺ assoc²') ⟩
+      ((F.₁ B⇐ ∘ μ.η (Y ⊗₀ X)) ∘ F.₁ σ) ∘ σ ∘ B⇒       ≈⟨ assoc²αε ○ ∘-resp-≈ʳ assoc²εβ ⟩
       F.₁ B⇐ ∘ (μ.η (Y ⊗₀ X) ∘ F.₁ σ ∘ σ) ∘ B⇒         ≈⟨ refl⟩∘⟨ pushˡ left.μ-η-comm ⟩
       F.₁ B⇐ ∘ σ ∘ (id ⊗₁ μ.η X) ∘ B⇒                  ≈˘⟨ pullʳ (pullʳ (braiding.⇒.commute (μ.η X , id))) ⟩
       τ ∘ μ.η X ⊗₁ id ∎

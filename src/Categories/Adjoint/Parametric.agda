@@ -82,7 +82,7 @@ record ParametricAdjoint {C D E : Category o ℓ e} (L : Functor C (Functors D E
               _ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ LL.F-resp-≈ a' R.homomorphism ⟩
               _ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ LL.homomorphism a' ⟩
               _ ≈⟨ refl⟩∘⟨ pullˡ (commute (L.₁ _) _) ⟩
-              _ ≈⟨ MR.assoc²'' E ⟩
+              _ ≈⟨  MR.assoc²δγ E  ⟩
               _ ∎ }
     ; F-resp-≈ = λ { {a , a'} {b , b'} {f} {g} (f≈g , f'≈g') →
         L.F-resp-≈ f'≈g' ⟩∘⟨ Functor.F-resp-≈ (L.₀ a') (R.F-resp-≈ f≈g)}

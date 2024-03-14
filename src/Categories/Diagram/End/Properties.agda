@@ -111,11 +111,11 @@ module _ {P Q : Functor (Product (Category.op C) C) D} (P⇒Q : NaturalTransform
       { α = λ c → η (c , c) ∘ dinatural.α ep c
       ; commute = λ {C} {C′} f → begin
         Q.₁ (C.id , f) ∘ (η (C , C) ∘ αp C) ∘ D.id       ≈⟨ pullˡ sym-assoc ⟩
-        ((Q.₁ (C.id , f) ∘ η (C , C)) ∘ αp C) ∘ D.id     ≈⟨ (nt.sym-commute (C.id , f) ⟩∘⟨refl ⟩∘⟨refl) ⟩
-        ((η (C , C′) ∘ P.₁ (C.id , f)) ∘ αp C) ∘ D.id    ≈⟨ assoc² ⟩
-        η (C , C′) ∘ (P.₁ (C.id , f) ∘ αp C ∘ D.id)      ≈⟨ (refl⟩∘⟨ αp-comm f) ⟩
-        η (C , C′) ∘ P.₁ (f , C.id) ∘ αp C′ ∘ D.id       ≈˘⟨ assoc² ⟩
-        ((η (C , C′) ∘ P.₁ (f , C.id)) ∘ αp C′) ∘ D.id   ≈⟨ (nt.commute (f , C.id) ⟩∘⟨refl ⟩∘⟨refl) ⟩
+        ((Q.₁ (C.id , f) ∘ η (C , C)) ∘ αp C) ∘ D.id     ≈⟨ nt.sym-commute (C.id , f) ⟩∘⟨refl ⟩∘⟨refl ⟩
+        ((η (C , C′) ∘ P.₁ (C.id , f)) ∘ αp C) ∘ D.id    ≈⟨ assoc²αε ⟩
+        η (C , C′) ∘ (P.₁ (C.id , f) ∘ αp C ∘ D.id)      ≈⟨ refl⟩∘⟨ αp-comm f ⟩
+        η (C , C′) ∘ P.₁ (f , C.id) ∘ αp C′ ∘ D.id       ≈⟨ assoc²εα ⟩
+        ((η (C , C′) ∘ P.₁ (f , C.id)) ∘ αp C′) ∘ D.id   ≈⟨ nt.commute (f , C.id) ⟩∘⟨refl ⟩∘⟨refl ⟩
         ((Q.₁ (f , C.id) ∘ η (C′ , C′)) ∘ αp C′) ∘ D.id  ≈⟨ pushˡ assoc ⟩
         Q.₁ (f , C.id) ∘ (η (C′ , C′) ∘ αp C′) ∘ D.id    ∎
       }

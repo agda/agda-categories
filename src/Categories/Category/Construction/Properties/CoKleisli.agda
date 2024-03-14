@@ -51,7 +51,7 @@ module _ {F : Functor 𝒞 𝒟} {G : Functor 𝒟 𝒞} (F⊣G : Adjoint F G) w
       G.F₁ g 𝒞.∘ G.F₁ ((F.F₁ (G.F₁ f)) 𝒟.∘ F.F₁ (unit.η (G.F₀ X))) 𝒞.∘ unit.η (G.F₀ X)      ≈⟨ (refl⟩∘⟨ pushˡ G.homomorphism) ⟩
       G.F₁ g 𝒞.∘ G.F₁ (F.F₁ (G.F₁ f)) 𝒞.∘ G.F₁ (F.F₁ (unit.η (G.F₀ X))) 𝒞.∘ unit.η (G.F₀ X) ≈⟨ (refl⟩∘⟨ (refl⟩∘⟨ sym (unit.commute (unit.η (G.F₀ X))))) ⟩
       G.F₁ g 𝒞.∘ G.F₁ (F.F₁ (G.F₁ f)) 𝒞.∘ unit.η (G.F₀ (F.F₀ (G.F₀ X))) 𝒞.∘ unit.η (G.F₀ X) ≈⟨ (refl⟩∘⟨ pullˡ (sym (unit.commute (G.F₁ f)))) ⟩
-      G.F₁ g 𝒞.∘ (unit.η (G.F₀ Y) 𝒞.∘ G.F₁ f) 𝒞.∘ unit.η (G.F₀ X)                           ≈⟨ MR.assoc²'' 𝒞 ⟩
+      G.F₁ g 𝒞.∘ (unit.η (G.F₀ Y) 𝒞.∘ G.F₁ f) 𝒞.∘ unit.η (G.F₀ X)                           ≈⟨ MR.assoc²δγ 𝒞 ⟩
       (G.F₁ g 𝒞.∘ unit.η (G.F₀ Y)) 𝒞.∘ G.F₁ f 𝒞.∘ unit.η (G.F₀ X)                           ∎
    ; F-resp-≈ = λ eq → 𝒞.∘-resp-≈ (G.F-resp-≈ eq) (Category.Equiv.refl 𝒞)
    }

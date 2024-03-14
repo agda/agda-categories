@@ -320,7 +320,7 @@ module _ {V : MonoidalCategory o ℓ e} {C : Category o′ ℓ′ e′} where
           sub λ⇒ ∘ (μ unit u ∘ T₁ unit f) ∘ return
         ≈˘⟨ refl⟩∘⟨ pushʳ (commute M.ε f) ⟩
           sub λ⇒ ∘ μ unit u ∘ return ∘ f
-        ≈˘⟨ assoc²' ⟩
+        ≈⟨ assoc²εβ ⟩
           (sub λ⇒ ∘ μ unit u ∘ return) ∘ f
         ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ introˡ (identity (M.₀ unit))) ⟩∘⟨refl ⟩
           (sub λ⇒ ∘ μ unit u ∘ T₁ unit id ∘ return) ∘ f
@@ -421,7 +421,7 @@ module _ {V : MonoidalCategory o ℓ e} {C : Category o′ ℓ′ e′} where
 
       unitaryʳ : sub ρ⇒ ∘ μ u unit ∘ T₁ u return ∘ id ≈ id {T₀ u A}
       unitaryʳ {u = u} = begin
-        sub ρ⇒ ∘ μ u unit ∘ T₁ u return ∘ id     ≈˘⟨ assoc²' ⟩
+        sub ρ⇒ ∘ μ u unit ∘ T₁ u return ∘ id     ≈⟨ assoc²εβ ⟩
         (sub ρ⇒ ∘ μ u unit ∘ T₁ u return) ∘ id   ≈⟨ elimˡ μ-identityʳ ⟩
         id                                       ∎
 

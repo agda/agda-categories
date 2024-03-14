@@ -44,7 +44,7 @@ Forgetful =
    (F₁ (g ∘ F₁ f ∘ M.δ.η X)) ∘ M.δ.η X         ≈⟨ pushˡ trihom ⟩
    F₁ g ∘ (F₁ (F₁ f) ∘ F₁ (M.δ.η X)) ∘ M.δ.η X ≈⟨ refl⟩∘⟨ (pullʳ (sym M.assoc)) ⟩
    F₁ g ∘ F₁ (F₁ f) ∘ M.δ.η (F₀ X) ∘ M.δ.η X   ≈⟨ refl⟩∘⟨ pullˡ (sym (M.δ.commute f)) ⟩
-   F₁ g ∘ (M.δ.η Y ∘ F₁ f) ∘ M.δ.η X           ≈⟨ assoc²'' ⟩
+   F₁ g ∘ (M.δ.η Y ∘ F₁ f) ∘ M.δ.η X           ≈⟨ assoc²δγ ⟩
    (F₁ g ∘ M.δ.η Y) ∘ F₁ f ∘ M.δ.η X           ∎
 
 Cofree : Functor C (CoKleisli M)

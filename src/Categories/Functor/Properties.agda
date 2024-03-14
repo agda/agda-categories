@@ -137,13 +137,13 @@ module _ (F : Functor C D) where
           (⟨f⟩ , q) = full (_≅_.to sb ∘ f ∘ _≅_.from sa)
           (⟨g⟩ , r) = full (_≅_.to sc ∘ g ∘ _≅_.from sb)
       in faith $ begin
-        F₁ ⟨g∘f⟩                                                         ≈⟨ p ⟩
-        _≅_.to sc ∘ (g ∘ f) ∘ _≅_.from sa                               ≈⟨ assoc²'' ⟩
+        F₁ ⟨g∘f⟩                                                        ≈⟨ p ⟩
+        _≅_.to sc ∘ (g ∘ f) ∘ _≅_.from sa                               ≈⟨ assoc²δγ ⟩
         (_≅_.to sc ∘ g) ∘ (f ∘ _≅_.from sa)                             ≈⟨ insertInner (_≅_.isoʳ sb) ⟩
         ((_≅_.to sc ∘ g) ∘ _≅_.from sb) ∘ (_≅_.to sb ∘ f ∘ _≅_.from sa) ≈⟨ D.assoc ⟩∘⟨refl ⟩
         (_≅_.to sc ∘ g ∘ _≅_.from sb) ∘ (_≅_.to sb ∘ f ∘ _≅_.from sa)   ≈˘⟨ (r ⟩∘⟨ q ) ⟩
-        F₁ ⟨g⟩ ∘ F₁ ⟨f⟩                                                   ≈˘⟨ homomorphism ⟩
-        F₁ (⟨g⟩ C.∘ ⟨f⟩)                                                  ∎
+        F₁ ⟨g⟩ ∘ F₁ ⟨f⟩                                                 ≈˘⟨ homomorphism ⟩
+        F₁ (⟨g⟩ C.∘ ⟨f⟩)                                                ∎
     ; F-resp-≈ = λ {X} {Y} {f} {g} f≈g →
       let sa = proj₂ (surj X)
           sb = proj₂ (surj Y)

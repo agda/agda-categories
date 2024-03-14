@@ -169,7 +169,7 @@ module _ {o ℓ e o′ ℓ′ e′ o″ ℓ″ e″} {C : Category o′ ℓ′ e
         ; commute = λ {K} → begin
           ⊤Gd.proj W K ∘ R₁ g ∘ R₁ f        ≈⟨ pullˡ (proj-red K g) ⟩
           ⊤Gd.proj Z (↙⇒ K g) ∘ R₁ f       ≈⟨ proj-red (↙⇒ K g) f ⟩
-          ⊤Gd.proj Y (↙⇒ (↙⇒ K g) f)     ≈⟨ proj≈ (D.Equiv.trans D.identityˡ (MR.assoc²' D)) ⟩
+          ⊤Gd.proj Y (↙⇒ (↙⇒ K g) f)     ≈⟨ proj≈ (D.Equiv.trans D.identityˡ (MR.assoc²βε D)) ⟩
           ⊤Gd.proj Y (↙⇒ K (g D.∘ f))      ∎
         }
 
