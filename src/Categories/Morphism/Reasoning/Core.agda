@@ -52,7 +52,13 @@ module Assoc4 where
 
   Each successive association is given a Greek letter, from 'α' associated all
   the way to the left, to 'ε' associated all the way to the right. Then,
-  'assoc²XY' is the proof that X is equal to Y.
+  'assoc²XY' is the proof that X is equal to Y. Explicitly:
+
+  α = ((i ∘ h) ∘ g) ∘ f
+  β = (i ∘ (h ∘ g)) ∘ f
+  γ = (i ∘ h) ∘ (g ∘ f)
+  δ = i ∘ ((h ∘ g) ∘ f)
+  ε = i ∘ (h ∘ (g ∘ f))
 
   Only reassociations that need two assoc steps are defined here.
   -}
