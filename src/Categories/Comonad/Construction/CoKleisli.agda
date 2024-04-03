@@ -107,10 +107,9 @@ module _ (C : Category o ℓ e) where
 
       assoc' : {X Y Z : Obj} {k : F₀ X ⇒ Y} {l : F₀ Y ⇒ Z} → F₁ (l ∘ F₁ k ∘ δ.η X) ∘ δ.η X ≈ (F₁ l ∘ δ.η Y) ∘ F₁ k ∘ δ.η X
       assoc' {X} {Y} {Z} {k} {l} = begin
-        F₁ (l ∘ F₁ k ∘ δ.η X) ∘ δ.η X               ≈⟨ (homomorphism ⟩∘⟨refl) ⟩
-        ((F₁ l ∘ F₁ (F₁ k ∘ δ.η X) ) ∘ δ.η X)       ≈⟨ ((refl⟩∘⟨ homomorphism) ⟩∘⟨refl) ⟩
-        ((F₁ l ∘ (F₁ (F₁ k) ∘ F₁ (δ.η X))) ∘ δ.η X) ≈⟨ pullʳ (pullʳ M.sym-assoc) ⟩
-        (F₁ l ∘ F₁ (F₁ k) ∘ δ.η (F₀ X) ∘ δ.η X)     ≈⟨ (refl⟩∘⟨ (pullˡ (sym (δ.commute k)))) ⟩
-        (F₁ l ∘ (δ.η Y ∘ F₁ k) ∘ δ.η X)             ≈⟨ assoc²'' ⟩
-        (F₁ l ∘ δ.η Y) ∘ F₁ k ∘ δ.η X               ∎
-      
+        F₁ (l ∘ F₁ k ∘ δ.η X) ∘ δ.η X             ≈⟨ homomorphism ⟩∘⟨refl ⟩
+        (F₁ l ∘ F₁ (F₁ k ∘ δ.η X) ) ∘ δ.η X       ≈⟨ (refl⟩∘⟨ homomorphism) ⟩∘⟨refl ⟩
+        (F₁ l ∘ (F₁ (F₁ k) ∘ F₁ (δ.η X))) ∘ δ.η X ≈⟨ pullʳ (pullʳ M.sym-assoc) ⟩
+        F₁ l ∘ F₁ (F₁ k) ∘ δ.η (F₀ X) ∘ δ.η X     ≈⟨ refl⟩∘⟨ pullˡ (sym (δ.commute k)) ⟩
+        F₁ l ∘ (δ.η Y ∘ F₁ k) ∘ δ.η X             ≈⟨ assoc²δγ ⟩
+        (F₁ l ∘ δ.η Y) ∘ F₁ k ∘ δ.η X             ∎

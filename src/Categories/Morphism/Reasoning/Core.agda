@@ -47,14 +47,51 @@ module Identity where
 open Identity public
 
 module Assoc4 where
-  assoc² : ((i ∘ h) ∘ g) ∘ f ≈ i ∘ (h ∘ (g ∘ f))
-  assoc² = Equiv.trans assoc assoc
+  {-
+  Explanation of naming scheme:
 
-  assoc²' : (i ∘ (h ∘ g)) ∘ f ≈ i ∘ (h ∘ (g ∘ f))
-  assoc²' = Equiv.trans assoc (∘-resp-≈ʳ assoc)
+  Each successive association is given a Greek letter, from 'α' associated all
+  the way to the left, to 'ε' associated all the way to the right. Then,
+  'assoc²XY' is the proof that X is equal to Y. Explicitly:
 
-  assoc²'' : i ∘ ((h ∘ g) ∘ f) ≈ (i ∘ h) ∘ (g ∘ f)
-  assoc²'' = Equiv.trans (∘-resp-≈ʳ assoc) sym-assoc
+  α = ((i ∘ h) ∘ g) ∘ f
+  β = (i ∘ (h ∘ g)) ∘ f
+  γ = (i ∘ h) ∘ (g ∘ f)
+  δ = i ∘ ((h ∘ g) ∘ f)
+  ε = i ∘ (h ∘ (g ∘ f))
+
+  Only reassociations that need two assoc steps are defined here.
+  -}
+
+  assoc²αδ : ((i ∘ h) ∘ g) ∘ f ≈ i ∘ ((h ∘ g) ∘ f)
+  assoc²αδ = ∘-resp-≈ˡ assoc ○ assoc
+
+  assoc²αε : ((i ∘ h) ∘ g) ∘ f ≈ i ∘ (h ∘ (g ∘ f))
+  assoc²αε = assoc ○ assoc
+
+  assoc²βγ : (i ∘ (h ∘ g)) ∘ f ≈ (i ∘ h) ∘ (g ∘ f)
+  assoc²βγ = ∘-resp-≈ˡ sym-assoc ○ assoc
+
+  assoc²βε : (i ∘ (h ∘ g)) ∘ f ≈ i ∘ (h ∘ (g ∘ f))
+  assoc²βε = assoc ○ ∘-resp-≈ʳ assoc
+
+  assoc²γβ : (i ∘ h) ∘ (g ∘ f) ≈ (i ∘ (h ∘ g)) ∘ f
+  assoc²γβ = sym-assoc ○ ∘-resp-≈ˡ assoc
+
+  assoc²γδ : (i ∘ h) ∘ (g ∘ f) ≈ i ∘ ((h ∘ g) ∘ f)
+  assoc²γδ = assoc ○ ∘-resp-≈ʳ sym-assoc
+
+  assoc²δα : i ∘ ((h ∘ g) ∘ f) ≈ ((i ∘ h) ∘ g) ∘ f
+  assoc²δα = sym-assoc ○ ∘-resp-≈ˡ sym-assoc
+
+  assoc²δγ : i ∘ ((h ∘ g) ∘ f) ≈ (i ∘ h) ∘ (g ∘ f)
+  assoc²δγ = ∘-resp-≈ʳ assoc ○ sym-assoc
+
+  assoc²εα : i ∘ (h ∘ (g ∘ f)) ≈ ((i ∘ h) ∘ g) ∘ f
+  assoc²εα = sym-assoc ○ sym-assoc
+
+  assoc²εβ : i ∘ (h ∘ (g ∘ f)) ≈ (i ∘ (h ∘ g)) ∘ f
+  assoc²εβ = ∘-resp-≈ʳ sym-assoc ○ sym-assoc
 
 open Assoc4 public
 

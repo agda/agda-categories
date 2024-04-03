@@ -168,7 +168,7 @@ uncurry {C₁ = C₁} {C₂ = C₂} {D = D} = record
                 _ ≈⟨ assoc ⟩
                 _ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ F.homomorphism ⟩
                 _ ≈⟨ refl⟩∘⟨ pullˡ (sym-commute (F.F₁ g1) f2) ⟩
-                _ ≈⟨ assoc²'' ⟩
+                _ ≈⟨ assoc²δγ ⟩
                 _ ∎ }
         ; F-resp-≈ = λ (f≈f₁ , f≈f₂) → F-resp-≈ (F.F₀ _) f≈f₂ ⟩∘⟨ F.F-resp-≈ f≈f₁
         } where module F = Functor F

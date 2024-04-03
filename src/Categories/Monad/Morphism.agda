@@ -127,6 +127,6 @@ module _ {S R T : Monad C} where
       (S.μ.η U ∘ τ .α.η (S.F.₀ U)) ∘ σ .α.η (S.F.₀ U) ∘ R.F.₁ (τ .α.η U) ∘ R.F.₁ (σ .α.η U)
         ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ R.F.homomorphism ⟩
       (S.μ.η U ∘ τ .α.η (S.F.₀ U)) ∘ σ .α.η (S.F.₀ U) ∘ R.F.₁ (τ .α.η U ∘ σ .α.η U)
-        ≈˘⟨ assoc²'' ⟩
+        ≈⟨ assoc²γδ ⟩
       S.μ.η U ∘ (τ .α.η (S.F.₀ U) ∘ σ .α.η (S.F.₀ U)) ∘ R.F.₁ (τ .α.η U ∘ σ .α.η U)
         ∎
