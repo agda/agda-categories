@@ -23,11 +23,7 @@ module Categories.Category.Restriction.Properties.Poset {o ℓ e} {𝒞 : Catego
     ; _≤_ = λ f g → f ≈ g ∘ f ↓
     ; isPartialOrder = record 
       { isPreorder = record 
-        { isEquivalence = record 
-          { refl = refl 
-          ; sym = sym 
-          ; trans = trans 
-          } 
+        { isEquivalence = equiv
         ; reflexive = λ {x} {y} x≈y → begin 
           x       ≈˘⟨ pidʳ ⟩ 
           x ∘ x ↓ ≈⟨ x≈y ⟩∘⟨refl ⟩
