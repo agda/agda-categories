@@ -1,22 +1,20 @@
 {-# OPTIONS --without-K --safe #-}
 
--- Some properties of Restriction Categories
-
--- The first few lemmas are from Cocket & Lack, Lemma 2.1 and 2.2
-module Categories.Category.Restriction.Properties where
-
+open import Categories.Category.Core using (Category)
+open import Categories.Category.Restriction using (Restriction)
 open import Data.Product using (Σ; _,_)
 open import Level using (Level; _⊔_)
 
-open import Categories.Category.Core using (Category)
-open import Categories.Category.Restriction using (Restriction)
 open import Categories.Category.SubCategory
 open import Categories.Morphism using (Mono)
 open import Categories.Morphism.Idempotent using (Idempotent)
 open import Categories.Morphism.Properties using (Mono-id)
 import Categories.Morphism.Reasoning as MR
 
-module _ {o ℓ e : Level} {𝒞 : Category o ℓ e} (R : Restriction 𝒞) where
+-- Some properties of Restriction Categories
+
+-- The first few lemmas are from Cocket & Lack, Lemma 2.1 and 2.2
+module Categories.Category.Restriction.Properties {o ℓ e} {𝒞 : Category o ℓ e} (R : Restriction 𝒞) where
   open Category 𝒞
   open Restriction R
   open HomReasoning
