@@ -14,11 +14,11 @@ DagCats : ∀ o ℓ e → Category (suc (o ⊔ ℓ ⊔ e)) (o ⊔ ℓ ⊔ e) (o 
 DagCats o ℓ e = record
   { Obj = DaggerCategory o ℓ e
   ; _⇒_ = DaggerFunctor
-  ; _≈_ = NaturalIsomorphism on DaggerFunctor.functor
+  ; _≈_ = NaturalIsomorphism on functor
   ; id = id
   ; _∘_ = _∘F†_
-  ; assoc = λ {_ _ _ _ F G H} → associator (DaggerFunctor.functor F) (DaggerFunctor.functor G) (DaggerFunctor.functor H)
-  ; sym-assoc = λ {_ _ _ _ F G H} → sym (associator (DaggerFunctor.functor F) (DaggerFunctor.functor G) (DaggerFunctor.functor H))
+  ; assoc = λ {_ _ _ _ F G H} → associator (functor F) (functor G) (functor H)
+  ; sym-assoc = λ {_ _ _ _ F G H} → sym (associator (functor F) (functor G) (functor H))
   ; identityˡ = unitorˡ
   ; identityʳ = unitorʳ
   ; identity² = unitor²
@@ -28,4 +28,4 @@ DagCats o ℓ e = record
     ; trans = trans
     }
   ; ∘-resp-≈ = _ⓘₕ_
-  }
+  } where open DaggerFunctor
