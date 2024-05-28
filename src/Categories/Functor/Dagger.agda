@@ -2,10 +2,10 @@
 
 module Categories.Functor.Dagger where
 
-open import Categories.Category.Dagger
-open import Categories.Functor renaming (id to idF)
+open import Categories.Category.Dagger using (DaggerCategory)
+open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 
-open import Level
+open import Level using (Level; _⊔_)
 
 private
   variable
