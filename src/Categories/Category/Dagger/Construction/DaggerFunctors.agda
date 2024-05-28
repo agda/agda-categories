@@ -2,13 +2,12 @@
 
 module Categories.Category.Dagger.Construction.DaggerFunctors where
 
-open import Categories.Category.Dagger
+open import Categories.Category.Dagger using (DaggerCategory)
 import Categories.Category.Construction.DaggerFunctors as cat
-open import Categories.Functor.Dagger
-open import Categories.NaturalTransformation
-open import Categories.NaturalTransformation.NaturalIsomorphism
+open import Categories.Functor.Dagger using (DaggerFunctor)
+open import Categories.NaturalTransformation using (NaturalTransformation)
 
-open import Level
+open import Level using (Level; _⊔_)
 
 private
   variable
