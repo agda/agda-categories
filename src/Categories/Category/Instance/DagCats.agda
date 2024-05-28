@@ -2,13 +2,13 @@
 
 module Categories.Category.Instance.DagCats where
 
-open import Categories.Category.Core
-open import Categories.Category.Dagger
-open import Categories.Functor.Dagger
+open import Categories.Category.Core using (Category)
+open import Categories.Category.Dagger using (DaggerCategory)
+open import Categories.Functor.Dagger using (DaggerFunctor; id; _∘F†_)
 open import Categories.NaturalTransformation.NaturalIsomorphism
 
 open import Function.Base using (_on_)
-open import Level
+open import Level using (suc; _⊔_)
 
 DagCats : ∀ o ℓ e → Category (suc (o ⊔ ℓ ⊔ e)) (o ⊔ ℓ ⊔ e) (o ⊔ ℓ ⊔ e)
 DagCats o ℓ e = record
