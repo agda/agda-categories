@@ -21,7 +21,6 @@ record DaggerFunctor (C : DaggerCategory o ℓ e) (D : DaggerCategory o′ ℓ�
   open Functor functor public
 
   field
---    F-resp-† : ∀ {X Y} {f : X C.⇒ Y} → F₁ (f C.†) D.≈ (F₁ f D.†)
     F-resp-† : ∀ {X Y} {f : X C.⇒ Y} → F₁ f D.† D.≈ F₁ (f C.†)
   
 id : ∀ {C : DaggerCategory o ℓ e} → DaggerFunctor C C
