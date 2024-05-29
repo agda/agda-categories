@@ -7,6 +7,7 @@ import Categories.Category.Construction.DaggerFunctors as cat
 open import Categories.Functor.Dagger using (DaggerFunctor)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 
+open import Function.Base using (_$_)
 open import Level using (Level; _⊔_)
 
 private
@@ -26,23 +27,27 @@ DaggerFunctors C D = record
       in record
       { η = λ X → α.η X †
       ; commute = λ {X Y} f → begin
-        α.η Y † ∘ G.₁ f         ≈˘⟨ †-involutive _ ⟩
-        (α.η Y † ∘ G.₁ f) † †   ≈⟨ †-resp-≈ †-homomorphism ⟩
-        (G.₁ f † ∘ α.η Y † †) † ≈⟨ †-resp-≈ (∘-resp-≈ (G.F-resp-†) (†-involutive _)) ⟩
-        (G.₁ (f ‡) ∘ α.η Y) †   ≈⟨ †-resp-≈ (α.sym-commute (f ‡)) ⟩
-        (α.η X ∘ F.₁ (f ‡)) †   ≈˘⟨ †-resp-≈ (∘-resp-≈ (†-involutive _) (F.F-resp-†)) ⟩
-        (α.η X † † ∘ F.₁ f †) † ≈˘⟨ †-resp-≈ †-homomorphism ⟩
-        (F.₁ f ∘ α.η X †) † †   ≈⟨ †-involutive _ ⟩
-        F.₁ f ∘ α.η X †         ∎
+        α.η Y † ∘ G.₁ f       ≈˘⟨ †-involutive _ ⟩
+        (α.η Y † ∘ G.₁ f) † † ≈⟨ †-resp-≈ $ begin
+          (α.η Y † ∘ G.₁ f) †   ≈⟨ †-homomorphism ⟩
+          G.₁ f † ∘ α.η Y † †   ≈⟨ G.F-resp-† ⟩∘⟨ †-involutive _ ⟩
+          G.₁ (f ‡) ∘ α.η Y     ≈⟨ α.sym-commute (f ‡) ⟩
+          α.η X ∘ F.₁ (f ‡)     ≈˘⟨ †-involutive _ ⟩∘⟨ F.F-resp-† ⟩
+          α.η X † † ∘ F.₁ f †   ≈˘⟨ †-homomorphism ⟩
+          (F.₁ f ∘ α.η X †) †   ∎ ⟩
+        (F.₁ f ∘ α.η X †) † † ≈⟨ †-involutive _ ⟩
+        F.₁ f ∘ α.η X †       ∎
       ; sym-commute = λ {X Y} f → begin
-        F.₁ f ∘ α.η X †         ≈˘⟨ †-involutive _ ⟩
-        (F.₁ f ∘ α.η X †) † †   ≈⟨ †-resp-≈ †-homomorphism ⟩
-        (α.η X † † ∘ F.₁ f †) † ≈⟨ †-resp-≈ (∘-resp-≈ (†-involutive _) (F.F-resp-†)) ⟩
-        (α.η X ∘ F.₁ (f ‡)) †   ≈⟨ †-resp-≈ (α.commute (f ‡)) ⟩
-        (G.₁ (f ‡) ∘ α.η Y) †   ≈˘⟨ †-resp-≈ (∘-resp-≈ (G.F-resp-†) (†-involutive _)) ⟩
-        (G.₁ f † ∘ α.η Y † †) † ≈˘⟨ †-resp-≈ †-homomorphism ⟩
-        (α.η Y † ∘ G.₁ f) † †   ≈⟨ †-involutive _ ⟩
-        α.η Y † ∘ G.₁ f         ∎
+        F.₁ f ∘ α.η X †       ≈˘⟨ †-involutive _ ⟩
+        (F.₁ f ∘ α.η X †) † † ≈⟨ †-resp-≈ $ begin
+          (F.₁ f ∘ α.η X †) †   ≈⟨ †-homomorphism ⟩
+          α.η X † † ∘ F.₁ f †   ≈⟨ †-involutive _ ⟩∘⟨ F.F-resp-† ⟩
+          α.η X ∘ F.₁ (f ‡)     ≈⟨ α.commute (f ‡) ⟩
+          G.₁ (f ‡) ∘ α.η Y     ≈˘⟨ G.F-resp-† ⟩∘⟨ †-involutive _ ⟩
+          G.₁ f † ∘ α.η Y † †   ≈˘⟨ †-homomorphism ⟩
+          (α.η Y † ∘ G.₁ f) †   ∎ ⟩
+        (α.η Y † ∘ G.₁ f) † † ≈⟨ †-involutive _ ⟩
+        α.η Y † ∘ G.₁ f       ∎
       }
     ; †-identity = †-identity
     ; †-homomorphism = †-homomorphism
