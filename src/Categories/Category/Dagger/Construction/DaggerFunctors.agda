@@ -24,6 +24,8 @@ DaggerFunctors C D = record
          module F = DaggerFunctor F
          module G = DaggerFunctor G
          module α = NaturalTransformation α
+      -- We avoid using ntHelper here to preserve α's distinct commute and
+      -- sym-commute in case they have been defined explicitly.
       in record
       { η = λ X → α.η X †
       ; commute = λ {X Y} f → begin
