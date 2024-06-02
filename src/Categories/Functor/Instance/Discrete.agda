@@ -23,7 +23,7 @@ Discrete {o} = record
    ; F₁ = DiscreteFunctor
    ; identity = DiscreteId
    ; homomorphism = PointwiseHom
-   ; F-resp-≈ = ExtensionalityNI
+   ; F-resp-≈ = λ f≗g → ExtensionalityNI f≗g
    }
    where
      DiscreteFunctor : {A B : Set o} → (A → B) → Cats o o o [ D.Discrete A , D.Discrete B ]
@@ -48,9 +48,9 @@ Discrete {o} = record
        ; iso = λ X → record { isoˡ = ≡.refl ; isoʳ = ≡.refl }
        }
      ExtensionalityNI : {A B : Set o} {g h : A → B} →
-      ({x : A} → g x ≡.≡ h x) → NaturalIsomorphism (DiscreteFunctor g) (DiscreteFunctor h)
+      g ≡.≗ h → NaturalIsomorphism (DiscreteFunctor g) (DiscreteFunctor h)
      ExtensionalityNI g≡h = record
-       { F⇒G = ntHelper record { η = λ X → g≡h {X} ; commute = λ { ≡.refl → ≡.sym (≡.trans-reflʳ g≡h)} }
-       ; F⇐G = ntHelper record { η = λ X → ≡.sym (g≡h {X}) ; commute = λ { ≡.refl → ≡.sym (≡.trans-reflʳ _)} }
-       ; iso = λ X → record { isoˡ = ≡.trans-symʳ g≡h ; isoʳ = ≡.trans-symˡ g≡h }
+       { F⇒G = ntHelper record { η = g≡h ; commute = λ { ≡.refl → ≡.sym (≡.trans-reflʳ (g≡h _))} }
+       ; F⇐G = ntHelper record { η = λ X → ≡.sym (g≡h X) ; commute = λ { ≡.refl → ≡.sym (≡.trans-reflʳ _)} }
+       ; iso = λ X → record { isoˡ = ≡.trans-symʳ (g≡h _) ; isoʳ = ≡.trans-symˡ (g≡h _) }
        }
