@@ -26,9 +26,9 @@ Trivial : GlobularSet zero
 Trivial = record
   { F₀ = λ _ → ⊤
   ; F₁ = λ _ x → x
-  ; identity = refl
-  ; homomorphism = refl
-  ; F-resp-≈ = λ _ → refl
+  ; identity = λ _ → refl
+  ; homomorphism = λ _ → refl
+  ; F-resp-≈ = λ _ _ → refl
   }
 
 GlobularObject : Category o ℓ e → Set _
