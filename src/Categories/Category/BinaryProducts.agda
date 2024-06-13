@@ -94,6 +94,12 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   ⁂-cong₂ : f ≈ g → h ≈ i → f ⁂ h ≈ g ⁂ i
   ⁂-cong₂ = [ product ⇒ product ]×-cong₂
 
+  first-cong : f ≈ g → f ⁂ h ≈ g ⁂ h
+  first-cong f≈g = ⁂-cong₂ f≈g Equiv.refl
+
+  second-cong : g ≈ h → f ⁂ g ≈ f ⁂ h
+  second-cong g≈h = ⁂-cong₂ Equiv.refl g≈h
+
   ⁂∘⟨⟩ : (f ⁂ g) ∘ ⟨ f′ , g′ ⟩ ≈ ⟨ f ∘ f′ , g ∘ g′ ⟩
   ⁂∘⟨⟩ = [ product ⇒ product ]×∘⟨⟩
 
