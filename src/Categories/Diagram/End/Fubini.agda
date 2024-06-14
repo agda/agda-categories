@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --lossy-unification #-}
+{-# OPTIONS --without-K --lossy-unification --safe #-}
 
 open import Level
 open import Data.Product using (Σ; _,_; _×_) renaming (proj₁ to fst; proj₂ to snd)
