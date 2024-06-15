@@ -153,18 +153,35 @@ module _ {C : Category o ℓ e}
     }
   --module appˡ-resp-∘ X = NaturalIsomorphism (appˡ-resp-∘ X)
 
-  Continuous-preserve-endf-motive : ∀ X → ∫ (appˡ (F ∘F J) X)
-  Continuous-preserve-endf-motive X = ≅-yields-end (appˡ-resp-∘ X) (contF-as-end (appˡ J X) F {cont} (ω X))
-
   open NaturalTransformation using (η)
-
-  private
-    ω' = Continuous-preserve-endf-motive
-    module ω' (X : P.Obj) = ∫ (ω' X)
-    --module EndF {A B} (J : Functor A B) {ω} = Functor (EndF J {ω})
-
   open MR E
-  Continuous-pres-EndF :  F ∘F (EndF J {ω}) ≃ⁱ EndF (F ∘F J) {ω'}
+
+  Fω : ∀ X → ∫ (appˡ (F ∘F J) X)
+  Fω X = ≅-yields-end (appˡ-resp-∘ X) (contF-as-end (appˡ J X) F {cont} (ω X))
+  module Fω (p : P.Obj) = ∫ (Fω p)
+
+  Fω≈Fω : ∀ {p : P.Obj} {c : C.Obj} → Fω.dinatural.α p c ≈ F.₁ (ω.dinatural.α p c)
+  Fω≈Fω {p} {A} = begin
+    Fω.dinatural.α p A
+      ≡⟨⟩
+    id ∘ F₁ (J₁ (P.id , C.id , C.id)) ∘
+    id ∘ F₁ (J₁ (P.id , C.id , C.id) D.∘ ω.dinatural.α p A)
+      ≈⟨ identityˡ ⟩
+    F₁ (J₁ (P.id , C.id , C.id)) ∘
+    id ∘ F₁ (J₁ (P.id , C.id , C.id) D.∘ ω.dinatural.α p A)
+      ≈⟨ F-resp-≈ J.identity ⟩∘⟨refl ⟩
+    F₁ (D.id) ∘ id ∘ F₁ (J₁ (P.id , C.id , C.id) D.∘ ω.dinatural.α p A)
+      ≈⟨ elimˡ F.identity ⟩
+    id ∘ F₁ (J₁ (P.id , C.id , C.id) D.∘ ω.dinatural.α p A)
+      ≈⟨ identityˡ ⟩
+    F₁ (J₁ (P.id , C.id , C.id) D.∘ ω.dinatural.α p A)
+      ≈⟨ F-resp-≈ (D.∘-resp-≈ˡ J.identity) ⟩
+    F₁ (D.id D.∘ ω.dinatural.α p A)
+      ≈⟨ F-resp-≈ D.identityˡ ⟩
+    F₁ (ω.dinatural.α p A) 
+      ∎
+
+  Continuous-pres-EndF :  F ∘F (EndF J {ω}) ≃ⁱ EndF (F ∘F J) {Fω}
   Continuous-pres-EndF = niHelper record
     { η = λ X → E.id
     ; η⁻¹ = λ Y → E.id
@@ -172,9 +189,9 @@ module _ {C : Category o ℓ e}
       id ∘ Functor.F₁ (F ∘F EndF J {ω}) f ≈⟨ identityˡ ⟩
       Functor.F₁ (F ∘F EndF J {ω}) f      ≡⟨⟩
       F₁ (end-η (appˡJ.₁ f) ⦃ ω p ⦄ ⦃ ω q ⦄)
-        ≈⟨ ω'.unique′ q (λ {A} → begin
-          ω'.dinatural.α q A ∘ F₁ (end-η (appˡJ.₁ f) ⦃ ω p ⦄ ⦃ ω q ⦄)
-            ≈⟨ lemma ⟩∘⟨refl ⟩
+        ≈⟨ Fω.unique′ q (λ {A} → begin
+          Fω.dinatural.α q A ∘ F₁ (end-η (appˡJ.₁ f) ⦃ ω p ⦄ ⦃ ω q ⦄)
+            ≈⟨ Fω≈Fω ⟩∘⟨refl ⟩
           F₁ (ω.dinatural.α q A) ∘ F₁ (end-η (appˡJ.₁ f) ⦃ ω p ⦄ ⦃ ω q ⦄)
             ≈˘⟨ F.homomorphism ⟩
           F₁ (ω.dinatural.α q A D.∘ end-η (appˡJ.₁ f) ⦃ ω p ⦄ ⦃ ω q ⦄)
@@ -182,18 +199,18 @@ module _ {C : Category o ℓ e}
           F₁ ((appˡJ.₁ f) .η (A , A) D.∘ (ω.dinatural.α p A))
             ≈⟨ F.homomorphism ⟩
           F₁ ((appˡJ.₁ f) .η (A , A)) ∘ F₁ (ω.dinatural.α p A)
-            ≈˘⟨ refl⟩∘⟨ lemma ⟩
-          F₁ ((appˡJ.₁ f) .η (A , A)) ∘ (ω'.dinatural.α p A)
+            ≈˘⟨ refl⟩∘⟨ Fω≈Fω ⟩
+          F₁ ((appˡJ.₁ f) .η (A , A)) ∘ (Fω.dinatural.α p A)
             ≡⟨⟩
-          appˡFJ.₁ f .η (A , A) ∘ ω'.dinatural.α p A
-            ≈˘⟨ end-η-commute ⦃ ω' p ⦄ ⦃ ω' q ⦄ (appˡFJ.₁ f) A ⟩
-          ω'.dinatural.α q A ∘ end-η (appˡFJ.₁ f) ⦃ ω' p ⦄ ⦃ ω' q ⦄
+          appˡFJ.₁ f .η (A , A) ∘ Fω.dinatural.α p A
+            ≈˘⟨ end-η-commute ⦃ Fω p ⦄ ⦃ Fω q ⦄ (appˡFJ.₁ f) A ⟩
+          Fω.dinatural.α q A ∘ end-η (appˡFJ.₁ f) ⦃ Fω p ⦄ ⦃ Fω q ⦄
             ∎
         )⟩
-      end-η (appˡFJ.₁ f) ⦃ ω' p ⦄ ⦃ ω' q ⦄
+      end-η (appˡFJ.₁ f) ⦃ Fω p ⦄ ⦃ Fω q ⦄
         ≡⟨⟩
-      Functor.F₁ (EndF (F ∘F J) {ω'}) f   ≈˘⟨ identityʳ ⟩
-      Functor.F₁ (EndF (F ∘F J) {ω'}) f ∘ id
+      Functor.F₁ (EndF (F ∘F J) {Fω}) f   ≈˘⟨ identityʳ ⟩
+      Functor.F₁ (EndF (F ∘F J) {Fω}) f ∘ id
         ∎
     ; iso = λ Y → record
       { isoˡ = E.identity²
@@ -201,23 +218,3 @@ module _ {C : Category o ℓ e}
       }
     }
     where open E.HomReasoning
-          lemma : ∀ {q A} → ω'.dinatural.α q A ≈ F₁ (ω.dinatural.α q A)
-          lemma {q} {A} = begin
-            ω'.dinatural.α q A
-              ≡⟨⟩
-            id ∘ F₁ (J₁ (P.id , C.id , C.id)) ∘
-            id ∘ F₁ (J₁ (P.id , C.id , C.id) D.∘ ω.dinatural.α q A)
-              ≈⟨ identityˡ ⟩
-            F₁ (J₁ (P.id , C.id , C.id)) ∘
-            id ∘ F₁ (J₁ (P.id , C.id , C.id) D.∘ ω.dinatural.α q A)
-              ≈⟨ F-resp-≈ J.identity ⟩∘⟨refl ⟩
-            F₁ (D.id) ∘ id ∘ F₁ (J₁ (P.id , C.id , C.id) D.∘ ω.dinatural.α q A)
-              ≈⟨ elimˡ F.identity ⟩
-            id ∘ F₁ (J₁ (P.id , C.id , C.id) D.∘ ω.dinatural.α q A)
-              ≈⟨ identityˡ ⟩
-            F₁ (J₁ (P.id , C.id , C.id) D.∘ ω.dinatural.α q A)
-              ≈⟨ F-resp-≈ (D.∘-resp-≈ˡ J.identity) ⟩
-            F₁ (D.id D.∘ ω.dinatural.α q A)
-              ≈⟨ F-resp-≈ D.identityˡ ⟩
-            F₁ (ω.dinatural.α q A) 
-              ∎
