@@ -1,4 +1,8 @@
 {-# OPTIONS --without-K --safe #-}
+
+-- Bifunctor, aka a Functor from C × D to E
+module Categories.Functor.Bifunctor where
+
 open import Level
 open import Data.Product using (_,_)
 
@@ -6,10 +10,6 @@ open import Categories.Category
 open import Categories.Functor
 open import Categories.Functor.Construction.Constant
 open import Categories.Category.Product
-
-module Categories.Functor.Bifunctor where
-
--- Bifunctor, aka a Functor from C × D to E
 
 private
   variable

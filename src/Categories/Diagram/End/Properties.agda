@@ -2,42 +2,39 @@
 
 module Categories.Diagram.End.Properties where
 
+-- The following conventions are taken in this file: C is the 'source' category
+-- and D is the destination. If two source categories are needed, the other is
+-- called 'P' for "parameter", following MacLane. F, G and H are functors and ef,
+-- eg and eh are witnesses of their respective ends.
+
 open import Level
 open import Data.Product using (Σ; _,_)
 open import Function using (_$_)
 
-open import Categories.Category
-open import Categories.Category.Construction.Functors
-open import Categories.Category.Construction.TwistedArrow
+open import Categories.Category using (Category)
+open import Categories.Category.Construction.Functors using (Functors)
+open import Categories.Category.Construction.TwistedArrow using (Codomain)
 open import Categories.Category.Equivalence as SE using (StrongEquivalence)
-open import Categories.Category.Equivalence.Preserves
-open import Categories.Category.Product renaming (Product to _×ᶜ_)
-open import Categories.Diagram.Cone
-open import Categories.Diagram.End renaming (End to ∫)
-open import Categories.Diagram.Limit
-open import Categories.Diagram.Limit.Properties
-open import Categories.Diagram.Wedge
-open import Categories.Diagram.Wedge.Properties
-open import Categories.Functor hiding (id)
-open import Categories.Functor.Bifunctor
-open import Categories.Functor.Bifunctor.Properties
-open import Categories.Functor.Instance.Twisted
-open import Categories.Functor.Limits
-open import Categories.NaturalTransformation renaming (_∘ʳ_ to _▹ⁿ_; id to idN)
+open import Categories.Category.Equivalence.Preserves using (pres-Terminal)
+open import Categories.Category.Product using () renaming (Product to _×ᶜ_)
+open import Categories.Diagram.End using () renaming (End to ∫)
+open import Categories.Diagram.Limit using (Limit)
+open import Categories.Diagram.Limit.Properties using (≃-resp-lim)
+open import Categories.Diagram.Wedge using (Wedge; module Wedge-Morphism)
+open import Categories.Diagram.Wedge.Properties using (ConesTwist≅Wedges)
+open import Categories.Functor using (Functor; _∘F_)
+open import Categories.Functor.Bifunctor using (Bifunctor)
+open import Categories.Functor.Instance.Twisted using (Twist; Twistⁿⁱ)
+open import Categories.Functor.Limits using (Continuous)
+open import Categories.NaturalTransformation using (NaturalTransformation; _∘ᵥ_) renaming (_∘ʳ_ to _▹ⁿ_; id to idN)
 open import Categories.NaturalTransformation.Dinatural hiding (_≃_)
-open import Categories.NaturalTransformation.Equivalence renaming (_≃_ to _≃ⁿ_)
-open import Categories.NaturalTransformation.NaturalIsomorphism renaming (_≃_ to _≃ⁱ_)
-open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
+open import Categories.NaturalTransformation.Equivalence using () renaming (_≃_ to _≃ⁿ_)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; sym-associator) renaming (_≃_ to _≃ⁱ_)
 open import Categories.Object.Terminal as Terminal
 
 import Categories.Category.Construction.Wedges as Wedges
 import Categories.Morphism as M
 import Categories.Morphism.Reasoning as MR
-
--- The following conventions are taken in this file: C is the 'source' category
--- and D is the destination. If two source categories are needed, the other is
--- called 'P' for "parameter", following MacLane. F, G and H are functors and ef,
--- eg and eh are witnesses of their respective ends.
 
 private
   variable
@@ -236,14 +233,14 @@ module _ {C : Category o ℓ e}
       j-limit : Limit (Twist C D J)
       j-limit = End-yields-limit J ej
       --new-limit
-      f-limit : Limit (F ∘F (J ∘F Forget C))
+      f-limit : Limit (F ∘F (J ∘F Codomain C))
       f-limit .Limit.terminal = record
         { ⊤ = F-map-Coneˡ F (Limit.limit j-limit)
         ; ⊤-is-terminal = cont j-limit
         }
       -- for this we merely need to transport across the associator
       f-limit′ : Limit (Twist C E (F ∘F J))
-      f-limit′ = ≃-resp-lim (sym-associator (Forget C) J F) f-limit
+      f-limit′ = ≃-resp-lim (sym-associator (Codomain C) J F) f-limit
 
     -- really we want IsEnd `F.₀ (∫.E ej)` (F ∘F J)
     contF-as-end : ∫ (F ∘F J)

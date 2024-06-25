@@ -1,15 +1,16 @@
 {-# OPTIONS --without-K --safe #-}
 
+open import Categories.Category
+
+-- define a less-than-great equivalence on natural transformations
+module Categories.NaturalTransformation.Equivalence {o ℓ e o′ ℓ′ e′}
+    {C : Category o ℓ e} {D : Category o′ ℓ′ e′} where
+
 open import Level
 open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 
-open import Categories.Category
-open import Categories.Functor
-open import Categories.NaturalTransformation.Core
-
--- define a less-than-great equivalence on natural transformations
-module Categories.NaturalTransformation.Equivalence {o ℓ e o′ ℓ′ e′ : Level}
-    {C : Category o ℓ e} {D : Category o′ ℓ′ e′} where
+open import Categories.Functor using (Functor)
+open import Categories.NaturalTransformation.Core using (NaturalTransformation)
 
 module _ {F G : Functor C D} where
   infix 4 _≃_

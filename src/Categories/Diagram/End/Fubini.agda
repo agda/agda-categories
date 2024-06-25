@@ -1,26 +1,26 @@
 {-# OPTIONS --without-K --lossy-unification --safe #-}
 
+module Categories.Diagram.End.Fubini where
+
 open import Level
 open import Data.Product using (Σ; _,_; _×_) renaming (proj₁ to fst; proj₂ to snd)
 open import Function using (_$_)
 
-open import Categories.Category
-open import Categories.Category.Construction.Functors
-open import Categories.Category.Product renaming (Product to _×ᶜ_)
+open import Categories.Category using (Category)
+open import Categories.Category.Construction.Functors using (Functors; curry)
+open import Categories.Category.Product using (πˡ; πʳ; _⁂_; _※_; Swap) renaming (Product to _×ᶜ_)
 open import Categories.Diagram.End using () renaming (End to ∫)
-open import Categories.Diagram.End.Properties
-open import Categories.Diagram.End.Parameterized renaming (EndF to ⨏)
-open import Categories.Diagram.Wedge
-open import Categories.Functor renaming (id to idF)
-open import Categories.Functor.Bifunctor
-open import Categories.Functor.Bifunctor.Properties
+open import Categories.Diagram.End.Properties using (end-η-commute; end-unique)
+open import Categories.Diagram.End.Parameterized using () renaming (EndF to ⨏)
+open import Categories.Diagram.Wedge using (Wedge)
+open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
+open import Categories.Functor.Bifunctor using (Bifunctor; appˡ)
 open import Categories.NaturalTransformation using (NaturalTransformation)
-open import Categories.NaturalTransformation.Dinatural
+open import Categories.NaturalTransformation.Dinatural using (DinaturalTransformation; dtHelper)
 
 import Categories.Morphism as M
 import Categories.Morphism.Reasoning as MR
 
-module Categories.Diagram.End.Fubini where
 variable
   o ℓ e : Level
   C P D : Category o ℓ e
@@ -82,7 +82,7 @@ module _  (F : Bifunctor (Category.op C ×ᶜ Category.op P) (C ×ᶜ P) D)
           (F₁ ((C.id , P.id) , (C.id , s)) ∘ F₁ ((C.id , P.id) , (f , P.id)) ∘ ω.dinatural.α (p , p) c) ∘ ρ.dinatural.α p
             ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ ⟺ identityʳ) ⟩∘⟨refl ⟩
           (F₁ ((C.id , P.id) , (C.id , s)) ∘ F₁ ((C.id , P.id) , (f , P.id)) ∘ ω.dinatural.α (p , p) c ∘ id) ∘ ρ.dinatural.α p
-            ≈⟨ (refl⟩∘⟨ ω.dinatural.commute (p , p) f ) ⟩∘⟨refl ⟩
+            ≈⟨ (refl⟩∘⟨ ω.dinatural.commute (p , p) f) ⟩∘⟨refl ⟩
           (F₁ ((C.id , P.id) , (C.id , s)) ∘ F₁ ((f , P.id) , (C.id , P.id)) ∘ ω.dinatural.α (p , p) d ∘ id) ∘ ρ.dinatural.α p
             ≈⟨ extendʳ (⟺ F.homomorphism ○ F-resp-≈ ((MR.id-comm C , P.Equiv.refl) , (C.Equiv.refl , MR.id-comm P)) ○ F.homomorphism) ⟩∘⟨refl ⟩
           -- now, we must show dinaturality in P
@@ -93,7 +93,7 @@ module _  (F : Bifunctor (Category.op C ×ᶜ Category.op P) (C ×ᶜ P) D)
           -- this is the hard part: we use commutativity from the bottom face of the cube.
           -- The fact that this exists (an arrow between ∫ F (p,p,- ,-) to ∫ F (p,q,- ,-)) is due to functorality of ∫ and curry₀.
           -- The square commutes by universiality of ω
-            ≈⟨ refl⟩∘⟨ extendʳ (⟺ (end-η-commute ⦃ ω (p , p) ⦄ ⦃ ω (p , q) ⦄ (curry.₀.₁ (F ′) (P.id , s)) d )) ⟩
+            ≈⟨ refl⟩∘⟨ extendʳ (⟺ (end-η-commute ⦃ ω (p , p) ⦄ ⦃ ω (p , q) ⦄ (curry.₀.₁ (F ′) (P.id , s)) d)) ⟩
           -- now we can use dinaturality in ρ, which annoyingly has an `id` tacked on the end
           F₁ ((f , P.id) , (C.id , P.id)) ∘ ω.dinatural.α (p , q) d ∘ ∫F.F₁ (P.id , s) ∘ ρ.dinatural.α p
             ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨  ⟺ identityʳ ⟩
@@ -201,6 +201,6 @@ module _ (F : Bifunctor (Category.op C ×ᶜ Category.op P) (C ×ᶜ P) D)
     eₚ′′  .∫.unique {W} {g} h = eₚ.unique F h
 
   Fubini′ : ∫.E e₁ ≅ ∫.E e₂
-  Fubini′ = ≅.trans (Fubini F {ωᴾ} {eₚ' = eₚ F} ) $
+  Fubini′ = ≅.trans (Fubini F {ωᴾ} {eₚ' = eₚ F}) $
             ≅.trans (end-unique eₚ′′ (eₚ (F ′′)))
                     (≅.sym (Fubini (F ′′) {ωᶜ} {eₚ' = eₚ (F ′′)}))

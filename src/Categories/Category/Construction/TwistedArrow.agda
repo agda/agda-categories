@@ -1,27 +1,24 @@
 {-# OPTIONS --without-K --safe #-}
-open import Data.Product using (_,_; _×_; map; zip)
-open import Function.Base using (_$_; flip)
-open import Level
-open import Relation.Binary.Core using (Rel)
 
 open import Categories.Category using (Category; module Definitions)
-open import Categories.Category.Product renaming (Product to _×ᶜ_)
-open import Categories.Functor
-
-import Categories.Morphism as M
-import Categories.Morphism.Reasoning as MR
 
 -- Definition of the "Twisted Arrow" Category of a Category 𝒞
 module Categories.Category.Construction.TwistedArrow {o ℓ e} (𝒞 : Category o ℓ e) where
 
+open import Level
+open import Data.Product using (_,_; _×_; map; zip)
+open import Function.Base using (_$_; flip)
+open import Relation.Binary.Core using (Rel)
+
+open import Categories.Category.Product renaming (Product to _×ᶜ_)
+open import Categories.Functor using (Functor)
+open import Categories.Morphism.Reasoning 𝒞 using (pullˡ; pullʳ )
+
 private
   open module 𝒞 = Category 𝒞
-
-
-open M 𝒞
 open Definitions 𝒞
-open MR 𝒞
 open HomReasoning
+
 
 private
   variable
@@ -78,14 +75,12 @@ TwistedArrow = record
 
 -- Consider TwistedArrow as the comma category * / Hom[C][-,-]
 -- We have the codomain functor TwistedArrow → C.op × C
-
-module _ where
-  open Morphism
-  open Morphism⇒
-  open Functor
-  Forget : Functor TwistedArrow (𝒞.op ×ᶜ 𝒞)
-  Forget .F₀ x = dom x , cod x
-  Forget .F₁ f = dom⇐ f , cod⇒ f
-  Forget .identity = Equiv.refl , Equiv.refl
-  Forget .homomorphism = Equiv.refl , Equiv.refl
-  Forget .F-resp-≈ e = e
+open Functor
+Codomain : Functor TwistedArrow (𝒞.op ×ᶜ 𝒞)
+Codomain .F₀ x = dom , cod
+  where open Morphism x
+Codomain .F₁ f = dom⇐ , cod⇒
+  where open Morphism⇒ f
+Codomain .identity = Equiv.refl , Equiv.refl
+Codomain .homomorphism = Equiv.refl , Equiv.refl
+Codomain .F-resp-≈ e = e
