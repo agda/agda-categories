@@ -112,8 +112,7 @@ module _ {S R T : Comonad C} where
     R.δ.η U ∘ σ .α.η U ∘ τ .α.η U
       ≈⟨ pullˡ (σ .comult-comp) ⟩
     (σ .α.η (R.F.₀ U) ∘ T.F.₁ (σ .α.η U) ∘ T.δ.η U) ∘ τ .α.η U
-      -- there is no approx² that witnesses (a ∘ (b ∘ c)) ∘ d ≈ (a ∘ b) ∘ (c ∘ d)
-      ≈⟨ pushˡ C.sym-assoc ⟩
+      ≈⟨ assoc²βγ ⟩
     (σ .α.η (R.F.₀ U) ∘ T.F.₁ (σ .α.η U)) ∘ (T.δ.η U ∘ τ .α.η U)
       ≈⟨ refl⟩∘⟨ τ .comult-comp ⟩
     (σ .α.η (R.F.₀ U) ∘ T.F.₁ (σ .α.η U)) ∘ (τ .α.η (T.F.₀ U) ∘ S.F.₁ (τ .α.η U) ∘ S.δ.η U)
