@@ -4,11 +4,10 @@ open import Categories.Category
 
 module Categories.Object.Terminal.Limit {o ℓ e} (C : Category o ℓ e) where
 
-open import Categories.Category.Lift
-open import Categories.Category.Finite.Fin.Construction.Discrete
-open import Categories.Object.Terminal C
+open import Categories.Category.Construction.Empty using (Empty)
 open import Categories.Diagram.Limit
 open import Categories.Functor.Core
+open import Categories.Object.Terminal C
 
 import Categories.Category.Construction.Cones as Co
 
@@ -16,7 +15,7 @@ private
   module C = Category C
   open C
 
-module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C} where
+module _ {o′ ℓ′ e′} {F : Functor (Empty {o′} {ℓ′} {e′}) C} where
   limit⇒⊤ : Limit F → Terminal
   limit⇒⊤ L = record
     { ⊤        = apex
@@ -35,7 +34,7 @@ module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C
     }
     where open Limit L
 
-module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C} where
+module _ {o′ ℓ′ e′} {F : Functor (Empty {o′} {ℓ′} {e′}) C} where
   ⊤⇒limit : Terminal → Limit F
   ⊤⇒limit t = record
     { terminal = record
