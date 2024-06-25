@@ -1,62 +1,39 @@
 {-# OPTIONS --without-K --safe #-}
-open import Categories.Category using (Category; module Definitions)
 
--- Definition of the "Twisted" Functor between certain Functor Categories
-module Categories.Functor.Instance.Twisted {o ℓ e o′ ℓ′ e′} (𝒞 : Category o ℓ e) (𝒟 : Category o′ ℓ′ e′) where
-
-import Categories.Category.Construction.TwistedArrow as TW
-open import Categories.Category.Product
-open import Categories.Category.Construction.Functors
-open import Categories.Functor
-open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
-
+open import Level
 open import Data.Product using (_,_)
 
+open import Categories.Category using (Category; module Definitions)
+
+open import Categories.Category.Construction.TwistedArrow
+open import Categories.Category.Product renaming (Product to _×ᶜ_)
+open import Categories.Category.Construction.Functors
+open import Categories.Functor
+open import Categories.Functor.Bifunctor
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_; _ⓘʳ_)
+open import Categories.Functor.Limits using (Continuous)
+
+
+-- Definition of the "Twisted" Functor between certain Functor Categories
+module Categories.Functor.Instance.Twisted {o ℓ e o′ ℓ′ e′} (C : Category o ℓ e) (D : Category o′ ℓ′ e′)where
+
 private
-  module C = Category 𝒞
+  module C = Category C
+  module D = Category D
 
-Twist : Functor (Product C.op 𝒞) 𝒟 → Functor (TW.TwistedArrow 𝒞) 𝒟
-Twist F = record
-  { F₀ = λ x → F₀ (dom x , cod x)
-  ; F₁ = λ f → F₁ (dom⇐ f , cod⇒ f)
-  ; identity = identity
-  ; homomorphism = homomorphism
-  ; F-resp-≈ = F-resp-≈
-  }
-  where
-  open Functor F
-  open TW.Morphism
-  open TW.Morphism⇒
+open Morphism
+open Morphism⇒
+-- precomposition with the forgetful functor
+Twist : Functor (C.op ×ᶜ C) D → Functor (TwistedArrow C) D
+Twist F = F ∘F Forget C
 
-Twist′ : Functor (Product C.op 𝒞) 𝒟 → Functor (Category.op (TW.TwistedArrow C.op)) 𝒟
-Twist′ F = record
-  { F₀ = λ x → F₀ (dom x , cod x)
-  ; F₁ = λ f → F₁ (dom⇐ f , cod⇒ f)
-  ; identity = identity
-  ; homomorphism = homomorphism
-  ; F-resp-≈ = F-resp-≈
-  }
-  where
-  open Functor F
-  open TW.Morphism
-  open TW.Morphism⇒
+Twist′ : Functor (C.op ×ᶜ C) D → Functor (Category.op (TwistedArrow C.op)) D
+Twist′ F = F ∘F (Functor.op (Forget C.op))
 
-Twisted : Functor (Functors (Product C.op 𝒞) 𝒟) (Functors (TW.TwistedArrow 𝒞) 𝒟)
-Twisted = record
-  { F₀ = Twist
-  ; F₁ = Nat
-  ; identity = D.Equiv.refl
-  ; homomorphism = D.Equiv.refl
-  ; F-resp-≈ = λ f≈g → f≈g
-  }
-  where
-  open TW.Morphism
-  open TW.Morphism⇒
-  module D = Category 𝒟
-  Nat : {F G : Functor (Product C.op 𝒞) 𝒟} → NaturalTransformation F G → NaturalTransformation (Twist F) (Twist G)
-  Nat nt = ntHelper record
-    { η = λ x → η nt (dom x , cod x)
-    ; commute = λ f → commute nt (dom⇐ f , cod⇒ f)
-    }
-    where
-    open NaturalTransformation
+-- precomposition is functorial
+Twisted : Functor (Functors (C.op ×ᶜ C) D) (Functors (TwistedArrow C) D)
+Twisted = appʳ product (Forget C)
+
+Twistⁿⁱ : ∀ {F G : Functor (C.op ×ᶜ C) D } → (F ≃ G) → Twist F ≃ Twist G
+Twistⁿⁱ α = α ⓘʳ Forget C

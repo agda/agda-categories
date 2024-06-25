@@ -130,6 +130,8 @@ module curry {o₁ e₁ ℓ₁} {C₁ : Category o₁ e₁ ℓ₁}
   open Category
   open NaturalIsomorphism
 
+  module ₀ (F : Bifunctor C₁ C₂ D) = Functor (Functor.F₀ curry F)
+
   -- Currying preserves natural isos.
   -- This makes |curry.F₀| a map between the hom-setoids of Cats.
 

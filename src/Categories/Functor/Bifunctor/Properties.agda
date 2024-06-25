@@ -6,8 +6,12 @@ open import Level
 open import Data.Product using (Σ; _,_)
 
 open import Categories.Category
+open import Categories.Category.Product
 open import Categories.Functor
 open import Categories.Functor.Bifunctor
+open import Categories.Functor.Construction.Constant
+open import Categories.NaturalTransformation using (NaturalTransformation; _∘ˡ_) renaming (id to idN)
+
 import Categories.Morphism.Reasoning as MR
 
 private
