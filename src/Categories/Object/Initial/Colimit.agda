@@ -5,7 +5,7 @@ open import Categories.Category
 module Categories.Object.Initial.Colimit {o ℓ e} (C : Category o ℓ e) where
 
 open import Categories.Category.Construction.Cocones using (Cocone; Cocone⇒)
-open import Categories.Category.Construction.Empty using (Empty)
+open import Categories.Category.Instance.Zero using (Zero)
 open import Categories.Diagram.Colimit using (Colimit)
 open import Categories.Functor.Core using (Functor)
 open import Categories.Object.Initial C
@@ -13,7 +13,7 @@ open import Categories.Object.Initial C
 private
   open module C = Category C
 
-module _ {o′ ℓ′ e′} {F : Functor (Empty {o′} {ℓ′} {e′}) C} where
+module _ {o′ ℓ′ e′} {F : Functor (Zero {o′} {ℓ′} {e′}) C} where
   colimit⇒⊥ : Colimit F → Initial
   colimit⇒⊥ L = record
     { ⊥        = coapex
@@ -32,7 +32,7 @@ module _ {o′ ℓ′ e′} {F : Functor (Empty {o′} {ℓ′} {e′}) C} where
     }
     where open Colimit L
 
-module _ {o′ ℓ′ e′} {F : Functor (Empty {o′} {ℓ′} {e′}) C} where
+module _ {o′ ℓ′ e′} {F : Functor (Zero {o′} {ℓ′} {e′}) C} where
 
   ⊥⇒colimit : Initial → Colimit F
   ⊥⇒colimit t = record
