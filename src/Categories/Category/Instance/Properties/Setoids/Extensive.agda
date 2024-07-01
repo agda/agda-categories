@@ -44,9 +44,9 @@ Setoids-Extensive ℓ = record
         { commute = λ { {()}}
         ; universal = λ {C f g} eq → record
            { to = λ z → conflict A B (eq {z})
-           ; cong = λ z → tt
+           ; cong = λ {x} _ → conflict A B (eq {x})
            }
-        ; unique = λ _ _ → tt
+        ; unique = λ {_} {_} {_} {_} {eq} _ _ {x} → conflict A B (eq {x})
         ; p₁∘universal≈h₁ = λ {_ _ _ eq x} → conflict A B (eq {x})
         ; p₂∘universal≈h₂ = λ {_ _ _ eq y} → conflict A B (eq {y})
         }
