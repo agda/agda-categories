@@ -1,6 +1,8 @@
 {-# OPTIONS --without-K --safe #-}
-open import Categories.Category
+
 open import Level
+
+open import Categories.Category.Core using (Category)
 
 module Categories.Object.StrictInitial {o ℓ e} (C : Category o ℓ e) where
 
