@@ -2,15 +2,16 @@
 
 open import Categories.Category.Core
 open import Categories.Object.Terminal using (Terminal)
-open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
+open import Categories.Category.Cartesian using (Cartesian)
 open import Categories.Category.BinaryProducts using (BinaryProducts)
 
 -- Parametrized natural numbers object as described here https://ncatlab.org/nlab/show/natural+numbers+object#withparams
 
-module Categories.Object.NaturalNumbers.Parametrized {o ℓ e} (CC : CartesianCategory o ℓ e) where
+module Categories.Object.NaturalNumbers.Parametrized {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Cartesian : Cartesian 𝒞) where
 
 open import Level
-open CartesianCategory CC renaming (U to 𝒞)
+open Category 𝒞
+open Cartesian 𝒞-Cartesian
 open HomReasoning
 open Equiv
 
