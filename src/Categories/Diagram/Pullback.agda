@@ -24,16 +24,15 @@ private
 -- Proof that a given square is a pullback
 record IsPullback {P : Obj} (p₁ : P ⇒ X) (p₂ : P ⇒ Y) (f : X ⇒ Z) (g : Y ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
   field
-    commute   : f ∘ p₁ ≈ g ∘ p₂
-    universal : ∀ {h₁ : A ⇒ X} {h₂ : A ⇒ Y} → f ∘ h₁ ≈ g ∘ h₂ → A ⇒ P
-    unique    : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} →
-                  p₁ ∘ i ≈ h₁ → p₂ ∘ i ≈ h₂ →
-                  i ≈ universal eq
-
-    p₁∘universal≈h₁  : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} →
-                         p₁ ∘ universal eq ≈ h₁
-    p₂∘universal≈h₂  : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} →
-                         p₂ ∘ universal eq ≈ h₂
+    commute         : f ∘ p₁ ≈ g ∘ p₂
+    universal       : ∀ {h₁ : A ⇒ X} {h₂ : A ⇒ Y} → f ∘ h₁ ≈ g ∘ h₂ → A ⇒ P
+    p₁∘universal≈h₁ : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} →
+                        p₁ ∘ universal eq ≈ h₁
+    p₂∘universal≈h₂ : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} →
+                        p₂ ∘ universal eq ≈ h₂
+    unique          : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} →
+                        p₁ ∘ i ≈ h₁ → p₂ ∘ i ≈ h₂ →
+                        i ≈ universal eq
 
   unique′ : (eq eq′ : f ∘ h₁ ≈ g ∘ h₂) → universal eq ≈ universal eq′
   unique′ eq eq′ = unique p₁∘universal≈h₁ p₂∘universal≈h₂
@@ -95,9 +94,9 @@ swap p = record
   ; isPullback = record
     { commute          = ⟺ commute
     ; universal       = universal ● ⟺
-    ; unique          = flip unique
     ; p₁∘universal≈h₁ = p₂∘universal≈h₂
     ; p₂∘universal≈h₂ = p₁∘universal≈h₁
+    ; unique          = flip unique
     }
   }
   where open Pullback p
@@ -109,14 +108,14 @@ glue {h = h} p q = record
   ; isPullback = record
     { commute        = glue-square p.commute q.commute
     ; universal       = λ eq → q.universal (⟺ (p.p₁∘universal≈h₁ {eq = sym-assoc ○ eq}))
+    ; p₁∘universal≈h₁ = q.p₁∘universal≈h₁
+    ; p₂∘universal≈h₂ = assoc ○ ∘-resp-≈ʳ q.p₂∘universal≈h₂ ○ p.p₂∘universal≈h₂
     ; unique          = λ {_ h₁ h₂ i} eq eq′ →
       q.unique eq (p.unique (begin
         p.p₁ ∘ q.p₂ ∘ i ≈˘⟨ extendʳ q.commute ⟩
         h ∘ q.p₁ ∘ i    ≈⟨ refl⟩∘⟨ eq ⟩
         h ∘ h₁          ∎)
                             (sym-assoc ○ eq′))
-    ; p₁∘universal≈h₁ = q.p₁∘universal≈h₁
-    ; p₂∘universal≈h₂ = assoc ○ ∘-resp-≈ʳ q.p₂∘universal≈h₂ ○ p.p₂∘universal≈h₂
     }
   }
   where module p = Pullback p
@@ -132,14 +131,14 @@ unglue {f = f} {g = g} {h = h} p q = record
       (f ∘ h) ∘ h₁      ≈⟨ pullʳ eq ⟩
       f ∘ p.p₁ ∘ h₂     ≈⟨ extendʳ p.commute ⟩
       g ∘ p.p₂ ∘ h₂     ∎
-    ; unique          = λ {_ h₁ h₂ i} eq eq′ → q.unique eq $ begin
-    q.p₂ ∘ i            ≈⟨ pushˡ (⟺ p.p₂∘universal≈h₂) ⟩
-    p.p₂ ∘ p₂′ ∘ i      ≈⟨ refl⟩∘⟨ eq′ ⟩
-    p.p₂ ∘ h₂           ∎
     ; p₁∘universal≈h₁ = q.p₁∘universal≈h₁
     ; p₂∘universal≈h₂ = λ {_ _ _ eq} →
       p.unique-diagram ((pullˡ p.p₁∘universal≈h₁) ○ pullʳ q.p₁∘universal≈h₁ ○ eq)
                        (pullˡ p.p₂∘universal≈h₂ ○ q.p₂∘universal≈h₂)
+    ; unique          = λ {_ h₁ h₂ i} eq eq′ → q.unique eq $ begin
+      q.p₂ ∘ i            ≈⟨ pushˡ (⟺ p.p₂∘universal≈h₂) ⟩
+      p.p₂ ∘ p₂′ ∘ i      ≈⟨ refl⟩∘⟨ eq′ ⟩
+      p.p₂ ∘ h₂           ∎
     }
   }
   where module p = Pullback p
@@ -159,9 +158,9 @@ Product×Equalizer⇒Pullback {f = f} {g = g} p e = record
       f ∘ h₁                ≈⟨ eq ⟩
       g ∘ h₂                ≈˘⟨ pullʳ project₂ ⟩
       (g ∘ π₂) ∘ ⟨ h₁ , h₂ ⟩ ∎
-    ; unique          = λ eq eq′ → e.unique (p.unique (sym-assoc ○ eq) (sym-assoc ○ eq′))
     ; p₁∘universal≈h₁ = pullʳ (⟺ e.universal) ○ project₁
     ; p₂∘universal≈h₂ = pullʳ (⟺ e.universal) ○ project₂
+    ; unique          = λ eq eq′ → e.unique (p.unique (sym-assoc ○ eq) (sym-assoc ○ eq′))
     }
   }
   where module p = Product p
@@ -203,9 +202,9 @@ module _ (p : Pullback f g) where
     ; isPullback = record
       { commute         = ∘-resp-≈ˡ eq ○ commute ○ ⟺ (∘-resp-≈ˡ eq′)
       ; universal       = λ eq″ → universal (∘-resp-≈ˡ (⟺ eq) ○ eq″ ○ ∘-resp-≈ˡ eq′)
-      ; unique          = unique
       ; p₁∘universal≈h₁ = p₁∘universal≈h₁
       ; p₂∘universal≈h₂ = p₂∘universal≈h₂
+      ; unique          = unique
       }
     }
 

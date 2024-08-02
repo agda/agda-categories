@@ -30,9 +30,9 @@ pullback-self-mono : Mono f → IsPullback id id f f
 pullback-self-mono mono = record
   { commute = refl
   ; universal = λ {X} {h₁} {h₂} eq → h₁
-  ; unique = λ id∘i≈h₁ _ → ⟺ identityˡ ○ id∘i≈h₁
   ; p₁∘universal≈h₁ = identityˡ
   ; p₂∘universal≈h₂ = λ {X} {h₁} {h₂} {eq} → identityˡ ○ mono h₁ h₂ eq
+  ; unique = λ id∘i≈h₁ _ → ⟺ identityˡ ○ id∘i≈h₁
   }
 
 -- pullback from a terminal object is the same as a product
@@ -58,9 +58,9 @@ module _ (t : Terminal) where
     ; isPullback = record
       { commute         = !-unique₂
       ; universal       = λ {_ f g} _ → ⟨ f , g ⟩
-      ; unique          = λ eq eq′ → ⟺ (unique eq eq′)
       ; p₁∘universal≈h₁ = project₁
       ; p₂∘universal≈h₂ = project₂
+      ; unique          = λ eq eq′ → ⟺ (unique eq eq′)
       }
     }
     where open Product p
@@ -76,9 +76,9 @@ module _ (p : Pullback f g) where
     ; isPullback = record
       { commute         = ∘-resp-≈ˡ (⟺ eq) ○ commute ○ ∘-resp-≈ˡ eq′
       ; universal       = λ eq″ → universal (∘-resp-≈ˡ eq ○ eq″ ○ ∘-resp-≈ˡ (⟺ eq′))
-      ; unique          = unique
       ; p₁∘universal≈h₁ = p₁∘universal≈h₁
       ; p₂∘universal≈h₂ = p₂∘universal≈h₂
+      ; unique          = unique
       }
     }
 

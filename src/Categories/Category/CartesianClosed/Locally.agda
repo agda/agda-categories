@@ -44,9 +44,9 @@ record Locally : Set (levelOfTerm C) where
     ; isPullback = record
       { commute         = p.commute
       ; universal       = λ {Z} {h i} eq → slicearr {h = p.universal eq} (pullʳ p.p₁∘universal≈h₁ ○ Slice⇒.△ h)
-      ; unique          = λ eq₁ eq₂ → p.unique eq₁ eq₂
       ; p₁∘universal≈h₁ = p.p₁∘universal≈h₁
       ; p₂∘universal≈h₂ = p.p₂∘universal≈h₂
+      ; unique          = λ eq₁ eq₂ → p.unique eq₁ eq₂
       }
     }
     where open HomReasoning

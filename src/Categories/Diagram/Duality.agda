@@ -93,9 +93,9 @@ Pushout⇒coPullback p = record
   ; isPullback = record
     { commute         = commute
     ; universal       = universal
-    ; unique          = unique
     ; p₁∘universal≈h₁ = universal∘i₁≈h₁
     ; p₂∘universal≈h₂ = universal∘i₂≈h₂
+    ; unique          = unique
     }
   }
   where open Pushout p
