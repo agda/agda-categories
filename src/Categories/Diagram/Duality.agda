@@ -80,9 +80,9 @@ coPullback⇒Pushout p = record
   ; i₂              = p₂
   ; commute         = commute
   ; universal       = universal
-  ; unique          = unique
   ; universal∘i₁≈h₁ = p₁∘universal≈h₁
   ; universal∘i₂≈h₂ = p₂∘universal≈h₂
+  ; unique          = unique
   }
   where open Pullback p
 
