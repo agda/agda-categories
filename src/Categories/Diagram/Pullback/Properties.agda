@@ -32,7 +32,7 @@ pullback-self-mono mono = record
   ; universal = λ {X} {h₁} {h₂} eq → h₁
   ; p₁∘universal≈h₁ = identityˡ
   ; p₂∘universal≈h₂ = λ {X} {h₁} {h₂} {eq} → identityˡ ○ mono h₁ h₂ eq
-  ; unique = λ id∘i≈h₁ _ → ⟺ identityˡ ○ id∘i≈h₁
+  ; unique-diagram = λ id∘h≈id∘i _ → introˡ refl ○ id∘h≈id∘i ○ elimˡ refl
   }
 
 -- pullback from a terminal object is the same as a product
@@ -60,7 +60,7 @@ module _ (t : Terminal) where
       ; universal       = λ {_ f g} _ → ⟨ f , g ⟩
       ; p₁∘universal≈h₁ = project₁
       ; p₂∘universal≈h₂ = project₂
-      ; unique          = λ eq eq′ → ⟺ (unique eq eq′)
+      ; unique-diagram  = unique′
       }
     }
     where open Product p
@@ -78,7 +78,7 @@ module _ (p : Pullback f g) where
       ; universal       = λ eq″ → universal (∘-resp-≈ˡ eq ○ eq″ ○ ∘-resp-≈ˡ (⟺ eq′))
       ; p₁∘universal≈h₁ = p₁∘universal≈h₁
       ; p₂∘universal≈h₂ = p₂∘universal≈h₂
-      ; unique          = unique
+      ; unique-diagram  = unique-diagram
       }
     }
 

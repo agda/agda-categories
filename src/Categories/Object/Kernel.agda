@@ -35,6 +35,18 @@ record IsKernel {A B K} (k : K ⇒ A) (f : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) wher
     factors : ∀ {eq : f ∘ h ≈ zero⇒} → h ≈ k ∘ universal eq
     unique : ∀ {eq : f ∘ h ≈ zero⇒} → h ≈ k ∘ i → i ≈ universal eq
 
+  unique-diagram : k ∘ h ≈ k ∘ i → h ≈ i
+  unique-diagram {_} {h} {i} k∘h≈k∘i = begin
+    h            ≈⟨ unique Equiv.refl ⟩
+    universal eq ≈⟨ unique k∘h≈k∘i ⟨
+    i            ∎
+    where
+      eq : f ∘ k ∘ h ≈ zero⇒
+      eq = begin
+        f ∘ k ∘ h ≈⟨ glue′ commute Equiv.refl ⟩
+        zero⇒ ∘ h ≈⟨ zero-∘ʳ h ⟩
+        zero⇒ ∎
+
   universal-resp-≈ : ∀ {eq : f ∘ h ≈ zero⇒} {eq′ : f ∘ i ≈ zero⇒} →
     h ≈ i → universal eq ≈ universal eq′
   universal-resp-≈ h≈i = unique (⟺ h≈i ○ factors)

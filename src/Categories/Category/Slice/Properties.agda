@@ -27,7 +27,7 @@ module _ {A : C.Obj} where
   open C.Equiv
 
   product⇒pullback : ∀ {X Y : Obj} → Product (Slice A) X Y → Pullback C (arr X) (arr Y)
-  product⇒pullback p = record
+  product⇒pullback {X} p = record
     { p₁              = h π₁
     ; p₂              = h π₂
     ; isPullback = record
@@ -35,7 +35,20 @@ module _ {A : C.Obj} where
       ; universal       = λ eq → h ⟨ slicearr eq , slicearr refl ⟩
       ; p₁∘universal≈h₁ = project₁
       ; p₂∘universal≈h₂ = project₂
-      ; unique          = λ {_ _ _ _ eq} eq′ eq″ → ⟺ (unique {h = slicearr (pushˡ (⟺ (△ π₁)) ○ C.∘-resp-≈ʳ eq′ ○ eq)} eq′ eq″)
+      ; unique-diagram  = λ {D j i} eq₁ eq₂ →
+          let D′ : SliceObj A
+              D′ = sliceobj (arr A×B C.∘ i)
+              arr∘j≈arr∘i : arr A×B C.∘ j C.≈ arr A×B C.∘ i
+              arr∘j≈arr∘i = begin
+                arr A×B C.∘ j        ≈⟨ pushˡ (⟺ (△ π₁)) ⟩
+                arr X C.∘ h π₁ C.∘ j ≈⟨ refl⟩∘⟨ eq₁ ⟩
+                arr X C.∘ h π₁ C.∘ i ≈⟨ pullˡ (△ π₁) ⟩
+                arr A×B C.∘ i        ∎
+              j′ : D′ ⇒ A×B
+              j′ = slicearr {h = j} arr∘j≈arr∘i
+              i′ : D′ ⇒ A×B
+              i′ = slicearr {h = i} refl
+          in unique′ {h = j′} {i = i′} eq₁ eq₂
       }
     }
     where open Product (Slice A) p

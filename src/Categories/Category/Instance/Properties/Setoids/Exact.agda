@@ -280,13 +280,13 @@ module _ ℓ where
     { regular   = Setoids-Regular
     ; quotient  = Quotient-Coequalizer
     ; effective = λ {X} E → record
-        { commute   = eqn _ (refl X) (refl X)
-        ; universal = λ { {Z}{h₁}{h₂} → universal E h₁ h₂ }
-        ; p₁∘universal≈h₁ = λ { {eq = eq} → x₁≈ eq}
-        ; p₂∘universal≈h₂ = λ { {eq = eq} → ≈x₂ eq}
-        ; unique    = λ {Z}{h₁}{h₂}{u}{eq} eq₁ eq₂ {x} → Relation.relation (R E) u (universal E h₁ h₂ eq)
-            λ { zero {x}      → trans X eq₁ (sym X (x₁≈ eq))
-              ; (nzero _) {x} → trans X eq₂ (sym X (≈x₂ eq))
+        { commute         = eqn _ (refl X) (refl X)
+        ; universal       = λ {Z} {h₁} {h₂} → universal E h₁ h₂
+        ; p₁∘universal≈h₁ = λ { {eq = eq} → x₁≈ eq }
+        ; p₂∘universal≈h₂ = λ { {eq = eq} → ≈x₂ eq }
+        ; unique-diagram  = λ {Z} {h₁} {h₂} eq₁ eq₂ → Relation.relation (R E) h₁ h₂
+            λ { zero      → eq₁
+              ; (nzero _) → eq₂
               }
         }
     }

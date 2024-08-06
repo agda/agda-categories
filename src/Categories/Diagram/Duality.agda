@@ -82,7 +82,7 @@ coPullback⇒Pushout p = record
   ; universal       = universal
   ; universal∘i₁≈h₁ = p₁∘universal≈h₁
   ; universal∘i₂≈h₂ = p₂∘universal≈h₂
-  ; unique          = unique
+  ; unique-diagram  = unique-diagram
   }
   where open Pullback p
 
@@ -95,7 +95,7 @@ Pushout⇒coPullback p = record
     ; universal       = universal
     ; p₁∘universal≈h₁ = universal∘i₁≈h₁
     ; p₂∘universal≈h₂ = universal∘i₂≈h₂
-    ; unique          = unique
+    ; unique-diagram  = unique-diagram
     }
   }
   where open Pushout p

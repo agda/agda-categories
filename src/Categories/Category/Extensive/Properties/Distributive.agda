@@ -63,11 +63,13 @@ module Categories.Category.Extensive.Properties.Distributive {o ℓ e} (𝒞 : C
               ⟨ π₁ ∘ h₁ , π₂ ∘ h₁ ⟩       ≈⟨ g-η ⟩
               h₁                          ∎
           ; p₂∘universal≈h₂ = project₂
-          ; unique = λ {X} {h₁} {h₂} {i} {eq} H1 H2 → sym (BP.unique (begin
-              π₁ ∘ i              ≈˘⟨ identityˡ ⟩∘⟨refl ⟩
-              ((id ∘ π₁) ∘ i)     ≈˘⟨ pullˡ π₁∘⁂ ⟩
-              (π₁ ∘ (id ⁂ g) ∘ i) ≈⟨ refl⟩∘⟨ H1 ⟩
-              π₁ ∘ h₁             ∎) H2)
+          ; unique-diagram = λ {X} {h₁} {h₂} eq₁ eq₂ → BP.unique′ (begin
+              π₁ ∘ h₁            ≈⟨ pushˡ (introˡ refl) ⟩
+              id ∘ π₁ ∘ h₁       ≈⟨ extendʳ π₁∘⁂  ⟨
+              π₁ ∘ (id ⁂ g) ∘ h₁ ≈⟨ refl⟩∘⟨ eq₁ ⟩
+              π₁ ∘ (id ⁂ g) ∘ h₂ ≈⟨ extendʳ π₁∘⁂  ⟩
+              id ∘ π₁ ∘ h₂       ≈⟨ pullˡ (elimˡ refl) ⟩
+              π₁ ∘ h₂            ∎) eq₂
           } }
         
         -- by the diagram we get the canonical distributivity (iso-)morphism

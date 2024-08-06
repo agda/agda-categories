@@ -30,9 +30,15 @@ record IsPullback {P : Obj} (p₁ : P ⇒ X) (p₂ : P ⇒ Y) (f : X ⇒ Z) (g :
                         p₁ ∘ universal eq ≈ h₁
     p₂∘universal≈h₂ : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} →
                         p₂ ∘ universal eq ≈ h₂
-    unique          : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} →
-                        p₁ ∘ i ≈ h₁ → p₂ ∘ i ≈ h₂ →
-                        i ≈ universal eq
+    unique-diagram  : p₁ ∘ h ≈ p₁ ∘ i →
+                      p₂ ∘ h ≈ p₂ ∘ i →
+                      h ≈ i
+
+  unique : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} → p₁ ∘ i ≈ h₁ → p₂ ∘ i ≈ h₂ → i ≈ universal eq
+  unique p₁∘i≈h₁ p₂∘i≈h₂ =
+    unique-diagram
+      (p₁∘i≈h₁ ○ ⟺ p₁∘universal≈h₁)
+      (p₂∘i≈h₂ ○ ⟺ p₂∘universal≈h₂)
 
   unique′ : (eq eq′ : f ∘ h₁ ≈ g ∘ h₂) → universal eq ≈ universal eq′
   unique′ eq eq′ = unique p₁∘universal≈h₁ p₂∘universal≈h₂
@@ -42,16 +48,6 @@ record IsPullback {P : Obj} (p₁ : P ⇒ X) (p₂ : P ⇒ Y) (f : X ⇒ Z) (g :
 
   universal-resp-≈ : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} {eq′ : f ∘ i₁ ≈ g ∘ i₂} → h₁ ≈ i₁ → h₂ ≈ i₂ → universal eq ≈ universal eq′
   universal-resp-≈ h₁≈i₁ h₂≈i₂ = unique (p₁∘universal≈h₁ ○ h₁≈i₁) (p₂∘universal≈h₂ ○ h₂≈i₂)
-
-  unique-diagram : p₁ ∘ h ≈ p₁ ∘ i →
-                   p₂ ∘ h ≈ p₂ ∘ i →
-                   h ≈ i
-  unique-diagram {h = h} {i = i} eq₁ eq₂ = begin
-    h            ≈⟨ unique eq₁ eq₂ ⟩
-    universal eq ≈˘⟨ unique refl refl ⟩
-    i            ∎
-    where eq = extendʳ commute
-
 
 -- Pullback of two arrows with a common codomain
 record Pullback (f : X ⇒ Z) (g : Y ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
@@ -96,7 +92,7 @@ swap p = record
     ; universal       = universal ● ⟺
     ; p₁∘universal≈h₁ = p₂∘universal≈h₂
     ; p₂∘universal≈h₂ = p₁∘universal≈h₁
-    ; unique          = flip unique
+    ; unique-diagram  = flip unique-diagram
     }
   }
   where open Pullback p
@@ -106,16 +102,18 @@ glue {h = h} p q = record
   { p₁              = q.p₁
   ; p₂              = p.p₂ ∘ q.p₂
   ; isPullback = record
-    { commute        = glue-square p.commute q.commute
+    { commute         = glue-square p.commute q.commute
     ; universal       = λ eq → q.universal (⟺ (p.p₁∘universal≈h₁ {eq = sym-assoc ○ eq}))
     ; p₁∘universal≈h₁ = q.p₁∘universal≈h₁
     ; p₂∘universal≈h₂ = assoc ○ ∘-resp-≈ʳ q.p₂∘universal≈h₂ ○ p.p₂∘universal≈h₂
-    ; unique          = λ {_ h₁ h₂ i} eq eq′ →
-      q.unique eq (p.unique (begin
-        p.p₁ ∘ q.p₂ ∘ i ≈˘⟨ extendʳ q.commute ⟩
-        h ∘ q.p₁ ∘ i    ≈⟨ refl⟩∘⟨ eq ⟩
-        h ∘ h₁          ∎)
-                            (sym-assoc ○ eq′))
+    ; unique-diagram  = λ {_ j i} eq₁ eq₂ →
+        let eq′ : p.p₁ ∘ q.p₂ ∘ j ≈ p.p₁ ∘ q.p₂ ∘ i
+            eq′ = begin
+              p.p₁ ∘ q.p₂ ∘ j ≈⟨ extendʳ q.commute ⟨
+              h ∘ q.p₁ ∘ j    ≈⟨ refl⟩∘⟨ eq₁ ⟩
+              h ∘ q.p₁ ∘ i    ≈⟨ extendʳ q.commute ⟩
+              p.p₁ ∘ q.p₂ ∘ i ∎
+        in q.unique-diagram eq₁ (p.unique-diagram eq′ (sym-assoc ○ eq₂ ○ assoc))
     }
   }
   where module p = Pullback p
@@ -126,7 +124,7 @@ unglue {f = f} {g = g} {h = h} p q = record
   { p₁              = q.p₁
   ; p₂              = p₂′
   ; isPullback = record
-    { commute        = ⟺ p.p₁∘universal≈h₁
+    { commute         = ⟺ p.p₁∘universal≈h₁
     ; universal       = λ {_ h₁ h₂} eq → q.universal $ begin
       (f ∘ h) ∘ h₁      ≈⟨ pullʳ eq ⟩
       f ∘ p.p₁ ∘ h₂     ≈⟨ extendʳ p.commute ⟩
@@ -135,10 +133,14 @@ unglue {f = f} {g = g} {h = h} p q = record
     ; p₂∘universal≈h₂ = λ {_ _ _ eq} →
       p.unique-diagram ((pullˡ p.p₁∘universal≈h₁) ○ pullʳ q.p₁∘universal≈h₁ ○ eq)
                        (pullˡ p.p₂∘universal≈h₂ ○ q.p₂∘universal≈h₂)
-    ; unique          = λ {_ h₁ h₂ i} eq eq′ → q.unique eq $ begin
-      q.p₂ ∘ i            ≈⟨ pushˡ (⟺ p.p₂∘universal≈h₂) ⟩
-      p.p₂ ∘ p₂′ ∘ i      ≈⟨ refl⟩∘⟨ eq′ ⟩
-      p.p₂ ∘ h₂           ∎
+    ; unique-diagram  = λ {_ j i} eq₁ eq₂ →
+        let eq′ : q.p₂ ∘ j ≈ q.p₂ ∘ i
+            eq′ = begin
+              q.p₂ ∘ j       ≈⟨ pushˡ (⟺ p.p₂∘universal≈h₂) ⟩
+              p.p₂ ∘ p₂′ ∘ j ≈⟨ refl⟩∘⟨ eq₂ ⟩
+              p.p₂ ∘ p₂′ ∘ i ≈⟨ pullˡ p.p₂∘universal≈h₂ ⟩
+              q.p₂ ∘ i ∎
+        in q.unique-diagram eq₁ eq′
     }
   }
   where module p = Pullback p
@@ -160,7 +162,8 @@ Product×Equalizer⇒Pullback {f = f} {g = g} p e = record
       (g ∘ π₂) ∘ ⟨ h₁ , h₂ ⟩ ∎
     ; p₁∘universal≈h₁ = pullʳ (⟺ e.universal) ○ project₁
     ; p₂∘universal≈h₂ = pullʳ (⟺ e.universal) ○ project₂
-    ; unique          = λ eq eq′ → e.unique (p.unique (sym-assoc ○ eq) (sym-assoc ○ eq′))
+    ; unique-diagram  = λ eq₁ eq₂ →
+      e.unique-diagram (p.unique′ (sym-assoc ○ eq₁ ○ assoc) (sym-assoc ○ eq₂ ○ assoc))
     }
   }
   where module p = Product p
@@ -204,7 +207,7 @@ module _ (p : Pullback f g) where
       ; universal       = λ eq″ → universal (∘-resp-≈ˡ (⟺ eq) ○ eq″ ○ ∘-resp-≈ˡ eq′)
       ; p₁∘universal≈h₁ = p₁∘universal≈h₁
       ; p₂∘universal≈h₂ = p₂∘universal≈h₂
-      ; unique          = unique
+      ; unique-diagram  = unique-diagram
       }
     }
 
