@@ -24,7 +24,7 @@ private
   open Category C
   variable
     X Y Z : Obj
-    f g h : X ⇒ Y
+    f g h i : X ⇒ Y
 
 open HomReasoning
 
@@ -49,11 +49,11 @@ module _ {F : Functor Span.op C} where
     { p₁              = proj left
     ; p₂              = proj right
     ; isPullback = record
-      { commute         = trans (limit-commute span-arrˡ) (sym (limit-commute span-arrʳ))
+      { commute         = commute-left ○ ⟺ commute-right
       ; universal       = universal
-      ; unique          = commute′
       ; p₁∘universal≈h₁ = commute
       ; p₂∘universal≈h₂ = commute
+      ; unique-diagram  = unique-diagram
       }
     }
     where open Limit lim
@@ -65,29 +65,57 @@ module _ {F : Functor Span.op C} where
                             ; left   → f
                             ; right  → g
                             }
-            ; commute = λ { {center} {center} span-id  → elimˡ identity
-                          ; {left} {center} span-arrˡ  → eq
-                          ; {left} {left} span-id      → elimˡ identity
-                          ; {right} {center} span-arrʳ → refl
-                          ; {right} {right} span-id    → elimˡ identity
-                          }
+              ; commute = λ { span-id   → elimˡ identity
+                            ; span-arrˡ → eq
+                            ; span-arrʳ → refl
+                            }
               }
             }
 
-          proj-center : proj center ≈ B⇒W ∘ proj right
-          proj-center = sym (limit-commute span-arrʳ)
+          commute-left : A⇒W ∘ proj left ≈ proj center
+          commute-left = limit-commute span-arrˡ
 
-          commute′ : ∀ {eq : A⇒W ∘ f ≈ B⇒W ∘ g} → proj left ∘ h ≈ f → proj right ∘ h ≈ g → h ≈ universal eq
-          commute′ {f = f} {g = g} {h = h} {eq = eq} eq₁ eq₂ = sym $ terminal.!-unique $ record
-            { arr     = h
-            ; commute = λ { {center} → begin
-                              proj center ∘ h      ≈⟨ pushˡ proj-center ⟩
-                              B⇒W ∘ proj right ∘ h ≈⟨ refl⟩∘⟨ eq₂ ⟩
-                              B⇒W ∘ g              ∎
-                          ; {left}   → eq₁
-                          ; {right}  → eq₂
-                          }
-            }
+          commute-right : B⇒W ∘ proj right ≈ proj center
+          commute-right = limit-commute span-arrʳ
+
+          unique-diagram : proj left ∘ h ≈ proj left ∘ i →
+                           proj right ∘ h ≈ proj right ∘ i →
+                           h ≈ i
+          unique-diagram {D} {h} {i} eq₁ eq₂ = terminal.!-unique₂ {f = h-cone} {g = i-cone}
+            where
+              D-cone : Cone
+              D-cone = record
+                { apex = record
+                  { ψ       = λ { center → proj center ∘ h
+                                ; left   → proj left ∘ h
+                                ; right  → proj right ∘ h
+                                }
+                  ; commute = λ { span-id   → elimˡ identity
+                                ; span-arrˡ → pullˡ commute-left
+                                ; span-arrʳ → pullˡ commute-right
+                                }
+                  }
+                }
+              h-cone : Cone⇒ D-cone limit
+              h-cone = record
+                { arr     = h
+                ; commute = λ { {center} → refl
+                              ; {left} → refl
+                              ; {right} → refl
+                              }
+                }
+              i-cone : Cone⇒ D-cone limit
+              i-cone = record
+                { arr     = i
+                ; commute = λ { {center} → begin
+                                  proj center ∘ i     ≈⟨ pullˡ commute-left ⟨
+                                  A⇒W ∘ proj left ∘ i ≈⟨ refl⟩∘⟨ eq₁ ⟨
+                                  A⇒W ∘ proj left ∘ h ≈⟨ pullˡ commute-left ⟩
+                                  proj center ∘ h     ∎
+                              ; {left} → sym eq₁
+                              ; {right} → sym eq₂
+                              }
+                }
 
 module _ {fA fB gA : Obj} {f : fA ⇒ fB} {g : gA ⇒ fB} (p : Pullback f g) where
   open Pullback p

@@ -38,11 +38,9 @@ Kernel⇒Pullback {f = f} kernel = record
       f ∘ h₁ ≈⟨ eq ⟩
       ¡ ∘ h₂ ≈˘⟨ refl⟩∘⟨ !-unique h₂ ⟩
       zero⇒ ∎
-    ; unique = λ {C} {h₁} {h₂} {i} k-eq h-eq → unique $ begin
-      h₁ ≈˘⟨ k-eq ⟩
-      kernel⇒ ∘ i ∎
     ; p₁∘universal≈h₁ = ⟺ factors
     ; p₂∘universal≈h₂ = !-unique₂
+    ; unique-diagram = λ k-eq _ → unique-diagram k-eq
     }
   }
   where

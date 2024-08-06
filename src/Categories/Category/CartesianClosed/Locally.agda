@@ -44,9 +44,9 @@ record Locally : Set (levelOfTerm C) where
     ; isPullback = record
       { commute         = p.commute
       ; universal       = λ {Z} {h i} eq → slicearr {h = p.universal eq} (pullʳ p.p₁∘universal≈h₁ ○ Slice⇒.△ h)
-      ; unique          = λ eq₁ eq₂ → p.unique eq₁ eq₂
       ; p₁∘universal≈h₁ = p.p₁∘universal≈h₁
       ; p₂∘universal≈h₂ = p.p₂∘universal≈h₂
+      ; unique-diagram  = p.unique-diagram
       }
     }
     where open HomReasoning
@@ -57,7 +57,7 @@ record Locally : Set (levelOfTerm C) where
           module f = Slice⇒ f
           module g = Slice⇒ g
           module p = P.Pullback (pullbacks f.h g.h) using (p₁; p₂; commute; universal;
-                                 p₁∘universal≈h₁; p₂∘universal≈h₂; unique)
+                                 p₁∘universal≈h₁; p₂∘universal≈h₂; unique-diagram)
           open MR C
 
           comm : Y.arr ∘ p.p₂ ≈ X.arr ∘ p.p₁
