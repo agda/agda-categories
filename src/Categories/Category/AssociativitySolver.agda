@@ -19,7 +19,7 @@ open import Data.Unit
 module Categories.Category.AssociativitySolver {o ℓ e} (CC : Category o ℓ e) where
 
 -- We use a simple code to document the real code. This simple code is
--- a magma associativity solver. Similar to Monoid solver in Agda
+-- a semigroup associativity solver. Similar to Monoid solver in Agda
 -- stdlib.
 module Documentation1 where
 
