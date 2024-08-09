@@ -3,7 +3,7 @@
 module Categories.Category.Instance.Properties.Setoids.Extensive where
 
 open import Level using (Level)
-open import Data.Empty renaming (⊥ to ⊥′)
+open import Data.Empty.Polymorphic using (⊥-elim)
 open import Data.Product using (_,_)
 open import Data.Sum.Base as Sum using (_⊎_; inj₁; inj₂)
 open import Data.Sum.Relation.Binary.Pointwise using (inj₁; inj₂; _⊎ₛ_; drop-inj₁; drop-inj₂)
@@ -49,10 +49,7 @@ Setoids-Extensive ℓ = record
            }
         ; p₁∘universal≈h₁ = λ {_ _ _ eq x} → conflict A B (eq {x})
         ; p₂∘universal≈h₂ = λ {_ _ _ eq y} → conflict A B (eq {y})
-        ; unique-diagram = λ {X} {h} {i} eq₁ eq₂ {x} →
-            let fromBottom : Level.Lift ℓ ⊥′ → [ ⊥ ][ h ⟨$⟩ x ≈ i ⟨$⟩ x ]
-                fromBottom = λ ()
-            in fromBottom (h ⟨$⟩ x)
+        ; unique-diagram = λ {X} {h} {i} eq₁ eq₂ {x} → ⊥-elim {ℓ} {ℓ} {λ ()} (h ⟨$⟩ x)
         }
    }
      where
