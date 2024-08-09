@@ -60,7 +60,7 @@ pullback _ _ {X = X} {Y = Y} {Z = Z} f g = record
         }
       ; p₁∘universal≈h₁ = X.refl
       ; p₂∘universal≈h₂ = Y.refl
-      ; unique-diagram = λ eq₁ eq₂ → eq₁ , eq₂
+      ; unique-diagram = λ eq₁ eq₂ {_} → eq₁ , eq₂
       }
     }
     where
