@@ -31,10 +31,10 @@ record IsParametrizedNNO (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
     commute₂ : ∀ {A X} {f : A ⇒ X} {g : X ⇒ X} → g ∘ (universal f g) ≈ (universal f g) ∘ (id ⁂ s)
     unique : ∀ {A X} {f : A ⇒ X} {g : X ⇒ X} {u : A × N ⇒ X} → f ≈ u ∘ ⟨ id , z ∘ ! ⟩ → g ∘ u ≈ u ∘ (id ⁂ s) → u ≈ universal f g
 
-  η : universal {A = ⊤} ⟨ id , z ∘ ! ⟩ (id ⁂ s) ≈ id
+  η : ∀ {A} → universal ⟨ id , z ∘ ! ⟩ (id ⁂ s) ≈ id {A × N}
   η = ⟺ (unique (⟺ identityˡ) id-comm)
   
-  universal-cong : ∀ {A} → {f f′ : ⊤ ⇒ A} → {g g′ : A ⇒ A} → f ≈ f′ → g ≈ g′ → universal f g ≈ universal f′ g′
+  universal-cong : ∀ {A X} → {f f′ : A ⇒ X} → {g g′ : X ⇒ X} → f ≈ f′ → g ≈ g′ → universal f g ≈ universal f′ g′
   universal-cong f≈f′ g≈g′ = unique (⟺ f≈f′ ○  commute₁) (∘-resp-≈ˡ (⟺ g≈g′) ○ commute₂)
 
   isNNO : IsNNO N
