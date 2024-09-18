@@ -25,22 +25,17 @@ record Pushout (f : X ⇒ Y) (g : X ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
     i₂  : Z ⇒ Q
 
   field
-    commute   : i₁ ∘ f ≈ i₂ ∘ g
-    universal : {h₁ : Y ⇒ B} {h₂ : Z ⇒ B} → h₁ ∘ f ≈ h₂ ∘ g → Q ⇒ B
-    unique    : {h₁ : Y ⇒ E} {h₂ : Z ⇒ E} {j : Q ⇒ E} {eq : h₁ ∘ f ≈ h₂ ∘ g} →
-                  j ∘ i₁ ≈ h₁ → j ∘ i₂ ≈ h₂ →
-                  j ≈ universal eq
+    commute         : i₁ ∘ f ≈ i₂ ∘ g
+    universal       : {h₁ : Y ⇒ B} {h₂ : Z ⇒ B} → h₁ ∘ f ≈ h₂ ∘ g → Q ⇒ B
+    universal∘i₁≈h₁ : {h₁ : Y ⇒ E} {h₂ : Z ⇒ E} {eq : h₁ ∘ f ≈ h₂ ∘ g} →
+                        universal eq ∘ i₁ ≈ h₁
+    universal∘i₂≈h₂ : {h₁ : Y ⇒ E} {h₂ : Z ⇒ E} {eq : h₁ ∘ f ≈ h₂ ∘ g} →
+                        universal eq ∘ i₂ ≈ h₂
+    unique-diagram  : h ∘ i₁ ≈ j ∘ i₁ → h ∘ i₂ ≈ j ∘ i₂ → h ≈ j
 
-    universal∘i₁≈h₁  : {h₁ : Y ⇒ E} {h₂ : Z ⇒ E} {eq : h₁ ∘ f ≈ h₂ ∘ g} →
-                         universal eq ∘ i₁ ≈ h₁
-    universal∘i₂≈h₂  : {h₁ : Y ⇒ E} {h₂ : Z ⇒ E} {eq : h₁ ∘ f ≈ h₂ ∘ g} →
-                         universal eq ∘ i₂ ≈ h₂
-
-  unique-diagram : h ∘ i₁ ≈ j ∘ i₁ →
-                   h ∘ i₂ ≈ j ∘ i₂ →
-                   h ≈ j
-  unique-diagram {h = h} {j = j} eq₁ eq₂ = begin
-    h            ≈⟨ unique eq₁ eq₂ ⟩
-    universal eq ≈˘⟨ unique refl refl ⟩
-    j            ∎
-    where eq = extendˡ commute
+  unique : {h₁ : Y ⇒ E} {h₂ : Z ⇒ E} {eq : h₁ ∘ f ≈ h₂ ∘ g} →
+             j ∘ i₁ ≈ h₁ → j ∘ i₂ ≈ h₂ → j ≈ universal eq
+  unique j∘i₁≈h₁ j∘i₂≈h₂ =
+    unique-diagram
+      (j∘i₁≈h₁ ○ ⟺ universal∘i₁≈h₁)
+      (j∘i₂≈h₂ ○ ⟺ universal∘i₂≈h₂)
