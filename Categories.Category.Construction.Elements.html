@@ -141,13 +141,13 @@ module Alternate-Pullback {C : Category (suc o) o o} (F : Functor C (Sets o)) wh
       ; homomorphism = Functor.homomorphism h₁
       ; F-resp-≈ = Functor.F-resp-≈ h₁
       }
+    ; p₁∘universal≈h₁ = {!!}
+    ; p₂∘universal≈h₂ = {!!}
     ; unique = λ πˡ∘i≃h₁ map∘i≃h₂ → record
       { F⇒G = record { η = λ X → {!!} ; commute = {!!} }
       ; F⇐G = record { η = {!!} ; commute = {!!} }
       ; iso = λ X → record { isoˡ = {!!} ; isoʳ = {!!} }
       }
-    ; p₁∘universal≈h₁ = {!!}
-    ; p₂∘universal≈h₂ = {!!}
     }
     where
     open NaturalTransformation
