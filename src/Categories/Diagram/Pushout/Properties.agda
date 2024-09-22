@@ -9,16 +9,16 @@ open Category C
 
 open import Data.Product using (∃; _,_)
 
-open import Categories.Category.Cocartesian C
-open import Categories.Morphism C
-open import Categories.Morphism.Properties C
-open import Categories.Morphism.Duality C
+open import Categories.Category.Cocartesian C using (Cocartesian)
+open import Categories.Morphism C using (_≅_; Epi; Iso)
+open import Categories.Morphism.Properties C using (Iso-swap)
+open import Categories.Morphism.Duality C using (op-≅⇒≅; Iso⇒op-Iso)
 open import Categories.Object.Initial C using (Initial)
 open import Categories.Object.Terminal op using (Terminal)
 open import Categories.Object.Coproduct C using (Coproduct)
 open import Categories.Object.Duality C
 open import Categories.Diagram.Coequalizer C using (Coequalizer)
-open import Categories.Diagram.Pushout C
+open import Categories.Diagram.Pushout C using (Pushout)
 open import Categories.Diagram.Duality C
 open import Categories.Diagram.Pullback op as P′ using (Pullback)
 open import Categories.Diagram.Pullback.Properties op
