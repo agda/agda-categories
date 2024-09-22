@@ -13,11 +13,11 @@ open import Categories.Category.Cocartesian C
 open import Categories.Morphism C
 open import Categories.Morphism.Properties C
 open import Categories.Morphism.Duality C
-open import Categories.Object.Initial C
-open import Categories.Object.Terminal op
-open import Categories.Object.Coproduct C
+open import Categories.Object.Initial C using (Initial)
+open import Categories.Object.Terminal op using (Terminal)
+open import Categories.Object.Coproduct C using (Coproduct)
 open import Categories.Object.Duality C
-open import Categories.Diagram.Coequalizer C
+open import Categories.Diagram.Coequalizer C using (Coequalizer)
 open import Categories.Diagram.Pushout C
 open import Categories.Diagram.Duality C
 open import Categories.Diagram.Pullback op as P′ using (Pullback)
@@ -38,6 +38,9 @@ module _ (p : Pushout f g) where
   open Pullback pullback
     using (unique′; id-unique; unique-diagram)
     public
+
+  up-to-iso : (p p′ : Pushout f g) → Pushout.Q p ≅ Pushout.Q p′
+  up-to-iso p p′ = op-≅⇒≅ (P′.up-to-iso (Pushout⇒coPullback p) (Pushout⇒coPullback p′))
   
   swap : Pushout g f
   swap = coPullback⇒Pushout (P′.swap pullback)
