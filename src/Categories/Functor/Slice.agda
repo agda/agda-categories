@@ -36,8 +36,8 @@ module _ {A : Obj} where
 
   open S C
 
-  Forgetful : Functor (Slice A) C
-  Forgetful = record
+  TotalSpace : Functor (Slice A) C
+  TotalSpace = record
     { F₀           = Y
     ; F₁           = h
     ; identity     = refl
@@ -87,8 +87,8 @@ module _ {A : Obj} where
       open product
 
     -- this is adapted from proposition 1.33 of Aspects of Topoi (Freyd, 1972)
-    Free : Functor C (Slice A)
-    Free = record
+    ConstantFamily : Functor C (Slice A)
+    ConstantFamily = record
       { F₀ = λ _ → sliceobj π₁
       ; F₁ = λ f → slicearr ([ product ⇒ product ]π₁∘× ○ identityˡ)
       ; identity = id×id product
