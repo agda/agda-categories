@@ -11,6 +11,7 @@ open import Categories.Category.Slice
 open import Categories.Category.Slice.Properties
 open import Categories.Functor
 open import Categories.Functor.Slice
+open import Categories.Functor.Slice.BaseChange
 
 private
   module C = Category C
@@ -37,7 +38,7 @@ module _ (f : A ⇒ B) where
     J = slice⇒slice-slice C f
 
     I : Functor (Slice C/B (fObj ^ fObj)) C/B
-    I = pullback-functorial C/B slice-pullbacks i
+    I = TotalSpace C/B ∘F BaseChange* C/B i (slice-pullbacks i _)
 
     K : Functor C/B/f (Slice C/B (fObj ^ fObj))
     K = Base-F C/B (fObj ⇨-)
