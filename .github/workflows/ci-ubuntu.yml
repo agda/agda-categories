@@ -186,7 +186,7 @@ jobs:
 ########################################################################
 
       - name: Deploy HTML
-        uses: JamesIves/github-pages-deploy-action@v4.6.9
+        uses: JamesIves/github-pages-deploy-action@v4.7.1
         if: ${{ success() && env.AGDA_DEPLOY }}
         with:
           branch: gh-pages
