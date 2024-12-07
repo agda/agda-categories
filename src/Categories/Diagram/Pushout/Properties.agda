@@ -39,8 +39,8 @@ module _ (p : Pushout f g) where
     using (unique′; id-unique; unique-diagram)
     public
 
-  up-to-iso : (p p′ : Pushout f g) → Pushout.Q p ≅ Pushout.Q p′
-  up-to-iso p p′ = op-≅⇒≅ (P′.up-to-iso (Pushout⇒coPullback p) (Pushout⇒coPullback p′))
+  up-to-iso : (p′ : Pushout f g) → Pushout.Q p ≅ Pushout.Q p′
+  up-to-iso p′ = op-≅⇒≅ (P′.up-to-iso (Pushout⇒coPullback p) (Pushout⇒coPullback p′))
   
   swap : Pushout g f
   swap = coPullback⇒Pushout (P′.swap pullback)
