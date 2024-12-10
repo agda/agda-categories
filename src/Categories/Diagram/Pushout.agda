@@ -6,10 +6,6 @@ module Categories.Diagram.Pushout {o ℓ e} (C : Category o ℓ e) where
 
 open Category C
 open HomReasoning
-open Equiv
-
-open import Categories.Morphism.Reasoning C as Square
-  renaming (glue to glue-square) hiding (id-unique)
 
 open import Level
 
@@ -18,11 +14,7 @@ private
     A B E X Y Z : Obj
     f g h j : A ⇒ B
 
-record Pushout (f : X ⇒ Y) (g : X ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
-  field
-    {Q} : Obj
-    i₁  : Y ⇒ Q
-    i₂  : Z ⇒ Q
+record IsPushout {Q : Obj} (f : X ⇒ Y) (g : X ⇒ Z) (i₁ : Y ⇒ Q) (i₂ : Z ⇒ Q) : Set (o ⊔ ℓ ⊔ e) where
 
   field
     commute         : i₁ ∘ f ≈ i₂ ∘ g
@@ -39,3 +31,13 @@ record Pushout (f : X ⇒ Y) (g : X ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
     unique-diagram
       (j∘i₁≈h₁ ○ ⟺ universal∘i₁≈h₁)
       (j∘i₂≈h₂ ○ ⟺ universal∘i₂≈h₂)
+
+record Pushout (f : X ⇒ Y) (g : X ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
+
+  field
+    {Q} : Obj
+    i₁  : Y ⇒ Q
+    i₂  : Z ⇒ Q
+    isPushout : IsPushout f g i₁ i₂
+
+  open IsPushout isPushout public
