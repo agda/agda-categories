@@ -29,6 +29,7 @@ open import Categories.Morphism 𝒞
 open import Categories.Morphism.Properties 𝒞
 open import Categories.Morphism.Duality 𝒞
 open import Categories.Morphism.Reasoning 𝒞
+open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
 open import Categories.Object.Initial 𝒞 using (Initial)
 open import Categories.Object.Coproduct 𝒞
 open import Categories.Object.Duality 𝒞
@@ -149,11 +150,14 @@ module CocartesianMonoidal (cocartesian : Cocartesian) where
   A+⊥≅A : A + ⊥ ≅ A
   A+⊥≅A = op-≅⇒≅ (op-cartesianMonoidal.A×⊤≅A)
 
-  open op-cartesianMonoidal
-    using (monoidal)
-    -- both are natural isomorphism
-    renaming (⊤×--id to ⊥+--id; -×⊤-id to -+⊥-id)
-    public
+  open op-cartesianMonoidal using (monoidal; ⊤×--id; -×⊤-id)
+  open NaturalIsomorphism using (op′)
+
+  ⊥+--id : NaturalIsomorphism (⊥ +-) idF
+  ⊥+--id = op′ ⊤×--id
+
+  -+⊥-id : NaturalIsomorphism (-+ ⊥) idF
+  -+⊥-id = op′ -×⊤-id
 
   open Monoidal monoidal using (unit; unitorˡ-commute-to; unitorˡ-commute-from; unitorʳ-commute-to;
     unitorʳ-commute-from; assoc-commute-to; assoc-commute-from; triangle; pentagon)
