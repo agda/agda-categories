@@ -10,6 +10,7 @@ open import Categories.Functor.Properties
 open import Categories.NaturalTransformation
 import Categories.Diagram.Cone as Con
 import Categories.Morphism.Reasoning as MR
+open import Categories.Category.Construction.Cones using (Cones)
 
 private
   variable
@@ -42,6 +43,15 @@ module _ {F : Functor J C} (G : Functor C D) where
     }
     where open CF.Cone⇒ f
 
+  mapˡ : Functor (Cones F) (Cones (G ∘F F))
+  mapˡ = record
+    { F₀ = F-map-Coneˡ
+    ; F₁ =  F-map-Cone⇒ˡ
+    ; identity = G.identity
+    ; homomorphism = G.homomorphism
+    ; F-resp-≈ = G.F-resp-≈
+    }
+
 module _ {F : Functor J C} (G : Functor J′ J) where
   private
     module C   = Category C
@@ -67,6 +77,15 @@ module _ {F : Functor J C} (G : Functor J′ J) where
     ; commute = commute
     }
     where open CF.Cone⇒ f
+
+  mapʳ : Functor (Cones F) (Cones (F ∘F G))
+  mapʳ = record
+    { F₀ = F-map-Coneʳ
+    ; F₁ = F-map-Cone⇒ʳ
+    ; identity = C.Equiv.refl
+    ; homomorphism = C.Equiv.refl
+    ; F-resp-≈ = λ f≈g → f≈g
+    }
 
 module _ {F G : Functor J C} (α : NaturalTransformation F G) where
   private
@@ -99,3 +118,12 @@ module _ {F G : Functor J C} (α : NaturalTransformation F G) where
     ; commute = pullʳ commute
     }
     where open CF.Cone⇒ f
+
+  nat-map : Functor (Cones F) (Cones G)
+  nat-map = record
+    { F₀ = nat-map-Cone
+    ; F₁ = nat-map-Cone⇒
+    ; identity = C.Equiv.refl
+    ; homomorphism = C.Equiv.refl
+    ; F-resp-≈ = λ f≈g → f≈g
+    }
