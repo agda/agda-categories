@@ -199,16 +199,17 @@ module IsoPb {X Y Z} {f : X ⇒ Z} {g : Y ⇒ Z} (pull₀ pull₁ : Pullback f g
 -- if the right square (BCEF) is a pullback,
 -- then the left square (ABDE) is a pullback
 -- iff the big square (ACDF) is a pullback.
-module PullbackPastingLaw {A B C D E F : Obj} (f : A ⇒ B) (g : B ⇒ C) (h : A ⇒ D) (i : B ⇒ E) (j : C ⇒ F) (k : D ⇒ E) (l : E ⇒ F) (ABDE : i ∘ f ≈ k ∘ h) (BCEF : j ∘ g ≈ l ∘ i) (pbᵣ : IsPullback g i j l) where
+module PullbackPastingLaw {A B C D E F : Obj}
+  {f : A ⇒ B} {g : B ⇒ C} {h : A ⇒ D} {i : B ⇒ E} {j : C ⇒ F} {k : D ⇒ E} {l : E ⇒ F}
+  (ABDE : i ∘ f ≈ k ∘ h) (BCEF : j ∘ g ≈ l ∘ i) (pbᵣ : IsPullback g i j l) where
+  
   open IsPullback using (p₁∘universal≈h₁; p₂∘universal≈h₂; universal; unique-diagram)
   
   ACDF : j ∘ (g ∘ f) ≈ (l ∘ k) ∘ h
   ACDF = begin
-    j ∘ g ∘ f ≈⟨ sym-assoc ⟩
-    (j ∘ g) ∘ f ≈⟨ BCEF ⟩∘⟨refl ⟩
+    j ∘ g ∘ f   ≈⟨ pullˡ BCEF ⟩ 
     (l ∘ i) ∘ f ≈⟨ assoc ⟩
-    l ∘ (i ∘ f) ≈⟨ refl⟩∘⟨ ABDE ⟩
-    l ∘ (k ∘ h) ≈⟨ sym-assoc ⟩
+    l ∘ (i ∘ f) ≈⟨ pushʳ ABDE ⟩ 
     (l ∘ k) ∘ h ∎
 
   leftPullback⇒bigPullback : IsPullback f h i k → IsPullback (g ∘ f) h j (l ∘ k)
@@ -220,53 +221,49 @@ module PullbackPastingLaw {A B C D E F : Obj} (f : A ⇒ B) (g : B ⇒ C) (h : A
      ; unique-diagram = unique-diagramb
      } where
         j∘h₁≈l∘k∘h₂ : {H : Obj} {h₁ : H ⇒ C} {h₂ : H ⇒ D} → j ∘ h₁ ≈ (l ∘ k) ∘ h₂ → j ∘ h₁ ≈ l ∘ (k ∘ h₂)
-        j∘h₁≈l∘k∘h₂ {H} {h₁} {h₂} eq = begin
-          j ∘ h₁ ≈⟨ eq ⟩
-          (l ∘ k) ∘ h₂ ≈⟨ assoc ⟩
-          l ∘ (k ∘ h₂) ∎
+        j∘h₁≈l∘k∘h₂ eq = begin
+          j ∘ _       ≈⟨ eq ⟩
+          (l ∘ k) ∘ _ ≈⟨ assoc ⟩
+          l ∘ (k ∘ _) ∎
                   
         universalᵣ[h₁,k∘h₂] : {H : Obj} {h₁ : H ⇒ C} {h₂ : H ⇒ D} → j ∘ h₁ ≈ (l ∘ k) ∘ h₂ → H ⇒ B
-        universalᵣ[h₁,k∘h₂] {H} {h₁} {h₂} eq = universal pbᵣ {H} {h₁} {k ∘ h₂} (j∘h₁≈l∘k∘h₂ eq)
+        universalᵣ[h₁,k∘h₂] eq = universal pbᵣ (j∘h₁≈l∘k∘h₂ eq)
                 
         i∘universalᵣ[h₁,k∘h₂]≈k∘h₂ : {H : Obj} {h₁ : H ⇒ C} {h₂ : H ⇒ D} (eq : j ∘ h₁ ≈ (l ∘ k) ∘ h₂) → i ∘ universalᵣ[h₁,k∘h₂] eq ≈ k ∘ h₂
-        i∘universalᵣ[h₁,k∘h₂]≈k∘h₂ {H} {h₁} {h₂} eq = p₂∘universal≈h₂ pbᵣ {H} {h₁} {k ∘ h₂} {j∘h₁≈l∘k∘h₂ eq}
+        i∘universalᵣ[h₁,k∘h₂]≈k∘h₂ eq = p₂∘universal≈h₂ pbᵣ
                 
         universalb : {H : Obj} {h₁ : H ⇒ C} {h₂ : H ⇒ D} → j ∘ h₁ ≈ (l ∘ k) ∘ h₂ → H ⇒ A
-        universalb {H} {h₁} {h₂} eq = universal pbₗ {H} {universalᵣ[h₁,k∘h₂] eq} {h₂} (i∘universalᵣ[h₁,k∘h₂]≈k∘h₂ eq)
+        universalb eq = universal pbₗ (i∘universalᵣ[h₁,k∘h₂]≈k∘h₂ eq)
                 
         h∘universalb≈h₂ : {H : Obj} {h₁ : H ⇒ C} {h₂ : H ⇒ D} {eq : j ∘ h₁ ≈ (l ∘ k) ∘ h₂} → h ∘ universalb eq ≈ h₂
-        h∘universalb≈h₂ {H} {h₁} {h₂} {eq} = p₂∘universal≈h₂ pbₗ {H} {universalᵣ[h₁,k∘h₂] eq} {h₂} {i∘universalᵣ[h₁,k∘h₂]≈k∘h₂ eq}
+        h∘universalb≈h₂ = p₂∘universal≈h₂ pbₗ
                 
         [g∘f]∘universalb≈h₁ : {H : Obj} {h₁ : H ⇒ C} {h₂ : H ⇒ D} {eq : j ∘ h₁ ≈ (l ∘ k) ∘ h₂} → (g ∘ f) ∘ universalb eq ≈ h₁
-        [g∘f]∘universalb≈h₁ {H} {h₁} {h₂} {eq} = begin
-          (g ∘ f) ∘ universalb eq ≈⟨ assoc ⟩
-          g ∘ (f ∘ universalb eq) ≈⟨ refl⟩∘⟨ p₁∘universal≈h₁ pbₗ {H} {universalᵣ[h₁,k∘h₂] eq} {h₂} {i∘universalᵣ[h₁,k∘h₂]≈k∘h₂ eq} ⟩
-          g ∘ universalᵣ[h₁,k∘h₂] eq ≈⟨ p₁∘universal≈h₁ pbᵣ {H} {h₁} {k ∘ h₂} {j∘h₁≈l∘k∘h₂ eq} ⟩
-          h₁ ∎
+        [g∘f]∘universalb≈h₁ = begin
+          (g ∘ f) ∘ universalb _    ≈⟨ pullʳ (p₁∘universal≈h₁ pbₗ) ⟩
+          g ∘ universalᵣ[h₁,k∘h₂] _ ≈⟨ p₁∘universal≈h₁ pbᵣ ⟩
+          _                         ∎
                   
         g∘f∘s≈g∘f∘t : {H : Obj} {s t : H ⇒ A} → (g ∘ f) ∘ s ≈ (g ∘ f) ∘ t → g ∘ (f ∘ s) ≈ g ∘ (f ∘ t)
-        g∘f∘s≈g∘f∘t {H} {s} {t} eq = begin
-          g ∘ (f ∘ s) ≈⟨ sym-assoc ⟩
-          (g ∘ f) ∘ s ≈⟨ eq ⟩
-          (g ∘ f) ∘ t ≈⟨ assoc ⟩
-          g ∘ (f ∘ t) ∎
+        g∘f∘s≈g∘f∘t eq = begin
+          g ∘ f ∘ _   ≈⟨ sym-assoc ⟩
+          (g ∘ f) ∘ _ ≈⟨ eq ⟩
+          (g ∘ f) ∘ _ ≈⟨ assoc ⟩
+          g ∘ f ∘ _   ∎
                   
         i∘f∘s≈i∘f∘t : {H : Obj} {s t : H ⇒ A} → h ∘ s ≈ h ∘ t → i ∘ f ∘ s ≈ i ∘ f ∘ t
-        i∘f∘s≈i∘f∘t {H} {s} {t} eq = begin
-          i ∘ f ∘ s ≈⟨ sym-assoc ⟩
-          (i ∘ f) ∘ s ≈⟨ ABDE ⟩∘⟨refl ⟩
-          (k ∘ h) ∘ s ≈⟨ assoc ⟩
-          k ∘ (h ∘ s) ≈⟨ refl⟩∘⟨ eq ⟩
-          k ∘ (h ∘ t) ≈⟨ sym-assoc ⟩
-          (k ∘ h) ∘ t ≈⟨ sym ABDE ⟩∘⟨refl ⟩
-          (i ∘ f) ∘ t ≈⟨ assoc ⟩
-          i ∘ (f ∘ t) ∎
+        i∘f∘s≈i∘f∘t eq = begin
+          i ∘ f ∘ _   ≈⟨ pullˡ ABDE ⟩ 
+          (k ∘ h) ∘ _ ≈⟨ pullʳ eq ⟩
+          k ∘ (h ∘ _) ≈⟨ pullˡ (sym ABDE) ⟩
+          (i ∘ f) ∘ _ ≈⟨ assoc ⟩
+          i ∘ (f ∘ _) ∎
                   
         f∘s≈f∘t : {H : Obj} {s t : H ⇒ A} → (g ∘ f) ∘ s ≈ (g ∘ f) ∘ t → h ∘ s ≈ h ∘ t → f ∘ s ≈ f ∘ t
-        f∘s≈f∘t {H} {s} {t} eq eq' = unique-diagram pbᵣ {H} {f ∘ s} {f ∘ t} (g∘f∘s≈g∘f∘t eq) (i∘f∘s≈i∘f∘t eq')
+        f∘s≈f∘t eq eq' = unique-diagram pbᵣ (g∘f∘s≈g∘f∘t eq) (i∘f∘s≈i∘f∘t eq')
                 
         unique-diagramb : {H : Obj} {s t : H ⇒ A} → (g ∘ f) ∘ s ≈ (g ∘ f) ∘ t → h ∘ s ≈ h ∘ t → s ≈ t
-        unique-diagramb {H} {s} {t} eq eq' = unique-diagram pbₗ {H} {s} {t} (f∘s≈f∘t {H} {s} {t} eq eq') eq'
+        unique-diagramb eq eq' = unique-diagram pbₗ (f∘s≈f∘t eq eq') eq'
 
   bigPullback⇒leftPullback : IsPullback (g ∘ f) h j (l ∘ k) → IsPullback f h i k
   bigPullback⇒leftPullback pbb = record
@@ -277,42 +274,36 @@ module PullbackPastingLaw {A B C D E F : Obj} (f : A ⇒ B) (g : B ⇒ C) (h : A
       ; unique-diagram = unique-diagramb
       } where
         j∘[g∘h₁]≈[l∘k]∘h₂ : {H : Obj} {h₁ : H ⇒ B} {h₂ : H ⇒ D} → i ∘ h₁ ≈ k ∘ h₂ → j ∘ (g ∘ h₁) ≈ (l ∘ k) ∘ h₂
-        j∘[g∘h₁]≈[l∘k]∘h₂ {H} {h₁} {h₂} eq = begin
-          j ∘ (g ∘ h₁) ≈⟨ sym-assoc ⟩
-          (j ∘ g) ∘ h₁ ≈⟨ BCEF ⟩∘⟨refl ⟩
-          (l ∘ i) ∘ h₁ ≈⟨ assoc ⟩
-          l ∘ (i ∘ h₁) ≈⟨ refl⟩∘⟨ eq ⟩
-          l ∘ (k ∘ h₂) ≈⟨ sym-assoc ⟩
-          (l ∘ k) ∘ h₂ ∎
+        j∘[g∘h₁]≈[l∘k]∘h₂ eq = begin
+          j ∘ (g ∘ _) ≈⟨ pullˡ BCEF ⟩
+          (l ∘ i) ∘ _ ≈⟨ pullʳ eq ⟩
+          l ∘ (k ∘ _) ≈⟨ sym-assoc ⟩
+          (l ∘ k) ∘ _ ∎
                 
         universalₗ : {H : Obj} {h₁ : H ⇒ B} {h₂ : H ⇒ D} → i ∘ h₁ ≈ k ∘ h₂ → H ⇒ A
-        universalₗ {H} {h₁} {h₂} eq = universal pbb {H} {g ∘ h₁} {h₂} (j∘[g∘h₁]≈[l∘k]∘h₂ {H} {h₁} {h₂} eq)
+        universalₗ eq = universal pbb (j∘[g∘h₁]≈[l∘k]∘h₂ eq)
               
         g∘f∘universalₗ≈g∘h₁ : {H : Obj} {h₁ : H ⇒ B} {h₂ : H ⇒ D} (eq : i ∘ h₁ ≈ k ∘ h₂) → g ∘ f ∘ universalₗ eq ≈ g ∘ h₁
-        g∘f∘universalₗ≈g∘h₁ {H} {h₁} {h₂} eq = begin
-          g ∘ (f ∘ universalₗ eq) ≈⟨ sym-assoc ⟩
-          (g ∘ f) ∘ universalₗ eq ≈⟨ p₁∘universal≈h₁ pbb {H} {g ∘ h₁} {h₂} {j∘[g∘h₁]≈[l∘k]∘h₂ {H} {h₁} {h₂} eq} ⟩ 
-          g ∘ h₁ ∎
+        g∘f∘universalₗ≈g∘h₁ eq = begin
+          g ∘ f ∘ universalₗ eq   ≈⟨ sym-assoc ⟩
+          (g ∘ f) ∘ universalₗ eq ≈⟨ p₁∘universal≈h₁ pbb ⟩ 
+          g ∘ _                   ∎
                 
         i∘f∘universalₗ≈i∘h₁ : {H : Obj} {h₁ : H ⇒ B} {h₂ : H ⇒ D} (eq : i ∘ h₁ ≈ k ∘ h₂) → i ∘ f ∘ universalₗ eq ≈ i ∘ h₁
-        i∘f∘universalₗ≈i∘h₁ {H} {h₁} {h₂} eq = begin
-          i ∘ f ∘ universalₗ eq ≈⟨ sym-assoc ⟩
-          (i ∘ f) ∘ universalₗ eq ≈⟨ ABDE ⟩∘⟨refl ⟩
-          (k ∘ h) ∘ universalₗ eq ≈⟨ assoc ⟩
-          k ∘ (h ∘ universalₗ eq) ≈⟨ refl⟩∘⟨
-              p₂∘universal≈h₂ pbb {H} {g ∘ h₁} {h₂} {j∘[g∘h₁]≈[l∘k]∘h₂ {H} {h₁} {h₂} eq} ⟩
-          k ∘ h₂ ≈⟨ sym eq ⟩
-          i ∘ h₁ ∎
+        i∘f∘universalₗ≈i∘h₁ eq = begin
+          i ∘ f ∘ universalₗ eq   ≈⟨ pullˡ ABDE ⟩
+          (k ∘ h) ∘ universalₗ eq ≈⟨ pullʳ (p₂∘universal≈h₂ pbb) ⟩
+          k ∘ _                   ≈⟨ sym eq ⟩
+          i ∘ _                   ∎
                 
         f∘universalₗ≈h₁ : {H : Obj} {h₁ : H ⇒ B} {h₂ : H ⇒ D} {eq : i ∘ h₁ ≈ k ∘ h₂} → f ∘ universalₗ eq ≈ h₁
-        f∘universalₗ≈h₁ {H} {h₁} {h₂} {eq} = unique-diagram pbᵣ {H} {f ∘ universalₗ eq} {h₁} (g∘f∘universalₗ≈g∘h₁ eq) (i∘f∘universalₗ≈i∘h₁ eq)
+        f∘universalₗ≈h₁ = unique-diagram pbᵣ (g∘f∘universalₗ≈g∘h₁ _) (i∘f∘universalₗ≈i∘h₁ _)
               
         h∘universalₗ≈h₂ : {H : Obj} {h₁ : H ⇒ B} {h₂ : H ⇒ D} {eq : i ∘ h₁ ≈ k ∘ h₂} → h ∘ universalₗ eq ≈ h₂
-        h∘universalₗ≈h₂ {H} {h₁} {h₂} {eq} = p₂∘universal≈h₂ pbb {H} {g ∘ h₁} {h₂} {j∘[g∘h₁]≈[l∘k]∘h₂ {H} {h₁} {h₂} eq}
+        h∘universalₗ≈h₂ = p₂∘universal≈h₂ pbb
               
         unique-diagramb : {H : Obj} {s t : H ⇒ A} → f ∘ s ≈ f ∘ t → h ∘ s ≈ h ∘ t → s ≈ t
-        unique-diagramb {H} {s} {t} eq eq' = unique-diagram pbb {H} {s} {t}
-          (begin (g ∘ f) ∘ s ≈⟨ assoc ⟩
-                 g ∘ (f ∘ s) ≈⟨ refl⟩∘⟨ eq ⟩
-                 g ∘ (f ∘ t) ≈⟨ sym-assoc ⟩
-                 (g ∘ f) ∘ t ∎) eq'
+        unique-diagramb eq eq' = unique-diagram pbb (begin
+          (g ∘ f) ∘ _ ≈⟨ pullʳ eq ⟩
+          g ∘ f ∘ _   ≈⟨ sym-assoc ⟩
+          (g ∘ f) ∘ _ ∎) eq'
