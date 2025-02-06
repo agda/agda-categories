@@ -217,7 +217,7 @@ module PullbackPastingLaw {A B C D E F : Obj}
      { commute = ACDF
      ; universal = universalb
      ; p₁∘universal≈h₁ = [g∘f]∘universalb≈h₁
-     ; p₂∘universal≈h₂ = h∘universalb≈h₂
+     ; p₂∘universal≈h₂ = p₂∘universal≈h₂ pbₗ
      ; unique-diagram = unique-diagramb
      } where
         j∘h₁≈l∘k∘h₂ : {H : Obj} {h₁ : H ⇒ C} {h₂ : H ⇒ D} → j ∘ h₁ ≈ (l ∘ k) ∘ h₂ → j ∘ h₁ ≈ l ∘ (k ∘ h₂)
@@ -225,23 +225,14 @@ module PullbackPastingLaw {A B C D E F : Obj}
           j ∘ _       ≈⟨ eq ⟩
           (l ∘ k) ∘ _ ≈⟨ assoc ⟩
           l ∘ (k ∘ _) ∎
-                  
-        universalᵣ[h₁,k∘h₂] : {H : Obj} {h₁ : H ⇒ C} {h₂ : H ⇒ D} → j ∘ h₁ ≈ (l ∘ k) ∘ h₂ → H ⇒ B
-        universalᵣ[h₁,k∘h₂] eq = universal pbᵣ (j∘h₁≈l∘k∘h₂ eq)
-                
-        i∘universalᵣ[h₁,k∘h₂]≈k∘h₂ : {H : Obj} {h₁ : H ⇒ C} {h₂ : H ⇒ D} (eq : j ∘ h₁ ≈ (l ∘ k) ∘ h₂) → i ∘ universalᵣ[h₁,k∘h₂] eq ≈ k ∘ h₂
-        i∘universalᵣ[h₁,k∘h₂]≈k∘h₂ eq = p₂∘universal≈h₂ pbᵣ
                 
         universalb : {H : Obj} {h₁ : H ⇒ C} {h₂ : H ⇒ D} → j ∘ h₁ ≈ (l ∘ k) ∘ h₂ → H ⇒ A
-        universalb eq = universal pbₗ (i∘universalᵣ[h₁,k∘h₂]≈k∘h₂ eq)
-                
-        h∘universalb≈h₂ : {H : Obj} {h₁ : H ⇒ C} {h₂ : H ⇒ D} {eq : j ∘ h₁ ≈ (l ∘ k) ∘ h₂} → h ∘ universalb eq ≈ h₂
-        h∘universalb≈h₂ = p₂∘universal≈h₂ pbₗ
+        universalb eq = universal pbₗ (p₂∘universal≈h₂ pbᵣ {_} {_} {_} {j∘h₁≈l∘k∘h₂ eq})
                 
         [g∘f]∘universalb≈h₁ : {H : Obj} {h₁ : H ⇒ C} {h₂ : H ⇒ D} {eq : j ∘ h₁ ≈ (l ∘ k) ∘ h₂} → (g ∘ f) ∘ universalb eq ≈ h₁
         [g∘f]∘universalb≈h₁ = begin
           (g ∘ f) ∘ universalb _    ≈⟨ pullʳ (p₁∘universal≈h₁ pbₗ) ⟩
-          g ∘ universalᵣ[h₁,k∘h₂] _ ≈⟨ p₁∘universal≈h₁ pbᵣ ⟩
+          g ∘ universal pbᵣ _       ≈⟨ p₁∘universal≈h₁ pbᵣ ⟩
           _                         ∎
                   
         g∘f∘s≈g∘f∘t : {H : Obj} {s t : H ⇒ A} → (g ∘ f) ∘ s ≈ (g ∘ f) ∘ t → g ∘ (f ∘ s) ≈ g ∘ (f ∘ t)
@@ -258,19 +249,16 @@ module PullbackPastingLaw {A B C D E F : Obj}
           k ∘ (h ∘ _) ≈⟨ pullˡ (sym ABDE) ⟩
           (i ∘ f) ∘ _ ≈⟨ assoc ⟩
           i ∘ (f ∘ _) ∎
-                  
-        f∘s≈f∘t : {H : Obj} {s t : H ⇒ A} → (g ∘ f) ∘ s ≈ (g ∘ f) ∘ t → h ∘ s ≈ h ∘ t → f ∘ s ≈ f ∘ t
-        f∘s≈f∘t eq eq' = unique-diagram pbᵣ (g∘f∘s≈g∘f∘t eq) (i∘f∘s≈i∘f∘t eq')
                 
         unique-diagramb : {H : Obj} {s t : H ⇒ A} → (g ∘ f) ∘ s ≈ (g ∘ f) ∘ t → h ∘ s ≈ h ∘ t → s ≈ t
-        unique-diagramb eq eq' = unique-diagram pbₗ (f∘s≈f∘t eq eq') eq'
+        unique-diagramb eq eq' = unique-diagram pbₗ (unique-diagram pbᵣ (g∘f∘s≈g∘f∘t eq) (i∘f∘s≈i∘f∘t eq')) eq'
 
   bigPullback⇒leftPullback : IsPullback (g ∘ f) h j (l ∘ k) → IsPullback f h i k
   bigPullback⇒leftPullback pbb = record
       { commute = ABDE
       ; universal = universalₗ
-      ; p₁∘universal≈h₁ = f∘universalₗ≈h₁
-      ; p₂∘universal≈h₂ = h∘universalₗ≈h₂
+      ; p₁∘universal≈h₁ = unique-diagram pbᵣ (g∘f∘universalₗ≈g∘h₁ _) (i∘f∘universalₗ≈i∘h₁ _)
+      ; p₂∘universal≈h₂ = p₂∘universal≈h₂ pbb
       ; unique-diagram = unique-diagramb
       } where
         j∘[g∘h₁]≈[l∘k]∘h₂ : {H : Obj} {h₁ : H ⇒ B} {h₂ : H ⇒ D} → i ∘ h₁ ≈ k ∘ h₂ → j ∘ (g ∘ h₁) ≈ (l ∘ k) ∘ h₂
@@ -295,12 +283,6 @@ module PullbackPastingLaw {A B C D E F : Obj}
           (k ∘ h) ∘ universalₗ eq ≈⟨ pullʳ (p₂∘universal≈h₂ pbb) ⟩
           k ∘ _                   ≈⟨ sym eq ⟩
           i ∘ _                   ∎
-                
-        f∘universalₗ≈h₁ : {H : Obj} {h₁ : H ⇒ B} {h₂ : H ⇒ D} {eq : i ∘ h₁ ≈ k ∘ h₂} → f ∘ universalₗ eq ≈ h₁
-        f∘universalₗ≈h₁ = unique-diagram pbᵣ (g∘f∘universalₗ≈g∘h₁ _) (i∘f∘universalₗ≈i∘h₁ _)
-              
-        h∘universalₗ≈h₂ : {H : Obj} {h₁ : H ⇒ B} {h₂ : H ⇒ D} {eq : i ∘ h₁ ≈ k ∘ h₂} → h ∘ universalₗ eq ≈ h₂
-        h∘universalₗ≈h₂ = p₂∘universal≈h₂ pbb
               
         unique-diagramb : {H : Obj} {s t : H ⇒ A} → f ∘ s ≈ f ∘ t → h ∘ s ≈ h ∘ t → s ≈ t
         unique-diagramb eq eq' = unique-diagram pbb (begin
