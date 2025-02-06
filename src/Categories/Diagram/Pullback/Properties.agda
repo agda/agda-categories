@@ -194,7 +194,7 @@ module IsoPb {X Y Z} {f : X ⇒ Z} {g : Y ⇒ Z} (pull₀ pull₁ : Pullback f g
 -- pasting law for pullbacks:
 -- in a commutative diagram of the form
 -- A -> B -> C
--- |     |     |
+-- |    |    |
 -- D -> E -> F
 -- if the right square (BCEF) is a pullback,
 -- then the left square (ABDE) is a pullback
