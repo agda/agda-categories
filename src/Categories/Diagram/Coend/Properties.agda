@@ -6,7 +6,7 @@ open import Categories.Category.Core using (Category)
 open import Categories.Category.Product
 import Categories.Category.Construction.Cowedges as Cowedges
 open import Categories.Category.Construction.Functors
-open import Categories.Category.Equivalence
+open import Categories.Category.Equivalence as SE
 open import Categories.Category.Equivalence.Preserves
 open import Categories.Diagram.Coend
 open import Categories.Diagram.Colimit
@@ -136,6 +136,12 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ �
   open Functor
 
   open StrongEquivalence Eq renaming (F to F⇒)
+
+  Coend-yields-colimit : Coend F → Colimit (Twist′ C D F)
+  Coend-yields-colimit ef = record { initial = pres-Initial (SE.sym Eq) (Coend⇒Initial F ef) }
+
+  colimit-yields-Coend : Colimit (Twist′ C D F) → Coend F
+  colimit-yields-Coend l = Initial⇒Coend F (pres-Initial Eq (Colimit.initial l))
 
   -- Coends and Colimits are equivalent, in the category Cowedge F
   Coend-as-Colimit : (coend : Coend F) → (cl : Colimit (Twist′ C D F)) → Coend.cowedge coend ≅ F₀ F⇒ (Colimit.initial.⊥ cl)
