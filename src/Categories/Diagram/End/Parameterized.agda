@@ -9,6 +9,7 @@ open import Categories.Category
 open import Categories.Category.Construction.Functors
 open import Categories.Category.Product renaming (Product to _×ᶜ_)
 open import Categories.Diagram.End renaming (End to ∫)
+open import Categories.Diagram.End.Limit
 open import Categories.Diagram.End.Properties
 open import Categories.Diagram.Wedge
 open import Categories.Functor hiding (id)
