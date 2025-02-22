@@ -2,29 +2,24 @@
 
 module Categories.Diagram.Coend.Properties where
 
-open import Categories.Category.Core using (Category)
-open import Categories.Category.Product
-import Categories.Category.Construction.Cowedges as Cowedges
-open import Categories.Category.Construction.Functors
-open import Categories.Category.Equivalence as SE
-open import Categories.Category.Equivalence.Preserves
-open import Categories.Diagram.Coend
-open import Categories.Diagram.Colimit
-open import Categories.Diagram.Cowedge
-open import Categories.Diagram.Cowedge.Properties
-open import Categories.Functor using (Functor)
-open import Categories.Functor.Bifunctor using (Bifunctor)
-open import Categories.Functor.Instance.Twisted
-import Categories.Morphism as M
-open import Categories.NaturalTransformation hiding (id)
-open import Categories.NaturalTransformation.Dinatural
-open import Categories.Object.Initial as Initial
-
-import Categories.Morphism.Reasoning as MR
-
-open import Level
+open import Level using (Level)
 open import Data.Product using (Σ; _,_)
 open import Function using (_$_)
+
+open import Categories.Category.Core using (Category)
+open import Categories.Category.Construction.Functors using (Functors)
+open import Categories.Category.Product using (Product)
+open import Categories.Diagram.Coend using (Coend)
+open import Categories.Diagram.Cowedge using (Cowedge; module Cowedge-Morphism)
+open import Categories.Functor using (Functor)
+open import Categories.Functor.Bifunctor using (Bifunctor)
+open import Categories.NaturalTransformation using (NaturalTransformation)
+open import Categories.NaturalTransformation.Dinatural using (DinaturalTransformation; dtHelper; _∘>_)
+open import Categories.Object.Initial as Initial using (Initial)
+
+import Categories.Category.Construction.Cowedges as Cowedges
+import Categories.Morphism as M
+import Categories.Morphism.Reasoning as MR
 
 module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
   (F : Bifunctor (Category.op C) C D) where
@@ -95,7 +90,7 @@ module _ (F : Functor E (Functors (Product (Category.op C) C) D)) where
 
 -- A Natural Transformation between two functors induces an arrow between the
 -- (object part of) the respective coends.
-module _ {P Q : Functor (Product (Category.op C) C) D} (P⇒Q : NaturalTransformation P Q) where
+module _ {P Q : Bifunctor (Category.op C) C D} (P⇒Q : NaturalTransformation P Q) where
   open Coend renaming (E to coend)
   open Category D
 
@@ -127,38 +122,3 @@ module _ {P Q : Functor (Product (Category.op C) C) D} (P⇒Q : NaturalTransform
     open Cowedge
     open MR D
 
-module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
-  (F : Bifunctor (Category.op C) C D) where
-  private
-    Eq = CoconesTwist≅Cowedges F
-    module O = M D
-  open M (Cowedges.Cowedges F)
-  open Functor
-
-  open StrongEquivalence Eq renaming (F to F⇒)
-
-  Coend-yields-colimit : Coend F → Colimit (Twist′ C D F)
-  Coend-yields-colimit ef = record { initial = pres-Initial (SE.sym Eq) (Coend⇒Initial F ef) }
-
-  colimit-yields-Coend : Colimit (Twist′ C D F) → Coend F
-  colimit-yields-Coend l = Initial⇒Coend F (pres-Initial Eq (Colimit.initial l))
-
-  -- Coends and Colimits are equivalent, in the category Cowedge F
-  Coend-as-Colimit : (coend : Coend F) → (cl : Colimit (Twist′ C D F)) → Coend.cowedge coend ≅ F₀ F⇒ (Colimit.initial.⊥ cl)
-  Coend-as-Colimit coend cl = Initial.up-to-iso (Cowedges.Cowedges F) (Coend⇒Initial F coend) (pres-Initial Eq initial)
-    where
-    open Colimit cl
-
-  -- Which then induces that the objects, in D, are also equivalent.
-  Coend-as-Colimit-on-Obj : (coend : Coend F) → (cl : Colimit (Twist′ C D F)) → Coend.E coend O.≅ Colimit.coapex cl
-  Coend-as-Colimit-on-Obj coend cl = record
-    { from = Cowedge-Morphism.u (M._≅_.from X≅Y)
-    ; to = Cowedge-Morphism.u (M._≅_.to X≅Y)
-    ; iso = record
-      { isoˡ = M._≅_.isoˡ X≅Y
-      ; isoʳ = M._≅_.isoʳ X≅Y
-      }
-    }
-    where
-      X≅Y = Coend-as-Colimit coend cl
-      open Category D
