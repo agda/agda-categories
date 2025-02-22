@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --without-K --safe #-}
 
 module Categories.Diagram.End.Limit where
 
