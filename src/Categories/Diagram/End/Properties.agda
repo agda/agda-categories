@@ -13,6 +13,7 @@ open import Function using (_$_)
 
 open import Categories.Category using (Category)
 open import Categories.Category.Construction.Functors using (Functors)
+open import Categories.Category.Product using (Product)
 open import Categories.Diagram.End using () renaming (End to ∫)
 open import Categories.Diagram.Wedge using (Wedge; module Wedge-Morphism)
 open import Categories.Functor using (Functor)
@@ -30,7 +31,7 @@ import Categories.Morphism.Reasoning as MR
 private
   variable
     o ℓ e o′ ℓ′ e′ : Level
-    P C D : Category o ℓ e
+    P C D E : Category o ℓ e
 
 open Category using (o-level; ℓ-level; e-level)
 
@@ -59,6 +60,32 @@ module _ (F : Bifunctor (Category.op C) C D) where
     where
     open Terminal.Terminal i
     open Wedge-Morphism
+
+module _ (F : Functor E (Functors (Product (Category.op C) C) D)) where
+
+  private
+    module E = Category E
+
+  open Category D
+  open HomReasoning
+  open MR D
+  open Functor F
+  open NaturalTransformation using (η)
+
+  EndF : (∀ X → ∫ (F₀ X)) → Functor E D
+  EndF end = record
+    { F₀ = λ X → ∫.E (end X)
+    ; F₁ = F₁′
+    ; identity = ∫.unique (end _) $ id-comm ○ ∘-resp-≈ˡ (⟺ identity)
+    ; homomorphism = ∫.unique (end _) $ glue′ (∫.universal (end _)) (∫.universal (end _)) ○ ∘-resp-≈ˡ (⟺ homomorphism)
+    ; F-resp-≈ = λ eq → ∫.unique (end _) $ ∫.universal (end _) ○ ∘-resp-≈ˡ (⟺ (F-resp-≈ eq))
+    }
+    where
+      F₁′ : ∀ {X Y} → X E.⇒ Y → ∫.E (end X) ⇒ ∫.E (end Y)
+      F₁′ f = ∫.factor (end _) record
+        { E = ∫.E (end _)
+        ; dinatural = F₁ f <∘ ∫.dinatural (end _)
+        }
 
 -- A Natural Transformation between two functors induces an arrow between the
 -- (object part of) the respective ends.

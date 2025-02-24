@@ -21,6 +21,11 @@ import Categories.Category.Construction.Cowedges as Cowedges
 import Categories.Morphism as M
 import Categories.Morphism.Reasoning as MR
 
+private
+  variable
+    o ℓ e : Level
+    C D E : Category o ℓ e
+
 module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
   (F : Bifunctor (Category.op C) C D) where
   open Cowedges F
@@ -48,44 +53,29 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ �
     open Initial.Initial i
     open Cowedge-Morphism
 
-private
-  variable
-    o ℓ e : Level
-    C D E : Category o ℓ e
-
 module _ (F : Functor E (Functors (Product (Category.op C) C) D)) where
   private
-    module C = Category C
-    module D = Category D
     module E = Category E
-    module NT = NaturalTransformation
-  open D
+  open Category D
   open HomReasoning
 
   open MR D
   open Functor F
   open Coend hiding (E)
-  open NT using (η)
+  open NaturalTransformation using (η)
 
   CoendF : (∀ X → Coend (F₀ X)) → Functor E D
   CoendF coend = record
     { F₀           = λ X → Coend.E (coend X)
     ; F₁           = F₁′
-    ; identity     = λ {A} → unique (coend A) (id-comm-sym ○ ∘-resp-≈ʳ (⟺ identity))
-    ; homomorphism = λ {A B C} {f g} → unique (coend A) $ λ {Z} → begin
-      (F₁′ g ∘ F₁′ f) ∘ dinatural.α (coend A) Z                         ≈⟨  pullʳ (universal (coend A)) ⟩
-      (F₁′ g ∘ (dinatural.α (coend B) Z ∘ η (F₁ f) (Z , Z) )  )         ≈⟨ pullˡ (universal (coend B))  ⟩
-      ((dinatural.α (coend C) Z ∘ η (F₁ g) (Z , Z)) ∘ η (F₁ f) (Z , Z)) ≈˘⟨ pushʳ homomorphism ⟩
-      dinatural.α (coend C) Z ∘ η (F₁ (g E.∘ f)) (Z , Z)                ∎
-    ; F-resp-≈     = λ {A B f g} eq → unique (coend A) $ λ {Z} → begin
-      F₁′ g ∘ dinatural.α (coend A) Z                               ≈⟨ universal (coend A) ⟩
-      dinatural.α (coend B) Z ∘ η (F₁ g) (Z , Z)                   ≈˘⟨ refl⟩∘⟨ F-resp-≈ eq ⟩
-      dinatural.α (coend B) Z ∘ η (F₁ f) (Z , Z)                   ∎
+    ; identity     = unique (coend _) (id-comm-sym ○ ∘-resp-≈ʳ (⟺ identity))
+    ; homomorphism = unique (coend _) $ glue (universal (coend _)) (universal (coend _)) ○ ∘-resp-≈ʳ (⟺ homomorphism)
+    ; F-resp-≈ = λ eq → unique (coend _) $ universal (coend _) ○ ∘-resp-≈ʳ (⟺ (F-resp-≈ eq))
     }
     where F₁′ : ∀ {X Y} → X E.⇒ Y → Coend.E (coend X) ⇒ Coend.E (coend Y)
-          F₁′ {X} {Y} f = factor (coend X) $ record
-            { E         = Coend.E (coend Y)
-            ; dinatural = dinatural (coend Y) ∘> F₁ f
+          F₁′ f = factor (coend _) $ record
+            { E         = Coend.E (coend _)
+            ; dinatural = dinatural (coend _) ∘> F₁ f
             }
 
 -- A Natural Transformation between two functors induces an arrow between the
