@@ -6,12 +6,11 @@ open import Categories.Functor.Bifunctor using (Bifunctor)
 module Categories.Diagram.Coend {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
   (F : Bifunctor (Category.op C) C D) where
 
+open Category D
+open HomReasoning
+open Equiv
+
 private
-  module C = Category C
-  module D = Category D
-  open D
-  open HomReasoning
-  open Equiv
   variable
     A B : Obj
     f g : A ⇒ B
@@ -19,12 +18,6 @@ private
 open import Level
 
 open import Categories.Diagram.Cowedge F
-open import Categories.Functor
-open import Categories.Functor.Construction.Constant
-open import Categories.NaturalTransformation.Dinatural
-open import Categories.Morphism.Reasoning D
-
-open Functor F
 
 record Coend : Set (levelOfTerm F) where
   field
@@ -39,7 +32,7 @@ record Coend : Set (levelOfTerm F) where
     universal : ∀ {W : Cowedge} {A} → factor W ∘ cowedge.dinatural.α A ≈ dinatural.α W A
     unique    : ∀ {W : Cowedge} {g : cowedge.E ⇒ E W} → (∀ {A} → g ∘ cowedge.dinatural.α A ≈ dinatural.α W A) → factor W ≈ g
 
-  η-id : factor cowedge ≈ D.id
+  η-id : factor cowedge ≈ id
   η-id = unique identityˡ
 
   unique′ :(∀ {A} → f ∘ cowedge.dinatural.α A ≈ g ∘ cowedge.dinatural.α A) → f ≈ g
