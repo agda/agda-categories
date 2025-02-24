@@ -128,17 +128,19 @@ module _ {F : Bifunctor (Category.op C) C D} (ω₁ ω₂ : ∫ F) where
     module ω₁ = ∫ ω₁
     module ω₂ = ∫ ω₂
   open Category D
-  open M D
-  open _≅_
-  open Iso
-  open MR D
   open HomReasoning
+  open M D
+  open MR D
 
   end-unique : ∫.E ω₁ ≅ ∫.E ω₂
-  end-unique .to = ω₁.factor ω₂.wedge
-  end-unique .from = ω₂.factor ω₁.wedge
-  end-unique .iso .isoʳ = ω₂.unique′ $ pullˡ ω₂.universal ○ ω₁.universal ○ ⟺ identityʳ
-  end-unique .iso .isoˡ = ω₁.unique′ $ pullˡ ω₁.universal ○ ω₂.universal ○ ⟺ identityʳ
+  end-unique = record
+    { from = ω₂.factor ω₁.wedge
+    ; to = ω₁.factor ω₂.wedge
+    ; iso = record
+      { isoˡ = ω₁.unique′ (glueTrianglesʳ ω₁.universal ω₂.universal ○ ⟺ identityʳ)
+      ; isoʳ = ω₂.unique′ (glueTrianglesʳ ω₂.universal ω₁.universal ○ ⟺ identityʳ)
+      }
+    }
 
 module _ {C : Category o ℓ e } {D : Category o′ ℓ′ e′} where
   open MR D

@@ -112,3 +112,22 @@ module _ {P Q : Bifunctor (Category.op C) C D} (P⇒Q : NaturalTransformation P 
     open Cowedge
     open MR D
 
+module _ {F : Bifunctor (Category.op C) C D} (ω₁ ω₂ : Coend F) where
+  private
+    module ω₁ = Coend ω₁
+    module ω₂ = Coend ω₂
+
+  open Category D using (identityˡ; module HomReasoning)
+  open HomReasoning using (_○_; ⟺)
+  open M D using (_≅_)
+  open MR D using (glueTrianglesˡ)
+
+  coend-unique : ω₁.E ≅ ω₂.E
+  coend-unique = record
+    { from = ω₁.factor ω₂.cowedge
+    ; to = ω₂.factor ω₁.cowedge
+    ; iso = record
+      { isoˡ = ω₁.unique′ (glueTrianglesˡ ω₂.universal ω₁.universal ○ ⟺ identityˡ)
+      ; isoʳ = ω₂.unique′ (glueTrianglesˡ ω₁.universal ω₂.universal ○ ⟺ identityˡ)
+      }
+    }
