@@ -6,6 +6,7 @@ open import Level
 
 open import Categories.Category
 open import Categories.Adjoint.Equivalence
+open import Categories.Diagram.Duality using (coLimit⇒Colimit; Colimit⇒coLimit)
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Properties
 open import Categories.NaturalTransformation.NaturalIsomorphism as ≃ using (_≃_; NaturalIsomorphism)
@@ -13,6 +14,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism as ≃ using (_�
 import Categories.Morphism.Reasoning as MR
 import Categories.Category.Construction.Cones as Co
 import Categories.Diagram.Limit as Lim
+import Categories.Diagram.Colimit as Colim
 
 private
   variable
@@ -99,8 +101,8 @@ module _  (⊣equiv : ⊣Equivalence C D) (F : Functor C E) where
                   F.₁ (unit.⇐.η c) ∘ proj (R.₀ (L.₀ c)) ∘ f.arr ≈⟨ refl⟩∘⟨ f.commute ⟩
                   F.₁ (unit.⇐.η c) ∘ K.ψ (L.₀ c)                ∎
 
-    ⊣equiv-preserves-diagram : Lim.Limit FR
-    ⊣equiv-preserves-diagram = record
+    ⊣equiv-preserves-limit : Lim.Limit FR
+    ⊣equiv-preserves-limit = record
       { terminal = record
         { ⊤             = ⊤cone
         ; ⊤-is-terminal = record
@@ -110,3 +112,22 @@ module _  (⊣equiv : ⊣Equivalence C D) (F : Functor C E) where
         }
       }
   
+-- ditto for colimits, by duality
+module _ (⊣equiv : ⊣Equivalence C D) (F : Functor C E) where
+
+  private
+    module C = Category C
+    module D = Category D
+    module F = Functor F
+    module ⊣equiv = ⊣Equivalence ⊣equiv
+
+    opEquiv : ⊣Equivalence C.op D.op
+    opEquiv = sym record
+      { L = ⊣equiv.R.op
+      ; R = ⊣equiv.L.op
+      ; L⊣⊢R = ⊣equiv.op₁
+      }
+
+  ⊣equiv-preserves-colimit : Colim.Colimit F → Colim.Colimit (F ∘F ⊣equiv.R)
+  ⊣equiv-preserves-colimit colim = coLimit⇒Colimit E (⊣equiv-preserves-limit opEquiv F.op (Colimit⇒coLimit E colim))
+

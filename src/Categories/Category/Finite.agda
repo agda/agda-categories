@@ -21,7 +21,7 @@ open import Categories.Category.Finite.Fin
 -- Answer: probably yes. adjoint equivalence seems necessary as the notion needs to
 -- show that shapes are preserved.
 --
--- c.f. Categories.Adjoint.Equivalence.Properties.⊣equiv-preserves-diagram
+-- c.f. Categories.Adjoint.Equivalence.Properties.⊣equiv-preserves-limit
 record Finite {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   field
     shape : FinCatShape
