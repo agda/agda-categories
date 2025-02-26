@@ -15,6 +15,8 @@ open import Categories.Object.Terminal op
 open import Categories.Object.Initial C
 open import Categories.Object.Product op
 open import Categories.Object.Coproduct C
+open import Categories.Object.Product.Indexed op
+open import Categories.Object.Coproduct.Indexed C
 
 open import Categories.Object.Zero
 
@@ -79,6 +81,26 @@ coProduct⇒Coproduct A×B = record
   }
   where
   module A×B = Product A×B
+
+IndexedCoproductOf⇒coIndexedProductOf : ∀ {i} {I : Set i} {P : I → Obj} → IndexedCoproductOf P → IndexedProductOf P
+IndexedCoproductOf⇒coIndexedProductOf ΣP = record
+  { X = ΣP.X
+  ; π = ΣP.ι
+  ; ⟨_⟩ = ΣP.[_]
+  ; commute = ΣP.commute
+  ; unique = ΣP.unique
+  }
+  where module ΣP = IndexedCoproductOf ΣP
+
+coIndexedProductOf⇒IndexedCoproductOf : ∀ {i} {I : Set i} {P : I → Obj} → IndexedProductOf P → IndexedCoproductOf P
+coIndexedProductOf⇒IndexedCoproductOf ΠP = record
+  { X = ΠP.X
+  ; ι = ΠP.π
+  ; [_] = ΠP.⟨_⟩
+  ; commute = ΠP.commute
+  ; unique = ΠP.unique
+  }
+  where module ΠP = IndexedProductOf ΠP
 
 -- Zero objects are autodual
 IsZero⇒coIsZero : IsZero C Z → IsZero op Z
