@@ -13,19 +13,19 @@ import Categories.Morphism.Reasoning.Core as MR
 unliftF-liftF-weakInverse : ∀ {o ℓ e} o′ ℓ′ e′ (C : Category o ℓ e) → WeakInverse (unliftF o′ ℓ′ e′ C) (liftF o′ ℓ′ e′ C)
 unliftF-liftF-weakInverse o′ ℓ′ e′ C = record
   { F∘G≈id = niHelper record
-    { η = λ X → id
-    ; η⁻¹ = λ X → id
+    { η = λ _ → id
+    ; η⁻¹ = λ _ → id
     ; commute = λ f → id-comm-sym
-    ; iso = λ X → record
+    ; iso = λ _ → record
       { isoˡ = identity²
       ; isoʳ = identity²
       }
     }
   ; G∘F≈id = niHelper record
-    { η = λ X → lift id
-    ; η⁻¹ = λ X → lift id
-    ; commute = λ f → lift id-comm-sym
-    ; iso = λ X → record
+    { η = λ _ → lift id
+    ; η⁻¹ = λ _ → lift id
+    ; commute = λ _ → lift id-comm-sym
+    ; iso = λ _ → record
       { isoˡ = lift identity²
       ; isoʳ = lift identity²
       }
