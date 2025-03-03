@@ -65,9 +65,9 @@ module _ {C : Category o ℓ e} (Com : Complete (o ⊔ ℓ ⊔ o′) (o ⊔ ℓ 
 
     prop : (f : W.X ⇒ W.X) → f ∘ equalizer.arr ≈ equalizer.arr
     prop f = begin
-      f ∘ equalizer.arr            ≈˘⟨ pullˡ (Warr.commute _ f) ⟩
+      f ∘ equalizer.arr            ≈˘⟨ pullˡ Warr.commute ⟩
       Warr.π f ∘ Γ ∘ equalizer.arr ≈˘⟨ refl⟩∘⟨ equalizer.equality ⟩
-      Warr.π f ∘ Δ ∘ equalizer.arr ≈⟨ cancelˡ (Warr.commute _ f) ⟩
+      Warr.π f ∘ Δ ∘ equalizer.arr ≈⟨ cancelˡ Warr.commute ⟩
       equalizer.arr                ∎
 
     ! : ∀ A → equalizer.obj ⇒ A

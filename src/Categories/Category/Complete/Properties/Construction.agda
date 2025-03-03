@@ -60,9 +60,9 @@ module _ (prods : AllProductsOf (o′ ⊔ ℓ′)) (equalizer : ∀ {A B} (f g :
         ; apex = record
           { ψ       = λ X → OP.π (lift X) C.∘ eq.arr
           ; commute = λ {X Y} f → begin
-            F₁ f C.∘ OP.π (lift X) C.∘ eq.arr ≈˘⟨ pushˡ (MP.commute ψ⇒ _) ⟩
+            F₁ f C.∘ OP.π (lift X) C.∘ eq.arr ≈˘⟨ pushˡ MP.commute ⟩
             (MP.π (-, -, f) C.∘ ψ) C.∘ eq.arr ≈˘⟨ pushʳ eq.equality ⟩
-            MP.π (-, -, f) C.∘ ϕ C.∘ eq.arr   ≈⟨ pullˡ (MP.commute ϕ⇒ _ ) ⟩
+            MP.π (-, -, f) C.∘ ϕ C.∘ eq.arr   ≈⟨ pullˡ MP.commute ⟩
             OP.π (lift Y) C.∘ eq.arr          ∎
           }
         }
@@ -76,9 +76,9 @@ module _ (prods : AllProductsOf (o′ ⊔ ℓ′)) (equalizer : ∀ {A B} (f g :
 
         Keq : (i : ∃₂ J._⇒_) → ϕ⇒ i C.∘ K⇒ C.≈ ψ⇒ i C.∘ K⇒
         Keq i@(A , B , f) = begin
-          ϕ⇒ i C.∘ K⇒    ≈⟨ OP.commute _ _ ⟩
+          ϕ⇒ i C.∘ K⇒    ≈⟨ OP.commute ⟩
           K.ψ B          ≈˘⟨ K.commute _ ⟩
-          F₁ f C.∘ K.ψ A ≈˘⟨ pullʳ (OP.commute _ _) ⟩
+          F₁ f C.∘ K.ψ A ≈˘⟨ pullʳ OP.commute ⟩
           ψ⇒ i C.∘ K⇒    ∎
 
         !-eq : ϕ C.∘ K⇒ C.≈ ψ C.∘ K⇒
@@ -93,7 +93,7 @@ module _ (prods : AllProductsOf (o′ ⊔ ℓ′)) (equalizer : ∀ {A B} (f g :
           { arr     = eq.equalize {h = K⇒} !-eq
           ; commute = λ {j} → begin
             (OP.π (lift j) C.∘ eq.arr) C.∘ eq.equalize !-eq ≈˘⟨ pushʳ eq.universal ⟩
-            OP.π (lift j) C.∘ K⇒                            ≈⟨ OP.commute _ _ ⟩
+            OP.π (lift j) C.∘ K⇒                            ≈⟨ OP.commute ⟩
             K.ψ j                                           ∎
           }
 
@@ -102,7 +102,7 @@ module _ (prods : AllProductsOf (o′ ⊔ ℓ′)) (equalizer : ∀ {A B} (f g :
           where module f = Co.Cone⇒ F f
                 eq : K⇒ C.≈ eq.arr C.∘ f.arr
                 eq = OP.unique′ _ _ λ i → begin
-                  OP.π i C.∘ K⇒                 ≈⟨ OP.commute _ _ ⟩
+                  OP.π i C.∘ K⇒                 ≈⟨ OP.commute ⟩
                   K.ψ (lower i)                 ≈˘⟨ f.commute ⟩
                   (OP.π i C.∘ eq.arr) C.∘ f.arr ≈⟨ C.assoc ⟩
                   OP.π i C.∘ eq.arr C.∘ f.arr   ∎
