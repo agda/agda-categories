@@ -75,17 +75,17 @@ module _ (prods : AllProductsOf (o′ ⊔ ℓ′)) (equalizer : ∀ {A B} (f g :
         K⇒ : K.N C.⇒ src
         K⇒ = OP.⟨ (λ j → K.ψ (lower j)) ⟩
 
-        Keq : (i : ∃₂ J._⇒_) → ϕ⇒ i C.∘ K⇒ C.≈ ψ⇒ i C.∘ K⇒
-        Keq i@(A , B , f) = begin
-          ϕ⇒ i C.∘ K⇒    ≈⟨ OP.commute ⟩
-          K.ψ B          ≈˘⟨ K.commute _ ⟩
-          F₁ f C.∘ K.ψ A ≈˘⟨ pullʳ OP.commute ⟩
-          ψ⇒ i C.∘ K⇒    ∎
+        Keq : {i : ∃₂ J._⇒_} → ϕ⇒ i C.∘ K⇒ C.≈ ψ⇒ i C.∘ K⇒
+        Keq = begin
+          _ C.∘ K⇒       ≈⟨ OP.commute ⟩
+          K.ψ _          ≈˘⟨ K.commute _ ⟩
+          F₁ _ C.∘ K.ψ _ ≈˘⟨ pullʳ OP.commute ⟩
+          _ C.∘ K⇒       ∎
 
         !-eq : ϕ C.∘ K⇒ C.≈ ψ C.∘ K⇒
         !-eq = begin
           ϕ C.∘ K⇒                   ≈⟨ MP.⟨⟩∘ _ _ ⟩
-          MP.⟨ (λ i → ϕ⇒ i C.∘ K⇒) ⟩ ≈⟨ MP.⟨⟩-cong _ _ Keq ⟩
+          MP.⟨ (λ i → ϕ⇒ i C.∘ K⇒) ⟩ ≈⟨ MP.⟨⟩-cong Keq ⟩
           MP.⟨ (λ i → ψ⇒ i C.∘ K⇒) ⟩ ≈˘⟨ MP.⟨⟩∘ _ _ ⟩
           ψ C.∘ K⇒                   ∎
 
@@ -102,7 +102,7 @@ module _ (prods : AllProductsOf (o′ ⊔ ℓ′)) (equalizer : ∀ {A B} (f g :
         !-unique f = ⟺ (eq.unique eq)
           where module f = Co.Cone⇒ F f
                 eq : K⇒ C.≈ eq.arr C.∘ f.arr
-                eq = OP.unique′ _ _ $ begin
+                eq = OP.unique′ $ begin
                   OP.π _ C.∘ K⇒                 ≈⟨ OP.commute ⟩
                   K.ψ _                         ≈˘⟨ f.commute ⟩
                   (OP.π _ C.∘ eq.arr) C.∘ f.arr ≈⟨ C.assoc ⟩

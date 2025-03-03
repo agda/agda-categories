@@ -27,11 +27,11 @@ record IndexedCoproductOf {i} {I : Set i} (P : I → Obj) : Set (i ⊔ o ⊔ e �
   ∘[] : ∀ {Y Z} (f : ∀ i → P i ⇒ Y) (g : Y ⇒ Z) → g ∘ [ f ] ≈ [ (λ i → g ∘ f i) ]
   ∘[] f g = sym (unique (pullʳ commute))
 
-  []-cong : ∀ {Y} (f g : ∀ i → P i ⇒ Y) → (∀ i → f i ≈ g i) → [ f ] ≈ [ g ]
-  []-cong f g eq = unique (trans commute (sym (eq _)))
+  []-cong : ∀ {Y} {f g : ∀ i → P i ⇒ Y} → (∀ {i} → f i ≈ g i) → [ f ] ≈ [ g ]
+  []-cong eq = unique (trans commute (sym eq))
 
-  unique′ : ∀ {Y} (h h′ : X ⇒ Y) → (∀ {i} → h′ ∘ ι i ≈ h ∘ ι i) → h′ ≈ h
-  unique′ h h′ f = trans (sym (unique f)) (η _)
+  unique′ : ∀ {Y} {h h′ : X ⇒ Y} → (∀ {i} → h′ ∘ ι i ≈ h ∘ ι i) → h′ ≈ h
+  unique′ f = trans (sym (unique f)) (η _)
 
 AllCoproductsOf : ∀ i → Set (o ⊔ ℓ ⊔ e ⊔ suc i)
 AllCoproductsOf i = ∀ {I : Set i} (P : I → Obj) → IndexedCoproductOf P

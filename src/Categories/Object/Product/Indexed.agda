@@ -31,11 +31,11 @@ record IndexedProductOf {i} {I : Set i} (P : I → Obj) : Set (i ⊔ o ⊔ e ⊔
   ⟨⟩∘ : ∀ {Y Z} (f : ∀ i → Y ⇒ P i) (g : Z ⇒ Y) → ⟨ f ⟩ ∘ g ≈ ⟨ (λ i → f i ∘ g) ⟩
   ⟨⟩∘ f g = ⟺ (unique (pullˡ commute))
 
-  ⟨⟩-cong : ∀ {Y} (f g : ∀ i → Y ⇒ P i) → (eq : ∀ i → f i ≈ g i) → ⟨ f ⟩ ≈ ⟨ g ⟩
-  ⟨⟩-cong f g eq = unique (trans commute (⟺ (eq _)))
+  ⟨⟩-cong : ∀ {Y} {f g : ∀ i → Y ⇒ P i} → (eq : ∀ {i} → f i ≈ g i) → ⟨ f ⟩ ≈ ⟨ g ⟩
+  ⟨⟩-cong eq = unique (trans commute (⟺ eq))
 
-  unique′ : ∀ {Y} (h h′ : Y ⇒ X) → (∀ {i} → π i ∘ h′ ≈ π i ∘ h) → h′ ≈ h
-  unique′ h h′ f = trans (⟺ (unique f)) (η _)
+  unique′ : ∀ {Y} {h h′ : Y ⇒ X} → (∀ {i} → π i ∘ h′ ≈ π i ∘ h) → h′ ≈ h
+  unique′ f = trans (⟺ (unique f)) (η _)
 
 AllProductsOf : ∀ i → Set (o ⊔ ℓ ⊔ e ⊔ suc i)
 AllProductsOf i = ∀ {I : Set i} (P : I → Obj) → IndexedProductOf P
