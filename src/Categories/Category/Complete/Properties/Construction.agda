@@ -6,6 +6,7 @@ module Categories.Category.Complete.Properties.Construction {o ℓ e} (C : Categ
 
 open import Level
 open import Data.Product using (∃₂; _,_; -,_)
+open import Function.Base using (_$_)
 
 open import Categories.Category.Complete
 open import Categories.Diagram.Equalizer C
@@ -101,11 +102,11 @@ module _ (prods : AllProductsOf (o′ ⊔ ℓ′)) (equalizer : ∀ {A B} (f g :
         !-unique f = ⟺ (eq.unique eq)
           where module f = Co.Cone⇒ F f
                 eq : K⇒ C.≈ eq.arr C.∘ f.arr
-                eq = OP.unique′ _ _ λ i → begin
-                  OP.π i C.∘ K⇒                 ≈⟨ OP.commute ⟩
-                  K.ψ (lower i)                 ≈˘⟨ f.commute ⟩
-                  (OP.π i C.∘ eq.arr) C.∘ f.arr ≈⟨ C.assoc ⟩
-                  OP.π i C.∘ eq.arr C.∘ f.arr   ∎
+                eq = OP.unique′ _ _ $ begin
+                  OP.π _ C.∘ K⇒                 ≈⟨ OP.commute ⟩
+                  K.ψ _                         ≈˘⟨ f.commute ⟩
+                  (OP.π _ C.∘ eq.arr) C.∘ f.arr ≈⟨ C.assoc ⟩
+                  OP.π _ C.∘ eq.arr C.∘ f.arr   ∎
 
       complete : Limit F
       complete = record

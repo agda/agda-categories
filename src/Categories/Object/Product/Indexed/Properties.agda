@@ -44,6 +44,6 @@ module _ {i} (Com : Complete (i ⊔ o′) (i ⊔ ℓ′) (i ⊔ e′) C) where
       ; ⟨_⟩     = λ f → L.rep (K f)
       ; commute = Cone⇒.commute (L.rep-cone (K _))
       ; unique  = λ eq → L.terminal.!-unique record
-        { commute = eq _
+        { commute = eq
         }
       }

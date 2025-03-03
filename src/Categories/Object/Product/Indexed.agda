@@ -23,18 +23,18 @@ record IndexedProductOf {i} {I : Set i} (P : I → Obj) : Set (i ⊔ o ⊔ e ⊔
     ⟨_⟩ : ∀ {Y} → (∀ i → Y ⇒ P i) → Y ⇒ X
 
     commute : ∀ {Y} {f : ∀ i → Y ⇒ P i} {i} → π i ∘ ⟨ f ⟩ ≈ f i
-    unique  : ∀ {Y} {h : Y ⇒ X} {f : ∀ i → Y ⇒ P i} → (∀ i → π i ∘ h ≈ f i) → ⟨ f ⟩ ≈ h
+    unique  : ∀ {Y} {h : Y ⇒ X} {f : ∀ i → Y ⇒ P i} → (∀ {i} → π i ∘ h ≈ f i) → ⟨ f ⟩ ≈ h
 
   η : ∀ {Y} (h : Y ⇒ X) → ⟨ (λ i → π i ∘ h) ⟩ ≈ h
-  η h = unique λ _ → refl
+  η h = unique refl
 
   ⟨⟩∘ : ∀ {Y Z} (f : ∀ i → Y ⇒ P i) (g : Z ⇒ Y) → ⟨ f ⟩ ∘ g ≈ ⟨ (λ i → f i ∘ g) ⟩
-  ⟨⟩∘ f g = ⟺ (unique λ _ → pullˡ commute)
+  ⟨⟩∘ f g = ⟺ (unique (pullˡ commute))
 
   ⟨⟩-cong : ∀ {Y} (f g : ∀ i → Y ⇒ P i) → (eq : ∀ i → f i ≈ g i) → ⟨ f ⟩ ≈ ⟨ g ⟩
-  ⟨⟩-cong f g eq = unique λ i → trans commute (⟺ (eq i))
+  ⟨⟩-cong f g eq = unique (trans commute (⟺ (eq _)))
 
-  unique′ : ∀ {Y} (h h′ : Y ⇒ X) → (∀ i → π i ∘ h′ ≈ π i ∘ h) → h′ ≈ h
+  unique′ : ∀ {Y} (h h′ : Y ⇒ X) → (∀ {i} → π i ∘ h′ ≈ π i ∘ h) → h′ ≈ h
   unique′ h h′ f = trans (⟺ (unique f)) (η _)
 
 AllProductsOf : ∀ i → Set (o ⊔ ℓ ⊔ e ⊔ suc i)
