@@ -42,9 +42,8 @@ module _ {i} (Com : Complete (i ⊔ o′) (i ⊔ ℓ′) (i ⊔ e′) C) where
       { X       = L.apex
       ; π       = λ i → L.proj (lift i)
       ; ⟨_⟩     = λ f → L.rep (K f)
-      ; commute = λ f _ → Cone⇒.commute (L.rep-cone (K f))
-      ; unique  = λ f g eq → L.terminal.!-unique {A = K g} record
-        { arr     = f
-        ; commute = eq _
+      ; commute = Cone⇒.commute (L.rep-cone (K _))
+      ; unique  = λ eq → L.terminal.!-unique record
+        { commute = eq
         }
       }

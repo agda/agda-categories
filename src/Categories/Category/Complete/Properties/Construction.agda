@@ -6,6 +6,7 @@ module Categories.Category.Complete.Properties.Construction {o ℓ e} (C : Categ
 
 open import Level
 open import Data.Product using (∃₂; _,_; -,_)
+open import Function.Base using (_$_)
 
 open import Categories.Category.Complete
 open import Categories.Diagram.Equalizer C
@@ -60,9 +61,9 @@ module _ (prods : AllProductsOf (o′ ⊔ ℓ′)) (equalizer : ∀ {A B} (f g :
         ; apex = record
           { ψ       = λ X → OP.π (lift X) C.∘ eq.arr
           ; commute = λ {X Y} f → begin
-            F₁ f C.∘ OP.π (lift X) C.∘ eq.arr ≈˘⟨ pushˡ (MP.commute ψ⇒ _) ⟩
+            F₁ f C.∘ OP.π (lift X) C.∘ eq.arr ≈˘⟨ pushˡ MP.commute ⟩
             (MP.π (-, -, f) C.∘ ψ) C.∘ eq.arr ≈˘⟨ pushʳ eq.equality ⟩
-            MP.π (-, -, f) C.∘ ϕ C.∘ eq.arr   ≈⟨ pullˡ (MP.commute ϕ⇒ _ ) ⟩
+            MP.π (-, -, f) C.∘ ϕ C.∘ eq.arr   ≈⟨ pullˡ MP.commute ⟩
             OP.π (lift Y) C.∘ eq.arr          ∎
           }
         }
@@ -74,17 +75,17 @@ module _ (prods : AllProductsOf (o′ ⊔ ℓ′)) (equalizer : ∀ {A B} (f g :
         K⇒ : K.N C.⇒ src
         K⇒ = OP.⟨ (λ j → K.ψ (lower j)) ⟩
 
-        Keq : (i : ∃₂ J._⇒_) → ϕ⇒ i C.∘ K⇒ C.≈ ψ⇒ i C.∘ K⇒
-        Keq i@(A , B , f) = begin
-          ϕ⇒ i C.∘ K⇒    ≈⟨ OP.commute _ _ ⟩
-          K.ψ B          ≈˘⟨ K.commute _ ⟩
-          F₁ f C.∘ K.ψ A ≈˘⟨ pullʳ (OP.commute _ _) ⟩
-          ψ⇒ i C.∘ K⇒    ∎
+        Keq : {i : ∃₂ J._⇒_} → ϕ⇒ i C.∘ K⇒ C.≈ ψ⇒ i C.∘ K⇒
+        Keq = begin
+          _ C.∘ K⇒       ≈⟨ OP.commute ⟩
+          K.ψ _          ≈˘⟨ K.commute _ ⟩
+          F₁ _ C.∘ K.ψ _ ≈˘⟨ pullʳ OP.commute ⟩
+          _ C.∘ K⇒       ∎
 
         !-eq : ϕ C.∘ K⇒ C.≈ ψ C.∘ K⇒
         !-eq = begin
           ϕ C.∘ K⇒                   ≈⟨ MP.⟨⟩∘ _ _ ⟩
-          MP.⟨ (λ i → ϕ⇒ i C.∘ K⇒) ⟩ ≈⟨ MP.⟨⟩-cong _ _ Keq ⟩
+          MP.⟨ (λ i → ϕ⇒ i C.∘ K⇒) ⟩ ≈⟨ MP.⟨⟩-cong Keq ⟩
           MP.⟨ (λ i → ψ⇒ i C.∘ K⇒) ⟩ ≈˘⟨ MP.⟨⟩∘ _ _ ⟩
           ψ C.∘ K⇒                   ∎
 
@@ -93,7 +94,7 @@ module _ (prods : AllProductsOf (o′ ⊔ ℓ′)) (equalizer : ∀ {A B} (f g :
           { arr     = eq.equalize {h = K⇒} !-eq
           ; commute = λ {j} → begin
             (OP.π (lift j) C.∘ eq.arr) C.∘ eq.equalize !-eq ≈˘⟨ pushʳ eq.universal ⟩
-            OP.π (lift j) C.∘ K⇒                            ≈⟨ OP.commute _ _ ⟩
+            OP.π (lift j) C.∘ K⇒                            ≈⟨ OP.commute ⟩
             K.ψ j                                           ∎
           }
 
@@ -101,11 +102,11 @@ module _ (prods : AllProductsOf (o′ ⊔ ℓ′)) (equalizer : ∀ {A B} (f g :
         !-unique f = ⟺ (eq.unique eq)
           where module f = Co.Cone⇒ F f
                 eq : K⇒ C.≈ eq.arr C.∘ f.arr
-                eq = OP.unique′ _ _ λ i → begin
-                  OP.π i C.∘ K⇒                 ≈⟨ OP.commute _ _ ⟩
-                  K.ψ (lower i)                 ≈˘⟨ f.commute ⟩
-                  (OP.π i C.∘ eq.arr) C.∘ f.arr ≈⟨ C.assoc ⟩
-                  OP.π i C.∘ eq.arr C.∘ f.arr   ∎
+                eq = OP.unique′ $ begin
+                  OP.π _ C.∘ K⇒                 ≈⟨ OP.commute ⟩
+                  K.ψ _                         ≈˘⟨ f.commute ⟩
+                  (OP.π _ C.∘ eq.arr) C.∘ f.arr ≈⟨ C.assoc ⟩
+                  OP.π _ C.∘ eq.arr C.∘ f.arr   ∎
 
       complete : Limit F
       complete = record
