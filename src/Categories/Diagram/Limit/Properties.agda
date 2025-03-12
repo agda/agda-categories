@@ -6,10 +6,16 @@ open import Categories.Functor
 module Categories.Diagram.Limit.Properties
        {o ℓ e} {o′ ℓ′ e′} {C : Category o ℓ e} {J : Category o′ ℓ′ e′}  where
 
+open import Categories.Category.Construction.Arrow J
+open import Categories.Diagram.Cone
 open import Categories.Diagram.Cone.Properties
+open import Categories.Diagram.Equalizer C
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; _≃_; module ≃)
 open import Categories.Morphism.Reasoning C
 open import Categories.Morphism C
+open import Categories.Object.Product.Indexed C
+
+open import Function.Base using (_$_)
 
 import Categories.Category.Construction.Cones as Con
 import Categories.Diagram.Limit as Lim
@@ -91,3 +97,50 @@ module _ {F G : Functor J C} (F≃G : F ≃ G) where
         module Lf = Lim.Limit Lf
         module Lg = Lim.Limit Lg
         open NaturalIsomorphism F≃G
+
+-- existence theorem
+module _ {F : Functor J C} {OP : IndexedProductOf (Functor.₀ F)} {MP : IndexedProductOf λ f → Functor.₀ F (Morphism.cod f)} where
+
+  private
+    module F = Functor F
+    module OP = IndexedProductOf OP
+    module MP = IndexedProductOf MP
+
+    s t : OP.X ⇒ MP.X
+    s = MP.⟨ (λ f → F.₁ (Morphism.arr f) ∘ OP.π (Morphism.dom f)) ⟩
+    t = MP.⟨ (λ f → OP.π (Morphism.cod f)) ⟩
+
+  build-lim : Equalizer s t → Lim.Limit F
+  build-lim eq = record
+    { terminal = record
+      { ⊤ = record
+        { N = obj
+        ; apex = record
+          { ψ = λ X → OP.π X ∘ arr
+          ; commute = λ {X} {Y} f → begin
+            F.₁ f ∘ (OP.π X ∘ arr)   ≈⟨ pushˡ MP.commute ⟨
+            (MP.π (mor f) ∘ s) ∘ arr ≈⟨ pullʳ equality ⟩
+            MP.π (mor f) ∘ (t ∘ arr) ≈⟨ pullˡ MP.commute ⟩
+            OP.π Y ∘ arr             ∎
+          }
+        }
+      ; ⊤-is-terminal = record
+        { ! = λ {A} → record
+          { arr = equalize (bang-lemma A)
+          ; commute = ⟺ (pushʳ universal) ○ OP.commute
+          }
+        ; !-unique = λ f → Equiv.sym (unique (OP.unique (sym-assoc ○ Cone⇒.commute f)))
+        }
+      }
+    }
+    where
+      open Equalizer eq
+      abstract
+        bang-lemma : (A : Cone F) → s ∘ OP.⟨ Cone.ψ A ⟩ ≈ t ∘ OP.⟨ Cone.ψ A ⟩
+        bang-lemma A = begin
+          s ∘ OP.⟨ Cone.ψ A ⟩                                                             ≈⟨ MP.⟨⟩∘ (λ f → F.₁ (Morphism.arr f) ∘ OP.π (Morphism.dom f)) OP.⟨ Cone.ψ A ⟩ ⟩
+          MP.⟨ (λ f → (F.₁ (Morphism.arr f) ∘ OP.π (Morphism.dom f)) ∘ OP.⟨ Cone.ψ A ⟩) ⟩ ≈⟨ MP.⟨⟩-cong (pullʳ OP.commute) ⟩
+          MP.⟨ (λ f → F.₁ (Morphism.arr f) ∘ Cone.ψ A (Morphism.dom f)) ⟩                 ≈⟨ MP.⟨⟩-cong (Cone.commute A _) ⟩
+          MP.⟨ (λ f → Cone.ψ A (Morphism.cod f)) ⟩                                        ≈⟨ MP.⟨⟩-cong OP.commute ⟨
+          MP.⟨ (λ f → OP.π (Morphism.cod f) ∘ OP.⟨ Cone.ψ A ⟩) ⟩                          ≈⟨ MP.⟨⟩∘ (λ f → OP.π (Morphism.cod f)) OP.⟨ Cone.ψ A ⟩ ⟨
+          t ∘ OP.⟨ Cone.ψ A ⟩                                                             ∎
