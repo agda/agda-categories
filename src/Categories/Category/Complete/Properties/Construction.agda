@@ -20,11 +20,10 @@ private
     o′ ℓ′ e′ : Level
 
 module _ (prods : AllProductsOf (o′ ⊔ ℓ′)) (equalizer : ∀ {A B} (f g : C [ A , B ]) → Equalizer f g) where
-  private module _ {J : Category o′ ℓ′ e′} (F : Functor J C) where
-    open Functor F
-
-    complete : Limit F
-    complete = build-lim {OP = lowerAllProductsOf ℓ′ prods F₀} {MP = lowerAllProductsOf o′ prods λ f → F₀ (Morphism.cod f)} (equalizer _ _)
 
   AllProducts×Equalizer⇒Complete : Complete o′ ℓ′ e′ C
-  AllProducts×Equalizer⇒Complete = complete
+  AllProducts×Equalizer⇒Complete F = build-lim {OP = OP} {MP = MP} (equalizer _ _)
+    where
+      open Functor F
+      OP = lowerAllProductsOf ℓ′ prods F₀
+      MP = lowerAllProductsOf o′ prods λ f → F₀ (Morphism.cod f)

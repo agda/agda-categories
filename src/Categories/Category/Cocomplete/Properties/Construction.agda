@@ -20,11 +20,10 @@ private
     o′ ℓ′ e′ : Level
 
 module _ (coprods : AllCoproductsOf (o′ ⊔ ℓ′)) (coequalizer : ∀ {A B} (f g : C [ A , B ]) → Coequalizer f g) where
-  private module _ {J : Category o′ ℓ′ e′} (F : Functor J C) where
-    open Functor F
-
-    cocomplete : Colimit F
-    cocomplete = build-colim {OP = lowerAllCoproductsOf ℓ′ coprods F₀} {MP = lowerAllCoproductsOf o′ coprods (λ f → F₀ (Morphism.dom f))} (coequalizer _ _)
 
   AllCoproducts×Coequalizer⇒Cocomplete : Cocomplete o′ ℓ′ e′ C
-  AllCoproducts×Coequalizer⇒Cocomplete = cocomplete
+  AllCoproducts×Coequalizer⇒Cocomplete F = build-colim {OP = OP} {MP = MP} (coequalizer _ _)
+    where
+      open Functor F
+      OP = lowerAllCoproductsOf ℓ′ coprods F₀
+      MP = lowerAllCoproductsOf o′ coprods λ f → F₀ (Morphism.dom f)
