@@ -10,15 +10,15 @@ private
     open C
     open HomReasoning
 
-open import Categories.Category.Construction.Arrow J
-open import Categories.Diagram.Coequalizer C
-open import Categories.Diagram.Cocone
-open import Categories.Diagram.Limit as Lim
-open import Categories.Diagram.Colimit
-open import Categories.Functor hiding (id)
-open import Categories.Diagram.Duality C
-open import Categories.Morphism.Reasoning C
-open import Categories.Object.Coproduct.Indexed C
+open import Categories.Category.Construction.Arrow J using (Morphism; mor)
+open import Categories.Diagram.Coequalizer C using (Coequalizer)
+open import Categories.Diagram.Cocone using (Coapex; Cocone; Cocone⇒)
+open import Categories.Diagram.Colimit using (Colimit)
+open import Categories.Diagram.Duality C using (Coapex⇒coApex; Colimit⇒coLimit)
+open import Categories.Diagram.Limit using (Limit; ψ-≈⇒rep-≈)
+open import Categories.Functor using (Functor)
+open import Categories.Morphism.Reasoning C using (pullˡ; pullʳ; pushˡ; pushʳ)
+open import Categories.Object.Coproduct.Indexed C using (IndexedCoproductOf)
 
 module _ (F : Functor J C) (X : Obj) (coapex₁ : Coapex F X) (coapex₂ : Coapex F X) (L : Colimit F) where
   private

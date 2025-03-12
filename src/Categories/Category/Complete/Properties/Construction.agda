@@ -7,13 +7,12 @@ module Categories.Category.Complete.Properties.Construction {o ℓ e} (C : Categ
 open import Level
 
 open import Categories.Category.Construction.Arrow using (Morphism)
-open import Categories.Category.Complete
-open import Categories.Diagram.Equalizer C
-open import Categories.Diagram.Limit
+open import Categories.Category.Complete using (Complete)
+open import Categories.Diagram.Equalizer C using (Equalizer)
 open import Categories.Diagram.Limit.Properties using (build-lim)
-open import Categories.Object.Product.Indexed C
-open import Categories.Object.Product.Indexed.Properties C
-open import Categories.Functor
+open import Categories.Functor using (Functor)
+open import Categories.Object.Product.Indexed C using (AllProductsOf)
+open import Categories.Object.Product.Indexed.Properties C using (lowerAllProductsOf)
 
 private
   variable

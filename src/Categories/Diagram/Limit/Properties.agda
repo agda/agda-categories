@@ -1,19 +1,19 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category
-open import Categories.Functor
 
 module Categories.Diagram.Limit.Properties
        {o ℓ e} {o′ ℓ′ e′} {C : Category o ℓ e} {J : Category o′ ℓ′ e′}  where
 
-open import Categories.Category.Construction.Arrow J
-open import Categories.Diagram.Cone
-open import Categories.Diagram.Cone.Properties
-open import Categories.Diagram.Equalizer C
+open import Categories.Category.Construction.Arrow J using (Morphism; mor)
+open import Categories.Diagram.Cone using (Cone; Cone⇒)
+open import Categories.Diagram.Cone.Properties using (nat-map-Cone)
+open import Categories.Diagram.Equalizer C using (Equalizer)
+open import Categories.Functor using (Functor)
+open import Categories.Morphism C using (_≅_)
+open import Categories.Morphism.Reasoning C using (pullˡ; pullʳ; pushˡ; pushʳ; cancelˡ; switch-tofromˡ; switch-fromtoˡ)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism; _≃_; module ≃)
-open import Categories.Morphism.Reasoning C
-open import Categories.Morphism C
-open import Categories.Object.Product.Indexed C
+open import Categories.Object.Product.Indexed C using (IndexedProductOf)
 
 open import Function.Base using (_$_)
 

@@ -7,13 +7,13 @@ module Categories.Object.Product.Indexed.Properties {o ℓ e} (C : Category o �
 open import Function.Base using () renaming (_∘_ to _∙_)
 open import Level
 
-open import Categories.Category.Construction.StrictDiscrete
-open import Categories.Category.Complete
-open import Categories.Category.Construction.Cones
-open import Categories.Category.Lift
-open import Categories.Object.Product.Indexed C
-open import Categories.Diagram.Limit
-open import Categories.Functor
+open import Categories.Category.Construction.StrictDiscrete using (Discrete; lift-func)
+open import Categories.Category.Complete using (Complete)
+open import Categories.Category.Lift using (liftC; unliftF)
+open import Categories.Diagram.Cone using (Cone; Cone⇒)
+open import Categories.Diagram.Limit using (Limit)
+open import Categories.Functor using (Functor; _∘F_)
+open import Categories.Object.Product.Indexed C using (IndexedProductOf; AllProductsOf)
 
 import Relation.Binary.PropositionalEquality as ≡
 

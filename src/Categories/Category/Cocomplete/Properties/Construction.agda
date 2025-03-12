@@ -7,13 +7,12 @@ module Categories.Category.Cocomplete.Properties.Construction {o ℓ e} (C : Cat
 open import Level
 
 open import Categories.Category.Construction.Arrow using (Morphism)
-open import Categories.Category.Cocomplete
-open import Categories.Diagram.Coequalizer C
-open import Categories.Diagram.Colimit
+open import Categories.Category.Cocomplete using (Cocomplete)
+open import Categories.Diagram.Coequalizer C using (Coequalizer)
 open import Categories.Diagram.Colimit.Properties using (build-colim)
-open import Categories.Functor
-open import Categories.Object.Coproduct.Indexed C
-open import Categories.Object.Coproduct.Indexed.Properties C
+open import Categories.Functor using (Functor)
+open import Categories.Object.Coproduct.Indexed C using (AllCoproductsOf)
+open import Categories.Object.Coproduct.Indexed.Properties C using (lowerAllCoproductsOf)
 
 private
   variable

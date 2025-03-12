@@ -7,7 +7,7 @@ module Categories.Object.Coproduct.Indexed.Properties {o ℓ e} (C : Category o 
 open import Function.Base using () renaming (_∘_ to _∙_)
 open import Level
 
-open import Categories.Object.Coproduct.Indexed C
+open import Categories.Object.Coproduct.Indexed C using (IndexedCoproductOf; AllCoproductsOf)
 
 lowerAllCoproductsOf : ∀ {i} j → AllCoproductsOf (i ⊔ j) → AllCoproductsOf i
 lowerAllCoproductsOf j coprod P = record
