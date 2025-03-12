@@ -4,6 +4,7 @@ open import Categories.Category
 
 module Categories.Object.Product.Indexed.Properties {o ℓ e} (C : Category o ℓ e) where
 
+open import Function.Base using () renaming (_∘_ to _∙_)
 open import Level
 
 open import Categories.Category.Construction.StrictDiscrete
@@ -20,6 +21,16 @@ private
   variable
     o′ ℓ′ e′ : Level
   open Category C
+
+lowerAllProductsOf : ∀ {i} j → AllProductsOf (i ⊔ j) → AllProductsOf i
+lowerAllProductsOf j prod P = record
+  { X = X
+  ; π = π ∙ lift
+  ; ⟨_⟩ = λ f → ⟨ f ∙ lower ⟩
+  ; commute = commute
+  ; unique = λ eq → unique eq
+  }
+  where open IndexedProductOf (prod {Lift j _} (P ∙ lower))
 
 module _ {i} (Com : Complete (i ⊔ o′) (i ⊔ ℓ′) (i ⊔ e′) C) where
 
