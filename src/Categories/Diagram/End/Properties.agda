@@ -12,8 +12,10 @@ open import Data.Product using (Σ; _,_)
 open import Function using (_$_)
 
 open import Categories.Category using (Category)
+open import Categories.Category.Construction.Arrow using (Morphism; mor)
 open import Categories.Category.Construction.Functors using (Functors)
 open import Categories.Diagram.End using () renaming (End to ∫)
+open import Categories.Diagram.Equalizer using (Equalizer)
 open import Categories.Diagram.Wedge using (Wedge; module Wedge-Morphism)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor using (Bifunctor)
@@ -21,6 +23,7 @@ open import Categories.NaturalTransformation using (NaturalTransformation; _∘�
 open import Categories.NaturalTransformation.Dinatural hiding (_≃_)
 open import Categories.NaturalTransformation.Equivalence using () renaming (_≃_ to _≃ⁿ_)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism) renaming (_≃_ to _≃ⁱ_)
+open import Categories.Object.Product.Indexed
 open import Categories.Object.Terminal as Terminal
 
 import Categories.Category.Construction.Wedges as Wedges
@@ -160,3 +163,61 @@ module _ {F G : Bifunctor (Category.op C) C D} (F≃G : F ≃ⁱ G) {{ef : ∫ F
   end-resp-≅ .iso .isoˡ = ⟺ (end-η-resp-∘ F⇒G F⇐G) ○ end-η-resp-≈ {α = F⇐G ∘ᵥ F⇒G} {β = idN} (λ {x} → F≃G.iso.isoˡ x) ○ end-identity {F = F}
 
   -- See also ≅-yields-end in Categories.Diagram.End.Limit
+
+-- We can characterize an end in terms of products and equalizers
+-- Remark 1.2.4 of Coend Calculus
+-- See also Categories.Diagram.Limit.Properties.build-lim
+module _
+  {P : Bifunctor (Category.op C) C D}
+  (OP : IndexedProductOf D λ X → Bifunctor.₀ P (X , X))
+  (MP : IndexedProductOf D λ f → Bifunctor.₀ P (Morphism.dom {C = C} f , Morphism.cod f))
+  where
+
+  open Category D
+
+  private
+    module P = Bifunctor P
+    module OP = IndexedProductOf OP
+    module MP = IndexedProductOf MP
+
+    s t : OP.X ⇒ MP.X
+    s = MP.⟨ (λ f → P.₁ʳ (Morphism.arr f) ∘ OP.π (Morphism.dom f)) ⟩
+    t = MP.⟨ (λ f → P.₁ˡ (Morphism.arr f) ∘ OP.π (Morphism.cod f)) ⟩
+
+  open HomReasoning
+  open MR D
+
+  build-End : Equalizer D s t → ∫ P
+  build-End eq = record
+    { wedge = record
+      { E = obj
+      ; dinatural = extranaturalʳ
+        (λ X → OP.π X ∘ arr)
+        λ {X Y f} → begin
+          P.₁ʳ f ∘ (OP.π X ∘ arr)  ≈⟨ extendʳ MP.commute ⟨
+          MP.π (mor f) ∘ (s ∘ arr) ≈⟨ refl⟩∘⟨ equality ⟩
+          MP.π (mor f) ∘ (t ∘ arr) ≈⟨ extendʳ MP.commute ⟩
+          P.₁ˡ f ∘ (OP.π Y ∘ arr)  ∎
+      }
+    ; factor = λ W → equalize (factor-lemma W)
+    ; universal = Equiv.sym (pushʳ universal) ○ OP.commute
+    ; unique = λ eq′ → Equiv.sym (unique (OP.unique (sym-assoc ○ eq′)))
+    }
+    where
+      open Equalizer eq
+      abstract
+        factor-lemma : (W : Wedge P) → s ∘ OP.⟨ Wedge.dinatural.α W ⟩ ≈ t ∘ OP.⟨ Wedge.dinatural.α W ⟩
+        factor-lemma W = begin
+          s ∘ OP.⟨ dinatural.α ⟩
+            ≈⟨ MP.⟨⟩∘ (λ f → P.₁ʳ (Morphism.arr f) ∘ OP.π (Morphism.dom f)) OP.⟨ dinatural.α ⟩ ⟩
+          MP.⟨ (λ f → (P.₁ʳ (Morphism.arr f) ∘ OP.π (Morphism.dom f)) ∘ OP.⟨ dinatural.α ⟩) ⟩
+            ≈⟨ MP.⟨⟩-cong (pullʳ OP.commute) ⟩
+          MP.⟨ (λ f → P.₁ʳ (Morphism.arr f) ∘ dinatural.α (Morphism.dom f)) ⟩
+            ≈⟨ MP.⟨⟩-cong (extranatural-commʳ dinatural) ⟩
+          MP.⟨ (λ f → P.₁ˡ (Morphism.arr f) ∘ dinatural.α (Morphism.cod f)) ⟩
+            ≈⟨ MP.⟨⟩-cong (pullʳ OP.commute) ⟨
+          MP.⟨ (λ f → (P.₁ˡ (Morphism.arr f) ∘ OP.π (Morphism.cod f)) ∘ OP.⟨ dinatural.α ⟩) ⟩
+            ≈⟨ MP.⟨⟩∘ (λ f → P.₁ˡ (Morphism.arr f) ∘ OP.π (Morphism.cod f)) OP.⟨ dinatural.α ⟩ ⟨
+          t ∘ OP.⟨ dinatural.α ⟩
+            ∎
+          where open Wedge W
