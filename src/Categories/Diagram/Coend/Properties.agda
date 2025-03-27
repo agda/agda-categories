@@ -7,14 +7,17 @@ open import Data.Product using (Σ; _,_)
 open import Function using (_$_)
 
 open import Categories.Category.Core using (Category)
+open import Categories.Category.Construction.Arrow using (Morphism; mor)
 open import Categories.Category.Construction.Functors using (Functors)
 open import Categories.Category.Product using (Product)
 open import Categories.Diagram.Coend using (Coend)
+open import Categories.Diagram.Coequalizer using (Coequalizer)
 open import Categories.Diagram.Cowedge using (Cowedge; module Cowedge-Morphism)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.NaturalTransformation using (NaturalTransformation)
-open import Categories.NaturalTransformation.Dinatural using (DinaturalTransformation; dtHelper; _∘>_)
+open import Categories.NaturalTransformation.Dinatural using (DinaturalTransformation; dtHelper; _∘>_; extranaturalˡ; extranatural-commˡ)
+open import Categories.Object.Coproduct.Indexed using (IndexedCoproductOf)
 open import Categories.Object.Initial as Initial using (Initial)
 
 import Categories.Category.Construction.Cowedges as Cowedges
@@ -122,3 +125,60 @@ module _ {P Q : Bifunctor (Category.op C) C D} (P⇒Q : NaturalTransformation P 
     open Cowedge
     open MR D
 
+-- We can characterize a coend in terms of coproducts and coequalizers
+-- Remark 1.2.4 of Coend Calculus
+-- See also Categories.Diagram.Colimit.Properties.build-colim
+module _
+  {P : Bifunctor (Category.op C) C D}
+  (OP : IndexedCoproductOf D λ X → Bifunctor.₀ P (X , X))
+  (MP : IndexedCoproductOf D λ f → Bifunctor.₀ P (Morphism.cod {C = C} f , Morphism.dom f))
+  where
+
+  open Category D
+
+  private
+    module P = Bifunctor P
+    module OP = IndexedCoproductOf OP
+    module MP = IndexedCoproductOf MP
+
+    s t : MP.X ⇒ OP.X
+    s = MP.[ (λ f → OP.ι (Morphism.dom f) ∘ P.₁ˡ (Morphism.arr f)) ]
+    t = MP.[ (λ f → OP.ι (Morphism.cod f) ∘ P.₁ʳ (Morphism.arr f)) ]
+
+  open HomReasoning
+  open MR D
+
+  build-Coend : Coequalizer D s t → Coend P
+  build-Coend eq = record
+    { cowedge = record
+      { E = obj
+      ; dinatural = extranaturalˡ
+        (λ X → arr ∘ OP.ι X)
+        λ {X Y f} → begin
+          (arr ∘ OP.ι X) ∘ P.₁ˡ f  ≈⟨ extendˡ MP.commute ⟨
+          (arr ∘ s) ∘ MP.ι (mor f) ≈⟨ equality ⟩∘⟨refl ⟩
+          (arr ∘ t) ∘ MP.ι (mor f) ≈⟨ extendˡ MP.commute ⟩
+          (arr ∘ OP.ι Y) ∘ P.₁ʳ f  ∎
+      }
+    ; factor = λ W → coequalize (factor-lemma W)
+    ; universal = Equiv.sym (pushˡ universal) ○ OP.commute
+    ; unique = λ eq′ → Equiv.sym (unique (OP.unique (assoc ○ eq′)))
+    }
+    where
+      open Coequalizer eq
+      abstract
+        factor-lemma : (W : Cowedge P) → OP.[ Cowedge.dinatural.α W ] ∘ s ≈ OP.[ Cowedge.dinatural.α W ] ∘ t
+        factor-lemma W = begin
+          OP.[ dinatural.α ] ∘ s
+            ≈⟨ MP.∘[] (λ f → OP.ι (Morphism.dom f) ∘ P.₁ˡ (Morphism.arr f)) OP.[ dinatural.α ] ⟩
+          MP.[ (λ f → OP.[ dinatural.α ] ∘ (OP.ι (Morphism.dom f) ∘ P.₁ˡ (Morphism.arr f))) ]
+            ≈⟨ MP.[]-cong (pullˡ OP.commute) ⟩
+          MP.[ (λ f → dinatural.α (Morphism.dom f) ∘ P.₁ˡ (Morphism.arr f)) ]
+            ≈⟨ MP.[]-cong (extranatural-commˡ dinatural) ⟩
+          MP.[ (λ f → dinatural.α (Morphism.cod f) ∘ P.₁ʳ (Morphism.arr f)) ]
+            ≈⟨ MP.[]-cong (pullˡ OP.commute) ⟨
+          MP.[ (λ f → OP.[ dinatural.α ] ∘ (OP.ι (Morphism.cod f) ∘ P.₁ʳ (Morphism.arr f))) ]
+            ≈⟨ MP.∘[] (λ f → OP.ι (Morphism.cod f) ∘ P.₁ʳ (Morphism.arr f)) OP.[ dinatural.α ] ⟨
+          OP.[ dinatural.α ] ∘ t
+            ∎
+          where open Cowedge W
