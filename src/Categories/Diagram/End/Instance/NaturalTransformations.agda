@@ -18,8 +18,7 @@ open import Categories.Diagram.Wedge using (Wedge)
 open import Categories.Functor.Bifunctor using (reduce-×)
 open import Categories.Functor.Hom using (Hom[_][-,-]; Hom[_][_,_])
 open import Categories.Morphism.Reasoning D
-open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
-open import Categories.NaturalTransformation.Dinatural using (dtHelper)
+open import Categories.NaturalTransformation using (NaturalTransformation)
 
 open import Function.Bundles using (Func; _⟨$⟩_)
 
@@ -41,7 +40,7 @@ naturalTransformations : End (reduce-× Hom[ D ][-,-] F.op G)
 naturalTransformations = record
   { wedge = record
     { E = Hom[ Functors C D ][ F , G ]
-    ; dinatural = dtHelper record
+    ; dinatural = record
       { α = λ X → record
         { to = λ nt → η nt X
         ; cong = λ eq → eq
@@ -51,16 +50,26 @@ naturalTransformations = record
         G.₁ f ∘ η nt X          ≈⟨ sym-commute nt f ⟩
         η nt Y ∘ F.₁ f          ≈⟨ pushˡ (introˡ G.identity) ⟩
         G.₁ id ∘ η nt Y ∘ F.₁ f ∎
+      ; op-commute = λ {X Y} f {nt} → begin
+        G.₁ id ∘ η nt Y ∘ F.₁ f ≈⟨ pullˡ (elimˡ G.identity) ⟩
+        η nt Y ∘ F.₁ f          ≈⟨ commute nt f ⟩
+        G.₁ f ∘ η nt X          ≈⟨ refl⟩∘⟨ introʳ F.identity ⟩
+        G.₁ f ∘ η nt X ∘ F.₁ id ∎
       }
     }
   ; factor = λ W → record
-    { to = λ e → ntHelper record
+    { to = λ e → record
       { η = λ X → dinatural.α W X ⟨$⟩ e
       ; commute = λ {X Y} f → begin
         (dinatural.α W Y ⟨$⟩ e) ∘ F.₁ f          ≈⟨ pushˡ (introˡ G.identity) ⟩
         G.₁ id ∘ (dinatural.α W Y ⟨$⟩ e) ∘ F.₁ f ≈⟨ dinatural.op-commute W f ⟩
         G.₁ f ∘ (dinatural.α W X ⟨$⟩ e) ∘ F.₁ id ≈⟨ refl⟩∘⟨ elimʳ F.identity ⟩
         G.₁ f ∘ (dinatural.α W X ⟨$⟩ e)          ∎
+      ; sym-commute = λ {X Y} f → begin
+        G.₁ f ∘ (dinatural.α W X ⟨$⟩ e)          ≈⟨ refl⟩∘⟨ introʳ F.identity ⟩
+        G.₁ f ∘ (dinatural.α W X ⟨$⟩ e) ∘ F.₁ id ≈⟨ dinatural.commute W f ⟩
+        G.₁ id ∘ (dinatural.α W Y ⟨$⟩ e) ∘ F.₁ f ≈⟨ pullˡ (elimˡ G.identity) ⟩
+        (dinatural.α W Y ⟨$⟩ e) ∘ F.₁ f          ∎
       }
     ; cong = λ eq → Func.cong (dinatural.α W _) eq
     }
