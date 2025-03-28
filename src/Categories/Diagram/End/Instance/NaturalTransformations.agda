@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category
-open import Categories.Functor
+open import Categories.Category using (Category)
+open import Categories.Functor using (Functor)
 
 open import Level
 
@@ -12,24 +12,23 @@ module Categories.Diagram.End.Instance.NaturalTransformations
   (F G : Functor C D)
   where
 
-open import Categories.Category.Construction.Functors
-open import Categories.Diagram.End
-open import Categories.Diagram.Wedge
-open import Categories.Functor.Bifunctor
-open import Categories.Functor.Hom
+open import Categories.Category.Construction.Functors using (Functors)
+open import Categories.Diagram.End using (End)
+open import Categories.Diagram.Wedge using (Wedge)
+open import Categories.Functor.Bifunctor using (reduce-×)
+open import Categories.Functor.Hom using (Hom[_][-,-]; Hom[_][_,_])
 open import Categories.Morphism.Reasoning D
-open import Categories.NaturalTransformation
-open import Categories.NaturalTransformation.Dinatural
+open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
+open import Categories.NaturalTransformation.Dinatural using (dtHelper)
 
-open import Function.Bundles
+open import Function.Bundles using (Func; _⟨$⟩_)
 
 private
-  module C = Category C
-  module D = Category D
   module F = Functor F
   module G = Functor G
 
-open Category D
+open Category C using (id)
+open Category D hiding (id)
 open HomReasoning
 open NaturalTransformation
 open Wedge
@@ -48,20 +47,20 @@ naturalTransformations = record
         ; cong = λ eq → eq
         }
       ; commute = λ {X Y} f {nt} → begin
-        G.₁ f ∘ η nt X ∘ F.₁ C.id ≈⟨ refl⟩∘⟨ elimʳ F.identity ⟩
-        G.₁ f ∘ η nt X            ≈⟨ sym-commute nt f ⟩
-        η nt Y ∘ F.₁ f            ≈⟨ pushˡ (introˡ G.identity) ⟩
-        G.₁ C.id ∘ η nt Y ∘ F.₁ f ∎
+        G.₁ f ∘ η nt X ∘ F.₁ id ≈⟨ refl⟩∘⟨ elimʳ F.identity ⟩
+        G.₁ f ∘ η nt X          ≈⟨ sym-commute nt f ⟩
+        η nt Y ∘ F.₁ f          ≈⟨ pushˡ (introˡ G.identity) ⟩
+        G.₁ id ∘ η nt Y ∘ F.₁ f ∎
       }
     }
   ; factor = λ W → record
     { to = λ e → ntHelper record
       { η = λ X → dinatural.α W X ⟨$⟩ e
       ; commute = λ {X Y} f → begin
-        (dinatural.α W Y ⟨$⟩ e) ∘ F.₁ f            ≈⟨ pushˡ (introˡ G.identity) ⟩
-        G.₁ C.id ∘ (dinatural.α W Y ⟨$⟩ e) ∘ F.₁ f ≈⟨ dinatural.commute W f ⟨
-        G.₁ f ∘ (dinatural.α W X ⟨$⟩ e) ∘ F.₁ C.id ≈⟨ refl⟩∘⟨ elimʳ F.identity ⟩
-        G.₁ f ∘ (dinatural.α W X ⟨$⟩ e)            ∎
+        (dinatural.α W Y ⟨$⟩ e) ∘ F.₁ f          ≈⟨ pushˡ (introˡ G.identity) ⟩
+        G.₁ id ∘ (dinatural.α W Y ⟨$⟩ e) ∘ F.₁ f ≈⟨ dinatural.op-commute W f ⟩
+        G.₁ f ∘ (dinatural.α W X ⟨$⟩ e) ∘ F.₁ id ≈⟨ refl⟩∘⟨ elimʳ F.identity ⟩
+        G.₁ f ∘ (dinatural.α W X ⟨$⟩ e)          ∎
       }
     ; cong = λ eq → Func.cong (dinatural.α W _) eq
     }
