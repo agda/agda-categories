@@ -135,7 +135,15 @@ split₂ˡ {f = f} {g} {h} = begin
   id ⊗₁ g ∘ f ⊗₁ h      ∎
 
 -- The opposite, i.e. merge
-merge₂ʳ :  ∀ {X₁ Y₁ X₂ Y₂ Z₂} {f : X₁ ⇒ Y₁} {g : Y₂ ⇒ Z₂} {h : X₂ ⇒ Y₂} →
+merge₁ʳ : ∀ {X₁ Y₁ Z₁ X₂ Y₂} {f : Y₁ ⇒ Z₁} {g : X₁ ⇒ Y₁} {h : X₂ ⇒ Y₂} →
+          f ⊗₁ h ∘ g ⊗₁ id ≈ (f ∘ g) ⊗₁ h
+merge₁ʳ = Equiv.sym split₁ʳ
+
+merge₁ˡ : ∀ {X₁ Y₁ Z₁ X₂ Y₂} {f : Y₁ ⇒ Z₁} {g : X₁ ⇒ Y₁} {h : X₂ ⇒ Y₂} →
+          f ⊗₁ id ∘ g ⊗₁ h ≈ (f ∘ g) ⊗₁ h
+merge₁ˡ = Equiv.sym split₁ˡ
+
+merge₂ʳ : ∀ {X₁ Y₁ X₂ Y₂ Z₂} {f : X₁ ⇒ Y₁} {g : Y₂ ⇒ Z₂} {h : X₂ ⇒ Y₂} →
           f ⊗₁ g ∘ id ⊗₁ h ≈ f ⊗₁ (g ∘ h)
 merge₂ʳ = Equiv.sym split₂ʳ
 
