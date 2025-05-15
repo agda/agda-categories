@@ -31,7 +31,7 @@ private
 record IsKernel {A B K} (k : K ⇒ A) (f : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
   field
     commute : f ∘ k ≈ zero⇒
-    universal : ∀ {X} {h : X ⇒ A} → f ∘ h ≈ zero⇒ → X ⇒ K 
+    universal : ∀ {X} {h : X ⇒ A} → f ∘ h ≈ zero⇒ → X ⇒ K
     factors : ∀ {eq : f ∘ h ≈ zero⇒} → h ≈ k ∘ universal eq
     unique : ∀ {eq : f ∘ h ≈ zero⇒} → h ≈ k ∘ i → i ≈ universal eq
 
@@ -51,7 +51,7 @@ record IsKernel {A B K} (k : K ⇒ A) (f : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) wher
     h ≈ i → universal eq ≈ universal eq′
   universal-resp-≈ h≈i = unique (⟺ h≈i ○ factors)
 
-  universal-∘ : f ∘ k ∘ h ≈ zero⇒ 
+  universal-∘ : f ∘ k ∘ h ≈ zero⇒
   universal-∘ {h = h} = begin
     f ∘ k ∘ h ≈⟨ pullˡ commute ⟩
     zero⇒ ∘ h ≈⟨ zero-∘ʳ h ⟩

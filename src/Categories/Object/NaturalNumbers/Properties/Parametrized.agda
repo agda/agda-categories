@@ -27,8 +27,8 @@ open HomReasoning
 open Equiv
 
 NNO×CCC⇒PNNO : NNO → ParametrizedNNO
-NNO×CCC⇒PNNO nno = record 
-  { N = N 
+NNO×CCC⇒PNNO nno = record
+  { N = N
   ; isParametrizedNNO = record
     { z = z
     ; s = s
@@ -36,13 +36,13 @@ NNO×CCC⇒PNNO nno = record
     ; commute₁ = commute₁'
     ; commute₂ = commute₂'
     ; unique = unique'
-    } 
+    }
   }
   where
   open NNO nno renaming (unique to nno-unique)
 
   commute₁' : ∀ {A X} {f : A ⇒ X} {g : X ⇒ X} → f ≈ ((eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap) ∘ ⟨ id , z ∘ ! ⟩
-  commute₁' {A} {X} {f} {g} = begin 
+  commute₁' {A} {X} {f} {g} = begin
     f                                                                                   ≈⟨ introʳ project₂ ⟩
     f ∘ π₂ ∘ ⟨ ! , id ⟩                                                                 ≈⟨ pullˡ (⟺ β′) ⟩
     (eval′ ∘ (λg (f ∘ π₂) ⁂ id)) ∘ ⟨ ! , id ⟩                                           ≈⟨ pullʳ ⁂∘⟨⟩ ⟩
@@ -51,7 +51,7 @@ NNO×CCC⇒PNNO nno = record
     eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id) ∘ ⟨ z ∘ ! , id ⟩            ≈⟨ sym-assoc ○ pushʳ (⟺ swap∘⟨⟩) ⟩
     ((eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap) ∘ ⟨ id , z ∘ ! ⟩ ∎
 
-  commute₂' : ∀ {A X} {f : A ⇒ X} {g : X ⇒ X} 
+  commute₂' : ∀ {A X} {f : A ⇒ X} {g : X ⇒ X}
     → g ∘ ((eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap) ≈ ((eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap) ∘ (id ⁂ s)
   commute₂' {A} {X} {f} {g} = begin
     g ∘ (eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap                       ≈⟨ pullˡ (pullˡ (⟺ β′)) ⟩
@@ -62,39 +62,39 @@ NNO×CCC⇒PNNO nno = record
     eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id) ∘ swap ∘ (id ⁂ s)                  ≈⟨ sym-assoc ○ sym-assoc ⟩
     ((eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap) ∘ (id ⁂ s)              ∎
 
-  unique' : ∀ {A X} {f : A ⇒ X} {g : X ⇒ X} {u : A × N ⇒ X} 
+  unique' : ∀ {A X} {f : A ⇒ X} {g : X ⇒ X} {u : A × N ⇒ X}
     → f ≈ u ∘ ⟨ id , z ∘ ! ⟩ → g ∘ u ≈ u ∘ (id ⁂ s) → u ≈ (eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap
-  unique' {A} {X} {f} {g} {u} eqᶻ eqˢ = swap-epi _ _ (λ-inj (begin 
-    λg (u ∘ swap)                                                                  ≈⟨ nno-unique (⟺ z-commutes) s-commutes ⟩ 
+  unique' {A} {X} {f} {g} {u} eqᶻ eqˢ = swap-epi _ _ (λ-inj (begin
+    λg (u ∘ swap)                                                                  ≈⟨ nno-unique (⟺ z-commutes) s-commutes ⟩
     universal (λg (f ∘ π₂)) (λg (g ∘ eval′))                                       ≈˘⟨ η-exp′ ⟩
     λg (eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id))                   ≈˘⟨ λ-cong (cancelʳ swap∘swap) ⟩
     λg (((eval′ ∘ (universal (λg (f ∘ π₂)) (λg (g ∘ eval′)) ⁂ id)) ∘ swap) ∘ swap) ∎))
     where
     z-commutes : λg (u ∘ swap) ∘ z ≈ λg (f ∘ π₂)
-    z-commutes = λ-unique′ (begin 
-      eval′ ∘ (λg (u ∘ swap) ∘ z ⁂ id)        ≈˘⟨ refl⟩∘⟨ (⁂∘⁂ ○ ⁂-cong₂ refl identity²) ⟩ 
-      eval′ ∘ (λg (u ∘ swap) ⁂ id) ∘ (z ⁂ id) ≈⟨ extendʳ β′ ⟩ 
-      u ∘ swap ∘ (z ⁂ id)                     ≈⟨ refl⟩∘⟨ swap∘⁂ ⟩ 
+    z-commutes = λ-unique′ (begin
+      eval′ ∘ (λg (u ∘ swap) ∘ z ⁂ id)        ≈˘⟨ refl⟩∘⟨ (⁂∘⁂ ○ ⁂-cong₂ refl identity²) ⟩
+      eval′ ∘ (λg (u ∘ swap) ⁂ id) ∘ (z ⁂ id) ≈⟨ extendʳ β′ ⟩
+      u ∘ swap ∘ (z ⁂ id)                     ≈⟨ refl⟩∘⟨ swap∘⁂ ⟩
       u ∘ (id ⁂ z) ∘ swap                     ≈⟨ refl⟩∘⟨ (bp-unique′ π₁-commutes π₂-commutes) ⟩
       u ∘ ⟨ id , z ∘ ! ⟩ ∘ π₂                 ≈⟨ pullˡ (⟺ eqᶻ) ⟩
       f ∘ π₂                                  ∎)
       where
       π₁-commutes : π₁ ∘ (id ⁂ z) ∘ swap ≈ π₁ ∘ ⟨ id , z ∘ ! ⟩ ∘ π₂
-      π₁-commutes = begin 
-        π₁ ∘ (id ⁂ z) ∘ swap     ≈⟨ extendʳ project₁ ○ identityˡ ⟩ 
-        π₁ ∘ swap                ≈⟨ project₁ ⟩ 
-        π₂                       ≈˘⟨ cancelˡ project₁ ⟩ 
+      π₁-commutes = begin
+        π₁ ∘ (id ⁂ z) ∘ swap     ≈⟨ extendʳ project₁ ○ identityˡ ⟩
+        π₁ ∘ swap                ≈⟨ project₁ ⟩
+        π₂                       ≈˘⟨ cancelˡ project₁ ⟩
         π₁ ∘ ⟨ id , z ∘ ! ⟩ ∘ π₂ ∎
       π₂-commutes : π₂ ∘ (id ⁂ z) ∘ swap ≈ π₂ ∘ ⟨ id , z ∘ ! ⟩ ∘ π₂
-      π₂-commutes = begin 
-        π₂ ∘ (id ⁂ z) ∘ swap     ≈⟨ extendʳ project₂ ⟩ 
-        z ∘ π₂ ∘ swap            ≈⟨ refl⟩∘⟨ project₂ ⟩ 
-        z ∘ π₁                   ≈⟨ refl⟩∘⟨ !-unique₂ ⟩ 
-        z ∘ ! ∘ π₂               ≈˘⟨ extendʳ project₂ ⟩ 
+      π₂-commutes = begin
+        π₂ ∘ (id ⁂ z) ∘ swap     ≈⟨ extendʳ project₂ ⟩
+        z ∘ π₂ ∘ swap            ≈⟨ refl⟩∘⟨ project₂ ⟩
+        z ∘ π₁                   ≈⟨ refl⟩∘⟨ !-unique₂ ⟩
+        z ∘ ! ∘ π₂               ≈˘⟨ extendʳ project₂ ⟩
         π₂ ∘ ⟨ id , z ∘ ! ⟩ ∘ π₂ ∎
     s-commutes : λg (g ∘ eval′) ∘ λg (u ∘ swap) ≈ λg (u ∘ swap) ∘ s
-    s-commutes = begin 
-      λg (g ∘ eval′) ∘ λg (u ∘ swap)          ≈⟨ subst ⟩ 
+    s-commutes = begin
+      λg (g ∘ eval′) ∘ λg (u ∘ swap)          ≈⟨ subst ⟩
       λg ((g ∘ eval′) ∘ (λg (u ∘ swap) ⁂ id)) ≈⟨ λ-cong (pullʳ β′ ○ pullˡ eqˢ) ⟩
       λg ((u ∘ (id ⁂ s)) ∘ swap)              ≈⟨ λ-cong (pullʳ (⟺ swap∘⁂) ○ sym-assoc) ⟩
       λg ((u ∘ swap) ∘ (s ⁂ id))              ≈˘⟨ subst ⟩

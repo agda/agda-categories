@@ -101,7 +101,7 @@ module _ {o ℓ e} {𝒞 : Category o ℓ e} (has-pullbacks : ∀ {A B X} → (f
     }
     where
       morphism : ∀ {A B} → (f : 𝒞 [ B , A ]) → Σ[ α ∈ 𝒞.Obj ] (α ↣ A) → Σ[ β ∈ 𝒞.Obj ] (β ↣ B)
-      morphism f (α , m) = 
+      morphism f (α , m) =
         let pb = has-pullbacks f (mor m)
         in Pullback.P pb , record
           { mor = Pullback.p₁ pb

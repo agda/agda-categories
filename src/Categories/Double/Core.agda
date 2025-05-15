@@ -121,7 +121,7 @@ horizontal 2-composition:
         ↓      ↓   ∘    ↓      ↓   ~>  ↓    ↓
         B₁  →  B₂       B₁  →  B₂      B₁ → B₃
 -}
-    _∘₂ₕ_ : 
+    _∘₂ₕ_ :
       {T₁ T₂ T₃ B₁ B₂ B₃ : Obj} →
       {hT₁ : T₁ ⇒ₕ T₂} {hT₂ : T₂ ⇒ₕ T₃} →
       {hB₁ : B₁ ⇒ₕ B₂} {hB₂ : B₂ ⇒ₕ B₃} →

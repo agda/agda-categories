@@ -133,7 +133,7 @@ module _ {C : Category o ℓ e } {D : Category o′ ℓ′ e′} where
     end-identity : {{ef : ∫ F}} → end-η (idN {F = F}) ≈ id
     end-identity {F = F} {{ef}} = ∫.unique ef id-comm
 
-    end-η-commute : {{ef : ∫ F}} {{eg : ∫ G}} (α : NaturalTransformation F G) → 
+    end-η-commute : {{ef : ∫ F}} {{eg : ∫ G}} (α : NaturalTransformation F G) →
                     (c : C.Obj) → ∫.dinatural.α eg c ∘ end-η α ≈ α .η (c , c) ∘ ∫.dinatural.α ef c
     end-η-commute ⦃ _ ⦄ ⦃ eg ⦄ α c = ∫.universal eg
 

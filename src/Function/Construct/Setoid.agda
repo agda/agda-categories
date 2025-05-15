@@ -13,7 +13,7 @@ module Function.Construct.Setoid where
   private
     variable
       a₁ a₂ b₁ b₂ c₁ c₂ : Level
-      
+
   setoid : Setoid a₁ a₂ → Setoid b₁ b₂ → Setoid _ _
   setoid From To = record
     { Carrier = Func From To
@@ -32,5 +32,4 @@ module Function.Construct.Setoid where
   infixr 9 _∙_
   _∙_ : {A : Setoid a₁ a₂} {B : Setoid b₁ b₂} {C : Setoid c₁ c₂} → Func B C → Func A B → Func A C
   f ∙ g = Comp.function g f
-    
-  
+

@@ -64,9 +64,9 @@ module _ (C : Category o ℓ e) where
         cobind (cobind f ∘ counit) ∘ cobind id   ∎
 
       -- constructing δ from cobind
-      δ = ntHelper {F = F} {G = F ∘F F} record 
-        { η = λ X → cobind id 
-        ; commute = λ f → commute' (f ∘ counit) 
+      δ = ntHelper {F = F} {G = F ∘F F} record
+        { η = λ X → cobind id
+        ; commute = λ f → commute' (f ∘ counit)
         }
 
       module ε = NaturalTransformation ε
@@ -76,11 +76,11 @@ module _ (C : Category o ℓ e) where
       assoc' = commute' id
 
       identityˡ' : {X : Obj} → F₁ (ε.η X) ∘ δ.η X ≈ id
-      identityˡ' = begin 
-        cobind (counit ∘ counit) ∘ cobind id   ≈⟨ K.sym-assoc ⟩ 
-        cobind ((counit ∘ counit) ∘ cobind id) ≈⟨ K.cobind-≈ (pullʳ K.identityʳ) ⟩ 
-        cobind (counit ∘ id)                   ≈⟨ K.cobind-≈ identityʳ ⟩ 
-        cobind counit                          ≈⟨ K.identityˡ ⟩ 
+      identityˡ' = begin
+        cobind (counit ∘ counit) ∘ cobind id   ≈⟨ K.sym-assoc ⟩
+        cobind ((counit ∘ counit) ∘ cobind id) ≈⟨ K.cobind-≈ (pullʳ K.identityʳ) ⟩
+        cobind (counit ∘ id)                   ≈⟨ K.cobind-≈ identityʳ ⟩
+        cobind counit                          ≈⟨ K.identityˡ ⟩
         id                                     ∎
 
   Comonad⇒Kleisli : Comonad C → KleisliCotriple
@@ -100,7 +100,7 @@ module _ (C : Category o ℓ e) where
       open Functor F
 
       identityʳ' : {X Y : Obj} {k : F₀ X ⇒ Y} → ε.η Y ∘ F₁ k ∘ δ.η X ≈ k
-      identityʳ' {X} {Y} {k} = begin 
+      identityʳ' {X} {Y} {k} = begin
         ε.η Y ∘ F₁ k ∘ δ.η X     ≈⟨ pullˡ (ε.commute _) ⟩
         (k ∘ ε.η (F₀ X)) ∘ δ.η X ≈⟨ cancelʳ M.identityʳ ⟩
         k                        ∎

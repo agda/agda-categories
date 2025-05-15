@@ -120,7 +120,7 @@ module _ (has-kernels : ∀ {A B} → (f : A ⇒ B) → Kernel f) where
       K′ : Kernel K.kernel⇒
       K′ = has-kernels K.kernel⇒
 
-      kernel-pullback : Pullback ¡ ¡ 
+      kernel-pullback : Pullback ¡ ¡
       kernel-pullback = Pullback-resp-≈ (glue-pullback (Kernel⇒Pullback K) (swap (Kernel⇒Pullback K′))) (¡-unique (f ∘ ¡)) refl
 
       pullback-mono-mono : ∀ {A B} {f : A ⇒ B} → Mono f → Pullback f f

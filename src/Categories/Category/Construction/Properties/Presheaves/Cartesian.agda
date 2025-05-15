@@ -95,7 +95,7 @@ module IsCartesian o′ ℓ′ where
           }
         ; project₁ =  λ {F α β x} →
           let module α = NaturalTransformation α
-          in cong (α.η x) (Setoid.refl (Functor.₀ F _)) 
+          in cong (α.η x) (Setoid.refl (Functor.₀ F _))
         ; project₂ = λ {F α β x} →
           let module β = NaturalTransformation β
           in cong (β.η x) (Setoid.refl (Functor.₀ F _))

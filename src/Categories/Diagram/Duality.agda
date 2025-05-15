@@ -42,7 +42,7 @@ private
 -- terminal⇒coInitial and initial⇒coTerminal are in
 -- Categories.Object.Duality
 
-IsCoequalizer⇒IscoEqualizer : IsCoequalizer f g h → IsEqualizer h f g 
+IsCoequalizer⇒IscoEqualizer : IsCoequalizer f g h → IsEqualizer h f g
 IsCoequalizer⇒IscoEqualizer is-coe = record
   { equality = equality
   ; equalize = coequalize

@@ -72,7 +72,7 @@ boundary-map {n = n} f b = record
     open Boundary
 
 -- The boundary of an n-simplex
-∂Δ[_] : ℕ → ΔSet 
+∂Δ[_] : ℕ → ΔSet
 ∂Δ[_] ℕ.zero = const record
   { Carrier = ⊥
   ; _≈_ = λ ()
@@ -109,7 +109,7 @@ boundary-map {n = n} f b = record
 
 --------------------------------------------------------------------------------
 -- Horns
--- 
+--
 -- The idea here is essentially the same as the boundaries, but we exclude the kth
 -- face map as a possible factor.
 

@@ -62,7 +62,7 @@ module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) whe
   private
     D^C = Functors C D
     module D^C = Category D^C
-    module D   = Category D    
+    module D   = Category D
 
     module _ {J : Category o″ ℓ″ e″} (F : Functor J D^C) where
       private

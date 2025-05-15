@@ -6,7 +6,7 @@ module Categories.Functor.Instance.0-Truncation where
 --
 -- This is the right-adjoint of the inclusion functor from Setoids to
 -- Groupoids (see Categories.Functor.Adjoint.Instance.ZeroTruncation)
--- 
+--
 open import Function.Bundles using (Func)
 open import Relation.Binary using (Setoid)
 

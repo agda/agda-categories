@@ -45,7 +45,7 @@ module _ {o″ ℓ″ e″} {J : Category o″ ℓ″ e″} (F : Functor J D) wh
     }
     where module lim = LF.Limit lim
           open lim
-          
+
           ⊤ : CRF.Cone
           ⊤ = record
             { N    = R.F₀ apex
@@ -54,7 +54,7 @@ module _ {o″ ℓ″ e″} {J : Category o″ ℓ″ e″} (F : Functor J D) wh
               ; commute = λ f → [ R ]-resp-∘ (limit-commute f)
               }
             }
-            
+
           K′ : CRF.Cone → CF.Cone
           K′ K = record
             { N    = L.F₀ K.N
@@ -72,9 +72,9 @@ module _ {o″ ℓ″ e″} {J : Category o″ ℓ″ e″} (F : Functor J D) wh
             where module K = CRF.Cone K
                   open D.HomReasoning
                   open MR D
-                  
+
           module K′ K = CF.Cone (K′ K)
-          
+
           ! : ∀ {K : CRF.Cone} → CRF.Cones [ K , ⊤ ]
           ! {K} = record
             { arr     = R.F₁ (rep (K′ K)) C.∘ unit.η K.N
@@ -93,7 +93,7 @@ module _ {o″ ℓ″ e″} {J : Category o″ ℓ″ e″} (F : Functor J D) wh
                           open MR C
 
           module ! {K} = CRF.Cone⇒ (! {K})
-          
+
           !-unique : ∀ {K : CRF.Cone} (f : CRF.Cones [ K , ⊤ ]) → CRF.Cones [ ! ≈ f ]
           !-unique {K} f =
             let open C.HomReasoning
@@ -104,7 +104,7 @@ module _ {o″ ℓ″ e″} {J : Category o″ ℓ″ e″} (F : Functor J D) wh
                f.arr                            ∎
             where module K = CRF.Cone K
                   module f = CRF.Cone⇒ f
-                  
+
                   f′ : CF.Cones [ K′ K , limit ]
                   f′ = record
                     { arr     = Radjunct f.arr
