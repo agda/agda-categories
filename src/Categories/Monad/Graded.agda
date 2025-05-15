@@ -290,7 +290,7 @@ module _ {V : MonoidalCategory o ℓ e} {C : Category o′ ℓ′ e′} where
     ; sub-resp-≈       = λ α∼β → M.F-resp-≈ α∼β
     }
     where
-      private module M = MonoidalFunctor M
+      module M = MonoidalFunctor M
 
       μ = λ u v {A} → η (M.⊗-homo.η (u , v)) A
 
