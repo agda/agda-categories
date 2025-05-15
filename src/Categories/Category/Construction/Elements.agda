@@ -57,12 +57,12 @@ El {C = C} = record
     }
   ; identity = λ {P} → record
     { F⇒G = record
-      { η           = λ X → id , identity P _ 
+      { η           = λ X → id , identity P _
       ; commute     = λ _ → MR.id-comm-sym C
       ; sym-commute = λ _ → MR.id-comm C
       }
     ; F⇐G = record
-      { η           = λ X → id , identity P _ 
+      { η           = λ X → id , identity P _
       ; commute     = λ _ → MR.id-comm-sym C
       ; sym-commute = λ _ → MR.id-comm C
       }
@@ -74,7 +74,7 @@ El {C = C} = record
       ; sym-commute = λ _ → MR.id-comm C
       }
     ; F⇐G = record
-      { η           = λ X → id , identity Z₁ _ 
+      { η           = λ X → id , identity Z₁ _
       ; commute     = λ _ → MR.id-comm-sym C
       ; sym-commute = λ _ → MR.id-comm C
       }

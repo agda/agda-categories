@@ -57,7 +57,7 @@ module _  {C : Category o ℓ e} {D : Category o' ℓ' e'} (U : Functor D C) whe
               ((_* (F Y) (η (F Z) C.∘ g)) D.∘ (_* (F X) (η (F Y) C.∘ f)))
               (⟺ (hom-proof {X} {Y} {Z} {f} {g}))
               )
-      ; F-resp-≈ = λ {X} {Y} {f} {g} f≈g → sym (*-uniq (F X) (η (F Y) C.∘ f) (_* (F X) (η (F Y) C.∘ g)) (resp-proof  f≈g)) 
+      ; F-resp-≈ = λ {X} {Y} {f} {g} f≈g → sym (*-uniq (F X) (η (F Y) C.∘ f) (_* (F X) (η (F Y) C.∘ g)) (resp-proof  f≈g))
       }
       where
         open C.HomReasoning
@@ -76,9 +76,9 @@ module _  {C : Category o ℓ e} {D : Category o' ℓ' e'} (U : Functor D C) whe
         hom-proof : ∀ {X : C.Obj} {Y : C.Obj} {Z : C.Obj} {f : C [ X , Y ]} {g : C [ Y , Z ]} →
             C [ (η (F Z) C.∘ (g C.∘ f)) ≈ (U.₁ (_* (F Y) (η (F Z) C.∘ g) D.∘ _* (F X) (η (F Y) C.∘ f) ) C.∘ η (F X)) ]
         hom-proof {X} {Y} {Z} {f} {g} =  begin
-          FZ.η C.∘ (g C.∘ f)                                                     ≈˘⟨ pushˡ (FY.*-lift (FZ.η C.∘ g)) ⟩  
-          (U.₁((FZ.η C.∘ g) FY.*) C.∘ FY.η) C.∘ f                                ≈˘⟨ pushʳ (FX.*-lift (FY.η C.∘ f)) ⟩ 
-          U.₁((FZ.η C.∘ g) FY.*) C.∘ (U.₁((FY.η C.∘ f) FX.*) C.∘ FX.η)           ≈˘⟨ pushˡ U.homomorphism ⟩     
+          FZ.η C.∘ (g C.∘ f)                                                     ≈˘⟨ pushˡ (FY.*-lift (FZ.η C.∘ g)) ⟩
+          (U.₁((FZ.η C.∘ g) FY.*) C.∘ FY.η) C.∘ f                                ≈˘⟨ pushʳ (FX.*-lift (FY.η C.∘ f)) ⟩
+          U.₁((FZ.η C.∘ g) FY.*) C.∘ (U.₁((FY.η C.∘ f) FX.*) C.∘ FX.η)           ≈˘⟨ pushˡ U.homomorphism ⟩
           U.₁ ((FZ.η C.∘ g) FY.* D.∘ (FY.η C.∘ f) FX.*) C.∘ FX.η                 ∎
           where
             open MR C
@@ -106,7 +106,7 @@ module _  {C : Category o ℓ e} {D : Category o' ℓ' e'} (U : Functor D C) whe
 
   -- define a counit
   FO⇒counit : (F : ((X : C.Obj) → FreeObject U X)) → NaturalTransformation (FO⇒Functor F ∘F U) idF
-  FO⇒counit F = ntHelper (record { η = λ X → _* (F (U.₀ X)) C.id ; commute = λ {X} {Y} f → counit-comm {X} {Y} f }) 
+  FO⇒counit F = ntHelper (record { η = λ X → _* (F (U.₀ X)) C.id ; commute = λ {X} {Y} f → counit-comm {X} {Y} f })
       where
       open D.Equiv
       module F = Functor (FO⇒Functor F) using (₀; ₁; identity; homomorphism)

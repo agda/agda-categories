@@ -29,7 +29,6 @@ _∘⊣⊢_ {C = C} {D} {E} {L} {R} {L′} {R′} L⊣⊢R L′⊣⊢R′ = with
   ; zig    = zig
   }
   where
-  private
     module C   = Category C using (_∘_; id; assoc; identityˡ; module HomReasoning)
     module D   = Category D using (id)
     module E   = Category E using (_∘_; id; _≈_; assoc; identityˡ; module HomReasoning)

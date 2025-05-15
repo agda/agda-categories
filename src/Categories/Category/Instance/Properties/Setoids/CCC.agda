@@ -37,7 +37,7 @@ module _ ℓ where
     ; eval         = λ {X Y} →
       let module X = Setoid X in record
       { to = λ { (f , x) → f ⟨$⟩ x }
-      ; cong  = λ { {( f₁ , x₁)} {(f₂ , x₂)} (eq₁ , eq₂) → 
+      ; cong  = λ { {( f₁ , x₁)} {(f₂ , x₂)} (eq₁ , eq₂) →
           X.trans (eq₁ {x₁}) (Func.cong f₂ eq₂)}
       }
     ; curry        = λ {C A B} f → record

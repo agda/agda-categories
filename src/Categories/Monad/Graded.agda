@@ -89,7 +89,7 @@ record GradedKleisliTriple (V : MonoidalCategory o ℓ e) (C : Category o′ ℓ
     ext-identityʳ : ∀ {u A B} {f : A ⇒ T₀ u B} → sub λ⇒ ∘ ext unit f ∘ return ≈ f
     ext-assoc     : ∀ {u v w A B C} {f : B ⇒ T₀ w C} {g : A ⇒ T₀ v B} →
                     ext u (ext v f ∘ g) ≈ sub α⇒ ∘ (ext (u ⊗₀ v) f ∘ ext u g)
-                 
+
     ext-resp-≈  : ∀ {u v A B} {f g : A ⇒ T₀ v B} → f ≈ g → ext u f ≈ ext u g
 
     -- A coherence law relating subsumption and Kleisli extension
@@ -256,7 +256,7 @@ record GradedKleisliTriple (V : MonoidalCategory o ℓ e) (C : Category o′ ℓ
   ⊙-assoc : (f ⊙ g) ⊙ h ≈ sub α⇒ ∘ f ⊙ (g ⊙ h)
   ⊙-assoc {f = f} {g = g} {h = h} = begin
     ext _ (f ⊙ g) ∘ h           ≈⟨ pushˡ ext-assoc ⟩
-    sub α⇒ ∘ (f ⊙ ext _ g) ∘ h  ≈⟨ refl⟩∘⟨ assoc ⟩ 
+    sub α⇒ ∘ (f ⊙ ext _ g) ∘ h  ≈⟨ refl⟩∘⟨ assoc ⟩
     sub α⇒ ∘ f ⊙ (g ⊙ h)        ∎
 
 module _ {V : MonoidalCategory o ℓ e} {C : Category o′ ℓ′ e′} where
@@ -290,7 +290,7 @@ module _ {V : MonoidalCategory o ℓ e} {C : Category o′ ℓ′ e′} where
     ; sub-resp-≈       = λ α∼β → M.F-resp-≈ α∼β
     }
     where
-      private module M = MonoidalFunctor M
+      module M = MonoidalFunctor M
 
       μ = λ u v {A} → η (M.⊗-homo.η (u , v)) A
 
@@ -305,7 +305,7 @@ module _ {V : MonoidalCategory o ℓ e} {C : Category o′ ℓ′ e′} where
 
       return : A ⇒ T₀ unit A
       return {A} = η M.ε A
-      
+
       sub : u ≤ v → ∀ {A} → (T₀ u A ⇒ T₀ v A)
       sub α = η (M.₁ α) _
 
@@ -371,7 +371,7 @@ module _ {V : MonoidalCategory o ℓ e} {C : Category o′ ℓ′ e′} where
     { F               = F
     ; isMonoidal      = record
       { ε             = ntHelper (record
-        { η           = λ _ → return 
+        { η           = λ _ → return
         ; commute     = λ _ → return-commute
         })
       ; ⊗-homo        = ntHelper (record

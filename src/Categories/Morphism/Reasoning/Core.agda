@@ -282,7 +282,7 @@ module Cancellers (inv : h ∘ i ≈ id) where
 
   insertInner : f ∘ g ≈ (f ∘ h) ∘ (i ∘ g)
   insertInner = ⟺ cancelInner
-  
+
 open Cancellers public
 
 -- operate in the 'center' instead (like pull/push)

@@ -71,7 +71,7 @@ module _ (F : Functor (P ×ᶜ ((Category.op C) ×ᶜ C)) D) {ω : ∀ X → ∫
       end-η idN ⦃ ω A ⦄ ⦃ ω A ⦄                ≈⟨ end-identity ⦃ ω A ⦄ ⟩
       id                                       ∎
     ; homomorphism = λ {A B C} {f g} → begin
-      end-η (curry.₀.₁ F (P [ g ∘ f ])) ⦃ ω A ⦄ ⦃ ω C ⦄ 
+      end-η (curry.₀.₁ F (P [ g ∘ f ])) ⦃ ω A ⦄ ⦃ ω C ⦄
         ≈⟨ end-η-resp-≈ ⦃ ω A ⦄ ⦃ ω C ⦄ (curry.₀.homomorphism F) ⟩
       end-η (curry.₀.₁ F g ∘ᵥ curry.₀.₁ F f ) ⦃ ω A ⦄ ⦃ ω C ⦄
         ≈⟨  end-η-resp-∘ (curry.₀.₁ F f) (curry.₀.₁ F g) ⦃ ω A ⦄ ⦃ ω B ⦄ ⦃ ω C ⦄ ⟩
@@ -100,7 +100,7 @@ module _ (F : Functor (P ×ᶜ ((Category.op C) ×ᶜ C)) D) {ω : ∀ X → ∫
     ; commute = λ {p} {q} f → ω.unique′ q $ λ {c} → begin
       ω.dinatural.α q c ∘ ω.factor q (W' q) ∘ F'.₁ f
       ≈⟨ pullˡ (ω.universal q) ⟩
-      W.dinatural.α c .η q ∘ F'.₁ f 
+      W.dinatural.α c .η q ∘ F'.₁ f
       ≈⟨ W.dinatural.α c .NaturalTransformation.commute f  ⟩
       (curry.₀.₁ F f) .η (c , c) ∘ W.dinatural.α c .η p
       ≈˘⟨ refl⟩∘⟨ ω.universal p ⟩
@@ -179,7 +179,7 @@ module _ {C : Category o ℓ e}
       ≈⟨ F-resp-≈ (D.∘-resp-≈ˡ J.identity) ⟩
     F₁ (D.id D.∘ ω.dinatural.α p A)
       ≈⟨ F-resp-≈ D.identityˡ ⟩
-    F₁ (ω.dinatural.α p A) 
+    F₁ (ω.dinatural.α p A)
       ∎
 
   Continuous-pres-EndF :  F ∘F (EndF J {ω}) ≃ⁱ EndF (F ∘F J) {Fω}

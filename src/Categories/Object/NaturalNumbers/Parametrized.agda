@@ -33,7 +33,7 @@ record IsParametrizedNNO (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
 
   η : ∀ {A} → universal ⟨ id , z ∘ ! ⟩ (id ⁂ s) ≈ id {A × N}
   η = ⟺ (unique (⟺ identityˡ) id-comm)
-  
+
   universal-cong : ∀ {A X} → {f f′ : A ⇒ X} → {g g′ : X ⇒ X} → f ≈ f′ → g ≈ g′ → universal f g ≈ universal f′ g′
   universal-cong f≈f′ g≈g′ = unique (⟺ f≈f′ ○  commute₁) (∘-resp-≈ˡ (⟺ g≈g′) ○ commute₂)
 
@@ -42,21 +42,21 @@ record IsParametrizedNNO (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
     { z = z
     ; s = s
     ; universal = λ {A} q f → universal q f ∘ ⟨ ! , id ⟩
-    ; z-commute = λ {A} {q} {f} → begin 
-      q                                  ≈⟨ commute₁ ⟩ 
+    ; z-commute = λ {A} {q} {f} → begin
+      q                                  ≈⟨ commute₁ ⟩
       universal q f ∘ ⟨ id , z ∘ ! ⟩     ≈⟨ refl⟩∘⟨ ⟨⟩-cong₂ !-unique₂ (⟺ z∘! ○ ⟺ identityˡ) ⟩
       universal q f ∘ ⟨ ! ∘ z , id ∘ z ⟩ ≈˘⟨ pullʳ ⟨⟩∘ ⟩
       (universal q f ∘ ⟨ ! , id ⟩) ∘ z   ∎
-    ; s-commute = λ {A} {q} {f} → begin 
-      f ∘ universal q f ∘ ⟨ ! , id ⟩          ≈⟨ pullˡ commute₂ ⟩ 
+    ; s-commute = λ {A} {q} {f} → begin
+      f ∘ universal q f ∘ ⟨ ! , id ⟩          ≈⟨ pullˡ commute₂ ⟩
       (universal q f ∘ (id ⁂ s)) ∘ ⟨ ! , id ⟩ ≈⟨ pullʳ ⁂∘⟨⟩ ⟩
       universal q f ∘ ⟨ id ∘ ! , s ∘ id ⟩     ≈⟨ refl⟩∘⟨ ⟨⟩-cong₂ !-unique₂ id-comm ⟩
       universal q f ∘ ⟨ ! ∘ s , id ∘ s ⟩      ≈˘⟨ pullʳ ⟨⟩∘ ⟩
       (universal q f ∘ ⟨ ! , id ⟩) ∘ s        ∎
-    ; unique = λ {A} {q} {f} {u} eqᶻ eqˢ → begin 
-      u                          ≈⟨ introʳ project₂ ○ sym-assoc ⟩ 
-      (u ∘ π₂) ∘ ⟨ ! , id ⟩      ≈⟨ unique (eqᶻ ○ (pushʳ (z∘! ○ (⟺ project₂)))) 
-                                           (pullˡ eqˢ ○ ⟺ (pullʳ project₂ ○ sym-assoc)) 
+    ; unique = λ {A} {q} {f} {u} eqᶻ eqˢ → begin
+      u                          ≈⟨ introʳ project₂ ○ sym-assoc ⟩
+      (u ∘ π₂) ∘ ⟨ ! , id ⟩      ≈⟨ unique (eqᶻ ○ (pushʳ (z∘! ○ (⟺ project₂))))
+                                           (pullˡ eqˢ ○ ⟺ (pullʳ project₂ ○ sym-assoc))
                                   ⟩∘⟨refl ⟩
       universal q f ∘ ⟨ ! , id ⟩ ∎
     }

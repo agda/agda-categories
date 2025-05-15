@@ -55,6 +55,6 @@ module _ (N : NNO) (N′ : NNO) where
       }
     }
     where
-      universal-∘ : ∀ (N N′ : NNO) → universal N′ (z N) (s N) ∘ universal N (z N′) (s N′) ≈ id  
+      universal-∘ : ∀ (N N′ : NNO) → universal N′ (z N) (s N) ∘ universal N (z N′) (s N′) ≈ id
       universal-∘ N N′ = unique N (z-commute N′ ○ pushʳ (z-commute N)) (pullˡ (s-commute N′) ○ assoc ○ ∘-resp-≈ʳ (s-commute N) ○ ⟺ assoc) ○ (η N)
-      
+

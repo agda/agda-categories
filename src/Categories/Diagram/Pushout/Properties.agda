@@ -34,20 +34,20 @@ module _ (p : Pushout f g) where
   private
     pullback : Pullback f g
     pullback = Pushout⇒coPullback p
-  
+
   open Pullback pullback
     using (unique′; id-unique; unique-diagram)
     public
 
   up-to-iso : (p′ : Pushout f g) → Pushout.Q p ≅ Pushout.Q p′
   up-to-iso p′ = op-≅⇒≅ (P′.up-to-iso (Pushout⇒coPullback p) (Pushout⇒coPullback p′))
-  
+
   swap : Pushout g f
   swap = coPullback⇒Pushout (P′.swap pullback)
-  
+
   glue : Pushout h i₁ → Pushout (h ∘ f) g
   glue p = coPullback⇒Pushout (P′.glue pullback (Pushout⇒coPullback p))
-  
+
   unglue : Pushout (h ∘ f) g → Pushout h i₁
   unglue p = coPullback⇒Pushout (P′.unglue pullback (Pushout⇒coPullback p))
 

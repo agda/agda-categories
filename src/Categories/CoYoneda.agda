@@ -74,7 +74,7 @@ module Yoneda (C : Category o ℓ e) where
     ; to-cong = λ i≈j → i≈j
     ; from-cong = λ i≈j → cong (F.₁ _) i≈j
     ; inverse =
-       ( λ {b} {nat} eq → 
+       ( λ {b} {nat} eq →
           let module SR = SetoidR (F.₀ a) in
           let open SR in begin
           to (η nat a) id ≈⟨ eq ⟩
@@ -88,7 +88,7 @@ module Yoneda (C : Category o ℓ e) where
             to (F.₁ f) y                 ≈⟨ cong (F.₁ f) eq ⟩
             to (F.₁ f) (to (η nat a) id) ≈⟨ sym-commute nat f  ⟩
             to (η nat b) (f ∘ id ∘ id)   ≈⟨ cong (η nat b) (refl⟩∘⟨ identity² ○ identityʳ) ⟩
-            to (η nat b) f               ∎ 
+            to (η nat b) f               ∎
     }
     where
     module F = Functor F using (₀; ₁; F-resp-≈; homomorphism; identity)

@@ -260,7 +260,7 @@ module _ ℓ where
       pb-of-re-is-re : {A B D : Setoid ℓ ℓ} (f : B ⇒ A) {u : D ⇒ A} →
         RegularEpi S f → (pb : Pullback S f u) → RegularEpi S (p₂ pb)
       pb-of-re-is-re {A}{B}{D} f {u} record { C = C ; h = _ ; g = _ ; coequalizer = coeq } pb =
-        Surjective⇒RegularEpi (p₂ pb) λ y → 
+        Surjective⇒RegularEpi (p₂ pb) λ y →
           let (x , eq) = Epi⇒Surjective f (Coequalizer⇒Epi S record { arr = f ; isCoequalizer = coeq }) (u ⟨$⟩ y) in
           let pt = mk-× x y eq in
           P₀⇒P₁ ⟨$⟩ pt , p₂-≈ {pt}

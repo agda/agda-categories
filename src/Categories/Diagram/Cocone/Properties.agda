@@ -87,7 +87,7 @@ module _ {F G : Functor J C} (α : NaturalTransformation F G) where
     module α  = NaturalTransformation α
     module CF = Coc F
     module CG = Coc G
-    
+
   nat-map-Cocone : CG.Cocone → CF.Cocone
   nat-map-Cocone K = coCone⇒Cocone C (nat-map-Cone α.op (Cocone⇒coCone C K))
 

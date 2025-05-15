@@ -22,7 +22,7 @@ record DaggerFunctor (C : DaggerCategory o ℓ e) (D : DaggerCategory o′ ℓ�
 
   field
     F-resp-† : ∀ {X Y} {f : X C.⇒ Y} → F₁ f D.† D.≈ F₁ (f C.†)
-  
+
 id : ∀ {C : DaggerCategory o ℓ e} → DaggerFunctor C C
 id {C = C} = record
   { functor = idF

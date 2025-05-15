@@ -27,7 +27,7 @@ flattenPⁿ {m = m} {n} η = record
   ; sym-commute = λ fs → η.sym-commute (fs ∙ join _ _)
   }
   where
-  private module η = NaturalTransformation η
+  module η = NaturalTransformation η
 
 reduceN′ : ∀ {i j : Level} {I : Set i} {J : Set j}  {F F′ : Powerendo′ I} {G G′ : Powerendo′ J}
   (H : Bifunctor C C C)

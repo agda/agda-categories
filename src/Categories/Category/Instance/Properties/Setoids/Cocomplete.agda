@@ -32,7 +32,7 @@ module _ {o ℓ e} c ℓ′ {J : Category o ℓ e} (F : Functor J (Setoids (o �
 
   coc : Rel vertex-carrier (o ⊔ ℓ ⊔ c ⊔ ℓ′)
   coc (X , x) (Y , y) = Σ[ f ∈ J [ X , Y ] ] Y [ (F₁ f ⟨$⟩ x) ≈ y ]
-    
+
   coc-preorder : Preorder (o ⊔ c) (o ⊔ c) (o ⊔ ℓ ⊔ c ⊔ ℓ′)
   coc-preorder = record
     { Carrier    = vertex-carrier

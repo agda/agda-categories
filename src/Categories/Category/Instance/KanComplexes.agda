@@ -24,11 +24,11 @@ module _ (o ℓ : Level) where
   open IsKanComplex
   open Equiv
   open MR (SimplicialSet o ℓ)
-  
+
   -- As we are working with Algebraic Kan Complexes, maps between two Kan Complexes ought
   -- to take the chosen filler in 'X' to the chosen filler in 'Y'.
   PreservesFiller : ∀ {X Y : ΔSet} → IsKanComplex o ℓ X → IsKanComplex o ℓ Y → (X ⇒ Y) → Set (o ⊔ ℓ)
-  PreservesFiller {X} {Y} X-Kan Y-Kan f = ∀ {n} {k} → (i : Λ[ n , k ] ⇒ X) → (f ∘ filler X-Kan {n} i) ≈ filler Y-Kan (f ∘ i)  
+  PreservesFiller {X} {Y} X-Kan Y-Kan f = ∀ {n} {k} → (i : Λ[ n , k ] ⇒ X) → (f ∘ filler X-Kan {n} i) ≈ filler Y-Kan (f ∘ i)
 
   KanComplexes : Category (suc o ⊔ suc ℓ) (o ⊔ ℓ ⊔ (o ⊔ ℓ)) (o ⊔ ℓ)
   KanComplexes = SubCategory (SimplicialSet o ℓ) {I = Σ ΔSet (IsKanComplex o ℓ)} $ record

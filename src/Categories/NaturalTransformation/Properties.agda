@@ -73,7 +73,7 @@ module _ {F G : Functor C D} where
       F₁ G′ f ∘ ⇒.η X ∘ η X  ∎
     }
     where open NaturalIsomorphism G≃G′
-          open NaturalTransformation α  
+          open NaturalTransformation α
 
 module _ (F : Bifunctor C D E) where
 

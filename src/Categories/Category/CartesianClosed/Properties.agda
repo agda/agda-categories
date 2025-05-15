@@ -77,7 +77,7 @@ open IsStrictInitial using (is-initial; is-strict)
 initial→strict-initial : ∀ {⊥} → IsInitial ⊥ → IsStrictInitial ⊥
 initial→strict-initial i .is-initial = i
 -- proof from https://math.stackexchange.com/a/4877251/606410
-initial→strict-initial {⊥} i .is-strict f = record 
+initial→strict-initial {⊥} i .is-strict f = record
   { from = f
   ; to = !
   ; iso = record

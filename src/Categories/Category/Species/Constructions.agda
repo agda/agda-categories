@@ -80,7 +80,7 @@ module _ (o : Level) where
 
   -- One can be specified in two ways.  The traditional one (which doesn't generalize as well)
   -- uses 'counting' directly. Don't even try it here, it just leads to much pain.
-  
+
   -- There is a much nicer specification.
   One : Structure
   One = Hom[ 𝔹 ][ ⊤-FinSetoid ,-]
@@ -108,7 +108,7 @@ module _ (o : Level) where
                  ; (inj₂ x≈y) → inj₂ (Func.cong (B.₁ X≅Y) x≈y)}
       }
     ; identity = λ { {S , n , pf} {inj₁ x} → inj₁ (A.identity {x = x})
-                   ; {S , n , pf} {inj₂ y} → inj₂ B.identity} 
+                   ; {S , n , pf} {inj₂ y} → inj₂ B.identity}
     ; homomorphism = λ { {x = inj₁ x} → inj₁ A.homomorphism
                        ; {x = inj₂ y} → inj₂ B.homomorphism}
     ; F-resp-≈ = λ { f≈g {inj₁ x} → inj₁ (A.F-resp-≈ f≈g)
