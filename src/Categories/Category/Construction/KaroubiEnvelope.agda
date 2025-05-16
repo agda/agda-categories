@@ -14,7 +14,7 @@ private
   module 𝒞 = Category 𝒞
   open 𝒞.HomReasoning
   open 𝒞.Equiv
-  
+
   open Idempotent
   open Idempotent⇒
 

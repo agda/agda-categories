@@ -19,7 +19,7 @@ open import Categories.Morphism C
 
 private
   module C = Category C
-  
+
 open C hiding (_≈_)
 
 private
@@ -85,7 +85,7 @@ record RigCategory {M⊎ M× : Monoidal C} (S⊎ : Symmetric M⊎)
     annᵣ-commute : CommutativeSquare (f ⊗₁ id) ρ* ρ* id
     dl-commute : CommutativeSquare (f ⊗₁ (g ⊕₁ h)) dl.from dl.from ((f ⊗₁ g) ⊕₁ (f ⊗₁ h))
     dr-commute : CommutativeSquare ((f ⊕₁ g) ⊗₁ h) dr.from dr.from ((f ⊗₁ h) ⊕₁ (g ⊗₁ h))
-    
+
   -- need II, IX, X, XV
   -- choose I, IV, VI, XI, XIII, XIX, XXIII and (XVI, XVII)
   field

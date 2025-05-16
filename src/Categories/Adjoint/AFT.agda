@@ -74,7 +74,7 @@ module _ {R : Functor C D} where
         X↙R = X ↙ R
         module X↙R = Category X↙R
 
-        s′ : SolutionSet X↙R 
+        s′ : SolutionSet X↙R
         s′ = record
           { D   = D′
           ; arr = arr′

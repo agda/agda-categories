@@ -8,6 +8,7 @@ open import Data.Product using (Σ; _,_)
 open import Categories.Category
 open import Categories.Functor
 open import Categories.Functor.Bifunctor
+
 import Categories.Morphism.Reasoning as MR
 
 private

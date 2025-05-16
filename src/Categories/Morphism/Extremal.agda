@@ -22,12 +22,12 @@ IsExtremalEpi {A = A} {B = B} {f = f} epi =
 IsExtremalMono : ∀ {A B} {f : A ⇒ B} → Mono f → Set (o ⊔ ℓ ⊔ e)
 IsExtremalMono {A = A} {B = B} {f = f} mono =
   ∀ {X} {g : X ⇒ B} {i : A ⇒ X} → Epi i → f ≈ g ∘ i → IsIso i
-    
+
 record ExtremalEpi {A B} (f : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
   field
     epi : Epi f
     extremal : IsExtremalEpi epi
-  
+
 
 record ExtremalMono {A B} (f : A ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
   field

@@ -95,7 +95,7 @@ module IsCartesianClosed {o} (C : Category o o o) where
         { to = λ { (α , x) →
           let module α = NaturalTransformation α
           in α.η X ⟨$⟩ (C.id , x) }
-        ; cong  = λ { {α₁ , f₁} {α₂ , f₂} (eq₁ , eq₂) → 
+        ; cong  = λ { {α₁ , f₁} {α₂ , f₂} (eq₁ , eq₂) →
             let module SR = SetoidR (F.F₀ X) in
             let open SR
                 open NaturalTransformation
@@ -147,7 +147,7 @@ module IsCartesianClosed {o} (C : Category o o o) where
       let module H  = Functor H
           module α  = NaturalTransformation α
       in cong (α.η _) (H.identity , (Setoid.refl (Functor.F₀ G _)))
-    ; curry-unique = λ {F G H} {α β} eq {X} {x y} → λ { {f , z} → 
+    ; curry-unique = λ {F G H} {α β} eq {X} {x y} → λ { {f , z} →
       let module F = Functor F
           module G = Functor G
           module α = NaturalTransformation α

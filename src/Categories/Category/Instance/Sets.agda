@@ -7,7 +7,7 @@ module Categories.Category.Instance.Sets where
 open import Level
 open import Relation.Binary
 open import Function using (_∘′_) renaming (id to idf)
-open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
+open import Relation.Binary.PropositionalEquality as ≡ using (_≡_; _≗_)
 
 open import Categories.Category
 
@@ -15,22 +15,21 @@ Sets : ∀ o → Category (suc o) o o
 Sets o = record
   { Obj       = Set o
   ; _⇒_       = λ c d → c → d
-  ; _≈_       = λ f g → ∀ {x} → f x ≡ g x
+  ; _≈_       = _≗_
   ; id        = idf
   ; _∘_       = _∘′_
-  ; assoc     = ≡.refl
-  ; sym-assoc = ≡.refl
-  ; identityˡ = ≡.refl
-  ; identityʳ = ≡.refl
-  ; identity² = ≡.refl
+  ; assoc     = λ _ → ≡.refl
+  ; sym-assoc = λ _ → ≡.refl
+  ; identityˡ = λ _ → ≡.refl
+  ; identityʳ = λ _ → ≡.refl
+  ; identity² = λ _ → ≡.refl
   ; equiv     = record
-    { refl  = ≡.refl
-    ; sym   = λ eq → ≡.sym eq
-    ; trans = λ eq₁ eq₂ → ≡.trans eq₁ eq₂
+    { refl  = λ _ → ≡.refl
+    ; sym   = λ eq x → ≡.sym (eq x)
+    ; trans = λ eq₁ eq₂ x → ≡.trans (eq₁ x) (eq₂ x)
     }
   ; ∘-resp-≈  = resp
   }
   where resp : ∀ {A B C : Set o} {f h : B → C} {g i : A → B} →
-                 ({x : B} → f x ≡ h x) →
-                 ({x : A} → g x ≡ i x) → {x : A} → f (g x) ≡ h (i x)
-        resp {h = h} eq₁ eq₂ = ≡.trans eq₁ (≡.cong h eq₂)
+                 (f ≗ h) → (g ≗ i) → f ∘′ g ≗ h ∘′ i
+        resp {h = h} eq₁ eq₂ x = ≡.trans (eq₁ _) (≡.cong h (eq₂ x))

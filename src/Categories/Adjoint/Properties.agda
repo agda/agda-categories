@@ -12,6 +12,8 @@ open import Categories.Adjoint.RAPL using (rapl)
 open import Categories.Category using (Category; _[_,_]; _[_≈_]; _[_∘_])
 open import Categories.Category.Product using (_⁂_; _⁂ⁿⁱ_)
 open import Categories.Category.Construction.Comma using (CommaObj; Comma⇒; _↙_)
+open import Categories.Diagram.Cone using (Cone; Cone⇒)
+open import Categories.Diagram.Cone.Properties using (F-map-Coneʳ)
 open import Categories.Diagram.Limit using (Limit)
 open import Categories.Diagram.Colimit using (Colimit)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
@@ -34,12 +36,12 @@ import Categories.Yoneda.Properties as YP using (yoneda-NI)
 import Categories.Diagram.Duality as Duality using (coLimit⇒Colimit; Colimit⇒coLimit)
 
 import Categories.Morphism.Reasoning as MR using (pushʳ; pullˡ; pushˡ; elimʳ; center; center⁻¹;
-  elimˡ; cancelˡ; pullʳ; cancelʳ; id-comm-sym)
+  elimˡ; cancelˡ; pullʳ; cancelʳ; id-comm-sym; extendʳ)
 
 private
   variable
     o ℓ e : Level
-    C D E J : Category o ℓ e
+    C D E J K : Category o ℓ e
 
 -- if the left adjoint functor is a partial application of bifunctor, then it uniquely
 -- determines a bifunctor compatible with the right adjoint functor.
@@ -168,6 +170,73 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) (F : Functor J C)
 
   lapc : Colimit F → Colimit (L ∘F F)
   lapc col = Duality.coLimit⇒Colimit D (rapl (Adjoint.op L⊣R) F.op (Duality.Colimit⇒coLimit C col))
+
+-- left adjoint preserves diagrams in limits
+module _ {L : Functor J K} {R : Functor K J} (L⊣R : L ⊣ R) {F : Functor K C} (Lm : Limit F) where
+
+  private
+    module L = Functor L
+    module R = Functor R
+    module F = Functor F
+  open Adjoint L⊣R
+  open Category C
+  open HomReasoning
+  open MR C
+  open Limit Lm
+
+  private module _ {A : Cone (F ∘F L)} where
+
+    private module A = Cone A
+
+    A′ : Cone F
+    A′ = record
+      { N = A.N
+      ; apex = record
+        { ψ = λ X → F.₁ (counit.η X) ∘ A.ψ (R.₀ X)
+        ; commute = λ {X} {Y} f → begin
+          F.₁ f ∘ F.₁ (counit.η X) ∘ A.ψ (R.₀ X)             ≈⟨ extendʳ ([ F ]-resp-square (counit.sym-commute f)) ⟩
+          F.₁ (counit.η Y) ∘ F.₁ (L.₁ (R.₁ f)) ∘ A.ψ (R.₀ X) ≈⟨ refl⟩∘⟨ A.commute (R.₁ f) ⟩
+          F.₁ (counit.η Y) ∘ A.ψ (R.₀ Y)                     ∎
+        }
+      }
+
+    !cone : Cone⇒ (F ∘F L) A (F-map-Coneʳ L limit)
+    !cone = record
+      { arr = rep A′
+      ; commute = λ {X} → begin
+        proj (L.₀ X) ∘ rep A′                                 ≈⟨ commute ⟩
+        F.₁ (counit.η (L.₀ X)) ∘ A.ψ (R.₀ (L.₀ X))            ≈⟨ refl⟩∘⟨ A.commute (unit.η X) ⟨
+        F.₁ (counit.η (L.₀ X)) ∘ F.₁ (L.₁ (unit.η X)) ∘ A.ψ X ≈⟨ cancelˡ ([ F ]-resp-∘ zig ○ F.identity) ⟩
+        A.ψ X                                                 ∎
+      }
+
+  private
+    !cone-unique : ∀ {A} (f : Cone⇒ (F ∘F L) A (F-map-Coneʳ L limit)) → rep (A′ {A}) ≈ Cone⇒.arr f
+    !cone-unique {A} f = terminal.!-unique {A′ {A}} record
+      { arr = f.arr
+      ; commute = λ {X} → begin
+        proj X ∘ f.arr                 ≈⟨ pushˡ (⟺ (limit-commute (counit.η X))) ⟩
+        F.₁ (counit.η X) ∘ proj (L.₀ (R.₀ X)) ∘ f.arr ≈⟨ (refl⟩∘⟨ f.commute) ⟩
+        F.₁ (counit.η X) ∘ A.ψ (R.₀ X) ∎
+      }
+      where
+        module A = Cone A
+        module f = Cone⇒ f
+
+  la-preserves-diagram : Limit (F ∘F L)
+  la-preserves-diagram = record
+    { terminal = record
+      { ⊤ = F-map-Coneʳ L limit
+      ; ⊤-is-terminal = record
+        { ! = !cone
+        ; !-unique = !cone-unique
+        }
+      }
+    }
+
+-- right adjoint preserves diagrams in colimits
+ra-preserves-diagram : {L : Functor J K} {R : Functor K J} (L⊣R : L ⊣ R) {F : Functor J C} → Colimit F → Colimit (F ∘F R)
+ra-preserves-diagram L⊣R colim = Duality.coLimit⇒Colimit _ (la-preserves-diagram (Adjoint.op L⊣R) (Duality.Colimit⇒coLimit _ colim))
 
 -- adjoint functors induce monads and comonads
 module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where

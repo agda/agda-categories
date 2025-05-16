@@ -37,9 +37,9 @@ module Product {o : Level} where
     ; π₁ = proj₁
     ; π₂ = proj₂
     ; ⟨_,_⟩ = <_,_>
-    ; project₁ = refl
-    ; project₂ = refl
-    ; unique = λ p₁ p₂ {x} → sym (cong₂ _,_ (p₁ {x}) (p₂ {x}))
+    ; project₁ = λ _ → refl
+    ; project₂ = λ _ → refl
+    ; unique = λ p₁ p₂ x → sym (cong₂ _,_ (p₁ x) (p₂ x))
     } }
 
   Sets-is : Cartesian
@@ -59,9 +59,9 @@ module Coproduct {o : Level} where
     ; i₁ = inj₁
     ; i₂ = inj₂
     ; [_,_] = [_,_]′
-    ; inject₁ = refl
-    ; inject₂ = refl
-    ; unique = λ { i₁ i₂ {inj₁ x} → sym (i₁ {x}) ; i₁ i₂ {inj₂ y} → sym (i₂ {y})} -- stdlib?
+    ; inject₁ = λ _ → refl
+    ; inject₂ = λ _ → refl
+    ; unique = λ { i₁ i₂ (inj₁ x) → sym (i₁ x) ; i₁ i₂ (inj₂ y) → sym (i₂ y)} -- stdlib?
     } }
 
   Sets-is : Cocartesian

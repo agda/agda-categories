@@ -17,5 +17,5 @@ record IsTerminal (⊤ : Obj) : Set (o ⊔ ℓ ⊔ e ⊔ t) where
 
     η₁ : ∀ {A} f → hom A ⊤ [ f ≅ !₁ ]
     η₂ : ∀ {A}{f g}(α : hom A ⊤ [ f , g ])
-       → Along η₁ _ , η₁ _ [ α ≈ !₂ ] 
+       → Along η₁ _ , η₁ _ [ α ≈ !₂ ]
 

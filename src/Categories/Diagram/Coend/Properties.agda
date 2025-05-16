@@ -2,29 +2,27 @@
 
 module Categories.Diagram.Coend.Properties where
 
-open import Categories.Category.Core using (Category)
-open import Categories.Category.Product
-import Categories.Category.Construction.Cowedges as Cowedges
-open import Categories.Category.Construction.Functors
-open import Categories.Category.Equivalence
-open import Categories.Category.Equivalence.Preserves
-open import Categories.Diagram.Coend
-open import Categories.Diagram.Colimit
-open import Categories.Diagram.Cowedge
-open import Categories.Diagram.Cowedge.Properties
-open import Categories.Functor using (Functor)
-open import Categories.Functor.Bifunctor using (Bifunctor)
-open import Categories.Functor.Instance.Twisted
-import Categories.Morphism as M
-open import Categories.NaturalTransformation hiding (id)
-open import Categories.NaturalTransformation.Dinatural
-open import Categories.Object.Initial as Initial
-
-import Categories.Morphism.Reasoning as MR
-
-open import Level
+open import Level using (Level)
 open import Data.Product using (Σ; _,_)
 open import Function using (_$_)
+
+open import Categories.Category.Core using (Category)
+open import Categories.Category.Construction.Arrow using (Morphism; mor)
+open import Categories.Category.Construction.Functors using (Functors)
+open import Categories.Category.Product using (Product)
+open import Categories.Diagram.Coend using (Coend)
+open import Categories.Diagram.Coequalizer using (Coequalizer)
+open import Categories.Diagram.Cowedge using (Cowedge; module Cowedge-Morphism)
+open import Categories.Functor using (Functor)
+open import Categories.Functor.Bifunctor using (Bifunctor)
+open import Categories.NaturalTransformation using (NaturalTransformation)
+open import Categories.NaturalTransformation.Dinatural using (DinaturalTransformation; dtHelper; _∘>_; extranaturalˡ; extranatural-commˡ)
+open import Categories.Object.Coproduct.Indexed using (IndexedCoproductOf)
+open import Categories.Object.Initial as Initial using (Initial)
+
+import Categories.Category.Construction.Cowedges as Cowedges
+import Categories.Morphism as M
+import Categories.Morphism.Reasoning as MR
 
 module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
   (F : Bifunctor (Category.op C) C D) where
@@ -95,7 +93,7 @@ module _ (F : Functor E (Functors (Product (Category.op C) C) D)) where
 
 -- A Natural Transformation between two functors induces an arrow between the
 -- (object part of) the respective coends.
-module _ {P Q : Functor (Product (Category.op C) C) D} (P⇒Q : NaturalTransformation P Q) where
+module _ {P Q : Bifunctor (Category.op C) C D} (P⇒Q : NaturalTransformation P Q) where
   open Coend renaming (E to coend)
   open Category D
 
@@ -127,32 +125,60 @@ module _ {P Q : Functor (Product (Category.op C) C) D} (P⇒Q : NaturalTransform
     open Cowedge
     open MR D
 
-module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ ℓ′ e′}
-  (F : Bifunctor (Category.op C) C D) where
+-- We can characterize a coend in terms of coproducts and coequalizers
+-- Remark 1.2.4 of Coend Calculus
+-- See also Categories.Diagram.Colimit.Properties.build-colim
+module _
+  {P : Bifunctor (Category.op C) C D}
+  (OP : IndexedCoproductOf D λ X → Bifunctor.₀ P (X , X))
+  (MP : IndexedCoproductOf D λ f → Bifunctor.₀ P (Morphism.cod {C = C} f , Morphism.dom f))
+  where
+
+  open Category D
+
   private
-    Eq = CoconesTwist≅Cowedges F
-    module O = M D
-  open M (Cowedges.Cowedges F)
-  open Functor
+    module P = Bifunctor P
+    module OP = IndexedCoproductOf OP
+    module MP = IndexedCoproductOf MP
 
-  open StrongEquivalence Eq renaming (F to F⇒)
+    s t : MP.X ⇒ OP.X
+    s = MP.[ (λ f → OP.ι (Morphism.dom f) ∘ P.₁ˡ (Morphism.arr f)) ]
+    t = MP.[ (λ f → OP.ι (Morphism.cod f) ∘ P.₁ʳ (Morphism.arr f)) ]
 
-  -- Coends and Colimits are equivalent, in the category Cowedge F
-  Coend-as-Colimit : (coend : Coend F) → (cl : Colimit (Twist′ C D F)) → Coend.cowedge coend ≅ F₀ F⇒ (Colimit.initial.⊥ cl)
-  Coend-as-Colimit coend cl = Initial.up-to-iso (Cowedges.Cowedges F) (Coend⇒Initial F coend) (pres-Initial Eq initial)
-    where
-    open Colimit cl
+  open HomReasoning
+  open MR D
 
-  -- Which then induces that the objects, in D, are also equivalent.
-  Coend-as-Colimit-on-Obj : (coend : Coend F) → (cl : Colimit (Twist′ C D F)) → Coend.E coend O.≅ Colimit.coapex cl
-  Coend-as-Colimit-on-Obj coend cl = record
-    { from = Cowedge-Morphism.u (M._≅_.from X≅Y)
-    ; to = Cowedge-Morphism.u (M._≅_.to X≅Y)
-    ; iso = record
-      { isoˡ = M._≅_.isoˡ X≅Y
-      ; isoʳ = M._≅_.isoʳ X≅Y
+  build-Coend : Coequalizer D s t → Coend P
+  build-Coend eq = record
+    { cowedge = record
+      { E = obj
+      ; dinatural = extranaturalˡ
+        (λ X → arr ∘ OP.ι X)
+        λ {X Y f} → begin
+          (arr ∘ OP.ι X) ∘ P.₁ˡ f  ≈⟨ extendˡ MP.commute ⟨
+          (arr ∘ s) ∘ MP.ι (mor f) ≈⟨ equality ⟩∘⟨refl ⟩
+          (arr ∘ t) ∘ MP.ι (mor f) ≈⟨ extendˡ MP.commute ⟩
+          (arr ∘ OP.ι Y) ∘ P.₁ʳ f  ∎
       }
+    ; factor = λ W → coequalize (factor-lemma W)
+    ; universal = Equiv.sym (pushˡ universal) ○ OP.commute
+    ; unique = λ eq′ → Equiv.sym (unique (OP.unique (assoc ○ eq′)))
     }
     where
-      X≅Y = Coend-as-Colimit coend cl
-      open Category D
+      open Coequalizer eq
+      abstract
+        factor-lemma : (W : Cowedge P) → OP.[ Cowedge.dinatural.α W ] ∘ s ≈ OP.[ Cowedge.dinatural.α W ] ∘ t
+        factor-lemma W = begin
+          OP.[ dinatural.α ] ∘ s
+            ≈⟨ MP.∘[] (λ f → OP.ι (Morphism.dom f) ∘ P.₁ˡ (Morphism.arr f)) OP.[ dinatural.α ] ⟩
+          MP.[ (λ f → OP.[ dinatural.α ] ∘ (OP.ι (Morphism.dom f) ∘ P.₁ˡ (Morphism.arr f))) ]
+            ≈⟨ MP.[]-cong (pullˡ OP.commute) ⟩
+          MP.[ (λ f → dinatural.α (Morphism.dom f) ∘ P.₁ˡ (Morphism.arr f)) ]
+            ≈⟨ MP.[]-cong (extranatural-commˡ dinatural) ⟩
+          MP.[ (λ f → dinatural.α (Morphism.cod f) ∘ P.₁ʳ (Morphism.arr f)) ]
+            ≈⟨ MP.[]-cong (pullˡ OP.commute) ⟨
+          MP.[ (λ f → OP.[ dinatural.α ] ∘ (OP.ι (Morphism.cod f) ∘ P.₁ʳ (Morphism.arr f))) ]
+            ≈⟨ MP.∘[] (λ f → OP.ι (Morphism.cod f) ∘ P.₁ʳ (Morphism.arr f)) OP.[ dinatural.α ] ⟨
+          OP.[ dinatural.α ] ∘ t
+            ∎
+          where open Cowedge W

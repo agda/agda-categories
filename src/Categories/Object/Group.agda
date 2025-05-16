@@ -27,7 +27,7 @@ record IsGroup (G : Obj) : Set (ℓ ⊔ e) where
     isMonoid : IsMonoid G
 
   open IsMonoid isMonoid public
-       
+
   field
     -- inverse operation
     ι : G ⇒ G

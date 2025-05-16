@@ -23,7 +23,7 @@ record IsSplitIdempotent {A : Obj} (i : A ⇒ A) : Set (o ⊔ ℓ ⊔ e) where
     {obj}    : Obj
     retract  : A ⇒ obj
     section  : obj ⇒ A
-    retracts : retract ∘ section ≈ id 
+    retracts : retract ∘ section ≈ id
     splits   : section ∘ retract ≈ i
 
   retract-absorb : retract ∘ i ≈ retract

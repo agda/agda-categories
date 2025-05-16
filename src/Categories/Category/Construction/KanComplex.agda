@@ -30,12 +30,12 @@ record IsKanComplex (X : ΔSet) : Set (o ⊔ ℓ) where
 
 -- 'inner k' will embed 'k : Fin n' into the "inner" portion of 'Fin (n + 2)'
 -- Visually, it looks a little something like:
--- 
+--
 --   * * *
---   | | | 
+--   | | |
 --   v v v
 -- * * * * *
--- 
+--
 -- Note that this is set up in such a way that we can normalize
 -- as far as possible without pattern matching on 'i' in proofs.
 inner : ∀ {n} → Fin n → Fin (ℕ.suc (ℕ.suc n))

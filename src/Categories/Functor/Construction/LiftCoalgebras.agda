@@ -41,7 +41,7 @@ LiftCoalgebras = record
     open NaturalTransformation
     open F-Coalgebra
     open F-Coalgebra-Morphism
-    private module T̂ᵒᵖ = Functor (LiftAlgebras (Functor.op F) (Functor.op T) (NaturalTransformation.op μ))
+    module T̂ᵒᵖ = Functor (LiftAlgebras (Functor.op F) (Functor.op T) (NaturalTransformation.op μ))
 
 liftTerminal : Terminal (F-Coalgebras F) → Terminal (F-Algebras LiftCoalgebras)
 liftTerminal νF = record
@@ -68,6 +68,5 @@ liftTerminal νF = record
     open MR (F-Coalgebras F)
     open HomReasoning
     open Equiv
-    private
-      〖_〗 = λ X → ! {A = X} -- "lenses" (Meijer 1991)
+    〖_〗 = λ X → ! {A = X} -- "lenses" (Meijer 1991)
     open Functor LiftCoalgebras

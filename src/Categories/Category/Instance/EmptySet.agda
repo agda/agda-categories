@@ -6,11 +6,9 @@ open import Level
 -- Here EmptySet is not given an explicit name, it is an alias for Lift o ⊥
 module Categories.Category.Instance.EmptySet where
 
-open import Data.Unit
-open import Data.Empty using (⊥; ⊥-elim)
+open import Data.Empty.Polymorphic using (⊥; ⊥-elim)
 
 open import Relation.Binary using (Setoid)
-open import Relation.Binary.PropositionalEquality using (refl)
 
 open import Categories.Category.Instance.Sets
 open import Categories.Category.Instance.Setoids
@@ -20,15 +18,17 @@ module _ {o : Level} where
   open Init (Sets o)
 
   EmptySet-⊥ : Initial
-  EmptySet-⊥ = record { ⊥ = Lift o ⊥ ; ⊥-is-initial = record { ! = λ { {A} (lift x) → ⊥-elim x } ; !-unique = λ { f {()} } } }
+  EmptySet-⊥ .Initial.⊥ = ⊥
+  EmptySet-⊥ .Initial.⊥-is-initial .IsInitial.! ()
 
 module _ {c ℓ : Level} where
   open Init (Setoids c ℓ)
 
   EmptySetoid : Setoid c ℓ
   EmptySetoid = record
-    { Carrier = Lift c ⊥
-    ; _≈_     = λ _ _ → Lift ℓ ⊤
+    { Carrier = ⊥
+    ; _≈_     = λ ()
+    ; isEquivalence = record { refl = λ { {()} } ; sym = λ { {()} }  ; trans = λ { {()} } }
     }
 
   EmptySetoid-⊥ : Initial
@@ -36,7 +36,7 @@ module _ {c ℓ : Level} where
     { ⊥            = EmptySetoid
     ; ⊥-is-initial = record
       { !        = record
-        { to = λ { () }
+        { to = λ ()
         ; cong  = λ { {()} }
         }
       ; !-unique = λ { _ {()} }

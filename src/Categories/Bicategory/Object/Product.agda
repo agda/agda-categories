@@ -24,9 +24,9 @@ record Product  (A B : Obj) : Set (o ⊔ ℓ ⊔ e ⊔ t) where
     β₁a : ∀ {Γ} f g → hom Γ A [ πa ∘₁ ⟨ f , g ⟩₁  ≅ f ]
     β₁b : ∀ {Γ} f g → hom Γ B [ πb ∘₁ ⟨ f , g ⟩₁  ≅ g ]
     β₂a : ∀ {Γ}{fa ga fb gb}(αa : hom Γ A [ fa , ga ])(αb : hom Γ B [ fb , gb ])
-        → Along β₁a _ _ , β₁a _ _ [ πa ▷ ⟨ αa , αb ⟩₂ ≈ αa ] 
+        → Along β₁a _ _ , β₁a _ _ [ πa ▷ ⟨ αa , αb ⟩₂ ≈ αa ]
     β₂b : ∀ {Γ}{fa ga fb gb}(αa : hom Γ A [ fa , ga ])(αb : hom Γ B [ fb , gb ])
-        → Along β₁b _ _ , β₁b _ _ [ πb ▷ ⟨ αa , αb ⟩₂ ≈ αb ] 
+        → Along β₁b _ _ , β₁b _ _ [ πb ▷ ⟨ αa , αb ⟩₂ ≈ αb ]
 
     η₁ : ∀ {Γ} p → hom Γ A×B [ p ≅ ⟨ πa ∘₁ p , πb ∘₁ p ⟩₁ ]
     η₂ : ∀ {Γ}{p p'}(ϕ : hom Γ A×B [ p , p' ])

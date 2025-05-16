@@ -282,7 +282,7 @@ module Cancellers (inv : h ∘ i ≈ id) where
 
   insertInner : f ∘ g ≈ (f ∘ h) ∘ (i ∘ g)
   insertInner = ⟺ cancelInner
-  
+
 open Cancellers public
 
 -- operate in the 'center' instead (like pull/push)
@@ -309,8 +309,8 @@ pull-first {f = f} {g = g} {a = a} {h = h} {i = i} eq = begin
 pull-center : g ∘ h ≈ a → f ∘ (g ∘ (h ∘ i)) ≈ f ∘ (a ∘ i)
 pull-center eq = ∘-resp-≈ʳ (pullˡ eq)
 
-push-center : g ∘ h ≈ a → f ∘ (a ∘ i) ≈ f ∘ (g ∘ (h ∘ i))
-push-center eq = Equiv.sym (pull-center eq)
+push-center : a ≈ g ∘ h → f ∘ (a ∘ i) ≈ f ∘ (g ∘ (h ∘ i))
+push-center eq = Equiv.sym (pull-center (Equiv.sym eq))
 
 intro-first : a ∘ b ≈ id → f ∘ g ≈ a ∘ ((b ∘ f) ∘ g)
 intro-first {a = a} {b = b} {f = f} {g = g} eq = begin

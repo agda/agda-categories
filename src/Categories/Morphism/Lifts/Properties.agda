@@ -128,7 +128,7 @@ module _ {j} (J : MorphismClass j) where
     where
       open Pushout po
       open Filler (p-proj h h∈J (glue-■ sq commute))
-  
+
   -- J-Injective morphisms are stable under pullback.
   inj-pullback : ∀ {X Y Z} {i : X ⇒ Z} {f : Y ⇒ Z} → (P : Pullback i f) → Inj J i → Inj J (Pullback.p₂ P)
   inj-pullback {i = i} {f = f} pb i-inj h h∈J sq = record
