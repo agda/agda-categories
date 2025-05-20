@@ -30,6 +30,26 @@ private
     A B : Obj
 open Core.Shorthands
 
+monoidal-Op : M.Monoidal (C.op)
+monoidal-Op = record
+  { ⊗ = Functor.op ⊗
+  ; unit = unit
+  ; unitorˡ = ≅⇒op-≅ unitorˡ
+  ; unitorʳ = ≅⇒op-≅ unitorʳ
+  ; associator = ≅⇒op-≅ associator
+  ; unitorˡ-commute-from = sym unitorˡ-commute-to
+  ; unitorˡ-commute-to = sym unitorˡ-commute-from
+  ; unitorʳ-commute-from = sym unitorʳ-commute-to
+  ; unitorʳ-commute-to = sym unitorʳ-commute-from
+  ; assoc-commute-from = sym assoc-commute-to
+  ; assoc-commute-to = sym assoc-commute-from
+  ; triangle = triangle-inv
+  ; pentagon = pentagon-inv
+  }
+  where
+  open import Categories.Morphism.Duality C using (≅⇒op-≅)
+  open Equiv using (sym)
+
 ⊗-iso : Bifunctor Core Core Core
 ⊗-iso = record
   { F₀           = uncurry′ _⊗₀_
