@@ -7,6 +7,8 @@ open import Categories.Category
 open import Categories.Functor using (Functor; module Functor)
 open import Categories.NaturalTransformation hiding (id)
 open import Categories.Monad
+open import Categories.Monad.Relative renaming (Monad to RMonad)
+open import Categories.Monad.Construction.Kleisli
 import Categories.Morphism.Reasoning.Core as MR
 
 private
@@ -56,3 +58,24 @@ Kleisli {𝒞 = 𝒞} M = record
 
   identity²′ : {A : Obj} → (μ.η A ∘ F₁ (η.η A)) ∘ η.η A ≈ η.η A
   identity²′ = elimˡ M.identityˡ
+
+module TripleNotation {𝒞 : Category o ℓ e} (M : Monad 𝒞) where
+  open Category 𝒞
+  private
+    module M = Monad M
+  open RMonad (Monad⇒Kleisli 𝒞 M) renaming (extend to _*; extend-≈ to *-resp-≈; unit to η; identityˡ to *-identityˡ; identityʳ to *-identityʳ; assoc to *-assoc; sym-assoc to *-sym-assoc) public
+
+  open HomReasoning
+  open MR 𝒞
+  open Equiv
+
+  *-F₁ : ∀ {X Y Z} {f : Y ⇒ M.F.₀ Z} {g : X ⇒ Y} → f * ∘ M.F.₁ g ≈ (f ∘ g) *
+  *-F₁ {X} {Y} {Z} {f} {g} = begin 
+    (M.μ.η _ ∘ M.F.₁ f) ∘ M.F.₁ g ≈⟨ pullʳ (sym M.F.homomorphism) ⟩ 
+    (f ∘ g) *                     ∎
+
+  F₁-* : ∀ {X Y Z} {f : Y ⇒ Z} {g : X ⇒ M.F.₀ Y} → M.F.₁ f ∘ g * ≈ (M.F.₁ f ∘ g) *
+  F₁-* {X} {Y} {Z} {f} {g} = begin 
+    M.F.₁ f ∘ M.μ.η _ ∘ M.F.₁ g         ≈˘⟨ extendʳ (M.μ.commute f) ⟩ 
+    M.μ.η _ ∘ M.F.₁ (M.F.₁ f) ∘ M.F.₁ g ≈˘⟨ refl⟩∘⟨ M.F.homomorphism ⟩ 
+    M.μ.η _ ∘ M.F.₁ (M.F.₁ f ∘ g)       ∎

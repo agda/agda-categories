@@ -11,6 +11,7 @@ open import Categories.Monad.Commutative
 open import Categories.Category.Construction.Kleisli
 open import Categories.Category.Cartesian
 open import Categories.Category.Cartesian.SymmetricMonoidal
+open import Categories.Category.Cartesian.Monoidal
 open import Categories.Category.BinaryProducts
 open import Categories.Category.Monoidal
 open import Categories.Category.Monoidal.Symmetric
@@ -33,67 +34,68 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (CM : Commutativ
   open Equiv
   open Cartesian cartesian
   open Terminal terminal
-  open BinaryProducts products
+  open BinaryProducts products hiding (η)
 
   open CommutativeMonad CM hiding (identityˡ)
-  open Monad M using (η; μ)
+  open Monad M using (μ)
+  open TripleNotation M
 
   open StrongProps.Left.Shorthands strength
   open StrongProps.Right.Shorthands rightStrength
+
+  open CartesianMonoidal cartesian using (monoidal)
+  open Monoidal monoidal
 
   Kleisli-Monoidal : Monoidal (Kleisli M)
   Kleisli-Monoidal = record
     { ⊗ = record
       { F₀ = λ (X , Y) → X × Y
-      ; F₁ = λ (f , g) → (μ.η _ ∘ M.F.₁ τ ∘ σ) ∘ (f ⁂ g)
-      ; identity = λ {(A , B)} → begin 
-        (μ.η _ ∘ M.F.₁ τ ∘ σ) ∘ (η.η _ ⁂ η.η _)             ≈˘⟨ refl⟩∘⟨ (⁂∘⁂ ○ ⁂-cong₂ identityˡ identityʳ) ⟩ 
-        (μ.η _ ∘ M.F.₁ τ ∘ σ) ∘ (id ⁂ η.η _) ∘ (η.η _ ⁂ id) ≈⟨ pullˡ (pullʳ (pullʳ η-comm)) ⟩ 
-        (μ.η _ ∘ M.F.₁ τ ∘ η.η _) ∘ (η.η _ ⁂ id)            ≈⟨ (refl⟩∘⟨ (sym (η.commute _))) ⟩∘⟨refl ⟩ 
-        (μ.η _ ∘ η.η _ ∘ τ) ∘ (η.η _ ⁂ id)                  ≈⟨ (cancelˡ (Monad.identityʳ M)) ⟩∘⟨refl ⟩ 
-        τ ∘ (η.η _ ⁂ id)                                    ≈⟨ RightStrength.η-comm rightStrength ⟩ 
-        η.η _                                               ∎
+      ; F₁ = λ (f , g) → ψ ∘ (f ⁂ g)
+      ; identity = begin 
+        (τ * ∘ σ) ∘ (η ⁂ η)             ≈˘⟨ refl⟩∘⟨ (⁂∘⁂ ○ ⁂-cong₂ identityˡ identityʳ) ⟩ 
+        (τ * ∘ σ) ∘ (id ⁂ η) ∘ (η ⁂ id) ≈⟨ pullʳ (pullˡ η-comm) ⟩ 
+        τ * ∘ η ∘ (η ⁂ id)              ≈⟨ pullˡ *-identityʳ ⟩ 
+        τ ∘ (η ⁂ id)                    ≈⟨ RightStrength.η-comm rightStrength ⟩
+        η                               ∎
       ; homomorphism = λ {X} {Y} {Z} {(f , g)} {(h , i)} → begin 
-        (μ.η _ ∘ M.F.₁ τ ∘ σ) ∘ (((μ.η _ ∘ M.F.F₁ h) ∘ f) ⁂ ((μ.η _ ∘ M.F.F₁ i) ∘ g)) ≈˘⟨ sym assoc²βε ○ (∘-resp-≈ʳ (pullˡ ⁂∘⁂ ○ ⁂∘⁂)) ⟩ 
-        μ.η _ ∘ M.F.F₁ τ ∘ σ ∘ (μ.η _ ⁂ μ.η _) ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ (extendʳ (sym (Strength.strength-natural-id strength (μ.η _))) ○ ∘-resp-≈ʳ (pullˡ (⁂∘⁂ ○ ⁂-cong₂ identityʳ identityˡ))) ⟩ 
-        μ.η _ ∘ M.F.F₁ τ ∘ M.F.₁ (μ.η _ ⁂ id) ∘ σ ∘ (id ⁂ μ.η _) ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈⟨ refl⟩∘⟨ (pullˡ (sym M.F.homomorphism)) ⟩ 
-        μ.η _ ∘ M.F.F₁ (τ ∘ (μ.η _ ⁂ id)) ∘ σ ∘ (id ⁂ μ.η _) ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ (sym-assoc ○ extendʳ (assoc ○ Strength.μ-η-comm strength)) ⟩ 
-        μ.η _ ∘ M.F.F₁ (τ ∘ (μ.η _ ⁂ id)) ∘ μ.η _ ∘ M.F.₁ σ ∘ σ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈˘⟨ refl⟩∘⟨ (extendʳ (μ.commute _)) ⟩ 
-        μ.η _ ∘ μ.η _ ∘ M.F.₁ (M.F.F₁ (τ ∘ (μ.η _ ⁂ id))) ∘ M.F.₁ σ ∘ σ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈⟨ refl⟩∘⟨ refl⟩∘⟨ pullˡ (sym M.F.homomorphism) ⟩ 
-        μ.η _ ∘ μ.η _ ∘ M.F.₁ (M.F.F₁ (τ ∘ (μ.η _ ⁂ id)) ∘ σ) ∘ σ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ ((M.F.F-resp-≈ (∘-resp-≈ˡ (M.F.F-resp-≈ (RightStrength.μ-η-comm rightStrength)))) ⟩∘⟨refl) ⟩ 
-        μ.η _ ∘ μ.η _ ∘ M.F.₁ (M.F.F₁ (μ.η _ ∘ M.F.₁ τ ∘ τ) ∘ σ) ∘ σ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ({!   !}) ⟩ 
-        μ.η _ ∘ μ.η _ ∘ M.F.₁ (M.F.F₁ (μ.η _ ∘ M.F.₁ τ)) ∘ M.F.₁ (M.F.₁ τ) ∘ M.F.₁ σ ∘ σ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈⟨ {!   !} ⟩
-        μ.η _ ∘ M.F.F₁ (μ.η _ ∘ M.F.₁ τ) ∘ μ.η _ ∘ M.F.₁ (M.F.₁ τ) ∘ M.F.₁ σ ∘ σ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈⟨ {!   !} ⟩
-        μ.η _ ∘ μ.η _ ∘ M.F.₁ (M.F.₁ τ) ∘ μ.η _ ∘ M.F.₁ (M.F.₁ τ) ∘ M.F.₁ σ ∘ σ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈⟨ {!   !} ⟩
-        μ.η _ ∘ M.F.₁ τ ∘ μ.η _ ∘ μ.η _ ∘ M.F.₁ (M.F.₁ τ) ∘ M.F.₁ σ ∘ σ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈⟨ {!   !} ⟩
-        μ.η _ ∘ M.F.₁ τ ∘ μ.η _ ∘ M.F.₁ (μ.η _ ∘ M.F.₁ τ ∘ σ) ∘ σ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈⟨ {!   !} ⟩
-        μ.η _ ∘ M.F.₁ τ ∘ μ.η _ ∘ M.F.₁ (μ.η _ ∘ M.F.₁ σ ∘ τ) ∘ σ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈⟨ {!   !} ⟩
-        μ.η _ ∘ μ.η _ ∘ M.F.₁ (M.F.F₁ (μ.η _ ∘ M.F.₁ τ ∘ σ) ∘ τ) ∘ σ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈⟨ {!   !} ⟩ 
-        μ.η _ ∘ μ.η _ ∘ M.F.₁ (M.F.F₁ (μ.η _ ∘ M.F.₁ τ ∘ σ)) ∘ M.F.₁ τ ∘ σ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈⟨ {!   !} ⟩ 
-        μ.η _ ∘ M.F.F₁ (μ.η _ ∘ M.F.₁ τ ∘ σ) ∘ μ.η _ ∘ M.F.₁ τ ∘ σ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈⟨ {!   !} ⟩ 
-        μ.η _ ∘ M.F.F₁ (μ.η _ ∘ M.F.₁ τ ∘ σ) ∘ μ.η _ ∘ M.F.₁ τ ∘ M.F.₁ (M.F.₁ h ⁂ i) ∘ σ ∘ (f ⁂ g) ≈⟨ {!   !} ⟩ 
-        μ.η _ ∘ M.F.F₁ (μ.η _ ∘ M.F.₁ τ ∘ σ) ∘ μ.η _ ∘ M.F.₁ (M.F.₁ (h ⁂ i)) ∘ M.F.₁ τ ∘ σ ∘ (f ⁂ g) ≈⟨ {!   !} ⟩ 
-        (μ.η _ ∘ M.F.F₁ ((μ.η _ ∘ M.F.₁ τ ∘ σ) ∘ (h ⁂ i))) ∘ (μ.η _ ∘ M.F.₁ τ ∘ σ) ∘ (f ⁂ g) ∎
+        ψ ∘ ((h * ∘ f) ⁂ (i * ∘ g))                         ≈˘⟨ refl⟩∘⟨ (pullˡ ⁂∘⁂ ○ ⁂∘⁂) ⟩ 
+        ψ ∘ (μ.η _ ⁂ μ.η _) ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈˘⟨ extendʳ ψ-μ ⟩ 
+        ψ * ∘ ψ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g)             ≈⟨ refl⟩∘⟨ extendʳ ψ-comm ⟩ 
+        ψ * ∘ M.F.₁ (h ⁂ i) ∘ ψ ∘ (f ⁂ g)                   ≈⟨ pullˡ *-F₁ ⟩ 
+        (ψ ∘ (h ⁂ i)) * ∘ ψ ∘ (f ⁂ g)                       ∎
       ; F-resp-≈ = λ (f≈g , h≈i) → ∘-resp-≈ʳ (⁂-cong₂ f≈g h≈i)
       }
-    ; unit = ⊤
-    ; unitorˡ = record { from = η.η _ ∘ π₂ ; to = η.η _ ∘ ⟨ ! , id ⟩ ; iso = record 
+    ; unit = unit
+    ; unitorˡ = record { from = η ∘ unitorˡ.from ; to = η ∘ unitorˡ.to ; iso = record 
       { isoˡ = begin 
-        (μ.η _ ∘ M.F.₁ (η.η _ ∘ ⟨ ! , id ⟩)) ∘ (η.η _ ∘ π₂)       ≈⟨ (refl⟩∘⟨ M.F.homomorphism) ⟩∘⟨refl ⟩ 
-        (μ.η _ ∘ M.F.₁ (η.η _) ∘ M.F.₁ ⟨ ! , id ⟩) ∘ (η.η _ ∘ π₂) ≈⟨ cancelˡ M.identityˡ ⟩∘⟨refl ⟩ 
-        M.F.₁ ⟨ ! , id ⟩ ∘ η.η _ ∘ π₂                             ≈˘⟨ extendʳ (η.commute _) ⟩ 
-        η.η _ ∘ ⟨ ! , id ⟩ ∘ π₂                                   ≈⟨ refl⟩∘⟨ (⟨⟩∘ ○ ⟨⟩-cong₂ (sym (!-unique (! ∘ π₂)) ○ !-unique π₁) identityˡ) ⟩ 
-        η.η _ ∘ ⟨ π₁ , π₂ ⟩                                       ≈⟨ elimʳ (BinaryProducts.η products) ⟩ 
-        η.η _                                                     ∎ 
+        (η ∘ unitorˡ.to) * ∘ (η ∘ unitorˡ.from) ≈⟨ pullˡ *-identityʳ ⟩ 
+        (η ∘ unitorˡ.to) ∘ unitorˡ.from         ≈⟨ cancelʳ unitorˡ.isoˡ ⟩ 
+        η                                       ∎ 
       ; isoʳ = begin 
-        (μ.η _ ∘ M.F.₁ (η.η _ ∘ π₂)) ∘ (η.η _ ∘ ⟨ ! , id ⟩)       ≈⟨ (refl⟩∘⟨ M.F.homomorphism) ⟩∘⟨refl ⟩ 
-        (μ.η _ ∘ M.F.₁ (η.η _) ∘ M.F.₁ π₂) ∘ (η.η _ ∘ ⟨ ! , id ⟩) ≈⟨ (cancelˡ M.identityˡ ⟩∘⟨refl) ⟩ 
-        M.F.₁ π₂ ∘ η.η _ ∘ ⟨ ! , id ⟩                             ≈˘⟨ extendʳ (η.commute _) ⟩ 
-        η.η _ ∘ π₂ ∘ ⟨ ! , id ⟩                                   ≈⟨ elimʳ project₂ ⟩ 
-        η.η _                                                     ∎ } 
-      }
-    ; unitorʳ = record { from = η.η _ ∘ π₁ ; to = η.η _ ∘ ⟨ id , ! ⟩ ; iso = {!   !} }
-    ; associator = {!   !}
+        (η ∘ unitorˡ.from) * ∘ (η ∘ unitorˡ.to) ≈⟨ pullˡ *-identityʳ ⟩ 
+        (η ∘ unitorˡ.from) ∘ unitorˡ.to         ≈⟨ cancelʳ unitorˡ.isoʳ ⟩ 
+        η                                       ∎ 
+      } }
+    ; unitorʳ = record { from = η ∘ unitorʳ.from ; to = η ∘ unitorʳ.to ; iso = record 
+      { isoˡ = begin 
+        (η ∘ unitorʳ.to) * ∘ (η ∘ unitorʳ.from) ≈⟨ pullˡ *-identityʳ ⟩ 
+        (η ∘ unitorʳ.to) ∘ unitorʳ.from         ≈⟨ cancelʳ unitorʳ.isoˡ ⟩ 
+        η                                       ∎ 
+      ; isoʳ = begin 
+        (η ∘ unitorʳ.from) * ∘ (η ∘ unitorʳ.to) ≈⟨ pullˡ *-identityʳ ⟩ 
+        (η ∘ unitorʳ.from) ∘ unitorʳ.to         ≈⟨ cancelʳ unitorʳ.isoʳ ⟩ 
+        η                                       ∎ 
+      } }
+    ; associator = record { from = η ∘ associator.from ; to = η ∘ associator.to ; iso = record 
+      { isoˡ = begin 
+        (η ∘ associator.to) * ∘ (η ∘ associator.from) ≈⟨ pullˡ *-identityʳ ⟩ 
+        (η ∘ associator.to) ∘ associator.from         ≈⟨ cancelʳ associator.isoˡ ⟩ 
+        η                                       ∎ 
+      ; isoʳ = begin 
+        (η ∘ associator.from) * ∘ (η ∘ associator.to) ≈⟨ pullˡ *-identityʳ ⟩ 
+        (η ∘ associator.from) ∘ associator.to         ≈⟨ cancelʳ associator.isoʳ ⟩ 
+        η                                       ∎ 
+      } }    
     ; unitorˡ-commute-from = {!   !}
     ; unitorˡ-commute-to = {!   !}
     ; unitorʳ-commute-from = {!   !}
@@ -103,3 +105,28 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (CM : Commutativ
     ; triangle = {!   !}
     ; pentagon = {!   !}
     }
+    where
+      commutes' : ∀ {A B} → τ * ∘ σ {M.F.₀ A} {B} ≈ σ * ∘ τ
+      commutes' = assoc ○ commutes ○ sym-assoc
+      ψ : ∀ {A B} → M.F.₀ A × M.F.₀ B ⇒ M.F.₀ (A × B)
+      ψ = τ * ∘ σ
+      ψ-comm : ∀ {A B C D} {f : A ⇒ B} {g : C ⇒ D} → ψ ∘ (M.F.₁ f ⁂ M.F.₁ g) ≈ M.F.₁ (f ⁂ g) ∘ ψ
+      ψ-comm {A} {B} {C} {D} {f} {g} = begin 
+        (τ * ∘ σ) ∘ (M.F.₁ f ⁂ M.F.₁ g) ≈⟨ pullʳ (strengthen.commute (M.F.F₁ f , g)) ⟩ 
+        τ * ∘ M.F.₁ (M.F.₁ f ⁂ g) ∘ σ   ≈⟨ pullˡ *-F₁ ⟩ 
+        (τ ∘ (M.F.₁ f ⁂ g)) * ∘ σ       ≈⟨ *-resp-≈ (RightStrength.strengthen.commute rightStrength (f , g)) ⟩∘⟨refl ⟩ 
+        (M.F.₁ (f ⁂ g) ∘ τ) * ∘ σ       ≈˘⟨ pullˡ F₁-* ⟩ 
+        M.F.₁ (f ⁂ g) ∘ ψ               ∎
+      ψ-μ : ∀ {A B} → ψ * ∘ ψ ≈ ψ {A} {B} ∘ (μ.η _ ⁂ μ.η _)
+      ψ-μ = begin 
+        (τ * ∘ σ) * ∘ τ * ∘ σ                         ≈⟨ *-assoc ⟩∘⟨refl ⟩ 
+        (τ * ∘ σ *) ∘ τ * ∘ σ                         ≈⟨ pullʳ (pullˡ *-sym-assoc) ⟩ 
+        τ * ∘ (σ * ∘ τ) * ∘ σ                         ≈⟨ refl⟩∘⟨ *-resp-≈ (sym commutes') ⟩∘⟨refl ⟩ 
+        τ * ∘ (τ * ∘ σ) * ∘ σ                         ≈⟨ refl⟩∘⟨ *-assoc ⟩∘⟨refl ⟩ 
+        τ * ∘ (τ * ∘ σ *) ∘ σ                         ≈⟨ pullˡ (pullˡ (*-sym-assoc)) ⟩ 
+        ((τ * ∘ τ) * ∘ σ *) ∘ σ                       ≈⟨ *-resp-≈ (assoc ○ RightStrength.μ-η-comm rightStrength) ⟩∘⟨refl ⟩∘⟨refl ⟩ 
+        ((τ ∘ (μ.η _ ⁂ id)) * ∘ σ *) ∘ σ              ≈⟨ pullʳ (assoc ○ μ-η-comm) ⟩ 
+        (τ ∘ (μ.η _ ⁂ id)) * ∘ σ ∘ (id ⁂ μ.η _)       ≈⟨ sym *-F₁ ⟩∘⟨refl ⟩ 
+        (τ * ∘ M.F.₁ (μ.η _ ⁂ id)) ∘ σ ∘ (id ⁂ μ.η _) ≈⟨ pullʳ (extendʳ (sym (strength-natural-id (μ.η _)))) ⟩ 
+        τ * ∘ σ ∘ (μ.η _ ⁂ id) ∘ (id ⁂ μ.η _)         ≈⟨ (sym-assoc ○ ∘-resp-≈ʳ (⁂∘⁂ ○ ⁂-cong₂ identityʳ identityˡ)) ⟩ 
+        ψ ∘ (μ.η _ ⁂ μ.η _)                           ∎
