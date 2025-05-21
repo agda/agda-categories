@@ -61,7 +61,7 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (CM : Commutativ
         ψ ∘ ((h * ∘ f) ⁂ (i * ∘ g))                         ≈˘⟨ refl⟩∘⟨ (pullˡ ⁂∘⁂ ○ ⁂∘⁂) ⟩ 
         ψ ∘ (μ.η _ ⁂ μ.η _) ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g) ≈˘⟨ extendʳ ψ-μ ⟩ 
         ψ * ∘ ψ ∘ (M.F.₁ h ⁂ M.F.₁ i) ∘ (f ⁂ g)             ≈⟨ refl⟩∘⟨ extendʳ ψ-comm ⟩ 
-        ψ * ∘ M.F.₁ (h ⁂ i) ∘ ψ ∘ (f ⁂ g)                   ≈⟨ pullˡ *-F₁ ⟩ 
+        ψ * ∘ M.F.₁ (h ⁂ i) ∘ ψ ∘ (f ⁂ g)                   ≈⟨ pullˡ *∘F₁ ⟩ 
         (ψ ∘ (h ⁂ i)) * ∘ ψ ∘ (f ⁂ g)                       ∎
       ; F-resp-≈ = λ (f≈g , h≈i) → ∘-resp-≈ʳ (⁂-cong₂ f≈g h≈i)
       }
@@ -96,37 +96,50 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (CM : Commutativ
         (η ∘ associator.from) ∘ associator.to         ≈⟨ cancelʳ associator.isoʳ ⟩ 
         η                                       ∎ 
       } }    
-    ; unitorˡ-commute-from = {!   !}
-    ; unitorˡ-commute-to = {!   !}
-    ; unitorʳ-commute-from = {!   !}
-    ; unitorʳ-commute-to = {!   !}
-    ; assoc-commute-from = {!   !}
+    ; unitorˡ-commute-from = λ {X} {Y} {f} → begin 
+      (η ∘ unitorˡ.from) * ∘ ψ ∘ (η ⁂ f)                   ≈⟨ *⇒F₁ ⟩∘⟨ ψ-σ' ⟩ 
+      M.F.₁ unitorˡ.from ∘ σ ∘ (id ⁂ f)                    ≈⟨ pullˡ (Strength.identityˡ strength) ⟩ 
+      unitorˡ.from ∘ (id ⁂ f)                              ≈⟨ unitorˡ-commute-from ⟩ 
+      f ∘ unitorˡ.from                                     ≈˘⟨ pullˡ *-identityʳ ⟩ 
+      f * ∘ η ∘ unitorˡ.from                               ∎
+    ; unitorˡ-commute-to = λ {X} {Y} {f} → begin 
+      (η ∘ unitorˡ.to) * ∘ f                                       ≈⟨ *⇒F₁ ⟩∘⟨refl ⟩ 
+      M.F.₁ unitorˡ.to ∘ f                                         ≈˘⟨ refl⟩∘⟨ (cancelˡ unitorˡ.isoʳ) ⟩ 
+      M.F.₁ unitorˡ.to ∘ unitorˡ.from ∘ unitorˡ.to ∘ f             ≈˘⟨ pullʳ (pullˡ (Strength.identityˡ strength)) ⟩
+      (M.F.₁ unitorˡ.to ∘ M.F.₁ unitorˡ.from) ∘ σ ∘ unitorˡ.to ∘ f ≈⟨ elimˡ (sym M.F.homomorphism ○ (M.F.F-resp-≈ unitorˡ.isoˡ ○ M.F.identity)) ⟩
+      σ ∘ unitorˡ.to ∘ f                                           ≈˘⟨ pullʳ (sym unitorˡ-commute-to) ⟩ 
+      (σ ∘ (id ⁂ f)) ∘ unitorˡ.to                                  ≈˘⟨ ψ-σ' ⟩∘⟨refl ⟩ 
+      (ψ ∘ (η ⁂ f)) ∘ unitorˡ.to                                   ≈˘⟨ pullˡ *-identityʳ ⟩ 
+      (ψ ∘ (η ⁂ f)) * ∘ η ∘ unitorˡ.to                             ∎
+    ; unitorʳ-commute-from = λ {X} {Y} {f} → begin 
+      (η ∘ unitorʳ.from) * ∘ ψ ∘ (f ⁂ η) ≈⟨ *⇒F₁ ⟩∘⟨ ψ-τ' ⟩ 
+      M.F.₁ unitorʳ.from ∘ τ ∘ (f ⁂ id)  ≈⟨ pullˡ (RightStrength.identityˡ rightStrength) ⟩ 
+      unitorʳ.from ∘ (f ⁂ id)            ≈⟨ unitorʳ-commute-from ⟩ 
+      f ∘ unitorʳ.from                   ≈˘⟨ pullˡ *-identityʳ ⟩ 
+      f * ∘ η ∘ unitorʳ.from             ∎
+    ; unitorʳ-commute-to = λ {X} {Y} {f} → begin 
+      (η ∘ unitorʳ.to) * ∘ f                                       ≈⟨ *⇒F₁ ⟩∘⟨refl ⟩ 
+      M.F.₁ unitorʳ.to ∘ f                                         ≈˘⟨ refl⟩∘⟨ (cancelˡ unitorʳ.isoʳ) ⟩ 
+      M.F.₁ unitorʳ.to ∘ unitorʳ.from ∘ unitorʳ.to ∘ f             ≈˘⟨ pullʳ (pullˡ (RightStrength.identityˡ rightStrength)) ⟩
+      (M.F.₁ unitorʳ.to ∘ M.F.₁ unitorʳ.from) ∘ τ ∘ unitorʳ.to ∘ f ≈⟨ elimˡ (sym M.F.homomorphism ○ (M.F.F-resp-≈ unitorʳ.isoˡ ○ M.F.identity)) ⟩
+      τ ∘ unitorʳ.to ∘ f                                           ≈˘⟨ pullʳ (sym unitorʳ-commute-to) ⟩ 
+      (τ ∘ (f ⁂ id)) ∘ unitorʳ.to                                  ≈˘⟨ ψ-τ' ⟩∘⟨refl ⟩ 
+      (ψ ∘ (f ⁂ η)) ∘ unitorʳ.to                                   ≈˘⟨ pullˡ *-identityʳ ⟩ 
+      (ψ ∘ (f ⁂ η)) * ∘ η ∘ unitorʳ.to                             ∎
+    ; assoc-commute-from = λ {X} {Y} {f} {A} {B} {g} {U} {V} {h} → begin 
+      (η ∘ associator.from) * ∘ ψ ∘ (ψ ∘ (f ⁂ g) ⁂ h) ≈⟨ *⇒F₁ ⟩∘⟨refl ⟩ 
+      M.F.₁ associator.from ∘ ψ ∘ (ψ ∘ (f ⁂ g) ⁂ h) ≈⟨ {!   !} ⟩ 
+      {!   !} ≈⟨ {!   !} ⟩ 
+      {!   !} ≈⟨ {!   !} ⟩ 
+      {!   !} ≈⟨ {!   !} ⟩ 
+      {!   !} ≈⟨ {!   !} ⟩ 
+      {!   !} ≈⟨ {!   !} ⟩ 
+      {!   !} ≈⟨ {!   !} ⟩ 
+      ψ ∘ (id ⁂ ψ) ∘ associator.from ∘ ((f ⁂ g) ⁂ h) ≈˘⟨ pullʳ (pullʳ (sym assoc-commute-from)) ⟩ 
+      (ψ ∘ (id ⁂ ψ) ∘ (f ⁂ (g ⁂ h))) ∘ associator.from ≈⟨ {!   !} ⟩ 
+      (ψ ∘ (f ⁂ ψ ∘ (g ⁂ h))) ∘ associator.from ≈˘⟨ pullˡ *-identityʳ ⟩ 
+      (ψ ∘ (f ⁂ ψ ∘ (g ⁂ h))) * ∘ (η ∘ associator.from) ∎
     ; assoc-commute-to = {!   !}
     ; triangle = {!   !}
     ; pentagon = {!   !}
     }
-    where
-      commutes' : ∀ {A B} → τ * ∘ σ {M.F.₀ A} {B} ≈ σ * ∘ τ
-      commutes' = assoc ○ commutes ○ sym-assoc
-      ψ : ∀ {A B} → M.F.₀ A × M.F.₀ B ⇒ M.F.₀ (A × B)
-      ψ = τ * ∘ σ
-      ψ-comm : ∀ {A B C D} {f : A ⇒ B} {g : C ⇒ D} → ψ ∘ (M.F.₁ f ⁂ M.F.₁ g) ≈ M.F.₁ (f ⁂ g) ∘ ψ
-      ψ-comm {A} {B} {C} {D} {f} {g} = begin 
-        (τ * ∘ σ) ∘ (M.F.₁ f ⁂ M.F.₁ g) ≈⟨ pullʳ (strengthen.commute (M.F.F₁ f , g)) ⟩ 
-        τ * ∘ M.F.₁ (M.F.₁ f ⁂ g) ∘ σ   ≈⟨ pullˡ *-F₁ ⟩ 
-        (τ ∘ (M.F.₁ f ⁂ g)) * ∘ σ       ≈⟨ *-resp-≈ (RightStrength.strengthen.commute rightStrength (f , g)) ⟩∘⟨refl ⟩ 
-        (M.F.₁ (f ⁂ g) ∘ τ) * ∘ σ       ≈˘⟨ pullˡ F₁-* ⟩ 
-        M.F.₁ (f ⁂ g) ∘ ψ               ∎
-      ψ-μ : ∀ {A B} → ψ * ∘ ψ ≈ ψ {A} {B} ∘ (μ.η _ ⁂ μ.η _)
-      ψ-μ = begin 
-        (τ * ∘ σ) * ∘ τ * ∘ σ                         ≈⟨ *-assoc ⟩∘⟨refl ⟩ 
-        (τ * ∘ σ *) ∘ τ * ∘ σ                         ≈⟨ pullʳ (pullˡ *-sym-assoc) ⟩ 
-        τ * ∘ (σ * ∘ τ) * ∘ σ                         ≈⟨ refl⟩∘⟨ *-resp-≈ (sym commutes') ⟩∘⟨refl ⟩ 
-        τ * ∘ (τ * ∘ σ) * ∘ σ                         ≈⟨ refl⟩∘⟨ *-assoc ⟩∘⟨refl ⟩ 
-        τ * ∘ (τ * ∘ σ *) ∘ σ                         ≈⟨ pullˡ (pullˡ (*-sym-assoc)) ⟩ 
-        ((τ * ∘ τ) * ∘ σ *) ∘ σ                       ≈⟨ *-resp-≈ (assoc ○ RightStrength.μ-η-comm rightStrength) ⟩∘⟨refl ⟩∘⟨refl ⟩ 
-        ((τ ∘ (μ.η _ ⁂ id)) * ∘ σ *) ∘ σ              ≈⟨ pullʳ (assoc ○ μ-η-comm) ⟩ 
-        (τ ∘ (μ.η _ ⁂ id)) * ∘ σ ∘ (id ⁂ μ.η _)       ≈⟨ sym *-F₁ ⟩∘⟨refl ⟩ 
-        (τ * ∘ M.F.₁ (μ.η _ ⁂ id)) ∘ σ ∘ (id ⁂ μ.η _) ≈⟨ pullʳ (extendʳ (sym (strength-natural-id (μ.η _)))) ⟩ 
-        τ * ∘ σ ∘ (μ.η _ ⁂ id) ∘ (id ⁂ μ.η _)         ≈⟨ (sym-assoc ○ ∘-resp-≈ʳ (⁂∘⁂ ○ ⁂-cong₂ identityʳ identityˡ)) ⟩ 
-        ψ ∘ (μ.η _ ⁂ μ.η _)                           ∎

@@ -69,13 +69,19 @@ module TripleNotation {𝒞 : Category o ℓ e} (M : Monad 𝒞) where
   open MR 𝒞
   open Equiv
 
-  *-F₁ : ∀ {X Y Z} {f : Y ⇒ M.F.₀ Z} {g : X ⇒ Y} → f * ∘ M.F.₁ g ≈ (f ∘ g) *
-  *-F₁ {X} {Y} {Z} {f} {g} = begin 
+  *∘F₁ : ∀ {X Y Z} {f : Y ⇒ M.F.₀ Z} {g : X ⇒ Y} → f * ∘ M.F.₁ g ≈ (f ∘ g) *
+  *∘F₁ {X} {Y} {Z} {f} {g} = begin 
     (M.μ.η _ ∘ M.F.₁ f) ∘ M.F.₁ g ≈⟨ pullʳ (sym M.F.homomorphism) ⟩ 
     (f ∘ g) *                     ∎
 
-  F₁-* : ∀ {X Y Z} {f : Y ⇒ Z} {g : X ⇒ M.F.₀ Y} → M.F.₁ f ∘ g * ≈ (M.F.₁ f ∘ g) *
-  F₁-* {X} {Y} {Z} {f} {g} = begin 
+  F₁∘* : ∀ {X Y Z} {f : Y ⇒ Z} {g : X ⇒ M.F.₀ Y} → M.F.₁ f ∘ g * ≈ (M.F.₁ f ∘ g) *
+  F₁∘* {X} {Y} {Z} {f} {g} = begin 
     M.F.₁ f ∘ M.μ.η _ ∘ M.F.₁ g         ≈˘⟨ extendʳ (M.μ.commute f) ⟩ 
     M.μ.η _ ∘ M.F.₁ (M.F.₁ f) ∘ M.F.₁ g ≈˘⟨ refl⟩∘⟨ M.F.homomorphism ⟩ 
     M.μ.η _ ∘ M.F.₁ (M.F.₁ f ∘ g)       ∎
+
+  *⇒F₁ : ∀ {X Y} {f : X ⇒ Y} → (η ∘ f) * ≈ M.F.₁ f
+  *⇒F₁ {X} {Y} {f} = begin 
+    M.μ.η _ ∘ M.F.₁ (η ∘ f)     ≈⟨ refl⟩∘⟨ M.F.homomorphism ⟩ 
+    M.μ.η _ ∘ M.F.₁ η ∘ M.F.₁ f ≈⟨ cancelˡ M.identityˡ ⟩ 
+    M.F.₁ f                     ∎
