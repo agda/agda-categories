@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --without-K --allow-unsolved-metas #-}
 
 -- Commutative Monad on a braided monoidal category
 -- https://ncatlab.org/nlab/show/commutative+monad
@@ -77,6 +77,12 @@ module _ {C : Category o ℓ e} {V : Monoidal C} (B : Braided V) where
       ψ ∘ (M.η.η _ ⊗₁ f)              ≈˘⟨ refl⟩∘⟨ (sym (Functor.homomorphism (Braided.⊗ B)) ○ Functor.F-resp-≈ (Braided.⊗ B) (identityʳ , identityˡ)) ⟩ 
       ψ ∘ (M.η.η _ ⊗₁ id) ∘ (id ⊗₁ f) ≈⟨ pullˡ ψ-σ ⟩ 
       σ ∘ (id ⊗₁ f)                   ∎
+
+    ψ-η : ∀ {A B} → ψ ∘ (M.η.η _ ⊗₁ M.η.η _) ≈ M.η.η (A ⊗₀ B)
+    ψ-η = begin 
+      ψ ∘ (M.η.η _ ⊗₁ M.η.η _) ≈⟨ ψ-σ' ⟩ 
+      σ ∘ (id ⊗₁ M.η.η _)      ≈⟨ Strength.η-comm strength ⟩ 
+      M.η.η _                  ∎
     ψ-μ : ∀ {A B} → (M.μ.η _ ∘ M.F.₁ ψ) ∘ ψ ≈ ψ {A} {B} ∘ (M.μ.η _ ⊗₁ M.μ.η _)
     ψ-μ = begin 
       (τ * ∘ σ) * ∘ τ * ∘ σ                               ≈⟨ *-assoc ⟩∘⟨refl ⟩ 
@@ -94,18 +100,35 @@ module _ {C : Category o ℓ e} {V : Monoidal C} (B : Braided V) where
       -- use kleisli triple notation to make the proof more readable
       open TripleNotation M 
     
-    ψ-assoc : ∀ {A B C : Obj} → M.F.₁ associator.from ∘ ψ {A ⊗₀ B} {C} ∘ (ψ ⊗₁ id) ≈ ψ ∘ (id ⊗₁ ψ) ∘ associator.from
-    ψ-assoc = begin 
+    ψ-assoc-to : ∀ {A B C} → M.F.₁ associator.to ∘ ψ ∘ (id ⊗₁ ψ) ≈ ψ {A ⊗₀ B} {C} ∘ (ψ ⊗₁ id) ∘ associator.to
+    ψ-assoc-to = {!   !}
+
+    ψ-assoc-from : ∀ {A B C : Obj} → M.F.₁ associator.from ∘ ψ {A ⊗₀ B} {C} ∘ (ψ ⊗₁ id) ≈ ψ ∘ (id ⊗₁ ψ) ∘ associator.from
+    ψ-assoc-from = begin 
       M.F.₁ associator.from ∘ ψ ∘ (ψ ⊗₁ id) ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ refl⟩∘⟨ refl⟩∘⟨ {!  RightStrength.strength-assoc rightStrength !} ⟩ 
-      -- TODO other way around
-      σ * ∘ M.F.₁ (id ⊗₁ σ *) ∘ τ ∘ (id ⊗₁ τ) ∘ associator.from ≈˘⟨ pullʳ (extendʳ (RightStrength.strength-natural-id rightStrength (σ *))) ⟩ 
-      (σ * ∘ τ) ∘ (id ⊗₁ σ *) ∘ (id ⊗₁ τ) ∘ associator.from ≈⟨ {!   !} ⟩ 
-      (τ * ∘ σ) ∘ (id ⊗₁ (τ * ∘ σ)) ∘ associator.from ∎
+      M.μ.η _ ∘ M.F.₁ (M.F.₁ associator.from) ∘ M.F.₁ σ ∘ τ ∘ (ψ ⊗₁ id) ≈⟨ {!   !} ⟩
+      M.μ.η _ ∘ M.F.₁ (M.F.₁ associator.from ∘ σ) ∘ τ ∘ (ψ ⊗₁ id) ≈⟨ refl⟩∘⟨ M.F.F-resp-≈ (Strength.strength-assoc strength) ⟩∘⟨refl ⟩
+      M.μ.η _ ∘ M.F.₁ (σ ∘ (id ⊗₁ σ) ∘ associator.from) ∘ τ ∘ (ψ ⊗₁ id) ≈⟨ {!   !} ⟩
+      M.μ.η _ ∘ M.F.₁ (σ ∘ (id ⊗₁ σ) ∘ associator.from) ∘ τ ∘ (M.μ.η _ ⊗₁ id) ∘ ((M.F.₁ σ ∘ τ) ⊗₁ id) ≈⟨ {!   !} ⟩
+      M.μ.η _ ∘ M.F.₁ (σ ∘ (id ⊗₁ σ) ∘ associator.from) ∘ M.μ.η _ ∘ M.F.₁ τ ∘ τ ∘ ((M.F.₁ σ ∘ τ) ⊗₁ id) ≈⟨ {!   !} ⟩
+      M.μ.η _ ∘ M.F.₁ (σ ∘ (id ⊗₁ σ) ∘ associator.from) ∘ M.μ.η _ ∘ M.F.₁ τ ∘ M.F.₁ (σ ⊗₁ id) ∘ τ ∘ (τ ⊗₁ id) ≈⟨ {!   !} ⟩
+      M.μ.η _ ∘ M.F.₁ (σ ∘ (id ⊗₁ σ) ∘ associator.from) ∘ M.μ.η _ ∘ M.F.₁ τ ∘ M.F.₁ (σ ⊗₁ id) ∘ τ ∘ (τ ⊗₁ id) ∘ associator.to ∘ associator.from ≈⟨ {!   !} ⟩
+      M.μ.η _ ∘ M.F.₁ (σ ∘ (id ⊗₁ σ) ∘ associator.from) ∘ M.μ.η _ ∘ M.F.₁ τ ∘ M.F.₁ (σ ⊗₁ id) ∘ M.F.₁ associator.to ∘ τ ∘ associator.from ≈⟨ {!   !} ⟩
+      {!   !} ≈⟨ {!   !} ⟩
+      {!   !} ≈⟨ {!   !} ⟩
+      {!   !} ≈⟨ {!   !} ⟩
+      {!   !} ≈⟨ {!   !} ⟩
+      {!   !} ≈⟨ {!   !} ⟩
+      M.μ.η _ ∘ M.F.₁ ψ ∘ M.F.₁ (id ⊗₁ τ) ∘ M.F.₁ associator.from ∘ σ ≈⟨ {!   !} ⟩
+      {!   !} ≈⟨ {!   !} ⟩
+      {!   !} ≈⟨ {!   !} ⟩
+      {!   !} ≈⟨ {!   !} ⟩
+      {!   !} ≈⟨ {!   !} ⟩
+      {!   !} ≈⟨ {!   !} ⟩
+      {!   !} ≈⟨ {!   !} ⟩
+      ψ ∘ (id ⊗₁ ψ) ∘ associator.from ∎
       where
+      -- NOTE: μ ∘ M σ ∘ σ ≈ σ ∘ (id ⁂ μ)
       -- use kleisli triple notation to make the proof more readable
       open TripleNotation M 
 

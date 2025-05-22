@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --without-K #-}
 module Categories.Category.Construction.Kleisli.Monoidal where
 
 open import Level
@@ -127,19 +127,36 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (CM : Commutativ
       (ψ ∘ (f ⁂ η)) ∘ unitorʳ.to                                   ≈˘⟨ pullˡ *-identityʳ ⟩ 
       (ψ ∘ (f ⁂ η)) * ∘ η ∘ unitorʳ.to                             ∎
     ; assoc-commute-from = λ {X} {Y} {f} {A} {B} {g} {U} {V} {h} → begin 
-      (η ∘ associator.from) * ∘ ψ ∘ (ψ ∘ (f ⁂ g) ⁂ h) ≈⟨ *⇒F₁ ⟩∘⟨refl ⟩ 
-      M.F.₁ associator.from ∘ ψ ∘ (ψ ∘ (f ⁂ g) ⁂ h) ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ {!   !} ⟩ 
-      ψ ∘ (id ⁂ ψ) ∘ associator.from ∘ ((f ⁂ g) ⁂ h) ≈˘⟨ pullʳ (pullʳ (sym assoc-commute-from)) ⟩ 
-      (ψ ∘ (id ⁂ ψ) ∘ (f ⁂ (g ⁂ h))) ∘ associator.from ≈⟨ {!   !} ⟩ 
-      (ψ ∘ (f ⁂ ψ ∘ (g ⁂ h))) ∘ associator.from ≈˘⟨ pullˡ *-identityʳ ⟩ 
-      (ψ ∘ (f ⁂ ψ ∘ (g ⁂ h))) * ∘ (η ∘ associator.from) ∎
-    ; assoc-commute-to = {!   !}
-    ; triangle = {!   !}
-    ; pentagon = {!   !}
+      (η ∘ associator.from) * ∘ ψ ∘ (ψ ∘ (f ⁂ g) ⁂ h)      ≈⟨ *⇒F₁ ⟩∘⟨refl ⟩ 
+      M.F.₁ associator.from ∘ ψ ∘ (ψ ∘ (f ⁂ g) ⁂ h)        ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ (⁂∘⁂ ○ ⁂-cong₂ refl identityˡ) ⟩ 
+      M.F.₁ associator.from ∘ ψ ∘ (ψ ⁂ id) ∘ ((f ⁂ g) ⁂ h) ≈⟨ (sym-assoc ○ pullˡ (assoc ○ ψ-assoc-from) ○ assoc²βε) ⟩ 
+      ψ ∘ (id ⁂ ψ) ∘ associator.from ∘ ((f ⁂ g) ⁂ h)       ≈˘⟨ pullʳ (pullʳ (sym assoc-commute-from)) ⟩ 
+      (ψ ∘ (id ⁂ ψ) ∘ (f ⁂ (g ⁂ h))) ∘ associator.from     ≈⟨ (refl⟩∘⟨ (⁂∘⁂ ○ ⁂-cong₂ identityˡ refl)) ⟩∘⟨refl ⟩ 
+      (ψ ∘ (f ⁂ ψ ∘ (g ⁂ h))) ∘ associator.from            ≈˘⟨ pullˡ *-identityʳ ⟩ 
+      (ψ ∘ (f ⁂ ψ ∘ (g ⁂ h))) * ∘ (η ∘ associator.from)    ∎
+    ; assoc-commute-to = λ {X} {Y} {f} {A} {B} {g} {U} {V} {h} → begin 
+      (η ∘ associator.to) * ∘ ψ ∘ (f ⁂ ψ ∘ (g ⁂ h))      ≈⟨ *⇒F₁ ⟩∘⟨refl ⟩ 
+      M.F.₁ associator.to ∘ ψ ∘ (f ⁂ ψ ∘ (g ⁂ h))        ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ (⁂∘⁂ ○ ⁂-cong₂ identityˡ refl) ⟩ 
+      M.F.₁ associator.to ∘ ψ ∘ (id ⁂ ψ) ∘ (f ⁂ (g ⁂ h)) ≈⟨ (sym-assoc ○ (pullˡ (assoc ○ ψ-assoc-to) ○ assoc²βε)) ⟩ 
+      ψ ∘ (ψ ⁂ id) ∘ associator.to ∘ (f ⁂ (g ⁂ h))       ≈˘⟨ pullʳ (pullʳ (sym assoc-commute-to)) ⟩
+      (ψ ∘ (ψ ⁂ id) ∘ ((f ⁂ g) ⁂ h)) ∘ associator.to     ≈⟨ (refl⟩∘⟨ (⁂∘⁂ ○ ⁂-cong₂ refl identityˡ)) ⟩∘⟨refl ⟩ 
+      (ψ ∘ (ψ ∘ (f ⁂ g) ⁂ h)) ∘ associator.to            ≈˘⟨ pullˡ *-identityʳ ⟩ 
+      (ψ ∘ (ψ ∘ (f ⁂ g) ⁂ h)) * ∘ (η ∘ associator.to)    ∎
+    ; triangle = begin 
+      (ψ ∘ (η ⁂ (η ∘ unitorˡ.from))) * ∘ (η ∘ associator.from) ≈⟨ pullˡ *-identityʳ ⟩ 
+      (ψ ∘ (η ⁂ (η ∘ unitorˡ.from))) ∘ associator.from         ≈˘⟨ pullˡ (pullʳ (⁂∘⁂ ○ ⁂-cong₂ identityʳ refl)) ⟩ 
+      (ψ ∘ (η ⁂ η)) ∘ (id ⁂ unitorˡ.from) ∘ associator.from    ≈⟨ (refl⟩∘⟨ triangle) ⟩ 
+      (ψ ∘ (η ⁂ η)) ∘ (unitorʳ.from ⁂ id)                      ≈⟨ pullʳ (⁂∘⁂ ○ ⁂-cong₂ refl identityʳ) ⟩ 
+      ψ ∘ (η ∘ unitorʳ.from ⁂ η)                               ∎
+    ; pentagon = begin 
+      (ψ ∘ (η ⁂ (η ∘ associator.from))) * ∘ (η ∘ associator.from) * ∘ (ψ ∘ (η ∘ associator.from ⁂ η)) ≈⟨ refl⟩∘⟨ *⇒F₁ ⟩∘⟨refl ⟩ 
+      (ψ ∘ (η ⁂ (η ∘ associator.from))) * ∘ M.F.₁ associator.from ∘ (ψ ∘ (η ∘ associator.from ⁂ η))   ≈⟨ pullˡ (*∘F₁ ○ *-resp-≈ assoc) ⟩ 
+      (ψ ∘ (η ⁂ (η ∘ associator.from)) ∘ associator.from) * ∘ (ψ ∘ (η ∘ associator.from ⁂ η))         ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ (⁂∘⁂ ○ ⁂-cong₂ refl identityʳ) ⟩ 
+      (ψ ∘ (η ⁂ (η ∘ associator.from)) ∘ associator.from) * ∘ (ψ ∘ (η ⁂ η) ∘ (associator.from ⁂ id))  ≈⟨ refl⟩∘⟨ pullˡ ψ-η ⟩ 
+      (ψ ∘ (η ⁂ (η ∘ associator.from)) ∘ associator.from) * ∘ (η ∘ (associator.from ⁂ id))            ≈⟨ pullˡ *-identityʳ ⟩ 
+      (ψ ∘ (η ⁂ (η ∘ associator.from)) ∘ associator.from) ∘ (associator.from ⁂ id)                    ≈˘⟨ sym-assoc ○ (∘-resp-≈ʳ sym-assoc ○ pullˡ (pullʳ (pullˡ (⁂∘⁂ ○ ⁂-cong₂ identityʳ refl)))) ⟩ 
+      ψ ∘ (η ⁂ η) ∘ (id ⁂ associator.from) ∘ associator.from ∘ (associator.from ⁂ id)                 ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ pentagon) ⟩ 
+      ψ ∘ (η ⁂ η) ∘ (associator.from ∘ associator.from)                                               ≈⟨ (pullˡ ψ-η) ○ sym-assoc ⟩ 
+      (η ∘ associator.from) ∘ associator.from                                                         ≈˘⟨ pullˡ *-identityʳ ⟩ 
+      (η ∘ associator.from) * ∘ (η ∘ associator.from)                                                 ∎
     }
