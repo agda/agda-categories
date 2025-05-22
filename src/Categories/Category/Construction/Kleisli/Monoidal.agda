@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K #-}
+{-# OPTIONS --without-K --allow-unsolved-metas #-}
 module Categories.Category.Construction.Kleisli.Monoidal where
 
 open import Level
@@ -16,6 +16,7 @@ open import Categories.Category.BinaryProducts
 open import Categories.Category.Monoidal
 open import Categories.Category.Monoidal.Symmetric
 open import Categories.Object.Terminal
+open import Categories.NaturalTransformation.Core using (ntHelper)
 
 open import Data.Product using (_,_)
 
