@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --allow-unsolved-metas #-}
+{-# OPTIONS --without-K --safe #-}
 module Categories.Category.Construction.Kleisli.Symmetric where
 
 open import Level
@@ -18,6 +18,7 @@ open import Categories.Category.Monoidal.Symmetric
 open import Categories.Object.Terminal
 open import Categories.NaturalTransformation.Core using (ntHelper)
 open import Categories.Category.Construction.Kleisli.Monoidal
+open import Categories.Monad.Commutative.Properties
 
 open import Data.Product using (_,_)
 
@@ -49,6 +50,7 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (CM : Commutativ
   open CartesianMonoidal cartesian using (monoidal)
   open Monoidal monoidal
   open Symmetric (symmetric 𝒞 cartesian) using (braided; hexagon₁; hexagon₂)
+  open CommutativeProperties braided CM
 
   Kleisli-Symmetric : Symmetric (Kleisli-Monoidal cartesian CM)
   Kleisli-Symmetric = record 

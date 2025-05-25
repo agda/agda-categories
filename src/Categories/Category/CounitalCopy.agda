@@ -11,7 +11,7 @@ import Categories.Category.Monoidal.Properties
 
 -- Counital Copy categories as described by Cockett & Lack in "Restriction categories III"
 
-module Categories.Category.Copy {o ℓ e} (𝒞 : Category o ℓ e) where
+module Categories.Category.CounitalCopy {o ℓ e} (𝒞 : Category o ℓ e) where
   open Category 𝒞
 
   record CounitalCopy : Set (suc (o ⊔ ℓ ⊔ e)) where
