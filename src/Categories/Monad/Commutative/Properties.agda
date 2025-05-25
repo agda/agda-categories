@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --allow-unsolved-metas #-}
+{-# OPTIONS --without-K --safe #-}
 
 -- Commutative Monad on a braided monoidal category
 -- https://ncatlab.org/nlab/show/commutative+monad
@@ -164,7 +164,7 @@ module SymmetricProperties  {C : Category o ℓ e} {V : Monoidal C} (symmetric :
         ≈⟨ sym M.F.homomorphism ⟩ 
       M.F.₁ (associator.from ∘ (B⇐ ⊗₁ id))                             
         ≈⟨ M.F.F-resp-≈ (∘-resp-≈ʳ (⊗.F-resp-≈ (braiding-selfInverse , refl))) ⟩
-      M.F.₁ (associator.from ∘ (B⇒ ⊗₁ id))                             
+      M.F.₁ (associator.from ∘ (B⇒ ⊗₁ id)) 
         ≈˘⟨ M.F.F-resp-≈ (pullˡ (cancelˡ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identity² , (∘-resp-≈ˡ braiding-selfInverse ○ commutative)) ○ ⊗.identity))) ⟩
       M.F.₁ ((id ⊗₁ B⇐) ∘ ((id ⊗₁ B⇒) ∘ associator.from) ∘ (B⇒ ⊗₁ id)) 
         ≈⟨ M.F.F-resp-≈ (∘-resp-≈ʳ (assoc ○ (Braided.hexagon₁ BV) ○ sym-assoc)) ⟩
@@ -174,10 +174,32 @@ module SymmetricProperties  {C : Category o ℓ e} {V : Monoidal C} (symmetric :
         ∎
 
   τ-σ-assoc-from : ∀ {X Y Z} → M.F.₁ associator.from ∘ (τ {_} {Z}) * ∘ M.F.₁ (σ {X} {Y} ⊗₁ id) ≈ σ * ∘ M.F.₁ (id ⊗₁ τ) ∘ M.F.₁ associator.from
-  τ-σ-assoc-from = {!   !}
+  τ-σ-assoc-from = begin 
+    M.F.₁ associator.from ∘ τ * ∘ M.F.₁ (σ ⊗₁ id) 
+      ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ (pullˡ (sym M.F.homomorphism ○ M.F.F-resp-≈ (sym ⊗.homomorphism)) ○ (sym M.F.homomorphism ○ M.F.F-resp-≈ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ ((∘-resp-≈ˡ (cancelˡ (sym M.F.homomorphism ○ M.F.F-resp-≈ inv-commutative ○ M.F.identity)) ○ cancelʳ commutative) , elimˡ identity²)))) ⟩ 
+    M.F.₁ associator.from ∘ τ * ∘ M.F.₁ (M.F.₁ B⇐ ⊗₁ id) ∘ M.F.₁ (τ ⊗₁ id) ∘ M.F.₁ (B⇒ ⊗₁ id) 
+      ≈⟨ refl⟩∘⟨ extendʳ ((*∘F₁ ○ *-resp-≈ (τ.commute _)) ○ sym F₁∘*) ⟩ 
+    M.F.₁ associator.from ∘ M.F.₁ (B⇐ ⊗₁ id) ∘ τ * ∘ M.F.₁ (τ ⊗₁ id) ∘ M.F.₁ (B⇒ ⊗₁ id) 
+      ≈⟨ extendʳ hexagon₂' ○ ∘-resp-≈ʳ assoc²βε ⟩ 
+    M.F.₁ (id ⊗₁ B⇐) ∘ M.F.₁ associator.from ∘ M.F.₁ B⇒ ∘ M.F.₁ associator.from ∘ τ * ∘ M.F.₁ (τ ⊗₁ id) ∘ M.F.₁ (B⇒ ⊗₁ id) 
+      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ (pullˡ F₁∘* ○ (pullˡ (*∘F₁ ○ *-resp-≈ (assoc ○ τ-strength-assoc')) ○ sym (pullˡ *∘F₁))) ⟩ 
+    M.F.₁ (id ⊗₁ B⇐) ∘ M.F.₁ associator.from ∘ M.F.₁ B⇒ ∘ τ * ∘ M.F.₁ associator.from ∘ M.F.₁ (B⇒ ⊗₁ id) 
+      ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ extendʳ (F₁∘* ○ *-resp-≈ (∘-resp-≈ˡ (M.F.F-resp-≈ (sym braiding-selfInverse)) ○ cancelˡ (sym M.F.homomorphism ○ M.F.F-resp-≈ inv-commutative ○ M.F.identity)) ○ sym *∘F₁)) ⟩ 
+    M.F.₁ (id ⊗₁ B⇐) ∘ M.F.₁ associator.from ∘ σ * ∘ M.F.₁ B⇒ ∘ M.F.₁ associator.from ∘ M.F.₁ (B⇒ ⊗₁ id) 
+      ≈⟨ refl⟩∘⟨ (pullˡ (F₁∘* ○ *-resp-≈ strength-assoc) ○ sym (pullˡ *∘F₁ ○ pullˡ (*∘F₁ ○ *-resp-≈ assoc))) ⟩ 
+    M.F.₁ (id ⊗₁ B⇐) ∘ σ * ∘ M.F.₁ (id ⊗₁ σ) ∘ M.F.₁ associator.from ∘ M.F.₁ B⇒ ∘ M.F.₁ associator.from ∘ M.F.₁ (B⇒ ⊗₁ id) 
+      ≈⟨ extendʳ (F₁∘* ○ *-resp-≈ (sym (σ.commute _)) ○ sym *∘F₁) ⟩ 
+    σ * ∘ M.F.₁ (id ⊗₁ M.F.₁ B⇐) ∘ M.F.₁ (id ⊗₁ σ) ∘ M.F.₁ associator.from ∘ M.F.₁ B⇒ ∘ M.F.₁ associator.from ∘ M.F.₁ (B⇒ ⊗₁ id) 
+      ≈⟨ (refl⟩∘⟨ extendʳ (sym M.F.homomorphism ○ M.F.F-resp-≈ (sym ⊗.homomorphism) ○ M.F.F-resp-≈ (⊗.F-resp-≈ (identity² , left-right-braiding-comm BV)) ○ sym (sym M.F.homomorphism ○ M.F.F-resp-≈ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identity² , refl))))) ⟩ 
+    σ * ∘ M.F.₁ (id ⊗₁ τ) ∘ M.F.₁ (id ⊗₁ B⇐) ∘ M.F.₁ associator.from ∘ M.F.₁ B⇒ ∘ M.F.₁ associator.from ∘ M.F.₁ (B⇒ ⊗₁ id) 
+      ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ ((pullˡ hexagon₂') ○ pullʳ assoc²βε) ⟩ 
+    σ * ∘ M.F.₁ (id ⊗₁ τ) ∘ M.F.₁ associator.from ∘ M.F.₁ (B⇐ ⊗₁ id) ∘ M.F.₁ (B⇒ ⊗₁ id) 
+      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ elimʳ (sym M.F.homomorphism ○ M.F.F-resp-≈ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ ((∘-resp-≈ˡ braiding-selfInverse ○ commutative) , identity²) ○ ⊗.identity) ○ M.F.identity) ⟩ 
+    σ * ∘ M.F.₁ (id ⊗₁ τ) ∘ M.F.₁ associator.from 
+      ∎
 
   σ-τ-assoc-to : ∀ {X Y Z} → M.F.₁ associator.to ∘ (σ {X}) * ∘ M.F.₁ (id ⊗₁ τ {Y} {Z}) ≈ τ * ∘ M.F.₁ (σ ⊗₁ id) ∘ M.F.₁ associator.to
-  σ-τ-assoc-to {X} {Y} = begin 
+  σ-τ-assoc-to = begin
     M.F.₁ associator.to ∘ σ * ∘ M.F.₁ (id ⊗₁ τ) 
       ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ (pullˡ (sym M.F.homomorphism ○ M.F.F-resp-≈ (sym ⊗.homomorphism)) ○ (sym M.F.homomorphism ○ M.F.F-resp-≈ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (elimˡ identity² , assoc)))) ⟩ 
     M.F.₁ associator.to ∘ σ * ∘ M.F.₁ (id ⊗₁ M.F.₁ B⇐) ∘ M.F.₁ (id ⊗₁ σ) ∘ M.F.₁ (id ⊗₁ B⇒) 
@@ -228,10 +250,25 @@ module SymmetricProperties  {C : Category o ℓ e} {V : Monoidal C} (symmetric :
 
   ψ-assoc-from : ∀ {X Y Z} → M.F.₁ associator.from ∘ ψ {X ⊗₀ Y} {Z} ∘ (ψ ⊗₁ id) ≈ ψ ∘ (id ⊗₁ ψ) ∘ associator.from
   ψ-assoc-from = begin 
-    M.F.₁ associator.from ∘ (τ * ∘ σ) ∘ (ψ ⊗₁ id) ≈⟨ refl⟩∘⟨ commutes ⟩∘⟨refl ⟩ 
-    M.F.₁ associator.from ∘ (σ * ∘ τ) ∘ (ψ ⊗₁ id) ≈⟨ pullˡ (pullˡ {!   !}) ⟩
-    {!   !} ≈⟨ {!   !} ⟩
-    {!   !} ≈⟨ {!   !} ⟩
-    {!   !} ≈⟨ {!   !} ⟩
-    {!   !} ≈⟨ {!   !} ⟩
-    ψ ∘ (id ⊗₁ ψ) ∘ associator.from ∎
+    M.F.₁ associator.from ∘ (τ * ∘ σ) ∘ (ψ ⊗₁ id) 
+      ≈˘⟨ refl⟩∘⟨ sym commutes ⟩∘⟨ (pullˡ (sym ⊗.homomorphism) ○ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (sym commutes , (elimˡ identity²)))) ⟩ 
+    M.F.₁ associator.from ∘ (σ * ∘ τ) ∘ (M.μ.η _ ⊗₁ id) ∘ (M.F.₁ σ ⊗₁ id) ∘ (τ ⊗₁ id) 
+      ≈⟨ pullˡ (pullˡ (F₁∘* ○ *-resp-≈ strength-assoc ○ *-resp-≈ sym-assoc)) ○ sym (pullˡ *∘F₁ ○ (pullˡ *∘F₁ ○ sym-assoc)) ⟩
+    σ * ∘ M.F.₁ (id ⊗₁ σ) ∘ M.F.₁ associator.from ∘ τ ∘ (M.μ.η _ ⊗₁ id) ∘ (M.F.₁ σ ⊗₁ id) ∘ (τ ⊗₁ id) 
+      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ ((sym (RightStrength.μ-η-comm rightStrength)) ○ sym-assoc) ⟩
+    σ * ∘ M.F.₁ (id ⊗₁ σ) ∘ M.F.₁ associator.from ∘ τ * ∘ τ ∘ (M.F.₁ σ ⊗₁ id) ∘ (τ ⊗₁ id) 
+      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ (τ.commute _) ⟩
+    σ * ∘ M.F.₁ (id ⊗₁ σ) ∘ M.F.₁ associator.from ∘ τ * ∘ M.F.₁ (σ ⊗₁ id) ∘ τ ∘ (τ ⊗₁ id) 
+      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ (sym-assoc ○ pullˡ (assoc ○ τ-σ-assoc-from) ○ pullʳ assoc) ⟩
+    σ * ∘ M.F.₁ (id ⊗₁ σ) ∘ σ * ∘ M.F.₁ (id ⊗₁ τ) ∘ M.F.₁ associator.from ∘ τ ∘ (τ ⊗₁ id) 
+      ≈⟨ refl⟩∘⟨ extendʳ (F₁∘* ○ (*-resp-≈ (sym (σ.commute _)) ○ sym *∘F₁)) ⟩
+    σ * ∘ σ * ∘ M.F.₁ (id ⊗₁ M.F.₁ σ) ∘ M.F.₁ (id ⊗₁ τ) ∘ M.F.₁ associator.from ∘ τ ∘ (τ ⊗₁ id) 
+      ≈⟨ extendʳ (*-sym-assoc ○ *-resp-≈ (assoc ○ μ-η-comm) ○ sym *∘F₁) ⟩
+    σ * ∘ M.F.₁ (id ⊗₁ M.μ.η _) ∘ M.F.₁ (id ⊗₁ M.F.₁ σ) ∘ M.F.₁ (id ⊗₁ τ) ∘ M.F.₁ associator.from ∘ τ ∘ (τ ⊗₁ id) 
+      ≈⟨ (refl⟩∘⟨ (pullˡ (sym M.F.homomorphism) ○ pullˡ (sym M.F.homomorphism) ○ ∘-resp-≈ˡ (M.F.F-resp-≈ (∘-resp-≈ˡ (sym ⊗.homomorphism) ○ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (elimˡ identity² , sym commutes)))))) ⟩
+    σ * ∘ M.F.₁ (id ⊗₁ ψ) ∘ M.F.₁ associator.from ∘ τ ∘ (τ ⊗₁ id) 
+      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ τ-strength-assoc' ⟩
+    σ * ∘ M.F.₁ (id ⊗₁ ψ) ∘ τ ∘ associator.from 
+      ≈⟨ (∘-resp-≈ʳ (extendʳ (sym (τ.commute _))) ○ (sym-assoc ○ extendʳ (sym commutes ⟩∘⟨ ⊗.F-resp-≈ (M.F.identity , refl)))) ⟩
+    ψ ∘ (id ⊗₁ ψ) ∘ associator.from 
+      ∎

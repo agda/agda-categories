@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --allow-unsolved-metas #-}
+{-# OPTIONS --without-K --safe #-}
 
 -- Commutative Monad on a braided monoidal category
 -- https://ncatlab.org/nlab/show/commutative+monad

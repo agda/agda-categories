@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --allow-unsolved-metas #-}
+{-# OPTIONS --without-K --safe #-}
 module Categories.Category.Construction.Kleisli.Monoidal where
 
 open import Level
@@ -8,6 +8,7 @@ open import Categories.Monad hiding (id)
 open import Categories.Monad.Strong
 open import Categories.Monad.Strong.Properties
 open import Categories.Monad.Commutative
+open import Categories.Monad.Commutative.Properties
 open import Categories.Category.Construction.Kleisli
 open import Categories.Category.Cartesian
 open import Categories.Category.Cartesian.SymmetricMonoidal
@@ -46,6 +47,9 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (CM : Commutativ
 
   open CartesianMonoidal cartesian using (monoidal)
   open Monoidal monoidal
+
+  open CommutativeProperties (Symmetric.braided (symmetric 𝒞 cartesian)) CM
+  open SymmetricProperties (symmetric 𝒞 cartesian) CM
 
   Kleisli-Monoidal : Monoidal (Kleisli M)
   Kleisli-Monoidal = record
