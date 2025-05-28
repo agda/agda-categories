@@ -30,13 +30,17 @@ module Categories.Category.CounitalCopy {o ℓ e} (𝒞 : Category o ℓ e) wher
     field
       isMonoid : ∀ X → IsMonoid (monoidal-Op) X
 
+
     Δ : ∀ {X} → X ⇒ X ⊗₀ X
     Δ {X} = IsMonoid.μ (isMonoid X)
     δ : ∀ {X} → X ⇒ unit
     δ {X} = IsMonoid.η (isMonoid X)
 
     field
-      natural : ∀ {A} {f : A ⇒ A} → Δ ∘ f ≈ (f ⊗₁ f) ∘ Δ
+      natural : ∀ {A B} {f : A ⇒ B} → Δ ∘ f ≈ (f ⊗₁ f) ∘ Δ
       inverse₁ : Δ {unit} ∘ unitorˡ.from ≈ id
       inverse₂ : unitorˡ.from ∘ Δ {unit} ≈ id
       preserves : ∀ {X Y} → associator.to ∘ (id ⊗₁ associator.from) ∘ (id ⊗₁ ((σ ⊗₁ id) ∘ associator.to)) ∘ associator.from ∘ (Δ ⊗₁ Δ) ≈ Δ {X ⊗₀ Y}
+    
+    module _ {X : Obj} where
+      open IsMonoid (isMonoid X) public hiding (μ; η) renaming (assoc to Δ-assoc; identityˡ to δ-identityˡ; identityʳ to δ-identityʳ)
