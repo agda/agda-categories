@@ -174,6 +174,26 @@ _⟩⊚⟨refl = ⊚-resp-≈ˡ
 ∘ᵥ-distr-▷ : (f ▷ α) ∘ᵥ (f ▷ β) ≈ f ▷ (α ∘ᵥ β)
 ∘ᵥ-distr-▷ {f = f} = ⟺ (Functor.homomorphism (f ⊚-))
 
+◁-resp-≈ : α ≈ β → α ◁ f ≈ β ◁ f
+◁-resp-≈ = _⟩⊚⟨refl
+
+▷-resp-≈ : α ≈ β → f ▷ α ≈ f ▷ β
+▷-resp-≈ = refl⟩⊚⟨_
+
+▷-resp-sq : α ∘ᵥ β ≈ γ ∘ᵥ δ → f ▷ α ∘ᵥ f ▷ β ≈ f ▷ γ ∘ᵥ f ▷ δ
+▷-resp-sq {α = α} {β = β} {γ = γ} {δ = δ} {f = f} sq = begin
+  f ▷ α ∘ᵥ f ▷ β ≈⟨ ∘ᵥ-distr-▷ ⟩
+  f ▷ (α ∘ᵥ β) ≈⟨ ▷-resp-≈ sq ⟩
+  f ▷ (γ ∘ᵥ δ) ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩
+  f ▷ γ ∘ᵥ f ▷ δ ∎
+
+◁-resp-sq : α ∘ᵥ β ≈ γ ∘ᵥ δ → α ◁ f ∘ᵥ β ◁ f ≈ γ ◁ f ∘ᵥ δ ◁ f
+◁-resp-sq {α = α} {β = β} {γ = γ} {δ = δ} {f = f} sq = begin
+  α ◁ f ∘ᵥ β ◁ f ≈⟨ ∘ᵥ-distr-◁ ⟩
+  (α ∘ᵥ β) ◁ f ≈⟨ ◁-resp-≈ sq ⟩
+  (γ ∘ᵥ δ)◁ f ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩
+  γ ◁ f ∘ᵥ δ ◁ f ∎
+
 λ⇒-∘ᵥ-▷ : λ⇒ ∘ᵥ (id₁ ▷ α) ≈ α ∘ᵥ λ⇒
 λ⇒-∘ᵥ-▷ {α = α} = begin
   λ⇒ ∘ᵥ (id₁ ▷ α)    ≈˘⟨ refl⟩∘⟨ id.identity ⟩⊚⟨refl ⟩
