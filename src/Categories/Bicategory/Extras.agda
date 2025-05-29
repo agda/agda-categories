@@ -224,6 +224,9 @@ _⟩⊚⟨refl = ⊚-resp-≈ˡ
 α⇐-▷-◁ : α⇐ ∘ᵥ (f ▷ (γ ◁ g)) ≈ ((f ▷ γ) ◁ g) ∘ᵥ α⇐
 α⇐-▷-◁ {f = f} {γ = γ} {g = g} = ⊚-assoc.⇐.commute ((id₂ , γ) , id₂)
 
+α⇒-▷-◁ : α⇒ ∘ᵥ ((f ▷ γ) ◁ g) ≈ (f ▷ (γ ◁ g)) ∘ᵥ α⇒
+α⇒-▷-◁ {f = f} {γ = γ} {g = g} = ⟺ (conjugate-to associator associator α⇐-▷-◁)
+
 α⇒-▷-∘₁ : α⇒ ∘ᵥ (f ∘₁ g) ▷ γ ≈ f ▷ g ▷ γ ∘ᵥ α⇒
 α⇒-▷-∘₁{f = f} {g = g} {γ = γ} = begin
   α⇒ ∘ᵥ (f ⊚₀ g) ▷ γ     ≈˘⟨ refl⟩∘⟨ ⊚.identity ⟩⊚⟨refl ⟩
