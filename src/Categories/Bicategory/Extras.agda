@@ -108,6 +108,9 @@ identity₂ˡ = hom.identityˡ
 identity₂ʳ : α ∘ᵥ id₂ ≈ α
 identity₂ʳ = hom.identityʳ
 
+identity₂² : id₂ ∘ᵥ id₂ {f = g} ≈ id₂ {f = g}
+identity₂² = hom.identity²
+
 assoc₂ : (α ∘ᵥ β) ∘ᵥ γ ≈ α ∘ᵥ β ∘ᵥ γ
 assoc₂ = hom.assoc
 
