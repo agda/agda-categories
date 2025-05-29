@@ -114,6 +114,9 @@ identity₂² = hom.identity²
 assoc₂ : (α ∘ᵥ β) ∘ᵥ γ ≈ α ∘ᵥ β ∘ᵥ γ
 assoc₂ = hom.assoc
 
+sym-assoc₂ : α ∘ᵥ β ∘ᵥ γ ≈ (α ∘ᵥ β) ∘ᵥ γ
+sym-assoc₂ = hom.sym-assoc
+
 id₂◁ : id₂ {f = g} ◁ f ≈ id₂
 id₂◁ = ⊚.identity
 
