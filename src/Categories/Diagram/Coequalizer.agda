@@ -91,6 +91,12 @@ up-to-iso coe₁ coe₂ = record
     repack-cancel : (e₁ e₂ : Coequalizer h i) → repack e₁ e₂ ∘ repack e₂ e₁ ≈ id
     repack-cancel coe₁ coe₂ = repack∘ coe₂ coe₁ coe₂ ○ ⟺ (id-coequalize coe₂)
 
+-- We prove that the isomorphism of up-to-iso fits into a triangle --
+up-to-iso-triangle : (coe₁ coe₂ : Coequalizer h i) →
+                     _≅_.from (up-to-iso coe₁ coe₂) ∘ Coequalizer.arr coe₁
+                     ≈ Coequalizer.arr coe₂
+up-to-iso-triangle coe₁ coe₂ = ⟺ (Coequalizer.universal coe₁)
+
 IsCoequalizer⇒Coequalizer : IsCoequalizer h i k → Coequalizer h i
 IsCoequalizer⇒Coequalizer {k = k} is-coe = record
   { arr = k
