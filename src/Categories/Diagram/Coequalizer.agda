@@ -102,3 +102,6 @@ IsCoequalizer⇒Coequalizer {k = k} is-coe = record
   { arr = k
   ; isCoequalizer = is-coe
   }
+
+Coequalizers : Set (o ⊔ ℓ ⊔ e)
+Coequalizers = {A B : Obj} → (f g : A ⇒ B) → Coequalizer f g
