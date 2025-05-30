@@ -188,3 +188,59 @@ module MapBetweenCoequalizers where
       open IsCoequalizer isCoequalizer₁ renaming (universal to universal₁)
 
 open MapBetweenCoequalizers public
+
+CoeqOfIsomorphicDiagram : {A B : Obj} {f g : A ⇒ B} (coeq : Coequalizer f g )
+                        → {A' B' : Obj}
+                        → (a : A ≅ A') (b : B ≅ B')
+                        → Coequalizer (_≅_.from b ∘ f ∘ _≅_.to a) (_≅_.from b ∘ g ∘ _≅_.to a)
+CoeqOfIsomorphicDiagram {A} {B} {f} {g} coeq {A'} {B'} a b = record
+  { arr = arr ∘ _≅_.to b
+  ; isCoequalizer = record
+    { equality = begin
+        (arr ∘ _≅_.to b) ∘ _≅_.from b ∘ f ∘ _≅_.to a ≈⟨ sym-assoc ⟩
+        ((arr ∘ _≅_.to b) ∘ _≅_.from b) ∘ f ∘ _≅_.to a ≈⟨ assoc ⟩∘⟨refl ⟩
+        (arr ∘ _≅_.to b ∘ _≅_.from b) ∘ f ∘ _≅_.to a ≈⟨ (refl⟩∘⟨ _≅_.isoˡ b) ⟩∘⟨refl ⟩
+        (arr ∘ id) ∘ f ∘ _≅_.to a ≈⟨ identityʳ ⟩∘⟨refl ⟩
+        arr ∘ f ∘ _≅_.to a ≈⟨ sym-assoc ⟩
+        (arr ∘ f) ∘ _≅_.to a ≈⟨ equality ⟩∘⟨refl ⟩
+        (arr ∘ g) ∘ _≅_.to a ≈⟨ assoc ⟩
+        arr ∘ g ∘ _≅_.to a ≈⟨ ⟺ identityʳ ⟩∘⟨refl ⟩
+        (arr ∘ id) ∘ g ∘ _≅_.to a ≈⟨ (refl⟩∘⟨ ⟺ (_≅_.isoˡ b)) ⟩∘⟨refl ⟩
+        (arr ∘ _≅_.to b ∘ _≅_.from b) ∘ g ∘ _≅_.to a ≈⟨ sym-assoc ⟩∘⟨refl ⟩
+        ((arr ∘ _≅_.to b) ∘ _≅_.from b) ∘ g ∘ _≅_.to a ≈⟨ assoc ⟩
+        (arr ∘ _≅_.to b) ∘ _≅_.from b ∘ g ∘ _≅_.to a ∎
+    ; coequalize = coequalize'
+    ; universal =  λ {C} {h} {eq} → begin
+        h ≈⟨ switch-fromtoʳ b universal ⟩
+        (coequalize' eq ∘ arr) ∘ _≅_.to b ≈⟨ assoc ⟩
+        coequalize' eq ∘ (arr ∘ _≅_.to b) ∎
+    ; unique = λ {C} {h} {i} {eq} e → unique (⟺ (switch-tofromʳ b (begin
+        (i ∘ arr) ∘ _≅_.to b ≈⟨ assoc ⟩
+        i ∘ arr ∘ _≅_.to b ≈⟨ ⟺ e ⟩
+        h ∎)))
+    }
+  }
+  where
+    open Coequalizer coeq
+    open HomReasoning
+    open MR C using (switch-fromtoʳ; switch-tofromʳ; cancel-toʳ)
+    
+    f' g' : A' ⇒ B'
+    f' = _≅_.from b ∘ f ∘ _≅_.to a
+    g' = _≅_.from b ∘ g ∘ _≅_.to a
+
+    equalize'⇒equalize : {C : Obj} {h : B' ⇒ C}
+                         (eq : h ∘ f' ≈ h ∘ g')
+                       → (h ∘ _≅_.from b) ∘ f ≈ (h ∘ _≅_.from b) ∘ g
+    equalize'⇒equalize {C} {h} eq = cancel-toʳ a (begin
+      ((h ∘ _≅_.from b) ∘ f) ∘ _≅_.to a ≈⟨ assoc ⟩
+      (h ∘ _≅_.from b) ∘ f ∘ _≅_.to a ≈⟨ assoc ⟩
+      h ∘ f' ≈⟨ eq ⟩
+      h ∘ g' ≈⟨ sym-assoc ⟩
+      (h ∘ _≅_.from b) ∘ g ∘ _≅_.to a ≈⟨ sym-assoc ⟩
+      ((h ∘ _≅_.from b) ∘ g) ∘ _≅_.to a ∎)
+
+    coequalize' : {C : Obj} {h : B' ⇒ C}
+                  (eq : h ∘ _≅_.from b ∘ f ∘ _≅_.to a ≈ h ∘ _≅_.from b ∘ g ∘ _≅_.to a)
+                  → obj ⇒ C
+    coequalize' {C} {h} eq = coequalize (equalize'⇒equalize eq)
