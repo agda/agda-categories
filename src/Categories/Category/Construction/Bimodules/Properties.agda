@@ -1,5 +1,3 @@
--- By Till --
-
 {-# OPTIONS --without-K --safe --lossy-unification #-}
 
 

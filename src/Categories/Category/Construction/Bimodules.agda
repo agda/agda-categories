@@ -1,5 +1,3 @@
--- By Till --
-
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Bicategory
