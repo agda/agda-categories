@@ -255,6 +255,57 @@ pentagon-inv : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D
                (α⇐ ◁ f ∘ᵥ α⇐) ∘ᵥ i ▷ α⇐ ≈ α⇐ ∘ᵥ α⇐ {f = i} {h} {g ∘₁ f}
 pentagon-inv = to-≈ pentagon-iso
 
+pentagon-var : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                      (i ▷ α⇒ ∘ᵥ α⇒) ∘ᵥ α⇒ ◁ f ≈
+                      α⇒ {f = i} {h} {g ∘₁ f} ∘ᵥ α⇒
+pentagon-var {f = f} {g} {h} {i} = begin
+    (i ▷ α⇒ ∘ᵥ α⇒) ∘ᵥ α⇒ ◁ f      ≈⟨ assoc₂ ⟩
+    i ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ f        ≈⟨ pentagon ⟩
+    α⇒ {f = i} {h} {g ∘₁ f} ∘ᵥ α⇒ ∎
+
+pentagon-inv-var : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                   α⇐ ◁ f ∘ᵥ α⇐ ∘ᵥ i ▷ α⇐
+                   ≈ α⇐ ∘ᵥ α⇐ {f = i} {h} {g ∘₁ f}
+pentagon-inv-var  {f = f} {g} {h} {i} = begin
+  α⇐ ◁ f ∘ᵥ α⇐ ∘ᵥ i ▷ α⇐   ≈⟨ sym-assoc₂ ⟩
+  (α⇐ ◁ f ∘ᵥ α⇐) ∘ᵥ i ▷ α⇐ ≈⟨ pentagon-inv ⟩
+  α⇐ ∘ᵥ α⇐                 ∎
+
+pentagon-conjugate₁ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                      α⇐ {f = i} {h} {g ∘₁ f} ∘ᵥ i ▷ α⇒ ∘ᵥ α⇒ ≈
+                      α⇒ ∘ᵥ α⇐ ◁ f
+pentagon-conjugate₁ {f = f} = conjugate-from (associator ◁ᵢ f) associator pentagon-var
+
+pentagon-conjugate₂ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                      i ▷ α⇒ ∘ᵥ α⇒ ≈
+                      α⇒ {f = i} {h} {g ∘₁ f} ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ f
+pentagon-conjugate₂ {f = f} {g} {h} {i} = begin
+    i ▷ α⇒ ∘ᵥ α⇒         ≈⟨ switch-fromtoʳ (associator ◁ᵢ f) pentagon-var ⟩
+    (α⇒ ∘ᵥ α⇒) ∘ᵥ α⇐ ◁ f ≈⟨ assoc₂ ⟩
+    α⇒ {f = i} {h} {g ∘₁ f} ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ f ∎
+
+pentagon-conjugate₃ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                      α⇒ ◁ f ∘ᵥ α⇐ ≈
+                      (α⇐ ∘ᵥ i ▷ α⇐) ∘ᵥ α⇒ {f = i} {h} {g ∘₁ f}
+pentagon-conjugate₃ {f = f} {g} {h} {i} = begin
+    α⇒ ◁ f ∘ᵥ α⇐         ≈⟨ ⟺ (conjugate-to associator (associator ◁ᵢ f) pentagon-inv-var) ⟩
+    (α⇐ ∘ᵥ i ▷ α⇐) ∘ᵥ α⇒ ∎
+
+pentagon-conjugate₄ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                      α⇒ ∘ᵥ α⇐ ◁ f ≈
+                      α⇐ {f = i} {h} {g ∘₁ f} ∘ᵥ i ▷ α⇒ ∘ᵥ α⇒
+pentagon-conjugate₄ {f = f} {g} {h} {i} = begin
+    α⇒ ∘ᵥ α⇐ ◁ f       ≈⟨ ⟺ (conjugate-from (associator ◁ᵢ f) associator pentagon-var) ⟩
+    α⇐ ∘ᵥ i ▷ α⇒ ∘ᵥ α⇒ ∎
+
+pentagon-conjugate₅ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                      α⇐ {f = i} {h} {g ∘₁ f} ∘ᵥ i ▷ α⇒ ≈
+                      α⇒ ∘ᵥ α⇐ ◁ f ∘ᵥ α⇐
+pentagon-conjugate₅ {f = f} {g} {h} {i} = begin
+    α⇐ ∘ᵥ i ▷ α⇒       ≈⟨ conjugate-to (i ▷ᵢ associator) associator (⟺ pentagon-inv) ⟩
+    α⇒ ∘ᵥ α⇐ ◁ f ∘ᵥ α⇐ ∎
+
+
 module UnitorCoherence where
 
   -- Extra coherence laws for the unitors.
