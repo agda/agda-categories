@@ -405,6 +405,16 @@ module UnitorCoherence where
     id₁ ▷ (λ⇒ ∘ᵥ α⇒)        ≈˘⟨ id.identity ⟩⊚⟨refl ⟩
     id.F₁ _ ⊚₁ (λ⇒ ∘ᵥ α⇒)   ∎)
 
+  unitorˡ-coherence-iso : {f : B ⇒₁ C} {g : A ⇒₁ B} → unitorˡ ◁ᵢ g ≈ᵢ unitorˡ ∘ᵢ associator {f = id₁} {f} {g}
+  unitorˡ-coherence-iso = ⌞ unitorˡ-coherence ⌟
+
+  unitorˡ-coherence-inv : [ f ⊚₀ g ⇒ (id₁ ⊚₀ f) ⊚₀ g ]⟨
+                            λ⇐ ◁ g
+                          ≈ λ⇐      ⇒⟨ id₁ ⊚₀ (f ⊚₀ g) ⟩
+                            α⇐
+                          ⟩
+  unitorˡ-coherence-inv = to-≈ unitorˡ-coherence-iso
+
   unitorʳ-coherence : [ (f ⊚₀ g) ⊚₀ id₁ ⇒ f ⊚₀ g ]⟨
                         ρ⇒
                       ≈ α⇒         ⇒⟨ f ⊚₀ (g ⊚₀ id₁) ⟩
