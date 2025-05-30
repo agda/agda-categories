@@ -68,3 +68,62 @@ regular-is-coeq-kp {A} {B} f record { C = D ; h = h ; g = g ; coequalizer = coeq
 
 retract-coequalizer : ∀ {X Y} {f : Y ⇒ X} {g : X ⇒ Y} → f RetractOf g → IsCoequalizer (g ∘ f) id f
 retract-coequalizer f∘g≈id = IscoEqualizer⇒IsCoequalizer (section-equalizer f∘g≈id)
+
+-- split coequalizer are coequalizer --
+splitCoequalizer⇒Coequalizer : {A B C : Obj} {f g : A ⇒ B} {e : B ⇒ C}
+                               (t : B ⇒ A) (s : C ⇒ B)
+                               (eq : e ∘ f ≈ e ∘ g)
+                               (tisSection : f ∘ t ≈ id)
+                               (sisSection : e ∘ s ≈ id)
+                               (sq : s ∘ e ≈ g ∘ t)
+                               → IsCoequalizer f g e
+splitCoequalizer⇒Coequalizer {f = f} {g} {e} t s eq tisSection sisSection sq = record
+  { equality = eq
+  ; coequalize = λ {T} {h} _ → h ∘ s
+  ; universal = λ {T} {h} {h∘f≈h∘g} → begin
+    h           ≈⟨ ⟺ identityʳ ⟩
+    h ∘ id      ≈⟨ refl⟩∘⟨ ⟺ tisSection ⟩
+    h ∘ f ∘ t   ≈⟨ sym-assoc ⟩
+    (h ∘ f) ∘ t ≈⟨ h∘f≈h∘g ⟩∘⟨refl ⟩
+    (h ∘ g) ∘ t ≈⟨ assoc ⟩
+    h ∘ g ∘ t   ≈⟨ refl⟩∘⟨ ⟺ sq ⟩
+    h ∘ s ∘ e   ≈⟨ sym-assoc ⟩
+    (h ∘ s) ∘ e ∎
+  ; unique = λ {C} {h} {i} {h∘f≈h∘g} h≈i∘e → begin
+    i ≈⟨ ⟺ identityʳ ⟩
+    i ∘ id ≈⟨ refl⟩∘⟨ ⟺ sisSection ⟩
+    i ∘ e ∘ s ≈⟨ sym-assoc ⟩
+    (i ∘ e) ∘ s ≈⟨ ⟺ h≈i∘e ⟩∘⟨refl ⟩
+    h ∘ s ∎
+  }
+  where
+    open HomReasoning
+
+splitCoequalizer⇒Coequalizer-sym : {A B C : Obj} {f g : A ⇒ B} {e : B ⇒ C}
+                               (t : B ⇒ A) (s : C ⇒ B)
+                               (eq : e ∘ f ≈ e ∘ g)
+                               (tisSection : g ∘ t ≈ id)
+                               (sisSection : e ∘ s ≈ id)
+                               (sq : s ∘ e ≈ f ∘ t)
+                               → IsCoequalizer f g e
+splitCoequalizer⇒Coequalizer-sym {f = f} {g} {e} t s eq tisSection sisSection sq = record
+  { equality = eq
+  ; coequalize = λ {T} {h} _ → h ∘ s
+  ; universal = λ {T} {h} {h∘f≈h∘g} → begin
+    h           ≈⟨ ⟺ identityʳ ⟩
+    h ∘ id      ≈⟨ refl⟩∘⟨ ⟺ tisSection ⟩
+    h ∘ g ∘ t   ≈⟨ sym-assoc ⟩
+    (h ∘ g) ∘ t ≈⟨ ⟺ h∘f≈h∘g ⟩∘⟨refl ⟩
+    (h ∘ f) ∘ t ≈⟨ assoc ⟩
+    h ∘ f ∘ t   ≈⟨ refl⟩∘⟨ ⟺ sq ⟩
+    h ∘ s ∘ e   ≈⟨ sym-assoc ⟩
+    (h ∘ s) ∘ e ∎
+  ; unique = λ {C} {h} {i} {h∘f≈h∘g} h≈i∘e → begin
+    i ≈⟨ ⟺ identityʳ ⟩
+    i ∘ id ≈⟨ refl⟩∘⟨ ⟺ sisSection ⟩
+    i ∘ e ∘ s ≈⟨ sym-assoc ⟩
+    (i ∘ e) ∘ s ≈⟨ ⟺ h≈i∘e ⟩∘⟨refl ⟩
+    h ∘ s ∎
+  }
+  where
+    open HomReasoning
