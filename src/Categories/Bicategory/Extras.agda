@@ -427,4 +427,28 @@ module UnitorCoherence where
     (f ▷ ρ⇒ ∘ᵥ α⇒) ◁ id₁         ≈˘⟨ refl⟩⊚⟨ id.identity ⟩
     (f ▷ ρ⇒ ∘ᵥ α⇒) ⊚₁ id.F₁ _    ∎)
 
-open UnitorCoherence public using (unitorˡ-coherence; unitorʳ-coherence)
+  unitorʳ-coherence-var₁ : [ (f ⊚₀ g) ⊚₀ id₁ ⇒ f ⊚₀ g ⊚₀ id₁ ]⟨
+                             α⇒
+                           ≈ ρ⇒     ⇒⟨ f ⊚₀ g ⟩
+                             f ▷ ρ⇐
+                           ⟩
+  unitorʳ-coherence-var₁ {f = f} = switch-fromtoˡ (f ▷ᵢ unitorʳ) (⟺ unitorʳ-coherence)
+
+  unitorʳ-coherence-var₂ : [ f ⊚₀ g ⇒ f ⊚₀ g ⊚₀ id₁ ]⟨
+                              f ▷ ρ⇐
+                           ≈  ρ⇐     ⇒⟨ (f ⊚₀ g) ⊚₀ id₁ ⟩
+                              α⇒
+                      ⟩
+  unitorʳ-coherence-var₂ = switch-fromtoʳ unitorʳ (⟺ unitorʳ-coherence-var₁)
+
+  unitorʳ-coherence-inv : [ f ⊚₀ g ⇒ (f ⊚₀ g) ⊚₀ id₁ ]⟨
+                            f ▷ ρ⇐      ⇒⟨ f ⊚₀ g ⊚₀ id₁ ⟩
+                            α⇐
+                          ≈ ρ⇐
+                           ⟩
+  unitorʳ-coherence-inv = ⟺ (switch-fromtoˡ associator (⟺ unitorʳ-coherence-var₂))
+
+open UnitorCoherence public
+  using (unitorˡ-coherence; unitorˡ-coherence-inv;
+         unitorʳ-coherence; unitorʳ-coherence-var₁;
+         unitorʳ-coherence-var₂; unitorʳ-coherence-inv)
