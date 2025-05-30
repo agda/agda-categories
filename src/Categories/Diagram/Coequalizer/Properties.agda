@@ -7,14 +7,14 @@ module Categories.Diagram.Coequalizer.Properties {o ℓ e} (C : Category o ℓ e
 
 open Category C
 
-open import Categories.Diagram.Coequalizer C using (Coequalizer; IsCoequalizer)
+open import Categories.Diagram.Coequalizer C using (Coequalizer; IsCoequalizer; Coequalizer⇒Epi; up-to-iso)
 open import Categories.Morphism C
 import Categories.Morphism.Reasoning as MR
-open import Categories.Diagram.Equalizer op
+open import Categories.Diagram.Equalizer op hiding (up-to-iso)
 open import Categories.Diagram.Equalizer.Properties op
 open import Categories.Diagram.Duality C
 open import Categories.Diagram.KernelPair C
-open import Categories.Diagram.Pullback C
+open import Categories.Diagram.Pullback C hiding (up-to-iso)
 open import Categories.Morphism.Regular C
 
 
