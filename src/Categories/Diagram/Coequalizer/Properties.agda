@@ -81,23 +81,18 @@ splitCoequalizer⇒Coequalizer {f = f} {g} {e} t s eq tisSection sisSection sq =
   { equality = eq
   ; coequalize = λ {T} {h} _ → h ∘ s
   ; universal = λ {T} {h} {h∘f≈h∘g} → begin
-    h           ≈⟨ ⟺ identityʳ ⟩
-    h ∘ id      ≈⟨ refl⟩∘⟨ ⟺ tisSection ⟩
-    h ∘ f ∘ t   ≈⟨ sym-assoc ⟩
-    (h ∘ f) ∘ t ≈⟨ h∘f≈h∘g ⟩∘⟨refl ⟩
-    (h ∘ g) ∘ t ≈⟨ assoc ⟩
-    h ∘ g ∘ t   ≈⟨ refl⟩∘⟨ ⟺ sq ⟩
-    h ∘ s ∘ e   ≈⟨ sym-assoc ⟩
+    h           ≈⟨ introʳ tisSection ⟩
+    h ∘ f ∘ t   ≈⟨ extendʳ h∘f≈h∘g ⟩
+    h ∘ g ∘ t   ≈⟨ pushʳ (⟺ sq) ⟩
     (h ∘ s) ∘ e ∎
   ; unique = λ {C} {h} {i} {h∘f≈h∘g} h≈i∘e → begin
-    i ≈⟨ ⟺ identityʳ ⟩
-    i ∘ id ≈⟨ refl⟩∘⟨ ⟺ sisSection ⟩
-    i ∘ e ∘ s ≈⟨ sym-assoc ⟩
-    (i ∘ e) ∘ s ≈⟨ ⟺ h≈i∘e ⟩∘⟨refl ⟩
+    i ≈⟨ introʳ sisSection ⟩
+    i ∘ e ∘ s ≈⟨ pullˡ (⟺ h≈i∘e) ⟩
     h ∘ s ∎
   }
   where
     open HomReasoning
+    open MR C
 
 splitCoequalizer⇒Coequalizer-sym : {A B C : Obj} {f g : A ⇒ B} {e : B ⇒ C}
                                (t : B ⇒ A) (s : C ⇒ B)
