@@ -131,16 +131,13 @@ module MapBetweenCoequalizers where
               → (coeq₂ : Coequalizer f₂ g₂)
               → (Coequalizer.arr coeq₂ ∘ β) ∘ f₁ ≈ (Coequalizer.arr coeq₂ ∘ β) ∘ g₁
   ⇒coequalize {A₁} {B₁} {A₂} {B₂} {f₁} {g₁} {f₂} {g₂} α β sq₁ sq₂ coeq₂ = begin
-    (Coequalizer.arr coeq₂ ∘ β) ∘ f₁ ≈⟨ assoc ⟩
-    Coequalizer.arr coeq₂ ∘ (β ∘ f₁) ≈⟨ refl⟩∘⟨ ⟺ sq₁ ⟩
-    Coequalizer.arr coeq₂ ∘ (f₂ ∘ α) ≈⟨ ⟺ assoc ⟩
+    (Coequalizer.arr coeq₂ ∘ β) ∘ f₁ ≈⟨ extendˡ (⟺ sq₁) ⟩
     (Coequalizer.arr coeq₂ ∘ f₂) ∘ α ≈⟨ equality₂ ⟩∘⟨refl ⟩
-    (Coequalizer.arr coeq₂ ∘ g₂) ∘ α ≈⟨ assoc ⟩
-    Coequalizer.arr coeq₂ ∘ (g₂ ∘ α) ≈⟨ refl⟩∘⟨ sq₂ ⟩
-    Coequalizer.arr coeq₂ ∘ (β ∘ g₁) ≈⟨ ⟺ assoc ⟩
+    (Coequalizer.arr coeq₂ ∘ g₂) ∘ α ≈⟨ extendˡ sq₂ ⟩
     (Coequalizer.arr coeq₂ ∘ β) ∘ g₁ ∎
     where
       open HomReasoning
+      open MR C
       open Coequalizer coeq₂
       open IsCoequalizer isCoequalizer renaming (equality to equality₂)
 
