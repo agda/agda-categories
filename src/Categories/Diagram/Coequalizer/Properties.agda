@@ -186,13 +186,9 @@ CoeqOfIsomorphicDiagram {A} {B} {f} {g} coeq {A'} {B'} a b = record
     { equality = begin
         (arr ∘ _≅_.to b) ∘ _≅_.from b ∘ f ∘ _≅_.to a ≈⟨ sym-assoc ⟩
         ((arr ∘ _≅_.to b) ∘ _≅_.from b) ∘ f ∘ _≅_.to a ≈⟨ assoc ⟩∘⟨refl ⟩
-        (arr ∘ _≅_.to b ∘ _≅_.from b) ∘ f ∘ _≅_.to a ≈⟨ (refl⟩∘⟨ _≅_.isoˡ b) ⟩∘⟨refl ⟩
-        (arr ∘ id) ∘ f ∘ _≅_.to a ≈⟨ identityʳ ⟩∘⟨refl ⟩
-        arr ∘ f ∘ _≅_.to a ≈⟨ sym-assoc ⟩
-        (arr ∘ f) ∘ _≅_.to a ≈⟨ equality ⟩∘⟨refl ⟩
-        (arr ∘ g) ∘ _≅_.to a ≈⟨ assoc ⟩
-        arr ∘ g ∘ _≅_.to a ≈⟨ ⟺ identityʳ ⟩∘⟨refl ⟩
-        (arr ∘ id) ∘ g ∘ _≅_.to a ≈⟨ (refl⟩∘⟨ ⟺ (_≅_.isoˡ b)) ⟩∘⟨refl ⟩
+        (arr ∘ _≅_.to b ∘ _≅_.from b) ∘ f ∘ _≅_.to a ≈⟨ elimʳ (_≅_.isoˡ b) ⟩∘⟨refl ⟩
+        arr ∘ f ∘ _≅_.to a ≈⟨ extendʳ equality ⟩
+        arr ∘ g ∘ _≅_.to a ≈⟨ introʳ (_≅_.isoˡ b) ⟩∘⟨refl ⟩
         (arr ∘ _≅_.to b ∘ _≅_.from b) ∘ g ∘ _≅_.to a ≈⟨ sym-assoc ⟩∘⟨refl ⟩
         ((arr ∘ _≅_.to b) ∘ _≅_.from b) ∘ g ∘ _≅_.to a ≈⟨ assoc ⟩
         (arr ∘ _≅_.to b) ∘ _≅_.from b ∘ g ∘ _≅_.to a ∎
@@ -210,7 +206,7 @@ CoeqOfIsomorphicDiagram {A} {B} {f} {g} coeq {A'} {B'} a b = record
   where
     open Coequalizer coeq
     open HomReasoning
-    open MR C using (switch-fromtoʳ; switch-tofromʳ; cancel-toʳ)
+    open MR C
     
     f' g' : A' ⇒ B'
     f' = _≅_.from b ∘ f ∘ _≅_.to a
