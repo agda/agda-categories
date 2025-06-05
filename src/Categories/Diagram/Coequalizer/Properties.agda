@@ -63,7 +63,7 @@ regular-is-coeq-kp {A} {B} f record { C = D ; h = h ; g = g ; coequalizer = coeq
       (u ∘ p₂ kp) ∘ pb-univ   ≈⟨ pullʳ (p₂∘universal≈h₂ kp) ⟩
       u ∘ g                   ∎
       where
-        open Category.HomReasoning 𝒞
+        open HomReasoning
         open MR 𝒞
 
 retract-coequalizer : ∀ {X Y} {f : Y ⇒ X} {g : X ⇒ Y} → f RetractOf g → IsCoequalizer (g ∘ f) id f
@@ -155,7 +155,7 @@ module MapBetweenCoequalizers where
     where
       open Coequalizer coeq₁ renaming (isCoequalizer to isCoequalizer₁)
       open IsCoequalizer isCoequalizer₁ renaming (coequalize to coequalize₁)
-      open Category.HomReasoning 𝒞
+      open HomReasoning
 
   ⇒MapBetweenCoeqSq : {A₁ B₁ A₂ B₂ : Obj}
                   → {f₁ g₁ : A₁ ⇒ B₁}
