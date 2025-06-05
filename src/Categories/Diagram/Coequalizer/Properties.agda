@@ -327,7 +327,7 @@ module CoequalizerOfCoequalizer
     universal∘arr {T} {t} {eq} = begin
       t ∘ Coequalizer.arr coeqⁱ ≈⟨ Coequalizer.universal coeqʰ ⟩
       u eq ∘ Coequalizer.arr coeqʰ ≈⟨ Coequalizer.universal coeqcoeqᵍʰ ⟩∘⟨refl ⟩
-      (coequalize eq ∘ Coequalizer.arr coeqcoeqᵍʰ) ∘ Coequalizer.arr coeqʰ ≈⟨ extendˡ {!arrSq!} ⟩
+      (coequalize eq ∘ Coequalizer.arr coeqcoeqᵍʰ) ∘ Coequalizer.arr coeqʰ ≈⟨ extendˡ arrSq ⟩
       (coequalize eq ∘ arr) ∘ Coequalizer.arr coeqⁱ ∎
       where
         open MR 𝒞
