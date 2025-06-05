@@ -341,15 +341,13 @@ module CoequalizerOfCoequalizer
                      → (i ∘ Coequalizer.arr coeqcoeqᵍʰ) ∘ Coequalizer.arr coeqʰ
                        ≈ (coequalize eq  ∘ Coequalizer.arr coeqcoeqᵍʰ) ∘ Coequalizer.arr coeqʰ
     unique∘arr∘arr {T} {t} {i} {eq} factors = begin
-      (i ∘ Coequalizer.arr coeqcoeqᵍʰ) ∘ Coequalizer.arr coeqʰ ≈⟨ assoc ⟩
-      i ∘ Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ ≈⟨ refl⟩∘⟨ arrSq ⟩
-      i ∘ arr ∘ Coequalizer.arr coeqⁱ ≈⟨ ⟺ assoc ⟩
+      (i ∘ Coequalizer.arr coeqcoeqᵍʰ) ∘ Coequalizer.arr coeqʰ ≈⟨ extendˡ arrSq ⟩
       (i ∘ arr) ∘ Coequalizer.arr coeqⁱ ≈⟨ ⟺ factors ⟩∘⟨refl ⟩
       t ∘ Coequalizer.arr coeqⁱ ≈⟨ universal ⟩∘⟨refl ⟩
-      (coequalize eq ∘ arr) ∘ Coequalizer.arr coeqⁱ ≈⟨ assoc ⟩
-      coequalize eq ∘ arr ∘ Coequalizer.arr coeqⁱ ≈⟨ refl⟩∘⟨ ⟺ arrSq ⟩
-      coequalize eq ∘ Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ ≈⟨ ⟺ assoc ⟩
+      (coequalize eq ∘ arr) ∘ Coequalizer.arr coeqⁱ ≈⟨ extendˡ (⟺ arrSq) ⟩
       (coequalize eq  ∘ Coequalizer.arr coeqcoeqᵍʰ) ∘ Coequalizer.arr coeqʰ ∎
+      where
+        open MR 𝒞
 
     unique : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} {i : obj ⇒ T} {eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂}
              → t ≈ i ∘ arr → i ≈ coequalize eq
