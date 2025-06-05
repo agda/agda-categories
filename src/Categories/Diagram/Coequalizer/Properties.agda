@@ -307,18 +307,14 @@ module CoequalizerOfCoequalizer
     uEqualizes∘arr : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
                      → (u eq ∘ g⇒h₁) ∘ Coequalizer.arr coeqᵍ ≈ (u eq ∘ g⇒h₂) ∘ Coequalizer.arr coeqᵍ
     uEqualizes∘arr {T} {t} eq = begin
-      (u eq ∘ g⇒h₁) ∘ Coequalizer.arr coeqᵍ ≈⟨ assoc ⟩
-      u eq ∘ g⇒h₁ ∘ Coequalizer.arr coeqᵍ ≈⟨ refl⟩∘⟨ ⟺ sq₁ᵍʰ ⟩
-      u eq ∘ Coequalizer.arr coeqʰ ∘ i₁ ≈⟨ sym-assoc ⟩
+      (u eq ∘ g⇒h₁) ∘ Coequalizer.arr coeqᵍ ≈⟨ extendˡ (⟺ sq₁ᵍʰ) ⟩
       (u eq ∘ Coequalizer.arr coeqʰ) ∘ i₁ ≈⟨ ⟺ (Coequalizer.universal coeqʰ) ⟩∘⟨refl ⟩
-      (t ∘ Coequalizer.arr coeqⁱ) ∘ i₁ ≈⟨ assoc ⟩
-      t ∘ Coequalizer.arr coeqⁱ ∘ i₁ ≈⟨ refl⟩∘⟨ Coequalizer.equality coeqⁱ ⟩
-      t ∘ Coequalizer.arr coeqⁱ ∘ i₂ ≈⟨ ⟺ assoc ⟩
+      (t ∘ Coequalizer.arr coeqⁱ) ∘ i₁ ≈⟨ extendˡ (Coequalizer.equality coeqⁱ) ⟩
       (t ∘ Coequalizer.arr coeqⁱ) ∘ i₂ ≈⟨ Coequalizer.universal coeqʰ ⟩∘⟨refl ⟩
-      (u eq ∘ Coequalizer.arr coeqʰ) ∘ i₂ ≈⟨ assoc ⟩
-      u eq ∘ Coequalizer.arr coeqʰ ∘ i₂ ≈⟨ refl⟩∘⟨ sq₂ᵍʰ ⟩
-      u eq ∘ g⇒h₂ ∘ Coequalizer.arr coeqᵍ ≈⟨ ⟺ assoc ⟩
+      (u eq ∘ Coequalizer.arr coeqʰ) ∘ i₂ ≈⟨ extendˡ sq₂ᵍʰ ⟩
       (u eq ∘ g⇒h₂) ∘ Coequalizer.arr coeqᵍ ∎
+      where
+        open MR 𝒞
 
     uEqualizes : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂) → u eq ∘ g⇒h₁ ≈ u eq ∘ g⇒h₂
     uEqualizes {T} {t} eq = Coequalizer⇒Epi coeqᵍ (u eq ∘ g⇒h₁) (u eq ∘ g⇒h₂) (uEqualizes∘arr eq)
