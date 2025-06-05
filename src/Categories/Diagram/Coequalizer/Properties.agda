@@ -216,11 +216,9 @@ CoeqOfIsomorphicDiagram {A} {B} {f} {g} coeq {A'} {B'} a b = record
                          (eq : h ∘ f' ≈ h ∘ g')
                        → (h ∘ _≅_.from b) ∘ f ≈ (h ∘ _≅_.from b) ∘ g
     equalize'⇒equalize {C} {h} eq = cancel-toʳ a (begin
-      ((h ∘ _≅_.from b) ∘ f) ∘ _≅_.to a ≈⟨ assoc ⟩
-      (h ∘ _≅_.from b) ∘ f ∘ _≅_.to a ≈⟨ assoc ⟩
+      ((h ∘ _≅_.from b) ∘ f) ∘ _≅_.to a ≈⟨ assoc²αε ⟩
       h ∘ f' ≈⟨ eq ⟩
-      h ∘ g' ≈⟨ sym-assoc ⟩
-      (h ∘ _≅_.from b) ∘ g ∘ _≅_.to a ≈⟨ sym-assoc ⟩
+      h ∘ g' ≈⟨ assoc²εα ⟩
       ((h ∘ _≅_.from b) ∘ g) ∘ _≅_.to a ∎)
 
     coequalize' : {C : Obj} {h : B' ⇒ C}
