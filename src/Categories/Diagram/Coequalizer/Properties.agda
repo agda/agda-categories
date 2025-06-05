@@ -222,7 +222,7 @@ CoeqOfIsomorphicDiagram {A} {B} {f} {g} coeq {A'} {B'} a b = record
       ((h ∘ _≅_.from b) ∘ g) ∘ _≅_.to a ∎)
 
     coequalize' : {C : Obj} {h : B' ⇒ C}
-                  (eq : h ∘ _≅_.from b ∘ f ∘ _≅_.to a ≈ h ∘ _≅_.from b ∘ g ∘ _≅_.to a)
+                  (eq : h ∘ f' ≈ h ∘ g')
                   → obj ⇒ C
     coequalize' {C} {h} eq = coequalize (equalize'⇒equalize eq)
 
