@@ -3,19 +3,19 @@
 open import Categories.Category
 
 -- we use duality to prove properties about coequalizer
-module Categories.Diagram.Coequalizer.Properties {o ℓ e} (C : Category o ℓ e) where
+module Categories.Diagram.Coequalizer.Properties {o ℓ e} (𝒞 : Category o ℓ e) where
 
-open Category C
+open Category 𝒞
 
-open import Categories.Diagram.Coequalizer C using (Coequalizer; IsCoequalizer; Coequalizer⇒Epi; up-to-iso)
-open import Categories.Morphism C using (_RetractOf_; _≅_)
+open import Categories.Diagram.Coequalizer 𝒞 using (Coequalizer; IsCoequalizer; Coequalizer⇒Epi; up-to-iso)
+open import Categories.Morphism 𝒞 using (_RetractOf_; _≅_)
 import Categories.Morphism.Reasoning as MR
 open import Categories.Diagram.Equalizer op using (Equalizer)
 open import Categories.Diagram.Equalizer.Properties op using (section-equalizer)
-open import Categories.Diagram.Duality C using (Coequalizer⇒coEqualizer; IscoEqualizer⇒IsCoequalizer)
-open import Categories.Diagram.KernelPair C using (KernelPair)
-open import Categories.Diagram.Pullback C using (Pullback; IsPullback)
-open import Categories.Morphism.Regular C using (RegularEpi)
+open import Categories.Diagram.Duality 𝒞 using (Coequalizer⇒coEqualizer; IscoEqualizer⇒IsCoequalizer)
+open import Categories.Diagram.KernelPair 𝒞 using (KernelPair)
+open import Categories.Diagram.Pullback 𝒞 using (Pullback; IsPullback)
+open import Categories.Morphism.Regular 𝒞 using (RegularEpi)
 
 
 import Relation.Binary.Reasoning.Setoid as SR
@@ -63,8 +63,8 @@ regular-is-coeq-kp {A} {B} f record { C = D ; h = h ; g = g ; coequalizer = coeq
       (u ∘ p₂ kp) ∘ pb-univ   ≈⟨ pullʳ (p₂∘universal≈h₂ kp) ⟩
       u ∘ g                   ∎
       where
-        open Category.HomReasoning C
-        open MR C
+        open Category.HomReasoning 𝒞
+        open MR 𝒞
 
 retract-coequalizer : ∀ {X Y} {f : Y ⇒ X} {g : X ⇒ Y} → f RetractOf g → IsCoequalizer (g ∘ f) id f
 retract-coequalizer f∘g≈id = IscoEqualizer⇒IsCoequalizer (section-equalizer f∘g≈id)
@@ -92,7 +92,7 @@ splitCoequalizer⇒Coequalizer {f = f} {g} {e} t s eq tisSection sisSection sq =
   }
   where
     open HomReasoning
-    open MR C
+    open MR 𝒞
 
 splitCoequalizer⇒Coequalizer-sym : {A B C : Obj} {f g : A ⇒ B} {e : B ⇒ C}
                                (t : B ⇒ A) (s : C ⇒ B)
@@ -116,10 +116,10 @@ splitCoequalizer⇒Coequalizer-sym {f = f} {g} {e} t s eq tisSection sisSection 
   }
   where
     open HomReasoning
-    open MR C
+    open MR 𝒞
 
 
-open Categories.Category.Definitions C
+open Categories.Category.Definitions 𝒞
 
 module MapBetweenCoequalizers where
 
@@ -137,7 +137,7 @@ module MapBetweenCoequalizers where
     (Coequalizer.arr coeq₂ ∘ β) ∘ g₁ ∎
     where
       open HomReasoning
-      open MR C
+      open MR 𝒞
       open Coequalizer coeq₂
       open IsCoequalizer isCoequalizer renaming (equality to equality₂)
 
@@ -155,7 +155,7 @@ module MapBetweenCoequalizers where
     where
       open Coequalizer coeq₁ renaming (isCoequalizer to isCoequalizer₁)
       open IsCoequalizer isCoequalizer₁ renaming (coequalize to coequalize₁)
-      open Category.HomReasoning C
+      open Category.HomReasoning 𝒞
 
   ⇒MapBetweenCoeqSq : {A₁ B₁ A₂ B₂ : Obj}
                   → {f₁ g₁ : A₁ ⇒ B₁}
@@ -206,7 +206,7 @@ CoeqOfIsomorphicDiagram {A} {B} {f} {g} coeq {A'} {B'} a b = record
   where
     open Coequalizer coeq
     open HomReasoning
-    open MR C
+    open MR 𝒞
     
     f' g' : A' ⇒ B'
     f' = _≅_.from b ∘ f ∘ _≅_.to a
