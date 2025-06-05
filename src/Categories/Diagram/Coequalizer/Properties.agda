@@ -293,14 +293,12 @@ module CoequalizerOfCoequalizer
     commutes : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
                → (t ∘ Coequalizer.arr coeqⁱ) ∘ h₁ ≈ (t ∘ Coequalizer.arr coeqⁱ) ∘ h₂
     commutes {T} {t} eq = begin
-      (t ∘ Coequalizer.arr coeqⁱ) ∘ h₁ ≈⟨ assoc ⟩
-      t ∘ Coequalizer.arr coeqⁱ ∘ h₁ ≈⟨ refl⟩∘⟨ ⟺ sq₁ᶠⁱ ⟩
-      t ∘ f⇒i₁ ∘ Coequalizer.arr coeqᶠ ≈⟨ ⟺ assoc ⟩
+      (t ∘ Coequalizer.arr coeqⁱ) ∘ h₁ ≈⟨ extendˡ (⟺ sq₁ᶠⁱ) ⟩
       (t ∘ f⇒i₁) ∘ Coequalizer.arr coeqᶠ ≈⟨ eq ⟩∘⟨refl ⟩
-      (t ∘ f⇒i₂) ∘ Coequalizer.arr coeqᶠ ≈⟨ assoc ⟩
-      t ∘ f⇒i₂ ∘ Coequalizer.arr coeqᶠ ≈⟨ refl⟩∘⟨ sq₂ᶠⁱ ⟩
-      t ∘ Coequalizer.arr coeqⁱ ∘ h₂ ≈⟨ ⟺ assoc ⟩
+      (t ∘ f⇒i₂) ∘ Coequalizer.arr coeqᶠ ≈⟨ extendˡ sq₂ᶠⁱ ⟩
       (t ∘ Coequalizer.arr coeqⁱ) ∘ h₂ ∎
+      where
+        open MR 𝒞
   
     u : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
         → Coequalizer.obj coeqʰ ⇒ T
