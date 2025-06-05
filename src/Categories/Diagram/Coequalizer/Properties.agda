@@ -277,18 +277,14 @@ module CoequalizerOfCoequalizer
 
     equality∘arr : (arr ∘ f⇒i₁) ∘ Coequalizer.arr coeqᶠ  ≈ (arr ∘ f⇒i₂) ∘ Coequalizer.arr coeqᶠ
     equality∘arr = begin
-      (arr ∘ f⇒i₁) ∘ Coequalizer.arr coeqᶠ ≈⟨ assoc ⟩
-      arr ∘ f⇒i₁ ∘ Coequalizer.arr coeqᶠ ≈⟨ refl⟩∘⟨ sq₁ᶠⁱ ⟩
-      arr ∘ Coequalizer.arr coeqⁱ ∘ h₁ ≈⟨ ⟺ assoc ⟩
+      (arr ∘ f⇒i₁) ∘ Coequalizer.arr coeqᶠ ≈⟨ extendˡ sq₁ᶠⁱ ⟩
       (arr ∘ Coequalizer.arr coeqⁱ) ∘ h₁ ≈⟨ ⟺ arrSq ⟩∘⟨refl ⟩
-      (Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ) ∘ h₁ ≈⟨ assoc ⟩
-      Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ ∘ h₁ ≈⟨ refl⟩∘⟨ Coequalizer.equality coeqʰ ⟩
-      Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ ∘ h₂ ≈⟨ ⟺ assoc ⟩
+      (Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ) ∘ h₁ ≈⟨ extendˡ (Coequalizer.equality coeqʰ) ⟩
       (Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ) ∘ h₂ ≈⟨ arrSq ⟩∘⟨refl ⟩
-      (arr ∘ Coequalizer.arr coeqⁱ) ∘ h₂ ≈⟨ assoc ⟩
-      arr ∘ Coequalizer.arr coeqⁱ ∘ h₂ ≈⟨ refl⟩∘⟨ ⟺ sq₂ᶠⁱ ⟩
-      arr ∘ f⇒i₂ ∘ Coequalizer.arr coeqᶠ ≈⟨ ⟺ assoc ⟩
+      (arr ∘ Coequalizer.arr coeqⁱ) ∘ h₂ ≈⟨ extendˡ (⟺ sq₂ᶠⁱ) ⟩
       (arr ∘ f⇒i₂) ∘ Coequalizer.arr coeqᶠ ∎
+      where
+        open MR 𝒞
 
     equality : arr ∘ f⇒i₁ ≈ arr ∘ f⇒i₂
     equality = Coequalizer⇒Epi coeqᶠ (arr ∘ f⇒i₁) (arr ∘ f⇒i₂) equality∘arr
