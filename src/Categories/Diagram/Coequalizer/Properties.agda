@@ -119,7 +119,7 @@ splitCoequalizer⇒Coequalizer-sym {f = f} {g} {e} t s eq tisSection sisSection 
     open MR 𝒞
 
 
-open Categories.Category.Definitions 𝒞
+open Categories.Category.Definitions 𝒞 using (CommutativeSquare)
 
 module MapBetweenCoequalizers where
 
