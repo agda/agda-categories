@@ -378,7 +378,7 @@ module CoequalizerOfCoequalizer
   -- We need this for proving some coherences in the bicategory of monads and bimodules --
   IsoFitsInPentagon : (coeq : Coequalizer f⇒i₁ f⇒i₂)
                     → Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ
-                      ≈ _≅_.from (CoeqsAreIsomorphic coeq) ∘ Coequalizer.arr coeq  ∘ Coequalizer.arr coeqⁱ 
+                      ≈ _≅_.from (CoeqsAreIsomorphic coeq) ∘ Coequalizer.arr coeq  ∘ Coequalizer.arr coeqⁱ
   IsoFitsInPentagon coeq = begin
     Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ ≈⟨ arrSq ⟩
     arr ∘ Coequalizer.arr coeqⁱ                        ≈⟨ Coequalizer.universal coeq ⟩∘⟨refl ⟩
