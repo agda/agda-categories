@@ -7,14 +7,23 @@ open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 open import Data.Product using (_,_)
 
 import Categories.Morphism.Reasoning as MR
+import Categories.Morphism as M
 
 module Categories.Category.CounitalCopy.Restriction {o ℓ e} {𝒞 : Category o ℓ e} (counitalCopy : CounitalCopy 𝒞) where
   open Category 𝒞
   open Equiv
+  open M 𝒞
   open MR 𝒞
   open HomReasoning
   open CounitalCopy counitalCopy
   open Symmetric symmetric
+  open import Categories.Category.Monoidal.Utilities monoidal
+  open import Categories.Category.Monoidal.Properties monoidal
+
+  private
+    σ : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X
+    σ {X} {Y} = braiding.⇒.η (X , Y)
+
   restriction : Restriction 𝒞
   restriction = record
     { _↓ = λ {A} {B} f → unitorˡ.from ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ
@@ -27,12 +36,36 @@ module Categories.Category.CounitalCopy.Restriction {o ℓ e} {𝒞 : Category o
       unitorˡ.from ∘ unitorˡ.to ∘ f                        ≈⟨ cancelˡ unitorˡ.isoʳ ⟩ 
       f                                                    ∎
     ; ↓-comm = λ {A} {B} {C} {f} {g} → begin 
-      (unitorˡ.from ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ) ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ Δ ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ {!   !} ⟩ 
-      {!   !} ≈⟨ {!   !} ⟩ 
+      (unitorˡ.from ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ) ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ Δ
+      -- unitorˡ.from ∘ (δ ⊗₁ id) ∘ ((f ⊗₁ g) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ ≈ unitorˡ.from ∘ (δ ⊗₁ id) ∘ ((g ⊗₁ f) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ
+      -- unitorˡ.from ∘ (δ ⊗₁ id) ∘ ((g ⊗₁ f) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ
+        ≈⟨ ↓-comm' f g ⟩
+      unitorˡ.from ∘ unitorˡ.from ∘ associator.from ∘ ((δ ⊗₁ δ) ⊗₁ id) ∘ ((g ⊗₁ f) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ 
+        ≈⟨ {!   !} ⟩
+      unitorˡ.from ∘ unitorˡ.from ∘ associator.from ∘ ((δ ⊗₁ δ) ⊗₁ id) ∘ ((f ⊗₁ g) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ 
+        ≈˘⟨ ↓-comm' g f ⟩
       (unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ Δ) ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ ∎
-    ; ↓-denestʳ = λ {A} {B} {C} {f} {g} → {! begin ? ≈⟨ ? ⟩ ? ∎  !}
+    ; ↓-denestʳ = λ {A} {B} {C} {f} {g} → begin 
+      unitorˡ.from ∘ (δ ⊗₁ id) ∘ ((g ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ) ⊗₁ id) ∘ Δ
+        ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ (pullˡ (sym ⊗.homomorphism) ○ pullˡ (sym ⊗.homomorphism) ○ pullˡ (sym ⊗.homomorphism) ○ pullˡ (sym ⊗.homomorphism) ○ ∘-resp-≈ˡ (⊗.F-resp-≈ ((assoc ○ assoc ○ assoc) , elimˡ (elimˡ (elimˡ identity²))))) ⟩ 
+      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (unitorˡ.from ⊗₁ id) ∘ ((δ ⊗₁ id) ⊗₁ id) ∘ ((f ⊗₁ id) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ
+        ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ (sym-assoc ○ sym Δ-assoc) ⟩ 
+      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (unitorˡ.from ⊗₁ id) ∘ ((δ ⊗₁ id) ⊗₁ id) ∘ ((f ⊗₁ id) ⊗₁ id) ∘ associator.to ∘ (id ⊗₁ Δ) ∘ Δ
+        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ (sym assoc-commute-to ○ ∘-resp-≈ʳ (⊗.F-resp-≈ (refl , ⊗.identity))) ⟩ 
+      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (unitorˡ.from ⊗₁ id) ∘ ((δ ⊗₁ id) ⊗₁ id) ∘ associator.to ∘ (f ⊗₁ id) ∘ (id ⊗₁ Δ) ∘ Δ
+        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ (sym assoc-commute-to ○ ∘-resp-≈ʳ (⊗.F-resp-≈ (refl , ⊗.identity))) ⟩ 
+      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (unitorˡ.from ⊗₁ id) ∘ associator.to ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ (id ⊗₁ Δ) ∘ Δ
+        ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ pullˡ coherence₁ ⟩ 
+      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ unitorˡ.from ∘ associator.from ∘ associator.to ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ (id ⊗₁ Δ) ∘ Δ
+        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ cancelˡ associator.isoʳ ⟩
+      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ (id ⊗₁ Δ) ∘ Δ
+        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (id-comm , id-comm-sym) ○ ⊗.homomorphism) ⟩ 
+      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (id ⊗₁ Δ) ∘ (f ⊗₁ id) ∘ Δ
+        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (id-comm , id-comm-sym) ○ ⊗.homomorphism) ⟩ 
+      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ unitorˡ.from ∘ (id ⊗₁ Δ) ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ
+        ≈˘⟨ pullʳ (pullʳ (pullʳ (extendʳ (sym unitorˡ-commute-from)))) ⟩ 
+      (unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ Δ) ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ 
+        ∎
     ; ↓-skew-comm = λ {A} {B} {C} {g} {f} → begin 
       (unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ Δ) ∘ f                   ≈⟨ pullʳ (pullʳ (pullʳ natural)) ⟩ 
       unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (f ⊗₁ f) ∘ Δ              ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ pullˡ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identityˡ , identityʳ)) ⟩ 
@@ -43,3 +76,57 @@ module Categories.Category.CounitalCopy.Restriction {o ℓ e} {𝒞 : Category o
       f ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ ((g ∘ f) ⊗₁ id) ∘ Δ               ∎
     ; ↓-cong = λ f≈g → refl⟩∘⟨ refl⟩∘⟨ ⊗.F-resp-≈ (f≈g , refl) ⟩∘⟨refl
     }
+    where
+      ↓-comm' : ∀ {A B C} (f : A ⇒ B) (g : A ⇒ C) → (unitorˡ.from ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ) ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ Δ ≈ unitorˡ.from ∘ unitorˡ.from ∘ associator.from ∘ ((δ ⊗₁ δ) ⊗₁ id) ∘ ((g ⊗₁ f) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ
+      ↓-comm' f g = begin 
+        (unitorˡ.from ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ) ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ Δ
+          ≈⟨ pullʳ (pullʳ (pullʳ (extendʳ (sym unitorˡ-commute-from)))) ⟩ 
+        unitorˡ.from ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ unitorˡ.from ∘ (id ⊗₁ Δ) ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ Δ
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (id-comm-sym , id-comm) ○ ⊗.homomorphism) ⟩
+        unitorˡ.from ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (id ⊗₁ Δ) ∘ (g ⊗₁ id) ∘ Δ
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (id-comm-sym , id-comm) ○ ⊗.homomorphism) ⟩
+        unitorˡ.from ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (id ⊗₁ Δ) ∘ Δ
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ (sym unitorˡ-commute-from) ⟩
+        unitorˡ.from ∘ (δ ⊗₁ id) ∘ unitorˡ.from ∘ (id ⊗₁ (f ⊗₁ id)) ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (id ⊗₁ Δ) ∘ Δ
+          ≈⟨ refl⟩∘⟨ extendʳ (sym unitorˡ-commute-from) ⟩
+        unitorˡ.from ∘ unitorˡ.from ∘ (id ⊗₁ (δ ⊗₁ id)) ∘ (id ⊗₁ (f ⊗₁ id)) ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (id ⊗₁ Δ) ∘ Δ
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (id-comm-sym , id-comm) ○ ⊗.homomorphism) ⟩
+        unitorˡ.from ∘ unitorˡ.from ∘ (id ⊗₁ (δ ⊗₁ id)) ∘ (δ ⊗₁ id) ∘ (id ⊗₁ (f ⊗₁ id)) ∘ (g ⊗₁ id) ∘ (id ⊗₁ Δ) ∘ Δ
+          ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ cancelˡ associator.isoʳ ⟩
+        unitorˡ.from ∘ unitorˡ.from ∘ (id ⊗₁ (δ ⊗₁ id)) ∘ (δ ⊗₁ id) ∘ (id ⊗₁ (f ⊗₁ id)) ∘ (g ⊗₁ id) ∘ associator.from ∘ associator.to ∘ (id ⊗₁ Δ) ∘ Δ
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ (sym-assoc ○ sym Δ-assoc) ⟩
+        unitorˡ.from ∘ unitorˡ.from ∘ (id ⊗₁ (δ ⊗₁ id)) ∘ (δ ⊗₁ id) ∘ (id ⊗₁ (f ⊗₁ id)) ∘ (g ⊗₁ id) ∘ associator.from ∘ (Δ ⊗₁ id) ∘ Δ
+          ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ (assoc-commute-from ○ ∘-resp-≈ˡ (⊗.F-resp-≈ (refl , ⊗.identity))) ⟩
+        unitorˡ.from ∘ unitorˡ.from ∘ (id ⊗₁ (δ ⊗₁ id)) ∘ (δ ⊗₁ id) ∘ (id ⊗₁ (f ⊗₁ id)) ∘ associator.from ∘ ((g ⊗₁ id) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ extendʳ (sym assoc-commute-from) ⟩
+        unitorˡ.from ∘ unitorˡ.from ∘ (id ⊗₁ (δ ⊗₁ id)) ∘ (δ ⊗₁ id) ∘ associator.from ∘ ((id ⊗₁ f) ⊗₁ id) ∘ ((g ⊗₁ id) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ (pullˡ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identityˡ , identityʳ)) ○ extendʳ (sym assoc-commute-from)) ⟩ 
+        unitorˡ.from ∘ unitorˡ.from ∘ associator.from ∘ ((δ ⊗₁ δ) ⊗₁ id) ∘ ((id ⊗₁ f) ⊗₁ id) ∘ ((g ⊗₁ id) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ
+          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ pullˡ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ ((sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identityˡ , identityʳ)) , identity²)) ⟩
+        unitorˡ.from ∘ unitorˡ.from ∘ associator.from ∘ ((δ ⊗₁ δ) ⊗₁ id) ∘ ((g ⊗₁ f) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ 
+          ≈⟨ refl⟩∘⟨ (pullˡ coherence₁) ⟩
+        unitorˡ.from ∘ (unitorˡ.from ⊗₁ id) ∘ ((δ ⊗₁ δ) ⊗₁ id) ∘ ((g ⊗₁ f) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ
+          ≈⟨ {!   !} ⟩
+        unitorˡ.from ∘ ((unitorˡ.from ∘ (id ⊗₁ δ) ∘ (δ ⊗₁ id)) ⊗₁ id) ∘ ((g ⊗₁ f) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ 
+          ≈⟨ refl⟩∘⟨ (⊗.F-resp-≈ (extendʳ unitorˡ-commute-from , refl)) ⟩∘⟨refl ⟩
+        unitorˡ.from ∘ ((δ ∘ unitorˡ.from ∘ (δ ⊗₁ id)) ⊗₁ id) ∘ ((g ⊗₁ f) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ
+          ≈⟨ refl⟩∘⟨ (⊗.F-resp-≈ (∘-resp-≈ʳ {!  unitorˡ-commute-from !} , refl)) ⟩∘⟨refl ⟩
+        {!   !}
+        -- unitorˡ.from ∘ (δ ⊗₁ id) ∘ ((g ⊗₁ f) ⊗₁ id) ∘ (Δ ⊗₁ id) ∘ Δ
+          ≈⟨ {!   !} ⟩
+        {!   !}
+          ∎
+      σ-Δ : ∀ {A} → σ ∘ Δ {A} ≈ Δ
+      σ-Δ {A} = begin 
+        σ ∘ Δ ≈⟨ {!   !} ⟩ 
+        {!   !} ≈⟨ {!   !} ⟩
+        Δ ∎
+      -- Δ-δ : ∀ {A B} → Δ ∘ δ ≈ (δ {A} ⊗₁ δ {B})
+      -- Δ-δ {A} {B} = begin 
+      --   Δ ∘ δ ≈⟨ natural ⟩ 
+      --   (δ ⊗₁ δ) ∘ Δ {A ⊗₀ B} ≈⟨ {!   !} ⟩ 
+      --   (δ ⊗₁ δ) ∘ associator.to ∘ (id ⊗₁ associator.from) ∘ (id ⊗₁ ((σ ⊗₁ id) ∘ associator.to)) ∘ associator.from ∘ (Δ ⊗₁ Δ) ≈⟨ {!   !} ⟩
+      --   {!   !} ≈⟨ {!   !} ⟩
+      --   {!   !} ≈⟨ {!   !} ⟩
+      --   {!   !} ≈⟨ {!   !} ⟩
+      --   (δ ⊗₁ δ) ∎
