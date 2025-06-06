@@ -40,6 +40,7 @@ module Categories.Category.CounitalCopy {o ℓ e} (𝒞 : Category o ℓ e) wher
       natural : ∀ {A B} {f : A ⇒ B} → Δ ∘ f ≈ (f ⊗₁ f) ∘ Δ
       inverse₁ : Δ {unit} ∘ unitorˡ.from ≈ id
       inverse₂ : unitorˡ.from ∘ Δ {unit} ≈ id
+      cocommutative : ∀ {A} → σ ∘ Δ ≈ Δ {A}
       preserves : ∀ {X Y} → associator.to ∘ (id ⊗₁ associator.from) ∘ (id ⊗₁ ((σ ⊗₁ id) ∘ associator.to)) ∘ associator.from ∘ (Δ ⊗₁ Δ) ≈ Δ {X ⊗₀ Y}
     
     module _ {X : Obj} where
