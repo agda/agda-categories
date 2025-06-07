@@ -2,32 +2,27 @@
 module Categories.Category.Construction.Kleisli.CounitalCopy where
 
 open import Level
-
-open import Categories.Category
-open import Categories.Monad hiding (id)
-open import Categories.Monad.Strong
-open import Categories.Monad.Strong.Properties
-open import Categories.Monad.Commutative
-open import Categories.Monad.Commutative.Properties
-open import Categories.Monad.EquationalLifting
-open import Categories.Category.Construction.Kleisli
-open import Categories.Category.Cartesian
-open import Categories.Category.Cartesian.SymmetricMonoidal
-open import Categories.Category.Cartesian.Monoidal
-open import Categories.Category.BinaryProducts
-open import Categories.Category.Monoidal
-open import Categories.Category.Monoidal.Symmetric
-open import Categories.Category.CounitalCopy
-open import Categories.Object.Terminal
-open import Categories.NaturalTransformation.Core using (ntHelper)
-open import Categories.Category.Construction.Kleisli.Monoidal
-open import Categories.Category.Construction.Kleisli.Symmetric
-
-
 open import Data.Product using (_,_)
 
-import Categories.Morphism.Reasoning as MR
+open import Categories.Category.Core using (Category)
+open import Categories.Monad using (Monad)
+open import Categories.Monad.Strong.Properties
+open import Categories.Monad.Commutative using (CommutativeMonad)
+open import Categories.Monad.Commutative.Properties using (module CommutativeProperties)
+open import Categories.Monad.EquationalLifting using (EquationalLiftingMonad)
+open import Categories.Category.Construction.Kleisli
+open import Categories.Category.Cartesian using (Cartesian)
+open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
+open import Categories.Category.Cartesian.SymmetricMonoidal using (symmetric)
+open import Categories.Category.BinaryProducts using (BinaryProducts)
+open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Category.Monoidal.Symmetric using (Symmetric)
+open import Categories.Category.CounitalCopy using (CounitalCopy)
+open import Categories.Object.Terminal using (Terminal)
+open import Categories.Category.Construction.Kleisli.Monoidal using (Kleisli-Monoidal)
+open import Categories.Category.Construction.Kleisli.Symmetric using (Kleisli-Symmetric)
 
+import Categories.Morphism.Reasoning as MR
 import Categories.Monad.Strong.Properties as StrongProps
 
 private
@@ -44,7 +39,6 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (ELM : Equationa
   open BinaryProducts products renaming (η to prod-η)
 
   open EquationalLiftingMonad ELM hiding (identityˡ)
-  -- open CommutativeMonad CM hiding (identityˡ)
   open Monad M using (μ)
   open TripleNotation M
 
@@ -53,15 +47,14 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (ELM : Equationa
   open StrongProps.Right.Shorthands rightStrength
 
   open CartesianMonoidal cartesian using (monoidal)
-  open Monoidal monoidal
-  open Symmetric (symmetric 𝒞 cartesian) using (braided; hexagon₁; hexagon₂)
-
+  open Monoidal monoidal using (associator; unitorˡ)
+  open Symmetric (symmetric 𝒞 cartesian) using (braided)
   open CommutativeProperties braided commutativeMonad
 
   Kleisli-CounitalCopy : CounitalCopy (Kleisli M)
   Kleisli-CounitalCopy = record
-    { monoidal = Kleisli-Monoidal cartesian commutativeMonad
-    ; symmetric = Kleisli-Symmetric cartesian commutativeMonad
+    { monoidal = Kleisli-Monoidal (symmetric 𝒞 cartesian) commutativeMonad
+    ; symmetric = Kleisli-Symmetric (symmetric 𝒞 cartesian) commutativeMonad
     ; isMonoid = λ X → record
         { μ = η ∘ ⟨ id , id ⟩ 
         ; η = η ∘ ! 
@@ -103,7 +96,7 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (ELM : Equationa
           (ψ ∘ (η ⁂ (η ∘ !))) * ∘ η ∘ ⟨ id , id ⟩ 
             ∎ 
         }
-    ; natural = λ {X} {f} → begin 
+    ; natural = λ {X} {Y} {f} → begin 
       (η ∘ Δ) * ∘ f         ≈⟨ *⇒F₁ ⟩∘⟨refl ⟩ 
       M.F.₁ Δ ∘ f           ≈˘⟨ pullˡ ψ-lifting ⟩ 
       ψ ∘ Δ ∘ f             ≈˘⟨ pullʳ (⁂∘Δ ○ sym Δ∘) ⟩ 
@@ -118,6 +111,10 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (ELM : Equationa
       ((η ∘ π₂) *) ∘ η ∘ ⟨ id , id ⟩ ≈⟨ pullˡ *-identityʳ ⟩ 
       (η ∘ π₂) ∘ ⟨ id , id ⟩         ≈⟨ cancelʳ project₂ ⟩ 
       η                              ∎
+    ; cocommutative = begin 
+      (η ∘ swap) * ∘ η ∘ ⟨ id , id ⟩ ≈⟨ extendʳ *-identityʳ ⟩ 
+      η ∘ swap ∘ ⟨ id , id ⟩         ≈⟨ refl⟩∘⟨ swap∘⟨⟩ ⟩ 
+      η ∘ ⟨ id , id ⟩                ∎
     ; preserves = begin 
       (η ∘ associator.to) * ∘ (ψ ∘ (η ⁂ (η ∘ associator.from))) * ∘ (ψ ∘ (η ⁂ ((ψ ∘ ((η ∘ swap) ⁂ η)) * ∘ η ∘ associator.to))) * ∘ (η ∘ associator.from) * ∘ (ψ ∘ ((η ∘ Δ) ⁂ (η ∘ Δ))) 
         ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ∘-resp-≈ʳ ⁂∘⁂ ⟩ 

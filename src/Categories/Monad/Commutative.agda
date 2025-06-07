@@ -8,16 +8,12 @@ module Categories.Monad.Commutative where
 open import Level
 open import Data.Product using (_,_)
 
-open import Categories.Category.Construction.Kleisli hiding (Kleisli)
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Monoidal using (Monoidal)
 open import Categories.Category.Monoidal.Braided using (Braided)
 open import Categories.Monad using (Monad)
 open import Categories.Monad.Strong using (StrongMonad; RightStrength; Strength)
 import Categories.Monad.Strong.Properties as StrongProps
-open import Categories.Functor.Core
-
-import Categories.Morphism.Reasoning as MR
 
 private
   variable
@@ -25,7 +21,7 @@ private
 
 module _ {C : Category o ℓ e} {V : Monoidal C} (BV : Braided V) where
   record Commutative (LSM : StrongMonad V) : Set (o ⊔ ℓ ⊔ e) where
-    open Category C -- using (_⇒_; _∘_; _≈_)
+    open Category C using (_⇒_; _∘_; _≈_)
     open Braided BV using (_⊗₀_)
     open StrongMonad LSM using (M; strength)
     open StrongProps.Left.Shorthands strength

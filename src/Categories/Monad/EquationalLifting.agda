@@ -3,15 +3,14 @@
 -- Equational Lifting Monads, as introduced in "An Equational Notion of Lifting Monad" by Bucalo & Führmann
 
 open import Level
-open import Categories.Category.Core
-open import Categories.Category.Cartesian
-open import Categories.Category.BinaryProducts
-open import Categories.Monad hiding (id)
-open import Categories.Monad.Strong
-open import Categories.Monad.Commutative
-open import Categories.Monad.Commutative.Properties
-open import Categories.Category.Cartesian.Monoidal
-open import Categories.Category.Cartesian.SymmetricMonoidal
+open import Categories.Category.Core using (Category)
+open import Categories.Category.Cartesian using (Cartesian)
+open import Categories.Category.BinaryProducts using (BinaryProducts)
+open import Categories.Monad.Strong using (RightStrength)
+open import Categories.Monad.Commutative using (CommutativeMonad)
+open import Categories.Monad.Commutative.Properties using (module CommutativeProperties)
+open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
+open import Categories.Category.Cartesian.SymmetricMonoidal using (symmetric)
 open import Categories.Category.Construction.Kleisli using (module TripleNotation)
 open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 
@@ -22,21 +21,21 @@ module Categories.Monad.EquationalLifting {o ℓ e} {C : Category o ℓ e} (cart
   open Category C
   open Cartesian cartesian using (products)
   open BinaryProducts products hiding (η)
+
   open CartesianMonoidal cartesian using (monoidal)
   open Symmetric (symmetric C cartesian) using (braided)
 
   record EquationalLifting (CM : CommutativeMonad braided) : Set (o ⊔ e) where
-    open CommutativeMonad CM
-    open CommutativeProperties braided CM
+    open CommutativeMonad CM using (M; strength; rightStrength)
+    open CommutativeProperties braided CM using (ψ)
     open StrongProps.Left strength using (left-right-braiding-comm; right-left-braiding-comm)
-    open StrongProps.Left.Shorthands strength
-    open StrongProps.Right.Shorthands rightStrength
+    open StrongProps.Left.Shorthands strength using (σ)
+    open StrongProps.Right.Shorthands rightStrength using (τ)
 
     field
       lifting : ∀ {X} → σ ∘ Δ {M.F.₀ X} ≈ M.F.₁ ⟨ M.η.η X , id ⟩
 
     open TripleNotation M
-
     open HomReasoning
     open MR C
     open Equiv

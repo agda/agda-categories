@@ -1,26 +1,27 @@
 {-# OPTIONS --without-K --safe #-}
 
--- Commutative Monad on a braided monoidal category
--- https://ncatlab.org/nlab/show/commutative+monad
+-- Properties of the natural transformation
+-- Ψ = τ * ∘ σ = σ * ∘ τ : M A ⊗ M B ⇒ M (A ⊗ B)
+-- for commutative monads.
 
 module Categories.Monad.Commutative.Properties where
 
 open import Level
 open import Data.Product using (_,_)
 
-open import Categories.Category.Construction.Kleisli hiding (Kleisli)
+open import Categories.Category.Construction.Kleisli using (module TripleNotation)
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Monoidal using (Monoidal)
 open import Categories.Category.Monoidal.Braided using (Braided)
 open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 open import Categories.Monad using (Monad)
 open import Categories.Monad.Strong using (StrongMonad; RightStrength; Strength)
-open import Categories.Monad.Commutative
+open import Categories.Monad.Commutative using (CommutativeMonad)
+open import Categories.Functor.Core using (Functor)
+
 import Categories.Monad.Strong.Properties as StrongProps
 import Categories.Category.Monoidal.Braided.Properties as BraidedProps
 import Categories.Category.Monoidal.Symmetric.Properties as SymmetricProps
-open import Categories.Functor.Core
-
 import Categories.Morphism.Reasoning as MR
 
 private
@@ -28,21 +29,16 @@ private
     o ℓ e : Level
 
 module CommutativeProperties {C : Category o ℓ e} {V : Monoidal C} (BV : Braided V) (CM : CommutativeMonad BV) where
-  open Category C -- using (_⇒_; _∘_; _≈_)
-  open Braided BV using (_⊗₀_; _⊗₁_; associator)
-  open CommutativeMonad CM hiding (identityˡ)
-  -- open StrongMonad LSM using (M; strength)
-  open StrongProps.Left.Shorthands strength
-  -- open Monoidal V
-
-  -- rightStrength : RightStrength V M
-  -- rightStrength = StrongProps.Strength⇒RightStrength BV strength
-
-  open StrongProps.Right.Shorthands rightStrength
-
+  open Category C
   open HomReasoning
   open Equiv
   open MR C
+  open Braided BV using (_⊗₀_; _⊗₁_; associator)
+  open CommutativeMonad CM hiding (identityˡ)
+
+  open StrongProps.Left.Shorthands strength
+  open StrongProps.Right.Shorthands rightStrength
+
 
   private
     module ⊗ = Functor (Braided.⊗ BV)
@@ -120,7 +116,8 @@ module SymmetricProperties  {C : Category o ℓ e} {V : Monoidal C} (symmetric :
   open MR C
   open CommutativeProperties BV CM
 
-  module ⊗ = Functor (Braided.⊗ BV)
+  private
+    module ⊗ = Functor (Braided.⊗ BV)
 
   -- use kleisli triple notation to make the proof more readable
   open TripleNotation M

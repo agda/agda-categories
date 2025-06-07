@@ -3,7 +3,6 @@
 open import Categories.Category.Core using (Category)
 open import Categories.Category.CounitalCopy using (CounitalCopy)
 open import Categories.Category.Restriction using (Restriction)
-open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 open import Data.Product using (_,_)
 
 import Categories.Morphism.Reasoning as MR
@@ -16,7 +15,6 @@ module Categories.Category.CounitalCopy.Restriction {o ℓ e} {𝒞 : Category o
   open MR 𝒞
   open HomReasoning
   open CounitalCopy counitalCopy
-  open Symmetric symmetric
   open import Categories.Category.Monoidal.Utilities monoidal
   open import Categories.Category.Monoidal.Properties monoidal
   open import Categories.Category.Monoidal.Braided.Properties braided
@@ -73,13 +71,20 @@ module Categories.Category.CounitalCopy.Restriction {o ℓ e} {𝒞 : Category o
       (unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ Δ) ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ 
         ∎
     ; ↓-skew-comm = λ {A} {B} {C} {g} {f} → begin 
-      (unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ Δ) ∘ f                   ≈⟨ pullʳ (pullʳ (pullʳ natural)) ⟩ 
-      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (f ⊗₁ f) ∘ Δ              ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ pullˡ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identityˡ , identityʳ)) ⟩ 
-      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (id ⊗₁ f) ∘ (f ⊗₁ id) ∘ Δ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ (extendʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (id-comm , id-comm-sym) ○ ⊗.homomorphism)) ⟩ 
-      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (id ⊗₁ f) ∘ (g ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ ≈⟨ refl⟩∘⟨ (extendʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (id-comm , id-comm-sym) ○ ⊗.homomorphism)) ⟩  
-      unitorˡ.from ∘ (id ⊗₁ f) ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ ≈⟨ extendʳ unitorˡ-commute-from ⟩ 
-      f ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ         ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ pullˡ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (refl , identity²)) ⟩ 
-      f ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ ((g ∘ f) ⊗₁ id) ∘ Δ               ∎
+      (unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ Δ) ∘ f                   
+        ≈⟨ pullʳ (pullʳ (pullʳ natural)) ⟩ 
+      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (f ⊗₁ f) ∘ Δ              
+        ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ pullˡ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identityˡ , identityʳ)) ⟩ 
+      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (id ⊗₁ f) ∘ (f ⊗₁ id) ∘ Δ 
+        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ (extendʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (id-comm , id-comm-sym) ○ ⊗.homomorphism)) ⟩ 
+      unitorˡ.from ∘ (δ ⊗₁ id) ∘ (id ⊗₁ f) ∘ (g ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ 
+        ≈⟨ refl⟩∘⟨ (extendʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (id-comm , id-comm-sym) ○ ⊗.homomorphism)) ⟩  
+      unitorˡ.from ∘ (id ⊗₁ f) ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ 
+        ≈⟨ extendʳ unitorˡ-commute-from ⟩ 
+      f ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ (g ⊗₁ id) ∘ (f ⊗₁ id) ∘ Δ         
+        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ pullˡ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (refl , identity²)) ⟩ 
+      f ∘ unitorˡ.from ∘ (δ ⊗₁ id) ∘ ((g ∘ f) ⊗₁ id) ∘ Δ               
+        ∎
     ; ↓-cong = λ f≈g → refl⟩∘⟨ refl⟩∘⟨ ⊗.F-resp-≈ (f≈g , refl) ⟩∘⟨refl
     }
     where

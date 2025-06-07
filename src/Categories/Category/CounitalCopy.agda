@@ -2,11 +2,11 @@
 
 open import Level
 open import Categories.Category.Core using (Category)
+open import Categories.Object.Monoid using (IsMonoid)
 open import Categories.Category.Monoidal.Core using (Monoidal)
 open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 open import Data.Product using (_,_)
 
-import Categories.Object.Monoid
 import Categories.Category.Monoidal.Properties
 
 -- Counital Copy categories as described by Cockett & Lack in "Restriction categories III"
@@ -19,9 +19,8 @@ module Categories.Category.CounitalCopy {o ℓ e} (𝒞 : Category o ℓ e) wher
       monoidal : Monoidal 𝒞
       symmetric : Symmetric monoidal
 
-    open Symmetric symmetric
-    open Categories.Category.Monoidal.Properties monoidal
-    open Categories.Object.Monoid
+    open Symmetric symmetric public
+    open Categories.Category.Monoidal.Properties monoidal using (monoidal-Op)
 
     private
       σ : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X
