@@ -29,7 +29,7 @@ private
   variable
     o ℓ e : Level
 
--- The Kleisli category of an equational lifting monad is a restriction category.
+-- The Kleisli category of an equational lifting monad is a counital copy category.
 
 module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (ELM : EquationalLiftingMonad cartesian) where
   open Category 𝒞
