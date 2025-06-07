@@ -9,7 +9,7 @@ open import Data.Product using (_,_)
 
 import Categories.Category.Monoidal.Properties
 
--- Counital Copy categories as described by Cockett & Lack in "Restriction categories III"
+-- Counital copy categories as described by Cockett & Lack in "Restriction categories III"
 
 module Categories.Category.CounitalCopy {o ℓ e} (𝒞 : Category o ℓ e) where
   open Category 𝒞

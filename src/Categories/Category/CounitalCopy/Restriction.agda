@@ -8,6 +8,8 @@ open import Data.Product using (_,_)
 import Categories.Morphism.Reasoning as MR
 import Categories.Morphism as M
 
+-- Counital copy categories admit a non trivial restriction structure.
+
 module Categories.Category.CounitalCopy.Restriction {o ℓ e} {𝒞 : Category o ℓ e} (counitalCopy : CounitalCopy 𝒞) where
   open Category 𝒞
   open Equiv

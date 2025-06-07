@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
--- Equational Lifting Monads, as introduced in "An Equational Notion of Lifting Monad" by Bucalo & Führmann
+-- Equational Lifting Monads, as introduced in "An Equational Notion of Lifting Monad" by Bucalo et al.
 
 open import Level
 open import Categories.Category.Core using (Category)

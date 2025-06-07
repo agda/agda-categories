@@ -21,6 +21,8 @@ private
   variable
     o ℓ e : Level
 
+-- The Kleisli category of a commutative monad (where 𝒞 is symmetric) is monoidal.
+
 module _ {𝒞 : Category o ℓ e} {monoidal : Monoidal 𝒞} (symmetric : Symmetric monoidal) (CM : CommutativeMonad (Symmetric.braided symmetric)) where
   open Category 𝒞
   open MR 𝒞
