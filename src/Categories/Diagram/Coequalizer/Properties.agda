@@ -131,7 +131,7 @@ module MapBetweenCoequalizers where
               → CommutativeSquare α g₁ g₂ β                -- g₂ ∘ α ≈ β ∘ g₁
               → (coeq₂ : Coequalizer f₂ g₂)
               → (arr coeq₂ ∘ β) ∘ f₁ ≈ (arr coeq₂ ∘ β) ∘ g₁
-  ⇒coequalize {A₁} {B₁} {A₂} {B₂} {f₁} {g₁} {f₂} {g₂} α β sq₁ sq₂ coeq₂ = begin
+  ⇒coequalize {f₁ = f₁} {g₁} {f₂} {g₂} α β sq₁ sq₂ coeq₂ = begin
     (arr coeq₂ ∘ β) ∘ f₁ ≈⟨ extendˡ (⟺ sq₁) ⟩
     (arr coeq₂ ∘ f₂) ∘ α ≈⟨ equality coeq₂ ⟩∘⟨refl ⟩
     (arr coeq₂ ∘ g₂) ∘ α ≈⟨ extendˡ sq₂ ⟩
@@ -174,7 +174,7 @@ CoeqOfIsomorphicDiagram : {A B : Obj} {f g : A ⇒ B} (coeq : Coequalizer f g )
                         → {A' B' : Obj}
                         → (a : A ≅ A') (b : B ≅ B')
                         → Coequalizer (_≅_.from b ∘ f ∘ _≅_.to a) (_≅_.from b ∘ g ∘ _≅_.to a)
-CoeqOfIsomorphicDiagram {A} {B} {f} {g} coeq {A'} {B'} a b = record
+CoeqOfIsomorphicDiagram {f = f} {g} coeq {A'} {B'} a b = record
   { arr = arr ∘ _≅_.to b
   ; isCoequalizer = record
     { equality = begin
@@ -293,11 +293,11 @@ module CoequalizerOfCoequalizer
   
     u : {T : Obj} {t : obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
       → obj coeqʰ ⇒ T
-    u {T} {t} eq = coequalize coeqʰ {h = t ∘ arr coeqⁱ} (commutes eq)
+    u eq = coequalize coeqʰ (commutes eq)
 
     uEqualizes∘arr : {T : Obj} {t : obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
                    → (u eq ∘ g⇒h₁) ∘ arr coeqᵍ ≈ (u eq ∘ g⇒h₂) ∘ arr coeqᵍ
-    uEqualizes∘arr {T} {t} eq = begin
+    uEqualizes∘arr {t = t} eq = begin
       (u eq ∘ g⇒h₁) ∘ arr coeqᵍ ≈⟨ extendˡ (⟺ sq₁ᵍʰ) ⟩
       (u eq ∘ arr coeqʰ) ∘ i₁   ≈⟨ ⟺ (universal coeqʰ) ⟩∘⟨refl ⟩
       (t ∘ arr coeqⁱ) ∘ i₁      ≈⟨ extendˡ (equality coeqⁱ) ⟩
@@ -309,14 +309,14 @@ module CoequalizerOfCoequalizer
 
     uEqualizes : {T : Obj} {t : obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
                → u eq ∘ g⇒h₁ ≈ u eq ∘ g⇒h₂
-    uEqualizes {T} {t} eq = Coequalizer⇒Epi coeqᵍ (u eq ∘ g⇒h₁) (u eq ∘ g⇒h₂) (uEqualizes∘arr eq)
+    uEqualizes eq = Coequalizer⇒Epi coeqᵍ (u eq ∘ g⇒h₁) (u eq ∘ g⇒h₂) (uEqualizes∘arr eq)
 
     coequalizeᶠⁱ : {T : Obj} {t : obj coeqⁱ ⇒ T} → t ∘ f⇒i₁ ≈ t ∘ f⇒i₂ → objᶠⁱ ⇒ T
-    coequalizeᶠⁱ {T} {t} eq = coequalize coeqcoeqᵍʰ {h = u eq} (uEqualizes eq)
+    coequalizeᶠⁱ eq = coequalize coeqcoeqᵍʰ (uEqualizes eq)
 
     universalᶠⁱ∘arr : {T : Obj} {t : obj coeqⁱ ⇒ T} {eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂}
                     → t ∘ arr coeqⁱ ≈ (coequalizeᶠⁱ eq ∘ arrᶠⁱ) ∘ arr coeqⁱ
-    universalᶠⁱ∘arr {T} {t} {eq} = begin
+    universalᶠⁱ∘arr {t = t} {eq} = begin
       t ∘ arr coeqⁱ                                  ≈⟨ universal coeqʰ ⟩
       u eq ∘ arr coeqʰ                               ≈⟨ universal coeqcoeqᵍʰ ⟩∘⟨refl ⟩
       (coequalizeᶠⁱ eq ∘ arr coeqcoeqᵍʰ) ∘ arr coeqʰ ≈⟨ extendˡ arrSq ⟩
@@ -326,13 +326,13 @@ module CoequalizerOfCoequalizer
 
     universalᶠⁱ : {T : Obj} {t : obj coeqⁱ ⇒ T} {eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂}
                 → t ≈ coequalizeᶠⁱ eq ∘ arrᶠⁱ
-    universalᶠⁱ {T} {t} {eq} = Coequalizer⇒Epi coeqⁱ t (coequalizeᶠⁱ eq ∘ arrᶠⁱ) universalᶠⁱ∘arr
+    universalᶠⁱ {t = t} {eq} = Coequalizer⇒Epi coeqⁱ t (coequalizeᶠⁱ eq ∘ arrᶠⁱ) universalᶠⁱ∘arr
 
     uniqueᶠⁱ∘arr∘arr : {T : Obj} {t : obj coeqⁱ ⇒ T} {i : objᶠⁱ ⇒ T} {eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂}
                      → t ≈ i ∘ arrᶠⁱ
                      → (i ∘ arr coeqcoeqᵍʰ) ∘ arr coeqʰ
                      ≈ (coequalizeᶠⁱ eq  ∘ arr coeqcoeqᵍʰ) ∘ arr coeqʰ
-    uniqueᶠⁱ∘arr∘arr {T} {t} {i} {eq} factors = begin
+    uniqueᶠⁱ∘arr∘arr {t = t} {i} {eq} factors = begin
       (i ∘ arr coeqcoeqᵍʰ) ∘ arr coeqʰ                ≈⟨ extendˡ arrSq ⟩
       (i ∘ arrᶠⁱ) ∘ arr coeqⁱ                         ≈⟨ ⟺ factors ⟩∘⟨refl ⟩
       t ∘ arr coeqⁱ                                   ≈⟨ universalᶠⁱ ⟩∘⟨refl ⟩
@@ -344,7 +344,7 @@ module CoequalizerOfCoequalizer
     uniqueᶠⁱ : {T : Obj} {t : obj coeqⁱ ⇒ T} {i : objᶠⁱ ⇒ T} {eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂}
              → t ≈ i ∘ arrᶠⁱ
              → i ≈ coequalizeᶠⁱ eq
-    uniqueᶠⁱ {T} {t} {i} {eq} factors = Coequalizer⇒Epi coeqcoeqᵍʰ i (coequalizeᶠⁱ eq) (
+    uniqueᶠⁱ {i = i} {eq} factors = Coequalizer⇒Epi coeqcoeqᵍʰ i (coequalizeᶠⁱ eq) (
                                           Coequalizer⇒Epi coeqʰ
                                           (i ∘ arr coeqcoeqᵍʰ)
                                           (coequalizeᶠⁱ eq  ∘ arr coeqcoeqᵍʰ)
