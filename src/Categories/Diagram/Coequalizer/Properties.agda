@@ -132,14 +132,12 @@ module MapBetweenCoequalizers where
               → (Coequalizer.arr coeq₂ ∘ β) ∘ f₁ ≈ (Coequalizer.arr coeq₂ ∘ β) ∘ g₁
   ⇒coequalize {A₁} {B₁} {A₂} {B₂} {f₁} {g₁} {f₂} {g₂} α β sq₁ sq₂ coeq₂ = begin
     (Coequalizer.arr coeq₂ ∘ β) ∘ f₁ ≈⟨ extendˡ (⟺ sq₁) ⟩
-    (Coequalizer.arr coeq₂ ∘ f₂) ∘ α ≈⟨ equality₂ ⟩∘⟨refl ⟩
+    (Coequalizer.arr coeq₂ ∘ f₂) ∘ α ≈⟨ Coequalizer.equality coeq₂ ⟩∘⟨refl ⟩
     (Coequalizer.arr coeq₂ ∘ g₂) ∘ α ≈⟨ extendˡ sq₂ ⟩
     (Coequalizer.arr coeq₂ ∘ β) ∘ g₁ ∎
     where
       open HomReasoning
       open MR 𝒞
-      open Coequalizer coeq₂
-      open IsCoequalizer isCoequalizer renaming (equality to equality₂)
 
   ⇒MapBetweenCoeq : {A₁ B₁ A₂ B₂ : Obj}
                   → {f₁ g₁ : A₁ ⇒ B₁}
@@ -169,10 +167,7 @@ module MapBetweenCoequalizers where
                   → CommutativeSquare
                       β (Coequalizer.arr coeq₁)
                       (Coequalizer.arr coeq₂) (⇒MapBetweenCoeq α β sq₁ sq₂ coeq₁ coeq₂)
-  ⇒MapBetweenCoeqSq α β sq₁ sq₂ coeq₁ coeq₂ = universal₁
-    where
-      open Coequalizer coeq₁ renaming (isCoequalizer to isCoequalizer₁)
-      open IsCoequalizer isCoequalizer₁ renaming (universal to universal₁)
+  ⇒MapBetweenCoeqSq α β sq₁ sq₂ coeq₁ coeq₂ = Coequalizer.universal coeq₁
 
 open MapBetweenCoequalizers public
 
