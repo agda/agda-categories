@@ -224,12 +224,13 @@ module CoequalizerOfCoequalizer
   {A B C D : Obj} {f₁ f₂ : A ⇒ B} {g₁ g₂ : A ⇒ C} {h₁ h₂ : B ⇒ D} {i₁ i₂ : C ⇒ D}
   (coeqᶠ : Coequalizer f₁ f₂) (coeqᵍ : Coequalizer g₁ g₂)
   (coeqʰ : Coequalizer h₁ h₂) (coeqⁱ : Coequalizer i₁ i₂)
-  (f⇒i₁ f⇒i₂ : Coequalizer.obj coeqᶠ ⇒ Coequalizer.obj coeqⁱ)
-  (g⇒h₁ g⇒h₂ : Coequalizer.obj coeqᵍ ⇒ Coequalizer.obj coeqʰ)
-  (sq₁ᶠⁱ : CommutativeSquare (Coequalizer.arr coeqᶠ) h₁ f⇒i₁ (Coequalizer.arr coeqⁱ))
-  (sq₂ᶠⁱ : CommutativeSquare (Coequalizer.arr coeqᶠ) h₂ f⇒i₂ (Coequalizer.arr coeqⁱ))
-  (sq₁ᵍʰ : CommutativeSquare i₁ (Coequalizer.arr coeqᵍ) (Coequalizer.arr coeqʰ) g⇒h₁)
-  (sq₂ᵍʰ : CommutativeSquare i₂ (Coequalizer.arr coeqᵍ) (Coequalizer.arr coeqʰ) g⇒h₂)
+  (let open Coequalizer)
+  (f⇒i₁ f⇒i₂ : obj coeqᶠ ⇒ obj coeqⁱ)
+  (g⇒h₁ g⇒h₂ : obj coeqᵍ ⇒ obj coeqʰ)
+  (sq₁ᶠⁱ : CommutativeSquare (arr coeqᶠ) h₁ f⇒i₁ (arr coeqⁱ))
+  (sq₂ᶠⁱ : CommutativeSquare (arr coeqᶠ) h₂ f⇒i₂ (arr coeqⁱ))
+  (sq₁ᵍʰ : CommutativeSquare i₁ (arr coeqᵍ) (arr coeqʰ) g⇒h₁)
+  (sq₂ᵍʰ : CommutativeSquare i₂ (arr coeqᵍ) (arr coeqʰ) g⇒h₂)
   (coeqcoeqᵍʰ : Coequalizer g⇒h₁ g⇒h₂) where
 
   {-
@@ -255,26 +256,23 @@ module CoequalizerOfCoequalizer
   open HomReasoning
 
   objᶠⁱ : Obj
-  objᶠⁱ = Coequalizer.obj coeqcoeqᵍʰ
+  objᶠⁱ = obj coeqcoeqᵍʰ
 
-  arrᶠⁱ : Coequalizer.obj coeqⁱ ⇒ objᶠⁱ
-  arrᶠⁱ = ⇒MapBetweenCoeq (Coequalizer.arr coeqᵍ) (Coequalizer.arr coeqʰ)
-                          (⟺ sq₁ᵍʰ) (⟺ sq₂ᵍʰ) coeqⁱ coeqcoeqᵍʰ
+  arrᶠⁱ : obj coeqⁱ ⇒ objᶠⁱ
+  arrᶠⁱ = ⇒MapBetweenCoeq (arr coeqᵍ) (arr coeqʰ) (⟺ sq₁ᵍʰ) (⟺ sq₂ᵍʰ) coeqⁱ coeqcoeqᵍʰ
 
   abstract
-    arrSq : Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ
-            ≈ arrᶠⁱ ∘ Coequalizer.arr coeqⁱ
-    arrSq = ⇒MapBetweenCoeqSq (Coequalizer.arr coeqᵍ) (Coequalizer.arr coeqʰ)
-                              (⟺ sq₁ᵍʰ) (⟺ sq₂ᵍʰ) coeqⁱ coeqcoeqᵍʰ
+    arrSq : arr coeqcoeqᵍʰ ∘ arr coeqʰ ≈ arrᶠⁱ ∘ arr coeqⁱ
+    arrSq = ⇒MapBetweenCoeqSq (arr coeqᵍ) (arr coeqʰ) (⟺ sq₁ᵍʰ) (⟺ sq₂ᵍʰ) coeqⁱ coeqcoeqᵍʰ
 
-    equalityᶠⁱ∘arr : (arrᶠⁱ ∘ f⇒i₁) ∘ Coequalizer.arr coeqᶠ  ≈ (arrᶠⁱ ∘ f⇒i₂) ∘ Coequalizer.arr coeqᶠ
+    equalityᶠⁱ∘arr : (arrᶠⁱ ∘ f⇒i₁) ∘ arr coeqᶠ  ≈ (arrᶠⁱ ∘ f⇒i₂) ∘ arr coeqᶠ
     equalityᶠⁱ∘arr = begin
-      (arrᶠⁱ ∘ f⇒i₁) ∘ Coequalizer.arr coeqᶠ                    ≈⟨ extendˡ sq₁ᶠⁱ ⟩
-      (arrᶠⁱ ∘ Coequalizer.arr coeqⁱ) ∘ h₁                      ≈⟨ ⟺ arrSq ⟩∘⟨refl ⟩
-      (Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ) ∘ h₁ ≈⟨ extendˡ (Coequalizer.equality coeqʰ) ⟩
-      (Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ) ∘ h₂ ≈⟨ arrSq ⟩∘⟨refl ⟩
-      (arrᶠⁱ ∘ Coequalizer.arr coeqⁱ) ∘ h₂                      ≈⟨ extendˡ (⟺ sq₂ᶠⁱ) ⟩
-      (arrᶠⁱ ∘ f⇒i₂) ∘ Coequalizer.arr coeqᶠ                    ∎
+      (arrᶠⁱ ∘ f⇒i₁) ∘ arr coeqᶠ        ≈⟨ extendˡ sq₁ᶠⁱ ⟩
+      (arrᶠⁱ ∘ arr coeqⁱ) ∘ h₁          ≈⟨ ⟺ arrSq ⟩∘⟨refl ⟩
+      (arr coeqcoeqᵍʰ ∘ arr coeqʰ) ∘ h₁ ≈⟨ extendˡ (equality coeqʰ) ⟩
+      (arr coeqcoeqᵍʰ ∘ arr coeqʰ) ∘ h₂ ≈⟨ arrSq ⟩∘⟨refl ⟩
+      (arrᶠⁱ ∘ arr coeqⁱ) ∘ h₂          ≈⟨ extendˡ (⟺ sq₂ᶠⁱ) ⟩
+      (arrᶠⁱ ∘ f⇒i₂) ∘ arr coeqᶠ        ∎
       where
         open MR 𝒞
 
@@ -282,72 +280,73 @@ module CoequalizerOfCoequalizer
     equalityᶠⁱ = Coequalizer⇒Epi coeqᶠ (arrᶠⁱ ∘ f⇒i₁) (arrᶠⁱ ∘ f⇒i₂) equalityᶠⁱ∘arr
 
 
-    commutes : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
-             → (t ∘ Coequalizer.arr coeqⁱ) ∘ h₁ ≈ (t ∘ Coequalizer.arr coeqⁱ) ∘ h₂
+    commutes : {T : Obj} {t : obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
+             → (t ∘ arr coeqⁱ) ∘ h₁ ≈ (t ∘ arr coeqⁱ) ∘ h₂
     commutes {T} {t} eq = begin
-      (t ∘ Coequalizer.arr coeqⁱ) ∘ h₁   ≈⟨ extendˡ (⟺ sq₁ᶠⁱ) ⟩
-      (t ∘ f⇒i₁) ∘ Coequalizer.arr coeqᶠ ≈⟨ eq ⟩∘⟨refl ⟩
-      (t ∘ f⇒i₂) ∘ Coequalizer.arr coeqᶠ ≈⟨ extendˡ sq₂ᶠⁱ ⟩
-      (t ∘ Coequalizer.arr coeqⁱ) ∘ h₂   ∎
+      (t ∘ arr coeqⁱ) ∘ h₁   ≈⟨ extendˡ (⟺ sq₁ᶠⁱ) ⟩
+      (t ∘ f⇒i₁) ∘ arr coeqᶠ ≈⟨ eq ⟩∘⟨refl ⟩
+      (t ∘ f⇒i₂) ∘ arr coeqᶠ ≈⟨ extendˡ sq₂ᶠⁱ ⟩
+      (t ∘ arr coeqⁱ) ∘ h₂   ∎
       where
         open MR 𝒞
   
-    u : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
-      → Coequalizer.obj coeqʰ ⇒ T
-    u {T} {t} eq = Coequalizer.coequalize coeqʰ {h = t ∘ Coequalizer.arr coeqⁱ} (commutes eq)
+    u : {T : Obj} {t : obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
+      → obj coeqʰ ⇒ T
+    u {T} {t} eq = coequalize coeqʰ {h = t ∘ arr coeqⁱ} (commutes eq)
 
-    uEqualizes∘arr : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
-                   → (u eq ∘ g⇒h₁) ∘ Coequalizer.arr coeqᵍ ≈ (u eq ∘ g⇒h₂) ∘ Coequalizer.arr coeqᵍ
+    uEqualizes∘arr : {T : Obj} {t : obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
+                   → (u eq ∘ g⇒h₁) ∘ arr coeqᵍ ≈ (u eq ∘ g⇒h₂) ∘ arr coeqᵍ
     uEqualizes∘arr {T} {t} eq = begin
-      (u eq ∘ g⇒h₁) ∘ Coequalizer.arr coeqᵍ ≈⟨ extendˡ (⟺ sq₁ᵍʰ) ⟩
-      (u eq ∘ Coequalizer.arr coeqʰ) ∘ i₁   ≈⟨ ⟺ (Coequalizer.universal coeqʰ) ⟩∘⟨refl ⟩
-      (t ∘ Coequalizer.arr coeqⁱ) ∘ i₁      ≈⟨ extendˡ (Coequalizer.equality coeqⁱ) ⟩
-      (t ∘ Coequalizer.arr coeqⁱ) ∘ i₂      ≈⟨ Coequalizer.universal coeqʰ ⟩∘⟨refl ⟩
-      (u eq ∘ Coequalizer.arr coeqʰ) ∘ i₂   ≈⟨ extendˡ sq₂ᵍʰ ⟩
-      (u eq ∘ g⇒h₂) ∘ Coequalizer.arr coeqᵍ ∎
+      (u eq ∘ g⇒h₁) ∘ arr coeqᵍ ≈⟨ extendˡ (⟺ sq₁ᵍʰ) ⟩
+      (u eq ∘ arr coeqʰ) ∘ i₁   ≈⟨ ⟺ (universal coeqʰ) ⟩∘⟨refl ⟩
+      (t ∘ arr coeqⁱ) ∘ i₁      ≈⟨ extendˡ (equality coeqⁱ) ⟩
+      (t ∘ arr coeqⁱ) ∘ i₂      ≈⟨ universal coeqʰ ⟩∘⟨refl ⟩
+      (u eq ∘ arr coeqʰ) ∘ i₂   ≈⟨ extendˡ sq₂ᵍʰ ⟩
+      (u eq ∘ g⇒h₂) ∘ arr coeqᵍ ∎
       where
         open MR 𝒞
 
-    uEqualizes : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂) → u eq ∘ g⇒h₁ ≈ u eq ∘ g⇒h₂
+    uEqualizes : {T : Obj} {t : obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
+               → u eq ∘ g⇒h₁ ≈ u eq ∘ g⇒h₂
     uEqualizes {T} {t} eq = Coequalizer⇒Epi coeqᵍ (u eq ∘ g⇒h₁) (u eq ∘ g⇒h₂) (uEqualizes∘arr eq)
 
-    coequalizeᶠⁱ : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} → t ∘ f⇒i₁ ≈ t ∘ f⇒i₂ → objᶠⁱ ⇒ T
-    coequalizeᶠⁱ {T} {t} eq = Coequalizer.coequalize coeqcoeqᵍʰ {h = u eq} (uEqualizes eq)
+    coequalizeᶠⁱ : {T : Obj} {t : obj coeqⁱ ⇒ T} → t ∘ f⇒i₁ ≈ t ∘ f⇒i₂ → objᶠⁱ ⇒ T
+    coequalizeᶠⁱ {T} {t} eq = coequalize coeqcoeqᵍʰ {h = u eq} (uEqualizes eq)
 
-    universalᶠⁱ∘arr : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} {eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂}
-                    → t ∘ Coequalizer.arr coeqⁱ ≈ (coequalizeᶠⁱ eq ∘ arrᶠⁱ) ∘ Coequalizer.arr coeqⁱ
+    universalᶠⁱ∘arr : {T : Obj} {t : obj coeqⁱ ⇒ T} {eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂}
+                    → t ∘ arr coeqⁱ ≈ (coequalizeᶠⁱ eq ∘ arrᶠⁱ) ∘ arr coeqⁱ
     universalᶠⁱ∘arr {T} {t} {eq} = begin
-      t ∘ Coequalizer.arr coeqⁱ                                              ≈⟨ Coequalizer.universal coeqʰ ⟩
-      u eq ∘ Coequalizer.arr coeqʰ                                           ≈⟨ Coequalizer.universal coeqcoeqᵍʰ ⟩∘⟨refl ⟩
-      (coequalizeᶠⁱ eq ∘ Coequalizer.arr coeqcoeqᵍʰ) ∘ Coequalizer.arr coeqʰ ≈⟨ extendˡ arrSq ⟩
-      (coequalizeᶠⁱ eq ∘ arrᶠⁱ) ∘ Coequalizer.arr coeqⁱ                      ∎
+      t ∘ arr coeqⁱ                                  ≈⟨ universal coeqʰ ⟩
+      u eq ∘ arr coeqʰ                               ≈⟨ universal coeqcoeqᵍʰ ⟩∘⟨refl ⟩
+      (coequalizeᶠⁱ eq ∘ arr coeqcoeqᵍʰ) ∘ arr coeqʰ ≈⟨ extendˡ arrSq ⟩
+      (coequalizeᶠⁱ eq ∘ arrᶠⁱ) ∘ arr coeqⁱ          ∎
       where
         open MR 𝒞
 
-    universalᶠⁱ : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} {eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂}
+    universalᶠⁱ : {T : Obj} {t : obj coeqⁱ ⇒ T} {eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂}
                 → t ≈ coequalizeᶠⁱ eq ∘ arrᶠⁱ
     universalᶠⁱ {T} {t} {eq} = Coequalizer⇒Epi coeqⁱ t (coequalizeᶠⁱ eq ∘ arrᶠⁱ) universalᶠⁱ∘arr
 
-    uniqueᶠⁱ∘arr∘arr : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} {i : objᶠⁱ ⇒ T} {eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂}
+    uniqueᶠⁱ∘arr∘arr : {T : Obj} {t : obj coeqⁱ ⇒ T} {i : objᶠⁱ ⇒ T} {eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂}
                      → t ≈ i ∘ arrᶠⁱ
-                     → (i ∘ Coequalizer.arr coeqcoeqᵍʰ) ∘ Coequalizer.arr coeqʰ
-                     ≈ (coequalizeᶠⁱ eq  ∘ Coequalizer.arr coeqcoeqᵍʰ) ∘ Coequalizer.arr coeqʰ
+                     → (i ∘ arr coeqcoeqᵍʰ) ∘ arr coeqʰ
+                     ≈ (coequalizeᶠⁱ eq  ∘ arr coeqcoeqᵍʰ) ∘ arr coeqʰ
     uniqueᶠⁱ∘arr∘arr {T} {t} {i} {eq} factors = begin
-      (i ∘ Coequalizer.arr coeqcoeqᵍʰ) ∘ Coequalizer.arr coeqʰ                ≈⟨ extendˡ arrSq ⟩
-      (i ∘ arrᶠⁱ) ∘ Coequalizer.arr coeqⁱ                                     ≈⟨ ⟺ factors ⟩∘⟨refl ⟩
-      t ∘ Coequalizer.arr coeqⁱ                                               ≈⟨ universalᶠⁱ ⟩∘⟨refl ⟩
-      (coequalizeᶠⁱ eq ∘ arrᶠⁱ) ∘ Coequalizer.arr coeqⁱ                       ≈⟨ extendˡ (⟺ arrSq) ⟩
-      (coequalizeᶠⁱ eq  ∘ Coequalizer.arr coeqcoeqᵍʰ) ∘ Coequalizer.arr coeqʰ ∎
+      (i ∘ arr coeqcoeqᵍʰ) ∘ arr coeqʰ                ≈⟨ extendˡ arrSq ⟩
+      (i ∘ arrᶠⁱ) ∘ arr coeqⁱ                         ≈⟨ ⟺ factors ⟩∘⟨refl ⟩
+      t ∘ arr coeqⁱ                                   ≈⟨ universalᶠⁱ ⟩∘⟨refl ⟩
+      (coequalizeᶠⁱ eq ∘ arrᶠⁱ) ∘ arr coeqⁱ           ≈⟨ extendˡ (⟺ arrSq) ⟩
+      (coequalizeᶠⁱ eq  ∘ arr coeqcoeqᵍʰ) ∘ arr coeqʰ ∎
       where
         open MR 𝒞
 
-    uniqueᶠⁱ : {T : Obj} {t : Coequalizer.obj coeqⁱ ⇒ T} {i : objᶠⁱ ⇒ T} {eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂}
+    uniqueᶠⁱ : {T : Obj} {t : obj coeqⁱ ⇒ T} {i : objᶠⁱ ⇒ T} {eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂}
              → t ≈ i ∘ arrᶠⁱ
              → i ≈ coequalizeᶠⁱ eq
     uniqueᶠⁱ {T} {t} {i} {eq} factors = Coequalizer⇒Epi coeqcoeqᵍʰ i (coequalizeᶠⁱ eq) (
                                           Coequalizer⇒Epi coeqʰ
-                                          (i ∘ Coequalizer.arr coeqcoeqᵍʰ)
-                                          (coequalizeᶠⁱ eq  ∘ Coequalizer.arr coeqcoeqᵍʰ)
+                                          (i ∘ arr coeqcoeqᵍʰ)
+                                          (coequalizeᶠⁱ eq  ∘ arr coeqcoeqᵍʰ)
                                           (uniqueᶠⁱ∘arr∘arr factors)
                                         )
   -- end abstract --
@@ -364,18 +363,16 @@ module CoequalizerOfCoequalizer
       }
     }
 
-  CoeqsAreIsomorphic : (coeq : Coequalizer f⇒i₁ f⇒i₂) → Coequalizer.obj coeq ≅ Coequalizer.obj coeqcoeqᵍʰ
+  CoeqsAreIsomorphic : (coeq : Coequalizer f⇒i₁ f⇒i₂) → obj coeq ≅ obj coeqcoeqᵍʰ
   CoeqsAreIsomorphic coeq = up-to-iso coeq coeqcoeqᶠⁱ
 
   -- The Isomorphism of coequalizers fits into a commutative pentagon --
   -- We need this for proving some coherences in the bicategory of monads and bimodules --
   IsoFitsInPentagon : (coeq : Coequalizer f⇒i₁ f⇒i₂)
-                    → Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ
-                      ≈ _≅_.from (CoeqsAreIsomorphic coeq) ∘ Coequalizer.arr coeq  ∘ Coequalizer.arr coeqⁱ
+                    → arr coeqcoeqᵍʰ ∘ arr coeqʰ
+                      ≈ _≅_.from (CoeqsAreIsomorphic coeq) ∘ arr coeq  ∘ arr coeqⁱ
   IsoFitsInPentagon coeq = begin
-    Coequalizer.arr coeqcoeqᵍʰ ∘ Coequalizer.arr coeqʰ ≈⟨ arrSq ⟩
-    arrᶠⁱ ∘ Coequalizer.arr coeqⁱ                      ≈⟨ Coequalizer.universal coeq ⟩∘⟨refl ⟩
-    (_≅_.from (CoeqsAreIsomorphic coeq)
-      ∘ Coequalizer.arr coeq) ∘ Coequalizer.arr coeqⁱ  ≈⟨ assoc ⟩
-    _≅_.from (CoeqsAreIsomorphic coeq)
-      ∘ Coequalizer.arr coeq ∘ Coequalizer.arr coeqⁱ   ∎
+    arr coeqcoeqᵍʰ ∘ arr coeqʰ                                   ≈⟨ arrSq ⟩
+    arrᶠⁱ ∘ arr coeqⁱ                                            ≈⟨ universal coeq ⟩∘⟨refl ⟩
+    (_≅_.from (CoeqsAreIsomorphic coeq) ∘ arr coeq) ∘ arr coeqⁱ  ≈⟨ assoc ⟩
+    _≅_.from (CoeqsAreIsomorphic coeq) ∘ arr coeq ∘ arr coeqⁱ    ∎
