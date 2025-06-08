@@ -149,10 +149,8 @@ module MapBetweenCoequalizers where
                   → (coeq₁ : Coequalizer f₁ g₁)
                   → (coeq₂ : Coequalizer f₂ g₂)
                   → Coequalizer.obj coeq₁ ⇒ Coequalizer.obj coeq₂
-  ⇒MapBetweenCoeq α β sq₁ sq₂ coeq₁ coeq₂ = coequalize₁ (⇒coequalize α β sq₁ sq₂ coeq₂)
+  ⇒MapBetweenCoeq α β sq₁ sq₂ coeq₁ coeq₂ = Coequalizer.coequalize coeq₁ (⇒coequalize α β sq₁ sq₂ coeq₂)
     where
-      open Coequalizer coeq₁ renaming (isCoequalizer to isCoequalizer₁)
-      open IsCoequalizer isCoequalizer₁ renaming (coequalize to coequalize₁)
       open HomReasoning
 
   ⇒MapBetweenCoeqSq : {A₁ B₁ A₂ B₂ : Obj}
