@@ -252,6 +252,7 @@ module CoequalizerOfCoequalizer
   -}
 
   -- We construct a coequalizer of the parallel pair f⇒i₁, f⇒i₂
+  -- its components will be called: objᶠⁱ, arrᶠⁱ, ...
 
   open HomReasoning
 
