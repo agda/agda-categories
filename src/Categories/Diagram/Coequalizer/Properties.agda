@@ -186,8 +186,8 @@ CoeqOfIsomorphicDiagram {A} {B} {f} {g} coeq {A'} {B'} a b = record
     { equality = begin
         (arr ∘ _≅_.to b) ∘ _≅_.from b ∘ f ∘ _≅_.to a ≈⟨ assoc²γβ ⟩
         (arr ∘ _≅_.to b ∘ _≅_.from b) ∘ f ∘ _≅_.to a ≈⟨ elimʳ (_≅_.isoˡ b) ⟩∘⟨refl ⟩
-        arr ∘ f ∘ _≅_.to a ≈⟨ extendʳ equality ⟩
-        arr ∘ g ∘ _≅_.to a ≈⟨ introʳ (_≅_.isoˡ b) ⟩∘⟨refl ⟩
+        arr ∘ f ∘ _≅_.to a                           ≈⟨ extendʳ equality ⟩
+        arr ∘ g ∘ _≅_.to a                           ≈⟨ introʳ (_≅_.isoˡ b) ⟩∘⟨refl ⟩
         (arr ∘ _≅_.to b ∘ _≅_.from b) ∘ g ∘ _≅_.to a ≈⟨ assoc²βγ ⟩
         (arr ∘ _≅_.to b) ∘ _≅_.from b ∘ g ∘ _≅_.to a ∎
     ; coequalize = coequalize'
@@ -197,7 +197,7 @@ CoeqOfIsomorphicDiagram {A} {B} {f} {g} coeq {A'} {B'} a b = record
         coequalize' eq ∘ (arr ∘ _≅_.to b) ∎
     ; unique = λ {C} {h} {i} {eq} e → unique (⟺ (switch-tofromʳ b (begin
         (i ∘ arr) ∘ _≅_.to b ≈⟨ assoc ⟩
-        i ∘ arr ∘ _≅_.to b ≈⟨ ⟺ e ⟩
+        i ∘ arr ∘ _≅_.to b   ≈⟨ ⟺ e ⟩
         h ∎)))
     }
   }
