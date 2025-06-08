@@ -122,6 +122,7 @@ splitCoequalizer⇒Coequalizer-sym {f = f} {g} {e} t s eq tisSection sisSection 
 open Categories.Category.Definitions 𝒞 using (CommutativeSquare)
 
 module MapBetweenCoequalizers where
+  open Coequalizer
 
   ⇒coequalize : {A₁ B₁ A₂ B₂ : Obj}
               → {f₁ g₁ : A₁ ⇒ B₁} → {f₂ g₂ : A₂ ⇒ B₂}
@@ -129,12 +130,12 @@ module MapBetweenCoequalizers where
               → CommutativeSquare α f₁ f₂ β                -- f₂ ∘ α ≈ β ∘ f₁
               → CommutativeSquare α g₁ g₂ β                -- g₂ ∘ α ≈ β ∘ g₁
               → (coeq₂ : Coequalizer f₂ g₂)
-              → (Coequalizer.arr coeq₂ ∘ β) ∘ f₁ ≈ (Coequalizer.arr coeq₂ ∘ β) ∘ g₁
+              → (arr coeq₂ ∘ β) ∘ f₁ ≈ (arr coeq₂ ∘ β) ∘ g₁
   ⇒coequalize {A₁} {B₁} {A₂} {B₂} {f₁} {g₁} {f₂} {g₂} α β sq₁ sq₂ coeq₂ = begin
-    (Coequalizer.arr coeq₂ ∘ β) ∘ f₁ ≈⟨ extendˡ (⟺ sq₁) ⟩
-    (Coequalizer.arr coeq₂ ∘ f₂) ∘ α ≈⟨ Coequalizer.equality coeq₂ ⟩∘⟨refl ⟩
-    (Coequalizer.arr coeq₂ ∘ g₂) ∘ α ≈⟨ extendˡ sq₂ ⟩
-    (Coequalizer.arr coeq₂ ∘ β) ∘ g₁ ∎
+    (arr coeq₂ ∘ β) ∘ f₁ ≈⟨ extendˡ (⟺ sq₁) ⟩
+    (arr coeq₂ ∘ f₂) ∘ α ≈⟨ equality coeq₂ ⟩∘⟨refl ⟩
+    (arr coeq₂ ∘ g₂) ∘ α ≈⟨ extendˡ sq₂ ⟩
+    (arr coeq₂ ∘ β) ∘ g₁ ∎
     where
       open HomReasoning
       open MR 𝒞
@@ -148,8 +149,8 @@ module MapBetweenCoequalizers where
                   → CommutativeSquare α g₁ g₂ β                -- g₂ ∘ α ≈ β ∘ g₁
                   → (coeq₁ : Coequalizer f₁ g₁)
                   → (coeq₂ : Coequalizer f₂ g₂)
-                  → Coequalizer.obj coeq₁ ⇒ Coequalizer.obj coeq₂
-  ⇒MapBetweenCoeq α β sq₁ sq₂ coeq₁ coeq₂ = Coequalizer.coequalize coeq₁ (⇒coequalize α β sq₁ sq₂ coeq₂)
+                  → obj coeq₁ ⇒ obj coeq₂
+  ⇒MapBetweenCoeq α β sq₁ sq₂ coeq₁ coeq₂ = coequalize coeq₁ (⇒coequalize α β sq₁ sq₂ coeq₂)
     where
       open HomReasoning
 
@@ -163,9 +164,9 @@ module MapBetweenCoequalizers where
                   → (coeq₁ : Coequalizer f₁ g₁)
                   → (coeq₂ : Coequalizer f₂ g₂)
                   → CommutativeSquare
-                      β (Coequalizer.arr coeq₁)
-                      (Coequalizer.arr coeq₂) (⇒MapBetweenCoeq α β sq₁ sq₂ coeq₁ coeq₂)
-  ⇒MapBetweenCoeqSq α β sq₁ sq₂ coeq₁ coeq₂ = Coequalizer.universal coeq₁
+                      β (arr coeq₁)
+                      (arr coeq₂) (⇒MapBetweenCoeq α β sq₁ sq₂ coeq₁ coeq₂)
+  ⇒MapBetweenCoeqSq α β sq₁ sq₂ coeq₁ coeq₂ = universal coeq₁
 
 open MapBetweenCoequalizers public
 
