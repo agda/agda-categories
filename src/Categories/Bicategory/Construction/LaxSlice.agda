@@ -68,12 +68,12 @@ module SliceHom (A : Obj) where
           open HomReasoning
           open Equiv
           open MR (hom X.Y A)
-          
+
   SliceHomCat : SliceObj A → SliceObj A → 1Category (o ⊔ ℓ) (ℓ ⊔ e) e
   SliceHomCat X Y = record
     { Obj = Slice⇒₁ X Y
     ; _⇒_ = Slice⇒₂
-    ; _≈_ = λ (slicearr₂ {ϕ} _) (slicearr₂ {ψ} _) → ϕ ≈ ψ 
+    ; _≈_ = λ (slicearr₂ {ϕ} _) (slicearr₂ {ψ} _) → ϕ ≈ ψ
     ; id = slice-id _
     ; _∘_ = _∘ᵥ/_
     ; assoc = hom.assoc
@@ -102,7 +102,7 @@ module SliceHom (A : Obj) where
   _⊚₀/_ {X}{Y}{Z} J K = slicearr₁ ((α⇒ ∘ᵥ J.Δ ◁ K.h) ∘ᵥ K.Δ)
     where module K = Slice⇒₁ K
           module J = Slice⇒₁ J
-  
+
   _⊚₁/_ : ∀ {X Y Z : SliceObj A} → {J J' : Slice⇒₁ Y Z} → {K K' : Slice⇒₁ X Y} → Slice⇒₂ J J' → Slice⇒₂ K K' → Slice⇒₂ (J ⊚₀/ K) (J' ⊚₀/ K')
   _⊚₁/_ {X}{Y}{Z}{J'}{J}{K'}{K} δ γ = slicearr₂ $ begin
     (α⇒ ∘ᵥ J.Δ ◁ K.h) ∘ᵥ K.Δ                                                  ≈⟨ (refl⟩∘⟨ γ.E) ⟩
@@ -122,7 +122,7 @@ module SliceHom (A : Obj) where
           module K = Slice⇒₁ K
           module K' = Slice⇒₁ K'
           module γ = Slice⇒₂ γ
-          module δ = Slice⇒₂ δ          
+          module δ = Slice⇒₂ δ
           open 1Category (hom X.Y A)
           open HomReasoning
           open MR (hom X.Y A)
@@ -142,7 +142,7 @@ module SliceHom (A : Obj) where
       where module X = SliceObj X
             module Y = SliceObj Y
             module Z = SliceObj Z
-  
+
   α⇒/ : ∀ {W X Y Z}(J : Slice⇒₁ Y Z) (K : Slice⇒₁ X Y) (L : Slice⇒₁ W X) → Slice⇒₂ ((J ⊚₀/ K) ⊚₀/ L) (J ⊚₀/ (K ⊚₀/ L))
   α⇒/ {W}{X}{Y}{Z} J K L = slicearr₂ $ begin
     (α⇒ ∘ᵥ J.Δ ◁ K.h ⊚₀ L.h) ∘ᵥ ((α⇒ ∘ᵥ K.Δ ◁ L.h) ∘ᵥ L.Δ  )                  ≈⟨ pullʳ (center⁻¹ (sym α⇒-◁-∘₁) refl) ⟩
@@ -205,7 +205,7 @@ module SliceHom (A : Obj) where
           module Y = SliceObj Y
           module J = Slice⇒₁ J
           module K = Slice⇒₁ K
-          module α = Slice⇒₂ α          
+          module α = Slice⇒₂ α
           open 1Category (hom X.Y A)
           open HomReasoning
           open MR (hom X.Y A)

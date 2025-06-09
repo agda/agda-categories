@@ -18,6 +18,7 @@ open import Categories.Diagram.Cone.Properties
 open import Categories.Object.Terminal
 open import Categories.Object.Product.Limit C
 open import Categories.Object.Terminal.Limit C
+open import Categories.Diagram.Empty C
 open import Categories.Functor
 open import Categories.Functor.Limits
 open import Categories.Functor.Properties
@@ -43,7 +44,7 @@ module _ (Com : Complete o′ ℓ′ e′ C) where
   Complete⇒FinitelyComplete : FinitelyComplete C
   Complete⇒FinitelyComplete = record
     { cartesian = record
-      { terminal = limit⇒⊤ (Com (⊤⇒limit-F _ _ _))
+      { terminal = limit⇒⊤ (Com (empty _ _ _))
       ; products = record
         { product = λ {A B} → limit⇒product (Com (product⇒limit-F _ _ _ A B))
         }
@@ -61,7 +62,7 @@ module _ {D : Category o′ ℓ′ e′} (Com : Complete o″ ℓ″ e″ D) whe
   private
     D^C = Functors C D
     module D^C = Category D^C
-    module D   = Category D    
+    module D   = Category D
 
     module _ {J : Category o″ ℓ″ e″} (F : Functor J D^C) where
       private

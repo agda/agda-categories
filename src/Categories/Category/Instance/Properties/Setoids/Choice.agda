@@ -6,7 +6,7 @@ open import Categories.Category using (Category)
 open import Categories.Category.Exact using (Exact)
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Category.Instance.Properties.Setoids.Exact using (SSurj)
-open import Categories.Object.InternalRelation using (Relation) 
+open import Categories.Object.InternalRelation using (Relation)
 
 open import Data.Nat.Base using (ℕ)
 open import Data.Product using (∃; proj₁; proj₂; _,_; Σ-syntax; _×_; -,_; map; zip; swap; map₂)
@@ -54,7 +54,7 @@ module _ ℓ where
     }
 
   entire : {A B : Setoid ℓ ℓ} → (R : Relation S A B) → Set ℓ
-  entire {A} R = ∀ (x : ∣ A ∣) →  Σ[ e ∈ ∣ dom ∣ ]  [ A ][ p₁ ⟨$⟩ e ≈ x ]  
+  entire {A} R = ∀ (x : ∣ A ∣) →  Σ[ e ∈ ∣ dom ∣ ]  [ A ][ p₁ ⟨$⟩ e ≈ x ]
     where open Relation R
 
   functional : {A B : Setoid ℓ ℓ} → (R : Relation S A B) → Set ℓ
@@ -68,12 +68,12 @@ module _ ℓ where
 
   record DepChoice {A : Setoid ℓ ℓ} (R : Relation S A A) (inhb : ∣ A ∣) (ent : entire R) : Set (Level.suc ℓ) where
     open Relation R
-    
+
     field
       pair   : ℕ → ∣ dom ∣
       chain  : ∀ (n : ℕ) → [ A ][ p₁ ⟨$⟩ pair (ℕ.suc n) ≈ p₂ ⟨$⟩ pair n ]
-  
-  -- Dependent choice for setoids 
+
+  -- Dependent choice for setoids
   Setoid-DepChoice :  {A : Setoid ℓ ℓ} (R : Relation S A A) (inhb : ∣ A ∣) (ent : entire R) → DepChoice R inhb ent
   Setoid-DepChoice {A} R inhb ent = record
     { pair  = pair
@@ -81,7 +81,7 @@ module _ ℓ where
     }
       where
         open Relation R
-        
+
         pair : ℕ → ∣ dom ∣
         pair ℕ.zero = proj₁ (ent inhb)
         pair (ℕ.suc n) = let x , _ = ent (p₂ ⟨$⟩ pair n) in x
@@ -90,11 +90,11 @@ module _ ℓ where
         chain ℕ.zero    = let _ , eq = ent (p₂ ⟨$⟩ proj₁ (ent inhb)) in eq
         chain (ℕ.suc n) = let x , eq = ent (p₂ ⟨$⟩ proj₁ (ent (p₂ ⟨$⟩ pair n))) in eq
 
-  -- Countable choice for setoids 
+  -- Countable choice for setoids
   ℕ-Choice :  ∀ {A : Setoid ℓ ℓ} (f : A ⇒ ℕ-Setoid) → SSurj ℓ f → Σ[ g ∈ ∣ ℕ-Setoid ⇨ A ∣ ] [ ℕ-Setoid ⇨ ℕ-Setoid ][ f ∘ g ≈ id ]
   ℕ-Choice {A} f surj = record
     { to = λ n → let x , eq = surj n in x
-    ; cong = λ {n}{m} eq → let x , _ = surj n; y , _ = surj m in P.subst (λ m → [ A ][ proj₁ (surj n) ≈ proj₁ (surj m) ]) eq (refl A) 
+    ; cong = λ {n}{m} eq → let x , _ = surj n; y , _ = surj m in P.subst (λ m → [ A ][ proj₁ (surj n) ≈ proj₁ (surj m) ]) eq (refl A)
     }
     , λ {n} → proj₂ (surj n)
 

@@ -1,7 +1,8 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Functor.Bifunctor where
 
 -- Bifunctor, aka a Functor from C × D to E
+module Categories.Functor.Bifunctor where
+
 open import Level
 open import Data.Product using (_,_)
 

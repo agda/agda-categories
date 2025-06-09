@@ -15,7 +15,7 @@ record UniversalMorphism {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : 
 
   private
     module X↙F = Category X↙F
-   
+
   field
     initial : Initial X↙F
 

@@ -82,7 +82,7 @@ record ParametricAdjoint {C D E : Category o ℓ e} (L : Functor C (Functors D E
               _ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ LL.F-resp-≈ a' R.homomorphism ⟩
               _ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ LL.homomorphism a' ⟩
               _ ≈⟨ refl⟩∘⟨ pullˡ (commute (L.₁ _) _) ⟩
-              _ ≈⟨ MR.assoc²'' E ⟩
+              _ ≈⟨  MR.assoc²δγ E  ⟩
               _ ∎ }
     ; F-resp-≈ = λ { {a , a'} {b , b'} {f} {g} (f≈g , f'≈g') →
         L.F-resp-≈ f'≈g' ⟩∘⟨ Functor.F-resp-≈ (L.₀ a') (R.F-resp-≈ f≈g)}
@@ -117,7 +117,7 @@ record ParametricAdjoint {C D E : Category o ℓ e} (L : Functor C (Functors D E
         where
           open D.HomReasoning
           open MR D
-      
+
       adjunction-iso : ∀ {X Y} (f : X C.⇒ Y) → A.Ladjunct X (A.Radjunct X (η (R.₁ f) A))
                        D.≈ A.Ladjunct X (A.counit.η Y A E.∘ η (L.₁ f) (RR.₀ Y A))
       adjunction-iso {X} {Y} f = adjunction-isoˡ f ○ ⟺ (adjunction-isoʳ f)
@@ -125,7 +125,7 @@ record ParametricAdjoint {C D E : Category o ℓ e} (L : Functor C (Functors D E
 
       is-cowedge : ∀ {X Y} (f : X C.⇒ Y) → A.Radjunct X (η (R.₁ f) A) E.≈ A.counit.η Y A E.∘ η (L.₁ f) (RR.₀ Y A)
       is-cowedge {X} {Y} f = Injection.injective (Inverse⇒Injection (Hom-inverse (areAdjoint X) (RR.₀ Y A) A)) (adjunction-iso f)
-      
+
       -- the dinat needed is  DinaturalTransformation F (const E)
       -- where F = PABifunctor {A} and E is A and G = const E
       -- here we inline the definitions

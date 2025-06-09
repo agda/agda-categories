@@ -71,6 +71,5 @@ liftInitial μT = record
     open MR (F-Algebras T)
     open HomReasoning
     open Equiv
-    private
-      ⦅_⦆ = λ X → ! {A = X} -- "banana brackets" (Meijer 1991)
+    ⦅_⦆ = λ X → ! {A = X} -- "banana brackets" (Meijer 1991)
     open Functor LiftAlgebras

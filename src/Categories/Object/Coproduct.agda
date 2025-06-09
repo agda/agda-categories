@@ -20,7 +20,7 @@ private
 
 record Coproduct (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   infix 10 [_,_]
-  
+
   field
     A+B   : Obj
     i₁    : A ⇒ A+B
@@ -70,7 +70,7 @@ IsCoproduct⇒Coproduct c = record
   }
   where
     open IsCoproduct c
-  
+
 module _ {A B : Obj} where
   open Coproduct {A} {B} renaming ([_,_] to _[_,_])
 
@@ -78,8 +78,8 @@ module _ {A B : Obj} where
   repack p₁ p₂ = p₁ [ i₁ p₂ , i₂ p₂ ]
 
   repack∘ : (p₁ p₂ p₃ : Coproduct A B) → repack p₂ p₃ ∘ repack p₁ p₂ ≈ repack p₁ p₃
-  repack∘ p₁ p₂ p₃ = ⟺ $ unique p₁ 
-    (glueTrianglesˡ (inject₁ p₂) (inject₁ p₁)) 
+  repack∘ p₁ p₂ p₃ = ⟺ $ unique p₁
+    (glueTrianglesˡ (inject₁ p₂) (inject₁ p₁))
     (glueTrianglesˡ (inject₂ p₂) (inject₂ p₁))
 
   repack≡id : (p : Coproduct A B) → repack p p ≈ id
@@ -138,20 +138,20 @@ Associable p₁ p₂ p₃ = record
   ; [_,_]     = λ f g → p₃ [ f ∘ i₁ p₁ , p₂ [ f ∘ i₂ p₁ , g ] ]
   ; inject₁  = λ {_ f g} → begin
     p₃ [ f ∘ i₁ p₁ , p₂ [ f ∘ i₂ p₁ , g ] ] ∘ p₁ [ i₁ p₃ , i₂ p₃ ∘ i₁ p₂ ] ≈⟨ ∘-distribˡ-[] p₁ ⟩
-    p₁ [ p₃ [ f ∘ i₁ p₁ , p₂ [ f ∘ i₂ p₁ , g ] ] ∘ i₁ p₃ 
+    p₁ [ p₃ [ f ∘ i₁ p₁ , p₂ [ f ∘ i₂ p₁ , g ] ] ∘ i₁ p₃
        , p₃ [ f ∘ i₁ p₁ , p₂ [ f ∘ i₂ p₁ , g ] ] ∘ i₂ p₃ ∘ i₁ p₂ ]         ≈⟨ []-cong₂ p₁ (inject₁ p₃) (glueTrianglesʳ (inject₂ p₃) (inject₁  p₂)) ⟩
     p₁ [ f ∘ i₁ p₁ , f ∘ i₂ p₁ ]                                           ≈⟨ g-η p₁ ⟩
     f                                                                      ∎
   ; inject₂  = λ {_ f g} → glueTrianglesʳ (inject₂ p₃) (inject₂ p₂)
   ; unique = λ {_ i f g} pf₁ pf₂ → begin
-    p₃ [ f ∘ i₁ p₁ , p₂ [ f ∘ i₂ p₁ , g ] ]                   ≈⟨ []-cong₂ p₃ (∘-resp-≈ˡ (sym pf₁)) 
+    p₃ [ f ∘ i₁ p₁ , p₂ [ f ∘ i₂ p₁ , g ] ]                   ≈⟨ []-cong₂ p₃ (∘-resp-≈ˡ (sym pf₁))
                                                                 ([]-cong₂ p₂ (∘-resp-≈ˡ (sym pf₁)) (sym pf₂)) ⟩
-    (p₃ [ (i ∘ p₁ [ i₁ p₃ , i₂ p₃ ∘ i₁ p₂ ]) ∘ i₁ p₁ 
-        , p₂ [ (i ∘ p₁ [ i₁ p₃ , i₂ p₃ ∘ i₁ p₂ ]) ∘ i₂ p₁ 
-             , i ∘ i₂ p₃ ∘ i₂ p₂ ] ])                         ≈⟨ []-cong₂ p₃ (pullʳ (inject₁ p₁)) 
-                                                                ([]-cong₂ p₂ (trans (pullʳ (inject₂ p₁)) sym-assoc) 
+    (p₃ [ (i ∘ p₁ [ i₁ p₃ , i₂ p₃ ∘ i₁ p₂ ]) ∘ i₁ p₁
+        , p₂ [ (i ∘ p₁ [ i₁ p₃ , i₂ p₃ ∘ i₁ p₂ ]) ∘ i₂ p₁
+             , i ∘ i₂ p₃ ∘ i₂ p₂ ] ])                         ≈⟨ []-cong₂ p₃ (pullʳ (inject₁ p₁))
+                                                                ([]-cong₂ p₂ (trans (pullʳ (inject₂ p₁)) sym-assoc)
                                                                              sym-assoc) ⟩
-    (p₃ [ i ∘ i₁ p₃ 
+    (p₃ [ i ∘ i₁ p₃
         , p₂ [ (i ∘ i₂ p₃) ∘ i₁ p₂ , (i ∘ i₂ p₃) ∘ i₂ p₂ ] ]) ≈⟨ []-cong₂ p₃ refl (g-η p₂) ⟩
     (p₃ [ i ∘ i₁ p₃ , i ∘ i₂ p₃ ])                            ≈⟨ g-η p₃ ⟩
     i                                                         ∎

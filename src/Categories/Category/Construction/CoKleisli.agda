@@ -39,12 +39,12 @@ CoKleisli {𝒞 = 𝒞} M =
   open HomReasoning
   open Equiv
   open MR 𝒞
-  
+
   -- useful lemma
   trihom : {X Y Z W : Obj} {f : X ⇒ Y} {g : Y ⇒ Z} {h : Z ⇒ W} → F₁ (h ∘ g ∘ f) ≈ F₁ h ∘ F₁ g ∘ F₁ f
-  trihom {X} {Y} {Z} {W} {f} {g} {h} = begin 
-   F₁ (h ∘ g ∘ f)     ≈⟨ homomorphism ⟩ 
-   F₁ h ∘ F₁ (g ∘ f)  ≈⟨ refl⟩∘⟨ homomorphism ⟩ 
+  trihom {X} {Y} {Z} {W} {f} {g} {h} = begin
+   F₁ (h ∘ g ∘ f)     ≈⟨ homomorphism ⟩
+   F₁ h ∘ F₁ (g ∘ f)  ≈⟨ refl⟩∘⟨ homomorphism ⟩
    F₁ h ∘ F₁ g ∘ F₁ f ∎
   -- shorthands to make the proofs nicer
   F≈ = F-resp-≈
@@ -52,7 +52,7 @@ CoKleisli {𝒞 = 𝒞} M =
   assoc′ : {A B C D : Obj} {f : F₀ A ⇒ B} {g : F₀ B ⇒ C} {h : F₀ C ⇒ D} → (h ∘ F₁ g ∘ δ.η B) ∘ F₁ f ∘ δ.η A ≈ h ∘ F₁ (g ∘ F₁ f ∘ δ.η A) ∘ δ.η A
   assoc′ {A} {B} {C} {D} {f} {g} {h} =
       begin
-        (h ∘ F₁ g ∘ δ.η B) ∘ (F₁ f ∘ δ.η A)             ≈⟨ assoc²' ⟩
+        (h ∘ F₁ g ∘ δ.η B) ∘ (F₁ f ∘ δ.η A)             ≈⟨ assoc²βε ⟩
         h ∘ (F₁ g ∘ (δ.η B ∘ (F₁ f ∘ δ.η A)))           ≈⟨ ((refl⟩∘⟨ (refl⟩∘⟨ sym assoc))) ⟩
         h ∘ (F₁ g ∘ ((δ.η B ∘ F₁ f) ∘ δ.η A))           ≈⟨ ((refl⟩∘⟨ (refl⟩∘⟨ pushˡ (δ.commute f)))) ⟩
         h ∘ (F₁ g ∘ (F₁ (F₁ f) ∘ (δ.η (F₀ A) ∘ δ.η A))) ≈⟨ refl⟩∘⟨ (refl⟩∘⟨  pushʳ (Comonad.assoc M)) ⟩

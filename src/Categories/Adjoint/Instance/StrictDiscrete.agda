@@ -31,9 +31,9 @@ Forgetful : ∀ {o ℓ e} → Functor (StrictCats o ℓ e) (Sets o)
 Forgetful {o} {ℓ} {e} = record
   { F₀ = Obj
   ; F₁ = F₀
-  ; identity     = refl
-  ; homomorphism = refl
-  ; F-resp-≈     = λ F≡G {X} → eq₀ F≡G X
+  ; identity     = λ _ → refl
+  ; homomorphism = λ _ → refl
+  ; F-resp-≈     = eq₀
   }
   where
     open Category
@@ -67,8 +67,8 @@ Discrete {o} = record
                cong g (cong f p)        ∎
     }
   ; F-resp-≈ = λ {_ _ f g} f≗g → record
-    { eq₀ = λ x → f≗g {x}
-    ; eq₁ = λ {x} {y} p → naturality (λ x → subst (f x ≡_) (f≗g {x}) refl)
+    { eq₀ = f≗g
+    ; eq₁ = λ p → naturality (λ x → subst (f x ≡_) (f≗g x) refl)
     }
   }
   where
@@ -110,7 +110,7 @@ Codiscrete {o} ℓ e = record
   ; identity     = Equiv.refl
   ; homomorphism = Equiv.refl
   ; F-resp-≈     = λ {_ _ f g} f≗g → record
-    { eq₀ = λ x → f≗g {x}
+    { eq₀ = f≗g
     ; eq₁ = λ _ → lift tt
     }
   }
@@ -124,7 +124,7 @@ DiscreteLeftAdj {o} = record
   { unit   = unit
   ; counit = counit
   ; zig    = zig
-  ; zag    = refl
+  ; zag    = λ _ → refl
   }
   where
     module U = Functor Forgetful
@@ -169,7 +169,7 @@ CodiscreteRightAdj : ∀ {o ℓ e} → Forgetful ⊣ Codiscrete {o} ℓ e
 CodiscreteRightAdj {o} {ℓ} {e} = record
   { unit   = unit
   ; counit = counit
-  ; zig    = refl
+  ; zig    = λ _ → refl
   ; zag    = zag
   }
   where

@@ -158,7 +158,7 @@ module Lax where
             D.id ∘ F.₁ C.id ∘ F.ε  ≈⟨ identityˡ ⟩
             F.₁ C.id ∘ F.ε         ≈⟨ F.identity ⟩∘⟨refl ⟩
             D.id ∘ F.ε             ≈⟨ identityˡ ⟩
-            F.ε ∎ 
+            F.ε ∎
         ; ⊗-homo-compat = λ {X Y} → begin
             D.id D.∘ F.₁ C.id ∘ F.⊗-homo.η (X , Y)  ≈⟨ identityˡ ⟩
             F.₁ C.id ∘ F.⊗-homo.η (X , Y)           ≈⟨ F.identity ⟩∘⟨refl ⟩
@@ -294,7 +294,7 @@ module Strong where
            {E : MonoidalCategory o″ ℓ″ e″} where
 
     open Lax.MonoidalNaturalIsomorphism
-    
+
     infixr 9 _ⓘₕ_ _ⓘˡ_ _ⓘʳ_
 
     _ⓘₕ_ : {F G : StrongMonoidalFunctor C D} {H I : StrongMonoidalFunctor D E} →

@@ -82,11 +82,11 @@ module _ {A : Obj} (ccc : CartesianClosed C) (pullback : ∀ {X} {Y} {Z} (h : X 
         eval′ ∘ first (p.p₂ T) ∘ first (p.universal T _) ∘ swap    ≈⟨ refl⟩∘⟨ pullˡ first∘first ⟩
         eval′ ∘ first (p.p₂ T ∘ p.universal T _) ∘ swap            ≈⟨ refl⟩∘⟨ first-cong (p.p₂∘universal≈h₂ T) ⟩∘⟨refl ⟩
         eval′ ∘ first (λg (h f ∘ eval′ ∘ first (p.p₂ S))) ∘ swap   ≈⟨ pullˡ β′ ⟩
-        (h f ∘ eval′ ∘ first (p.p₂ S)) ∘ swap                      ≈⟨ assoc²' ⟩
+        (h f ∘ eval′ ∘ first (p.p₂ S)) ∘ swap                      ≈⟨ assoc²βε ⟩
         h f ∘ eval′ ∘ first (p.p₂ S) ∘ swap                        ∎
       }
     ; zig = λ {X} → begin
-      (eval′ ∘ first (p.p₂ (sliceobj π₁)) ∘ swap) ∘ second (p.universal (sliceobj π₁) _) ≈⟨ assoc²' ⟩
+      (eval′ ∘ first (p.p₂ (sliceobj π₁)) ∘ swap) ∘ second (p.universal (sliceobj π₁) _) ≈⟨ assoc²βε ⟩
       eval′ ∘ first (p.p₂ (sliceobj π₁)) ∘ swap ∘ second (p.universal (sliceobj π₁) _)   ≈⟨ refl⟩∘⟨ refl⟩∘⟨ swap∘⁂ ⟩
       eval′ ∘ first (p.p₂ (sliceobj π₁)) ∘ first (p.universal (sliceobj π₁) _) ∘ swap    ≈⟨ refl⟩∘⟨ pullˡ first∘first ⟩
       eval′ ∘ first (p.p₂ (sliceobj π₁) ∘ p.universal (sliceobj π₁) _) ∘ swap            ≈⟨ refl⟩∘⟨ first-cong (p.p₂∘universal≈h₂ (sliceobj π₁)) ⟩∘⟨refl ⟩
@@ -128,7 +128,7 @@ module _ {A : Obj} (ccc : CartesianClosed C) (pullback : ∀ {X} {Y} {Z} (h : X 
         -- It would mean we could avoid this swap
         counit-△ : ∀ X → arr X ∘ eval′ ∘ first (p.p₂ X) ∘ swap ≈ π₁
         counit-△ X = begin
-          arr X ∘ eval′ ∘ first (p.p₂ X) ∘ swap     ≈˘⟨ assoc² ⟩
+          arr X ∘ eval′ ∘ first (p.p₂ X) ∘ swap     ≈˘⟨ assoc²αε ⟩
           ((arr X ∘ eval′) ∘ first (p.p₂ X)) ∘ swap ≈⟨ lemma ⟩∘⟨refl ⟩
           (π₂ ∘ first (p.p₁ X)) ∘ swap              ≈⟨ (π₂∘⁂ ○ identityˡ) ⟩∘⟨refl ⟩
           π₂ ∘ swap                                 ≈⟨ project₂ ⟩

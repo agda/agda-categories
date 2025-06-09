@@ -4,11 +4,10 @@ open import Categories.Category
 
 module Categories.Object.Terminal.Limit {o ℓ e} (C : Category o ℓ e) where
 
-open import Categories.Category.Lift
-open import Categories.Category.Finite.Fin.Construction.Discrete
-open import Categories.Object.Terminal C
+open import Categories.Category.Instance.Zero using (Zero)
 open import Categories.Diagram.Limit
 open import Categories.Functor.Core
+open import Categories.Object.Terminal C
 
 import Categories.Category.Construction.Cones as Co
 
@@ -16,7 +15,7 @@ private
   module C = Category C
   open C
 
-module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C} where
+module _ {o′ ℓ′ e′} {F : Functor (Zero {o′} {ℓ′} {e′}) C} where
   limit⇒⊤ : Limit F → Terminal
   limit⇒⊤ L = record
     { ⊤        = apex
@@ -35,18 +34,8 @@ module _ {o′ ℓ′ e′} {F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C
     }
     where open Limit L
 
-module _ o′ ℓ′ e′ where
-
-  ⊤⇒limit-F : Functor (liftC o′ ℓ′ e′ (Discrete 0)) C
-  ⊤⇒limit-F = record
-    { F₀           = λ ()
-    ; F₁           = λ { {()} }
-    ; identity     = λ { {()} }
-    ; homomorphism = λ { {()} }
-    ; F-resp-≈     = λ { {()} }
-    }
-
-  ⊤⇒limit : Terminal → Limit ⊤⇒limit-F
+module _ {o′ ℓ′ e′} {F : Functor (Zero {o′} {ℓ′} {e′}) C} where
+  ⊤⇒limit : Terminal → Limit F
   ⊤⇒limit t = record
     { terminal = record
       { ⊤        = record
@@ -58,13 +47,13 @@ module _ o′ ℓ′ e′ where
         }
       ; ⊤-is-terminal = record
         { !        = λ {K} →
-          let open Co.Cone ⊤⇒limit-F K
+          let open Co.Cone F K
           in record
           { arr     = !
           ; commute = λ { {()} }
           }
         ; !-unique = λ f →
-          let module f = Co.Cone⇒ ⊤⇒limit-F f
+          let module f = Co.Cone⇒ F f
           in !-unique f.arr
         }
       }

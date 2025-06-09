@@ -113,14 +113,14 @@ module KleisliExtension where
   f-iso⇒Klf-iso {A} {B} f g (record { isoˡ = isoˡ ; isoʳ = isoʳ }) = record
     { isoˡ = begin
        (μ.η A ∘ F₁ g) ∘ μ.η B ∘ F₁ f           ≈⟨ center (sym (μ.commute g)) ⟩
-       μ.η A ∘ (μ.η (F₀ A) ∘ F₁ (F₁ g)) ∘ F₁ f ≈⟨ assoc²'' ○ pushˡ M.sym-assoc ⟩
+       μ.η A ∘ (μ.η (F₀ A) ∘ F₁ (F₁ g)) ∘ F₁ f ≈⟨ assoc²δγ ○ pushˡ M.sym-assoc ⟩
        μ.η A ∘ F₁ (μ.η A) ∘ F₁ (F₁ g) ∘ F₁ f   ≈⟨ refl⟩∘⟨ sym trihom ⟩
        μ.η A ∘ F₁ (μ.η A ∘ F₁ g ∘ f)           ≈⟨ refl⟩∘⟨ F-resp-≈ sym-assoc ⟩
        μ.η A ∘ F₁ ((μ.η A ∘ F₁ g) ∘ f)         ≈⟨ refl⟩∘⟨ F-resp-≈ isoʳ ○ M.identityˡ ⟩
        C.id                                        ∎
     ; isoʳ = begin
        (μ.η B ∘ F₁ f) ∘ μ.η A ∘ F₁ g           ≈⟨ center (sym (μ.commute f)) ⟩
-       μ.η B ∘ (μ.η (F₀ B) ∘ F₁ (F₁ f)) ∘ F₁ g ≈⟨ assoc²'' ○ pushˡ M.sym-assoc ⟩
+       μ.η B ∘ (μ.η (F₀ B) ∘ F₁ (F₁ f)) ∘ F₁ g ≈⟨ assoc²δγ ○ pushˡ M.sym-assoc ⟩
        μ.η B ∘ F₁ (μ.η B) ∘ F₁ (F₁ f) ∘ F₁ g   ≈⟨ refl⟩∘⟨ sym trihom ⟩
        μ.η B ∘ F₁ (μ.η B ∘ F₁ f ∘ g)           ≈⟨ refl⟩∘⟨ F-resp-≈ sym-assoc ⟩
        μ.η B ∘ F₁ ((μ.η B ∘ F₁ f) ∘ g)         ≈⟨ refl⟩∘⟨ F-resp-≈ isoˡ ○ M.identityˡ ⟩

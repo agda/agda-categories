@@ -76,8 +76,8 @@ module _ (C : Category o ℓ e) where
       assoc' = commute' id
 
       identityˡ' : ∀ {X : Obj} → μ.η X ∘ F₁ (η.η X) ≈ id
-      identityˡ' = begin 
-        extend id ∘ extend (unit ∘ unit)   ≈⟨ K.sym-assoc ⟩ 
+      identityˡ' = begin
+        extend id ∘ extend (unit ∘ unit)   ≈⟨ K.sym-assoc ⟩
         extend (extend id ∘ (unit ∘ unit)) ≈⟨ K.extend-≈ (pullˡ K.identityʳ) ⟩
         extend (id ∘ unit)                 ≈⟨ K.extend-≈ identityˡ ⟩
         extend unit                        ≈⟨ K.identityˡ ⟩
@@ -100,18 +100,17 @@ module _ (C : Category o ℓ e) where
       open Functor F
 
       identityʳ' : ∀ {X Y} {k : X ⇒ F₀ Y} → (μ.η Y ∘ F₁ k) ∘ η.η X ≈ k
-      identityʳ' {X} {Y} {k}  = begin 
+      identityʳ' {X} {Y} {k}  = begin
         ((μ.η Y ∘ F₁ k) ∘ η.η X)   ≈⟨ pullʳ (sym (η.commute _)) ⟩
         (μ.η Y ∘ η.η (F₀ Y) ∘ k)   ≈⟨ cancelˡ M.identityʳ ⟩
         k                          ∎
 
       assoc' : ∀  {X Y Z} {k : X ⇒ F₀ Y} {l : Y ⇒ F₀ Z} → μ.η Z ∘ F₁ ((μ.η Z ∘ F₁ l) ∘ k) ≈ (μ.η Z ∘ F₁ l) ∘ μ.η Y ∘ F₁ k
       assoc' {X} {Y} {Z} {k} {l} = begin
-        (μ.η Z ∘ F₁ ((μ.η Z ∘ F₁ l) ∘ k))           ≈⟨ refl⟩∘⟨ homomorphism ⟩ 
-        (μ.η Z ∘ F₁ (μ.η Z ∘ ₁ l) ∘ F₁ k)           ≈⟨ refl⟩∘⟨ homomorphism ⟩∘⟨refl ⟩ 
-        (μ.η Z ∘ (F₁ (μ.η Z) ∘ F₁ (F₁ l)) ∘ F₁ k)   ≈⟨ pullˡ (pullˡ M.assoc) ⟩ 
+        (μ.η Z ∘ F₁ ((μ.η Z ∘ F₁ l) ∘ k))           ≈⟨ refl⟩∘⟨ homomorphism ⟩
+        (μ.η Z ∘ F₁ (μ.η Z ∘ ₁ l) ∘ F₁ k)           ≈⟨ refl⟩∘⟨ homomorphism ⟩∘⟨refl ⟩
+        (μ.η Z ∘ (F₁ (μ.η Z) ∘ F₁ (F₁ l)) ∘ F₁ k)   ≈⟨ pullˡ (pullˡ M.assoc) ⟩
         (((μ.η Z ∘ μ.η (F₀ Z)) ∘ F₁ (F₁ l)) ∘ F₁ k) ≈⟨ pullʳ (μ.commute l) ⟩∘⟨refl ⟩
-        (μ.η Z ∘ F₁ l ∘ μ.η Y) ∘ F₁ k               ≈⟨ trans assoc²' sym-assoc ⟩
+        (μ.η Z ∘ F₁ l ∘ μ.η Y) ∘ F₁ k               ≈⟨ assoc²βγ ⟩
         (μ.η Z ∘ F₁ l) ∘ μ.η Y ∘ F₁ k               ∎
-
 

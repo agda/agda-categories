@@ -29,8 +29,8 @@ Elements {C = C} F = record
   { Obj       = Σ Obj F₀
   ; _⇒_       = λ { (c , x) (c′ , x′) → Σ (c ⇒ c′) (λ f → F₁ f x ≡ x′)  }
   ; _≈_       = λ p q → proj₁ p ≈ proj₁ q
-  ; id        = id , identity
-  ; _∘_       = λ { (f , Ff≡) (g , Fg≡) → f ∘ g ,  trans homomorphism (trans (cong (F₁ f) Fg≡) Ff≡)}
+  ; id        = id , identity _
+  ; _∘_       = λ { (f , Ff≡) (g , Fg≡) → f ∘ g ,  trans (homomorphism _) (trans (cong (F₁ f) Fg≡) Ff≡)}
   ; assoc     = assoc
   ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
@@ -50,31 +50,31 @@ El {C = C} = record
   { F₀ = Elements
   ; F₁ = λ A⇒B → record
     { F₀ = map idf (η A⇒B _)
-    ; F₁ = map idf λ {f} eq → trans (sym $ commute A⇒B f) (cong (η A⇒B _) eq)
+    ; F₁ = map idf λ {f} eq → trans (sym $ commute A⇒B f _) (cong (η A⇒B _) eq)
     ; identity = Equiv.refl
     ; homomorphism = Equiv.refl
     ; F-resp-≈ = idf
     }
   ; identity = λ {P} → record
     { F⇒G = record
-      { η           = λ X → id , identity P
+      { η           = λ X → id , identity P _
       ; commute     = λ _ → MR.id-comm-sym C
       ; sym-commute = λ _ → MR.id-comm C
       }
     ; F⇐G = record
-      { η           = λ X → id , identity P
+      { η           = λ X → id , identity P _
       ; commute     = λ _ → MR.id-comm-sym C
       ; sym-commute = λ _ → MR.id-comm C
       }
     ; iso = λ X → record { isoˡ = identityˡ ; isoʳ = identityʳ } }
   ; homomorphism = λ {X₁} {Y₁} {Z₁} → record
     { F⇒G = record
-      { η           = λ X → id , identity Z₁
+      { η           = λ X → id , identity Z₁ _
       ; commute     = λ _ → MR.id-comm-sym C
       ; sym-commute = λ _ → MR.id-comm C
       }
     ; F⇐G = record
-      { η           = λ X → id , identity Z₁
+      { η           = λ X → id , identity Z₁ _
       ; commute     = λ _ → MR.id-comm-sym C
       ; sym-commute = λ _ → MR.id-comm C
       }
@@ -82,12 +82,12 @@ El {C = C} = record
     }
   ; F-resp-≈ = λ {_} {B₁} f≈g → record
     { F⇒G = record
-      { η           = λ _ → id , trans (identity B₁) f≈g
+      { η           = λ _ → id , trans (identity B₁ _) (f≈g _)
       ; commute     = λ _ → MR.id-comm-sym C
       ; sym-commute = λ _ → MR.id-comm C
       }
     ; F⇐G = record
-      { η           = λ _ → id , trans (identity B₁) (sym f≈g)
+      { η           = λ _ → id , trans (identity B₁ _) (sym (f≈g _ ))
       ; commute     = λ _ → MR.id-comm-sym C
       ; sym-commute = λ _ → MR.id-comm C
       }
@@ -140,13 +140,13 @@ module Alternate-Pullback {C : Category (suc o) o o} (F : Functor C (Sets o)) wh
       ; homomorphism = Functor.homomorphism h₁
       ; F-resp-≈ = Functor.F-resp-≈ h₁
       }
+    ; p₁∘universal≈h₁ = {!!}
+    ; p₂∘universal≈h₂ = {!!}
     ; unique = λ πˡ∘i≃h₁ map∘i≃h₂ → record
       { F⇒G = record { η = λ X → {!!} ; commute = {!!} }
       ; F⇐G = record { η = {!!} ; commute = {!!} }
       ; iso = λ X → record { isoˡ = {!!} ; isoʳ = {!!} }
       }
-    ; p₁∘universal≈h₁ = {!!}
-    ; p₂∘universal≈h₂ = {!!}
     }
     where
     open NaturalTransformation

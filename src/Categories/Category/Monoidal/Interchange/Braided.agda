@@ -188,12 +188,12 @@ swapInner-assoc = begin
     α⇐ ∘ id ⊗₁ (α⇒ ∘ α⇒ ∘ (α⇐ ∘ α⇐) ⊗₁ id ∘ α⇐) ∘
     id ⊗₁ (id ⊗₁ (σ⇒ ⊗₁ id ∘ α⇐)) ∘ id ⊗₁ α⇒ ∘ α⇒ ∘
     (id ⊗₁ (α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐)) ⊗₁ id ∘ α⇒ ⊗₁ id
-                                                                  ≈⟨ refl⟩∘⟨ merge₂ assoc²' ○ (refl⟩∘⟨ refl⟩∘⟨ assoc) ⟩∘⟨
+                                                                  ≈⟨ refl⟩∘⟨ merge₂ assoc²βε ○ (refl⟩∘⟨ refl⟩∘⟨ assoc) ⟩∘⟨
                                                                        refl⟩∘⟨ extendʳ assoc-commute-from ⟩
     α⇐ ∘ id ⊗₁ (α⇒ ∘ α⇒ ∘ (α⇐ ∘ α⇐) ⊗₁ id ∘ α⇐ ∘ id ⊗₁ (σ⇒ ⊗₁ id ∘ α⇐)) ∘
     id ⊗₁ α⇒ ∘
     id ⊗₁ ((α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐) ⊗₁ id) ∘ α⇒ ∘ α⇒ ⊗₁ id
-                                                                  ≈⟨ refl⟩∘⟨ merge₂ (assoc²' ○ (refl⟩∘⟨ refl⟩∘⟨ assoc²')) ⟩∘⟨
+                                                                  ≈⟨ refl⟩∘⟨ merge₂ (assoc²βε ○ (refl⟩∘⟨ refl⟩∘⟨ assoc²βε)) ⟩∘⟨
                                                                        refl⟩∘⟨ switch-fromtoˡ (idᵢ ⊗ᵢ α) pentagon ⟩
     α⇐ ∘ id ⊗₁ (α⇒ ∘ α⇒ ∘ (α⇐ ∘ α⇐) ⊗₁ id ∘ α⇐ ∘ id ⊗₁ (σ⇒ ⊗₁ id ∘ α⇐) ∘ α⇒) ∘
     id ⊗₁ ((α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐) ⊗₁ id) ∘ id ⊗₁ α⇐ ∘ α⇒ ∘ α⇒
@@ -201,7 +201,7 @@ swapInner-assoc = begin
     α⇐ ∘ id ⊗₁
       (α⇒ ∘ α⇒ ∘ (α⇐ ∘ α⇐) ⊗₁ id ∘ α⇐ ∘ id ⊗₁ (σ⇒ ⊗₁ id ∘ α⇐) ∘ α⇒) ∘
     id ⊗₁ ((α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐) ⊗₁ id ∘ α⇐) ∘ α⇒ ∘ α⇒
-                                                                  ≈⟨ refl⟩∘⟨ merge₂ assoc²' ○ (refl⟩∘⟨ refl⟩∘⟨ (assoc²' ○
+                                                                  ≈⟨ refl⟩∘⟨ merge₂ assoc²βε ○ (refl⟩∘⟨ refl⟩∘⟨ (assoc²βε ○
                                                                       (refl⟩∘⟨ refl⟩∘⟨ assoc))) ⟩∘⟨ Equiv.refl ⟩
     α⇐ ∘ id ⊗₁ (α⇒ ∘
       α⇒ ∘ (α⇐ ∘ α⇐) ⊗₁ id ∘ α⇐ ∘ id ⊗₁ (σ⇒ ⊗₁ id ∘ α⇐) ∘ α⇒ ∘
@@ -223,7 +223,7 @@ swapInner-assoc = begin
                                                                           pushʳ (refl⟩∘⟨ refl⟩⊗⟨ ⊗.identity ⟩∘⟨refl) ⟩
       α⇒ ∘ ((α⇐ ∘ α⇐) ∘ id ⊗₁ σ⇒) ⊗₁ id ∘ α⇒ ⊗₁ id ∘ α⇐ ∘
       (α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐) ⊗₁ (id ⊗₁ id) ∘ α⇐
-                                                                  ≈⟨ refl⟩∘⟨ merge₁ assoc² ⟩∘⟨ extendʳ assoc-commute-to ⟩
+                                                                  ≈⟨ refl⟩∘⟨ merge₁ assoc²αε ⟩∘⟨ extendʳ assoc-commute-to ⟩
       α⇒ ∘ (α⇐ ∘ α⇐ ∘ id ⊗₁ σ⇒ ∘ α⇒) ⊗₁ id ∘
       ((α⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐) ⊗₁ id) ⊗₁ id ∘ α⇐ ∘ α⇐
                                                                   ≈˘⟨ refl⟩∘⟨ pushˡ split₁ˡ ⟩

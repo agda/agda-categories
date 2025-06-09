@@ -192,7 +192,7 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
             }
           ; cong  = λ eq → cong (α.η _) ((cong (F.F₁ π₁) eq) , cong (G.₁ π₂) (Setoid.refl (G.F₀ _)))
           }
-        ; commute = λ {X Y} f {FX Z} {GZ} → 
+        ; commute = λ {X Y} f {FX Z} {GZ} →
           let open SetoidR (H.₀ (Y × Z)) in begin
           α.η (Y × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ (F.₁ f ⟨$⟩ FX) , G.₁ π₂ ⟨$⟩ GZ)
             ≈˘⟨ cong (α.η _) (([ F ]-resp-square π₁∘⁂) , ([ G ]-resp-∘ (π₂∘⁂ CH.○ C.identityˡ))) ⟩

@@ -4,15 +4,16 @@ open import Categories.Category
 
 module Categories.Object.Product.Indexed.Properties {o ℓ e} (C : Category o ℓ e) where
 
+open import Function.Base using () renaming (_∘_ to _∙_)
 open import Level
 
-open import Categories.Category.Construction.StrictDiscrete
-open import Categories.Category.Complete
-open import Categories.Category.Construction.Cones
-open import Categories.Category.Lift
-open import Categories.Object.Product.Indexed C
-open import Categories.Diagram.Limit
-open import Categories.Functor
+open import Categories.Category.Construction.StrictDiscrete using (Discrete; lift-func)
+open import Categories.Category.Complete using (Complete)
+open import Categories.Category.Lift using (liftC; unliftF)
+open import Categories.Diagram.Cone using (Cone; Cone⇒)
+open import Categories.Diagram.Limit using (Limit)
+open import Categories.Functor using (Functor; _∘F_)
+open import Categories.Object.Product.Indexed C using (IndexedProductOf; AllProductsOf)
 
 import Relation.Binary.PropositionalEquality as ≡
 
@@ -20,6 +21,16 @@ private
   variable
     o′ ℓ′ e′ : Level
   open Category C
+
+lowerAllProductsOf : ∀ {i} j → AllProductsOf (i ⊔ j) → AllProductsOf i
+lowerAllProductsOf j prod P = record
+  { X = X
+  ; π = π ∙ lift
+  ; ⟨_⟩ = λ f → ⟨ f ∙ lower ⟩
+  ; commute = commute
+  ; unique = λ eq → unique eq
+  }
+  where open IndexedProductOf (prod {Lift j _} (P ∙ lower))
 
 module _ {i} (Com : Complete (i ⊔ o′) (i ⊔ ℓ′) (i ⊔ e′) C) where
 
@@ -42,9 +53,8 @@ module _ {i} (Com : Complete (i ⊔ o′) (i ⊔ ℓ′) (i ⊔ e′) C) where
       { X       = L.apex
       ; π       = λ i → L.proj (lift i)
       ; ⟨_⟩     = λ f → L.rep (K f)
-      ; commute = λ f _ → Cone⇒.commute (L.rep-cone (K f))
-      ; unique  = λ f g eq → L.terminal.!-unique {A = K g} record
-        { arr     = f
-        ; commute = eq _
+      ; commute = Cone⇒.commute (L.rep-cone (K _))
+      ; unique  = λ eq → L.terminal.!-unique record
+        { commute = eq
         }
       }

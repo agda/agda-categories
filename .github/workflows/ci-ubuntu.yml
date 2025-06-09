@@ -12,27 +12,13 @@ on:
 ##
 ## Key variables:
 ##
-## AGDA_COMMIT picks the version of Agda to use to build the library.
-## It can either be a hash of a specific commit (to target a bugfix for
-## instance) or a tag e.g. tags/v2.6.1.3 (to target a released version).
+## AGDA_VERSION picks the version of Agda to use to build the library.
 ##
 ## STDLIB_VERSION picks the version of the stdlib to pull. The current
 ## design requires that the number corresponds to a released version
 ## but we could change that to a commit-based approach if you need to.
 ##
 ## The rest:
-##
-## Basically do not touch GHC_VERSION and CABAL_VERSION as long as
-## they aren't a problem in the build. If you have time to waste, it
-## could be worth investigating whether newer versions of ghc produce
-## more efficient Agda executable and could cut down the build time.
-## Just be aware that actions are flaky and small variations are to be
-## expected.
-##
-## The CABAL_INSTALL variable only passes `-O1` optimisations to ghc
-## because github actions cannot currently handle a build using `-O2`.
-## To be experimented with again in the future to see if things have
-## gotten better.
 ##
 ## The AGDA variable specifies the command to use to build the library.
 ## It currently passes the flag `-Werror` to ensure maximal compliance
@@ -45,12 +31,9 @@ on:
 ########################################################################
 
 env:
-  AGDA_COMMIT: tags/v2.6.4
-  STDLIB_VERSION: "2.0"
+  AGDA_VERSION: "2.7.0.1"
+  STDLIB_VERSION: "2.1"
 
-  GHC_VERSION: 8.10.7
-  CABAL_VERSION: 3.6.2.0
-  CABAL_INSTALL: cabal install --overwrite-policy=always --ghc-options='-O1 +RTS -M6G -RTS' --installdir $HOME/.cabal/bin
   AGDA: agda --auto-inline -Werror +RTS -M6G -H3.5G -A128M -RTS -i . -i src/
 
 jobs:
@@ -73,11 +56,6 @@ jobs:
              echo "AGDA_DEPLOY=true" >> $GITHUB_ENV
           fi
 
-      # The script won't be able to find Agda if we don't tell it to look at the
-      # content of ~/.cabal/bin
-      - name: Put cabal programs in PATH
-        run: echo "$HOME/.cabal/bin" >> $GITHUB_PATH
-
 ########################################################################
 ## CACHING
 ########################################################################
@@ -87,68 +65,24 @@ jobs:
       # i.e. if we change either the version of Agda, ghc, or cabal that we want
       # to use for the build.
       - name: Open cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-everything
         with:
           path: |
-            ~/.cabal/packages
-            ~/.cabal/store
-            ~/.cabal/bin
-            ~/.cabal/share
-            ~/.agda-build-cache
-          key: ${{ runner.os }}-${{ env.GHC_VERSION }}-${{ env.CABAL_VERSION }}-${{ env.AGDA_COMMIT }}
-
-      # If a build cache exists for agda-categories, use it, but don't fail if
-      # there isn't.
-      - name: Unpack agda-categories build cache
-        if: steps.cache-everything.outputs.cache-hit == 'true'
-        run: |
-          cp -rpv ~/.agda-build-cache/agda-categories ./_build/ || exit 0
+            ~/.agda
+            ~/_build
+          key: ${{ runner.os }}-agda-${{ env.AGDA_VERSION }}
 
 ########################################################################
 ## INSTALLATION STEPS
 ########################################################################
 
-      - name: Install ghc and cabal
+      - name: Install Agda
         if: steps.cache-everything.outputs.cache-hit != 'true'
-        uses: haskell-actions/setup@v2
+        uses: wenkokke/setup-agda@main
         with:
-          ghc-version: ${{ env.GHC_VERSION }}
-          cabal-version: ${{ env.CABAL_VERSION }}
-
-      - name: Cabal update
-        if: steps.cache-everything.outputs.cache-hit != 'true'
-        run: cabal update
-
-      - name: Download and install Agda from github
-        if: steps.cache-everything.outputs.cache-hit != 'true'
-        run: |
-          git clone https://github.com/agda/agda
-          cd agda
-          git checkout ${{ env.AGDA_COMMIT }}
-          mkdir -p doc
-          touch doc/user-manual.pdf
-          # make sure it exists
-          mkdir -p $HOME/.cabal/bin
-          ${{ env.CABAL_INSTALL }}
-          cd ..
-
-      - name: Install stdlib
-        run: |
-          mkdir -p $HOME/.agda
-          cd $HOME/.agda
-          wget https://github.com/agda/agda-stdlib/archive/v${{ env.STDLIB_VERSION }}.tar.gz
-          tar -xzvf v${{ env.STDLIB_VERSION }}.tar.gz
-          mv agda-stdlib-${{ env.STDLIB_VERSION }} agda-stdlib
-          echo "~/.agda/agda-stdlib/standard-library.agda-lib" > libraries
-          cd -
-
-      # If a build cache exists for agda-stdlib, use it, but don't fail if there
-      # isn't.
-      - name: Unpack agda-stdlib build cache
-        if: steps.cache-everything.outputs.cache-hit == 'true'
-        run: |
-          cp -rpv ~/.agda-build-cache/agda-stdlib ~/.agda/agda-stdlib/_build/ || exit 0
+          agda-version: ${{ env.AGDA_VERSION }}
+          agda-stdlib-version: ${{ env.STDLIB_VERSION }}
 
 ########################################################################
 ## TESTING
@@ -170,23 +104,11 @@ jobs:
           ${{ env.AGDA }} --html --html-dir html index.agda
 
 ########################################################################
-## PACKAGE BUILD CACHING
-########################################################################
-
-      # Package type-checked agda-stdlib and agda-categories libraries for
-      # future CI runs.
-      - name: "Pack Agda build cache"
-        run: |
-          mkdir -p ~/.agda-build-cache/
-          cp -rpv ./_build/ ~/.agda-build-cache/agda-categories/ || exit 0
-          cp -rpv ~/.agda/agda-stdlib/_build/ ~/.agda-build-cache/agda-stdlib/ || exit 0
-
-########################################################################
 ## DEPLOYMENT
 ########################################################################
 
       - name: Deploy HTML
-        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        uses: JamesIves/github-pages-deploy-action@v4.7.3
         if: ${{ success() && env.AGDA_DEPLOY }}
         with:
           branch: gh-pages

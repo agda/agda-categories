@@ -136,7 +136,7 @@ module _ (f : Span C D) (g : Span B C) (h : Span A B) where
             p₂ pullback-gh ∘ universal pullback-gh _ ∘ universal pullback-⟨fg⟩h _ ≈⟨ pullˡ (p₂∘universal≈h₂ pullback-gh) ⟩
             (p₁ pullback-fg ∘ p₂ pullback-⟨fg⟩h) ∘ universal pullback-⟨fg⟩h _     ≈⟨ pullʳ (p₂∘universal≈h₂ pullback-⟨fg⟩h) ⟩
             p₁ pullback-fg ∘ universal pullback-fg _                              ≈⟨ p₁∘universal≈h₁ pullback-fg ⟩
-            p₂ pullback-gh ∘ p₁ pullback-f⟨gh⟩ ∎ 
+            p₂ pullback-gh ∘ p₁ pullback-f⟨gh⟩ ∎
 
           lemmaˡ = begin
             p₁ pullback-f⟨gh⟩ ∘ universal pullback-f⟨gh⟩ _ ∘ universal pullback-⟨fg⟩h _ ≈⟨ pullˡ (p₁∘universal≈h₁ pullback-f⟨gh⟩) ⟩
@@ -291,7 +291,7 @@ pentagon {A} {B} {C} {D} {E} f g h i =
         p₂ pullback-fg ∘ universal pullback-fg _ ∘ universal pullback-f⟨gh⟩ _ ∘ universal pullback-f⟨⟨gh⟩i⟩ _ ≈⟨ pullˡ (p₂∘universal≈h₂ pullback-fg) ⟩
         (p₁ pullback-gh ∘ p₂ pullback-f⟨gh⟩) ∘ universal pullback-f⟨gh⟩ _ ∘ universal pullback-f⟨⟨gh⟩i⟩ _     ≈⟨ center (p₂∘universal≈h₂ pullback-f⟨gh⟩) ⟩
         p₁ pullback-gh ∘ (p₁ pullback-⟨gh⟩i ∘ p₂ pullback-f⟨⟨gh⟩i⟩) ∘ universal pullback-f⟨⟨gh⟩i⟩ _           ≈⟨ center⁻¹ refl (p₂∘universal≈h₂ pullback-f⟨⟨gh⟩i⟩) ⟩
-        (p₁ pullback-gh ∘ p₁ pullback-⟨gh⟩i) ∘ universal pullback-⟨gh⟩i _ ∘ p₂ pullback-f⟨g⟨hi⟩⟩              ≈⟨ center (p₁∘universal≈h₁ pullback-⟨gh⟩i) ⟩ 
+        (p₁ pullback-gh ∘ p₁ pullback-⟨gh⟩i) ∘ universal pullback-⟨gh⟩i _ ∘ p₂ pullback-f⟨g⟨hi⟩⟩              ≈⟨ center (p₁∘universal≈h₁ pullback-⟨gh⟩i) ⟩
         p₁ pullback-gh ∘ universal pullback-gh _ ∘ p₂ pullback-f⟨g⟨hi⟩⟩                                       ≈⟨ pullˡ (p₁∘universal≈h₁ pullback-gh) ⟩
         p₁ pullback-g⟨hi⟩ ∘ p₂ pullback-f⟨g⟨hi⟩⟩                                                              ≈˘⟨ p₂∘universal≈h₂ pullback-fg ⟩
         p₂ pullback-fg ∘ universal pullback-fg _                                                              ∎

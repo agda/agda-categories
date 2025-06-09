@@ -43,7 +43,7 @@ section-equalizer {X = X} {Y = Y} {f = f} {g = g} g∘f≈id = record
       f ∘ id      ≈⟨ id-comm ⟩
       id ∘ f      ∎
 
-    equalize : ∀ {Z} {h : Z ⇒ X} → (f ∘ g) ∘ h ≈ id ∘ h → Z ⇒ Y 
+    equalize : ∀ {Z} {h : Z ⇒ X} → (f ∘ g) ∘ h ≈ id ∘ h → Z ⇒ Y
     equalize {h = h} _ = g ∘ h
 
     universal : ∀ {Z} {h : Z ⇒ X} {eq : (f ∘ g) ∘ h ≈ id ∘ h} → h ≈ f ∘ g ∘ h

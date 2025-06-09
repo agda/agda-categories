@@ -67,7 +67,7 @@ record Iso (from : A ⇒ B) (to : B ⇒ A) : Set e where
 record IsIso (from : A ⇒ B) : Set (ℓ ⊔ e) where
   field
     inv : B ⇒ A
-    iso : Iso from inv 
+    iso : Iso from inv
 
   open Iso iso public
 

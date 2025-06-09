@@ -85,7 +85,7 @@ private
                             ⟩
   braiding-coherence⊗unit = cancel-fromˡ braiding.FX≅GX (begin
     σ⇒ ∘ λ⇒ ⊗₁ id ∘ σ⇒ ⊗₁ id            ≈⟨ pullˡ (⟺ (glue◽◃ unitorˡ-commute-from coherence₁)) ⟩
-    (λ⇒ ∘ id ⊗₁ σ⇒ ∘ α⇒) ∘ σ⇒ ⊗₁ id     ≈⟨ assoc²' ⟩
+    (λ⇒ ∘ id ⊗₁ σ⇒ ∘ α⇒) ∘ σ⇒ ⊗₁ id     ≈⟨ assoc²βε ⟩
     λ⇒ ∘ id ⊗₁ σ⇒ ∘ α⇒ ∘ σ⇒ ⊗₁ id       ≈⟨ refl⟩∘⟨ hexagon₁ ⟩
     λ⇒ ∘ α⇒ ∘ σ⇒ ∘ α⇒                   ≈⟨ pullˡ coherence₁ ⟩
     λ⇒ ⊗₁ id ∘ σ⇒ ∘ α⇒                  ≈˘⟨ pushˡ (braiding.⇒.commute _) ⟩
@@ -156,3 +156,23 @@ inv-braiding-coherence : [ unit ⊗₀ X ⇒ X ]⟨
                          ≈ λ⇒
                          ⟩
 inv-braiding-coherence = ⟺ (switch-fromtoʳ σ braiding-coherence)
+
+-- Reversing a ternary product via braiding commutes with the associator.
+
+assoc-reverse : [ X ⊗₀ (Y ⊗₀ Z) ⇒ (X ⊗₀ Y) ⊗₀ Z ]⟨
+                  id ⊗₁ σ⇒      ⇒⟨ X ⊗₀ (Z ⊗₀ Y) ⟩
+                  σ⇒            ⇒⟨ (Z ⊗₀ Y) ⊗₀ X ⟩
+                  α⇒            ⇒⟨ Z ⊗₀ (Y ⊗₀ X) ⟩
+                  id ⊗₁ σ⇐      ⇒⟨ Z ⊗₀ (X ⊗₀ Y) ⟩
+                  σ⇐
+                ≈ α⇐
+                ⟩
+assoc-reverse = begin
+  σ⇐ ∘ id ⊗₁ σ⇐ ∘ α⇒ ∘ σ⇒ ∘ id ⊗₁ σ⇒    ≈⟨ refl⟩∘⟨ assoc²εβ ⟩
+  σ⇐ ∘ (id ⊗₁ σ⇐ ∘ α⇒ ∘ σ⇒) ∘ id ⊗₁ σ⇒  ≈⟨ refl⟩∘⟨ pushˡ hex₁' ⟩
+  σ⇐ ∘ (α⇒ ∘ σ⇒ ⊗₁ id) ∘ α⇐ ∘ id ⊗₁ σ⇒  ≈⟨ refl⟩∘⟨ pullʳ (sym-assoc ○ hexagon₂) ⟩
+  σ⇐ ∘ α⇒ ∘ (α⇐ ∘ σ⇒) ∘ α⇐              ≈⟨ refl⟩∘⟨ pullˡ (cancelˡ associator.isoʳ) ⟩
+  σ⇐ ∘ σ⇒ ∘ α⇐                          ≈⟨ cancelˡ (braiding.iso.isoˡ _) ⟩
+  α⇐                                    ∎
+  where
+    hex₁' = conjugate-from associator (idᵢ ⊗ᵢ σ) (⟺ (hexagon₁ ○ sym-assoc))

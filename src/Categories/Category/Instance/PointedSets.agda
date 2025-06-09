@@ -33,7 +33,7 @@ Underlying : {o : Level} → Functor (PointedSets o) (Sets o)
 Underlying = record
   { F₀           = proj₁
   ; F₁           = proj₁
-  ; identity     = refl
-  ; homomorphism = refl
-  ; F-resp-≈     = λ f≈g {x} → f≈g x
+  ; identity     = λ _ → refl
+  ; homomorphism = λ _ → refl
+  ; F-resp-≈     = λ f≈g → f≈g
   }

@@ -8,8 +8,9 @@ open import Categories.Category
 open import Categories.Functor
 open import Categories.Functor.Properties
 open import Categories.NaturalTransformation
-open import Categories.Diagram.Cone.Properties
+open import Categories.Diagram.Cone.Properties using (F-map-Coneʳ; F-map-Cone⇒ʳ; nat-map-Cone; nat-map-Cone⇒)
 open import Categories.Diagram.Duality
+open import Categories.Category.Construction.Cocones using (Cocones)
 
 import Categories.Diagram.Cocone as Coc
 import Categories.Morphism.Reasoning as MR
@@ -45,6 +46,15 @@ module _ {F : Functor J C} (G : Functor C D) where
     }
     where open CF.Cocone⇒ f
 
+  mapˡ : Functor (Cocones F) (Cocones (G ∘F F))
+  mapˡ = record
+    { F₀ = F-map-Coconeˡ
+    ; F₁ =  F-map-Cocone⇒ˡ
+    ; identity = G.identity
+    ; homomorphism = G.homomorphism
+    ; F-resp-≈ = G.F-resp-≈
+    }
+
 module _ {F : Functor J C} (G : Functor J′ J) where
   private
     module C   = Category C
@@ -61,14 +71,34 @@ module _ {F : Functor J C} (G : Functor J′ J) where
   F-map-Cocone⇒ʳ : ∀ {K K′} (f : CF.Cocone⇒ K K′) → CFG.Cocone⇒ (F-map-Coconeʳ K) (F-map-Coconeʳ K′)
   F-map-Cocone⇒ʳ f = coCone⇒⇒Cocone⇒ C (F-map-Cone⇒ʳ G.op (Cocone⇒⇒coCone⇒ C f))
 
+  mapʳ : Functor (Cocones F) (Cocones (F ∘F G))
+  mapʳ = record
+    { F₀ = F-map-Coconeʳ
+    ; F₁ = F-map-Cocone⇒ʳ
+    ; identity = C.Equiv.refl
+    ; homomorphism = C.Equiv.refl
+    ; F-resp-≈ = λ f≈g → f≈g
+    }
+
+
 module _ {F G : Functor J C} (α : NaturalTransformation F G) where
   private
+    module C  = Category C
     module α  = NaturalTransformation α
     module CF = Coc F
     module CG = Coc G
-    
+
   nat-map-Cocone : CG.Cocone → CF.Cocone
   nat-map-Cocone K = coCone⇒Cocone C (nat-map-Cone α.op (Cocone⇒coCone C K))
 
   nat-map-Cocone⇒ : ∀ {K K′} (f : CG.Cocone⇒ K K′) → CF.Cocone⇒ (nat-map-Cocone K) (nat-map-Cocone K′)
   nat-map-Cocone⇒ f = coCone⇒⇒Cocone⇒ C (nat-map-Cone⇒ α.op (Cocone⇒⇒coCone⇒ C f))
+
+  nat-map : Functor (Cocones G) (Cocones F)
+  nat-map = record
+    { F₀ = nat-map-Cocone
+    ; F₁ = nat-map-Cocone⇒
+    ; identity = C.Equiv.refl
+    ; homomorphism = C.Equiv.refl
+    ; F-resp-≈ = λ f≈g → f≈g
+    }
