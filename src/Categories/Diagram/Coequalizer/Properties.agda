@@ -121,17 +121,16 @@ splitCoequalizer⇒Coequalizer-sym {f = f} {g} {e} t s eq tisSection sisSection 
 
 open Categories.Category.Definitions 𝒞 using (CommutativeSquare)
 
-module MapBetweenCoequalizers where
+module MapBetweenCoequalizers
+  {A₁ B₁ A₂ B₂ : Obj} {f₁ g₁ : A₁ ⇒ B₁} {f₂ g₂ : A₂ ⇒ B₂}
+  (α : A₁ ⇒ A₂) (β : B₁ ⇒ B₂)
+  (sq₁ : CommutativeSquare α f₁ f₂ β)                -- f₂ ∘ α ≈ β ∘ f₁
+  (sq₂ : CommutativeSquare α g₁ g₂ β)                -- g₂ ∘ α ≈ β ∘ g₁
+  where
   open Coequalizer
 
-  ⇒coequalize : {A₁ B₁ A₂ B₂ : Obj}
-              → {f₁ g₁ : A₁ ⇒ B₁} → {f₂ g₂ : A₂ ⇒ B₂}
-              → (α : A₁ ⇒ A₂) → (β : B₁ ⇒ B₂)
-              → CommutativeSquare α f₁ f₂ β                -- f₂ ∘ α ≈ β ∘ f₁
-              → CommutativeSquare α g₁ g₂ β                -- g₂ ∘ α ≈ β ∘ g₁
-              → (coeq₂ : Coequalizer f₂ g₂)
-              → (arr coeq₂ ∘ β) ∘ f₁ ≈ (arr coeq₂ ∘ β) ∘ g₁
-  ⇒coequalize {f₁ = f₁} {g₁} {f₂} {g₂} α β sq₁ sq₂ coeq₂ = begin
+  ⇒coequalize : (coeq₂ : Coequalizer f₂ g₂) → (arr coeq₂ ∘ β) ∘ f₁ ≈ (arr coeq₂ ∘ β) ∘ g₁
+  ⇒coequalize coeq₂ = begin
     (arr coeq₂ ∘ β) ∘ f₁ ≈⟨ extendˡ (⟺ sq₁) ⟩
     (arr coeq₂ ∘ f₂) ∘ α ≈⟨ equality coeq₂ ⟩∘⟨refl ⟩
     (arr coeq₂ ∘ g₂) ∘ α ≈⟨ extendˡ sq₂ ⟩
@@ -140,33 +139,19 @@ module MapBetweenCoequalizers where
       open HomReasoning
       open MR 𝒞
 
-  ⇒MapBetweenCoeq : {A₁ B₁ A₂ B₂ : Obj}
-                  → {f₁ g₁ : A₁ ⇒ B₁}
-                  → {f₂ g₂ : A₂ ⇒ B₂}
-                  → (α : A₁ ⇒ A₂)
-                  → (β : B₁ ⇒ B₂)
-                  → CommutativeSquare α f₁ f₂ β                -- f₂ ∘ α ≈ β ∘ f₁
-                  → CommutativeSquare α g₁ g₂ β                -- g₂ ∘ α ≈ β ∘ g₁
-                  → (coeq₁ : Coequalizer f₁ g₁)
+  ⇒MapBetweenCoeq : (coeq₁ : Coequalizer f₁ g₁)
                   → (coeq₂ : Coequalizer f₂ g₂)
                   → obj coeq₁ ⇒ obj coeq₂
-  ⇒MapBetweenCoeq α β sq₁ sq₂ coeq₁ coeq₂ = coequalize coeq₁ (⇒coequalize α β sq₁ sq₂ coeq₂)
+  ⇒MapBetweenCoeq coeq₁ coeq₂ = coequalize coeq₁ (⇒coequalize coeq₂)
     where
       open HomReasoning
 
-  ⇒MapBetweenCoeqSq : {A₁ B₁ A₂ B₂ : Obj}
-                  → {f₁ g₁ : A₁ ⇒ B₁}
-                  → {f₂ g₂ : A₂ ⇒ B₂}
-                  → (α : A₁ ⇒ A₂)
-                  → (β : B₁ ⇒ B₂)
-                  → (sq₁ : CommutativeSquare α f₁ f₂ β)               -- f₂ ∘ α ≈ β ∘ f₁
-                  → (sq₂ : CommutativeSquare α g₁ g₂ β)               -- g₂ ∘ α ≈ β ∘ g₁
-                  → (coeq₁ : Coequalizer f₁ g₁)
-                  → (coeq₂ : Coequalizer f₂ g₂)
-                  → CommutativeSquare
-                      β (arr coeq₁)
-                      (arr coeq₂) (⇒MapBetweenCoeq α β sq₁ sq₂ coeq₁ coeq₂)
-  ⇒MapBetweenCoeqSq α β sq₁ sq₂ coeq₁ coeq₂ = universal coeq₁
+  ⇒MapBetweenCoeqSq : (coeq₁ : Coequalizer f₁ g₁)
+                    → (coeq₂ : Coequalizer f₂ g₂)
+                    → CommutativeSquare
+                        β (arr coeq₁)
+                        (arr coeq₂) (⇒MapBetweenCoeq coeq₁ coeq₂)
+  ⇒MapBetweenCoeqSq coeq₁ coeq₂ = universal coeq₁
 
 open MapBetweenCoequalizers public
 
