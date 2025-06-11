@@ -79,13 +79,13 @@ splitCoequalizer⇒Coequalizer : {A B C : Obj} {f g : A ⇒ B} {e : B ⇒ C}
                              → IsCoequalizer f g e
 splitCoequalizer⇒Coequalizer {f = f} {g} {e} t s eq tisSection sisSection sq = record
   { equality = eq
-  ; coequalize = λ {T} {h} _ → h ∘ s
-  ; universal = λ {T} {h} {h∘f≈h∘g} → begin
+  ; coequalize = λ {_} {h} _ → h ∘ s
+  ; universal = λ {_} {h} {h∘f≈h∘g} → begin
     h           ≈⟨ introʳ tisSection ⟩
     h ∘ f ∘ t   ≈⟨ extendʳ h∘f≈h∘g ⟩
     h ∘ g ∘ t   ≈⟨ pushʳ (⟺ sq) ⟩
     (h ∘ s) ∘ e ∎
-  ; unique = λ {C} {h} {i} {h∘f≈h∘g} h≈i∘e → begin
+  ; unique = λ {_} {h} {i} {h∘f≈h∘g} h≈i∘e → begin
     i         ≈⟨ introʳ sisSection ⟩
     i ∘ e ∘ s ≈⟨ pullˡ (⟺ h≈i∘e) ⟩
     h ∘ s     ∎
@@ -103,13 +103,13 @@ splitCoequalizer⇒Coequalizer-sym : {A B C : Obj} {f g : A ⇒ B} {e : B ⇒ C}
                                  → IsCoequalizer f g e
 splitCoequalizer⇒Coequalizer-sym {f = f} {g} {e} t s eq tisSection sisSection sq = record
   { equality = eq
-  ; coequalize = λ {T} {h} _ → h ∘ s
-  ; universal = λ {T} {h} {h∘f≈h∘g} → begin
+  ; coequalize = λ {_} {h} _ → h ∘ s
+  ; universal = λ {_} {h} {h∘f≈h∘g} → begin
     h           ≈⟨ introʳ tisSection ⟩
     h ∘ g ∘ t   ≈⟨ extendʳ (⟺ h∘f≈h∘g) ⟩
     h ∘ f ∘ t   ≈⟨ pushʳ (⟺ sq) ⟩
     (h ∘ s) ∘ e ∎
-  ; unique = λ {C} {h} {i} {h∘f≈h∘g} h≈i∘e → begin
+  ; unique = λ {_} {h} {i} {h∘f≈h∘g} h≈i∘e → begin
     i         ≈⟨ introʳ sisSection ⟩
     i ∘ e ∘ s ≈⟨ pullˡ (⟺ h≈i∘e) ⟩
     h ∘ s     ∎
@@ -185,11 +185,11 @@ CoeqOfIsomorphicDiagram {f = f} {g} coeq {A'} {B'} a b = record
         (arr ∘ _≅_.to b ∘ _≅_.from b) ∘ g ∘ _≅_.to a ≈⟨ assoc²βγ ⟩
         (arr ∘ _≅_.to b) ∘ _≅_.from b ∘ g ∘ _≅_.to a ∎
     ; coequalize = coequalize'
-    ; universal =  λ {C} {h} {eq} → begin
+    ; universal =  λ {_} {h} {eq} → begin
         h ≈⟨ switch-fromtoʳ b universal ⟩
         (coequalize' eq ∘ arr) ∘ _≅_.to b ≈⟨ assoc ⟩
         coequalize' eq ∘ (arr ∘ _≅_.to b) ∎
-    ; unique = λ {C} {h} {i} {eq} e → unique (⟺ (switch-tofromʳ b (begin
+    ; unique = λ {_} {h} {i} {eq} e → unique (⟺ (switch-tofromʳ b (begin
         (i ∘ arr) ∘ _≅_.to b ≈⟨ assoc ⟩
         i ∘ arr ∘ _≅_.to b   ≈⟨ ⟺ e ⟩
         h ∎)))
@@ -207,7 +207,7 @@ CoeqOfIsomorphicDiagram {f = f} {g} coeq {A'} {B'} a b = record
     equalize'⇒equalize : {C : Obj} {h : B' ⇒ C}
                          (eq : h ∘ f' ≈ h ∘ g')
                        → (h ∘ _≅_.from b) ∘ f ≈ (h ∘ _≅_.from b) ∘ g
-    equalize'⇒equalize {C} {h} eq = cancel-toʳ a (begin
+    equalize'⇒equalize {_} {h} eq = cancel-toʳ a (begin
       ((h ∘ _≅_.from b) ∘ f) ∘ _≅_.to a ≈⟨ assoc²αε ⟩
       h ∘ f'                            ≈⟨ eq ⟩
       h ∘ g'                            ≈⟨ assoc²εα ⟩
@@ -216,7 +216,7 @@ CoeqOfIsomorphicDiagram {f = f} {g} coeq {A'} {B'} a b = record
     coequalize' : {C : Obj} {h : B' ⇒ C}
                   (eq : h ∘ f' ≈ h ∘ g')
                 → obj ⇒ C
-    coequalize' {C} {h} eq = coequalize (equalize'⇒equalize eq)
+    coequalize' eq = coequalize (equalize'⇒equalize eq)
 
 
 -- coequalizer commutes with coequalizer
@@ -283,7 +283,7 @@ module CoequalizerOfCoequalizer
 
     commutes : {T : Obj} {t : obj coeqⁱ ⇒ T} (eq : t ∘ f⇒i₁ ≈ t ∘ f⇒i₂)
              → (t ∘ arr coeqⁱ) ∘ h₁ ≈ (t ∘ arr coeqⁱ) ∘ h₂
-    commutes {T} {t} eq = begin
+    commutes {_} {t} eq = begin
       (t ∘ arr coeqⁱ) ∘ h₁   ≈⟨ extendˡ (⟺ sq₁ᶠⁱ) ⟩
       (t ∘ f⇒i₁) ∘ arr coeqᶠ ≈⟨ eq ⟩∘⟨refl ⟩
       (t ∘ f⇒i₂) ∘ arr coeqᶠ ≈⟨ extendˡ sq₂ᶠⁱ ⟩
