@@ -78,7 +78,6 @@ jobs:
 ########################################################################
 
       - name: Install Agda
-        if: steps.cache-everything.outputs.cache-hit != 'true'
         uses: wenkokke/setup-agda@main
         with:
           agda-version: ${{ env.AGDA_VERSION }}
