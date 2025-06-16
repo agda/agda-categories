@@ -11,19 +11,14 @@ import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 open import Categories.Functor
 
-postCompFunc : {A B C : Obj} → B ⇒₁ C → Functor (hom A B) (hom A C)
-postCompFunc = _⊚-
-
-preCompFunc : {A B C : Obj} → A ⇒₁ B → Functor (hom B C) (hom A C)
-preCompFunc = -⊚_
 
 record LocalCoequalizers : Set (o ⊔ ℓ ⊔ e ⊔ t) where
   field
     localCoequalizers : (A B : Obj) → Coequalizers (hom A B)
     precompPreservesCoequalizer : {A B C : Obj} → (f : A ⇒₁ B)
-      → PreservesCoequalizers (preCompFunc {A} {B} {C} f)
+      → PreservesCoequalizers (-⊚_ {A} {B} {C} f)
     postcompPreservesCoequalizer : {A B C : Obj} → (f : B ⇒₁ C)
-      → PreservesCoequalizers (postCompFunc {A} {B} {C} f)
+      → PreservesCoequalizers (_⊚- {B} {C} {A} f)
       
   precompCoequalizer : {A B C : Obj} → {X Y : B ⇒₁ C} {α β : X ⇒₂ Y}
                                    → Coequalizer (hom B C) α β
