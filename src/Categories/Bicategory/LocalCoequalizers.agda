@@ -23,18 +23,19 @@ record LocalCoequalizers : Set (o ⊔ ℓ ⊔ e ⊔ t) where
 open LocalCoequalizers
 
 module _ (localcoeq : LocalCoequalizers)
-         {A B E : Obj} {X Y : A ⇒₁ B} {α β : X ⇒₂ Y}
-         (coeq : Coequalizer (hom A B) α β) where
+         {A B E : Obj} {X Y : A ⇒₁ B} {α β : X ⇒₂ Y} where
 
-  precompCoequalizer : (f : E ⇒₁ A) → Coequalizer (hom E B) (α ◁ f) (β ◁ f)
-  precompCoequalizer f = record
+  _coeq-◁_ : (coeq : Coequalizer (hom A B) α β) (f : E ⇒₁ A)
+           → Coequalizer (hom E B) (α ◁ f) (β ◁ f)
+  coeq coeq-◁ f = record
     { obj = Coequalizer.obj coeq ∘₁ f
     ; arr = Coequalizer.arr coeq ◁ f
     ; isCoequalizer = precompPreservesCoequalizer localcoeq f {coeq = coeq}
     }
 
-  postcompCoequalizer : (f : B ⇒₁ E) → Coequalizer (hom A E) (f ▷ α) (f ▷ β)
-  postcompCoequalizer f = record
+  _▷-coeq_ : (f : B ⇒₁ E) (coeq : Coequalizer (hom A B) α β)
+                      → Coequalizer (hom A E) (f ▷ α) (f ▷ β)
+  f ▷-coeq coeq = record
     { obj = f ∘₁ Coequalizer.obj coeq
     ; arr = f ▷ Coequalizer.arr coeq
     ; isCoequalizer = postcompPreservesCoequalizer localcoeq f {coeq = coeq}
