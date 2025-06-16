@@ -15,10 +15,10 @@ open import Categories.Functor
 record LocalCoequalizers : Set (o ⊔ ℓ ⊔ e ⊔ t) where
   field
     localCoequalizers : (A B : Obj) → Coequalizers (hom A B)
-    precompPreservesCoequalizer : {A B C : Obj} → (f : A ⇒₁ B)
-      → PreservesCoequalizers (-⊚_ {A} {B} {C} f)
-    postcompPreservesCoequalizer : {A B C : Obj} → (f : B ⇒₁ C)
-      → PreservesCoequalizers (_⊚- {B} {C} {A} f)
+    precompPreservesCoequalizer : {A B E : Obj} → (f : E ⇒₁ A)
+      → PreservesCoequalizers (-⊚_ {E} {A} {B} f)
+    postcompPreservesCoequalizer : {A B E : Obj} → (f : B ⇒₁ E)
+      → PreservesCoequalizers (_⊚- {B} {E} {A} f)
       
   precompCoequalizer : {A B C : Obj} → {X Y : B ⇒₁ C} {α β : X ⇒₂ Y}
                                    → Coequalizer (hom B C) α β
