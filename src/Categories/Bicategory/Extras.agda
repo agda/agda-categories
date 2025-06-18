@@ -108,8 +108,14 @@ identity₂ˡ = hom.identityˡ
 identity₂ʳ : α ∘ᵥ id₂ ≈ α
 identity₂ʳ = hom.identityʳ
 
+identity₂² : id₂ ∘ᵥ id₂ {f = g} ≈ id₂ {f = g}
+identity₂² = hom.identity²
+
 assoc₂ : (α ∘ᵥ β) ∘ᵥ γ ≈ α ∘ᵥ β ∘ᵥ γ
 assoc₂ = hom.assoc
+
+sym-assoc₂ : α ∘ᵥ β ∘ᵥ γ ≈ (α ∘ᵥ β) ∘ᵥ γ
+sym-assoc₂ = hom.sym-assoc
 
 id₂◁ : id₂ {f = g} ◁ f ≈ id₂
 id₂◁ = ⊚.identity
@@ -153,11 +159,40 @@ refl⟩⊚⟨_ = ⊚-resp-≈ʳ
 _⟩⊚⟨refl : α ≈ β → α ⊚₁ γ ≈ β ⊚₁ γ
 _⟩⊚⟨refl = ⊚-resp-≈ˡ
 
+∘ᵥ-distr-⊚ : (α ∘ᵥ γ) ⊚₁ (β ∘ᵥ δ) ≈ (α ⊚₁ β) ∘ᵥ (γ ⊚₁ δ)
+∘ᵥ-distr-⊚ = Functor.homomorphism ⊚
+
+α⇐-⊚ : α⇐ ∘ᵥ (α ⊚₁ β ⊚₁ γ) ≈ ((α ⊚₁ β) ⊚₁ γ) ∘ᵥ α⇐
+α⇐-⊚ {α = α} {β = β} {γ = γ} = ⊚-assoc.⇐.commute ((α , β) , γ)
+
+α⇒-⊚ : α⇒ ∘ᵥ ((α ⊚₁ β) ⊚₁ γ) ≈ (α ⊚₁ β ⊚₁ γ) ∘ᵥ α⇒
+α⇒-⊚ {α = α} {β = β} {γ = γ} = ⊚-assoc.⇒.commute ((α , β) , γ)
+
 ∘ᵥ-distr-◁ : (α ◁ f) ∘ᵥ (β ◁ f) ≈ (α ∘ᵥ β) ◁ f
 ∘ᵥ-distr-◁ {f = f} = ⟺ (Functor.homomorphism (-⊚ f))
 
 ∘ᵥ-distr-▷ : (f ▷ α) ∘ᵥ (f ▷ β) ≈ f ▷ (α ∘ᵥ β)
 ∘ᵥ-distr-▷ {f = f} = ⟺ (Functor.homomorphism (f ⊚-))
+
+◁-resp-≈ : α ≈ β → α ◁ f ≈ β ◁ f
+◁-resp-≈ = _⟩⊚⟨refl
+
+▷-resp-≈ : α ≈ β → f ▷ α ≈ f ▷ β
+▷-resp-≈ = refl⟩⊚⟨_
+
+▷-resp-sq : α ∘ᵥ β ≈ γ ∘ᵥ δ → f ▷ α ∘ᵥ f ▷ β ≈ f ▷ γ ∘ᵥ f ▷ δ
+▷-resp-sq {α = α} {β = β} {γ = γ} {δ = δ} {f = f} sq = begin
+  f ▷ α ∘ᵥ f ▷ β ≈⟨ ∘ᵥ-distr-▷ ⟩
+  f ▷ (α ∘ᵥ β) ≈⟨ ▷-resp-≈ sq ⟩
+  f ▷ (γ ∘ᵥ δ) ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩
+  f ▷ γ ∘ᵥ f ▷ δ ∎
+
+◁-resp-sq : α ∘ᵥ β ≈ γ ∘ᵥ δ → α ◁ f ∘ᵥ β ◁ f ≈ γ ◁ f ∘ᵥ δ ◁ f
+◁-resp-sq {α = α} {β = β} {γ = γ} {δ = δ} {f = f} sq = begin
+  α ◁ f ∘ᵥ β ◁ f ≈⟨ ∘ᵥ-distr-◁ ⟩
+  (α ∘ᵥ β) ◁ f ≈⟨ ◁-resp-≈ sq ⟩
+  (γ ∘ᵥ δ)◁ f ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩
+  γ ◁ f ∘ᵥ δ ◁ f ∎
 
 λ⇒-∘ᵥ-▷ : λ⇒ ∘ᵥ (id₁ ▷ α) ≈ α ∘ᵥ λ⇒
 λ⇒-∘ᵥ-▷ {α = α} = begin
@@ -189,6 +224,9 @@ _⟩⊚⟨refl = ⊚-resp-≈ˡ
 α⇐-▷-◁ : α⇐ ∘ᵥ (f ▷ (γ ◁ g)) ≈ ((f ▷ γ) ◁ g) ∘ᵥ α⇐
 α⇐-▷-◁ {f = f} {γ = γ} {g = g} = ⊚-assoc.⇐.commute ((id₂ , γ) , id₂)
 
+α⇒-▷-◁ : α⇒ ∘ᵥ ((f ▷ γ) ◁ g) ≈ (f ▷ (γ ◁ g)) ∘ᵥ α⇒
+α⇒-▷-◁ {f = f} {γ = γ} {g = g} = ⟺ (conjugate-to associator associator α⇐-▷-◁)
+
 α⇒-▷-∘₁ : α⇒ ∘ᵥ (f ∘₁ g) ▷ γ ≈ f ▷ g ▷ γ ∘ᵥ α⇒
 α⇒-▷-∘₁{f = f} {g = g} {γ = γ} = begin
   α⇒ ∘ᵥ (f ⊚₀ g) ▷ γ     ≈˘⟨ refl⟩∘⟨ ⊚.identity ⟩⊚⟨refl ⟩
@@ -216,6 +254,57 @@ pentagon-iso = ⌞ pentagon ⌟
 pentagon-inv : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
                (α⇐ ◁ f ∘ᵥ α⇐) ∘ᵥ i ▷ α⇐ ≈ α⇐ ∘ᵥ α⇐ {f = i} {h} {g ∘₁ f}
 pentagon-inv = to-≈ pentagon-iso
+
+pentagon-var : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                      (i ▷ α⇒ ∘ᵥ α⇒) ∘ᵥ α⇒ ◁ f ≈
+                      α⇒ {f = i} {h} {g ∘₁ f} ∘ᵥ α⇒
+pentagon-var {f = f} {g} {h} {i} = begin
+    (i ▷ α⇒ ∘ᵥ α⇒) ∘ᵥ α⇒ ◁ f      ≈⟨ assoc₂ ⟩
+    i ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ f        ≈⟨ pentagon ⟩
+    α⇒ {f = i} {h} {g ∘₁ f} ∘ᵥ α⇒ ∎
+
+pentagon-inv-var : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                   α⇐ ◁ f ∘ᵥ α⇐ ∘ᵥ i ▷ α⇐
+                   ≈ α⇐ ∘ᵥ α⇐ {f = i} {h} {g ∘₁ f}
+pentagon-inv-var  {f = f} {g} {h} {i} = begin
+  α⇐ ◁ f ∘ᵥ α⇐ ∘ᵥ i ▷ α⇐   ≈⟨ sym-assoc₂ ⟩
+  (α⇐ ◁ f ∘ᵥ α⇐) ∘ᵥ i ▷ α⇐ ≈⟨ pentagon-inv ⟩
+  α⇐ ∘ᵥ α⇐                 ∎
+
+pentagon-conjugate₁ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                      α⇐ {f = i} {h} {g ∘₁ f} ∘ᵥ i ▷ α⇒ ∘ᵥ α⇒ ≈
+                      α⇒ ∘ᵥ α⇐ ◁ f
+pentagon-conjugate₁ {f = f} = conjugate-from (associator ◁ᵢ f) associator pentagon-var
+
+pentagon-conjugate₂ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                      i ▷ α⇒ ∘ᵥ α⇒ ≈
+                      α⇒ {f = i} {h} {g ∘₁ f} ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ f
+pentagon-conjugate₂ {f = f} {g} {h} {i} = begin
+    i ▷ α⇒ ∘ᵥ α⇒         ≈⟨ switch-fromtoʳ (associator ◁ᵢ f) pentagon-var ⟩
+    (α⇒ ∘ᵥ α⇒) ∘ᵥ α⇐ ◁ f ≈⟨ assoc₂ ⟩
+    α⇒ {f = i} {h} {g ∘₁ f} ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ f ∎
+
+pentagon-conjugate₃ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                      α⇒ ◁ f ∘ᵥ α⇐ ≈
+                      (α⇐ ∘ᵥ i ▷ α⇐) ∘ᵥ α⇒ {f = i} {h} {g ∘₁ f}
+pentagon-conjugate₃ {f = f} {g} {h} {i} = begin
+    α⇒ ◁ f ∘ᵥ α⇐         ≈⟨ ⟺ (conjugate-to associator (associator ◁ᵢ f) pentagon-inv-var) ⟩
+    (α⇐ ∘ᵥ i ▷ α⇐) ∘ᵥ α⇒ ∎
+
+pentagon-conjugate₄ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                      α⇒ ∘ᵥ α⇐ ◁ f ≈
+                      α⇐ {f = i} {h} {g ∘₁ f} ∘ᵥ i ▷ α⇒ ∘ᵥ α⇒
+pentagon-conjugate₄ {f = f} {g} {h} {i} = begin
+    α⇒ ∘ᵥ α⇐ ◁ f       ≈⟨ ⟺ (conjugate-from (associator ◁ᵢ f) associator pentagon-var) ⟩
+    α⇐ ∘ᵥ i ▷ α⇒ ∘ᵥ α⇒ ∎
+
+pentagon-conjugate₅ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                      α⇐ {f = i} {h} {g ∘₁ f} ∘ᵥ i ▷ α⇒ ≈
+                      α⇒ ∘ᵥ α⇐ ◁ f ∘ᵥ α⇐
+pentagon-conjugate₅ {f = f} {g} {h} {i} = begin
+    α⇐ ∘ᵥ i ▷ α⇒       ≈⟨ conjugate-to (i ▷ᵢ associator) associator (⟺ pentagon-inv) ⟩
+    α⇒ ∘ᵥ α⇐ ◁ f ∘ᵥ α⇐ ∎
+
 
 module UnitorCoherence where
 
@@ -316,6 +405,16 @@ module UnitorCoherence where
     id₁ ▷ (λ⇒ ∘ᵥ α⇒)        ≈˘⟨ id.identity ⟩⊚⟨refl ⟩
     id.F₁ _ ⊚₁ (λ⇒ ∘ᵥ α⇒)   ∎)
 
+  unitorˡ-coherence-iso : {f : B ⇒₁ C} {g : A ⇒₁ B} → unitorˡ ◁ᵢ g ≈ᵢ unitorˡ ∘ᵢ associator {f = id₁} {f} {g}
+  unitorˡ-coherence-iso = ⌞ unitorˡ-coherence ⌟
+
+  unitorˡ-coherence-inv : [ f ⊚₀ g ⇒ (id₁ ⊚₀ f) ⊚₀ g ]⟨
+                            λ⇐ ◁ g
+                          ≈ λ⇐      ⇒⟨ id₁ ⊚₀ (f ⊚₀ g) ⟩
+                            α⇐
+                          ⟩
+  unitorˡ-coherence-inv = to-≈ unitorˡ-coherence-iso
+
   unitorʳ-coherence : [ (f ⊚₀ g) ⊚₀ id₁ ⇒ f ⊚₀ g ]⟨
                         ρ⇒
                       ≈ α⇒         ⇒⟨ f ⊚₀ (g ⊚₀ id₁) ⟩
@@ -328,4 +427,28 @@ module UnitorCoherence where
     (f ▷ ρ⇒ ∘ᵥ α⇒) ◁ id₁         ≈˘⟨ refl⟩⊚⟨ id.identity ⟩
     (f ▷ ρ⇒ ∘ᵥ α⇒) ⊚₁ id.F₁ _    ∎)
 
-open UnitorCoherence public using (unitorˡ-coherence; unitorʳ-coherence)
+  unitorʳ-coherence-var₁ : [ (f ⊚₀ g) ⊚₀ id₁ ⇒ f ⊚₀ g ⊚₀ id₁ ]⟨
+                             α⇒
+                           ≈ ρ⇒     ⇒⟨ f ⊚₀ g ⟩
+                             f ▷ ρ⇐
+                           ⟩
+  unitorʳ-coherence-var₁ {f = f} = switch-fromtoˡ (f ▷ᵢ unitorʳ) (⟺ unitorʳ-coherence)
+
+  unitorʳ-coherence-var₂ : [ f ⊚₀ g ⇒ f ⊚₀ g ⊚₀ id₁ ]⟨
+                              f ▷ ρ⇐
+                           ≈  ρ⇐     ⇒⟨ (f ⊚₀ g) ⊚₀ id₁ ⟩
+                              α⇒
+                      ⟩
+  unitorʳ-coherence-var₂ = switch-fromtoʳ unitorʳ (⟺ unitorʳ-coherence-var₁)
+
+  unitorʳ-coherence-inv : [ f ⊚₀ g ⇒ (f ⊚₀ g) ⊚₀ id₁ ]⟨
+                            f ▷ ρ⇐      ⇒⟨ f ⊚₀ g ⊚₀ id₁ ⟩
+                            α⇐
+                          ≈ ρ⇐
+                           ⟩
+  unitorʳ-coherence-inv = ⟺ (switch-fromtoˡ associator (⟺ unitorʳ-coherence-var₂))
+
+open UnitorCoherence public
+  using (unitorˡ-coherence; unitorˡ-coherence-inv;
+         unitorʳ-coherence; unitorʳ-coherence-var₁;
+         unitorʳ-coherence-var₂; unitorʳ-coherence-inv)

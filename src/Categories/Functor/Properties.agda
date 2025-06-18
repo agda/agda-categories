@@ -51,6 +51,15 @@ Conservative {C = C} {D = D} F = ∀ {A B} {f : C [ A , B ]} {g : D [ F₀ B , F
     open Functor F
     open Morphism
 
+PreservesCoequalizers : Functor C D → Set _
+PreservesCoequalizers {C = C} {D = D} F = ∀ {A B : C.Obj} {f g : A C.⇒ B} {coeq : Coequalizer C f g}
+                      → IsCoequalizer D (F₁ f) (F₁ g) (F₁ (arr coeq))
+  where
+    module C = Category C
+    open Functor F
+    open import Categories.Diagram.Coequalizer
+    open Coequalizer
+
 -- a series of [ Functor ]-respects-Thing combinators (with respects -> resp)
 
 module _ (F : Functor C D) where
