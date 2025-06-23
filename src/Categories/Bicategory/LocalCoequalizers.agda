@@ -27,15 +27,19 @@ module _ (localcoeq : LocalCoequalizers)
   _coeq-◁_ : (coeq : Coequalizer (hom A B) α β) (f : E ⇒₁ A)
            → Coequalizer (hom E B) (α ◁ f) (β ◁ f)
   coeq coeq-◁ f = record
-    { obj = Coequalizer.obj coeq ∘₁ f
-    ; arr = Coequalizer.arr coeq ◁ f
+    { obj = obj ∘₁ f
+    ; arr = arr ◁ f
     ; isCoequalizer = precompPreservesCoequalizer localcoeq f {coeq = coeq}
     }
+    where
+      open Coequalizer coeq
 
   _▷-coeq_ : (f : B ⇒₁ E) (coeq : Coequalizer (hom A B) α β)
                       → Coequalizer (hom A E) (f ▷ α) (f ▷ β)
   f ▷-coeq coeq = record
-    { obj = f ∘₁ Coequalizer.obj coeq
-    ; arr = f ▷ Coequalizer.arr coeq
+    { obj = f ∘₁ obj
+    ; arr = f ▷ arr
     ; isCoequalizer = postcompPreservesCoequalizer localcoeq f {coeq = coeq}
     }
+    where
+      open Coequalizer coeq
