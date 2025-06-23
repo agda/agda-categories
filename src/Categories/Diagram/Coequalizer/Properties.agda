@@ -9,6 +9,7 @@ open Category 𝒞
 
 open import Categories.Diagram.Coequalizer 𝒞 using (Coequalizer; IsCoequalizer; Coequalizer⇒Epi; up-to-iso)
 open import Categories.Morphism 𝒞 using (_RetractOf_; _≅_)
+open _≅_
 import Categories.Morphism.Reasoning as MR
 open import Categories.Diagram.Equalizer op using (Equalizer)
 open import Categories.Diagram.Equalizer.Properties op using (section-equalizer)
@@ -156,26 +157,26 @@ open MapBetweenCoequalizers public
 CoeqOfIsomorphicDiagram : {A B : Obj} {f g : A ⇒ B} (coeq : Coequalizer f g )
                         → {A' B' : Obj}
                         → (a : A ≅ A') (b : B ≅ B')
-                        → Coequalizer (_≅_.from b ∘ f ∘ _≅_.to a) (_≅_.from b ∘ g ∘ _≅_.to a)
+                        → Coequalizer (from b ∘ f ∘ to a) (from b ∘ g ∘ to a)
 CoeqOfIsomorphicDiagram {f = f} {g} coeq {A'} {B'} a b = record
-  { arr = arr ∘ _≅_.to b
+  { arr = arr ∘ to b
   ; isCoequalizer = record
     { equality = begin
-        (arr ∘ _≅_.to b) ∘ _≅_.from b ∘ f ∘ _≅_.to a ≈⟨ assoc²γβ ⟩
-        (arr ∘ _≅_.to b ∘ _≅_.from b) ∘ f ∘ _≅_.to a ≈⟨ elimʳ (_≅_.isoˡ b) ⟩∘⟨refl ⟩
-        arr ∘ f ∘ _≅_.to a                           ≈⟨ extendʳ equality ⟩
-        arr ∘ g ∘ _≅_.to a                           ≈⟨ introʳ (_≅_.isoˡ b) ⟩∘⟨refl ⟩
-        (arr ∘ _≅_.to b ∘ _≅_.from b) ∘ g ∘ _≅_.to a ≈⟨ assoc²βγ ⟩
-        (arr ∘ _≅_.to b) ∘ _≅_.from b ∘ g ∘ _≅_.to a ∎
+        (arr ∘ to b) ∘ from b ∘ f ∘ to a ≈⟨ assoc²γβ ⟩
+        (arr ∘ to b ∘ from b) ∘ f ∘ to a ≈⟨ elimʳ (isoˡ b) ⟩∘⟨refl ⟩
+        arr ∘ f ∘ to a                   ≈⟨ extendʳ equality ⟩
+        arr ∘ g ∘ to a                   ≈⟨ introʳ (isoˡ b) ⟩∘⟨refl ⟩
+        (arr ∘ to b ∘ from b) ∘ g ∘ to a ≈⟨ assoc²βγ ⟩
+        (arr ∘ to b) ∘ from b ∘ g ∘ to a ∎
     ; coequalize = coequalize'
     ; universal =  λ {_} {h} {eq} → begin
-        h ≈⟨ switch-fromtoʳ b universal ⟩
-        (coequalize' eq ∘ arr) ∘ _≅_.to b ≈⟨ assoc ⟩
-        coequalize' eq ∘ (arr ∘ _≅_.to b) ∎
+        h                             ≈⟨ switch-fromtoʳ b universal ⟩
+        (coequalize' eq ∘ arr) ∘ to b ≈⟨ assoc ⟩
+        coequalize' eq ∘ (arr ∘ to b) ∎
     ; unique = λ {_} {h} {i} {eq} e → unique (⟺ (switch-tofromʳ b (begin
-        (i ∘ arr) ∘ _≅_.to b ≈⟨ assoc ⟩
-        i ∘ arr ∘ _≅_.to b   ≈⟨ ⟺ e ⟩
-        h ∎)))
+        (i ∘ arr) ∘ to b ≈⟨ assoc ⟩
+        i ∘ arr ∘ to b   ≈⟨ ⟺ e ⟩
+        h                ∎)))
     }
   }
   where
@@ -184,17 +185,17 @@ CoeqOfIsomorphicDiagram {f = f} {g} coeq {A'} {B'} a b = record
     open MR 𝒞
     
     f' g' : A' ⇒ B'
-    f' = _≅_.from b ∘ f ∘ _≅_.to a
-    g' = _≅_.from b ∘ g ∘ _≅_.to a
+    f' = from b ∘ f ∘ to a
+    g' = from b ∘ g ∘ to a
 
     equalize'⇒equalize : {C : Obj} {h : B' ⇒ C}
                          (eq : h ∘ f' ≈ h ∘ g')
-                       → (h ∘ _≅_.from b) ∘ f ≈ (h ∘ _≅_.from b) ∘ g
+                       → (h ∘ from b) ∘ f ≈ (h ∘ from b) ∘ g
     equalize'⇒equalize {_} {h} eq = cancel-toʳ a (begin
-      ((h ∘ _≅_.from b) ∘ f) ∘ _≅_.to a ≈⟨ assoc²αε ⟩
-      h ∘ f'                            ≈⟨ eq ⟩
-      h ∘ g'                            ≈⟨ assoc²εα ⟩
-      ((h ∘ _≅_.from b) ∘ g) ∘ _≅_.to a ∎)
+      ((h ∘ from b) ∘ f) ∘ to a ≈⟨ assoc²αε ⟩
+      h ∘ f'                    ≈⟨ eq ⟩
+      h ∘ g'                    ≈⟨ assoc²εα ⟩
+      ((h ∘ from b) ∘ g) ∘ to a ∎)
 
     coequalize' : {C : Obj} {h : B' ⇒ C}
                   (eq : h ∘ f' ≈ h ∘ g')
@@ -354,9 +355,9 @@ module CoequalizerOfCoequalizer
   -- We need this for proving some coherences in the bicategory of monads and bimodules --
   IsoFitsInPentagon : (coeq : Coequalizer f⇒i₁ f⇒i₂)
                     → arr coeqcoeqᵍʰ ∘ arr coeqʰ
-                      ≈ _≅_.from (CoeqsAreIsomorphic coeq) ∘ arr coeq  ∘ arr coeqⁱ
+                      ≈ from (CoeqsAreIsomorphic coeq) ∘ arr coeq  ∘ arr coeqⁱ
   IsoFitsInPentagon coeq = begin
-    arr coeqcoeqᵍʰ ∘ arr coeqʰ                                   ≈⟨ arrSq ⟩
-    arrᶠⁱ ∘ arr coeqⁱ                                            ≈⟨ universal coeq ⟩∘⟨refl ⟩
-    (_≅_.from (CoeqsAreIsomorphic coeq) ∘ arr coeq) ∘ arr coeqⁱ  ≈⟨ assoc ⟩
-    _≅_.from (CoeqsAreIsomorphic coeq) ∘ arr coeq ∘ arr coeqⁱ    ∎
+    arr coeqcoeqᵍʰ ∘ arr coeqʰ                               ≈⟨ arrSq ⟩
+    arrᶠⁱ ∘ arr coeqⁱ                                        ≈⟨ universal coeq ⟩∘⟨refl ⟩
+    (from (CoeqsAreIsomorphic coeq) ∘ arr coeq) ∘ arr coeqⁱ  ≈⟨ assoc ⟩
+    from (CoeqsAreIsomorphic coeq) ∘ arr coeq ∘ arr coeqⁱ    ∎
