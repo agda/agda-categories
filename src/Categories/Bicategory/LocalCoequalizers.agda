@@ -4,9 +4,9 @@ open import Categories.Bicategory
 
 module Categories.Bicategory.LocalCoequalizers {o ℓ e t} (𝒞 : Bicategory o ℓ e t)  where
 
-open import Categories.Diagram.Coequalizer
-open import Level
-open import Categories.Functor.Properties
+open import Categories.Diagram.Coequalizer using (Coequalizer; Coequalizers)
+open import Level using (_⊔_)
+open import Categories.Functor.Properties using (PreservesCoequalizers)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 open import Categories.Functor
