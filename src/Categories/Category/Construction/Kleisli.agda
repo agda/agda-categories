@@ -62,7 +62,14 @@ module TripleNotation {𝒞 : Category o ℓ e} (M : Monad 𝒞) where
   open Category 𝒞
   private
     module M = Monad M
-  open RMonad (Monad⇒Kleisli 𝒞 M) renaming (extend to infix 10 _*; extend-≈ to *-resp-≈; unit to η; identityˡ to *-identityˡ; identityʳ to *-identityʳ; assoc to *-assoc; sym-assoc to *-sym-assoc) public
+  open RMonad (Monad⇒Kleisli 𝒞 M) public renaming 
+    ( extend to infix 10 _*
+    ; extend-≈ to *-resp-≈
+    ; unit to η
+    ; identityˡ to *-identityˡ
+    ; identityʳ to *-identityʳ
+    ; assoc to *-assoc
+    ; sym-assoc to *-sym-assoc)
 
   open HomReasoning
   open MR 𝒞
