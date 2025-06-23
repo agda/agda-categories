@@ -63,7 +63,8 @@ record DistributiveMonad : Set (o ⊔ ℓ ⊔ e) where
       { η = λ X → record
         { f = μ.η _
         ; commutes = begin
-          (distrib.η _ ∘ N.₁ _) ∘ μ.η _                                   ≈⟨ glue◃◽ μ-distrib (μ.sym-commute _) ⟩
+          (distrib.η _ ∘ N.₁ _) ∘ μ.η _                                   ≈⟨ pullʳ (μ.sym-commute _) ⟩
+          distrib.η _ ∘ (μ.η _ ∘ N.₁ (N.₁ _))                             ≈⟨ pullˡ μ-distrib ⟩
           ((F.₁ (μ.η _) ∘ distrib.η _) ∘ N.₁ (distrib.η _)) ∘ N.₁ (N.₁ _) ≈⟨ pullʳ (C.Equiv.sym N.homomorphism) ⟩
           (F.₁ (μ.η _) ∘ distrib.η _) ∘ N.₁ (distrib.η _ ∘ N.₁ _)         ≈⟨ C.assoc ⟩
           F.₁ (μ.η _) ∘ distrib.η _ ∘ N.₁ (distrib.η _ ∘ N.₁ _)           ∎

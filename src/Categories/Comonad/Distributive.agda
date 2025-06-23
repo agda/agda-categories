@@ -64,7 +64,8 @@ record DistributiveComonad : Set (o ⊔ ℓ ⊔ e) where
       { η = λ X → record
         { f = δ.η _
         ; commutes = begin
-          δ.η _ ∘ (N.₁ _ ∘ distrib.η _)                                   ≈⟨ glue◽◃ (δ.commute _) δ-distrib ⟩
+          δ.η _ ∘ (N.₁ _ ∘ distrib.η _)                                   ≈⟨ pullˡ (δ.commute _) ⟩
+          (N.₁ (N.₁ _) ∘ δ.η _) ∘ distrib.η _                             ≈⟨ pullʳ δ-distrib ⟩
           N.₁ (N.₁ _) ∘ (N.₁ (distrib.η _) ∘ (distrib.η _ ∘ F.₁ (δ.η _))) ≈⟨ pullˡ (C.Equiv.sym N.homomorphism) ⟩
           N.₁ (N.₁ _ ∘ distrib.η _) ∘ (distrib.η _ ∘ F.₁ (δ.η _))         ≈⟨ C.sym-assoc ⟩
           (N.₁ (N.₁ _ ∘ distrib.η _) ∘ distrib.η _) ∘ F.₁ (δ.η _)         ∎
