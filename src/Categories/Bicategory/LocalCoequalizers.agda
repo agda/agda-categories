@@ -9,7 +9,6 @@ open import Level using (_⊔_)
 open import Categories.Functor.Properties using (PreservesCoequalizers)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
-open import Categories.Functor
 
 
 record LocalCoequalizers : Set (o ⊔ ℓ ⊔ e ⊔ t) where
