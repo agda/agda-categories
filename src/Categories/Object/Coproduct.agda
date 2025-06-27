@@ -43,6 +43,9 @@ record Coproduct (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   ∘-distribˡ-[] : ∀ {f : A ⇒ C} {g : B ⇒ C} {q : C ⇒ D} → q ∘ [ f , g ] ≈ [ q ∘ f , q ∘ g ]
   ∘-distribˡ-[] = ⟺ $ unique (pullʳ inject₁) (pullʳ inject₂)
 
+  unique′ : f ∘ i₁ ≈ g ∘ i₁ → f ∘ i₂ ≈ g ∘ i₂ → f ≈ g
+  unique′ eq₁ eq₂ = ⟺ (unique eq₁ eq₂) ○ g-η
+
 record IsCoproduct {A B A+B : Obj} (i₁ : A ⇒ A+B) (i₂ : B ⇒ A+B) : Set (o ⊔ ℓ ⊔ e) where
   field
     [_,_] : A ⇒ C → B ⇒ C → A+B ⇒ C
