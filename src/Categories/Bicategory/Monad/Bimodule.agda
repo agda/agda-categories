@@ -59,7 +59,7 @@ id-bimodule-hom {M₁} {M₂} {B} = record
   ; linearˡ = begin
       actionˡ ∘ᵥ (id₂ ◁ T M₁) ≈⟨ refl⟩∘⟨ id₂◁ ⟩
       actionˡ ∘ᵥ id₂          ≈⟨ identity₂ʳ ⟩
-      actionˡ                 ≈⟨ hom.Equiv.sym identity₂ˡ ⟩
+      actionˡ                 ≈⟨ ⟺ identity₂ˡ ⟩
       id₂ ∘ᵥ actionˡ          ∎
   ; linearʳ = begin
       actionʳ ∘ᵥ (T M₂ ▷ id₂) ≈⟨ refl⟩∘⟨ ▷id₂ ⟩
@@ -72,7 +72,6 @@ id-bimodule-hom {M₁} {M₂} {B} = record
     open Bimodule B using (actionˡ; actionʳ)
     open Category (hom (C M₁) (C M₂))
     open HomReasoning
-    open Equiv
 
 bimodule-hom-∘ : {M₁ M₂ : Monad 𝒞} → {B₁ B₂ B₃ : Bimodule M₁ M₂}
                  → Bimodulehomomorphism B₂ B₃ → Bimodulehomomorphism B₁ B₂ → Bimodulehomomorphism B₁ B₃
@@ -101,4 +100,3 @@ bimodule-hom-∘ {M₁} {M₂} {B₁} {B₂} {B₃} g f = record
     open Bimodule using (F; actionˡ; actionʳ)
     open Category (hom (C M₁) (C M₂))
     open HomReasoning
-    open Equiv
