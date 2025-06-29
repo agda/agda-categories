@@ -10,24 +10,22 @@ import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 
 record Bimodule (M₁ M₂ : Monad 𝒞) : Set (o ⊔ ℓ ⊔ e) where
-  open Monad M₁ renaming (C to C₁; T to T₁; μ to μ₁; η to η₁)
-  open Monad M₂ renaming (C to C₂; T to T₂; μ to μ₂; η to η₂)
-
+  open Monad
   field
-    F       : C₁ ⇒₁ C₂
-    actionˡ : F ∘₁ T₁ ⇒₂ F
-    actionʳ : T₂ ∘₁ F ⇒₂ F
+    F       : C M₁ ⇒₁ C M₂
+    actionˡ : F ∘₁ T M₁ ⇒₂ F
+    actionʳ : T M₂ ∘₁ F ⇒₂ F
 
-    assoc     : actionʳ ∘ᵥ (T₂ ▷ actionˡ) ∘ᵥ associator.from ≈ actionˡ ∘ᵥ (actionʳ ◁ T₁)
-    sym-assoc : actionˡ ∘ᵥ (actionʳ ◁ T₁) ∘ᵥ associator.to ≈ actionʳ ∘ᵥ (T₂ ▷ actionˡ)
+    assoc     : actionʳ ∘ᵥ (T M₂ ▷ actionˡ) ∘ᵥ associator.from ≈ actionˡ ∘ᵥ (actionʳ ◁ T M₁)
+    sym-assoc : actionˡ ∘ᵥ (actionʳ ◁ T M₁) ∘ᵥ associator.to ≈ actionʳ ∘ᵥ (T M₂ ▷ actionˡ)
 
-    assoc-actionˡ     : actionˡ ∘ᵥ (F ▷ μ₁) ∘ᵥ associator.from ≈ actionˡ ∘ᵥ (actionˡ ◁ T₁)
-    sym-assoc-actionˡ : actionˡ ∘ᵥ (actionˡ ◁ T₁) ∘ᵥ associator.to ≈ actionˡ ∘ᵥ (F ▷ μ₁)
-    assoc-actionʳ     : actionʳ ∘ᵥ (μ₂ ◁ F) ∘ᵥ associator.to ≈ actionʳ ∘ᵥ (T₂ ▷ actionʳ)
-    sym-assoc-actionʳ : actionʳ ∘ᵥ (T₂ ▷ actionʳ) ∘ᵥ associator.from ≈ actionʳ ∘ᵥ (μ₂ ◁ F)
+    assoc-actionˡ     : actionˡ ∘ᵥ (F ▷ μ M₁) ∘ᵥ associator.from ≈ actionˡ ∘ᵥ (actionˡ ◁ T M₁)
+    sym-assoc-actionˡ : actionˡ ∘ᵥ (actionˡ ◁ T M₁) ∘ᵥ associator.to ≈ actionˡ ∘ᵥ (F ▷ μ M₁)
+    assoc-actionʳ     : actionʳ ∘ᵥ (μ M₂ ◁ F) ∘ᵥ associator.to ≈ actionʳ ∘ᵥ (T M₂ ▷ actionʳ)
+    sym-assoc-actionʳ : actionʳ ∘ᵥ (T M₂ ▷ actionʳ) ∘ᵥ associator.from ≈ actionʳ ∘ᵥ (μ M₂ ◁ F)
 
-    identityˡ : actionˡ ∘ᵥ (F ▷ η₁) ∘ᵥ unitorʳ.to ≈ id₂
-    identityʳ : actionʳ ∘ᵥ (η₂ ◁ F) ∘ᵥ unitorˡ.to ≈ id₂
+    identityˡ : actionˡ ∘ᵥ (F ▷ η M₁) ∘ᵥ unitorʳ.to ≈ id₂
+    identityʳ : actionʳ ∘ᵥ (η M₂ ◁ F) ∘ᵥ unitorˡ.to ≈ id₂
 
 id-bimodule : (M : Monad 𝒞) → Bimodule M M
 id-bimodule M = record
@@ -46,14 +44,12 @@ id-bimodule M = record
   where open Monad M
 
 record Bimodulehomomorphism {M₁ M₂ : Monad 𝒞} (B₁ B₂ : Bimodule M₁ M₂) : Set (ℓ ⊔ e) where
-  open Monad M₁ renaming (C to C₁; T to T₁)
-  open Monad M₂ renaming (C to C₂; T to T₂)
-  open Bimodule B₁ renaming (F to F₁; actionˡ to actionˡ₁; actionʳ to actionʳ₁)
-  open Bimodule B₂ renaming (F to F₂; actionˡ to actionˡ₂; actionʳ to actionʳ₂)
+  open Monad using (T)
+  open Bimodule using (F; actionˡ; actionʳ)
   field
-    α       : F₁ ⇒₂ F₂
-    linearˡ : actionˡ₂ ∘ᵥ (α ◁ T₁) ≈ α ∘ᵥ actionˡ₁
-    linearʳ : actionʳ₂ ∘ᵥ (T₂ ▷ α) ≈ α ∘ᵥ actionʳ₁
+    α       : F B₁ ⇒₂ F B₂
+    linearˡ : actionˡ B₂ ∘ᵥ (α ◁ T M₁) ≈ α ∘ᵥ actionˡ B₁
+    linearʳ : actionʳ B₂ ∘ᵥ (T M₂ ▷ α) ≈ α ∘ᵥ actionʳ B₁
 
 open import Categories.Category
 
@@ -61,21 +57,20 @@ id-bimodule-hom : {M₁ M₂ : Monad 𝒞} → {B : Bimodule M₁ M₂} → Bimo
 id-bimodule-hom {M₁} {M₂} {B} = record
   { α = id₂
   ; linearˡ = begin
-      actionˡ ∘ᵥ (id₂ ◁ T₁) ≈⟨ refl⟩∘⟨ id₂◁ ⟩
-      actionˡ ∘ᵥ id₂        ≈⟨ identity₂ʳ ⟩
-      actionˡ               ≈⟨ hom.Equiv.sym identity₂ˡ ⟩
-      id₂ ∘ᵥ actionˡ        ∎
+      actionˡ ∘ᵥ (id₂ ◁ T M₁) ≈⟨ refl⟩∘⟨ id₂◁ ⟩
+      actionˡ ∘ᵥ id₂          ≈⟨ identity₂ʳ ⟩
+      actionˡ                 ≈⟨ hom.Equiv.sym identity₂ˡ ⟩
+      id₂ ∘ᵥ actionˡ          ∎
   ; linearʳ = begin
-      actionʳ ∘ᵥ (T₂ ▷ id₂) ≈⟨ refl⟩∘⟨ ▷id₂ ⟩
-      actionʳ ∘ᵥ id₂        ≈⟨ identity₂ʳ ⟩
-      actionʳ               ≈⟨ ⟺ identity₂ˡ ⟩
-      id₂ ∘ᵥ actionʳ        ∎
+      actionʳ ∘ᵥ (T M₂ ▷ id₂) ≈⟨ refl⟩∘⟨ ▷id₂ ⟩
+      actionʳ ∘ᵥ id₂          ≈⟨ identity₂ʳ ⟩
+      actionʳ                 ≈⟨ ⟺ identity₂ˡ ⟩
+      id₂ ∘ᵥ actionʳ          ∎
   }
   where
-    open Monad M₁ renaming (C to C₁; T to T₁)
-    open Monad M₂ renaming (C to C₂; T to T₂)
-    open Bimodule B
-    open Category (hom C₁ C₂)
+    open Monad using (C; T)
+    open Bimodule B using (actionˡ; actionʳ)
+    open Category (hom (C M₁) (C M₂))
     open HomReasoning
     open Equiv
 
@@ -84,29 +79,26 @@ bimodule-hom-∘ : {M₁ M₂ : Monad 𝒞} → {B₁ B₂ B₃ : Bimodule M₁ 
 bimodule-hom-∘ {M₁} {M₂} {B₁} {B₂} {B₃} g f = record
   { α = α g ∘ᵥ α f
   ; linearˡ = begin
-      actionˡ₃ ∘ᵥ (α g ∘ᵥ α f) ◁ T₁          ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
-      actionˡ₃ ∘ᵥ (α g ◁ T₁) ∘ᵥ (α f ◁ T₁)   ≈⟨ sym-assoc₂ ⟩
-      (actionˡ₃ ∘ᵥ (α g ◁ T₁)) ∘ᵥ (α f ◁ T₁) ≈⟨ linearˡ g ⟩∘⟨refl ⟩
-      (α g ∘ᵥ actionˡ₂) ∘ᵥ (α f ◁ T₁)        ≈⟨ assoc₂ ⟩
-      α g ∘ᵥ actionˡ₂ ∘ᵥ (α f ◁ T₁)          ≈⟨ refl⟩∘⟨ linearˡ f ⟩
-      α g ∘ᵥ α f ∘ᵥ actionˡ₁                 ≈⟨ sym-assoc₂ ⟩
-      (α g ∘ᵥ α f) ∘ᵥ actionˡ₁               ∎
+      actionˡ B₃ ∘ᵥ (α g ∘ᵥ α f) ◁ T M₁            ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
+      actionˡ B₃ ∘ᵥ (α g ◁ T M₁) ∘ᵥ (α f ◁ T M₁)   ≈⟨ sym-assoc₂ ⟩
+      (actionˡ B₃ ∘ᵥ (α g ◁ T M₁)) ∘ᵥ (α f ◁ T M₁) ≈⟨ linearˡ g ⟩∘⟨refl ⟩
+      (α g ∘ᵥ actionˡ B₂) ∘ᵥ (α f ◁ T M₁)          ≈⟨ assoc₂ ⟩
+      α g ∘ᵥ actionˡ B₂ ∘ᵥ (α f ◁ T M₁)            ≈⟨ refl⟩∘⟨ linearˡ f ⟩
+      α g ∘ᵥ α f ∘ᵥ actionˡ B₁                     ≈⟨ sym-assoc₂ ⟩
+      (α g ∘ᵥ α f) ∘ᵥ actionˡ B₁                   ∎
   ; linearʳ = begin
-      actionʳ₃ ∘ᵥ T₂ ▷ (α g ∘ᵥ α f)          ≈⟨ refl⟩∘⟨ (⟺ ∘ᵥ-distr-▷) ⟩
-      actionʳ₃ ∘ᵥ (T₂ ▷ α g) ∘ᵥ (T₂ ▷ α f)   ≈⟨ sym-assoc₂ ⟩
-      (actionʳ₃ ∘ᵥ (T₂ ▷ α g)) ∘ᵥ (T₂ ▷ α f) ≈⟨ linearʳ g ⟩∘⟨refl ⟩
-      (α g ∘ᵥ actionʳ₂) ∘ᵥ (T₂ ▷ α f)        ≈⟨ assoc₂ ⟩
-      α g ∘ᵥ actionʳ₂ ∘ᵥ (T₂ ▷ α f)          ≈⟨ refl⟩∘⟨ linearʳ f ⟩
-      α g ∘ᵥ α f ∘ᵥ actionʳ₁                 ≈⟨ sym-assoc₂ ⟩
-      (α g ∘ᵥ α f) ∘ᵥ actionʳ₁               ∎
+      actionʳ B₃ ∘ᵥ T M₂ ▷ (α g ∘ᵥ α f)            ≈⟨ refl⟩∘⟨ (⟺ ∘ᵥ-distr-▷) ⟩
+      actionʳ B₃ ∘ᵥ (T M₂ ▷ α g) ∘ᵥ (T M₂ ▷ α f)   ≈⟨ sym-assoc₂ ⟩
+      (actionʳ B₃ ∘ᵥ (T M₂ ▷ α g)) ∘ᵥ (T M₂ ▷ α f) ≈⟨ linearʳ g ⟩∘⟨refl ⟩
+      (α g ∘ᵥ actionʳ B₂) ∘ᵥ (T M₂ ▷ α f)          ≈⟨ assoc₂ ⟩
+      α g ∘ᵥ actionʳ B₂ ∘ᵥ (T M₂ ▷ α f)            ≈⟨ refl⟩∘⟨ linearʳ f ⟩
+      α g ∘ᵥ α f ∘ᵥ actionʳ B₁                     ≈⟨ sym-assoc₂ ⟩
+      (α g ∘ᵥ α f) ∘ᵥ actionʳ B₁                   ∎
   }
   where
     open Bimodulehomomorphism
-    open Monad M₁ renaming (C to C₁; T to T₁)
-    open Monad M₂ renaming (C to C₂; T to T₂)
-    open Bimodule B₁ renaming (F to F₁; actionˡ to actionˡ₁; actionʳ to actionʳ₁)
-    open Bimodule B₂ renaming (F to F₂; actionˡ to actionˡ₂; actionʳ to actionʳ₂)
-    open Bimodule B₃ renaming (F to F₃; actionˡ to actionˡ₃; actionʳ to actionʳ₃)
-    open Category (hom C₁ C₂)
+    open Monad using (C; T)
+    open Bimodule using (F; actionˡ; actionʳ)
+    open Category (hom (C M₁) (C M₂))
     open HomReasoning
     open Equiv
