@@ -5,12 +5,12 @@ open import Categories.Bicategory
 module Categories.Bicategory.Monad.Bimodule {o ℓ e t} {𝒞 : Bicategory o ℓ e t} where
 
 open import Level
-open import Categories.Bicategory.Monad
+open import Categories.Bicategory.Monad using (Monad)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 
 record Bimodule (M₁ M₂ : Monad 𝒞) : Set (o ⊔ ℓ ⊔ e) where
-  open Monad
+  open Monad using (C; T; μ; η)
   field
     F       : C M₁ ⇒₁ C M₂
     actionˡ : F ∘₁ T M₁ ⇒₂ F
@@ -96,7 +96,7 @@ bimodule-hom-∘ {M₁} {M₂} {B₁} {B₂} {B₃} g f = record
       (α g ∘ᵥ α f) ∘ᵥ actionʳ B₁                   ∎
   }
   where
-    open Bimodulehomomorphism
+    open Bimodulehomomorphism using (α; linearˡ; linearʳ)
     open Monad using (C; T)
     open Bimodule using (F; actionˡ; actionʳ)
     open Category (hom (C M₁) (C M₂))
