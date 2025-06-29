@@ -51,8 +51,6 @@ record Bimodulehomomorphism {M₁ M₂ : Monad 𝒞} (B₁ B₂ : Bimodule M₁ 
     linearˡ : actionˡ B₂ ∘ᵥ (α ◁ T M₁) ≈ α ∘ᵥ actionˡ B₁
     linearʳ : actionʳ B₂ ∘ᵥ (T M₂ ▷ α) ≈ α ∘ᵥ actionʳ B₁
 
-open import Categories.Category
-
 id-bimodule-hom : {M₁ M₂ : Monad 𝒞} → {B : Bimodule M₁ M₂} → Bimodulehomomorphism B B
 id-bimodule-hom {M₁} {M₂} {B} = record
   { α = id₂
@@ -70,8 +68,7 @@ id-bimodule-hom {M₁} {M₂} {B} = record
   where
     open Monad using (C; T)
     open Bimodule B using (actionˡ; actionʳ)
-    open Category (hom (C M₁) (C M₂))
-    open HomReasoning
+    open hom.HomReasoning
 
 bimodule-hom-∘ : {M₁ M₂ : Monad 𝒞} → {B₁ B₂ B₃ : Bimodule M₁ M₂}
                  → Bimodulehomomorphism B₂ B₃ → Bimodulehomomorphism B₁ B₂ → Bimodulehomomorphism B₁ B₃
@@ -98,5 +95,4 @@ bimodule-hom-∘ {M₁} {M₂} {B₁} {B₂} {B₃} g f = record
     open Bimodulehomomorphism using (α; linearˡ; linearʳ)
     open Monad using (C; T)
     open Bimodule using (F; actionˡ; actionʳ)
-    open Category (hom (C M₁) (C M₂))
-    open HomReasoning
+    open hom.HomReasoning
