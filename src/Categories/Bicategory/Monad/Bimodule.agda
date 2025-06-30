@@ -41,7 +41,8 @@ id-bimodule M = record
   ; identityˡ = identityˡ
   ; identityʳ = identityʳ
   }
-  where open Monad M
+  where
+    open Monad M
 
 record Bimodulehomomorphism {M₁ M₂ : Monad 𝒞} (B₁ B₂ : Bimodule M₁ M₂) : Set (ℓ ⊔ e) where
   open Monad using (T)
@@ -71,7 +72,7 @@ id-bimodule-hom {M₁} {M₂} {B} = record
     open hom.HomReasoning
 
 bimodule-hom-∘ : {M₁ M₂ : Monad 𝒞} → {B₁ B₂ B₃ : Bimodule M₁ M₂}
-                 → Bimodulehomomorphism B₂ B₃ → Bimodulehomomorphism B₁ B₂ → Bimodulehomomorphism B₁ B₃
+               → Bimodulehomomorphism B₂ B₃ → Bimodulehomomorphism B₁ B₂ → Bimodulehomomorphism B₁ B₃
 bimodule-hom-∘ {M₁} {M₂} {B₁} {B₂} {B₃} g f = record
   { α = α g ∘ᵥ α f
   ; linearˡ = begin
