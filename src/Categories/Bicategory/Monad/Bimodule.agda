@@ -55,27 +55,43 @@ record Bimodulehomomorphism {M₁ M₂ : Monad 𝒞} (B₁ B₂ : Bimodule M₁ 
 id-bimodule-hom : {M₁ M₂ : Monad 𝒞} → {B : Bimodule M₁ M₂} → Bimodulehomomorphism B B
 id-bimodule-hom {M₁} {M₂} {B} = record
   { α = id₂
-  ; linearˡ = begin
-      actionˡ ∘ᵥ (id₂ ◁ T M₁) ≈⟨ refl⟩∘⟨ id₂◁ ⟩
-      actionˡ ∘ᵥ id₂          ≈⟨ identity₂ʳ ⟩
-      actionˡ                 ≈⟨ ⟺ identity₂ˡ ⟩
-      id₂ ∘ᵥ actionˡ          ∎
-  ; linearʳ = begin
-      actionʳ ∘ᵥ (T M₂ ▷ id₂) ≈⟨ refl⟩∘⟨ ▷id₂ ⟩
-      actionʳ ∘ᵥ id₂          ≈⟨ identity₂ʳ ⟩
-      actionʳ                 ≈⟨ ⟺ identity₂ˡ ⟩
-      id₂ ∘ᵥ actionʳ          ∎
+  ; linearˡ = id-linearˡ
+  ; linearʳ = id-linearʳ
   }
   where
     open Monad using (C; T)
     open Bimodule B using (actionˡ; actionʳ)
     open hom.HomReasoning
 
+    id-linearˡ : actionˡ ∘ᵥ (id₂ ◁ T M₁) ≈ id₂ ∘ᵥ actionˡ
+    id-linearˡ = begin
+      actionˡ ∘ᵥ (id₂ ◁ T M₁) ≈⟨ refl⟩∘⟨ id₂◁ ⟩
+      actionˡ ∘ᵥ id₂          ≈⟨ identity₂ʳ ⟩
+      actionˡ                 ≈⟨ ⟺ identity₂ˡ ⟩
+      id₂ ∘ᵥ actionˡ          ∎
+
+    id-linearʳ : actionʳ ∘ᵥ (T M₂ ▷ id₂) ≈ id₂ ∘ᵥ actionʳ
+    id-linearʳ = begin
+      actionʳ ∘ᵥ (T M₂ ▷ id₂) ≈⟨ refl⟩∘⟨ ▷id₂ ⟩
+      actionʳ ∘ᵥ id₂          ≈⟨ identity₂ʳ ⟩
+      actionʳ                 ≈⟨ ⟺ identity₂ˡ ⟩
+      id₂ ∘ᵥ actionʳ          ∎
+
 bimodule-hom-∘ : {M₁ M₂ : Monad 𝒞} → {B₁ B₂ B₃ : Bimodule M₁ M₂}
                → Bimodulehomomorphism B₂ B₃ → Bimodulehomomorphism B₁ B₂ → Bimodulehomomorphism B₁ B₃
 bimodule-hom-∘ {M₁} {M₂} {B₁} {B₂} {B₃} g f = record
   { α = α g ∘ᵥ α f
-  ; linearˡ = begin
+  ; linearˡ = g∘f-linearˡ
+  ; linearʳ = g∘f-linearʳ
+  }
+  where
+    open Bimodulehomomorphism using (α; linearˡ; linearʳ)
+    open Monad using (C; T)
+    open Bimodule using (F; actionˡ; actionʳ)
+    open hom.HomReasoning
+
+    g∘f-linearˡ : actionˡ B₃ ∘ᵥ (α g ∘ᵥ α f) ◁ T M₁ ≈ (α g ∘ᵥ α f) ∘ᵥ actionˡ B₁
+    g∘f-linearˡ = begin
       actionˡ B₃ ∘ᵥ (α g ∘ᵥ α f) ◁ T M₁            ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
       actionˡ B₃ ∘ᵥ (α g ◁ T M₁) ∘ᵥ (α f ◁ T M₁)   ≈⟨ sym-assoc₂ ⟩
       (actionˡ B₃ ∘ᵥ (α g ◁ T M₁)) ∘ᵥ (α f ◁ T M₁) ≈⟨ linearˡ g ⟩∘⟨refl ⟩
@@ -83,7 +99,9 @@ bimodule-hom-∘ {M₁} {M₂} {B₁} {B₂} {B₃} g f = record
       α g ∘ᵥ actionˡ B₂ ∘ᵥ (α f ◁ T M₁)            ≈⟨ refl⟩∘⟨ linearˡ f ⟩
       α g ∘ᵥ α f ∘ᵥ actionˡ B₁                     ≈⟨ sym-assoc₂ ⟩
       (α g ∘ᵥ α f) ∘ᵥ actionˡ B₁                   ∎
-  ; linearʳ = begin
+
+    g∘f-linearʳ : actionʳ B₃ ∘ᵥ T M₂ ▷ (α g ∘ᵥ α f) ≈ (α g ∘ᵥ α f) ∘ᵥ actionʳ B₁
+    g∘f-linearʳ = begin
       actionʳ B₃ ∘ᵥ T M₂ ▷ (α g ∘ᵥ α f)            ≈⟨ refl⟩∘⟨ (⟺ ∘ᵥ-distr-▷) ⟩
       actionʳ B₃ ∘ᵥ (T M₂ ▷ α g) ∘ᵥ (T M₂ ▷ α f)   ≈⟨ sym-assoc₂ ⟩
       (actionʳ B₃ ∘ᵥ (T M₂ ▷ α g)) ∘ᵥ (T M₂ ▷ α f) ≈⟨ linearʳ g ⟩∘⟨refl ⟩
@@ -91,9 +109,3 @@ bimodule-hom-∘ {M₁} {M₂} {B₁} {B₂} {B₃} g f = record
       α g ∘ᵥ actionʳ B₂ ∘ᵥ (T M₂ ▷ α f)            ≈⟨ refl⟩∘⟨ linearʳ f ⟩
       α g ∘ᵥ α f ∘ᵥ actionʳ B₁                     ≈⟨ sym-assoc₂ ⟩
       (α g ∘ᵥ α f) ∘ᵥ actionʳ B₁                   ∎
-  }
-  where
-    open Bimodulehomomorphism using (α; linearˡ; linearʳ)
-    open Monad using (C; T)
-    open Bimodule using (F; actionˡ; actionʳ)
-    open hom.HomReasoning
