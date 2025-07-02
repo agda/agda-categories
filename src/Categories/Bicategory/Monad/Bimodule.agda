@@ -8,6 +8,7 @@ open import Level
 open import Categories.Bicategory.Monad using (Monad)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
+open Shorthands
 
 record Bimodule (M₁ M₂ : Monad 𝒞) : Set (o ⊔ ℓ ⊔ e) where
   open Monad using (C; T; μ; η)
@@ -16,13 +17,13 @@ record Bimodule (M₁ M₂ : Monad 𝒞) : Set (o ⊔ ℓ ⊔ e) where
     actionˡ : F ∘₁ T M₁ ⇒₂ F
     actionʳ : T M₂ ∘₁ F ⇒₂ F
 
-    assoc     : actionʳ ∘ᵥ (T M₂ ▷ actionˡ) ∘ᵥ associator.from ≈ actionˡ ∘ᵥ (actionʳ ◁ T M₁)
-    sym-assoc : actionˡ ∘ᵥ (actionʳ ◁ T M₁) ∘ᵥ associator.to ≈ actionʳ ∘ᵥ (T M₂ ▷ actionˡ)
+    assoc     : actionʳ ∘ᵥ (T M₂ ▷ actionˡ) ∘ᵥ α⇒ ≈ actionˡ ∘ᵥ (actionʳ ◁ T M₁)
+    sym-assoc : actionˡ ∘ᵥ (actionʳ ◁ T M₁) ∘ᵥ α⇐ ≈ actionʳ ∘ᵥ (T M₂ ▷ actionˡ)
 
-    assoc-actionˡ     : actionˡ ∘ᵥ (F ▷ μ M₁) ∘ᵥ associator.from ≈ actionˡ ∘ᵥ (actionˡ ◁ T M₁)
-    sym-assoc-actionˡ : actionˡ ∘ᵥ (actionˡ ◁ T M₁) ∘ᵥ associator.to ≈ actionˡ ∘ᵥ (F ▷ μ M₁)
-    assoc-actionʳ     : actionʳ ∘ᵥ (μ M₂ ◁ F) ∘ᵥ associator.to ≈ actionʳ ∘ᵥ (T M₂ ▷ actionʳ)
-    sym-assoc-actionʳ : actionʳ ∘ᵥ (T M₂ ▷ actionʳ) ∘ᵥ associator.from ≈ actionʳ ∘ᵥ (μ M₂ ◁ F)
+    assoc-actionˡ     : actionˡ ∘ᵥ (F ▷ μ M₁) ∘ᵥ α⇒ ≈ actionˡ ∘ᵥ (actionˡ ◁ T M₁)
+    sym-assoc-actionˡ : actionˡ ∘ᵥ (actionˡ ◁ T M₁) ∘ᵥ α⇐ ≈ actionˡ ∘ᵥ (F ▷ μ M₁)
+    assoc-actionʳ     : actionʳ ∘ᵥ (μ M₂ ◁ F) ∘ᵥ α⇐ ≈ actionʳ ∘ᵥ (T M₂ ▷ actionʳ)
+    sym-assoc-actionʳ : actionʳ ∘ᵥ (T M₂ ▷ actionʳ) ∘ᵥ α⇒ ≈ actionʳ ∘ᵥ (μ M₂ ◁ F)
 
     identityˡ : actionˡ ∘ᵥ (F ▷ η M₁) ∘ᵥ unitorʳ.to ≈ id₂
     identityʳ : actionʳ ∘ᵥ (η M₂ ◁ F) ∘ᵥ unitorˡ.to ≈ id₂
