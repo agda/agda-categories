@@ -1,19 +1,19 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Bicategory
+open import Categories.Bicategory.Monad using (Monad)
 
-module Categories.Category.Construction.Bimodules {o ℓ e t} {𝒞 : Bicategory o ℓ e t} where
+module Categories.Category.Construction.Bimodules {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {M₁ M₂ : Monad 𝒞} where
 
 open import Level
 open import Categories.Category
-open import Categories.Bicategory.Monad using (Monad)
 open import Categories.Bicategory.Monad.Bimodule using (Bimodule)
 open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism; id-bimodule-hom; bimodule-hom-∘)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 
-Bimodules : Monad 𝒞 → Monad 𝒞 → Category (o ⊔ ℓ ⊔ e) (ℓ ⊔ e) e
-Bimodules M₁ M₂  = record
+Bimodules : Category (o ⊔ ℓ ⊔ e) (ℓ ⊔ e) e
+Bimodules = record
   { Obj = Bimodule M₁ M₂
   ; _⇒_ = Bimodulehomomorphism
   ; _≈_ = λ h₁ h₂ → α h₁ ≈ α h₂
