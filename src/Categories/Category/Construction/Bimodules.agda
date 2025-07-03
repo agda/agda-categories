@@ -6,9 +6,9 @@ module Categories.Category.Construction.Bimodules {o ℓ e t} {𝒞 : Bicategory
 
 open import Level
 open import Categories.Category
-open import Categories.Bicategory.Monad
-open import Categories.Bicategory.Monad.Bimodule
-open import Categories.Bicategory.Monad.Bimodule.Homomorphism
+open import Categories.Bicategory.Monad using (Monad)
+open import Categories.Bicategory.Monad.Bimodule using (Bimodule)
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism; id-bimodule-hom; bimodule-hom-∘)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 
