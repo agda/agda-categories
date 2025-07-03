@@ -9,6 +9,11 @@ open import Level
 open import Categories.Bicategory.Monad.Bimodule using (Bimodule)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
+import Categories.Morphism.Reasoning as MR
+
+private
+  module MR' {A B : Obj} where
+    open MR (hom A B) public
 
 record Bimodulehomomorphism (B₁ B₂ : Bimodule M₁ M₂) : Set (ℓ ⊔ e) where
   open Monad using (T)
