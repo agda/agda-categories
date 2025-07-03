@@ -28,14 +28,14 @@ import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 
 open import Categories.Bicategory.Monad.Bimodule {o} {ℓ} {e} {t} {𝒞}
-
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism
 
 module Bimodulehom-isIso {B₁ B₂ : Obj Bimodules} (f : _⇒_ {C = Bimodules} B₁ B₂) where
   open Monad M₁ using () renaming (C to C₁; T to T₁)
   open Monad M₂ using () renaming (C to C₂; T to T₂)
   open Bimodule B₁ using () renaming (F to F₁; actionˡ to actionˡ₁)
   open Bimodule B₂ using () renaming (F to F₂; actionˡ to actionˡ₂)
-  open Bimodulehomomorphism {M₁} {M₂} {B₁} {B₂} f using (α; linearˡ; linearʳ)
+  open Bimodulehomomorphism f using (α; linearˡ; linearʳ)
 
   2cellisIso⇒isIso : IsIso {C = hom C₁ C₂} α → IsIso {C = Bimodules} f
   2cellisIso⇒isIso αisIso = record
