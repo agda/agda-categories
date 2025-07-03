@@ -9,6 +9,11 @@ open import Categories.Bicategory.Monad using (Monad)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 open Shorthands
+import Categories.Morphism.Reasoning as MR
+
+private
+  module MR' {A B : Obj} where
+    open MR (hom A B) using (pullˡ; elimʳ; assoc²βγ) public
 
 record Bimodule (M₁ M₂ : Monad 𝒞) : Set (o ⊔ ℓ ⊔ e) where
   open Monad using (C; T; μ; η)
