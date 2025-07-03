@@ -8,7 +8,7 @@ open import Level
 open import Categories.Category
 open import Categories.Bicategory.Monad
 open import Categories.Bicategory.Monad.Bimodule
-open Bimodulehomomorphism
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 
@@ -31,3 +31,5 @@ Bimodules M₁ M₂  = record
     }
   ; ∘-resp-≈ = hom.∘-resp-≈
   }
+  where
+    open Bimodulehomomorphism using (α)
