@@ -3,7 +3,7 @@
 open import Categories.Bicategory
 open import Categories.Bicategory.Monad using (Monad)
 
-module Categories.Category.Construction.Bimodules {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {M₁ M₂ : Monad 𝒞} where
+module Categories.Category.Construction.Bimodules {o ℓ e t} {𝒞 : Bicategory o ℓ e t} (M₁ M₂ : Monad 𝒞) where
 
 open import Level
 open import Categories.Category
