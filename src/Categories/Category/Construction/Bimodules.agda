@@ -15,7 +15,7 @@ open Bicat 𝒞
 Bimodules : Monad 𝒞 → Monad 𝒞 → Category (o ⊔ ℓ ⊔ e) (ℓ ⊔ e) e
 Bimodules M₁ M₂  = record
   { Obj = Bimodule M₁ M₂
-  ; _⇒_ = λ B₁ B₂ → Bimodulehomomorphism B₁ B₂
+  ; _⇒_ = Bimodulehomomorphism
   ; _≈_ = λ h₁ h₂ → α h₁ ≈ α h₂
   ; id = id-bimodule-hom
   ; _∘_ = bimodule-hom-∘
