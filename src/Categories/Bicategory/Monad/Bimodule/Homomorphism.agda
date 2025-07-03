@@ -33,18 +33,17 @@ id-bimodule-hom {B} = record
     open Monad using (C; T)
     open Bimodule B using (actionˡ; actionʳ)
     open hom.HomReasoning
+    open MR'
 
     id-linearˡ : actionˡ ∘ᵥ (id₂ ◁ T M₁) ≈ id₂ ∘ᵥ actionˡ
     id-linearˡ = begin
-      actionˡ ∘ᵥ (id₂ ◁ T M₁) ≈⟨ refl⟩∘⟨ id₂◁ ⟩
-      actionˡ ∘ᵥ id₂          ≈⟨ identity₂ʳ ⟩
+      actionˡ ∘ᵥ (id₂ ◁ T M₁) ≈⟨ elimʳ ▷id₂ ⟩
       actionˡ                 ≈⟨ ⟺ identity₂ˡ ⟩
       id₂ ∘ᵥ actionˡ          ∎
 
     id-linearʳ : actionʳ ∘ᵥ (T M₂ ▷ id₂) ≈ id₂ ∘ᵥ actionʳ
     id-linearʳ = begin
-      actionʳ ∘ᵥ (T M₂ ▷ id₂) ≈⟨ refl⟩∘⟨ ▷id₂ ⟩
-      actionʳ ∘ᵥ id₂          ≈⟨ identity₂ʳ ⟩
+      actionʳ ∘ᵥ (T M₂ ▷ id₂) ≈⟨ elimʳ ▷id₂ ⟩
       actionʳ                 ≈⟨ ⟺ identity₂ˡ ⟩
       id₂ ∘ᵥ actionʳ          ∎
 
@@ -56,27 +55,20 @@ bimodule-hom-∘ {B₁} {B₂} {B₃} g f = record
   ; linearʳ = g∘f-linearʳ
   }
   where
-    open Bimodulehomomorphism using (α; linearˡ; linearʳ)
     open Monad using (C; T)
     open Bimodule using (F; actionˡ; actionʳ)
+    open Bimodulehomomorphism using (α; linearˡ; linearʳ)
     open hom.HomReasoning
+    open MR'
 
     g∘f-linearˡ : actionˡ B₃ ∘ᵥ (α g ∘ᵥ α f) ◁ T M₁ ≈ (α g ∘ᵥ α f) ∘ᵥ actionˡ B₁
     g∘f-linearˡ = begin
       actionˡ B₃ ∘ᵥ (α g ∘ᵥ α f) ◁ T M₁            ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
-      actionˡ B₃ ∘ᵥ (α g ◁ T M₁) ∘ᵥ (α f ◁ T M₁)   ≈⟨ sym-assoc₂ ⟩
-      (actionˡ B₃ ∘ᵥ (α g ◁ T M₁)) ∘ᵥ (α f ◁ T M₁) ≈⟨ linearˡ g ⟩∘⟨refl ⟩
-      (α g ∘ᵥ actionˡ B₂) ∘ᵥ (α f ◁ T M₁)          ≈⟨ assoc₂ ⟩
-      α g ∘ᵥ actionˡ B₂ ∘ᵥ (α f ◁ T M₁)            ≈⟨ refl⟩∘⟨ linearˡ f ⟩
-      α g ∘ᵥ α f ∘ᵥ actionˡ B₁                     ≈⟨ sym-assoc₂ ⟩
+      actionˡ B₃ ∘ᵥ (α g ◁ T M₁) ∘ᵥ (α f ◁ T M₁)   ≈⟨ glue′ (linearˡ g) (linearˡ f) ⟩
       (α g ∘ᵥ α f) ∘ᵥ actionˡ B₁                   ∎
 
     g∘f-linearʳ : actionʳ B₃ ∘ᵥ T M₂ ▷ (α g ∘ᵥ α f) ≈ (α g ∘ᵥ α f) ∘ᵥ actionʳ B₁
     g∘f-linearʳ = begin
       actionʳ B₃ ∘ᵥ T M₂ ▷ (α g ∘ᵥ α f)            ≈⟨ refl⟩∘⟨ (⟺ ∘ᵥ-distr-▷) ⟩
-      actionʳ B₃ ∘ᵥ (T M₂ ▷ α g) ∘ᵥ (T M₂ ▷ α f)   ≈⟨ sym-assoc₂ ⟩
-      (actionʳ B₃ ∘ᵥ (T M₂ ▷ α g)) ∘ᵥ (T M₂ ▷ α f) ≈⟨ linearʳ g ⟩∘⟨refl ⟩
-      (α g ∘ᵥ actionʳ B₂) ∘ᵥ (T M₂ ▷ α f)          ≈⟨ assoc₂ ⟩
-      α g ∘ᵥ actionʳ B₂ ∘ᵥ (T M₂ ▷ α f)            ≈⟨ refl⟩∘⟨ linearʳ f ⟩
-      α g ∘ᵥ α f ∘ᵥ actionʳ B₁                     ≈⟨ sym-assoc₂ ⟩
+      actionʳ B₃ ∘ᵥ (T M₂ ▷ α g) ∘ᵥ (T M₂ ▷ α f)   ≈⟨ glue′ (linearʳ g) (linearʳ f) ⟩
       (α g ∘ᵥ α f) ∘ᵥ actionʳ B₁                   ∎
