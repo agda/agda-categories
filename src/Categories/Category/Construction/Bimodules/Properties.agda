@@ -31,13 +31,11 @@ open import Categories.Bicategory.Monad.Bimodule {𝒞 = 𝒞}
 open import Categories.Bicategory.Monad.Bimodule.Homomorphism {𝒞 = 𝒞}
 
 module Bimodulehom-isIso {B₁ B₂ : Obj {C = Bimodules}} (f : _⇒_ {C = Bimodules} B₁ B₂) where
-  open Monad M₁ using () renaming (C to C₁; T to T₁)
-  open Monad M₂ using () renaming (C to C₂; T to T₂)
-  open Bimodule B₁ using () renaming (F to F₁; actionˡ to actionˡ₁)
-  open Bimodule B₂ using () renaming (F to F₂; actionˡ to actionˡ₂)
+  open Monad using (C; T)
+  open Bimodule using (F; actionˡ; actionʳ)
   open Bimodulehomomorphism f using (α; linearˡ; linearʳ)
 
-  αisIso⇒fisIso : IsIso {C = hom C₁ C₂} α → IsIso {C = Bimodules} f
+  αisIso⇒fisIso : IsIso {C = hom (C M₁) (C M₂)} α → IsIso {C = Bimodules} f
   αisIso⇒fisIso αisIso = record
     { inv = record
       { α = α⁻¹
@@ -52,23 +50,23 @@ module Bimodulehom-isIso {B₁ B₂ : Obj {C = Bimodules}} (f : _⇒_ {C = Bimod
     where
       open hom.HomReasoning
 
-      α⁻¹ : F₂ ⇒₂ F₁
+      α⁻¹ : F B₂ ⇒₂ F B₁
       α⁻¹ = IsIso.inv αisIso
 
-      αIso : F₁ ≅ F₂
+      αIso : F B₁ ≅ F B₂
       αIso = record
         { from = α
         ; to = α⁻¹
         ; iso = IsIso.iso αisIso
         }
 
-      linearˡ⁻¹ : actionˡ₁ ∘ᵥ α⁻¹ ◁ T₁ ≈ α⁻¹ ∘ᵥ actionˡ₂
-      linearˡ⁻¹ = ⟺ (conjugate-from (αIso ◁ᵢ T₁) αIso linearˡ)
+      linearˡ⁻¹ : actionˡ B₁ ∘ᵥ α⁻¹ ◁ T M₁ ≈ α⁻¹ ∘ᵥ actionˡ B₂
+      linearˡ⁻¹ = ⟺ (conjugate-from (αIso ◁ᵢ T M₁) αIso linearˡ)
 
-      linearʳ⁻¹ : actionʳ₁ ∘ᵥ T₂ ▷ α⁻¹ ≈ α⁻¹ ∘ᵥ actionʳ₂
-      linearʳ⁻¹ = ⟺ (conjugate-from (T₂ ▷ᵢ αIso) αIso linearʳ)
+      linearʳ⁻¹ : actionʳ B₁ ∘ᵥ T M₂ ▷ α⁻¹ ≈ α⁻¹ ∘ᵥ actionʳ B₂
+      linearʳ⁻¹ = ⟺ (conjugate-from (T M₂ ▷ᵢ αIso) αIso linearʳ)
 
-  αisIso⇒Iso : IsIso {C = hom C₁ C₂} α → B₁ ≅ B₂
+  αisIso⇒Iso : IsIso {C = hom (C M₁) (C M₂)} α → B₁ ≅ B₂
   αisIso⇒Iso αisIso = record
     { from = f
     ; to = IsIso.inv (αisIso⇒fisIso αisIso)
