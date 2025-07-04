@@ -71,6 +71,6 @@ module Bimodulehom-isIso {B₁ B₂ : Obj {C = Bimodules}} (f : _⇒_ {C = Bimod
   αisIso⇒Iso : IsIso {C = hom C₁ C₂} α → B₁ ≅ B₂
   αisIso⇒Iso αisIso = record
     { from = f
-    ; to = IsIso.inv (2cellisIso⇒isIso αisIso)
-    ; iso = IsIso.iso (2cellisIso⇒isIso αisIso)
+    ; to = IsIso.inv (αisIso⇒fisIso αisIso)
+    ; iso = IsIso.iso (αisIso⇒fisIso αisIso)
     }
