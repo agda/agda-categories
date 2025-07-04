@@ -41,11 +41,8 @@ module Bimodulehom-isIso {B₁ B₂ : Obj {C = Bimodules}} (f : _⇒_ {C = Bimod
   αisIso⇒fisIso αisIso = record
     { inv = record
       { α = α⁻¹
-        -- F₂ ⇒₂ F₁
-      ; linearˡ = ⟺ (conjugate-from (αIso ◁ᵢ T₁) αIso linearˡ)
-        -- linearˡ : actionˡ₁ ∘ᵥ α⁻¹ ◁ T₁ ≈ α⁻¹ ∘ᵥ actionˡ₂
-      ; linearʳ = ⟺ (conjugate-from (T₂ ▷ᵢ αIso) αIso linearʳ)
-      -- linearʳ : actionʳ₁ ∘ᵥ T₂ ▷ α⁻¹ ≈ α⁻¹ ∘ᵥ actionʳ₂
+      ; linearˡ = linearˡ⁻¹
+      ; linearʳ = linearʳ⁻¹
       }
     ; iso = record
       { isoˡ = IsIso.isoˡ αisIso
@@ -54,13 +51,22 @@ module Bimodulehom-isIso {B₁ B₂ : Obj {C = Bimodules}} (f : _⇒_ {C = Bimod
     }
     where
       open hom.HomReasoning
+
+      α⁻¹ : F₂ ⇒₂ F₁
       α⁻¹ = IsIso.inv αisIso
+
       αIso : F₁ ≅ F₂
       αIso = record
         { from = α
         ; to = α⁻¹
         ; iso = IsIso.iso αisIso
         }
+
+      linearˡ⁻¹ : actionˡ₁ ∘ᵥ α⁻¹ ◁ T₁ ≈ α⁻¹ ∘ᵥ actionˡ₂
+      linearˡ⁻¹ = ⟺ (conjugate-from (αIso ◁ᵢ T₁) αIso linearˡ)
+
+      linearʳ⁻¹ : actionʳ₁ ∘ᵥ T₂ ▷ α⁻¹ ≈ α⁻¹ ∘ᵥ actionʳ₂
+      linearʳ⁻¹ = ⟺ (conjugate-from (T₂ ▷ᵢ αIso) αIso linearʳ)
 
   αisIso⇒Iso : IsIso {C = hom C₁ C₂} α → B₁ ≅ B₂
   αisIso⇒Iso αisIso = record
