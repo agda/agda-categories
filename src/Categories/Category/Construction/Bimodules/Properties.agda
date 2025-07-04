@@ -17,20 +17,20 @@ Bimodules = Categories.Category.Construction.Bimodules.Bimodules M₁ M₂
 
 private
   module Cat {o₁ ℓ₁ e₁} {C : Categories.Category.Category o₁ ℓ₁ e₁} where
-    open Categories.Category.Category C public
-    open import Categories.Morphism C public
-    open import Categories.Morphism.Reasoning.Iso C public
+    open Categories.Category.Category C using (Obj; _⇒_) public
+    open import Categories.Morphism C using (IsIso; _≅_) public
+    open import Categories.Morphism.Reasoning.Iso C using (conjugate-from) public
 
 open Cat
 
 
 import Categories.Bicategory.Extras as Bicat
-open Bicat 𝒞
+open Bicat 𝒞 using (hom; _⇒₂_; _≈_; _∘ᵥ_; _◁_; _▷_; _◁ᵢ_; _▷ᵢ_)
 
 open import Categories.Bicategory.Monad.Bimodule {o} {ℓ} {e} {t} {𝒞}
 open import Categories.Bicategory.Monad.Bimodule.Homomorphism
 
-module Bimodulehom-isIso {B₁ B₂ : Obj Bimodules} (f : _⇒_ {C = Bimodules} B₁ B₂) where
+module Bimodulehom-isIso {B₁ B₂ : Obj {C = Bimodules}} (f : _⇒_ {C = Bimodules} B₁ B₂) where
   open Monad M₁ using () renaming (C to C₁; T to T₁)
   open Monad M₂ using () renaming (C to C₂; T to T₂)
   open Bimodule B₁ using () renaming (F to F₁; actionˡ to actionˡ₁)
