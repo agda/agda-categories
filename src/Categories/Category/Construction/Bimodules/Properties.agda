@@ -27,8 +27,8 @@ open Cat
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞 using (hom; _⇒₂_; _≈_; _∘ᵥ_; _◁_; _▷_; _◁ᵢ_; _▷ᵢ_)
 
-open import Categories.Bicategory.Monad.Bimodule {o} {ℓ} {e} {t} {𝒞}
-open import Categories.Bicategory.Monad.Bimodule.Homomorphism
+open import Categories.Bicategory.Monad.Bimodule {𝒞 = 𝒞}
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism {𝒞 = 𝒞}
 
 module Bimodulehom-isIso {B₁ B₂ : Obj {C = Bimodules}} (f : _⇒_ {C = Bimodules} B₁ B₂) where
   open Monad M₁ using () renaming (C to C₁; T to T₁)
