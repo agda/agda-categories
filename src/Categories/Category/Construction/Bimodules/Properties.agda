@@ -37,8 +37,8 @@ module Bimodulehom-isIso {B₁ B₂ : Obj {C = Bimodules}} (f : _⇒_ {C = Bimod
   open Bimodule B₂ using () renaming (F to F₂; actionˡ to actionˡ₂)
   open Bimodulehomomorphism f using (α; linearˡ; linearʳ)
 
-  2cellisIso⇒isIso : IsIso {C = hom C₁ C₂} α → IsIso {C = Bimodules} f
-  2cellisIso⇒isIso αisIso = record
+  αisIso⇒fisIso : IsIso {C = hom C₁ C₂} α → IsIso {C = Bimodules} f
+  αisIso⇒fisIso αisIso = record
     { inv = record
       { α = α⁻¹
         -- F₂ ⇒₂ F₁
@@ -62,8 +62,8 @@ module Bimodulehom-isIso {B₁ B₂ : Obj {C = Bimodules}} (f : _⇒_ {C = Bimod
         ; iso = IsIso.iso αisIso
         }
 
-  2cellisIso⇒Iso : IsIso {C = hom C₁ C₂} α → _≅_ {C = Bimodules} B₁ B₂
-  2cellisIso⇒Iso αisIso = record
+  αisIso⇒Iso : IsIso {C = hom C₁ C₂} α → B₁ ≅ B₂
+  αisIso⇒Iso αisIso = record
     { from = f
     ; to = IsIso.inv (2cellisIso⇒isIso αisIso)
     ; iso = IsIso.iso (2cellisIso⇒isIso αisIso)
