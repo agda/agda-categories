@@ -53,44 +53,8 @@ module _ {𝒞 : Category o ℓ e} {monoidal : Monoidal 𝒞} (symmetric : Symme
         ; F⇐G = record { η = λ _ → η ∘ B ; commute = λ (f , g) → swapping g f ; sym-commute = λ (f , g) → sym (swapping g f) }
         ; iso = λ _ → record { isoˡ = pullˡ *-identityʳ ○ cancelʳ B-commutative ; isoʳ = pullˡ *-identityʳ ○ cancelʳ B-commutative } 
         } 
-      ; hexagon₁ = λ {X} {Y} {Z} → begin 
-        (ψ ∘ (η ⊗₁ (η ∘ B))) * ∘ (η ∘ associator.from) * ∘ (ψ ∘ ((η ∘ B) ⊗₁ η))       
-          ≈⟨ pullˡ *-sym-assoc ⟩ 
-        ((ψ ∘ (η ⊗₁ (η ∘ B))) * ∘ (η ∘ associator.from)) * ∘ (ψ ∘ ((η ∘ B) ⊗₁ η))     
-          ≈⟨ ((*-resp-≈ (pullˡ *-identityʳ)) ⟩∘⟨refl) ⟩ 
-        ((ψ ∘ (η ⊗₁ (η ∘ B))) ∘ associator.from) * ∘ (ψ ∘ ((η ∘ B) ⊗₁ η))             
-          ≈˘⟨ *-resp-≈ (∘-resp-≈ˡ (∘-resp-≈ʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identityʳ , refl)))) ⟩∘⟨ ∘-resp-≈ʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (refl , identityʳ)) ⟩ 
-        ((ψ ∘ (η ⊗₁ η) ∘ (id ⊗₁ B)) ∘ associator.from) * ∘ (ψ ∘ (η ⊗₁ η) ∘ (B ⊗₁ id)) 
-          ≈⟨ *-resp-≈ (∘-resp-≈ˡ (pullˡ ψ-η)) ⟩∘⟨ pullˡ ψ-η ⟩ 
-        ((η ∘ (id ⊗₁ B)) ∘ associator.from) * ∘ (η ∘ (B ⊗₁ id))                       
-          ≈⟨ pullˡ *-identityʳ ⟩ 
-        ((η ∘ (id ⊗₁ B)) ∘ associator.from) ∘ (B ⊗₁ id)                               
-          ≈⟨ (assoc ○ pullʳ hexagon₁ ○ (sym-assoc ○ sym-assoc)) ⟩ 
-        ((η ∘ associator.from) ∘ B) ∘ associator.from                                 
-          ≈˘⟨ pullˡ (pullˡ *-identityʳ) ⟩ 
-        (η ∘ associator.from) * ∘ (η ∘ B) ∘ associator.from                           
-          ≈˘⟨ refl⟩∘⟨ (pullˡ *-identityʳ) ⟩ 
-        (η ∘ associator.from) * ∘ (η ∘ B) * ∘ (η ∘ associator.from)                   
-          ∎ 
-      ; hexagon₂ = λ {X} {Y} {Z} → begin 
-        ((ψ ∘ ((η ∘ B) ⊗₁ η)) * ∘ (η ∘ associator.to)) * ∘ (ψ ∘ (η ⊗₁ (η ∘ B)))     
-          ≈⟨ ((*-resp-≈ (pullˡ *-identityʳ)) ⟩∘⟨refl) ⟩ 
-        ((ψ ∘ ((η ∘ B) ⊗₁ η)) ∘ associator.to) * ∘ (ψ ∘ (η ⊗₁ (η ∘ B)))             
-          ≈˘⟨ *-resp-≈ (∘-resp-≈ˡ (∘-resp-≈ʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (refl , identityʳ)))) ⟩∘⟨ ∘-resp-≈ʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identityʳ , refl)) ⟩ 
-        ((ψ ∘ (η ⊗₁ η) ∘ (B ⊗₁ id)) ∘ associator.to) * ∘ (ψ ∘ (η ⊗₁ η) ∘ (id ⊗₁ B)) 
-          ≈⟨ *-resp-≈ (∘-resp-≈ˡ (pullˡ ψ-η)) ⟩∘⟨ pullˡ ψ-η ⟩ 
-        ((η ∘ (B ⊗₁ id)) ∘ associator.to) * ∘ (η ∘ (id ⊗₁ B))                       
-          ≈⟨ pullˡ *-identityʳ ⟩ 
-        ((η ∘ (B ⊗₁ id)) ∘ associator.to) ∘ (id ⊗₁ B)                               
-          ≈⟨ (assoc ○ pullʳ (sym-assoc ○ hexagon₂) ○ (sym-assoc ○ ∘-resp-≈ˡ sym-assoc)) ⟩
-        ((η ∘ associator.to) ∘ B) ∘ associator.to                                   
-          ≈˘⟨ pullˡ (pullˡ *-identityʳ) ⟩ 
-        (η ∘ associator.to) * ∘ (η ∘ B) ∘ associator.to                             
-          ≈˘⟨ refl⟩∘⟨ (pullˡ *-identityʳ) ⟩ 
-        (η ∘ associator.to) * ∘ (η ∘ B) * ∘ (η ∘ associator.to)                     
-          ≈˘⟨ *-assoc ⟩∘⟨refl ○ assoc ⟩ 
-        ((η ∘ associator.to) * ∘ (η ∘ B)) * ∘ (η ∘ associator.to)                   
-          ∎ 
+      ; hexagon₁ = hexagon₁'
+      ; hexagon₂ = hexagon₂'
       } 
     ; commutative = λ {X} {Y} → pullˡ *-identityʳ ○ cancelʳ B-commutative 
     }
@@ -115,3 +79,43 @@ module _ {𝒞 : Category o ℓ e} {monoidal : Monoidal 𝒞} (symmetric : Symme
         ≈˘⟨ extendʳ *-identityʳ ⟩ 
       (ψ ∘ (g ⊗₁ f)) * ∘ η ∘ B       
         ∎
+    hexagon₁' : ∀ {X Y Z : Obj} → (ψ {X} {Y ⊗₀ Z} ∘ (η ⊗₁ (η ∘ B))) * ∘ (η ∘ associator.from) * ∘ (ψ ∘ ((η ∘ B) ⊗₁ η)) ≈ (η ∘ associator.from) * ∘ (η ∘ B) * ∘ (η ∘ associator.from)
+    hexagon₁' = begin 
+      (ψ ∘ (η ⊗₁ (η ∘ B))) * ∘ (η ∘ associator.from) * ∘ (ψ ∘ ((η ∘ B) ⊗₁ η))       
+        ≈⟨ pullˡ *-sym-assoc ⟩ 
+      ((ψ ∘ (η ⊗₁ (η ∘ B))) * ∘ (η ∘ associator.from)) * ∘ (ψ ∘ ((η ∘ B) ⊗₁ η))     
+        ≈⟨ ((*-resp-≈ (pullˡ *-identityʳ)) ⟩∘⟨refl) ⟩ 
+      ((ψ ∘ (η ⊗₁ (η ∘ B))) ∘ associator.from) * ∘ (ψ ∘ ((η ∘ B) ⊗₁ η))             
+        ≈˘⟨ *-resp-≈ (∘-resp-≈ˡ (∘-resp-≈ʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identityʳ , refl)))) ⟩∘⟨ ∘-resp-≈ʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (refl , identityʳ)) ⟩ 
+      ((ψ ∘ (η ⊗₁ η) ∘ (id ⊗₁ B)) ∘ associator.from) * ∘ (ψ ∘ (η ⊗₁ η) ∘ (B ⊗₁ id)) 
+        ≈⟨ *-resp-≈ (∘-resp-≈ˡ (pullˡ ψ-η)) ⟩∘⟨ pullˡ ψ-η ⟩ 
+      ((η ∘ (id ⊗₁ B)) ∘ associator.from) * ∘ (η ∘ (B ⊗₁ id))                       
+        ≈⟨ pullˡ *-identityʳ ⟩ 
+      ((η ∘ (id ⊗₁ B)) ∘ associator.from) ∘ (B ⊗₁ id)                               
+        ≈⟨ (assoc ○ pullʳ hexagon₁ ○ (sym-assoc ○ sym-assoc)) ⟩ 
+      ((η ∘ associator.from) ∘ B) ∘ associator.from                                 
+        ≈˘⟨ pullˡ (pullˡ *-identityʳ) ⟩ 
+      (η ∘ associator.from) * ∘ (η ∘ B) ∘ associator.from                           
+        ≈˘⟨ refl⟩∘⟨ (pullˡ *-identityʳ) ⟩ 
+      (η ∘ associator.from) * ∘ (η ∘ B) * ∘ (η ∘ associator.from)                   
+        ∎
+    hexagon₂' : ∀ {X Y Z : Obj} → ((ψ {X ⊗₀ Y} {Z} ∘ ((η ∘ B) ⊗₁ η)) * ∘ (η ∘ associator.to)) * ∘ (ψ ∘ (η ⊗₁ (η ∘ B))) ≈ ((η ∘ associator.to) * ∘ (η ∘ B)) * ∘ (η ∘ associator.to)
+    hexagon₂' = begin 
+      ((ψ ∘ ((η ∘ B) ⊗₁ η)) * ∘ (η ∘ associator.to)) * ∘ (ψ ∘ (η ⊗₁ (η ∘ B)))     
+        ≈⟨ ((*-resp-≈ (pullˡ *-identityʳ)) ⟩∘⟨refl) ⟩ 
+      ((ψ ∘ ((η ∘ B) ⊗₁ η)) ∘ associator.to) * ∘ (ψ ∘ (η ⊗₁ (η ∘ B)))             
+        ≈˘⟨ *-resp-≈ (∘-resp-≈ˡ (∘-resp-≈ʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (refl , identityʳ)))) ⟩∘⟨ ∘-resp-≈ʳ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identityʳ , refl)) ⟩ 
+      ((ψ ∘ (η ⊗₁ η) ∘ (B ⊗₁ id)) ∘ associator.to) * ∘ (ψ ∘ (η ⊗₁ η) ∘ (id ⊗₁ B)) 
+        ≈⟨ *-resp-≈ (∘-resp-≈ˡ (pullˡ ψ-η)) ⟩∘⟨ pullˡ ψ-η ⟩ 
+      ((η ∘ (B ⊗₁ id)) ∘ associator.to) * ∘ (η ∘ (id ⊗₁ B))                       
+        ≈⟨ pullˡ *-identityʳ ⟩ 
+      ((η ∘ (B ⊗₁ id)) ∘ associator.to) ∘ (id ⊗₁ B)                               
+        ≈⟨ (assoc ○ pullʳ (sym-assoc ○ hexagon₂) ○ (sym-assoc ○ ∘-resp-≈ˡ sym-assoc)) ⟩
+      ((η ∘ associator.to) ∘ B) ∘ associator.to                                   
+        ≈˘⟨ pullˡ (pullˡ *-identityʳ) ⟩ 
+      (η ∘ associator.to) * ∘ (η ∘ B) ∘ associator.to                             
+        ≈˘⟨ refl⟩∘⟨ (pullˡ *-identityʳ) ⟩ 
+      (η ∘ associator.to) * ∘ (η ∘ B) * ∘ (η ∘ associator.to)                     
+        ≈˘⟨ *-assoc ⟩∘⟨refl ○ assoc ⟩ 
+      ((η ∘ associator.to) * ∘ (η ∘ B)) * ∘ (η ∘ associator.to)                   
+        ∎ 
