@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Category.Construction.Kleisli.Monoidal where
+module Categories.Category.Monoidal.Construction.Kleisli where
 
 open import Level
 open import Data.Product using (_,_)
@@ -12,8 +12,10 @@ open import Categories.Monad.Commutative.Properties using (module CommutativePro
 open import Categories.Category.Construction.Kleisli using (Kleisli; module TripleNotation)
 open import Categories.Category.Monoidal using (Monoidal)
 open import Categories.Category.Monoidal.Symmetric using (Symmetric)
+open import Categories.Functor.Bifunctor using (Bifunctor)
 
 
+import Categories.Morphism as MC
 import Categories.Morphism.Reasoning as MR
 import Categories.Monad.Strong.Properties as StrongProps
 import Categories.Category.Monoidal.Utilities as MonoidalUtils
@@ -43,28 +45,57 @@ module _ {𝒞 : Category o ℓ e} {monoidal : Monoidal 𝒞} (symmetric : Symme
   open CommutativeProperties braided CM
   open SymmetricProperties symmetric CM
 
+  open MC (Kleisli M) using (_≅_)
+
+  ⊗' : Bifunctor (Kleisli M) (Kleisli M) (Kleisli M)
+  ⊗' = record
+    { F₀ = λ (X , Y) → X ⊗₀ Y
+    ; F₁ = λ (f , g) → ψ ∘ (f ⊗₁ g)
+    ; identity = identity'
+    ; homomorphism = λ {(X₁ , X₂)} {(Y₁ , Y₂)} {(Z₁ , Z₂)} {(f , g)} {(h , i)} → homomorphism' {X₁} {X₂} {Y₁} {Y₂} {Z₁} {Z₂} {f} {g} {h} {i}
+    ; F-resp-≈ = λ (f≈g , h≈i) → ∘-resp-≈ʳ (⊗.F-resp-≈ (f≈g , h≈i))
+    }
+    where
+    identity' : ∀ {X} {Y} → ψ ∘ (η {X} ⊗₁ η {Y}) ≈ η
+    identity' = begin
+      (τ * ∘ σ) ∘ (η ⊗₁ η)              ≈˘⟨ refl⟩∘⟨ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identityˡ , identityʳ)) ⟩
+      (τ * ∘ σ) ∘ (id ⊗₁ η) ∘ (η ⊗₁ id) ≈⟨ pullʳ (pullˡ η-comm) ⟩
+      τ * ∘ η ∘ (η ⊗₁ id)               ≈⟨ pullˡ *-identityʳ ⟩
+      τ ∘ (η ⊗₁ id)                     ≈⟨ RightStrength.η-comm rightStrength ⟩
+      η                                 ∎
+    homomorphism' : ∀ {X₁ X₂ Y₁ Y₂ Z₁ Z₂ : Obj} {f : X₁ ⇒ M.F.₀ Y₁} {g : X₂ ⇒ M.F.₀ Y₂} {h : Y₁ ⇒ M.F.₀ Z₁} {i : Y₂ ⇒ M.F.₀ Z₂} → ψ ∘ ((h * ∘ f) ⊗₁ (i * ∘ g)) ≈ (ψ ∘ (h ⊗₁ i)) * ∘ ψ ∘ (f ⊗₁ g)
+    homomorphism' {f = f} {g} {h} {i} = begin
+      ψ ∘ ((h * ∘ f) ⊗₁ (i * ∘ g))                           ≈˘⟨ refl⟩∘⟨ (pullˡ (sym ⊗.homomorphism) ○ sym ⊗.homomorphism) ⟩
+      ψ ∘ (μ.η _ ⊗₁ μ.η _) ∘ (M.F.₁ h ⊗₁ M.F.₁ i) ∘ (f ⊗₁ g) ≈˘⟨ extendʳ ψ-μ ⟩
+      ψ * ∘ ψ ∘ (M.F.₁ h ⊗₁ M.F.₁ i) ∘ (f ⊗₁ g)              ≈⟨ refl⟩∘⟨ extendʳ ψ-comm ⟩
+      ψ * ∘ M.F.₁ (h ⊗₁ i) ∘ ψ ∘ (f ⊗₁ g)                    ≈⟨ pullˡ *∘F₁ ⟩
+      (ψ ∘ (h ⊗₁ i)) * ∘ ψ ∘ (f ⊗₁ g)                        ∎
+
+  unitorˡ' : ∀ {X} → unit ⊗₀ X ≅ X
+  unitorˡ' = record { from = η ∘ λ⇒ ; to = η ∘ λ⇐ ; iso = record
+    { isoˡ = pullˡ *-identityʳ ○ cancelʳ unitorˡ.isoˡ
+    ; isoʳ = pullˡ *-identityʳ ○ cancelʳ unitorˡ.isoʳ
+    } }
+
+  unitorʳ' : ∀ {X} → X ⊗₀ unit ≅ X
+  unitorʳ' = record { from = η ∘ ρ⇒ ; to = η ∘ ρ⇐ ; iso = record
+    { isoˡ = pullˡ *-identityʳ ○ cancelʳ unitorʳ.isoˡ
+    ; isoʳ = pullˡ *-identityʳ ○ cancelʳ unitorʳ.isoʳ
+    } }
+
+  associator' : ∀ {X Y Z} → (X ⊗₀ Y) ⊗₀ Z ≅ X ⊗₀ (Y ⊗₀ Z)
+  associator' = record { from = η ∘ α⇒ ; to = η ∘ α⇐ ; iso = record
+    { isoˡ = pullˡ *-identityʳ ○ cancelʳ associator.isoˡ
+    ; isoʳ = pullˡ *-identityʳ ○ cancelʳ associator.isoʳ
+    } }
+
   Kleisli-Monoidal : Monoidal (Kleisli M)
   Kleisli-Monoidal = record
-    { ⊗ = record
-      { F₀ = λ (X , Y) → X ⊗₀ Y
-      ; F₁ = λ (f , g) → ψ ∘ (f ⊗₁ g)
-      ; identity = identity'
-      ; homomorphism = λ {(X₁ , X₂)} {(Y₁ , Y₂)} {(Z₁ , Z₂)} {(f , g)} {(h , i)} → homomorphism' {X₁} {X₂} {Y₁} {Y₂} {Z₁} {Z₂} {f} {g} {h} {i}
-      ; F-resp-≈ = λ (f≈g , h≈i) → ∘-resp-≈ʳ (⊗.F-resp-≈ (f≈g , h≈i))
-      }
+    { ⊗ = ⊗'
     ; unit = unit
-    ; unitorˡ = record { from = η ∘ λ⇒ ; to = η ∘ λ⇐ ; iso = record 
-      { isoˡ = pullˡ *-identityʳ ○ cancelʳ unitorˡ.isoˡ
-      ; isoʳ = pullˡ *-identityʳ ○ cancelʳ unitorˡ.isoʳ
-      } }
-    ; unitorʳ = record { from = η ∘ ρ⇒ ; to = η ∘ ρ⇐ ; iso = record 
-      { isoˡ = pullˡ *-identityʳ ○ cancelʳ unitorʳ.isoˡ
-      ; isoʳ = pullˡ *-identityʳ ○ cancelʳ unitorʳ.isoʳ
-      } }
-    ; associator = record { from = η ∘ α⇒ ; to = η ∘ α⇐ ; iso = record 
-      { isoˡ = pullˡ *-identityʳ ○ cancelʳ associator.isoˡ
-      ; isoʳ = pullˡ *-identityʳ ○ cancelʳ associator.isoʳ
-      } }    
+    ; unitorˡ = unitorˡ'
+    ; unitorʳ = unitorʳ'
+    ; associator = associator'
     ; unitorˡ-commute-from = unitorˡ-commute-from'
     ; unitorˡ-commute-to = unitorˡ-commute-to'
     ; unitorʳ-commute-from = unitorʳ-commute-from'
@@ -75,20 +106,6 @@ module _ {𝒞 : Category o ℓ e} {monoidal : Monoidal 𝒞} (symmetric : Symme
     ; pentagon = pentagon'
     }
     where
-    identity' : ∀ {X} {Y} → ψ ∘ (η {X} ⊗₁ η {Y}) ≈ η
-    identity' = begin 
-        (τ * ∘ σ) ∘ (η ⊗₁ η)              ≈˘⟨ refl⟩∘⟨ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identityˡ , identityʳ)) ⟩
-        (τ * ∘ σ) ∘ (id ⊗₁ η) ∘ (η ⊗₁ id) ≈⟨ pullʳ (pullˡ η-comm) ⟩ 
-        τ * ∘ η ∘ (η ⊗₁ id)               ≈⟨ pullˡ *-identityʳ ⟩ 
-        τ ∘ (η ⊗₁ id)                     ≈⟨ RightStrength.η-comm rightStrength ⟩
-        η                                 ∎
-    homomorphism' : ∀ {X₁ X₂ Y₁ Y₂ Z₁ Z₂ : Obj} {f : X₁ ⇒ M.F.₀ Y₁} {g : X₂ ⇒ M.F.₀ Y₂} {h : Y₁ ⇒ M.F.₀ Z₁} {i : Y₂ ⇒ M.F.₀ Z₂} → ψ ∘ ((h * ∘ f) ⊗₁ (i * ∘ g)) ≈ (ψ ∘ (h ⊗₁ i)) * ∘ ψ ∘ (f ⊗₁ g)
-    homomorphism' {f = f} {g} {h} {i} = begin 
-        ψ ∘ ((h * ∘ f) ⊗₁ (i * ∘ g))                           ≈˘⟨ refl⟩∘⟨ (pullˡ (sym ⊗.homomorphism) ○ sym ⊗.homomorphism) ⟩ 
-        ψ ∘ (μ.η _ ⊗₁ μ.η _) ∘ (M.F.₁ h ⊗₁ M.F.₁ i) ∘ (f ⊗₁ g) ≈˘⟨ extendʳ ψ-μ ⟩ 
-        ψ * ∘ ψ ∘ (M.F.₁ h ⊗₁ M.F.₁ i) ∘ (f ⊗₁ g)              ≈⟨ refl⟩∘⟨ extendʳ ψ-comm ⟩ 
-        ψ * ∘ M.F.₁ (h ⊗₁ i) ∘ ψ ∘ (f ⊗₁ g)                    ≈⟨ pullˡ *∘F₁ ⟩ 
-        (ψ ∘ (h ⊗₁ i)) * ∘ ψ ∘ (f ⊗₁ g)                        ∎
     unitorˡ-commute-from' : ∀ {X} {Y} {f : X ⇒ M.F.₀ Y} → (η ∘ λ⇒) * ∘ ψ ∘ (η ⊗₁ f) ≈ f * ∘ η ∘ λ⇒
     unitorˡ-commute-from' {f = f} = begin 
       (η ∘ λ⇒) * ∘ ψ ∘ (η ⊗₁ f) ≈⟨ *⇒F₁ ⟩∘⟨ ψ-σ' ⟩ 

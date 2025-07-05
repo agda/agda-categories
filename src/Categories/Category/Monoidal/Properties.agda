@@ -30,7 +30,7 @@ private
     A B : Obj
 open Core.Shorthands
 
-monoidal-Op : M.Monoidal (C.op)
+monoidal-Op : M.Monoidal C.op
 monoidal-Op = record
   { ⊗ = Functor.op ⊗
   ; unit = unit
