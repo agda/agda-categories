@@ -25,6 +25,8 @@ Bimodules = record
   ; identityʳ = identity₂ʳ
   ; identity² = identity₂²
   ; equiv = record
+  -- must be delta expanded to type-check
+  -- as functions are applied to different implicit parameters
     { refl = hom.Equiv.refl
     ; sym = hom.Equiv.sym
     ; trans = hom.Equiv.trans
