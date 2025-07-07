@@ -43,6 +43,7 @@ module Bimodulehom-isIso {B₁ B₂ : Obj {C = Bimodules}} (f : _⇒_ {C = Bimod
       ; linearʳ = linearʳ⁻¹
       }
     ; iso = record
+    -- Cannot be delta reduced because of size issues
       { isoˡ = IsIso.isoˡ αisIso
       ; isoʳ = IsIso.isoʳ αisIso
       }
