@@ -11,16 +11,16 @@ open import Categories.Bicategory.Monad.Bimodule using (Bimodule)
 open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism)
 import Categories.Morphism as Mor
 import Categories.Morphism.Reasoning.Iso as IsoReasoning
+open import Categories.Category.Construction.Bimodules M₁ M₂ using (Bimodules)
+open import Categories.Category using (Category)
+import Categories.Bicategory.Extras as Bicat
 
 private
   module Bimodules where
-    open import Categories.Category.Construction.Bimodules M₁ M₂ using (Bimodules)
-    open import Categories.Category using (Category)
     open Category Bimodules public
     open Mor Bimodules using (IsIso; _≅_) public
 
   module 𝒞 where
-    import Categories.Bicategory.Extras as Bicat
     open Bicat 𝒞 public
 
   module HomCat {A B : 𝒞.Obj} where
