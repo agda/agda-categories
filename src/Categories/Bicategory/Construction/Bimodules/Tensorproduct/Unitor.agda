@@ -12,7 +12,8 @@ open import Categories.Bicategory.Monad.Bimodule
 module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor
   {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞}
   {M₁ M₂ : Monad 𝒞} {B : Bimodule M₁ M₂} where
-  
+
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism)
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct {o} {ℓ} {e} {t} {𝒞} {localCoeq}
 open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_coeq-◁_; _▷-coeq_)
 
