@@ -64,7 +64,7 @@ module TensorproductOfBimodules {M₁ M₂ M₃ : Monad 𝒞} (B₂ : Bimodule M
 
     -- To define the left-action we need that F ∘₁ T₁ is a coequalizer --
     F∘T₁Coequalizer : Coequalizer (hom C₁ C₃) ((act-to-the-left) ◁ T₁) ((act-to-the-right) ◁ T₁)
-    F∘T₁Coequalizer = precompCoequalizer F₂⊗F₁ T₁
+    F∘T₁Coequalizer = F₂⊗F₁ coeq-◁ T₁
     
     F₂∘₁T₂▷actionˡ₁ : (F₂ ∘₁ T₂ ∘₁ F₁) ∘₁ T₁ ⇒₂ F₂ ∘₁ T₂ ∘₁ F₁
     F₂∘₁T₂▷actionˡ₁ = associator.from ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁ ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁
@@ -162,7 +162,7 @@ module TensorproductOfBimodules {M₁ M₂ M₃ : Monad 𝒞} (B₂ : Bimodule M
 
     -- To define the right-action we need that T₃ ∘₁ F is a coequalizer --
     T₃∘FCoequalizer : Coequalizer (hom C₁ C₃) (T₃ ▷ (act-to-the-left)) (T₃ ▷ (act-to-the-right))
-    T₃∘FCoequalizer = postcompCoequalizer F₂⊗F₁ T₃
+    T₃∘FCoequalizer =  T₃ ▷-coeq F₂⊗F₁
 
     -- to define a map between the coequalizers T₃ ∘₁ F ⇒₂ F we define a map of diagrams --
     actionʳ₂◁T₂∘₁F₁ : T₃ ∘₁ F₂ ∘₁ T₂ ∘₁ F₁ ⇒₂  F₂ ∘₁ T₂ ∘₁ F₁
@@ -240,11 +240,11 @@ module TensorproductOfBimodules {M₁ M₂ M₃ : Monad 𝒞} (B₂ : Bimodule M
 
     -- we need that T₃∘(F∘T₁) is a coequalizer --
     T₃∘[F∘T₁]Coequalizer : Coequalizer (hom C₁ C₃) (T₃ ▷ ((act-to-the-left) ◁ T₁))  (T₃ ▷ ((act-to-the-right) ◁ T₁))
-    T₃∘[F∘T₁]Coequalizer = postcompCoequalizer F∘T₁Coequalizer T₃
+    T₃∘[F∘T₁]Coequalizer = T₃ ▷-coeq F∘T₁Coequalizer
 
     -- we need that (T₃∘F)∘T₁ is a coequalizer --
     [T₃∘F]∘T₁Coequalizer : Coequalizer (hom C₁ C₃) ((T₃ ▷ (act-to-the-left)) ◁ T₁) ((T₃ ▷ (act-to-the-right)) ◁ T₁)
-    [T₃∘F]∘T₁Coequalizer = precompCoequalizer T₃∘FCoequalizer T₁
+    [T₃∘F]∘T₁Coequalizer = T₃∘FCoequalizer coeq-◁ T₁
 
     abstract
       assoc-pentagon : actionʳ₂◁F₁ ∘ᵥ T₃ ▷ F₂▷actionˡ₁ ∘ᵥ associator.from ≈ F₂▷actionˡ₁ ∘ᵥ actionʳ₂◁F₁ ◁ T₁
@@ -324,7 +324,7 @@ module TensorproductOfBimodules {M₁ M₂ M₃ : Monad 𝒞} (B₂ : Bimodule M
 
     --  we need that (F∘T₁)∘T₁ is a coequalizer --
     [F∘T₁]∘T₁Coequalizer : Coequalizer (hom C₁ C₃) (((act-to-the-left) ◁ T₁) ◁ T₁) (((act-to-the-right) ◁ T₁) ◁ T₁)
-    [F∘T₁]∘T₁Coequalizer = precompCoequalizer F∘T₁Coequalizer T₁
+    [F∘T₁]∘T₁Coequalizer = F∘T₁Coequalizer coeq-◁ T₁
 
     abstract
       assoc-actionˡ-pentagon : F₂▷actionˡ₁ ∘ᵥ (F₂ ∘₁ F₁) ▷ μ₁ ∘ᵥ associator.from ≈ F₂▷actionˡ₁ ∘ᵥ F₂▷actionˡ₁ ◁ T₁
@@ -402,7 +402,7 @@ module TensorproductOfBimodules {M₁ M₂ M₃ : Monad 𝒞} (B₂ : Bimodule M
 
     --  we need that T₃∘(T₃∘F) is a coequalizer --
     T₃∘[T₃∘F]Coequalizer : Coequalizer (hom C₁ C₃) (T₃ ▷ T₃ ▷ (act-to-the-left)) (T₃ ▷ T₃ ▷ (act-to-the-right))
-    T₃∘[T₃∘F]Coequalizer = postcompCoequalizer T₃∘FCoequalizer T₃
+    T₃∘[T₃∘F]Coequalizer = T₃ ▷-coeq T₃∘FCoequalizer
 
     abstract
       assoc-actionʳ-pentagon : actionʳ₂◁F₁ ∘ᵥ μ₃ ◁ (F₂ ∘₁ F₁) ∘ᵥ associator.to ≈ actionʳ₂◁F₁ ∘ᵥ T₃ ▷ actionʳ₂◁F₁
