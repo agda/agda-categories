@@ -206,11 +206,11 @@ module Left-Unitor where
   open import Categories.Category.Construction.Bimodules.Properties
 
   Unitorˡ⊗ : Categories.Morphism._≅_ (Bimodules₁ M₁ M₂) (Id-Bimod ⊗₀ B) B
-  Unitorˡ⊗ = 2cellisIso⇒Iso Unitorˡ⊗From λ⇒⊗isIso
+  Unitorˡ⊗ = αisIso⇒Iso Unitorˡ⊗From λ⇒⊗isIso
     where
       open Monad M₁ using () renaming (C to C₁)
       open Monad M₂ using () renaming (C to C₂)
-      open Bimodulehom-isIso
+      open Bimodule-Isomorphism using (αisIso⇒Iso)
       λ⇒⊗isIso : Categories.Morphism.IsIso (hom C₁ C₂) λ⇒⊗
       λ⇒⊗isIso = record
        { inv = _≅_.to 2-cell.Unitorˡ⊗Iso
@@ -380,11 +380,11 @@ module Right-Unitor where
   open import Categories.Category.Construction.Bimodules.Properties
 
   Unitorʳ⊗ : Categories.Morphism._≅_ (Bimodules₁ M₁ M₂) (B ⊗₀ Id-Bimod) B
-  Unitorʳ⊗ = 2cellisIso⇒Iso Unitorʳ⊗From ρ⇒⊗isIso
+  Unitorʳ⊗ = αisIso⇒Iso Unitorʳ⊗From ρ⇒⊗isIso
     where
       open Monad M₁ using () renaming (C to C₁)
       open Monad M₂ using () renaming (C to C₂)
-      open Bimodulehom-isIso
+      open Bimodule-Isomorphism using (αisIso⇒Iso)
       ρ⇒⊗isIso : Categories.Morphism.IsIso (hom C₁ C₂) ρ⇒⊗
       ρ⇒⊗isIso = record
        { inv = _≅_.to 2-cell.Unitorʳ⊗Iso
