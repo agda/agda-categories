@@ -9,6 +9,7 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct
 open import Categories.Bicategory.Monad
 open import Level
 open import Categories.Bicategory.Monad.Bimodule
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism)
 import Categories.Category.Construction.Bimodules
 open Categories.Category.Construction.Bimodules {o} {ℓ} {e} {t} {𝒞} renaming (Bimodules to Bimodules₁)
 import Categories.Bicategory.Extras as Bicat
