@@ -14,6 +14,7 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor
   {M₁ M₂ : Monad 𝒞} {B : Bimodule M₁ M₂} where
   
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct {o} {ℓ} {e} {t} {𝒞} {localCoeq}
+open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_coeq-◁_; _▷-coeq_)
 
 private
   _⊗₀_ = TensorproductOfBimodules.B₂⊗B₁
@@ -151,7 +152,7 @@ module Left-Unitor where
 
       linearˡ : actionˡ ∘ᵥ λ⇒⊗ ◁ T₁ ≈ λ⇒⊗ ∘ᵥ actionˡT₂⊗F
       linearˡ = Coequalizer⇒Epi
-                  (precompCoequalizer T₂⊗F T₁)
+                  (T₂⊗F coeq-◁ T₁)
                   (actionˡ ∘ᵥ λ⇒⊗ ◁ T₁)
                   (λ⇒⊗ ∘ᵥ actionˡT₂⊗F)
                   linearˡ∘arr
@@ -183,7 +184,7 @@ module Left-Unitor where
 
       linearʳ : actionʳ ∘ᵥ T₂ ▷ λ⇒⊗ ≈ λ⇒⊗ ∘ᵥ actionʳT₂⊗F
       linearʳ = Coequalizer⇒Epi
-                  (postcompCoequalizer T₂⊗F T₂)
+                  (T₂ ▷-coeq T₂⊗F)
                   (actionʳ ∘ᵥ T₂ ▷ λ⇒⊗)
                   (λ⇒⊗ ∘ᵥ actionʳT₂⊗F)
                   linearʳ∘arr
