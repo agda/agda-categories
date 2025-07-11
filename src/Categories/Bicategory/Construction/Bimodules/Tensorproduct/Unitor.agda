@@ -328,7 +328,7 @@ module Right-Unitor where
 
       linearˡ : actionˡ ∘ᵥ ρ⇒⊗ ◁ T₁ ≈ ρ⇒⊗ ∘ᵥ actionˡF⊗T₁
       linearˡ = Coequalizer⇒Epi
-                  (precompCoequalizer F⊗T₁ T₁)
+                  (F⊗T₁ coeq-◁ T₁)
                   (actionˡ ∘ᵥ ρ⇒⊗ ◁ T₁)
                   (ρ⇒⊗ ∘ᵥ actionˡF⊗T₁)
                   linearˡ∘arr
@@ -359,7 +359,7 @@ module Right-Unitor where
 
       linearʳ : actionʳ ∘ᵥ T₂ ▷ ρ⇒⊗ ≈ ρ⇒⊗ ∘ᵥ actionʳF⊗T₁
       linearʳ = Coequalizer⇒Epi
-                  (postcompCoequalizer F⊗T₁ T₂)
+                  (T₂ ▷-coeq F⊗T₁)
                   (actionʳ ∘ᵥ T₂ ▷ ρ⇒⊗)
                   (ρ⇒⊗ ∘ᵥ actionʳF⊗T₁)
                   linearʳ∘arr
