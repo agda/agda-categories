@@ -22,7 +22,7 @@ private
   module Bimodules₁ M₁ M₂ = Category (Bimodules₁ M₁ M₂)
 
   open LocalCoequalizers localCoeq
-  open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_▷-coeq_; _coeq-◁_)
+  open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_coeq-◁_; _▷-coeq_)
 
 
 module TensorproductOfBimodules {M₁ M₂ M₃ : Monad 𝒞} (B₂ : Bimodule M₂ M₃) (B₁ : Bimodule M₁ M₂) where
