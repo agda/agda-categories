@@ -21,7 +21,7 @@ record LocalCoequalizers : Set (o ⊔ ℓ ⊔ e ⊔ t) where
 
 open LocalCoequalizers
 
-module _ (localcoeq : LocalCoequalizers)
+module ComposeWithLocalCoequalizer (localcoeq : LocalCoequalizers)
          {A B E : Obj} {X Y : A ⇒₁ B} {α β : X ⇒₂ Y} where
 
   _coeq-◁_ : (coeq : Coequalizer (hom A B) α β) (f : E ⇒₁ A)
