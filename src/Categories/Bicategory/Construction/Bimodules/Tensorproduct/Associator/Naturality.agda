@@ -5,6 +5,7 @@ open import Categories.Bicategory.LocalCoequalizers
 
 open import Categories.Bicategory.Monad
 open import Categories.Bicategory.Monad.Bimodule
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism
   renaming (Bimodulehomomorphism to Bimodhom)
 
 
@@ -16,7 +17,7 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator.Nat
   (f₃ : Bimodhom B₃ B₃') (f₂ : Bimodhom B₂ B₂') (f₁ : Bimodhom B₁ B₁') where
 
 import Categories.Bicategory.LocalCoequalizers
-open LocalCoequalizers localCoeq
+open ComposeWithLocalCoequalizer 𝒞 localCoeq
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct {o} {ℓ} {e} {t} {𝒞} {localCoeq}
 
 private
@@ -310,7 +311,7 @@ abstract
                      ≈ (Bimodhom.α (f₃ ⊗₁ (f₂ ⊗₁ f₁)) ∘ᵥ α⇒⊗ {B₃} {B₂} {B₁})
                         ∘ᵥ Coequalizer.arr [F₃⊗F₂]⊗F₁
   α⇒⊗-natural∘arr = Coequalizer⇒Epi
-                      (precompCoequalizer F₃⊗F₂ F₁)
+                      (F₃⊗F₂ coeq-◁ F₁)
                       ((α⇒⊗ {B₃'} {B₂'} {B₁'}
                         ∘ᵥ Bimodhom.α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
                         ∘ᵥ Coequalizer.arr [F₃⊗F₂]⊗F₁)
