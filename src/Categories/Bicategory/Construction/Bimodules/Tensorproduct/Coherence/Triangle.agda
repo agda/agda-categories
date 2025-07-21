@@ -4,7 +4,8 @@ open import Categories.Bicategory
 open import Categories.Bicategory.LocalCoequalizers
 
 open import Categories.Bicategory.Monad
-open import Categories.Bicategory.Monad.Bimodule renaming (Bimodulehomomorphism to Bimodhom)
+open import Categories.Bicategory.Monad.Bimodule
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism renaming (Bimodulehomomorphism to Bimodhom)
 
 
 -- We will prove that the associator and unitor in the bicategory of monads and bimodules --
@@ -15,7 +16,7 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Tria
   {B₂ : Bimodule M₂ M₃} {B₁ : Bimodule M₁ M₂} where
 
 import Categories.Bicategory.LocalCoequalizers
-open LocalCoequalizers localCoeq
+open ComposeWithLocalCoequalizer 𝒞 localCoeq
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct {o} {ℓ} {e} {t} {𝒞} {localCoeq}
 private
   _⊗₀_ = TensorproductOfBimodules.B₂⊗B₁
@@ -177,7 +178,7 @@ abstract
                     ∘ᵥ Coequalizer.arr [F₂⊗T₂]⊗F₁
                     
   triangle⊗∘arr = Coequalizer⇒Epi
-                    (precompCoequalizer F₂⊗T₂ F₁)
+                    (F₂⊗T₂ coeq-◁ F₁)
                     ((Bimodhom.α (id-bimodule-hom ⊗₁ Unitorˡ⊗From)
                     ∘ᵥ Bimodhom.α Associator⊗From)
                     ∘ᵥ Coequalizer.arr [F₂⊗T₂]⊗F₁)
