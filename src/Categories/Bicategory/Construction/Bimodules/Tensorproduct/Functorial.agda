@@ -8,6 +8,7 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Functorial {o 
 open import Categories.Bicategory.Monad
 open import Level
 open import Categories.Bicategory.Monad.Bimodule {o} {ℓ} {e} {t} {𝒞}
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism
 open Bimodulehomomorphism
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct {o} {ℓ} {e} {t} {𝒞} {localCoeq}
 
