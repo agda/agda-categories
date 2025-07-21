@@ -13,8 +13,9 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator
   {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞} {M₁ M₂ M₃ M₄ : Monad 𝒞}
   {B₃ : Bimodule M₃ M₄} {B₂ : Bimodule M₂ M₃} {B₁ : Bimodule M₁ M₂} where
 
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism
 import Categories.Bicategory.LocalCoequalizers
-open LocalCoequalizers localCoeq
+open ComposeWithLocalCoequalizer 𝒞 localCoeq
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct {o} {ℓ} {e} {t} {𝒞} {localCoeq}
 private
   _⊗₀_ = TensorproductOfBimodules.B₂⊗B₁
@@ -140,14 +141,14 @@ module 2-cell where
 
 
   coeqᶠ : Coequalizer f₁ f₂
-  coeqᶠ = precompCoequalizer F₃⊗F₂ (T₂ ∘₁ F₁)
+  coeqᶠ = F₃⊗F₂ coeq-◁ (T₂ ∘₁ F₁)
 
   -- We would like to define
   -- coeqᵍ = postcompCoequalizer (postcompCoequalizer F₂⊗F₁ T₃) F₃)
   -- but we have to plug in associators at the appropriate positions.
   coeqᵍ : Coequalizer g₁ g₂
   coeqᵍ = CoeqOfIsomorphicDiagram
-            (postcompCoequalizer (postcompCoequalizer F₂⊗F₁ T₃) F₃)
+            (F₃ ▷-coeq T₃ ▷-coeq F₂⊗F₁)
             associatorA
             associatorC
   
@@ -156,13 +157,13 @@ module 2-cell where
   -- but we have to plug in associators at the appropriate positions.
   coeqʰ : Coequalizer h₁ h₂
   coeqʰ = CoeqOfIsomorphicDiagram
-            (postcompCoequalizer F₂⊗F₁ F₃)
+            (F₃ ▷-coeq F₂⊗F₁)
             associatorB
             associatorD
       
   
   coeqⁱ : Coequalizer i₁ i₂
-  coeqⁱ = precompCoequalizer F₃⊗F₂ F₁
+  coeqⁱ = F₃⊗F₂ coeq-◁ F₁
   
   f⇒i₁ f⇒i₂ : Coequalizer.obj coeqᶠ ⇒₂ Coequalizer.obj coeqⁱ
   f⇒i₁ = TensorproductOfBimodules.act-to-the-left (B₃ ⊗₀ B₂) B₁
@@ -773,7 +774,7 @@ module Linear-Left where
                       ∘ᵥ Bimodule.actionˡ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
                       ∘ᵥ Coequalizer.arr [F₃⊗F₂]⊗F₁ ◁ T₁
     linearˡ∘arr = Coequalizer⇒Epi
-                    (precompCoequalizer (precompCoequalizer F₃⊗F₂ F₁) T₁)
+                    (F₃⊗F₂ coeq-◁ F₁ coeq-◁ T₁)
                     ((Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
                       ∘ᵥ α⇒⊗ ◁ T₁)
                       ∘ᵥ Coequalizer.arr [F₃⊗F₂]⊗F₁ ◁ T₁)
@@ -785,7 +786,7 @@ module Linear-Left where
     linearˡ : Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁) ∘ᵥ α⇒⊗ ◁ T₁
                       ≈ α⇒⊗ ∘ᵥ Bimodule.actionˡ ((B₃ ⊗₀ B₂) ⊗₀ B₁)
     linearˡ = Coequalizer⇒Epi
-                    (precompCoequalizer [F₃⊗F₂]⊗F₁ T₁)
+                    ([F₃⊗F₂]⊗F₁ coeq-◁ T₁)
                     (Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
                       ∘ᵥ α⇒⊗ ◁ T₁)
                     (α⇒⊗
@@ -1076,7 +1077,7 @@ module Linear-Right where
                     ∘ᵥ Bimodule.actionʳ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
                     ∘ᵥ T₄ ▷ Coequalizer.arr [F₃⊗F₂]⊗F₁
     linearʳ∘arr = Coequalizer⇒Epi
-                    (postcompCoequalizer (precompCoequalizer F₃⊗F₂ F₁) T₄)
+                    (T₄ ▷-coeq (F₃⊗F₂ coeq-◁ F₁))
                     ((Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
                       ∘ᵥ T₄ ▷ α⇒⊗)
                       ∘ᵥ T₄ ▷ Coequalizer.arr [F₃⊗F₂]⊗F₁)
@@ -1090,7 +1091,7 @@ module Linear-Right where
               ≈ α⇒⊗
               ∘ᵥ Bimodule.actionʳ ((B₃ ⊗₀ B₂) ⊗₀ B₁)
     linearʳ = Coequalizer⇒Epi
-                (postcompCoequalizer [F₃⊗F₂]⊗F₁ T₄)
+                (T₄ ▷-coeq [F₃⊗F₂]⊗F₁)
                 (Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁) ∘ᵥ T₄ ▷ α⇒⊗)
                 (α⇒⊗ ∘ᵥ Bimodule.actionʳ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
                 linearʳ∘arr
@@ -1108,9 +1109,9 @@ open import Categories.Category.Construction.Bimodules
 open import Categories.Category.Construction.Bimodules.Properties
 
 Associator⊗ : Categories.Morphism._≅_ (Bimodules₁ M₁ M₄) ((B₃ ⊗₀ B₂) ⊗₀ B₁) (B₃ ⊗₀ B₂ ⊗₀ B₁) 
-Associator⊗ = 2cellisIso⇒Iso Associator⊗From α⇒⊗isIso
+Associator⊗ = αisIso⇒Iso Associator⊗From α⇒⊗isIso
   where
-    open Bimodulehom-isIso
+    open Bimodule-Isomorphism
     α⇒⊗isIso : Categories.Morphism.IsIso (hom C₁ C₄) α⇒⊗
     α⇒⊗isIso = record
      { inv = _≅_.to 2-cell.Associator⊗Iso
