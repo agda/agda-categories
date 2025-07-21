@@ -4,7 +4,8 @@ open import Categories.Bicategory
 open import Categories.Bicategory.LocalCoequalizers
 
 open import Categories.Bicategory.Monad
-open import Categories.Bicategory.Monad.Bimodule renaming (Bimodulehomomorphism to Bimodhom)
+open import Categories.Bicategory.Monad.Bimodule
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism renaming (Bimodulehomomorphism to Bimodhom)
 
 
 -- We will prove that the associator in the bicategory of monads and bimodules --
@@ -15,7 +16,7 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Pent
   {B₄ : Bimodule M₄ M₅} {B₃ : Bimodule M₃ M₄} {B₂ : Bimodule M₂ M₃} {B₁ : Bimodule M₁ M₂} where
 
 import Categories.Bicategory.LocalCoequalizers
-open LocalCoequalizers localCoeq
+open ComposeWithLocalCoequalizer 𝒞 localCoeq
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct {o} {ℓ} {e} {t} {𝒞} {localCoeq}
 private
   _⊗₀_ = TensorproductOfBimodules.B₂⊗B₁
@@ -652,7 +653,7 @@ abstract
                      ∘ᵥ Coequalizer.arr [F₄⊗F₃]⊗F₂ ◁ F₁
   pentagon⊗∘arr² = Coequalizer⇒Epi
   
-                     (precompCoequalizer (precompCoequalizer F₄⊗F₃ F₂) F₁)
+                     (F₄⊗F₃ coeq-◁ F₂ coeq-◁ F₁)
                      
                      (((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
                      ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
@@ -676,7 +677,7 @@ abstract
                      ∘ᵥ Coequalizer.arr [[F₄⊗F₃]⊗F₂]⊗F₁
   pentagon⊗∘arr = Coequalizer⇒Epi
   
-                    (precompCoequalizer [F₄⊗F₃]⊗F₂ F₁)
+                    ([F₄⊗F₃]⊗F₂ coeq-◁ F₁)
                      
                     ((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
                     ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
