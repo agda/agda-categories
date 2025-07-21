@@ -24,6 +24,9 @@ open LocalCoequalizers
 module ComposeWithLocalCoequalizer (localcoeq : LocalCoequalizers)
          {A B E : Obj} {X Y : A ⇒₁ B} {α β : X ⇒₂ Y} where
 
+  infixr 10 _▷-coeq_
+  infixl 10 _coeq-◁_
+
   _coeq-◁_ : (coeq : Coequalizer (hom A B) α β) (f : E ⇒₁ A)
            → Coequalizer (hom E B) (α ◁ f) (β ◁ f)
   coeq coeq-◁ f = record
