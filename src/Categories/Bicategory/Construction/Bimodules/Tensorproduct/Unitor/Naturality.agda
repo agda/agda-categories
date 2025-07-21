@@ -4,7 +4,8 @@ open import Categories.Bicategory
 open import Categories.Bicategory.LocalCoequalizers
 
 open import Categories.Bicategory.Monad
-open import Categories.Bicategory.Monad.Bimodule renaming (Bimodulehomomorphism to Bimodhom)
+open import Categories.Bicategory.Monad.Bimodule
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism renaming (Bimodulehomomorphism to Bimodhom)
 
 
 -- We will show that the left- and right-unitor in the bicategory of monads and bimodules is natural. --
