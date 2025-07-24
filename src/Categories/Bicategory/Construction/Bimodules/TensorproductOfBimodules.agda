@@ -151,7 +151,7 @@ module Left-Action where
       open CoeqProperties (hom C₁ C₃)
 
   abstract    
-    -- the left-action fits into the following commutaitve square --
+    -- the left-action fits into the following commutative square --
     actionˡSq : CommutativeSquare (F₂▷actionˡ₁) (Coequalizer.arr F∘T₁Coequalizer) (Coequalizer.arr F₂⊗F₁) (actionˡ)
     actionˡSq = ⇒MapBetweenCoeqSq F₂∘₁T₂▷actionˡ₁ F₂▷actionˡ₁ sq₁ sq₂ F∘T₁Coequalizer F₂⊗F₁
       where
