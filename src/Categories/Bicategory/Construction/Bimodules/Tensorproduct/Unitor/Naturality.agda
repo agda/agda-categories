@@ -15,8 +15,9 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor.Natural
   {M₁ M₂ : Monad 𝒞}
   {B B' : Bimodule M₁ M₂}
   (f : Bimodhom B B') where
-  
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct {o} {ℓ} {e} {t} {𝒞} {localCoeq}
+
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
 
 private
   _⊗₀_ = TensorproductOfBimodules.B₂⊗B₁

@@ -10,7 +10,8 @@ open import Level
 open import Categories.Bicategory.Monad.Bimodule {o} {ℓ} {e} {t} {𝒞}
 open import Categories.Bicategory.Monad.Bimodule.Homomorphism
 open Bimodulehomomorphism
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct {o} {ℓ} {e} {t} {𝒞} {localCoeq}
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
 
 _⊗₀_ = TensorproductOfBimodules.B₂⊗B₁
 _⊗₁_ = TensorproductOfHomomorphisms.h₂⊗h₁
