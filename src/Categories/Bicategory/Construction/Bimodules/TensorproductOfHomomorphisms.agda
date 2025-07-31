@@ -88,9 +88,6 @@ sq₂ = begin
     open CoeqProperties (hom C₁ C₃)
 
 open TensorproductOfBimodules.Left-Action using (actionˡ-∘)
-open TensorproductOfBimodules.Left-Action B₂ B₁ using (actionˡSq)
-open TensorproductOfBimodules.Left-Action B'₂ B'₁ using ()
-  renaming (actionˡSq to actionˡ'Sq)
 
 linearˡ-square :   (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈ (α₂ ⊚₁ α₁) ∘ᵥ  (actionˡ-∘ B₂ B₁)
 linearˡ-square = begin
@@ -114,17 +111,18 @@ linearˡ∘arr = begin
   actionˡ' ∘ᵥ (α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ◁ T₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ (⟺ αSq) ⟩
   actionˡ' ∘ᵥ (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁)) ◁ T₁ ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
   actionˡ' ∘ᵥ Coequalizer.arr (CoeqBimods B'₂ B'₁) ◁ T₁ ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ sym-assoc₂ ⟩
-  (actionˡ' ∘ᵥ Coequalizer.arr (CoeqBimods B'₂ B'₁) ◁ T₁) ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ ⟺ actionˡ'Sq ⟩∘⟨refl ⟩
+  (actionˡ' ∘ᵥ Coequalizer.arr (CoeqBimods B'₂ B'₁) ◁ T₁) ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ ⟺ (actionˡSq-⊗ B'₂ B'₁) ⟩∘⟨refl ⟩
   (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ  (actionˡ-∘ B'₂ B'₁)) ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ assoc₂ ⟩
   Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ  (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ refl⟩∘⟨ linearˡ-square ⟩
   Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ sym-assoc₂ ⟩
   (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁)) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ αSq ⟩∘⟨refl ⟩
   (α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ assoc₂ ⟩
-  α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ refl⟩∘⟨ actionˡSq ⟩
+  α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ refl⟩∘⟨ actionˡSq-⊗ B₂ B₁ ⟩
   α ∘ᵥ actionˡ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T₁) ≈⟨ sym-assoc₂ ⟩
   (α ∘ᵥ actionˡ) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T₁) ∎
   where
     open hom.HomReasoning
+    open TensorproductOfBimodules.Left-Action using (actionˡSq-⊗)
 
 linearˡ : actionˡ' ∘ᵥ α ◁ T₁ ≈ α ∘ᵥ actionˡ
 linearˡ = Coequalizer⇒Epi (hom C₁ C₃) (CoeqBimods B₂ B₁ coeq-◁ T₁)
@@ -132,8 +130,8 @@ linearˡ = Coequalizer⇒Epi (hom C₁ C₃) (CoeqBimods B₂ B₁ coeq-◁ T₁
                           linearˡ∘arr
 
 
-open TensorproductOfBimodules.Right-Action B₂ B₁ using (T₃∘FCoequalizer; actionʳ₂◁F₁; actionʳSq)
-open TensorproductOfBimodules.Right-Action B'₂ B'₁ using () renaming (actionʳ₂◁F₁ to actionʳ'₂◁F'₁; actionʳSq to actionʳ'Sq)
+open TensorproductOfBimodules.Right-Action B₂ B₁ using (T₃∘FCoequalizer; actionʳ₂◁F₁)
+open TensorproductOfBimodules.Right-Action B'₂ B'₁ using () renaming (actionʳ₂◁F₁ to actionʳ'₂◁F'₁)
 
 linearʳ-square : actionʳ'₂◁F'₁ ∘ᵥ T₃ ▷ (α₂ ⊚₁ α₁) ≈ (α₂ ⊚₁ α₁) ∘ᵥ actionʳ₂◁F₁
 linearʳ-square = begin
@@ -156,17 +154,18 @@ linearʳ∘arr = begin
   actionʳ' ∘ᵥ T₃ ▷ (α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ≈⟨ refl⟩∘⟨ ▷-resp-≈ (⟺ αSq) ⟩
   actionʳ' ∘ᵥ T₃ ▷ (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁)) ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
   actionʳ' ∘ᵥ T₃ ▷ Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ T₃ ▷ (α₂ ⊚₁ α₁) ≈⟨ sym-assoc₂ ⟩
-  (actionʳ' ∘ᵥ T₃ ▷ Coequalizer.arr (CoeqBimods B'₂ B'₁)) ∘ᵥ T₃ ▷ (α₂ ⊚₁ α₁) ≈⟨ ⟺ actionʳ'Sq ⟩∘⟨refl ⟩
+  (actionʳ' ∘ᵥ T₃ ▷ Coequalizer.arr (CoeqBimods B'₂ B'₁)) ∘ᵥ T₃ ▷ (α₂ ⊚₁ α₁) ≈⟨ ⟺ (actionʳSq-⊗ B'₂ B'₁) ⟩∘⟨refl ⟩
   (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ actionʳ'₂◁F'₁) ∘ᵥ T₃ ▷ (α₂ ⊚₁ α₁) ≈⟨ assoc₂ ⟩
   Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ actionʳ'₂◁F'₁ ∘ᵥ T₃ ▷ (α₂ ⊚₁ α₁) ≈⟨ refl⟩∘⟨ linearʳ-square ⟩
   Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁) ∘ᵥ actionʳ₂◁F₁ ≈⟨ sym-assoc₂ ⟩
   (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁)) ∘ᵥ actionʳ₂◁F₁ ≈⟨ αSq ⟩∘⟨refl ⟩
   (α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ∘ᵥ actionʳ₂◁F₁ ≈⟨ assoc₂ ⟩
-  α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ actionʳ₂◁F₁ ≈⟨ refl⟩∘⟨ actionʳSq ⟩
+  α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ actionʳ₂◁F₁ ≈⟨ refl⟩∘⟨ actionʳSq-⊗ B₂ B₁ ⟩
   α ∘ᵥ actionʳ ∘ᵥ Coequalizer.arr T₃∘FCoequalizer ≈⟨ sym-assoc₂ ⟩
   (α ∘ᵥ actionʳ) ∘ᵥ Coequalizer.arr T₃∘FCoequalizer ∎
   where
     open hom.HomReasoning
+    open TensorproductOfBimodules.Right-Action using (actionʳSq-⊗)
 
 linearʳ : actionʳ' ∘ᵥ T₃ ▷ α ≈ α ∘ᵥ actionʳ
 linearʳ = Coequalizer⇒Epi (hom C₁ C₃) T₃∘FCoequalizer

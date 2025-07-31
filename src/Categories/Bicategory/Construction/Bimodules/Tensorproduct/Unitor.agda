@@ -134,8 +134,6 @@ module Left-Unitor where
   open 2-cell using (λ⇒⊗; triangle) public
 
   module Linear-Left where
-    open TensorproductOfBimodules.Left-Action Id-Bimod B
-      using () renaming (actionˡSq to actionˡSqT₂⊗F)
     open Bimodule (Id-Bimod ⊗₀ B) using () renaming (actionˡ to actionˡT₂⊗F)
 
     abstract
@@ -148,11 +146,12 @@ module Left-Unitor where
         actionˡ ∘ᵥ actionʳ ◁ T₁ ≈⟨ ⟺ assoc ⟩
         actionʳ ∘ᵥ T₂ ▷ actionˡ ∘ᵥ associator.from ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
         (λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)) ∘ᵥ T₂ ▷ actionˡ ∘ᵥ associator.from ≈⟨ assoc₂ ⟩
-        λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ∘ᵥ T₂ ▷ actionˡ ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ actionˡSqT₂⊗F ⟩
+        λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ∘ᵥ T₂ ▷ actionˡ ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ actionˡSq-⊗ ⟩
         λ⇒⊗ ∘ᵥ actionˡT₂⊗F ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ◁ T₁ ≈⟨ sym-assoc₂ ⟩
         (λ⇒⊗ ∘ᵥ actionˡT₂⊗F) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ◁ T₁ ∎
         where
           open hom.HomReasoning
+          open TensorproductOfBimodules.Left-Action Id-Bimod B using (actionˡSq-⊗)
 
       linearˡ : actionˡ ∘ᵥ λ⇒⊗ ◁ T₁ ≈ λ⇒⊗ ∘ᵥ actionˡT₂⊗F
       linearˡ = Coequalizer⇒Epi
@@ -166,8 +165,6 @@ module Left-Unitor where
 
 
   module Linear-Right where
-    open TensorproductOfBimodules.Right-Action Id-Bimod B
-      using () renaming (actionʳSq to actionʳSqT₂⊗F)
     open Bimodule (Id-Bimod ⊗₀ B) using () renaming (actionʳ to actionʳT₂⊗F)
 
     abstract
@@ -180,11 +177,12 @@ module Left-Unitor where
         actionʳ ∘ᵥ T₂ ▷ actionʳ ≈⟨ ⟺ assoc-actionʳ ⟩
         actionʳ ∘ᵥ μ₂ ◁ F ∘ᵥ associator.to ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
         (λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)) ∘ᵥ μ₂ ◁ F ∘ᵥ associator.to ≈⟨ assoc₂ ⟩
-        λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ∘ᵥ μ₂ ◁ F ∘ᵥ associator.to ≈⟨ refl⟩∘⟨ actionʳSqT₂⊗F ⟩
+        λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ∘ᵥ μ₂ ◁ F ∘ᵥ associator.to ≈⟨ refl⟩∘⟨ actionʳSq-⊗ ⟩
         λ⇒⊗ ∘ᵥ actionʳT₂⊗F ∘ᵥ T₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B) ≈⟨ sym-assoc₂ ⟩
         (λ⇒⊗ ∘ᵥ actionʳT₂⊗F) ∘ᵥ T₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B) ∎
         where
           open hom.HomReasoning
+          open TensorproductOfBimodules.Right-Action Id-Bimod B using (actionʳSq-⊗)
 
       linearʳ : actionʳ ∘ᵥ T₂ ▷ λ⇒⊗ ≈ λ⇒⊗ ∘ᵥ actionʳT₂⊗F
       linearʳ = Coequalizer⇒Epi
@@ -308,8 +306,6 @@ module Right-Unitor where
   open 2-cell using (ρ⇒⊗; triangle) public
 
   module Linear-Left where
-    open TensorproductOfBimodules.Left-Action B Id-Bimod
-      using () renaming (actionˡSq to actionˡSqF⊗T₁)
     open Bimodule (B ⊗₀ Id-Bimod) using () renaming (actionˡ to actionˡF⊗T₁)
 
     abstract
@@ -322,11 +318,12 @@ module Right-Unitor where
         actionˡ ∘ᵥ actionˡ ◁ T₁ ≈⟨ ⟺ assoc-actionˡ ⟩
         actionˡ ∘ᵥ F ▷ μ₁ ∘ᵥ associator.from ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
         (ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)) ∘ᵥ F ▷ μ₁ ∘ᵥ associator.from ≈⟨ assoc₂ ⟩
-        ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ∘ᵥ F ▷ μ₁ ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ actionˡSqF⊗T₁ ⟩
+        ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ∘ᵥ F ▷ μ₁ ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ actionˡSq-⊗ ⟩
         ρ⇒⊗ ∘ᵥ actionˡF⊗T₁ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ◁ T₁ ≈⟨ sym-assoc₂ ⟩
         (ρ⇒⊗ ∘ᵥ actionˡF⊗T₁) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ◁ T₁ ∎
         where
           open hom.HomReasoning
+          open TensorproductOfBimodules.Left-Action B Id-Bimod using (actionˡSq-⊗)
 
       linearˡ : actionˡ ∘ᵥ ρ⇒⊗ ◁ T₁ ≈ ρ⇒⊗ ∘ᵥ actionˡF⊗T₁
       linearˡ = Coequalizer⇒Epi
@@ -339,8 +336,6 @@ module Right-Unitor where
     -- end abstract --
 
   module Linear-Right where
-    open TensorproductOfBimodules.Right-Action B Id-Bimod
-      using () renaming (actionʳSq to actionʳSqF⊗T₁)
     open Bimodule (B ⊗₀ Id-Bimod) using () renaming (actionʳ to actionʳF⊗T₁)
 
     abstract
@@ -353,11 +348,12 @@ module Right-Unitor where
         actionʳ ∘ᵥ T₂ ▷ actionˡ ≈⟨ ⟺ sym-assoc ⟩
         actionˡ ∘ᵥ actionʳ ◁ T₁ ∘ᵥ associator.to ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
         (ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)) ∘ᵥ actionʳ ◁ T₁ ∘ᵥ associator.to ≈⟨ assoc₂ ⟩
-        ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ∘ᵥ actionʳ ◁ T₁ ∘ᵥ associator.to ≈⟨ refl⟩∘⟨ actionʳSqF⊗T₁ ⟩
+        ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ∘ᵥ actionʳ ◁ T₁ ∘ᵥ associator.to ≈⟨ refl⟩∘⟨ actionʳSq-⊗ ⟩
         ρ⇒⊗ ∘ᵥ actionʳF⊗T₁ ∘ᵥ T₂ ▷ Coequalizer.arr (CoeqBimods B Id-Bimod) ≈⟨ sym-assoc₂ ⟩
         (ρ⇒⊗ ∘ᵥ actionʳF⊗T₁) ∘ᵥ T₂ ▷ Coequalizer.arr (CoeqBimods B Id-Bimod) ∎
         where
           open hom.HomReasoning
+          open TensorproductOfBimodules.Right-Action B Id-Bimod using (actionʳSq-⊗)
 
       linearʳ : actionʳ ∘ᵥ T₂ ▷ ρ⇒⊗ ≈ ρ⇒⊗ ∘ᵥ actionʳF⊗T₁
       linearʳ = Coequalizer⇒Epi

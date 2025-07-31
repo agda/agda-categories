@@ -159,8 +159,8 @@ module Left-Action where
 
   abstract    
     -- the left-action fits into the following commutative square --
-    actionˡSq : CommutativeSquare (actionˡ-∘) (Coequalizer.arr (CoeqBimods coeq-◁ T₁)) (Coequalizer.arr CoeqBimods) (actionˡ-⊗)
-    actionˡSq = ⇒MapBetweenCoeqSq actionˡ-∘-∘ actionˡ-∘ sq₁ sq₂ (CoeqBimods coeq-◁ T₁) CoeqBimods
+    actionˡSq-⊗ : CommutativeSquare (actionˡ-∘) (Coequalizer.arr (CoeqBimods coeq-◁ T₁)) (Coequalizer.arr CoeqBimods) (actionˡ-⊗)
+    actionˡSq-⊗ = ⇒MapBetweenCoeqSq actionˡ-∘-∘ actionˡ-∘ sq₁ sq₂ (CoeqBimods coeq-◁ T₁) CoeqBimods
       where
         open CoeqProperties (hom C₁ C₃)
   -- end abstract --
@@ -235,15 +235,15 @@ module Right-Action where
 
   abstract
     -- the right-action fits into the following commutaitve square --
-    actionʳSq : CommutativeSquare (actionʳ₂◁F₁) (Coequalizer.arr T₃∘FCoequalizer) (Coequalizer.arr CoeqBimods) (actionʳ)
-    actionʳSq = ⇒MapBetweenCoeqSq actionʳ₂◁T₂∘₁F₁ actionʳ₂◁F₁ sq₁ sq₂ T₃∘FCoequalizer CoeqBimods
+    actionʳSq-⊗ : CommutativeSquare (actionʳ₂◁F₁) (Coequalizer.arr T₃∘FCoequalizer) (Coequalizer.arr CoeqBimods) (actionʳ)
+    actionʳSq-⊗ = ⇒MapBetweenCoeqSq actionʳ₂◁T₂∘₁F₁ actionʳ₂◁F₁ sq₁ sq₂ T₃∘FCoequalizer CoeqBimods
       where
         open CoeqProperties (hom C₁ C₃)
   -- end abstract --
 
 module Associativity where
-  open Left-Action using (actionˡ-⊗; actionˡSq; actionˡ-∘)
-  open Right-Action using (actionʳ; actionʳSq; actionʳ₂◁F₁; T₃∘FCoequalizer)
+  open Left-Action using (actionˡ-⊗; actionˡSq-⊗; actionˡ-∘)
+  open Right-Action using (actionʳ; actionʳSq-⊗; actionʳ₂◁F₁; T₃∘FCoequalizer)
 
   -- we need that T₃∘(F∘T₁) is a coequalizer --
   T₃∘[F∘T₁]Coequalizer : Coequalizer (hom C₁ C₃) (T₃ ▷ ((act-to-the-left) ◁ T₁))  (T₃ ▷ ((act-to-the-right) ◁ T₁))
@@ -286,18 +286,18 @@ module Associativity where
       (actionʳ ∘ᵥ (T₃ ▷ actionˡ-⊗)) ∘ᵥ Coequalizer.arr T₃∘[F∘T₁]Coequalizer ∘ᵥ associator.from  ≈⟨ sym-assoc₂ ⟩
       ((actionʳ ∘ᵥ (T₃ ▷ actionˡ-⊗)) ∘ᵥ Coequalizer.arr T₃∘[F∘T₁]Coequalizer) ∘ᵥ associator.from  ≈⟨ assoc₂ ⟩∘⟨refl ⟩
       (actionʳ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ Coequalizer.arr T₃∘[F∘T₁]Coequalizer) ∘ᵥ associator.from  ≈⟨ (refl⟩∘⟨ ∘ᵥ-distr-▷) ⟩∘⟨refl ⟩
-      (actionʳ ∘ᵥ T₃ ▷ (actionˡ-⊗ ∘ᵥ Coequalizer.arr (CoeqBimods coeq-◁ T₁))) ∘ᵥ associator.from  ≈⟨ (refl⟩∘⟨ ▷-resp-≈ (⟺ actionˡSq)) ⟩∘⟨refl ⟩
+      (actionʳ ∘ᵥ T₃ ▷ (actionˡ-⊗ ∘ᵥ Coequalizer.arr (CoeqBimods coeq-◁ T₁))) ∘ᵥ associator.from  ≈⟨ (refl⟩∘⟨ ▷-resp-≈ (⟺ actionˡSq-⊗)) ⟩∘⟨refl ⟩
       (actionʳ ∘ᵥ T₃ ▷ (Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘)) ∘ᵥ associator.from  ≈⟨ (refl⟩∘⟨(⟺ ∘ᵥ-distr-▷)) ⟩∘⟨refl ⟩
       (actionʳ ∘ᵥ Coequalizer.arr T₃∘FCoequalizer ∘ᵥ T₃ ▷ actionˡ-∘) ∘ᵥ associator.from  ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
-      ((actionʳ ∘ᵥ Coequalizer.arr T₃∘FCoequalizer) ∘ᵥ T₃ ▷ actionˡ-∘) ∘ᵥ associator.from  ≈⟨ (⟺ actionʳSq) ⟩∘⟨refl ⟩∘⟨refl ⟩
+      ((actionʳ ∘ᵥ Coequalizer.arr T₃∘FCoequalizer) ∘ᵥ T₃ ▷ actionˡ-∘) ∘ᵥ associator.from  ≈⟨ (⟺ actionʳSq-⊗) ⟩∘⟨refl ⟩∘⟨refl ⟩
       ((Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁) ∘ᵥ T₃ ▷ actionˡ-∘) ∘ᵥ associator.from  ≈⟨ assoc₂ ⟩
       (Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁) ∘ᵥ T₃ ▷ actionˡ-∘ ∘ᵥ associator.from  ≈⟨ assoc₂ ⟩
       Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁ ∘ᵥ T₃ ▷ actionˡ-∘ ∘ᵥ associator.from  ≈⟨ refl⟩∘⟨ assoc-pentagon ⟩
       Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘ ∘ᵥ actionʳ₂◁F₁ ◁ T₁  ≈⟨ sym-assoc₂ ⟩
-      (Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘) ∘ᵥ actionʳ₂◁F₁ ◁ T₁  ≈⟨ actionˡSq ⟩∘⟨refl ⟩
+      (Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘) ∘ᵥ actionʳ₂◁F₁ ◁ T₁  ≈⟨ actionˡSq-⊗ ⟩∘⟨refl ⟩
       (actionˡ-⊗ ∘ᵥ Coequalizer.arr (CoeqBimods coeq-◁ T₁)) ∘ᵥ actionʳ₂◁F₁ ◁ T₁  ≈⟨ assoc₂ ⟩
       actionˡ-⊗ ∘ᵥ Coequalizer.arr (CoeqBimods coeq-◁ T₁) ∘ᵥ actionʳ₂◁F₁ ◁ T₁  ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-      actionˡ-⊗ ∘ᵥ (Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁) ◁ T₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ actionʳSq ⟩
+      actionˡ-⊗ ∘ᵥ (Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁) ◁ T₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ actionʳSq-⊗ ⟩
       actionˡ-⊗ ∘ᵥ (actionʳ ∘ᵥ Coequalizer.arr T₃∘FCoequalizer) ◁ T₁ ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
       actionˡ-⊗ ∘ᵥ actionʳ ◁ T₁ ∘ᵥ Coequalizer.arr [T₃∘F]∘T₁Coequalizer ≈⟨ sym-assoc₂ ⟩
       (actionˡ-⊗ ∘ᵥ (actionʳ ◁ T₁)) ∘ᵥ (Coequalizer.arr [T₃∘F]∘T₁Coequalizer) ∎
@@ -369,14 +369,14 @@ module Associativity where
       actionˡ-⊗ ∘ᵥ ((F-⊗ ▷ μ₁) ∘ᵥ Coequalizer.arr CoeqBimods ◁ (T₁ ∘₁ T₁)) ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ ◁-▷-exchg ⟩∘⟨refl ⟩
       actionˡ-⊗ ∘ᵥ (Coequalizer.arr CoeqBimods ◁ T₁ ∘ᵥ (F₂ ∘₁ F₁) ▷ μ₁) ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ assoc₂ ⟩
       actionˡ-⊗ ∘ᵥ Coequalizer.arr CoeqBimods ◁ T₁ ∘ᵥ (F₂ ∘₁ F₁) ▷ μ₁ ∘ᵥ associator.from ≈⟨ sym-assoc₂ ⟩
-      (actionˡ-⊗ ∘ᵥ Coequalizer.arr CoeqBimods ◁ T₁) ∘ᵥ (F₂ ∘₁ F₁) ▷ μ₁ ∘ᵥ associator.from ≈⟨ ⟺ actionˡSq ⟩∘⟨refl ⟩
+      (actionˡ-⊗ ∘ᵥ Coequalizer.arr CoeqBimods ◁ T₁) ∘ᵥ (F₂ ∘₁ F₁) ▷ μ₁ ∘ᵥ associator.from ≈⟨ ⟺ actionˡSq-⊗ ⟩∘⟨refl ⟩
       (Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘) ∘ᵥ (F₂ ∘₁ F₁) ▷ μ₁ ∘ᵥ associator.from ≈⟨ assoc₂ ⟩
       Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘ ∘ᵥ (F₂ ∘₁ F₁) ▷ μ₁ ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ assoc-actionˡ-pentagon ⟩
       Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘ ∘ᵥ actionˡ-∘ ◁ T₁ ≈⟨ sym-assoc₂ ⟩
-      (Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘) ∘ᵥ actionˡ-∘ ◁ T₁ ≈⟨ actionˡSq ⟩∘⟨refl ⟩
+      (Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘) ∘ᵥ actionˡ-∘ ◁ T₁ ≈⟨ actionˡSq-⊗ ⟩∘⟨refl ⟩
       (actionˡ-⊗ ∘ᵥ Coequalizer.arr CoeqBimods ◁ T₁) ∘ᵥ actionˡ-∘ ◁ T₁ ≈⟨ assoc₂ ⟩
       actionˡ-⊗ ∘ᵥ Coequalizer.arr CoeqBimods ◁ T₁ ∘ᵥ actionˡ-∘ ◁ T₁ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-      actionˡ-⊗ ∘ᵥ (Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘) ◁ T₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ actionˡSq ⟩
+      actionˡ-⊗ ∘ᵥ (Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘) ◁ T₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ actionˡSq-⊗ ⟩
       actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ∘ᵥ Coequalizer.arr CoeqBimods ◁ T₁) ◁ T₁ ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
       actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T₁) ∘ᵥ Coequalizer.arr [F∘T₁]∘T₁Coequalizer ≈⟨ sym-assoc₂ ⟩
       (actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T₁)) ∘ᵥ Coequalizer.arr [F∘T₁]∘T₁Coequalizer ∎
@@ -447,14 +447,14 @@ module Associativity where
       actionʳ ∘ᵥ (μ₃ ◁ F-⊗ ∘ᵥ (T₃ ∘₁ T₃) ▷ Coequalizer.arr CoeqBimods) ∘ᵥ associator.to ≈⟨ refl⟩∘⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
       actionʳ ∘ᵥ (T₃ ▷ Coequalizer.arr CoeqBimods ∘ᵥ μ₃ ◁ (F₂ ∘₁ F₁)) ∘ᵥ associator.to ≈⟨ refl⟩∘⟨ assoc₂ ⟩
       actionʳ ∘ᵥ T₃ ▷ Coequalizer.arr CoeqBimods ∘ᵥ μ₃ ◁ (F₂ ∘₁ F₁) ∘ᵥ associator.to ≈⟨ sym-assoc₂ ⟩
-      (actionʳ ∘ᵥ T₃ ▷ Coequalizer.arr CoeqBimods) ∘ᵥ μ₃ ◁ (F₂ ∘₁ F₁) ∘ᵥ associator.to ≈⟨ ⟺ actionʳSq ⟩∘⟨refl ⟩
+      (actionʳ ∘ᵥ T₃ ▷ Coequalizer.arr CoeqBimods) ∘ᵥ μ₃ ◁ (F₂ ∘₁ F₁) ∘ᵥ associator.to ≈⟨ ⟺ actionʳSq-⊗ ⟩∘⟨refl ⟩
       (Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁) ∘ᵥ μ₃ ◁ (F₂ ∘₁ F₁) ∘ᵥ associator.to ≈⟨ assoc₂ ⟩
       Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁ ∘ᵥ μ₃ ◁ (F₂ ∘₁ F₁) ∘ᵥ associator.to ≈⟨ refl⟩∘⟨ assoc-actionʳ-pentagon ⟩
       Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁ ∘ᵥ T₃ ▷ actionʳ₂◁F₁ ≈⟨ sym-assoc₂ ⟩
-      (Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁) ∘ᵥ T₃ ▷ actionʳ₂◁F₁ ≈⟨ actionʳSq ⟩∘⟨refl ⟩
+      (Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁) ∘ᵥ T₃ ▷ actionʳ₂◁F₁ ≈⟨ actionʳSq-⊗ ⟩∘⟨refl ⟩
       (actionʳ ∘ᵥ T₃ ▷ Coequalizer.arr CoeqBimods) ∘ᵥ T₃ ▷ actionʳ₂◁F₁ ≈⟨ assoc₂ ⟩
       actionʳ ∘ᵥ T₃ ▷ Coequalizer.arr CoeqBimods ∘ᵥ T₃ ▷ actionʳ₂◁F₁ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
-      actionʳ ∘ᵥ T₃ ▷ (Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁) ≈⟨ refl⟩∘⟨ ▷-resp-≈ actionʳSq ⟩
+      actionʳ ∘ᵥ T₃ ▷ (Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁) ≈⟨ refl⟩∘⟨ ▷-resp-≈ actionʳSq-⊗ ⟩
       actionʳ ∘ᵥ T₃ ▷ (actionʳ ∘ᵥ T₃ ▷ Coequalizer.arr CoeqBimods) ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
       actionʳ ∘ᵥ T₃ ▷ actionʳ ∘ᵥ Coequalizer.arr T₃∘[T₃∘F]Coequalizer ≈⟨ sym-assoc₂ ⟩
       (actionʳ ∘ᵥ T₃ ▷ actionʳ) ∘ᵥ Coequalizer.arr T₃∘[T₃∘F]Coequalizer ∎
@@ -486,8 +486,8 @@ module Associativity where
   -- end abstract --
 
 module Identity where
-  open Left-Action using (actionˡ-⊗; actionˡSq; actionˡ-∘)
-  open Right-Action using (actionʳ; actionʳSq; actionʳ₂◁F₁; T₃∘FCoequalizer)
+  open Left-Action using (actionˡ-⊗; actionˡSq-⊗; actionˡ-∘)
+  open Right-Action using (actionʳ; actionʳSq-⊗; actionʳ₂◁F₁; T₃∘FCoequalizer)
 
   abstract
     identityˡ-triangle : actionˡ-∘ ∘ᵥ (F₂ ∘₁ F₁) ▷ η₁ ∘ᵥ unitorʳ.to ≈ id₂
@@ -514,7 +514,7 @@ module Identity where
       actionˡ-⊗ ∘ᵥ (F-⊗ ▷ η₁ ∘ᵥ Coequalizer.arr CoeqBimods ◁ id₁) ∘ᵥ unitorʳ.to ≈⟨ refl⟩∘⟨ ◁-▷-exchg ⟩∘⟨refl ⟩
       actionˡ-⊗ ∘ᵥ (Coequalizer.arr CoeqBimods ◁ T₁ ∘ᵥ (F₂ ∘₁ F₁) ▷ η₁) ∘ᵥ unitorʳ.to ≈⟨ refl⟩∘⟨ assoc₂ ⟩
       actionˡ-⊗ ∘ᵥ Coequalizer.arr CoeqBimods ◁ T₁ ∘ᵥ (F₂ ∘₁ F₁) ▷ η₁ ∘ᵥ unitorʳ.to ≈⟨ sym-assoc₂ ⟩
-      (actionˡ-⊗ ∘ᵥ Coequalizer.arr CoeqBimods ◁ T₁) ∘ᵥ (F₂ ∘₁ F₁) ▷ η₁ ∘ᵥ unitorʳ.to ≈⟨ ⟺ actionˡSq ⟩∘⟨refl ⟩
+      (actionˡ-⊗ ∘ᵥ Coequalizer.arr CoeqBimods ◁ T₁) ∘ᵥ (F₂ ∘₁ F₁) ▷ η₁ ∘ᵥ unitorʳ.to ≈⟨ ⟺ actionˡSq-⊗ ⟩∘⟨refl ⟩
       (Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘) ∘ᵥ (F₂ ∘₁ F₁) ▷ η₁ ∘ᵥ unitorʳ.to ≈⟨ assoc₂ ⟩
       Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘ ∘ᵥ (F₂ ∘₁ F₁) ▷ η₁ ∘ᵥ unitorʳ.to ≈⟨ refl⟩∘⟨ identityˡ-triangle ⟩
       Coequalizer.arr CoeqBimods ∘ᵥ id₂ ≈⟨ identity₂ʳ ⟩
@@ -551,7 +551,7 @@ module Identity where
       actionʳ ∘ᵥ (η₃ ◁ F-⊗ ∘ᵥ id₁ ▷ Coequalizer.arr CoeqBimods) ∘ᵥ unitorˡ.to ≈⟨ refl⟩∘⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
       actionʳ ∘ᵥ (T₃ ▷ Coequalizer.arr CoeqBimods ∘ᵥ η₃ ◁ (F₂ ∘₁ F₁)) ∘ᵥ unitorˡ.to ≈⟨ refl⟩∘⟨ assoc₂ ⟩
       actionʳ ∘ᵥ T₃ ▷ Coequalizer.arr CoeqBimods ∘ᵥ η₃ ◁ (F₂ ∘₁ F₁) ∘ᵥ unitorˡ.to ≈⟨ sym-assoc₂ ⟩
-      (actionʳ ∘ᵥ T₃ ▷ Coequalizer.arr CoeqBimods) ∘ᵥ η₃ ◁ (F₂ ∘₁ F₁) ∘ᵥ unitorˡ.to ≈⟨ ⟺ actionʳSq ⟩∘⟨refl ⟩
+      (actionʳ ∘ᵥ T₃ ▷ Coequalizer.arr CoeqBimods) ∘ᵥ η₃ ◁ (F₂ ∘₁ F₁) ∘ᵥ unitorˡ.to ≈⟨ ⟺ actionʳSq-⊗ ⟩∘⟨refl ⟩
       (Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁) ∘ᵥ η₃ ◁ (F₂ ∘₁ F₁) ∘ᵥ unitorˡ.to ≈⟨ assoc₂ ⟩
       Coequalizer.arr CoeqBimods ∘ᵥ actionʳ₂◁F₁ ∘ᵥ η₃ ◁ (F₂ ∘₁ F₁) ∘ᵥ unitorˡ.to ≈⟨ refl⟩∘⟨ identityʳ-triangle ⟩
       Coequalizer.arr CoeqBimods ∘ᵥ id₂ ≈⟨ identity₂ʳ ⟩

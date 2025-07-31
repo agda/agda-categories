@@ -209,7 +209,7 @@ module 2-cell where
 
       (Bimodule.actionˡ (B₃ ⊗₀ B₂)
         ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ T₂) ◁ F₁
-        ∘ᵥ associator.to                      ≈⟨ ◁-resp-≈ (⟺ actionˡSq) ⟩∘⟨refl ⟩
+        ∘ᵥ associator.to                      ≈⟨ ◁-resp-≈ (⟺ actionˡSq-⊗) ⟩∘⟨refl ⟩
 
       (Coequalizer.arr (CoeqBimods B₃ B₂)
         ∘ᵥ F₃ ▷ actionˡ₂
@@ -285,7 +285,7 @@ module 2-cell where
 
       where
         open hom.HomReasoning
-        open TensorproductOfBimodules.Left-Action B₃ B₂ using (actionˡSq)
+        open TensorproductOfBimodules.Left-Action B₃ B₂ using (actionˡSq-⊗)
 
     sq₁ᵍʰ : CommutativeSquare i₁ (Coequalizer.arr coeqᵍ) (Coequalizer.arr coeqʰ) g⇒h₁
     sq₁ᵍʰ = begin
@@ -344,7 +344,7 @@ module 2-cell where
             ∘ᵥ actionʳ₂ ◁ F₁
             ∘ᵥ associator.to)
         ∘ᵥ F₃ ▷ associator.from
-        ∘ᵥ associator.from                  ≈⟨ ▷-resp-≈ actionʳSq ⟩∘⟨refl ⟩
+        ∘ᵥ associator.from                  ≈⟨ ▷-resp-≈ actionʳSq-⊗ ⟩∘⟨refl ⟩
 
       F₃ ▷ (Bimodule.actionʳ (B₂ ⊗₀ B₁)
         ∘ᵥ T₃ ▷ Coequalizer.arr (CoeqBimods B₂ B₁))
@@ -363,7 +363,7 @@ module 2-cell where
 
       where
         open hom.HomReasoning
-        open TensorproductOfBimodules.Right-Action B₂ B₁ using (actionʳSq)
+        open TensorproductOfBimodules.Right-Action B₂ B₁ using (actionʳSq-⊗)
 
     sq₂ᵍʰ : CommutativeSquare i₂ (Coequalizer.arr coeqᵍ) (Coequalizer.arr coeqʰ) g⇒h₂
     sq₂ᵍʰ = begin
@@ -545,7 +545,7 @@ module Linear-Left where
       (Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
         ∘ᵥ Coequalizer.arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)) ◁ T₁)
         ∘ᵥ (F₃ ▷ Coequalizer.arr (CoeqBimods B₂ B₁)) ◁ T₁
-        ∘ᵥ associator.from ◁ T₁ ≈⟨ ⟺ actionˡSqB₃⊗[B₂⊗B₁] ⟩∘⟨refl ⟩
+        ∘ᵥ associator.from ◁ T₁ ≈⟨ ⟺ (actionˡSq-⊗ B₃ (B₂ ⊗₀ B₁)) ⟩∘⟨refl ⟩
 
       (Coequalizer.arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
         ∘ᵥ F₃ ▷ Bimodule.actionˡ (B₂ ⊗₀ B₁)
@@ -597,7 +597,7 @@ module Linear-Left where
                  ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ◁ T₁)
         ∘ᵥ associator.from
         ∘ᵥ associator.from ◁ T₁                 ≈⟨ refl⟩∘⟨ ▷-resp-≈
-                                                   (⟺ actionˡSqB₂⊗B₁)
+                                                   (⟺ (actionˡSq-⊗ B₂ B₁))
                                                  ⟩∘⟨refl ⟩
 
       Coequalizer.arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
@@ -735,7 +735,7 @@ module Linear-Left where
         ∘ᵥ (Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
         ∘ᵥ Coequalizer.obj (CoeqBimods B₃ B₂) ▷ actionˡ₁
         ∘ᵥ associator.from)
-        ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ◁ T₁      ≈⟨ refl⟩∘⟨ actionˡSq[B₃⊗B₂]⊗B₁
+        ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ◁ T₁      ≈⟨ refl⟩∘⟨ actionˡSq-⊗ (B₃ ⊗₀ B₂) B₁
                                                  ⟩∘⟨refl ⟩
 
       α⇒⊗
@@ -755,12 +755,7 @@ module Linear-Left where
 
       where
         open hom.HomReasoning
-        open TensorproductOfBimodules.Left-Action B₃ (B₂ ⊗₀ B₁)
-          using () renaming (actionˡSq to actionˡSqB₃⊗[B₂⊗B₁])
-        open TensorproductOfBimodules.Left-Action B₂ B₁
-          using () renaming (actionˡSq to actionˡSqB₂⊗B₁)
-        open TensorproductOfBimodules.Left-Action (B₃ ⊗₀ B₂) B₁
-          using () renaming (actionˡSq to actionˡSq[B₃⊗B₂]⊗B₁)
+        open TensorproductOfBimodules.Left-Action using (actionˡSq-⊗)
 
     linearˡ∘arr : (Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
                       ∘ᵥ α⇒⊗ ◁ T₁)
@@ -846,7 +841,7 @@ module Linear-Right where
       (Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
         ∘ᵥ T₄ ▷ Coequalizer.arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)))
         ∘ᵥ T₄ ▷ F₃ ▷ Coequalizer.arr (CoeqBimods B₂ B₁)
-        ∘ᵥ T₄ ▷ associator.from ≈⟨ ⟺ actionʳSqF₃⊗[F₂⊗F₁] ⟩∘⟨refl ⟩
+        ∘ᵥ T₄ ▷ associator.from ≈⟨ ⟺ (actionʳSq-⊗ B₃ (B₂ ⊗₀ B₁)) ⟩∘⟨refl ⟩
 
       (Coequalizer.arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
         ∘ᵥ actionʳ₃ ◁ Coequalizer.obj (CoeqBimods B₂ B₁)
@@ -995,7 +990,7 @@ module Linear-Right where
         ∘ᵥ actionʳ₃ ◁ F₂
         ∘ᵥ associator.to) ◁ F₁
         ∘ᵥ associator.to ≈⟨ refl⟩∘⟨ ◁-resp-≈
-                            actionʳSqF₂⊗F₁ ⟩∘⟨refl ⟩
+                            (actionʳSq-⊗ B₃ B₂) ⟩∘⟨refl ⟩
 
       (α⇒⊗
         ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
@@ -1038,7 +1033,7 @@ module Linear-Right where
         ∘ᵥ Bimodule.actionʳ (B₃ ⊗₀ B₂) ◁ F₁
         ∘ᵥ associator.to)
         ∘ᵥ T₄ ▷ (Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁) ≈⟨ refl⟩∘⟨
-                                                actionʳSq[F₃⊗F₂]⊗F₁
+                                                actionʳSq-⊗ (B₃ ⊗₀ B₂) B₁
                                               ⟩∘⟨refl ⟩
 
       α⇒⊗
@@ -1058,12 +1053,7 @@ module Linear-Right where
 
       where
         open hom.HomReasoning
-        open TensorproductOfBimodules.Right-Action B₃ (B₂ ⊗₀ B₁)
-          using () renaming (actionʳSq to actionʳSqF₃⊗[F₂⊗F₁])
-        open TensorproductOfBimodules.Right-Action B₃ B₂
-          using () renaming (actionʳSq to actionʳSqF₂⊗F₁)
-        open TensorproductOfBimodules.Right-Action (B₃ ⊗₀ B₂) B₁
-          using () renaming (actionʳSq to actionʳSq[F₃⊗F₂]⊗F₁)
+        open TensorproductOfBimodules.Right-Action using (actionʳSq-⊗)
 
     linearʳ∘arr : (Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
                     ∘ᵥ T₄ ▷ α⇒⊗)
