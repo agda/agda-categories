@@ -53,7 +53,6 @@ act-to-the-right = actionˡ₂ ◁ F₁ ∘ᵥ associator.to
 -- The coequalizer that defines the composite bimodule --
 CoeqBimods : Coequalizer (hom C₁ C₃) (act-to-the-left) (act-to-the-right)
 CoeqBimods = localCoequalizers C₁ C₃ (act-to-the-left) (act-to-the-right)
--- coequalizer {_} {_} {F₂ ∘₁ T₂ ∘₁ F₁} {F₂ ∘₁ F₁} (act-to-the-left) (act-to-the-right)
 
 -- The underlying object of that coequalizer is the underlying 1-cell of the bimodule B₂⊗B₁ --
 F-⊗ : C₁ ⇒₁ C₃
@@ -64,13 +63,13 @@ module Left-Action where
 
   {-
                                  act-to-the-left ◁ T M₁
-    (F B₂ ∘ T M₂ ∘ F B₁) ∘ T M₁ ========================> (F B₂ ∘ F B₁) ∘ T M₁ ---> F ∘ T M₁      ::     CoeqBimods
+    (F B₂ ∘ T M₂ ∘ F B₁) ∘ T M₁ ========================> (F B₂ ∘ F B₁) ∘ T M₁ ---> F ∘ T M₁      ::     CoeqBimods coeq-◁ T M₁
              |                   act-to-the-right ◁ T M₁            |                  .
              |                                                      |                  .
          actionˡ-∘-∘                                             actionˡ-∘          actionˡ-⊗
              |                                                      |                  .
              v                      act-to-the-left                 v                  v
-    F B₂ ∘ T M₂ ∘ F M₁ ======================================> F B₂ ∘ F B₁ ----------> F          ::     CoeqBimods coeq-◁ T M₁
+    F B₂ ∘ T M₂ ∘ F B₁ ======================================> F B₂ ∘ F B₁ ----------> F          ::     CoeqBimods
                                     act-to-the-right
   -}
 
@@ -166,6 +165,18 @@ module Left-Action where
   -- end abstract --
 
 module Right-Action where
+
+  {-
+                                 T M₃ ▷ act-to-the-left
+    T M₃ ∘ (F B₂ ∘ T M₂ ∘ F B₁) ========================> T M₃ ∘ (F B₂ ∘ F B₁) ---> T M₃ ∘ F      ::     T M₃ ▷-coeq CoeqBimods
+             |                   T M₃ ▷ act-to-the-right            |                  .
+             |                                                      |                  .
+         actionʳ-∘-∘                                             actionʳ-∘          actionʳ-⊗
+             |                                                      |                  .
+             v                      act-to-the-left                 v                  v
+    F B₂ ∘ T M₂ ∘ F B₁ ======================================> F B₂ ∘ F B₁ ----------> F          ::     CoeqBimods
+                                    act-to-the-right
+  -}
 
   -- to define a map between the coequalizers T₃ ∘₁ F-⊗ ⇒₂ F-⊗ we define a map of diagrams --
   actionʳ₂◁T₂∘₁F₁ : T₃ ∘₁ F₂ ∘₁ T₂ ∘₁ F₁ ⇒₂  F₂ ∘₁ T₂ ∘₁ F₁
