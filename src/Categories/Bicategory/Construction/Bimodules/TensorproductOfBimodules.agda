@@ -167,10 +167,6 @@ module Left-Action where
 
 module Right-Action where
 
-  -- To define the right-action we need that T₃ ∘₁ F-⊗ is a coequalizer --
-  T₃∘FCoequalizer : Coequalizer (hom C₁ C₃) (T₃ ▷ (act-to-the-left)) (T₃ ▷ (act-to-the-right))
-  T₃∘FCoequalizer =  T₃ ▷-coeq CoeqBimods
-
   -- to define a map between the coequalizers T₃ ∘₁ F-⊗ ⇒₂ F-⊗ we define a map of diagrams --
   actionʳ₂◁T₂∘₁F₁ : T₃ ∘₁ F₂ ∘₁ T₂ ∘₁ F₁ ⇒₂  F₂ ∘₁ T₂ ∘₁ F₁
   actionʳ₂◁T₂∘₁F₁ = actionʳ₂ ◁ (T₂ ∘₁ F₁) ∘ᵥ associator.to
