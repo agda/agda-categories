@@ -78,8 +78,8 @@ module Left-Action where
   F∘T₁Coequalizer : Coequalizer (hom C₁ C₃) ((act-to-the-left) ◁ T₁) ((act-to-the-right) ◁ T₁)
   F∘T₁Coequalizer = CoeqBimods coeq-◁ T₁
 
-  F₂∘₁T₂▷actionˡ₁ : (F₂ ∘₁ T₂ ∘₁ F₁) ∘₁ T₁ ⇒₂ F₂ ∘₁ T₂ ∘₁ F₁
-  F₂∘₁T₂▷actionˡ₁ = associator.from ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁ ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁
+  actionˡ-∘-∘ : (F₂ ∘₁ T₂ ∘₁ F₁) ∘₁ T₁ ⇒₂ F₂ ∘₁ T₂ ∘₁ F₁
+  actionˡ-∘-∘ = associator.from ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁ ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁
 
   actionˡ-∘ : (F₂ ∘₁ F₁) ∘₁ T₁ ⇒₂  F₂ ∘₁ F₁
   actionˡ-∘ = F₂ ▷ actionˡ₁ ∘ᵥ associator.from
@@ -88,9 +88,9 @@ module Left-Action where
   open Definitions (hom C₁ C₃)
 
   abstract
-    sq₁ : CommutativeSquare (F₂∘₁T₂▷actionˡ₁) ((act-to-the-left) ◁ T₁) (act-to-the-left) (actionˡ-∘)
+    sq₁ : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-left) ◁ T₁) (act-to-the-left) (actionˡ-∘)
     sq₁ = begin
-      act-to-the-left ∘ᵥ F₂∘₁T₂▷actionˡ₁                                     ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
+      act-to-the-left ∘ᵥ actionˡ-∘-∘                                     ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
       F₂ ▷ actionʳ₁ ∘ᵥ (associator.from ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁)
         ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁                          ≈⟨ refl⟩∘⟨ α⇒-▷-∘₁ ⟩∘⟨refl ⟩
       F₂ ▷ actionʳ₁ ∘ᵥ (F₂ ▷ T₂ ▷ actionˡ₁ ∘ᵥ associator.from)
@@ -133,9 +133,9 @@ module Left-Action where
         open hom.HomReasoning
         open hom.Equiv
 
-    sq₂ : CommutativeSquare (F₂∘₁T₂▷actionˡ₁) ((act-to-the-right) ◁ T₁) (act-to-the-right) (actionˡ-∘)
+    sq₂ : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-right) ◁ T₁) (act-to-the-right) (actionˡ-∘)
     sq₂ = begin
-      (act-to-the-right) ∘ᵥ F₂∘₁T₂▷actionˡ₁                               ≈⟨ sym-assoc₂ ⟩
+      (act-to-the-right) ∘ᵥ actionˡ-∘-∘                               ≈⟨ sym-assoc₂ ⟩
       ((actionˡ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ associator.from) ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁
         ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁                                        ≈⟨ assoc₂ ⟩∘⟨refl ⟩
       (actionˡ₂ ◁ F₁ ∘ᵥ associator.to ∘ᵥ associator.from) ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁
@@ -158,14 +158,14 @@ module Left-Action where
 
   -- left-action --
   actionˡ-⊗ : F-⊗ ∘₁ T₁ ⇒₂ F-⊗
-  actionˡ-⊗ = ⇒MapBetweenCoeq F₂∘₁T₂▷actionˡ₁ actionˡ-∘ sq₁ sq₂ F∘T₁Coequalizer CoeqBimods
+  actionˡ-⊗ = ⇒MapBetweenCoeq actionˡ-∘-∘ actionˡ-∘ sq₁ sq₂ F∘T₁Coequalizer CoeqBimods
     where
       open CoeqProperties (hom C₁ C₃)
 
   abstract    
     -- the left-action fits into the following commutative square --
     actionˡSq : CommutativeSquare (actionˡ-∘) (Coequalizer.arr F∘T₁Coequalizer) (Coequalizer.arr CoeqBimods) (actionˡ-⊗)
-    actionˡSq = ⇒MapBetweenCoeqSq F₂∘₁T₂▷actionˡ₁ actionˡ-∘ sq₁ sq₂ F∘T₁Coequalizer CoeqBimods
+    actionˡSq = ⇒MapBetweenCoeqSq actionˡ-∘-∘ actionˡ-∘ sq₁ sq₂ F∘T₁Coequalizer CoeqBimods
       where
         open CoeqProperties (hom C₁ C₃)
   -- end abstract --
