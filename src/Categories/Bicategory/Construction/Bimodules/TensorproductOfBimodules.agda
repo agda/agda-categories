@@ -39,9 +39,9 @@ open Bimodule B₂ using ()
 To construct the tensorproduct B₂⊗B₁ we will define its underlying 1-cell
 to be the coequalizer of the following parallel pair in hom C₁ C₃:
 
-                       F₂ ▷ actionʳ₁
-F₂ ∘₁ T₂ ∘ F₁ ==============================> F₂ ∘₁ F₁
-              actionˡ₂ ◁ F₁ ∘ᵥ associator.to
+                      act-to-the-left
+  F B₂ ∘ T M₂ ∘ F B₁ ==================> F B₂ ∘ F B₁
+                      act-to-the-right
 -}
 
 -- We itroduce names to the two parallel morphism in the above diagram --
@@ -61,6 +61,18 @@ F = Coequalizer.obj CoeqBimods
 
 
 module Left-Action where
+
+  {-
+                                 act-to-the-left ◁ T M₁
+    (F B₂ ∘ T M₂ ∘ F B₁) ∘ T M₁ ========================> (F B₂ ∘ F B₁) ∘ T M₁ ------> F
+             |                   act-to-the-right ◁ T M₁            |                  .
+             |                                                      |                  .
+         actionˡ-∘-∘                                             actionˡ-∘          actionˡ-⊗
+             |                                                      |                  .
+             v                      act-to-the-left                 v                  v
+    F B₂ ∘ T M₂ ∘ F M₁ ======================================> F B₂ ∘ F B₁ ----------> F
+                                    act-to-the-right
+  -}
 
   -- To define the left-action we need that F ∘₁ T₁ is a coequalizer --
   F∘T₁Coequalizer : Coequalizer (hom C₁ C₃) ((act-to-the-left) ◁ T₁) ((act-to-the-right) ◁ T₁)
