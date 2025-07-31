@@ -659,6 +659,7 @@ abstract
                      
                      pentagon⊗∘arr³
 
+abstract
   pentagon⊗∘arr : (Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
                   ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
                   ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
@@ -681,6 +682,7 @@ abstract
                     
                     pentagon⊗∘arr²
 
+abstract
   pentagon⊗ : Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
               ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
               ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
