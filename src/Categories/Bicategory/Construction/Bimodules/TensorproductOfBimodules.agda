@@ -64,7 +64,7 @@ module Left-Action where
 
   {-
                                  act-to-the-left ◁ T M₁
-    (F B₂ ∘ T M₂ ∘ F B₁) ∘ T M₁ ========================> (F B₂ ∘ F B₁) ∘ T M₁ ------> F
+    (F B₂ ∘ T M₂ ∘ F B₁) ∘ T M₁ ========================> (F B₂ ∘ F B₁) ∘ T M₁ ---> F ∘ T M₁
              |                   act-to-the-right ◁ T M₁            |                  .
              |                                                      |                  .
          actionˡ-∘-∘                                             actionˡ-∘          actionˡ-⊗
