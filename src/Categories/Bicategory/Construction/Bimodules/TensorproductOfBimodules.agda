@@ -117,7 +117,7 @@ module Left-Action where
       (F₂ ▷ (actionʳ₁ ∘ᵥ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from)
         ∘ᵥ associator.from                                                 ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
       F₂ ▷ ((actionʳ₁ ∘ᵥ T₂ ▷ actionˡ₁) ∘ᵥ associator.from)
-        ∘ᵥ associator.from                                                 ≈⟨ ▷-resp-≈ assoc₂ ⟩∘⟨ refl ⟩
+        ∘ᵥ associator.from                                                 ≈⟨ ▷-resp-≈ assoc₂ ⟩∘⟨refl ⟩
       F₂ ▷ (actionʳ₁ ∘ᵥ T₂ ▷ actionˡ₁ ∘ᵥ associator.from)
         ∘ᵥ associator.from ≈⟨ ▷-resp-≈ action-assoc₁ ⟩∘⟨refl ⟩
       F₂ ▷ (actionˡ₁ ∘ᵥ actionʳ₁ ◁ T₁) ∘ᵥ associator.from                  ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
@@ -127,7 +127,6 @@ module Left-Action where
       actionˡ-∘ ∘ᵥ (act-to-the-left) ◁ T₁ ∎
       where
         open hom.HomReasoning
-        open hom.Equiv
 
     sq₂ : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-right) ◁ T₁) (act-to-the-right) (actionˡ-∘)
     sq₂ = begin
