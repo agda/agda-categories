@@ -64,13 +64,13 @@ module Left-Action where
 
   {-
                                  act-to-the-left ◁ T M₁
-    (F B₂ ∘ T M₂ ∘ F B₁) ∘ T M₁ ========================> (F B₂ ∘ F B₁) ∘ T M₁ ---> F ∘ T M₁
+    (F B₂ ∘ T M₂ ∘ F B₁) ∘ T M₁ ========================> (F B₂ ∘ F B₁) ∘ T M₁ ---> F ∘ T M₁      ::     CoeqBimods
              |                   act-to-the-right ◁ T M₁            |                  .
              |                                                      |                  .
          actionˡ-∘-∘                                             actionˡ-∘          actionˡ-⊗
              |                                                      |                  .
              v                      act-to-the-left                 v                  v
-    F B₂ ∘ T M₂ ∘ F M₁ ======================================> F B₂ ∘ F B₁ ----------> F
+    F B₂ ∘ T M₂ ∘ F M₁ ======================================> F B₂ ∘ F B₁ ----------> F          ::     CoeqBimods coeq-◁ T M₁
                                     act-to-the-right
   -}
 
