@@ -458,26 +458,27 @@ module 2-cell where
   coeqcoeqᵍʰ = (CoeqBimods B₃ (B₂ ⊗₀ B₁))
 
   
+  abstract
+    Associator⊗Iso : Bimodule.F ((B₃ ⊗₀ B₂) ⊗₀ B₁) ≅ Bimodule.F (B₃ ⊗₀ B₂ ⊗₀ B₁)
+    Associator⊗Iso = CoeqsAreIsomorphic
+                     coeqᶠ coeqᵍ coeqʰ coeqⁱ
+                     f⇒i₁ f⇒i₂ g⇒h₁ g⇒h₂
+                     sq₁ᶠⁱ sq₂ᶠⁱ sq₁ᵍʰ sq₂ᵍʰ
+                     coeqcoeqᵍʰ coeqcoeqᶠⁱ
 
-  Associator⊗Iso : Bimodule.F ((B₃ ⊗₀ B₂) ⊗₀ B₁) ≅ Bimodule.F (B₃ ⊗₀ B₂ ⊗₀ B₁)
-  Associator⊗Iso = CoeqsAreIsomorphic
-                    coeqᶠ coeqᵍ coeqʰ coeqⁱ
-                    f⇒i₁ f⇒i₂ g⇒h₁ g⇒h₂
-                    sq₁ᶠⁱ sq₂ᶠⁱ sq₁ᵍʰ sq₂ᵍʰ
-                    coeqcoeqᵍʰ coeqcoeqᶠⁱ
-                    
   α⇒⊗ : (Bimodule.F ((B₃ ⊗₀ B₂) ⊗₀ B₁)) ⇒₂ (Bimodule.F (B₃ ⊗₀ B₂ ⊗₀ B₁))
   α⇒⊗ = _≅_.from Associator⊗Iso
 
-  hexagon : Coequalizer.arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)) ∘ᵥ F₃ ▷ Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ associator.from
-             ≈ α⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁
-  hexagon = IsoFitsInPentagon
+  abstract
+    hexagon : Coequalizer.arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)) ∘ᵥ F₃ ▷ Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ associator.from
+              ≈ α⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁
+    hexagon = IsoFitsInPentagon
                 coeqᶠ coeqᵍ coeqʰ coeqⁱ
                 f⇒i₁ f⇒i₂ g⇒h₁ g⇒h₂
                 sq₁ᶠⁱ sq₂ᶠⁱ sq₁ᵍʰ sq₂ᵍʰ
                 coeqcoeqᵍʰ coeqcoeqᶠⁱ
-    where
-      open CoequalizerOfCoequalizer using (IsoFitsInPentagon)
+      where
+        open CoequalizerOfCoequalizer using (IsoFitsInPentagon)
 
 open 2-cell using (α⇒⊗; hexagon) public
 
@@ -757,6 +758,7 @@ module Linear-Left where
         open hom.HomReasoning
         open TensorproductOfBimodules.Left-Action using (actionˡSq-⊗)
 
+  abstract
     linearˡ∘arr : (Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
                       ∘ᵥ α⇒⊗ ◁ T₁)
                       ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T₁
@@ -773,6 +775,7 @@ module Linear-Left where
                       ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T₁)
                     linearˡ∘arr∘arr
 
+  abstract
     linearˡ : Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁) ∘ᵥ α⇒⊗ ◁ T₁
                       ≈ α⇒⊗ ∘ᵥ Bimodule.actionˡ ((B₃ ⊗₀ B₂) ⊗₀ B₁)
     linearˡ = Coequalizer⇒Epi
@@ -1055,6 +1058,7 @@ module Linear-Right where
         open hom.HomReasoning
         open TensorproductOfBimodules.Right-Action using (actionʳSq-⊗)
 
+  abstract
     linearʳ∘arr : (Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
                     ∘ᵥ T₄ ▷ α⇒⊗)
                     ∘ᵥ T₄ ▷ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
@@ -1071,6 +1075,7 @@ module Linear-Right where
                       ∘ᵥ T₄ ▷ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                     linearʳ∘arr∘arr
 
+  abstract
     linearʳ : Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
               ∘ᵥ T₄ ▷ α⇒⊗
               ≈ α⇒⊗
