@@ -87,13 +87,14 @@ sq₂ = begin
   where
     open CoeqProperties (hom C₁ C₃)
 
-open TensorproductOfBimodules.Left-Action B₂ B₁ using (F∘T₁Coequalizer; F₂▷actionˡ₁; actionˡSq)
+open TensorproductOfBimodules.Left-Action using (actionˡ-∘)
+open TensorproductOfBimodules.Left-Action B₂ B₁ using (F∘T₁Coequalizer; actionˡSq)
 open TensorproductOfBimodules.Left-Action B'₂ B'₁ using ()
-  renaming (F₂▷actionˡ₁ to F'₂▷actionˡ'₁; actionˡSq to actionˡ'Sq)
+  renaming (actionˡSq to actionˡ'Sq)
 
-linearˡ-square :  F'₂▷actionˡ'₁ ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈ (α₂ ⊚₁ α₁) ∘ᵥ F₂▷actionˡ₁
+linearˡ-square :   (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈ (α₂ ⊚₁ α₁) ∘ᵥ  (actionˡ-∘ B₂ B₁)
 linearˡ-square = begin
-  F'₂▷actionˡ'₁ ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ assoc₂ ⟩
+   (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ assoc₂ ⟩
   F'₂ ▷ actionˡ'₁ ∘ᵥ associator.from ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ refl⟩∘⟨ α⇒-⊚ ⟩
   F'₂ ▷ actionˡ'₁ ∘ᵥ α₂ ⊚₁ (α₁ ◁ T₁) ∘ᵥ associator.from ≈⟨ sym-assoc₂ ⟩
   (F'₂ ▷ actionˡ'₁ ∘ᵥ α₂ ⊚₁ (α₁ ◁ T₁)) ∘ᵥ associator.from ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
@@ -101,7 +102,7 @@ linearˡ-square = begin
   (α₂ ⊚₁ (α₁ ∘ᵥ actionˡ₁)) ∘ᵥ associator.from ≈⟨ ⟺ identity₂ʳ ⟩⊚⟨refl ⟩∘⟨refl ⟩
   ((α₂ ∘ᵥ id₂) ⊚₁ (α₁ ∘ᵥ actionˡ₁)) ∘ᵥ associator.from ≈⟨ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
   ((α₂ ⊚₁ α₁) ∘ᵥ F₂ ▷ actionˡ₁) ∘ᵥ associator.from ≈⟨ assoc₂ ⟩
-  (α₂ ⊚₁ α₁) ∘ᵥ F₂▷actionˡ₁ ∎
+  (α₂ ⊚₁ α₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ∎
   where
     open hom.HomReasoning
 
@@ -114,12 +115,12 @@ linearˡ∘arr = begin
   actionˡ' ∘ᵥ (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁)) ◁ T₁ ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
   actionˡ' ∘ᵥ Coequalizer.arr (CoeqBimods B'₂ B'₁) ◁ T₁ ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ sym-assoc₂ ⟩
   (actionˡ' ∘ᵥ Coequalizer.arr (CoeqBimods B'₂ B'₁) ◁ T₁) ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ ⟺ actionˡ'Sq ⟩∘⟨refl ⟩
-  (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ F'₂▷actionˡ'₁) ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ assoc₂ ⟩
-  Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ F'₂▷actionˡ'₁ ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ refl⟩∘⟨ linearˡ-square ⟩
-  Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁) ∘ᵥ F₂▷actionˡ₁ ≈⟨ sym-assoc₂ ⟩
-  (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁)) ∘ᵥ F₂▷actionˡ₁ ≈⟨ αSq ⟩∘⟨refl ⟩
-  (α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ∘ᵥ F₂▷actionˡ₁ ≈⟨ assoc₂ ⟩
-  α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ F₂▷actionˡ₁ ≈⟨ refl⟩∘⟨ actionˡSq ⟩
+  (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ  (actionˡ-∘ B'₂ B'₁)) ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ assoc₂ ⟩
+  Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ  (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ refl⟩∘⟨ linearˡ-square ⟩
+  Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ sym-assoc₂ ⟩
+  (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁)) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ αSq ⟩∘⟨refl ⟩
+  (α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ assoc₂ ⟩
+  α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ refl⟩∘⟨ actionˡSq ⟩
   α ∘ᵥ actionˡ ∘ᵥ Coequalizer.arr F∘T₁Coequalizer ≈⟨ sym-assoc₂ ⟩
   (α ∘ᵥ actionˡ) ∘ᵥ Coequalizer.arr F∘T₁Coequalizer ∎
   where
