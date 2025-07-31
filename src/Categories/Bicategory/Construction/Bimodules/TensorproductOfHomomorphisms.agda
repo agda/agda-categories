@@ -88,7 +88,7 @@ sq₂ = begin
     open CoeqProperties (hom C₁ C₃)
 
 open TensorproductOfBimodules.Left-Action using (actionˡ-∘)
-open TensorproductOfBimodules.Left-Action B₂ B₁ using (F∘T₁Coequalizer; actionˡSq)
+open TensorproductOfBimodules.Left-Action B₂ B₁ using (actionˡSq)
 open TensorproductOfBimodules.Left-Action B'₂ B'₁ using ()
   renaming (actionˡSq to actionˡ'Sq)
 
@@ -106,11 +106,11 @@ linearˡ-square = begin
   where
     open hom.HomReasoning
 
-linearˡ∘arr : (actionˡ' ∘ᵥ α ◁ T₁) ∘ᵥ Coequalizer.arr F∘T₁Coequalizer
-              ≈ (α ∘ᵥ actionˡ) ∘ᵥ Coequalizer.arr F∘T₁Coequalizer
+linearˡ∘arr : (actionˡ' ∘ᵥ α ◁ T₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T₁)
+              ≈ (α ∘ᵥ actionˡ) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T₁)
 linearˡ∘arr = begin
-  (actionˡ' ∘ᵥ α ◁ T₁) ∘ᵥ Coequalizer.arr F∘T₁Coequalizer ≈⟨ assoc₂ ⟩
-  actionˡ' ∘ᵥ α ◁ T₁ ∘ᵥ Coequalizer.arr F∘T₁Coequalizer ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
+  (actionˡ' ∘ᵥ α ◁ T₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T₁) ≈⟨ assoc₂ ⟩
+  actionˡ' ∘ᵥ α ◁ T₁ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T₁) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
   actionˡ' ∘ᵥ (α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ◁ T₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ (⟺ αSq) ⟩
   actionˡ' ∘ᵥ (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁)) ◁ T₁ ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
   actionˡ' ∘ᵥ Coequalizer.arr (CoeqBimods B'₂ B'₁) ◁ T₁ ∘ᵥ (α₂ ⊚₁ α₁) ◁ T₁ ≈⟨ sym-assoc₂ ⟩
@@ -121,13 +121,13 @@ linearˡ∘arr = begin
   (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α₂ ⊚₁ α₁)) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ αSq ⟩∘⟨refl ⟩
   (α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ assoc₂ ⟩
   α ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ refl⟩∘⟨ actionˡSq ⟩
-  α ∘ᵥ actionˡ ∘ᵥ Coequalizer.arr F∘T₁Coequalizer ≈⟨ sym-assoc₂ ⟩
-  (α ∘ᵥ actionˡ) ∘ᵥ Coequalizer.arr F∘T₁Coequalizer ∎
+  α ∘ᵥ actionˡ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T₁) ≈⟨ sym-assoc₂ ⟩
+  (α ∘ᵥ actionˡ) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T₁) ∎
   where
     open hom.HomReasoning
 
 linearˡ : actionˡ' ∘ᵥ α ◁ T₁ ≈ α ∘ᵥ actionˡ
-linearˡ = Coequalizer⇒Epi (hom C₁ C₃) F∘T₁Coequalizer
+linearˡ = Coequalizer⇒Epi (hom C₁ C₃) (CoeqBimods B₂ B₁ coeq-◁ T₁)
                           (actionˡ' ∘ᵥ α ◁ T₁) (α ∘ᵥ actionˡ)
                           linearˡ∘arr
 
