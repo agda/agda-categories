@@ -50,17 +50,6 @@ open Bimodule B₁ using () renaming (F to F₁)
 open Bimodule B₂ using () renaming (F to F₂)
 open Bimodule B₃ using () renaming (F to F₃)
 open Bimodule B₄ using () renaming (F to F₄)
--- open TensorproductOfBimodules B₂ B₁ using (F₂⊗F₁)
--- open TensorproductOfBimodules B₃ B₂ using () renaming (F₂⊗F₁ to F₃⊗F₂)
--- open TensorproductOfBimodules B₄ B₃ using () renaming (F₂⊗F₁ to F₄⊗F₃)
--- open TensorproductOfBimodules B₃ (B₂ ⊗₀ B₁) using () renaming (F₂⊗F₁ to F₃⊗F₂⊗F₁)
--- open TensorproductOfBimodules (B₃ ⊗₀ B₂) B₁ using () renaming (F₂⊗F₁ to [F₃⊗F₂]⊗F₁)
--- open TensorproductOfBimodules (B₄ ⊗₀ B₃) B₂ using () renaming (F₂⊗F₁ to [F₄⊗F₃]⊗F₂ )
--- open TensorproductOfBimodules B₄ (B₃ ⊗₀ B₂) using () renaming (F₂⊗F₁ to F₄⊗F₃⊗F₂ )
--- open TensorproductOfBimodules ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁ using () renaming (F₂⊗F₁ to [[F₄⊗F₃]⊗F₂]⊗F₁)
--- open TensorproductOfBimodules (B₄ ⊗₀ B₃) (B₂ ⊗₀ B₁) using () renaming (F₂⊗F₁ to [F₄⊗F₃]⊗F₂⊗F₁)
--- open TensorproductOfBimodules (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁ using () renaming (F₂⊗F₁ to [F₄⊗F₃⊗F₂]⊗F₁)
--- open TensorproductOfBimodules B₄ ((B₃ ⊗₀ B₂) ⊗₀  B₁) using () renaming (F₂⊗F₁ to F₄⊗[F₃⊗F₂]⊗F₁)
 
 
 abstract
