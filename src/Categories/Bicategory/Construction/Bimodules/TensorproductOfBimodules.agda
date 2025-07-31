@@ -258,10 +258,6 @@ module Associativity where
   open Left-Action using (actionˡ-⊗; actionˡSq-⊗; actionˡ-∘)
   open Right-Action using (actionʳ; actionʳSq-⊗; actionʳ-∘)
 
-  -- we need that T₃∘(F∘T₁) is a coequalizer --
-  T₃∘[F∘T₁]Coequalizer : Coequalizer (hom C₁ C₃) (T₃ ▷ ((act-to-the-left) ◁ T₁))  (T₃ ▷ ((act-to-the-right) ◁ T₁))
-  T₃∘[F∘T₁]Coequalizer = T₃ ▷-coeq (CoeqBimods coeq-◁ T₁)
-
   -- we need that (T₃∘F)∘T₁ is a coequalizer --
   [T₃∘F]∘T₁Coequalizer : Coequalizer (hom C₁ C₃) ((T₃ ▷ (act-to-the-left)) ◁ T₁) ((T₃ ▷ (act-to-the-right)) ◁ T₁)
   [T₃∘F]∘T₁Coequalizer = (T₃ ▷-coeq CoeqBimods) coeq-◁ T₁
@@ -297,9 +293,9 @@ module Associativity where
       (actionʳ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ associator.from) ∘ᵥ (Coequalizer.arr [T₃∘F]∘T₁Coequalizer) ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
       ((actionʳ ∘ᵥ (T₃ ▷ actionˡ-⊗)) ∘ᵥ associator.from) ∘ᵥ (Coequalizer.arr [T₃∘F]∘T₁Coequalizer) ≈⟨ assoc₂ ⟩
       (actionʳ ∘ᵥ (T₃ ▷ actionˡ-⊗)) ∘ᵥ associator.from ∘ᵥ (Coequalizer.arr [T₃∘F]∘T₁Coequalizer) ≈⟨ refl⟩∘⟨ α⇒-▷-◁ ⟩
-      (actionʳ ∘ᵥ (T₃ ▷ actionˡ-⊗)) ∘ᵥ Coequalizer.arr T₃∘[F∘T₁]Coequalizer ∘ᵥ associator.from  ≈⟨ sym-assoc₂ ⟩
-      ((actionʳ ∘ᵥ (T₃ ▷ actionˡ-⊗)) ∘ᵥ Coequalizer.arr T₃∘[F∘T₁]Coequalizer) ∘ᵥ associator.from  ≈⟨ assoc₂ ⟩∘⟨refl ⟩
-      (actionʳ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ Coequalizer.arr T₃∘[F∘T₁]Coequalizer) ∘ᵥ associator.from  ≈⟨ (refl⟩∘⟨ ∘ᵥ-distr-▷) ⟩∘⟨refl ⟩
+      (actionʳ ∘ᵥ (T₃ ▷ actionˡ-⊗)) ∘ᵥ Coequalizer.arr (T₃ ▷-coeq (CoeqBimods coeq-◁ T₁)) ∘ᵥ associator.from  ≈⟨ sym-assoc₂ ⟩
+      ((actionʳ ∘ᵥ (T₃ ▷ actionˡ-⊗)) ∘ᵥ Coequalizer.arr (T₃ ▷-coeq (CoeqBimods coeq-◁ T₁))) ∘ᵥ associator.from  ≈⟨ assoc₂ ⟩∘⟨refl ⟩
+      (actionʳ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ Coequalizer.arr (T₃ ▷-coeq (CoeqBimods coeq-◁ T₁))) ∘ᵥ associator.from  ≈⟨ (refl⟩∘⟨ ∘ᵥ-distr-▷) ⟩∘⟨refl ⟩
       (actionʳ ∘ᵥ T₃ ▷ (actionˡ-⊗ ∘ᵥ Coequalizer.arr (CoeqBimods coeq-◁ T₁))) ∘ᵥ associator.from  ≈⟨ (refl⟩∘⟨ ▷-resp-≈ (⟺ actionˡSq-⊗)) ⟩∘⟨refl ⟩
       (actionʳ ∘ᵥ T₃ ▷ (Coequalizer.arr CoeqBimods ∘ᵥ actionˡ-∘)) ∘ᵥ associator.from  ≈⟨ (refl⟩∘⟨(⟺ ∘ᵥ-distr-▷)) ⟩∘⟨refl ⟩
       (actionʳ ∘ᵥ Coequalizer.arr (T₃ ▷-coeq CoeqBimods) ∘ᵥ T₃ ▷ actionˡ-∘) ∘ᵥ associator.from  ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
