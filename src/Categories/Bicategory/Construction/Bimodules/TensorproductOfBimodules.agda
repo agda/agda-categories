@@ -179,8 +179,8 @@ module Right-Action where
   -}
 
   -- to define a map between the coequalizers T₃ ∘₁ F-⊗ ⇒₂ F-⊗ we define a map of diagrams --
-  actionʳ₂◁T₂∘₁F₁ : T₃ ∘₁ F₂ ∘₁ T₂ ∘₁ F₁ ⇒₂  F₂ ∘₁ T₂ ∘₁ F₁
-  actionʳ₂◁T₂∘₁F₁ = actionʳ₂ ◁ (T₂ ∘₁ F₁) ∘ᵥ associator.to
+  actionʳ-∘-∘ : T₃ ∘₁ F₂ ∘₁ T₂ ∘₁ F₁ ⇒₂  F₂ ∘₁ T₂ ∘₁ F₁
+  actionʳ-∘-∘ = actionʳ₂ ◁ (T₂ ∘₁ F₁) ∘ᵥ associator.to
 
   actionʳ₂◁F₁ : T₃ ∘₁ F₂ ∘₁ F₁ ⇒₂  F₂ ∘₁ F₁
   actionʳ₂◁F₁ = actionʳ₂ ◁ F₁ ∘ᵥ associator.to
@@ -190,7 +190,7 @@ module Right-Action where
 
   -- to get a map of diagrams two squares have to commute --
   abstract
-    sq₁ : CommutativeSquare (actionʳ₂◁T₂∘₁F₁) (T₃ ▷ act-to-the-left) (act-to-the-left) (actionʳ₂◁F₁)
+    sq₁ : CommutativeSquare (actionʳ-∘-∘) (T₃ ▷ act-to-the-left) (act-to-the-left) (actionʳ₂◁F₁)
     sq₁ = glue′ sq₁bottom sq₁top
       where
         open hom.HomReasoning
@@ -200,9 +200,9 @@ module Right-Action where
         sq₁bottom : CommutativeSquare (actionʳ₂ ◁ (T₂ ∘₁ F₁)) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (F₂ ▷ actionʳ₁) (actionʳ₂ ◁ F₁)
         sq₁bottom = ◁-▷-exchg
 
-    sq₂ : CommutativeSquare (actionʳ₂◁T₂∘₁F₁) (T₃ ▷ (act-to-the-right)) (act-to-the-right) (actionʳ₂◁F₁)
+    sq₂ : CommutativeSquare (actionʳ-∘-∘) (T₃ ▷ (act-to-the-right)) (act-to-the-right) (actionʳ₂◁F₁)
     sq₂ = begin
-      (act-to-the-right) ∘ᵥ (actionʳ₂◁T₂∘₁F₁)                            ≈⟨ sym-assoc₂ ⟩
+      (act-to-the-right) ∘ᵥ (actionʳ-∘-∘)                            ≈⟨ sym-assoc₂ ⟩
       ((actionˡ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ actionʳ₂ ◁  (T₂ ∘₁ F₁)) ∘ᵥ associator.to    ≈⟨ assoc₂ ⟩∘⟨refl ⟩
       (actionˡ₂ ◁ F₁ ∘ᵥ (associator.to ∘ᵥ actionʳ₂ ◁  (T₂ ∘₁ F₁))) ∘ᵥ associator.to    ≈⟨ (refl⟩∘⟨ α⇐-◁-∘₁) ⟩∘⟨refl ⟩
       (actionˡ₂ ◁ F₁ ∘ᵥ (actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to)) ∘ᵥ associator.to        ≈⟨ assoc₂ ⟩
@@ -236,14 +236,14 @@ module Right-Action where
 
   -- right-action --
   actionʳ : T₃ ∘₁ F-⊗ ⇒₂ F-⊗
-  actionʳ = ⇒MapBetweenCoeq actionʳ₂◁T₂∘₁F₁ actionʳ₂◁F₁ sq₁ sq₂ (T₃ ▷-coeq CoeqBimods) CoeqBimods
+  actionʳ = ⇒MapBetweenCoeq actionʳ-∘-∘ actionʳ₂◁F₁ sq₁ sq₂ (T₃ ▷-coeq CoeqBimods) CoeqBimods
     where
       open CoeqProperties (hom C₁ C₃)
 
   abstract
     -- the right-action fits into the following commutaitve square --
     actionʳSq-⊗ : CommutativeSquare (actionʳ₂◁F₁) (Coequalizer.arr (T₃ ▷-coeq CoeqBimods)) (Coequalizer.arr CoeqBimods) (actionʳ)
-    actionʳSq-⊗ = ⇒MapBetweenCoeqSq actionʳ₂◁T₂∘₁F₁ actionʳ₂◁F₁ sq₁ sq₂ (T₃ ▷-coeq CoeqBimods) CoeqBimods
+    actionʳSq-⊗ = ⇒MapBetweenCoeqSq actionʳ-∘-∘ actionʳ₂◁F₁ sq₁ sq₂ (T₃ ▷-coeq CoeqBimods) CoeqBimods
       where
         open CoeqProperties (hom C₁ C₃)
   -- end abstract --
