@@ -130,8 +130,8 @@ abstract
         open TensorproductOfBimodules.Left-Action using (actionˡSq-⊗)
 
   abstract
-    linearˡ : actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T₁ ≈ α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁
-    linearˡ = Coequalizer⇒Epi (hom C₁ C₃) (CoeqBimods B₂ B₁ coeq-◁ T₁)
+    linearˡ-⊗ : actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T₁ ≈ α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁
+    linearˡ-⊗ = Coequalizer⇒Epi (hom C₁ C₃) (CoeqBimods B₂ B₁ coeq-◁ T₁)
                             (actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T₁) (α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁)
                             linearˡ-⊗-∘arr
 
@@ -175,8 +175,8 @@ abstract
         open TensorproductOfBimodules.Right-Action using (actionʳSq-⊗)
 
   abstract
-    linearʳ : actionʳ-⊗ B'₂ B'₁ ∘ᵥ T₃ ▷ α-⊗ ≈ α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁
-    linearʳ = Coequalizer⇒Epi (hom C₁ C₃) (T₃ ▷-coeq CoeqBimods B₂ B₁)
+    linearʳ-⊗ : actionʳ-⊗ B'₂ B'₁ ∘ᵥ T₃ ▷ α-⊗ ≈ α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁
+    linearʳ-⊗ = Coequalizer⇒Epi (hom C₁ C₃) (T₃ ▷-coeq CoeqBimods B₂ B₁)
                               (actionʳ-⊗ B'₂ B'₁ ∘ᵥ T₃ ▷ α-⊗) (α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁)
                               linearʳ-⊗-∘arr
 
@@ -185,6 +185,6 @@ abstract
 h₂⊗h₁ : Bimodulehomomorphism (B₂ ⊗₀ B₁) (B'₂ ⊗₀ B'₁)
 h₂⊗h₁ = record
   { α = α-⊗
-  ; linearˡ = linearˡ
-  ; linearʳ = linearʳ
+  ; linearˡ = linearˡ-⊗
+  ; linearʳ = linearʳ-⊗
   }
