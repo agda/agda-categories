@@ -13,7 +13,7 @@ open Bicat 𝒞
 
 record LocalCoequalizers : Set (o ⊔ ℓ ⊔ e ⊔ t) where
   field
-    localCoequalizers : (A B : Obj) → Coequalizers (hom A B)
+    local-coequalizers : {A B : Obj} → Coequalizers (hom A B)
     precompPreservesCoequalizer : {A B E : Obj} → (f : E ⇒₁ A)
       → PreservesCoequalizers (-⊚_ {E} {A} {B} f)
     postcompPreservesCoequalizer : {A B E : Obj} → (f : B ⇒₁ E)

@@ -55,6 +55,7 @@ abstract
   -- for all foreseeable purposes, the particular choice of coequalizer will not matter --
   CoeqBimods : Coequalizer (hom C₁ C₃) (act-to-the-left) (act-to-the-right)
   CoeqBimods = localCoequalizers C₁ C₃ (act-to-the-left) (act-to-the-right)
+  CoeqBimods = local-coequalizers (act-to-the-left) (act-to-the-right)
   
 -- The underlying object of that coequalizer is the underlying 1-cell of the bimodule B₂⊗B₁ --
 F-⊗ : C₁ ⇒₁ C₃
