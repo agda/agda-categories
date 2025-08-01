@@ -23,6 +23,9 @@ private
 open LocalCoequalizers localCoeq
 open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_coeq-◁_; _▷-coeq_)
 
+import Categories.Morphism.Reasoning as MorphismReasoning
+import Categories.Morphism.Reasoning.Iso as IsoReasoning
+
 private
   module homCat {X} {Y} where
     open import Categories.Diagram.Coequalizer (hom X Y) public using (Coequalizer; Coequalizer⇒Epi)
@@ -201,7 +204,7 @@ module Right-Action where
     sq₁ = glue′ sq₁bottom sq₁top
       where
         open hom.HomReasoning
-        open import Categories.Morphism.Reasoning.Core (hom C₁ C₃)
+        open MorphismReasoning (hom (C M₁) C₃) using (glue′)
         sq₁top : CommutativeSquare (associator.to) (T₃ ▷ F₂ ▷ actionʳ₁) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (associator.to)
         sq₁top = ⟺ α⇐-▷-∘₁
         sq₁bottom : CommutativeSquare (actionʳ₂ ◁ (T₂ ∘₁ F₁)) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (F₂ ▷ actionʳ₁) (actionʳ₂ ◁ F₁)
@@ -341,7 +344,7 @@ module Associativity where
       actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∎
       where
         open hom.HomReasoning
-        open import Categories.Morphism.Reasoning.Iso (hom C₁ C₃)
+        open IsoReasoning (hom (C M₁) C₃) using (switch-fromtoʳ)
 
   abstract
     assoc-actionˡ-∘ : actionˡ-∘ ∘ᵥ (F₂ ∘₁ F₁) ▷ μ₁ ∘ᵥ associator.from ≈ actionˡ-∘ ∘ᵥ actionˡ-∘ ◁ T₁
@@ -418,7 +421,7 @@ module Associativity where
       actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ₁) ∎
       where
         open hom.HomReasoning
-        open import Categories.Morphism.Reasoning.Iso (hom C₁ C₃)
+        open IsoReasoning (hom (C M₁) C₃) using (switch-fromtoʳ)
   -- end abstract --
 
   abstract
@@ -494,7 +497,7 @@ module Associativity where
       actionʳ-⊗ ∘ᵥ μ₃ ◁ F-⊗ ∎
       where
         open hom.HomReasoning
-        open import Categories.Morphism.Reasoning.Iso (hom C₁ C₃)
+        open IsoReasoning (hom (C M₁) C₃) using (switch-tofromʳ)
   -- end abstract --
 
 module Identity where
