@@ -16,8 +16,6 @@ open Categories.Category.Construction.Bimodules {o} {ℓ} {e} {t} {𝒞} renamin
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 open import Categories.Category
-open import Categories.Diagram.Coequalizer
-import Categories.Diagram.Coequalizer.Properties as CoeqProperties
 
 private
   module Bimodules₁ M₁ M₂ = Category (Bimodules₁ M₁ M₂)
@@ -25,6 +23,15 @@ private
 open LocalCoequalizers localCoeq
 open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_coeq-◁_; _▷-coeq_)
 
+private
+  module homCat {X} {Y} where
+    open import Categories.Diagram.Coequalizer (hom X Y) public using (Coequalizer; Coequalizer⇒Epi)
+    open import Categories.Diagram.Coequalizer.Properties (hom X Y) public
+      using (⇒MapBetweenCoeq; ⇒MapBetweenCoeqSq)
+
+open homCat
+
+open Monad
 open Monad M₁ using () renaming (C to C₁; T to T₁; μ to μ₁; η to η₁)
 open Monad M₂ using () renaming (C to C₂; T to T₂; μ to μ₂; η to η₂)
 open Monad M₃ using () renaming (C to C₃; T to T₃; μ to μ₃; η to η₃)
@@ -53,8 +60,7 @@ abstract
   -- to costruct the tensorproduct of bimodules the following coequalizer is formed --
   -- to speed-up type-checking we hide the definition of this coequalizer under an abstract clause --
   -- for all foreseeable purposes, the particular choice of coequalizer will not matter --
-  CoeqBimods : Coequalizer (hom C₁ C₃) (act-to-the-left) (act-to-the-right)
-  CoeqBimods = localCoequalizers C₁ C₃ (act-to-the-left) (act-to-the-right)
+  CoeqBimods : Coequalizer (act-to-the-left) (act-to-the-right)
   CoeqBimods = local-coequalizers (act-to-the-left) (act-to-the-right)
   
 -- The underlying object of that coequalizer is the underlying 1-cell of the bimodule B₂⊗B₁ --
@@ -159,14 +165,10 @@ module Left-Action where
     -- probably, no one ever wants to look into its defintion and instead only use the lemma actionˡSq-⊗ below --
     actionˡ-⊗ : F-⊗ ∘₁ T₁ ⇒₂ F-⊗
     actionˡ-⊗ = ⇒MapBetweenCoeq actionˡ-∘-∘ actionˡ-∘ sq₁ sq₂ (CoeqBimods coeq-◁ T₁) CoeqBimods
-      where
-        open CoeqProperties (hom C₁ C₃)
 
     -- the left-action fits into the following commutative square --
     actionˡSq-⊗ : CommutativeSquare (actionˡ-∘) (Coequalizer.arr (CoeqBimods coeq-◁ T₁)) (Coequalizer.arr CoeqBimods) (actionˡ-⊗)
     actionˡSq-⊗ = ⇒MapBetweenCoeqSq actionˡ-∘-∘ actionˡ-∘ sq₁ sq₂ (CoeqBimods coeq-◁ T₁) CoeqBimods
-      where
-        open CoeqProperties (hom C₁ C₃)
   -- end abstract --
 
 module Right-Action where
@@ -245,14 +247,10 @@ module Right-Action where
     -- probably, no one ever wants to look into its defintion and instead only use the lemma actionʳSq-⊗ below --
     actionʳ-⊗ : T₃ ∘₁ F-⊗ ⇒₂ F-⊗
     actionʳ-⊗ = ⇒MapBetweenCoeq actionʳ-∘-∘ actionʳ-∘ sq₁ sq₂ (T₃ ▷-coeq CoeqBimods) CoeqBimods
-      where
-        open CoeqProperties (hom C₁ C₃)
 
     -- the right-action fits into the following commutaitve square --
     actionʳSq-⊗ : CommutativeSquare (actionʳ-∘) (Coequalizer.arr (T₃ ▷-coeq CoeqBimods)) (Coequalizer.arr CoeqBimods) (actionʳ-⊗)
     actionʳSq-⊗ = ⇒MapBetweenCoeqSq actionʳ-∘-∘ actionʳ-∘ sq₁ sq₂ (T₃ ▷-coeq CoeqBimods) CoeqBimods
-      where
-        open CoeqProperties (hom C₁ C₃)
   -- end abstract --
 
 
@@ -321,10 +319,10 @@ module Associativity where
 
   abstract
     assoc-⊗ : actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ associator.from ≈ actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T₁)
-    assoc-⊗ = Coequalizer⇒Epi (hom C₁ C₃) ((T₃ ▷-coeq CoeqBimods) coeq-◁ T₁)
-                            (actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ associator.from)
-                            (actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T₁))
-                            assoc-⊗-∘arr
+    assoc-⊗ = Coequalizer⇒Epi ((T₃ ▷-coeq CoeqBimods) coeq-◁ T₁)
+                              (actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ associator.from)
+                              (actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T₁))
+                              assoc-⊗-∘arr
 
   abstract
     assoc-⊗-var : (actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗)) ∘ᵥ associator.from ≈ actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T₁)
@@ -398,10 +396,10 @@ module Associativity where
 
   abstract
     assoc-actionˡ-⊗ : actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ₁) ∘ᵥ associator.from ≈ actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T₁)
-    assoc-actionˡ-⊗ = Coequalizer⇒Epi ((hom C₁ C₃)) ((CoeqBimods coeq-◁ T₁) coeq-◁ T₁)
-                                    (actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ₁) ∘ᵥ associator.from)
-                                    (actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T₁))
-                                    assoc-actionˡ-⊗-∘arr
+    assoc-actionˡ-⊗ = Coequalizer⇒Epi ((CoeqBimods coeq-◁ T₁) coeq-◁ T₁)
+                                      (actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ₁) ∘ᵥ associator.from)
+                                      (actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T₁))
+                                      assoc-actionˡ-⊗-∘arr
 
   abstract
     assoc-actionˡ-⊗-var : (actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ₁)) ∘ᵥ associator.from ≈ actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T₁)
@@ -476,10 +474,10 @@ module Associativity where
 
   abstract
     assoc-actionʳ-⊗ : actionʳ-⊗ ∘ᵥ μ₃ ◁ F-⊗ ∘ᵥ associator.to ≈ actionʳ-⊗ ∘ᵥ T₃ ▷ actionʳ-⊗
-    assoc-actionʳ-⊗ = Coequalizer⇒Epi (hom C₁ C₃) (T₃ ▷-coeq (T₃ ▷-coeq CoeqBimods))
-                                    (actionʳ-⊗ ∘ᵥ μ₃ ◁ F-⊗ ∘ᵥ associator.to)
-                                    (actionʳ-⊗ ∘ᵥ T₃ ▷ actionʳ-⊗)
-                                    assoc-actionʳ-⊗-∘arr
+    assoc-actionʳ-⊗ = Coequalizer⇒Epi (T₃ ▷-coeq (T₃ ▷-coeq CoeqBimods))
+                                      (actionʳ-⊗ ∘ᵥ μ₃ ◁ F-⊗ ∘ᵥ associator.to)
+                                      (actionʳ-⊗ ∘ᵥ T₃ ▷ actionʳ-⊗)
+                                      assoc-actionʳ-⊗-∘arr
   abstract
     assoc-actionʳ-⊗-var : (actionʳ-⊗ ∘ᵥ μ₃ ◁ F-⊗) ∘ᵥ associator.to ≈ actionʳ-⊗ ∘ᵥ T₃ ▷ actionʳ-⊗
     assoc-actionʳ-⊗-var = begin
@@ -540,7 +538,7 @@ module Identity where
 
   abstract
     identityˡ-⊗ : actionˡ-⊗ ∘ᵥ F-⊗ ▷ η₁ ∘ᵥ unitorʳ.to ≈ id₂
-    identityˡ-⊗ = Coequalizer⇒Epi (hom C₁ C₃) CoeqBimods (actionˡ-⊗ ∘ᵥ F-⊗ ▷ η₁ ∘ᵥ unitorʳ.to) id₂ identityˡ-⊗-∘arr
+    identityˡ-⊗ = Coequalizer⇒Epi CoeqBimods (actionˡ-⊗ ∘ᵥ F-⊗ ▷ η₁ ∘ᵥ unitorʳ.to) id₂ identityˡ-⊗-∘arr
 
   abstract
     identityʳ-∘ : actionʳ-∘ ∘ᵥ η₃ ◁ (F₂ ∘₁ F₁) ∘ᵥ unitorˡ.to ≈ id₂
@@ -579,7 +577,7 @@ module Identity where
 
   abstract
     identityʳ-⊗ : actionʳ-⊗ ∘ᵥ (η₃ ◁ F-⊗) ∘ᵥ unitorˡ.to ≈ id₂
-    identityʳ-⊗ = Coequalizer⇒Epi (hom C₁ C₃) CoeqBimods (actionʳ-⊗ ∘ᵥ (η₃ ◁ F-⊗) ∘ᵥ unitorˡ.to) id₂ identityʳ-⊗-∘arr
+    identityʳ-⊗ = Coequalizer⇒Epi CoeqBimods (actionʳ-⊗ ∘ᵥ (η₃ ◁ F-⊗) ∘ᵥ unitorˡ.to) id₂ identityʳ-⊗-∘arr
   -- end abstract --
 
 B₂⊗B₁ : Bimodule M₁ M₃
