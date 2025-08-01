@@ -81,7 +81,7 @@ abstract
     α⇒⊗
     ∘ᵥ (Bimodhom.α ((f₃ ⊗₁ f₂) ⊗₁ f₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-    ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ refl⟩∘⟨ ⟺ αSq[f₃⊗f₂]⊗f₁ ⟩∘⟨refl ⟩
+    ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ refl⟩∘⟨ ⟺ (αSq-⊗ (f₃ ⊗₁ f₂) f₁) ⟩∘⟨refl ⟩
 
     α⇒⊗
     ∘ᵥ (Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
@@ -113,7 +113,7 @@ abstract
     ∘ᵥ Coequalizer.obj (CoeqBimods B₃' B₂') ▷ Bimodhom.α f₁
     ∘ᵥ Bimodhom.α (f₃ ⊗₁ f₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨
-                                     ◁-resp-sq (⟺ αSqf₃⊗f₂) ⟩
+                                     ◁-resp-sq (⟺ (αSq-⊗ f₃ f₂)) ⟩
 
     α⇒⊗
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
@@ -230,7 +230,7 @@ abstract
     ∘ᵥ F₃ ▷ Coequalizer.arr (CoeqBimods B₂' B₁')
     ∘ᵥ F₃ ▷ Bimodhom.α f₂ ⊚₁ Bimodhom.α f₁)
     ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ (refl⟩∘⟨
-                          ▷-resp-sq αSqf₂⊗f₁) ⟩∘⟨refl ⟩
+                          ▷-resp-sq (αSq-⊗ f₂ f₁)) ⟩∘⟨refl ⟩
 
     Coequalizer.arr (CoeqBimods B₃' (B₂' ⊗₀ B₁'))
     ∘ᵥ (Bimodhom.α f₃ ◁ Coequalizer.obj (CoeqBimods B₂' B₁')
@@ -263,7 +263,7 @@ abstract
     (Coequalizer.arr (CoeqBimods B₃' (B₂' ⊗₀ B₁'))
     ∘ᵥ Bimodhom.α f₃ ⊚₁ Bimodhom.α (f₂ ⊗₁ f₁))
     ∘ᵥ F₃ ▷ Coequalizer.arr (CoeqBimods B₂ B₁)
-    ∘ᵥ associator.from ≈⟨ αSqf₃⊗[f₂⊗f₁] ⟩∘⟨refl ⟩
+    ∘ᵥ associator.from ≈⟨ αSq-⊗ f₃ (f₂ ⊗₁ f₁) ⟩∘⟨refl ⟩
 
     (Bimodhom.α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)))
@@ -292,10 +292,7 @@ abstract
 
     where
       open hom.HomReasoning
-      open TensorproductOfHomomorphisms f₂ f₁ renaming (αSq to αSqf₂⊗f₁)
-      open TensorproductOfHomomorphisms f₃ f₂ renaming (αSq to αSqf₃⊗f₂)
-      open TensorproductOfHomomorphisms (f₃ ⊗₁ f₂) f₁ renaming (αSq to αSq[f₃⊗f₂]⊗f₁)
-      open TensorproductOfHomomorphisms f₃ (f₂ ⊗₁ f₁) renaming (αSq to αSqf₃⊗[f₂⊗f₁])
+      open TensorproductOfHomomorphisms using (αSq-⊗)
 
   α⇒⊗-natural∘arr : (α⇒⊗ {B₃'} {B₂'} {B₁'}
                      ∘ᵥ Bimodhom.α ((f₃ ⊗₁ f₂) ⊗₁ f₁))

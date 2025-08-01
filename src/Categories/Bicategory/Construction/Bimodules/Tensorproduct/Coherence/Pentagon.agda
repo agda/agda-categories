@@ -44,7 +44,6 @@ open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associato
   using (Associator⊗From; hexagon)
 
 open TensorproductOfBimodules using (CoeqBimods)
-open TensorproductOfHomomorphisms using (αSq)
 
 open Bimodule B₁ using () renaming (F to F₁)
 open Bimodule B₂ using () renaming (F to F₂)
@@ -238,7 +237,7 @@ abstract
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
-    ≈⟨ ⟺ (αSq (Associator⊗From {B₃ = B₄} {B₃} {B₂}) (id-bimodule-hom {B = B₁})) ⟩∘⟨refl ⟩
+    ≈⟨ ⟺ αSq-⊗ ⟩∘⟨refl ⟩
   
     (Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁)
     ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂}) ◁ F₁)
@@ -301,6 +300,7 @@ abstract
     
     where
       open hom.HomReasoning
+      open TensorproductOfHomomorphisms (Associator⊗From {B₃ = B₄} {B₃} {B₂}) (id-bimodule-hom {B = B₁}) using (αSq-⊗)
 
   face[432]1⇒4[32]1 : Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
                       ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁)
@@ -400,7 +400,7 @@ abstract
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ ((B₃ ⊗₀ B₂) ⊗₀  B₁)))
     ∘ᵥ F₄ ▷ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
     ∘ᵥ F₄ ▷ (Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁)
-    ≈⟨ ⟺ (αSq (id-bimodule-hom {B = B₄}) (Associator⊗From {B₃ = B₃} {B₂} {B₁})) ⟩∘⟨refl ⟩
+    ≈⟨ ⟺ αSq-⊗ ⟩∘⟨refl ⟩
 
     (Coequalizer.arr (CoeqBimods B₄ (B₃ ⊗₀ B₂ ⊗₀ B₁))
     ∘ᵥ F₄ ▷ Bimodhom.α (Associator⊗From {B₃ = B₃} {B₂} {B₁}))
@@ -463,6 +463,7 @@ abstract
 
     where
       open hom.HomReasoning
+      open TensorproductOfHomomorphisms (id-bimodule-hom {B = B₄}) (Associator⊗From {B₃ = B₃} {B₂} {B₁}) using (αSq-⊗)
 
 abstract
   pentagon⊗∘arr³ : (((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})

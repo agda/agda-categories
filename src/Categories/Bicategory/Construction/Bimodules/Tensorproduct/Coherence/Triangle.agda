@@ -53,7 +53,7 @@ open Unitor.Left-Unitor using (Unitorˡ⊗From) renaming (triangle to left-unito
 open Unitor.Right-Unitor using (Unitorʳ⊗From) renaming (triangle to right-unitor-triangle)
 
 open TensorproductOfBimodules using (CoeqBimods)
-open TensorproductOfHomomorphisms using (αSq)
+open TensorproductOfHomomorphisms using (αSq-⊗)
 
 open Monad M₂ using () renaming (T to T₂)
 open Bimodule B₁ using () renaming (F to F₁; actionʳ to actionʳ₁)
@@ -97,7 +97,7 @@ abstract
     ∘ᵥ Coequalizer.arr (CoeqBimods B₂ (Id-Bimod ⊗₀ B₁)))
     ∘ᵥ F₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B₁)
     ∘ᵥ associator.from {f = F₂} {T₂} {F₁}
-    ≈⟨ ⟺ (αSq (id-bimodule-hom {B = B₂}) (Unitorˡ⊗From {B = B₁})) ⟩∘⟨refl ⟩
+    ≈⟨ ⟺ (αSq-⊗ (id-bimodule-hom {B = B₂}) (Unitorˡ⊗From {B = B₁})) ⟩∘⟨refl ⟩
 
     (Coequalizer.arr (CoeqBimods B₂ B₁)
     ∘ᵥ F₂ ▷ Bimodhom.α (Unitorˡ⊗From {B = B₁}))
@@ -150,7 +150,7 @@ abstract
     (Coequalizer.arr (CoeqBimods B₂ B₁)
     ∘ᵥ Bimodhom.α (Unitorʳ⊗From {B = B₂}) ◁ F₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₂ Id-Bimod) ◁ F₁
-    ≈⟨ αSq (Unitorʳ⊗From {B = B₂}) (id-bimodule-hom {B = B₁}) ⟩∘⟨refl ⟩
+    ≈⟨ αSq-⊗ (Unitorʳ⊗From {B = B₂}) (id-bimodule-hom {B = B₁}) ⟩∘⟨refl ⟩
 
     (Bimodhom.α (Unitorʳ⊗From {B = B₂} ⊗₁ id-bimodule-hom {B = B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁))
