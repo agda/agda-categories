@@ -35,9 +35,9 @@ private
 open homCat
 
 open Monad
-open Monad M₁ using () renaming (C to C₁; T to T₁; μ to μ₁; η to η₁)
-open Monad M₂ using () renaming (C to C₂; T to T₂; μ to μ₂; η to η₂)
-open Monad M₃ using () renaming (C to C₃; T to T₃; μ to μ₃; η to η₃)
+open Monad M₁ using () renaming (T to T₁; μ to μ₁; η to η₁)
+open Monad M₂ using () renaming (T to T₂; μ to μ₂; η to η₂)
+open Monad M₃ using () renaming (T to T₃; μ to μ₃; η to η₃)
 open Bimodule B₁ using ()
   renaming (F to F₁; actionˡ to actionˡ₁; actionʳ to actionʳ₁; assoc to action-assoc₁;
             sym-assoc to action-sym-assoc₁; assoc-actionˡ to assoc-actionˡ₁; identityˡ to identityˡ₁)
@@ -47,7 +47,7 @@ open Bimodule B₂ using ()
 
 {-
 To construct the tensorproduct B₂⊗B₁ we will define its underlying 1-cell
-to be the coequalizer of the following parallel pair in hom C₁ C₃:
+to be the coequalizer of the following parallel pair in hom (C M₁) (C M₃):
 
                       act-to-the-left
   F B₂ ∘ T M₂ ∘ F B₁ ==================> F B₂ ∘ F B₁
@@ -67,7 +67,7 @@ abstract
   CoeqBimods = local-coequalizers (act-to-the-left) (act-to-the-right)
   
 -- The underlying object of that coequalizer is the underlying 1-cell of the bimodule B₂⊗B₁ --
-F-⊗ : C₁ ⇒₁ C₃
+F-⊗ : C M₁ ⇒₁ C M₃
 F-⊗ = Coequalizer.obj CoeqBimods
 
 
@@ -92,7 +92,7 @@ module Left-Action where
   actionˡ-∘ = F₂ ▷ actionˡ₁ ∘ᵥ associator.from
 
   -- for CommutativeSquare --
-  open Definitions (hom C₁ C₃)
+  open Definitions (hom (C M₁) (C M₃))
 
   abstract
     sq₁ : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-left) ◁ T₁) (act-to-the-left) (actionˡ-∘)
@@ -195,7 +195,7 @@ module Right-Action where
   actionʳ-∘ = actionʳ₂ ◁ F₁ ∘ᵥ associator.to
 
   -- for CommutativeSquare --
-  open Definitions (hom C₁ C₃)
+  open Definitions (hom (C M₁) (C M₃))
 
   -- to get a map of diagrams two squares have to commute --
   abstract
@@ -203,7 +203,7 @@ module Right-Action where
     sq₁ = glue′ sq₁bottom sq₁top
       where
         open hom.HomReasoning
-        open MorphismReasoning (hom (C M₁) C₃) using (glue′)
+        open MorphismReasoning (hom (C M₁) (C M₃)) using (glue′)
         sq₁top : CommutativeSquare (associator.to) (T₃ ▷ F₂ ▷ actionʳ₁) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (associator.to)
         sq₁top = ⟺ α⇐-▷-∘₁
         sq₁bottom : CommutativeSquare (actionʳ₂ ◁ (T₂ ∘₁ F₁)) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (F₂ ▷ actionʳ₁) (actionʳ₂ ◁ F₁)
@@ -342,7 +342,7 @@ module Associativity where
       actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∎
       where
         open hom.HomReasoning
-        open IsoReasoning (hom (C M₁) C₃) using (switch-fromtoʳ)
+        open IsoReasoning (hom (C M₁) (C M₃)) using (switch-fromtoʳ)
 
   abstract
     assoc-actionˡ-∘ : actionˡ-∘ ∘ᵥ (F₂ ∘₁ F₁) ▷ μ₁ ∘ᵥ associator.from ≈ actionˡ-∘ ∘ᵥ actionˡ-∘ ◁ T₁
@@ -419,7 +419,7 @@ module Associativity where
       actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ₁) ∎
       where
         open hom.HomReasoning
-        open IsoReasoning (hom (C M₁) C₃) using (switch-fromtoʳ)
+        open IsoReasoning (hom (C M₁) (C M₃)) using (switch-fromtoʳ)
   -- end abstract --
 
   abstract
@@ -495,7 +495,7 @@ module Associativity where
       actionʳ-⊗ ∘ᵥ μ₃ ◁ F-⊗ ∎
       where
         open hom.HomReasoning
-        open IsoReasoning (hom (C M₁) C₃) using (switch-tofromʳ)
+        open IsoReasoning (hom (C M₁) (C M₃)) using (switch-tofromʳ)
   -- end abstract --
 
 module Identity where
