@@ -159,7 +159,6 @@ module Left-Action where
       actionˡ-∘ ∘ᵥ (act-to-the-right) ◁ T₁ ∎
       where
         open hom.HomReasoning
-        open hom.Equiv
   -- end abstract --
 
   abstract    
@@ -217,7 +216,7 @@ module Right-Action where
       (actionˡ₂ ◁ F₁ ∘ᵥ (associator.to ∘ᵥ actionʳ₂ ◁  (T₂ ∘₁ F₁))) ∘ᵥ associator.to    ≈⟨ (refl⟩∘⟨ α⇐-◁-∘₁) ⟩∘⟨refl ⟩
       (actionˡ₂ ◁ F₁ ∘ᵥ (actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to)) ∘ᵥ associator.to        ≈⟨ assoc₂ ⟩
       actionˡ₂ ◁ F₁ ∘ᵥ ((actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ associator.to)        ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      actionˡ₂ ◁ F₁ ∘ᵥ actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to ∘ᵥ associator.to            ≈⟨ refl⟩∘⟨ refl⟩∘⟨ sym pentagon-inv ⟩
+      actionˡ₂ ◁ F₁ ∘ᵥ actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to ∘ᵥ associator.to            ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ pentagon-inv ⟩
       actionˡ₂ ◁ F₁ ∘ᵥ actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ (associator.to ◁ F₁ ∘ᵥ associator.to)
         ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
       actionˡ₂ ◁ F₁ ∘ᵥ (actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ (associator.to ◁ F₁ ∘ᵥ associator.to))
@@ -241,7 +240,6 @@ module Right-Action where
       actionʳ-∘ ∘ᵥ T₃ ▷ (act-to-the-right)                             ∎
         where
           open hom.HomReasoning
-          open hom.Equiv
   -- end abstract --
 
   abstract
