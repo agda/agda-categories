@@ -254,6 +254,14 @@ module Right-Action where
         open CoeqProperties (hom C₁ C₃)
   -- end abstract --
 
+
+-- Associativity and identity laws for bimodules each assert an equality of 2-cells.  --
+-- To prove that the tensorproduct satisfies these equalities (assoc-⊗, sym-assoc-⊗, identityˡ-⊗ ,...) --
+-- we show that the morphisms precomposed by a coequalizer arrow are equal (assoc-⊗-∘arr, sym-assoc-⊗-∘arr, identityˡ-⊗-∘arr,...). --
+-- Finally, we use that coequalizer arrows are epis to cancell them --
+-- In the proofs of assoc-⊗-∘arr, sym-assoc-⊗-∘arr, etc we use that a version of the associativity and identity laws hold for F B₂ ∘₁ F B₁. --
+-- Note that F B₂ ∘₁ F B₁ is a bimodule under actionˡ-∘ and actionˡ-∘ (although we don't use that fact). --
+
 module Associativity where
   open Left-Action using (actionˡ-⊗; actionˡSq-⊗; actionˡ-∘)
   open Right-Action using (actionʳ-⊗; actionʳSq-⊗; actionʳ-∘)
