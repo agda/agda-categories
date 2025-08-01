@@ -108,9 +108,9 @@ abstract
         open hom.HomReasoning
 
   abstract
-    linearˡ∘arr : (actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T₁)
+    linearˡ-⊗-∘arr : (actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T₁)
                   ≈ (α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T₁)
-    linearˡ∘arr = begin
+    linearˡ-⊗-∘arr = begin
       (actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T₁) ≈⟨ assoc₂ ⟩
       actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T₁ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T₁) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
       actionˡ-⊗ B'₂ B'₁ ∘ᵥ (α-⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ◁ T₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ (⟺ αSq-⊗) ⟩
@@ -133,7 +133,7 @@ abstract
     linearˡ : actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T₁ ≈ α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁
     linearˡ = Coequalizer⇒Epi (hom C₁ C₃) (CoeqBimods B₂ B₁ coeq-◁ T₁)
                             (actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T₁) (α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁)
-                            linearˡ∘arr
+                            linearˡ-⊗-∘arr
 
   open TensorproductOfBimodules.Right-Action using (actionʳ-∘)
 
@@ -153,9 +153,9 @@ abstract
         open hom.HomReasoning
 
   abstract
-    linearʳ∘arr : (actionʳ-⊗ B'₂ B'₁ ∘ᵥ T₃ ▷ α-⊗) ∘ᵥ Coequalizer.arr (T₃ ▷-coeq CoeqBimods B₂ B₁)
+    linearʳ-⊗-∘arr : (actionʳ-⊗ B'₂ B'₁ ∘ᵥ T₃ ▷ α-⊗) ∘ᵥ Coequalizer.arr (T₃ ▷-coeq CoeqBimods B₂ B₁)
                 ≈ (α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁) ∘ᵥ Coequalizer.arr (T₃ ▷-coeq CoeqBimods B₂ B₁)
-    linearʳ∘arr = begin
+    linearʳ-⊗-∘arr = begin
       (actionʳ-⊗ B'₂ B'₁ ∘ᵥ T₃ ▷ α-⊗) ∘ᵥ Coequalizer.arr (T₃ ▷-coeq CoeqBimods B₂ B₁) ≈⟨ assoc₂ ⟩
       actionʳ-⊗ B'₂ B'₁ ∘ᵥ T₃ ▷ α-⊗ ∘ᵥ Coequalizer.arr (T₃ ▷-coeq CoeqBimods B₂ B₁) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
       actionʳ-⊗ B'₂ B'₁ ∘ᵥ T₃ ▷ (α-⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ≈⟨ refl⟩∘⟨ ▷-resp-≈ (⟺ αSq-⊗) ⟩
@@ -178,7 +178,7 @@ abstract
     linearʳ : actionʳ-⊗ B'₂ B'₁ ∘ᵥ T₃ ▷ α-⊗ ≈ α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁
     linearʳ = Coequalizer⇒Epi (hom C₁ C₃) (T₃ ▷-coeq CoeqBimods B₂ B₁)
                               (actionʳ-⊗ B'₂ B'₁ ∘ᵥ T₃ ▷ α-⊗) (α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁)
-                              linearʳ∘arr
+                              linearʳ-⊗-∘arr
 
   -- end abstract --
 
