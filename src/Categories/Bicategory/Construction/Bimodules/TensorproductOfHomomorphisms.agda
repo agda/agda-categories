@@ -34,45 +34,48 @@ open Bimodule B₁ using () renaming (F to F₁; actionʳ to actionʳ₁; action
 open Bimodule B'₁ using () renaming (F to F'₁; actionʳ to actionʳ'₁; actionˡ to actionˡ'₁)
 open Bimodule B₂ using () renaming (F to F₂; actionʳ to actionʳ₂; actionˡ to actionˡ₂)
 open Bimodule B'₂ using () renaming (F to F'₂; actionʳ to actionʳ'₂; actionˡ to actionˡ'₂)
+
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} {M₁} {M₂} {M₃} as TensorproductOfBimodules
 open TensorproductOfBimodules using (CoeqBimods; act-to-the-left; act-to-the-right; F-⊗) renaming (Tensorproduct to infixr 30 _⊗₀_)
 open TensorproductOfBimodules.Left-Action using (actionˡ-⊗)
 open TensorproductOfBimodules.Right-Action using (actionʳ-⊗)
+
 open Bimodulehomomorphism h₁ using () renaming (α to α₁; linearˡ to linearˡ₁; linearʳ to linearʳ₁)
 open Bimodulehomomorphism h₂ using () renaming (α to α₂; linearˡ to linearˡ₂; linearʳ to linearʳ₂)
 
 open Definitions (hom C₁ C₃) -- for Commutative Squares
 
-sq₁ : CommutativeSquare (α₂ ⊚₁ id₂ ⊚₁ α₁)
-                        (act-to-the-left B₂ B₁)
-                        (act-to-the-left B'₂ B'₁)
-                        (α₂ ⊚₁ α₁)
-sq₁ = begin
-  (act-to-the-left B'₂ B'₁) ∘ᵥ α₂ ⊚₁ id₂ ⊚₁ α₁ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩
-  (id₂ ∘ᵥ α₂) ⊚₁ (actionʳ'₁ ∘ᵥ id₂ ⊚₁ α₁) ≈⟨ identity₂ˡ ⟩⊚⟨ linearʳ₁ ⟩
-  α₂ ⊚₁ (α₁ ∘ᵥ actionʳ₁) ≈⟨ ⟺ identity₂ʳ ⟩⊚⟨refl ⟩
-  (α₂ ∘ᵥ id₂) ⊚₁ (α₁ ∘ᵥ actionʳ₁) ≈⟨ ∘ᵥ-distr-⊚ ⟩
-  α₂ ⊚₁ α₁ ∘ᵥ (act-to-the-left B₂ B₁) ∎
-  where
-    open hom.HomReasoning
+private
+  sq₁ : CommutativeSquare (α₂ ⊚₁ id₂ ⊚₁ α₁)
+                          (act-to-the-left B₂ B₁)
+                          (act-to-the-left B'₂ B'₁)
+                          (α₂ ⊚₁ α₁)
+  sq₁ = begin
+    (act-to-the-left B'₂ B'₁) ∘ᵥ α₂ ⊚₁ id₂ ⊚₁ α₁ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩
+    (id₂ ∘ᵥ α₂) ⊚₁ (actionʳ'₁ ∘ᵥ id₂ ⊚₁ α₁) ≈⟨ identity₂ˡ ⟩⊚⟨ linearʳ₁ ⟩
+    α₂ ⊚₁ (α₁ ∘ᵥ actionʳ₁) ≈⟨ ⟺ identity₂ʳ ⟩⊚⟨refl ⟩
+    (α₂ ∘ᵥ id₂) ⊚₁ (α₁ ∘ᵥ actionʳ₁) ≈⟨ ∘ᵥ-distr-⊚ ⟩
+    α₂ ⊚₁ α₁ ∘ᵥ (act-to-the-left B₂ B₁) ∎
+    where
+      open hom.HomReasoning
 
-sq₂ : CommutativeSquare (α₂ ⊚₁ id₂ ⊚₁ α₁)
-                        (act-to-the-right B₂ B₁)
-                        (act-to-the-right B'₂ B'₁)
-                        (α₂ ⊚₁ α₁)
-sq₂ = begin
-  (act-to-the-right B'₂ B'₁) ∘ᵥ α₂ ⊚₁ id₂ ⊚₁ α₁ ≈⟨ assoc₂ ⟩
-  actionˡ'₂ ◁ F'₁ ∘ᵥ associator.to ∘ᵥ α₂ ⊚₁ id₂ ⊚₁ α₁ ≈⟨ refl⟩∘⟨ α⇐-⊚ ⟩
-  actionˡ'₂ ◁ F'₁ ∘ᵥ (α₂ ⊚₁ id₂) ⊚₁ α₁ ∘ᵥ associator.to ≈⟨ sym-assoc₂ ⟩
-  (actionˡ'₂ ◁ F'₁ ∘ᵥ (α₂ ⊚₁ id₂) ⊚₁ α₁) ∘ᵥ associator.to ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
-  ((actionˡ'₂ ∘ᵥ (α₂ ⊚₁ id₂)) ⊚₁ (id₂ ∘ᵥ α₁)) ∘ᵥ associator.to ≈⟨ linearˡ₂ ⟩⊚⟨refl ⟩∘⟨refl ⟩
-  ((α₂ ∘ᵥ actionˡ₂) ⊚₁ (id₂ ∘ᵥ α₁)) ∘ᵥ associator.to ≈⟨ refl⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
-  ((α₂ ∘ᵥ actionˡ₂) ⊚₁ α₁) ∘ᵥ associator.to ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
-  ((α₂ ∘ᵥ actionˡ₂) ⊚₁ (α₁ ∘ᵥ id₂)) ∘ᵥ associator.to ≈⟨ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
-  (α₂ ⊚₁ α₁ ∘ᵥ actionˡ₂ ◁ F₁) ∘ᵥ associator.to ≈⟨ assoc₂ ⟩
-  α₂ ⊚₁ α₁ ∘ᵥ (act-to-the-right B₂ B₁) ∎
-  where
-    open hom.HomReasoning
+  sq₂ : CommutativeSquare (α₂ ⊚₁ id₂ ⊚₁ α₁)
+                          (act-to-the-right B₂ B₁)
+                          (act-to-the-right B'₂ B'₁)
+                          (α₂ ⊚₁ α₁)
+  sq₂ = begin
+    (act-to-the-right B'₂ B'₁) ∘ᵥ α₂ ⊚₁ id₂ ⊚₁ α₁ ≈⟨ assoc₂ ⟩
+    actionˡ'₂ ◁ F'₁ ∘ᵥ associator.to ∘ᵥ α₂ ⊚₁ id₂ ⊚₁ α₁ ≈⟨ refl⟩∘⟨ α⇐-⊚ ⟩
+    actionˡ'₂ ◁ F'₁ ∘ᵥ (α₂ ⊚₁ id₂) ⊚₁ α₁ ∘ᵥ associator.to ≈⟨ sym-assoc₂ ⟩
+    (actionˡ'₂ ◁ F'₁ ∘ᵥ (α₂ ⊚₁ id₂) ⊚₁ α₁) ∘ᵥ associator.to ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
+    ((actionˡ'₂ ∘ᵥ (α₂ ⊚₁ id₂)) ⊚₁ (id₂ ∘ᵥ α₁)) ∘ᵥ associator.to ≈⟨ linearˡ₂ ⟩⊚⟨refl ⟩∘⟨refl ⟩
+    ((α₂ ∘ᵥ actionˡ₂) ⊚₁ (id₂ ∘ᵥ α₁)) ∘ᵥ associator.to ≈⟨ refl⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
+    ((α₂ ∘ᵥ actionˡ₂) ⊚₁ α₁) ∘ᵥ associator.to ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
+    ((α₂ ∘ᵥ actionˡ₂) ⊚₁ (α₁ ∘ᵥ id₂)) ∘ᵥ associator.to ≈⟨ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
+    (α₂ ⊚₁ α₁ ∘ᵥ actionˡ₂ ◁ F₁) ∘ᵥ associator.to ≈⟨ assoc₂ ⟩
+    α₂ ⊚₁ α₁ ∘ᵥ (act-to-the-right B₂ B₁) ∎
+    where
+      open hom.HomReasoning
 
 abstract
   -- to speed-up type-echecking we hide the the underliying 2-cell α-⊗ under an abstract clause --

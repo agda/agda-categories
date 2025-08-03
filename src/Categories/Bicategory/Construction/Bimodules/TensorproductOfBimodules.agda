@@ -95,70 +95,71 @@ module Left-Action where
   open Definitions (hom (C M₁) (C M₃))
 
   abstract
-    sq₁ : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-left) ◁ T₁) (act-to-the-left) (actionˡ-∘)
-    sq₁ = begin
-      act-to-the-left ∘ᵥ actionˡ-∘-∘                                     ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-      F₂ ▷ actionʳ₁ ∘ᵥ (associator.from ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁)
-        ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁                          ≈⟨ refl⟩∘⟨ α⇒-▷-∘₁ ⟩∘⟨refl ⟩
-      F₂ ▷ actionʳ₁ ∘ᵥ (F₂ ▷ T₂ ▷ actionˡ₁ ∘ᵥ associator.from)
-        ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁                          ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁ ∘ᵥ associator.from
-        ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁                          ≈⟨ sym-assoc₂ ⟩
-      (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ associator.from
-        ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁                          ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-      (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ (associator.from
-        ∘ᵥ associator.from)  ∘ᵥ associator.to ◁ T₁                         ≈⟨ refl⟩∘⟨ ⟺ pentagon ⟩∘⟨refl ⟩
-      -- maybe this can be shortened using conjugate --
-      (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ (F₂ ▷ associator.from
-        ∘ᵥ associator.from ∘ᵥ associator.from ◁ T₁) ∘ᵥ associator.to ◁ T₁  ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from
-        ∘ᵥ (associator.from ∘ᵥ associator.from ◁ T₁) ∘ᵥ associator.to ◁ T₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ assoc₂ ⟩
-      (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from
-        ∘ᵥ associator.from ∘ᵥ associator.from ◁ T₁ ∘ᵥ associator.to ◁ T₁   ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-      (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from
-        ∘ᵥ associator.from ∘ᵥ (associator.from ∘ᵥ associator.to) ◁ T₁      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ◁-resp-≈ associator.isoʳ ⟩
-      (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from
-        ∘ᵥ associator.from ∘ᵥ id₂ ◁ T₁                                     ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ id₂◁ ⟩
-      (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from
-        ∘ᵥ associator.from ∘ᵥ id₂                                          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ identity₂ʳ ⟩
-      (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from
-        ∘ᵥ associator.from                                                 ≈⟨ sym-assoc₂ ⟩
-      ((F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from)
-        ∘ᵥ associator.from                                                 ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩∘⟨refl ⟩
-      (F₂ ▷ (actionʳ₁ ∘ᵥ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from)
-        ∘ᵥ associator.from                                                 ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
-      F₂ ▷ ((actionʳ₁ ∘ᵥ T₂ ▷ actionˡ₁) ∘ᵥ associator.from)
-        ∘ᵥ associator.from                                                 ≈⟨ ▷-resp-≈ assoc₂ ⟩∘⟨refl ⟩
-      F₂ ▷ (actionʳ₁ ∘ᵥ T₂ ▷ actionˡ₁ ∘ᵥ associator.from)
-        ∘ᵥ associator.from ≈⟨ ▷-resp-≈ action-assoc₁ ⟩∘⟨refl ⟩
-      F₂ ▷ (actionˡ₁ ∘ᵥ actionʳ₁ ◁ T₁) ∘ᵥ associator.from                  ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
-      (F₂ ▷ actionˡ₁ ∘ᵥ F₂ ▷ (actionʳ₁ ◁ T₁)) ∘ᵥ associator.from           ≈⟨ assoc₂ ⟩
-      F₂ ▷ actionˡ₁ ∘ᵥ F₂ ▷ (actionʳ₁ ◁ T₁) ∘ᵥ associator.from             ≈⟨ refl⟩∘⟨ ⟺ α⇒-▷-◁ ⟩
-      F₂ ▷ actionˡ₁ ∘ᵥ associator.from ∘ᵥ (F₂ ▷ actionʳ₁) ◁ T₁             ≈⟨ ⟺ assoc₂ ⟩
-      actionˡ-∘ ∘ᵥ (act-to-the-left) ◁ T₁ ∎
-      where
-        open hom.HomReasoning
+    private
+      sq₁ : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-left) ◁ T₁) (act-to-the-left) (actionˡ-∘)
+      sq₁ = begin
+        act-to-the-left ∘ᵥ actionˡ-∘-∘                                     ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
+        F₂ ▷ actionʳ₁ ∘ᵥ (associator.from ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁)
+          ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁                          ≈⟨ refl⟩∘⟨ α⇒-▷-∘₁ ⟩∘⟨refl ⟩
+        F₂ ▷ actionʳ₁ ∘ᵥ (F₂ ▷ T₂ ▷ actionˡ₁ ∘ᵥ associator.from)
+          ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁                          ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+        F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁ ∘ᵥ associator.from
+          ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁                          ≈⟨ sym-assoc₂ ⟩
+        (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ associator.from
+          ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁                          ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
+        (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ (associator.from
+          ∘ᵥ associator.from)  ∘ᵥ associator.to ◁ T₁                         ≈⟨ refl⟩∘⟨ ⟺ pentagon ⟩∘⟨refl ⟩
+        -- maybe this can be shortened using conjugate --
+        (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ (F₂ ▷ associator.from
+          ∘ᵥ associator.from ∘ᵥ associator.from ◁ T₁) ∘ᵥ associator.to ◁ T₁  ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+        (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from
+          ∘ᵥ (associator.from ∘ᵥ associator.from ◁ T₁) ∘ᵥ associator.to ◁ T₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ assoc₂ ⟩
+        (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from
+          ∘ᵥ associator.from ∘ᵥ associator.from ◁ T₁ ∘ᵥ associator.to ◁ T₁   ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
+        (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from
+          ∘ᵥ associator.from ∘ᵥ (associator.from ∘ᵥ associator.to) ◁ T₁      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ◁-resp-≈ associator.isoʳ ⟩
+        (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from
+          ∘ᵥ associator.from ∘ᵥ id₂ ◁ T₁                                     ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ id₂◁ ⟩
+        (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from
+          ∘ᵥ associator.from ∘ᵥ id₂                                          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ identity₂ʳ ⟩
+        (F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from
+          ∘ᵥ associator.from                                                 ≈⟨ sym-assoc₂ ⟩
+        ((F₂ ▷ actionʳ₁ ∘ᵥ F₂ ▷ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from)
+          ∘ᵥ associator.from                                                 ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩∘⟨refl ⟩
+        (F₂ ▷ (actionʳ₁ ∘ᵥ T₂ ▷ actionˡ₁) ∘ᵥ F₂ ▷ associator.from)
+          ∘ᵥ associator.from                                                 ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
+        F₂ ▷ ((actionʳ₁ ∘ᵥ T₂ ▷ actionˡ₁) ∘ᵥ associator.from)
+          ∘ᵥ associator.from                                                 ≈⟨ ▷-resp-≈ assoc₂ ⟩∘⟨refl ⟩
+        F₂ ▷ (actionʳ₁ ∘ᵥ T₂ ▷ actionˡ₁ ∘ᵥ associator.from)
+          ∘ᵥ associator.from ≈⟨ ▷-resp-≈ action-assoc₁ ⟩∘⟨refl ⟩
+        F₂ ▷ (actionˡ₁ ∘ᵥ actionʳ₁ ◁ T₁) ∘ᵥ associator.from                  ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
+        (F₂ ▷ actionˡ₁ ∘ᵥ F₂ ▷ (actionʳ₁ ◁ T₁)) ∘ᵥ associator.from           ≈⟨ assoc₂ ⟩
+        F₂ ▷ actionˡ₁ ∘ᵥ F₂ ▷ (actionʳ₁ ◁ T₁) ∘ᵥ associator.from             ≈⟨ refl⟩∘⟨ ⟺ α⇒-▷-◁ ⟩
+        F₂ ▷ actionˡ₁ ∘ᵥ associator.from ∘ᵥ (F₂ ▷ actionʳ₁) ◁ T₁             ≈⟨ ⟺ assoc₂ ⟩
+        actionˡ-∘ ∘ᵥ (act-to-the-left) ◁ T₁ ∎
+        where
+          open hom.HomReasoning
 
-    sq₂ : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-right) ◁ T₁) (act-to-the-right) (actionˡ-∘)
-    sq₂ = begin
-      (act-to-the-right) ∘ᵥ actionˡ-∘-∘                               ≈⟨ sym-assoc₂ ⟩
-      ((actionˡ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ associator.from) ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁
-        ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁                                        ≈⟨ assoc₂ ⟩∘⟨refl ⟩
-      (actionˡ₂ ◁ F₁ ∘ᵥ associator.to ∘ᵥ associator.from) ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁
-        ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁                                        ≈⟨ (refl⟩∘⟨ associator.isoˡ) ⟩∘⟨refl ⟩
-      (actionˡ₂ ◁ F₁ ∘ᵥ id₂) ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁
-        ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁                                        ≈⟨ identity₂ʳ ⟩∘⟨refl ⟩
-      actionˡ₂ ◁ F₁ ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁ ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁   ≈⟨ sym-assoc₂ ⟩
-      (actionˡ₂ ◁ F₁ ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁) ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁ ≈⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
-      (F₂ ▷ actionˡ₁ ∘ᵥ actionˡ₂ ◁ (F₁ ∘₁ T₁)) ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁ ≈⟨ assoc₂ ⟩
-      F₂ ▷ actionˡ₁ ∘ᵥ actionˡ₂ ◁ (F₁ ∘₁ T₁) ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁   ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-      F₂ ▷ actionˡ₁ ∘ᵥ (actionˡ₂ ◁ (F₁ ∘₁ T₁) ∘ᵥ associator.from) ∘ᵥ associator.to ◁ T₁ ≈⟨ refl⟩∘⟨ ⟺ α⇒-◁-∘₁ ⟩∘⟨refl ⟩
-      F₂ ▷ actionˡ₁ ∘ᵥ (associator.from ∘ᵥ actionˡ₂ ◁ F₁ ◁ T₁) ∘ᵥ associator.to ◁ T₁    ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      F₂ ▷ actionˡ₁ ∘ᵥ associator.from ∘ᵥ actionˡ₂ ◁ F₁ ◁ T₁ ∘ᵥ associator.to ◁ T₁      ≈⟨ sym-assoc₂ ⟩
-      actionˡ-∘ ∘ᵥ actionˡ₂ ◁ F₁ ◁ T₁ ∘ᵥ associator.to ◁ T₁                           ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-      actionˡ-∘ ∘ᵥ (act-to-the-right) ◁ T₁ ∎
-      where
-        open hom.HomReasoning
+      sq₂ : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-right) ◁ T₁) (act-to-the-right) (actionˡ-∘)
+      sq₂ = begin
+        (act-to-the-right) ∘ᵥ actionˡ-∘-∘                               ≈⟨ sym-assoc₂ ⟩
+        ((actionˡ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ associator.from) ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁
+          ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁                                        ≈⟨ assoc₂ ⟩∘⟨refl ⟩
+        (actionˡ₂ ◁ F₁ ∘ᵥ associator.to ∘ᵥ associator.from) ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁
+          ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁                                        ≈⟨ (refl⟩∘⟨ associator.isoˡ) ⟩∘⟨refl ⟩
+        (actionˡ₂ ◁ F₁ ∘ᵥ id₂) ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁
+          ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁                                        ≈⟨ identity₂ʳ ⟩∘⟨refl ⟩
+        actionˡ₂ ◁ F₁ ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁ ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁   ≈⟨ sym-assoc₂ ⟩
+        (actionˡ₂ ◁ F₁ ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁) ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁ ≈⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
+        (F₂ ▷ actionˡ₁ ∘ᵥ actionˡ₂ ◁ (F₁ ∘₁ T₁)) ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁ ≈⟨ assoc₂ ⟩
+        F₂ ▷ actionˡ₁ ∘ᵥ actionˡ₂ ◁ (F₁ ∘₁ T₁) ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁   ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
+        F₂ ▷ actionˡ₁ ∘ᵥ (actionˡ₂ ◁ (F₁ ∘₁ T₁) ∘ᵥ associator.from) ∘ᵥ associator.to ◁ T₁ ≈⟨ refl⟩∘⟨ ⟺ α⇒-◁-∘₁ ⟩∘⟨refl ⟩
+        F₂ ▷ actionˡ₁ ∘ᵥ (associator.from ∘ᵥ actionˡ₂ ◁ F₁ ◁ T₁) ∘ᵥ associator.to ◁ T₁    ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+        F₂ ▷ actionˡ₁ ∘ᵥ associator.from ∘ᵥ actionˡ₂ ◁ F₁ ◁ T₁ ∘ᵥ associator.to ◁ T₁      ≈⟨ sym-assoc₂ ⟩
+        actionˡ-∘ ∘ᵥ actionˡ₂ ◁ F₁ ◁ T₁ ∘ᵥ associator.to ◁ T₁                           ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
+        actionˡ-∘ ∘ᵥ (act-to-the-right) ◁ T₁ ∎
+        where
+          open hom.HomReasoning
   -- end abstract --
 
   abstract    
@@ -199,47 +200,48 @@ module Right-Action where
 
   -- to get a map of diagrams two squares have to commute --
   abstract
-    sq₁ : CommutativeSquare (actionʳ-∘-∘) (T₃ ▷ act-to-the-left) (act-to-the-left) (actionʳ-∘)
-    sq₁ = glue′ sq₁bottom sq₁top
-      where
-        open hom.HomReasoning
-        open MorphismReasoning (hom (C M₁) (C M₃)) using (glue′)
-        sq₁top : CommutativeSquare (associator.to) (T₃ ▷ F₂ ▷ actionʳ₁) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (associator.to)
-        sq₁top = ⟺ α⇐-▷-∘₁
-        sq₁bottom : CommutativeSquare (actionʳ₂ ◁ (T₂ ∘₁ F₁)) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (F₂ ▷ actionʳ₁) (actionʳ₂ ◁ F₁)
-        sq₁bottom = ◁-▷-exchg
-
-    sq₂ : CommutativeSquare (actionʳ-∘-∘) (T₃ ▷ (act-to-the-right)) (act-to-the-right) (actionʳ-∘)
-    sq₂ = begin
-      (act-to-the-right) ∘ᵥ (actionʳ-∘-∘)                            ≈⟨ sym-assoc₂ ⟩
-      ((actionˡ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ actionʳ₂ ◁  (T₂ ∘₁ F₁)) ∘ᵥ associator.to    ≈⟨ assoc₂ ⟩∘⟨refl ⟩
-      (actionˡ₂ ◁ F₁ ∘ᵥ (associator.to ∘ᵥ actionʳ₂ ◁  (T₂ ∘₁ F₁))) ∘ᵥ associator.to    ≈⟨ (refl⟩∘⟨ α⇐-◁-∘₁) ⟩∘⟨refl ⟩
-      (actionˡ₂ ◁ F₁ ∘ᵥ (actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to)) ∘ᵥ associator.to        ≈⟨ assoc₂ ⟩
-      actionˡ₂ ◁ F₁ ∘ᵥ ((actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ associator.to)        ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      actionˡ₂ ◁ F₁ ∘ᵥ actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to ∘ᵥ associator.to            ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ pentagon-inv ⟩
-      actionˡ₂ ◁ F₁ ∘ᵥ actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ (associator.to ◁ F₁ ∘ᵥ associator.to)
-        ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-      actionˡ₂ ◁ F₁ ∘ᵥ (actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ (associator.to ◁ F₁ ∘ᵥ associator.to))
-        ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩∘⟨refl ⟩
-      actionˡ₂ ◁ F₁ ∘ᵥ ((actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to ◁ F₁) ∘ᵥ associator.to)
-        ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ sym-assoc₂ ⟩
-      (actionˡ₂ ◁ F₁ ∘ᵥ (actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to ◁ F₁) ∘ᵥ associator.to)
-        ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
-      ((actionˡ₂ ◁ F₁ ∘ᵥ actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to ◁ F₁) ∘ᵥ associator.to)
-        ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ ((refl⟩∘⟨ ∘ᵥ-distr-◁) ⟩∘⟨refl) ⟩∘⟨refl ⟩
-      ((actionˡ₂ ◁ F₁ ∘ᵥ (actionʳ₂ ◁ T₂ ∘ᵥ associator.to) ◁ F₁) ∘ᵥ associator.to)
-        ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩∘⟨refl ⟩
-      ((actionˡ₂ ∘ᵥ actionʳ₂ ◁ T₂ ∘ᵥ associator.to) ◁ F₁ ∘ᵥ associator.to)
-        ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ ◁-resp-≈ action-sym-assoc₂ ⟩∘⟨refl ⟩∘⟨refl ⟩
-      ((actionʳ₂ ∘ᵥ (T₃ ▷ actionˡ₂)) ◁ F₁ ∘ᵥ associator.to) ∘ᵥ T₃ ▷ associator.to      ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩∘⟨refl ⟩
-      ((actionʳ₂ ◁ F₁ ∘ᵥ (T₃ ▷ actionˡ₂) ◁ F₁) ∘ᵥ associator.to) ∘ᵥ T₃ ▷ associator.to ≈⟨ (assoc₂ ⟩∘⟨refl) ⟩
-      (actionʳ₂ ◁ F₁ ∘ᵥ (T₃ ▷ actionˡ₂) ◁ F₁ ∘ᵥ associator.to) ∘ᵥ T₃ ▷ associator.to   ≈⟨ (refl⟩∘⟨ ⟺ α⇐-▷-◁) ⟩∘⟨refl ⟩
-      (actionʳ₂ ◁ F₁ ∘ᵥ associator.to ∘ᵥ T₃ ▷ (actionˡ₂ ◁ F₁)) ∘ᵥ T₃ ▷ associator.to   ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
-      ((actionʳ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ T₃ ▷ (actionˡ₂ ◁ F₁)) ∘ᵥ T₃ ▷ associator.to ≈⟨ assoc₂ ⟩
-      (actionʳ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ T₃ ▷ (actionˡ₂ ◁ F₁) ∘ᵥ T₃ ▷ associator.to   ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
-      actionʳ-∘ ∘ᵥ T₃ ▷ (act-to-the-right)                             ∎
+    private
+      sq₁ : CommutativeSquare (actionʳ-∘-∘) (T₃ ▷ act-to-the-left) (act-to-the-left) (actionʳ-∘)
+      sq₁ = glue′ sq₁bottom sq₁top
         where
           open hom.HomReasoning
+          open MorphismReasoning (hom (C M₁) (C M₃)) using (glue′)
+          sq₁top : CommutativeSquare (associator.to) (T₃ ▷ F₂ ▷ actionʳ₁) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (associator.to)
+          sq₁top = ⟺ α⇐-▷-∘₁
+          sq₁bottom : CommutativeSquare (actionʳ₂ ◁ (T₂ ∘₁ F₁)) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (F₂ ▷ actionʳ₁) (actionʳ₂ ◁ F₁)
+          sq₁bottom = ◁-▷-exchg
+
+      sq₂ : CommutativeSquare (actionʳ-∘-∘) (T₃ ▷ (act-to-the-right)) (act-to-the-right) (actionʳ-∘)
+      sq₂ = begin
+        (act-to-the-right) ∘ᵥ (actionʳ-∘-∘)                            ≈⟨ sym-assoc₂ ⟩
+        ((actionˡ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ actionʳ₂ ◁  (T₂ ∘₁ F₁)) ∘ᵥ associator.to    ≈⟨ assoc₂ ⟩∘⟨refl ⟩
+        (actionˡ₂ ◁ F₁ ∘ᵥ (associator.to ∘ᵥ actionʳ₂ ◁  (T₂ ∘₁ F₁))) ∘ᵥ associator.to    ≈⟨ (refl⟩∘⟨ α⇐-◁-∘₁) ⟩∘⟨refl ⟩
+        (actionˡ₂ ◁ F₁ ∘ᵥ (actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to)) ∘ᵥ associator.to        ≈⟨ assoc₂ ⟩
+        actionˡ₂ ◁ F₁ ∘ᵥ ((actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ associator.to)        ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+        actionˡ₂ ◁ F₁ ∘ᵥ actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to ∘ᵥ associator.to            ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ pentagon-inv ⟩
+        actionˡ₂ ◁ F₁ ∘ᵥ actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ (associator.to ◁ F₁ ∘ᵥ associator.to)
+          ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
+        actionˡ₂ ◁ F₁ ∘ᵥ (actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ (associator.to ◁ F₁ ∘ᵥ associator.to))
+          ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩∘⟨refl ⟩
+        actionˡ₂ ◁ F₁ ∘ᵥ ((actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to ◁ F₁) ∘ᵥ associator.to)
+          ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ sym-assoc₂ ⟩
+        (actionˡ₂ ◁ F₁ ∘ᵥ (actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to ◁ F₁) ∘ᵥ associator.to)
+          ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
+        ((actionˡ₂ ◁ F₁ ∘ᵥ actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to ◁ F₁) ∘ᵥ associator.to)
+          ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ ((refl⟩∘⟨ ∘ᵥ-distr-◁) ⟩∘⟨refl) ⟩∘⟨refl ⟩
+        ((actionˡ₂ ◁ F₁ ∘ᵥ (actionʳ₂ ◁ T₂ ∘ᵥ associator.to) ◁ F₁) ∘ᵥ associator.to)
+          ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩∘⟨refl ⟩
+        ((actionˡ₂ ∘ᵥ actionʳ₂ ◁ T₂ ∘ᵥ associator.to) ◁ F₁ ∘ᵥ associator.to)
+          ∘ᵥ T₃ ▷ associator.to                                                          ≈⟨ ◁-resp-≈ action-sym-assoc₂ ⟩∘⟨refl ⟩∘⟨refl ⟩
+        ((actionʳ₂ ∘ᵥ (T₃ ▷ actionˡ₂)) ◁ F₁ ∘ᵥ associator.to) ∘ᵥ T₃ ▷ associator.to      ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩∘⟨refl ⟩
+        ((actionʳ₂ ◁ F₁ ∘ᵥ (T₃ ▷ actionˡ₂) ◁ F₁) ∘ᵥ associator.to) ∘ᵥ T₃ ▷ associator.to ≈⟨ (assoc₂ ⟩∘⟨refl) ⟩
+        (actionʳ₂ ◁ F₁ ∘ᵥ (T₃ ▷ actionˡ₂) ◁ F₁ ∘ᵥ associator.to) ∘ᵥ T₃ ▷ associator.to   ≈⟨ (refl⟩∘⟨ ⟺ α⇐-▷-◁) ⟩∘⟨refl ⟩
+        (actionʳ₂ ◁ F₁ ∘ᵥ associator.to ∘ᵥ T₃ ▷ (actionˡ₂ ◁ F₁)) ∘ᵥ T₃ ▷ associator.to   ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
+        ((actionʳ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ T₃ ▷ (actionˡ₂ ◁ F₁)) ∘ᵥ T₃ ▷ associator.to ≈⟨ assoc₂ ⟩
+        (actionʳ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ T₃ ▷ (actionˡ₂ ◁ F₁) ∘ᵥ T₃ ▷ associator.to   ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
+        actionʳ-∘ ∘ᵥ T₃ ▷ (act-to-the-right)                             ∎
+          where
+            open hom.HomReasoning
   -- end abstract --
 
   abstract
