@@ -10,15 +10,9 @@ module Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules
   {M₁ M₂ M₃ : Monad 𝒞} (B₂ : Bimodule M₂ M₃) (B₁ : Bimodule M₁ M₂) where
 
 open import Level
-open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism)
-import Categories.Category.Construction.Bimodules
-open Categories.Category.Construction.Bimodules {o} {ℓ} {e} {t} {𝒞} renaming (Bimodules to Bimodules₁)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 open import Categories.Category
-
-private
-  module Bimodules₁ M₁ M₂ = Category (Bimodules₁ M₁ M₂)
 
 open LocalCoequalizers localCoeq
 open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_coeq-◁_; _▷-coeq_)

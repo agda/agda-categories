@@ -12,8 +12,6 @@ module Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms
   (h₂ : Bimodulehomomorphism B₂ B'₂) (h₁ : Bimodulehomomorphism B₁ B'₁) where
 
 open import Level
-import Categories.Category.Construction.Bimodules
-open Categories.Category.Construction.Bimodules {o} {ℓ} {e} {t} {𝒞} renaming (Bimodules to Bimodules₁)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 
