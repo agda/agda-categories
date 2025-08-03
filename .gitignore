@@ -1,4 +1,47 @@
+# Agda interface files (compiled outputs)
 *.agdai
+
+# Emacs backup and auto-save files
+*~
+.#*
+\#*\#
+.\#*
+.\#*\#
+*.elc
+
+# Emacs desktop save mode files
+.desktop
+.emacs.desktop
+.emacs.desktop.lock
+
+# Emacs tramp temporary files
+.tramp
+
+# Projectile project files
+.projectile
+
+# Other Emacs temp or session files
+.session
+
+# VSCode project settings
+.vscode/
+
+# Agda standard library build cache (if you're vendoring it)
+**/_build/
+
+# Agda MAlonzo backend generated code
+src/MAlonzo/
+
+# Log files, core dumps, etc.
+*.log
+*.dump
+*.out
+
+# macOS clutter
 .DS_Store
-src/MAlonzo
+
+# Windows thumbnails
+Thumbs.db
+
+# Ignore Everything.agda
 Everything.agda
