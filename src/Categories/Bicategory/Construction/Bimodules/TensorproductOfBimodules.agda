@@ -96,9 +96,13 @@ module Left-Action where
 
   abstract
     private
-      sq-act-to-the-left : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-left) ◁ T₁) (act-to-the-left) (actionˡ-∘)
+      sq-act-to-the-left : CommutativeSquare
+                             actionˡ-∘-∘
+                             (act-to-the-left ◁ T₁)
+                             act-to-the-left
+                             actionˡ-∘
       sq-act-to-the-left = begin
-        act-to-the-left ∘ᵥ actionˡ-∘-∘                                     ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
+        act-to-the-left ∘ᵥ actionˡ-∘-∘                                       ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
         F₂ ▷ actionʳ₁ ∘ᵥ (associator.from ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁)
           ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁                          ≈⟨ refl⟩∘⟨ α⇒-▷-∘₁ ⟩∘⟨refl ⟩
         F₂ ▷ actionʳ₁ ∘ᵥ (F₂ ▷ T₂ ▷ actionˡ₁ ∘ᵥ associator.from)
@@ -140,9 +144,13 @@ module Left-Action where
         where
           open hom.HomReasoning
 
-      sq-act-to-the-right : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-right) ◁ T₁) (act-to-the-right) (actionˡ-∘)
+      sq-act-to-the-right : CommutativeSquare
+                              actionˡ-∘-∘
+                              (act-to-the-right ◁ T₁)
+                              act-to-the-right
+                              actionˡ-∘
       sq-act-to-the-right = begin
-        (act-to-the-right) ∘ᵥ actionˡ-∘-∘                               ≈⟨ sym-assoc₂ ⟩
+        (act-to-the-right) ∘ᵥ actionˡ-∘-∘                                                 ≈⟨ sym-assoc₂ ⟩
         ((actionˡ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ associator.from) ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁
           ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁                                        ≈⟨ assoc₂ ⟩∘⟨refl ⟩
         (actionˡ₂ ◁ F₁ ∘ᵥ associator.to ∘ᵥ associator.from) ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁
@@ -156,8 +164,8 @@ module Left-Action where
         F₂ ▷ actionˡ₁ ∘ᵥ (actionˡ₂ ◁ (F₁ ∘₁ T₁) ∘ᵥ associator.from) ∘ᵥ associator.to ◁ T₁ ≈⟨ refl⟩∘⟨ ⟺ α⇒-◁-∘₁ ⟩∘⟨refl ⟩
         F₂ ▷ actionˡ₁ ∘ᵥ (associator.from ∘ᵥ actionˡ₂ ◁ F₁ ◁ T₁) ∘ᵥ associator.to ◁ T₁    ≈⟨ refl⟩∘⟨ assoc₂ ⟩
         F₂ ▷ actionˡ₁ ∘ᵥ associator.from ∘ᵥ actionˡ₂ ◁ F₁ ◁ T₁ ∘ᵥ associator.to ◁ T₁      ≈⟨ sym-assoc₂ ⟩
-        actionˡ-∘ ∘ᵥ actionˡ₂ ◁ F₁ ◁ T₁ ∘ᵥ associator.to ◁ T₁                           ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-        actionˡ-∘ ∘ᵥ (act-to-the-right) ◁ T₁ ∎
+        actionˡ-∘ ∘ᵥ actionˡ₂ ◁ F₁ ◁ T₁ ∘ᵥ associator.to ◁ T₁                             ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
+        actionˡ-∘ ∘ᵥ act-to-the-right ◁ T₁                                              ∎
         where
           open hom.HomReasoning
   -- end abstract --
@@ -167,11 +175,27 @@ module Left-Action where
     -- to speed-up type-checking we hide the definition of the left-action under an abstract clause --
     -- probably, no one ever wants to look into its defintion and instead only use the lemma actionˡSq-⊗ below --
     actionˡ-⊗ : F-⊗ ∘₁ T₁ ⇒₂ F-⊗
-    actionˡ-⊗ = ⇒MapBetweenCoeq actionˡ-∘-∘ actionˡ-∘ sq-act-to-the-left sq-act-to-the-right (CoeqBimods coeq-◁ T₁) CoeqBimods
+    actionˡ-⊗ = ⇒MapBetweenCoeq
+                  actionˡ-∘-∘
+                  actionˡ-∘
+                  sq-act-to-the-left
+                  sq-act-to-the-right
+                  (CoeqBimods coeq-◁ T₁)
+                  CoeqBimods
 
     -- the left-action fits into the following commutative square --
-    actionˡSq-⊗ : CommutativeSquare (actionˡ-∘) (Coequalizer.arr (CoeqBimods coeq-◁ T₁)) (Coequalizer.arr CoeqBimods) (actionˡ-⊗)
-    actionˡSq-⊗ = ⇒MapBetweenCoeqSq actionˡ-∘-∘ actionˡ-∘ sq-act-to-the-left sq-act-to-the-right (CoeqBimods coeq-◁ T₁) CoeqBimods
+    actionˡSq-⊗ : CommutativeSquare
+                    actionˡ-∘
+                    (Coequalizer.arr (CoeqBimods coeq-◁ T₁))
+                    (Coequalizer.arr CoeqBimods)
+                    actionˡ-⊗
+    actionˡSq-⊗ = ⇒MapBetweenCoeqSq
+                    actionˡ-∘-∘
+                    actionˡ-∘
+                    sq-act-to-the-left
+                    sq-act-to-the-right
+                    (CoeqBimods coeq-◁ T₁)
+                    CoeqBimods
   -- end abstract --
 
 module Right-Action where
@@ -201,19 +225,35 @@ module Right-Action where
   -- to get a map of diagrams two squares have to commute --
   abstract
     private
-      sq-act-to-the-left : CommutativeSquare (actionʳ-∘-∘) (T₃ ▷ act-to-the-left) (act-to-the-left) (actionʳ-∘)
+      sq-act-to-the-left : CommutativeSquare
+                             actionʳ-∘-∘
+                             (T₃ ▷ act-to-the-left)
+                             act-to-the-left
+                             actionʳ-∘
       sq-act-to-the-left = glue′ sq-bottom sq-top
         where
           open hom.HomReasoning
           open MorphismReasoning (hom (C M₁) (C M₃)) using (glue′)
-          sq-top : CommutativeSquare (associator.to) (T₃ ▷ F₂ ▷ actionʳ₁) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (associator.to)
+          sq-top : CommutativeSquare
+                     associator.to
+                     (T₃ ▷ F₂ ▷ actionʳ₁)
+                     ((T₃ ∘₁ F₂) ▷ actionʳ₁)
+                     associator.to
           sq-top = ⟺ α⇐-▷-∘₁
-          sq-bottom : CommutativeSquare (actionʳ₂ ◁ (T₂ ∘₁ F₁)) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (F₂ ▷ actionʳ₁) (actionʳ₂ ◁ F₁)
+          sq-bottom : CommutativeSquare
+                        (actionʳ₂ ◁ (T₂ ∘₁ F₁))
+                        ((T₃ ∘₁ F₂) ▷ actionʳ₁)
+                        (F₂ ▷ actionʳ₁)
+                        (actionʳ₂ ◁ F₁)
           sq-bottom = ◁-▷-exchg
 
-      sq-act-to-the-right : CommutativeSquare (actionʳ-∘-∘) (T₃ ▷ (act-to-the-right)) (act-to-the-right) (actionʳ-∘)
+      sq-act-to-the-right : CommutativeSquare
+                              actionʳ-∘-∘
+                              (T₃ ▷ (act-to-the-right))
+                              act-to-the-right
+                              actionʳ-∘
       sq-act-to-the-right = begin
-        (act-to-the-right) ∘ᵥ (actionʳ-∘-∘)                            ≈⟨ sym-assoc₂ ⟩
+        act-to-the-right ∘ᵥ actionʳ-∘-∘                                                  ≈⟨ sym-assoc₂ ⟩
         ((actionˡ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ actionʳ₂ ◁  (T₂ ∘₁ F₁)) ∘ᵥ associator.to    ≈⟨ assoc₂ ⟩∘⟨refl ⟩
         (actionˡ₂ ◁ F₁ ∘ᵥ (associator.to ∘ᵥ actionʳ₂ ◁  (T₂ ∘₁ F₁))) ∘ᵥ associator.to    ≈⟨ (refl⟩∘⟨ α⇐-◁-∘₁) ⟩∘⟨refl ⟩
         (actionˡ₂ ◁ F₁ ∘ᵥ (actionʳ₂ ◁ T₂ ◁ F₁ ∘ᵥ associator.to)) ∘ᵥ associator.to        ≈⟨ assoc₂ ⟩
@@ -239,7 +279,7 @@ module Right-Action where
         (actionʳ₂ ◁ F₁ ∘ᵥ associator.to ∘ᵥ T₃ ▷ (actionˡ₂ ◁ F₁)) ∘ᵥ T₃ ▷ associator.to   ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
         ((actionʳ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ T₃ ▷ (actionˡ₂ ◁ F₁)) ∘ᵥ T₃ ▷ associator.to ≈⟨ assoc₂ ⟩
         (actionʳ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ T₃ ▷ (actionˡ₂ ◁ F₁) ∘ᵥ T₃ ▷ associator.to   ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
-        actionʳ-∘ ∘ᵥ T₃ ▷ (act-to-the-right)                             ∎
+        actionʳ-∘ ∘ᵥ T₃ ▷ (act-to-the-right)                                             ∎
           where
             open hom.HomReasoning
   -- end abstract --
@@ -249,11 +289,23 @@ module Right-Action where
     -- to speed-up type-checking we hide the definition of the right-action under an abstract clause --
     -- probably, no one ever wants to look into its defintion and instead only use the lemma actionʳSq-⊗ below --
     actionʳ-⊗ : T₃ ∘₁ F-⊗ ⇒₂ F-⊗
-    actionʳ-⊗ = ⇒MapBetweenCoeq actionʳ-∘-∘ actionʳ-∘ sq-act-to-the-left sq-act-to-the-right (T₃ ▷-coeq CoeqBimods) CoeqBimods
+    actionʳ-⊗ = ⇒MapBetweenCoeq
+                  actionʳ-∘-∘
+                  actionʳ-∘
+                  sq-act-to-the-left
+                  sq-act-to-the-right
+                  (T₃ ▷-coeq CoeqBimods)
+                  CoeqBimods
 
     -- the right-action fits into the following commutaitve square --
     actionʳSq-⊗ : CommutativeSquare (actionʳ-∘) (Coequalizer.arr (T₃ ▷-coeq CoeqBimods)) (Coequalizer.arr CoeqBimods) (actionʳ-⊗)
-    actionʳSq-⊗ = ⇒MapBetweenCoeqSq actionʳ-∘-∘ actionʳ-∘ sq-act-to-the-left sq-act-to-the-right (T₃ ▷-coeq CoeqBimods) CoeqBimods
+    actionʳSq-⊗ = ⇒MapBetweenCoeqSq
+                    actionʳ-∘-∘
+                    actionʳ-∘
+                    sq-act-to-the-left
+                    sq-act-to-the-right
+                    (T₃ ▷-coeq CoeqBimods)
+                    CoeqBimods
   -- end abstract --
 
 
@@ -294,7 +346,7 @@ module Associativity where
 
   abstract
     assoc-⊗-∘arr : (actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ associator.from) ∘ᵥ (Coequalizer.arr ((T₃ ▷-coeq CoeqBimods) coeq-◁ T₁))
-                  ≈ (actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T₁)) ∘ᵥ (Coequalizer.arr ((T₃ ▷-coeq CoeqBimods) coeq-◁ T₁))
+                 ≈ (actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T₁)) ∘ᵥ (Coequalizer.arr ((T₃ ▷-coeq CoeqBimods) coeq-◁ T₁))
     assoc-⊗-∘arr = begin
       (actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ associator.from) ∘ᵥ (Coequalizer.arr ((T₃ ▷-coeq CoeqBimods) coeq-◁ T₁)) ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
       ((actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗)) ∘ᵥ associator.from) ∘ᵥ (Coequalizer.arr ((T₃ ▷-coeq CoeqBimods) coeq-◁ T₁)) ≈⟨ assoc₂ ⟩
@@ -322,17 +374,18 @@ module Associativity where
 
   abstract
     assoc-⊗ : actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ associator.from ≈ actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T₁)
-    assoc-⊗ = Coequalizer⇒Epi ((T₃ ▷-coeq CoeqBimods) coeq-◁ T₁)
-                              (actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ associator.from)
-                              (actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T₁))
-                              assoc-⊗-∘arr
+    assoc-⊗ = Coequalizer⇒Epi
+                ((T₃ ▷-coeq CoeqBimods) coeq-◁ T₁)
+                (actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ associator.from)
+                (actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T₁))
+                assoc-⊗-∘arr
 
   abstract
     assoc-⊗-var : (actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗)) ∘ᵥ associator.from ≈ actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T₁)
     assoc-⊗-var = begin
       (actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗)) ∘ᵥ associator.from ≈⟨ assoc₂ ⟩
-      actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ associator.from ≈⟨ assoc-⊗ ⟩
-      actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T₁) ∎
+      actionʳ-⊗ ∘ᵥ (T₃ ▷ actionˡ-⊗) ∘ᵥ associator.from   ≈⟨ assoc-⊗ ⟩
+      actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T₁)                      ∎
       where
         open hom.HomReasoning
 
@@ -373,7 +426,7 @@ module Associativity where
 
   abstract
     assoc-actionˡ-⊗-∘arr : (actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ₁) ∘ᵥ associator.from) ∘ᵥ Coequalizer.arr ((CoeqBimods coeq-◁ T₁) coeq-◁ T₁)
-                        ≈ (actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T₁)) ∘ᵥ Coequalizer.arr ((CoeqBimods coeq-◁ T₁) coeq-◁ T₁)
+                         ≈ (actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T₁)) ∘ᵥ Coequalizer.arr ((CoeqBimods coeq-◁ T₁) coeq-◁ T₁)
     assoc-actionˡ-⊗-∘arr = begin
       (actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ₁) ∘ᵥ associator.from) ∘ᵥ Coequalizer.arr ((CoeqBimods coeq-◁ T₁) coeq-◁ T₁) ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
       ((actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ₁)) ∘ᵥ associator.from) ∘ᵥ Coequalizer.arr ((CoeqBimods coeq-◁ T₁) coeq-◁ T₁) ≈⟨ assoc₂ ⟩
@@ -399,10 +452,11 @@ module Associativity where
 
   abstract
     assoc-actionˡ-⊗ : actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ₁) ∘ᵥ associator.from ≈ actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T₁)
-    assoc-actionˡ-⊗ = Coequalizer⇒Epi ((CoeqBimods coeq-◁ T₁) coeq-◁ T₁)
-                                      (actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ₁) ∘ᵥ associator.from)
-                                      (actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T₁))
-                                      assoc-actionˡ-⊗-∘arr
+    assoc-actionˡ-⊗ = Coequalizer⇒Epi
+                        ((CoeqBimods coeq-◁ T₁) coeq-◁ T₁)
+                        (actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ₁) ∘ᵥ associator.from)
+                        (actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T₁))
+                        assoc-actionˡ-⊗-∘arr
 
   abstract
     assoc-actionˡ-⊗-var : (actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ₁)) ∘ᵥ associator.from ≈ actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T₁)
@@ -451,7 +505,7 @@ module Associativity where
 
   abstract
     assoc-actionʳ-⊗-∘arr : (actionʳ-⊗ ∘ᵥ μ₃ ◁ F-⊗ ∘ᵥ associator.to) ∘ᵥ Coequalizer.arr (T₃ ▷-coeq (T₃ ▷-coeq CoeqBimods))
-                        ≈ (actionʳ-⊗ ∘ᵥ T₃ ▷ actionʳ-⊗) ∘ᵥ Coequalizer.arr (T₃ ▷-coeq (T₃ ▷-coeq CoeqBimods))
+                         ≈ (actionʳ-⊗ ∘ᵥ T₃ ▷ actionʳ-⊗) ∘ᵥ Coequalizer.arr (T₃ ▷-coeq (T₃ ▷-coeq CoeqBimods))
     assoc-actionʳ-⊗-∘arr = begin
       (actionʳ-⊗ ∘ᵥ μ₃ ◁ F-⊗ ∘ᵥ associator.to) ∘ᵥ Coequalizer.arr (T₃ ▷-coeq (T₃ ▷-coeq CoeqBimods)) ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
       ((actionʳ-⊗ ∘ᵥ μ₃ ◁ F-⊗) ∘ᵥ associator.to) ∘ᵥ Coequalizer.arr (T₃ ▷-coeq (T₃ ▷-coeq CoeqBimods)) ≈⟨ assoc₂ ⟩
@@ -477,10 +531,11 @@ module Associativity where
 
   abstract
     assoc-actionʳ-⊗ : actionʳ-⊗ ∘ᵥ μ₃ ◁ F-⊗ ∘ᵥ associator.to ≈ actionʳ-⊗ ∘ᵥ T₃ ▷ actionʳ-⊗
-    assoc-actionʳ-⊗ = Coequalizer⇒Epi (T₃ ▷-coeq (T₃ ▷-coeq CoeqBimods))
-                                      (actionʳ-⊗ ∘ᵥ μ₃ ◁ F-⊗ ∘ᵥ associator.to)
-                                      (actionʳ-⊗ ∘ᵥ T₃ ▷ actionʳ-⊗)
-                                      assoc-actionʳ-⊗-∘arr
+    assoc-actionʳ-⊗ = Coequalizer⇒Epi
+                        (T₃ ▷-coeq (T₃ ▷-coeq CoeqBimods))
+                        (actionʳ-⊗ ∘ᵥ μ₃ ◁ F-⊗ ∘ᵥ associator.to)
+                        (actionʳ-⊗ ∘ᵥ T₃ ▷ actionʳ-⊗)
+                        assoc-actionʳ-⊗-∘arr
   abstract
     assoc-actionʳ-⊗-var : (actionʳ-⊗ ∘ᵥ μ₃ ◁ F-⊗) ∘ᵥ associator.to ≈ actionʳ-⊗ ∘ᵥ T₃ ▷ actionʳ-⊗
     assoc-actionʳ-⊗-var = begin
@@ -541,7 +596,11 @@ module Identity where
 
   abstract
     identityˡ-⊗ : actionˡ-⊗ ∘ᵥ F-⊗ ▷ η₁ ∘ᵥ unitorʳ.to ≈ id₂
-    identityˡ-⊗ = Coequalizer⇒Epi CoeqBimods (actionˡ-⊗ ∘ᵥ F-⊗ ▷ η₁ ∘ᵥ unitorʳ.to) id₂ identityˡ-⊗-∘arr
+    identityˡ-⊗ = Coequalizer⇒Epi
+                    CoeqBimods
+                    (actionˡ-⊗ ∘ᵥ F-⊗ ▷ η₁ ∘ᵥ unitorʳ.to)
+                    id₂
+                    identityˡ-⊗-∘arr
 
   abstract
     identityʳ-∘ : actionʳ-∘ ∘ᵥ η₃ ◁ (F₂ ∘₁ F₁) ∘ᵥ unitorˡ.to ≈ id₂
@@ -580,7 +639,11 @@ module Identity where
 
   abstract
     identityʳ-⊗ : actionʳ-⊗ ∘ᵥ (η₃ ◁ F-⊗) ∘ᵥ unitorˡ.to ≈ id₂
-    identityʳ-⊗ = Coequalizer⇒Epi CoeqBimods (actionʳ-⊗ ∘ᵥ (η₃ ◁ F-⊗) ∘ᵥ unitorˡ.to) id₂ identityʳ-⊗-∘arr
+    identityʳ-⊗ = Coequalizer⇒Epi
+                    CoeqBimods
+                    (actionʳ-⊗ ∘ᵥ (η₃ ◁ F-⊗) ∘ᵥ unitorˡ.to)
+                    id₂
+                    identityʳ-⊗-∘arr
   -- end abstract --
 
 
