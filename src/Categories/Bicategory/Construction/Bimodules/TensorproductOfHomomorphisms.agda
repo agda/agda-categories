@@ -16,21 +16,9 @@ import Categories.Category.Construction.Bimodules
 open Categories.Category.Construction.Bimodules {o} {ℓ} {e} {t} {𝒞} renaming (Bimodules to Bimodules₁)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
-open import Categories.Category
-
-private
-  module Bimodules₁ M₁ M₂ = Category (Bimodules₁ M₁ M₂)
 
 open LocalCoequalizers localCoeq
 open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_coeq-◁_; _▷-coeq_)
-
-private
-  module homCat {X} {Y} where
-    open import Categories.Diagram.Coequalizer (hom X Y) public using (Coequalizer; Coequalizer⇒Epi)
-    open import Categories.Diagram.Coequalizer.Properties (hom X Y) public
-      using (⇒MapBetweenCoeq; ⇒MapBetweenCoeqSq)
-
-open homCat
 
 open Monad M₁ using () renaming (C to C₁; T to T₁; μ to μ₁; η to η₁)
 open Monad M₂ using () renaming (C to C₂; T to T₂; μ to μ₂; η to η₂)
@@ -40,6 +28,11 @@ open Bimodule B'₁ using () renaming (F to F'₁; actionʳ to actionʳ'₁; act
 open Bimodule B₂ using () renaming (F to F₂; actionʳ to actionʳ₂; actionˡ to actionˡ₂)
 open Bimodule B'₂ using () renaming (F to F'₂; actionʳ to actionʳ'₂; actionˡ to actionˡ'₂)
 
+open import Categories.Diagram.Coequalizer (hom C₁ C₃) using (Coequalizer; Coequalizer⇒Epi)
+open import Categories.Diagram.Coequalizer.Properties (hom C₁ C₃) using (⇒MapBetweenCoeq; ⇒MapBetweenCoeqSq)
+import Categories.Category
+open Categories.Category.Definitions (hom C₁ C₃) using (CommutativeSquare)
+
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} {M₁} {M₂} {M₃} as TensorproductOfBimodules
 open TensorproductOfBimodules using (CoeqBimods; act-to-the-left; act-to-the-right; F-⊗) renaming (Tensorproduct to infixr 30 _⊗₀_)
 open TensorproductOfBimodules.Left-Action using (actionˡ-⊗)
@@ -47,8 +40,6 @@ open TensorproductOfBimodules.Right-Action using (actionʳ-⊗)
 
 open Bimodulehomomorphism h₁ using () renaming (α to α₁; linearˡ to linearˡ₁; linearʳ to linearʳ₁)
 open Bimodulehomomorphism h₂ using () renaming (α to α₂; linearˡ to linearˡ₂; linearʳ to linearʳ₂)
-
-open Definitions (hom C₁ C₃) -- for Commutative Squares
 
 private
   sq-act-to-the-left : CommutativeSquare (α₂ ⊚₁ id₂ ⊚₁ α₁)

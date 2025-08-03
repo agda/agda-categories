@@ -26,16 +26,13 @@ open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_coeq-◁_; _▷-coeq_)
 import Categories.Morphism.Reasoning as MorphismReasoning
 import Categories.Morphism.Reasoning.Iso as IsoReasoning
 
-private
-  module homCat {X} {Y} where
-    open import Categories.Diagram.Coequalizer (hom X Y) public using (Coequalizer; Coequalizer⇒Epi)
-    open import Categories.Diagram.Coequalizer.Properties (hom X Y) public
-      using (⇒MapBetweenCoeq; ⇒MapBetweenCoeqSq)
-
-open homCat
-
 open Monad using (C; T; μ; η)
 open Bimodule using (F; actionˡ; actionʳ; assoc; sym-assoc; assoc-actionˡ; assoc-actionʳ; identityˡ; identityʳ)
+
+open import Categories.Diagram.Coequalizer (hom (C M₁) (C M₃)) using (Coequalizer; Coequalizer⇒Epi)
+open import Categories.Diagram.Coequalizer.Properties (hom (C M₁) (C M₃)) using (⇒MapBetweenCoeq; ⇒MapBetweenCoeqSq)
+import Categories.Category
+open Categories.Category.Definitions (hom (C M₁) (C M₃)) using (CommutativeSquare)
 
 {-
 To construct the tensorproduct B₂⊗B₁ we will define its underlying 1-cell
@@ -82,9 +79,6 @@ module Left-Action where
 
   actionˡ-∘ : (F B₂ ∘₁ F B₁) ∘₁ T M₁ ⇒₂  F B₂ ∘₁ F B₁
   actionˡ-∘ = F B₂ ▷ actionˡ B₁ ∘ᵥ associator.from
-
-  -- for CommutativeSquare --
-  open Definitions (hom (C M₁) (C M₃))
 
   abstract
     private
@@ -210,9 +204,6 @@ module Right-Action where
 
   actionʳ-∘ : T M₃ ∘₁ F B₂ ∘₁ F B₁ ⇒₂  F B₂ ∘₁ F B₁
   actionʳ-∘ = actionʳ B₂ ◁ F B₁ ∘ᵥ associator.to
-
-  -- for CommutativeSquare --
-  open Definitions (hom (C M₁) (C M₃))
 
   -- to get a map of diagrams two squares have to commute --
   abstract
