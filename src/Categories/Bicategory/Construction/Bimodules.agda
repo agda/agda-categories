@@ -59,7 +59,7 @@ Bimodules = record
       }
     }
   ; triangle = λ {_} {_} {_} {B₁} {B₂} → triangle⊗ {B₂ = B₂} {B₁}
-  ; pentagon = λ {_} {_} {_} {_} {_}{B₁} {B₂} {B₃} {B₄} → pentagon⊗ {B₄ = B₄} {B₃} {B₂} {B₁}
+  ; pentagon = λ {_} {_} {_} {_} {_} {B₁} {B₂} {B₃} {B₄} → pentagon⊗ {B₄ = B₄} {B₃} {B₂} {B₁}
   }
   where
     open import Data.Product using (_,_)
