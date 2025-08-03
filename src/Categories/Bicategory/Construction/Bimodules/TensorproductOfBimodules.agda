@@ -23,9 +23,6 @@ private
 open LocalCoequalizers localCoeq
 open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_coeq-◁_; _▷-coeq_)
 
-import Categories.Morphism.Reasoning as MorphismReasoning
-import Categories.Morphism.Reasoning.Iso as IsoReasoning
-
 open Monad using (C; T; μ; η)
 open Bimodule using (F; actionˡ; actionʳ; assoc; sym-assoc; assoc-actionˡ; assoc-actionʳ; identityˡ; identityʳ)
 
@@ -33,6 +30,9 @@ open import Categories.Diagram.Coequalizer (hom (C M₁) (C M₃)) using (Coequa
 open import Categories.Diagram.Coequalizer.Properties (hom (C M₁) (C M₃)) using (⇒MapBetweenCoeq; ⇒MapBetweenCoeqSq)
 import Categories.Category
 open Categories.Category.Definitions (hom (C M₁) (C M₃)) using (CommutativeSquare)
+
+import Categories.Morphism.Reasoning (hom (C M₁) (C M₃)) as MorphismReasoning
+import Categories.Morphism.Reasoning.Iso (hom (C M₁) (C M₃)) as IsoReasoning
 
 {-
 To construct the tensorproduct B₂⊗B₁ we will define its underlying 1-cell
@@ -216,7 +216,7 @@ module Right-Action where
       sq-act-to-the-left = glue′ sq-bottom sq-top
         where
           open hom.HomReasoning
-          open MorphismReasoning (hom (C M₁) (C M₃)) using (glue′)
+          open MorphismReasoning using (glue′)
           sq-top : CommutativeSquare
                      associator.to
                      (T M₃ ▷ F B₂ ▷ actionʳ B₁)
@@ -380,7 +380,7 @@ module Associativity where
       actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗) ∎
       where
         open hom.HomReasoning
-        open IsoReasoning (hom (C M₁) (C M₃)) using (switch-fromtoʳ)
+        open IsoReasoning using (switch-fromtoʳ)
 
   abstract
     assoc-actionˡ-∘ : actionˡ-∘ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ μ M₁ ∘ᵥ associator.from ≈ actionˡ-∘ ∘ᵥ actionˡ-∘ ◁ T M₁
@@ -458,7 +458,7 @@ module Associativity where
       actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ M₁) ∎
       where
         open hom.HomReasoning
-        open IsoReasoning (hom (C M₁) (C M₃)) using (switch-fromtoʳ)
+        open IsoReasoning using (switch-fromtoʳ)
   -- end abstract --
 
   abstract
@@ -535,7 +535,7 @@ module Associativity where
       actionʳ-⊗ ∘ᵥ μ M₃ ◁ F-⊗ ∎
       where
         open hom.HomReasoning
-        open IsoReasoning (hom (C M₁) (C M₃)) using (switch-tofromʳ)
+        open IsoReasoning using (switch-tofromʳ)
   -- end abstract --
 
 module Identity where
