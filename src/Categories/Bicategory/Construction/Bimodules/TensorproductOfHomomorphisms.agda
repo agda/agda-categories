@@ -17,8 +17,6 @@ open Categories.Category.Construction.Bimodules {o} {ℓ} {e} {t} {𝒞} renamin
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 open import Categories.Category
-open import Categories.Diagram.Coequalizer
-import Categories.Diagram.Coequalizer.Properties as CoeqProperties
 
 private
   module Bimodules₁ M₁ M₂ = Category (Bimodules₁ M₁ M₂)
@@ -26,6 +24,13 @@ private
 open LocalCoequalizers localCoeq
 open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_coeq-◁_; _▷-coeq_)
 
+private
+  module homCat {X} {Y} where
+    open import Categories.Diagram.Coequalizer (hom X Y) public using (Coequalizer; Coequalizer⇒Epi)
+    open import Categories.Diagram.Coequalizer.Properties (hom X Y) public
+      using (⇒MapBetweenCoeq; ⇒MapBetweenCoeqSq)
+
+open homCat
 
 open Monad M₁ using () renaming (C to C₁; T to T₁; μ to μ₁; η to η₁)
 open Monad M₂ using () renaming (C to C₂; T to T₂; μ to μ₂; η to η₂)
@@ -82,13 +87,9 @@ abstract
   -- probably, no one ever wants to look into its defintion and instead only use the lemma αSq-⊗ below --
   α-⊗ : F-⊗ B₂ B₁ ⇒₂ F-⊗ B'₂ B'₁
   α-⊗ = ⇒MapBetweenCoeq (α₂ ⊚₁ id₂ ⊚₁  α₁) (α₂ ⊚₁ α₁) sq-act-to-the-left sq-act-to-the-right (CoeqBimods B₂ B₁) (CoeqBimods B'₂ B'₁)
-    where
-      open CoeqProperties (hom C₁ C₃)
 
   αSq-⊗ : CommutativeSquare (α₂ ⊚₁ α₁) (Coequalizer.arr (CoeqBimods B₂ B₁)) (Coequalizer.arr (CoeqBimods B'₂ B'₁)) α-⊗
   αSq-⊗ = ⇒MapBetweenCoeqSq (α₂ ⊚₁ id₂ ⊚₁  α₁) (α₂ ⊚₁ α₁) sq-act-to-the-left sq-act-to-the-right (CoeqBimods B₂ B₁) (CoeqBimods B'₂ B'₁)
-    where
-      open CoeqProperties (hom C₁ C₃)
 -- end abstract --
 
 
@@ -134,9 +135,9 @@ abstract
 
   abstract
     linearˡ-⊗ : actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T₁ ≈ α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁
-    linearˡ-⊗ = Coequalizer⇒Epi (hom C₁ C₃) (CoeqBimods B₂ B₁ coeq-◁ T₁)
-                            (actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T₁) (α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁)
-                            linearˡ-⊗-∘arr
+    linearˡ-⊗ = Coequalizer⇒Epi (CoeqBimods B₂ B₁ coeq-◁ T₁)
+                                (actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T₁) (α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁)
+                                linearˡ-⊗-∘arr
 
   open TensorproductOfBimodules.Right-Action using (actionʳ-∘)
 
@@ -179,9 +180,9 @@ abstract
 
   abstract
     linearʳ-⊗ : actionʳ-⊗ B'₂ B'₁ ∘ᵥ T₃ ▷ α-⊗ ≈ α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁
-    linearʳ-⊗ = Coequalizer⇒Epi (hom C₁ C₃) (T₃ ▷-coeq CoeqBimods B₂ B₁)
-                              (actionʳ-⊗ B'₂ B'₁ ∘ᵥ T₃ ▷ α-⊗) (α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁)
-                              linearʳ-⊗-∘arr
+    linearʳ-⊗ = Coequalizer⇒Epi (T₃ ▷-coeq CoeqBimods B₂ B₁)
+                                (actionʳ-⊗ B'₂ B'₁ ∘ᵥ T₃ ▷ α-⊗) (α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁)
+                                linearʳ-⊗-∘arr
 
   -- end abstract --
 
