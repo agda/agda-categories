@@ -96,8 +96,8 @@ module Left-Action where
 
   abstract
     private
-      sq₁ : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-left) ◁ T₁) (act-to-the-left) (actionˡ-∘)
-      sq₁ = begin
+      sq-act-to-the-left : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-left) ◁ T₁) (act-to-the-left) (actionˡ-∘)
+      sq-act-to-the-left = begin
         act-to-the-left ∘ᵥ actionˡ-∘-∘                                     ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
         F₂ ▷ actionʳ₁ ∘ᵥ (associator.from ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁)
           ∘ᵥ associator.from  ∘ᵥ associator.to ◁ T₁                          ≈⟨ refl⟩∘⟨ α⇒-▷-∘₁ ⟩∘⟨refl ⟩
@@ -140,8 +140,8 @@ module Left-Action where
         where
           open hom.HomReasoning
 
-      sq₂ : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-right) ◁ T₁) (act-to-the-right) (actionˡ-∘)
-      sq₂ = begin
+      sq-act-to-the-right : CommutativeSquare (actionˡ-∘-∘) ((act-to-the-right) ◁ T₁) (act-to-the-right) (actionˡ-∘)
+      sq-act-to-the-right = begin
         (act-to-the-right) ∘ᵥ actionˡ-∘-∘                               ≈⟨ sym-assoc₂ ⟩
         ((actionˡ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ associator.from) ∘ᵥ (F₂ ∘₁ T₂) ▷ actionˡ₁
           ∘ᵥ associator.from ∘ᵥ associator.to ◁ T₁                                        ≈⟨ assoc₂ ⟩∘⟨refl ⟩
@@ -167,11 +167,11 @@ module Left-Action where
     -- to speed-up type-checking we hide the definition of the left-action under an abstract clause --
     -- probably, no one ever wants to look into its defintion and instead only use the lemma actionˡSq-⊗ below --
     actionˡ-⊗ : F-⊗ ∘₁ T₁ ⇒₂ F-⊗
-    actionˡ-⊗ = ⇒MapBetweenCoeq actionˡ-∘-∘ actionˡ-∘ sq₁ sq₂ (CoeqBimods coeq-◁ T₁) CoeqBimods
+    actionˡ-⊗ = ⇒MapBetweenCoeq actionˡ-∘-∘ actionˡ-∘ sq-act-to-the-left sq-act-to-the-right (CoeqBimods coeq-◁ T₁) CoeqBimods
 
     -- the left-action fits into the following commutative square --
     actionˡSq-⊗ : CommutativeSquare (actionˡ-∘) (Coequalizer.arr (CoeqBimods coeq-◁ T₁)) (Coequalizer.arr CoeqBimods) (actionˡ-⊗)
-    actionˡSq-⊗ = ⇒MapBetweenCoeqSq actionˡ-∘-∘ actionˡ-∘ sq₁ sq₂ (CoeqBimods coeq-◁ T₁) CoeqBimods
+    actionˡSq-⊗ = ⇒MapBetweenCoeqSq actionˡ-∘-∘ actionˡ-∘ sq-act-to-the-left sq-act-to-the-right (CoeqBimods coeq-◁ T₁) CoeqBimods
   -- end abstract --
 
 module Right-Action where
@@ -201,18 +201,18 @@ module Right-Action where
   -- to get a map of diagrams two squares have to commute --
   abstract
     private
-      sq₁ : CommutativeSquare (actionʳ-∘-∘) (T₃ ▷ act-to-the-left) (act-to-the-left) (actionʳ-∘)
-      sq₁ = glue′ sq₁bottom sq₁top
+      sq-act-to-the-left : CommutativeSquare (actionʳ-∘-∘) (T₃ ▷ act-to-the-left) (act-to-the-left) (actionʳ-∘)
+      sq-act-to-the-left = glue′ sq-bottom sq-top
         where
           open hom.HomReasoning
           open MorphismReasoning (hom (C M₁) (C M₃)) using (glue′)
-          sq₁top : CommutativeSquare (associator.to) (T₃ ▷ F₂ ▷ actionʳ₁) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (associator.to)
-          sq₁top = ⟺ α⇐-▷-∘₁
-          sq₁bottom : CommutativeSquare (actionʳ₂ ◁ (T₂ ∘₁ F₁)) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (F₂ ▷ actionʳ₁) (actionʳ₂ ◁ F₁)
-          sq₁bottom = ◁-▷-exchg
+          sq-top : CommutativeSquare (associator.to) (T₃ ▷ F₂ ▷ actionʳ₁) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (associator.to)
+          sq-top = ⟺ α⇐-▷-∘₁
+          sq-bottom : CommutativeSquare (actionʳ₂ ◁ (T₂ ∘₁ F₁)) ((T₃ ∘₁ F₂) ▷ actionʳ₁) (F₂ ▷ actionʳ₁) (actionʳ₂ ◁ F₁)
+          sq-bottom = ◁-▷-exchg
 
-      sq₂ : CommutativeSquare (actionʳ-∘-∘) (T₃ ▷ (act-to-the-right)) (act-to-the-right) (actionʳ-∘)
-      sq₂ = begin
+      sq-act-to-the-right : CommutativeSquare (actionʳ-∘-∘) (T₃ ▷ (act-to-the-right)) (act-to-the-right) (actionʳ-∘)
+      sq-act-to-the-right = begin
         (act-to-the-right) ∘ᵥ (actionʳ-∘-∘)                            ≈⟨ sym-assoc₂ ⟩
         ((actionˡ₂ ◁ F₁ ∘ᵥ associator.to) ∘ᵥ actionʳ₂ ◁  (T₂ ∘₁ F₁)) ∘ᵥ associator.to    ≈⟨ assoc₂ ⟩∘⟨refl ⟩
         (actionˡ₂ ◁ F₁ ∘ᵥ (associator.to ∘ᵥ actionʳ₂ ◁  (T₂ ∘₁ F₁))) ∘ᵥ associator.to    ≈⟨ (refl⟩∘⟨ α⇐-◁-∘₁) ⟩∘⟨refl ⟩
@@ -249,11 +249,11 @@ module Right-Action where
     -- to speed-up type-checking we hide the definition of the right-action under an abstract clause --
     -- probably, no one ever wants to look into its defintion and instead only use the lemma actionʳSq-⊗ below --
     actionʳ-⊗ : T₃ ∘₁ F-⊗ ⇒₂ F-⊗
-    actionʳ-⊗ = ⇒MapBetweenCoeq actionʳ-∘-∘ actionʳ-∘ sq₁ sq₂ (T₃ ▷-coeq CoeqBimods) CoeqBimods
+    actionʳ-⊗ = ⇒MapBetweenCoeq actionʳ-∘-∘ actionʳ-∘ sq-act-to-the-left sq-act-to-the-right (T₃ ▷-coeq CoeqBimods) CoeqBimods
 
     -- the right-action fits into the following commutaitve square --
     actionʳSq-⊗ : CommutativeSquare (actionʳ-∘) (Coequalizer.arr (T₃ ▷-coeq CoeqBimods)) (Coequalizer.arr CoeqBimods) (actionʳ-⊗)
-    actionʳSq-⊗ = ⇒MapBetweenCoeqSq actionʳ-∘-∘ actionʳ-∘ sq₁ sq₂ (T₃ ▷-coeq CoeqBimods) CoeqBimods
+    actionʳSq-⊗ = ⇒MapBetweenCoeqSq actionʳ-∘-∘ actionʳ-∘ sq-act-to-the-left sq-act-to-the-right (T₃ ▷-coeq CoeqBimods) CoeqBimods
   -- end abstract --
 
 

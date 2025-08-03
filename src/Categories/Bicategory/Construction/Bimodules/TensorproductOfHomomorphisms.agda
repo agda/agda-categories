@@ -46,11 +46,11 @@ open Bimodulehomomorphism h₂ using () renaming (α to α₂; linearˡ to linea
 open Definitions (hom C₁ C₃) -- for Commutative Squares
 
 private
-  sq₁ : CommutativeSquare (α₂ ⊚₁ id₂ ⊚₁ α₁)
+  sq-act-to-the-left : CommutativeSquare (α₂ ⊚₁ id₂ ⊚₁ α₁)
                           (act-to-the-left B₂ B₁)
                           (act-to-the-left B'₂ B'₁)
                           (α₂ ⊚₁ α₁)
-  sq₁ = begin
+  sq-act-to-the-left = begin
     (act-to-the-left B'₂ B'₁) ∘ᵥ α₂ ⊚₁ id₂ ⊚₁ α₁ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩
     (id₂ ∘ᵥ α₂) ⊚₁ (actionʳ'₁ ∘ᵥ id₂ ⊚₁ α₁) ≈⟨ identity₂ˡ ⟩⊚⟨ linearʳ₁ ⟩
     α₂ ⊚₁ (α₁ ∘ᵥ actionʳ₁) ≈⟨ ⟺ identity₂ʳ ⟩⊚⟨refl ⟩
@@ -59,11 +59,11 @@ private
     where
       open hom.HomReasoning
 
-  sq₂ : CommutativeSquare (α₂ ⊚₁ id₂ ⊚₁ α₁)
+  sq-act-to-the-right : CommutativeSquare (α₂ ⊚₁ id₂ ⊚₁ α₁)
                           (act-to-the-right B₂ B₁)
                           (act-to-the-right B'₂ B'₁)
                           (α₂ ⊚₁ α₁)
-  sq₂ = begin
+  sq-act-to-the-right = begin
     (act-to-the-right B'₂ B'₁) ∘ᵥ α₂ ⊚₁ id₂ ⊚₁ α₁ ≈⟨ assoc₂ ⟩
     actionˡ'₂ ◁ F'₁ ∘ᵥ associator.to ∘ᵥ α₂ ⊚₁ id₂ ⊚₁ α₁ ≈⟨ refl⟩∘⟨ α⇐-⊚ ⟩
     actionˡ'₂ ◁ F'₁ ∘ᵥ (α₂ ⊚₁ id₂) ⊚₁ α₁ ∘ᵥ associator.to ≈⟨ sym-assoc₂ ⟩
@@ -81,12 +81,12 @@ abstract
   -- to speed-up type-echecking we hide the the underliying 2-cell α-⊗ under an abstract clause --
   -- probably, no one ever wants to look into its defintion and instead only use the lemma αSq-⊗ below --
   α-⊗ : F-⊗ B₂ B₁ ⇒₂ F-⊗ B'₂ B'₁
-  α-⊗ = ⇒MapBetweenCoeq (α₂ ⊚₁ id₂ ⊚₁  α₁) (α₂ ⊚₁ α₁) sq₁ sq₂ (CoeqBimods B₂ B₁) (CoeqBimods B'₂ B'₁)
+  α-⊗ = ⇒MapBetweenCoeq (α₂ ⊚₁ id₂ ⊚₁  α₁) (α₂ ⊚₁ α₁) sq-act-to-the-left sq-act-to-the-right (CoeqBimods B₂ B₁) (CoeqBimods B'₂ B'₁)
     where
       open CoeqProperties (hom C₁ C₃)
 
   αSq-⊗ : CommutativeSquare (α₂ ⊚₁ α₁) (Coequalizer.arr (CoeqBimods B₂ B₁)) (Coequalizer.arr (CoeqBimods B'₂ B'₁)) α-⊗
-  αSq-⊗ = ⇒MapBetweenCoeqSq (α₂ ⊚₁ id₂ ⊚₁  α₁) (α₂ ⊚₁ α₁) sq₁ sq₂ (CoeqBimods B₂ B₁) (CoeqBimods B'₂ B'₁)
+  αSq-⊗ = ⇒MapBetweenCoeqSq (α₂ ⊚₁ id₂ ⊚₁  α₁) (α₂ ⊚₁ α₁) sq-act-to-the-left sq-act-to-the-right (CoeqBimods B₂ B₁) (CoeqBimods B'₂ B'₁)
     where
       open CoeqProperties (hom C₁ C₃)
 -- end abstract --
