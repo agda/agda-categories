@@ -18,12 +18,6 @@ import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {�
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
 open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_coeq-◁_; _▷-coeq_)
 
-private
-  _⊗₀_ = TensorproductOfBimodules.B₂⊗B₁
-  _⊗₁_ = TensorproductOfHomomorphisms.h₂⊗h₁
-
-infixr 30 _⊗₀_ _⊗₁_
-
 Id-Bimod : {M : Monad 𝒞} → Bimodule M M
 Id-Bimod {M} = id-bimodule M
 
@@ -44,7 +38,8 @@ private
 open HomCat
 
 --- Maybe open it upon importing??? ---
-open TensorproductOfBimodules using (CoeqBimods)
+open TensorproductOfBimodules using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
+open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
 
 -- Id-Bimod ⊗₀ B → B --
 module Left-Unitor where

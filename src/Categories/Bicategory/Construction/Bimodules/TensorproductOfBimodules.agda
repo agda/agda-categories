@@ -581,8 +581,9 @@ module Identity where
     identityʳ-⊗ = Coequalizer⇒Epi CoeqBimods (actionʳ-⊗ ∘ᵥ (η₃ ◁ F-⊗) ∘ᵥ unitorˡ.to) id₂ identityʳ-⊗-∘arr
   -- end abstract --
 
-B₂⊗B₁ : Bimodule M₁ M₃
-B₂⊗B₁ = record
+
+Tensorproduct : Bimodule M₁ M₃
+Tensorproduct = record
   { F = F-⊗
   ; actionˡ = Left-Action.actionˡ-⊗                       -- : F ∘₁ T₁ ⇒₂ F
   ; actionʳ = Right-Action.actionʳ-⊗                      -- : T₂ ∘₁ F ⇒₂ F

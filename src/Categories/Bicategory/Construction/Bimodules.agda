@@ -65,6 +65,8 @@ Bimodules = record
     open import Data.Product using (_,_)
     open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
     open import Categories.Morphism using (_≅_)
+    open import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules using () renaming (Tensorproduct to infixr 30 _⊗₀_)
+    open import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
     open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Functorial {𝒞 = 𝒞} {localCoeq}
     open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator {𝒞 = 𝒞} {localCoeq}
       using (Associator⊗)

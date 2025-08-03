@@ -16,13 +16,11 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator
 open import Categories.Bicategory.Monad.Bimodule.Homomorphism
 import Categories.Bicategory.LocalCoequalizers
 open ComposeWithLocalCoequalizer 𝒞 localCoeq
+
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
-private
-  _⊗₀_ = TensorproductOfBimodules.B₂⊗B₁
-  _⊗₁_ = TensorproductOfHomomorphisms.h₂⊗h₁
-
-infixr 30 _⊗₀_ _⊗₁_
+open TensorproductOfBimodules using () renaming (Tensorproduct to infixr 30 _⊗₀_)
+open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
 
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞

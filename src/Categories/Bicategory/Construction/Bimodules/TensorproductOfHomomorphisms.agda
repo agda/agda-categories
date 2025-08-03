@@ -35,7 +35,7 @@ open Bimodule B'₁ using () renaming (F to F'₁; actionʳ to actionʳ'₁; act
 open Bimodule B₂ using () renaming (F to F₂; actionʳ to actionʳ₂; actionˡ to actionˡ₂)
 open Bimodule B'₂ using () renaming (F to F'₂; actionʳ to actionʳ'₂; actionˡ to actionˡ'₂)
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} {M₁} {M₂} {M₃} as TensorproductOfBimodules
-open TensorproductOfBimodules using (CoeqBimods; act-to-the-left; act-to-the-right; F-⊗) renaming (B₂⊗B₁ to _⊗₀_)
+open TensorproductOfBimodules using (CoeqBimods; act-to-the-left; act-to-the-right; F-⊗) renaming (Tensorproduct to infixr 30 _⊗₀_)
 open TensorproductOfBimodules.Left-Action using (actionˡ-⊗)
 open TensorproductOfBimodules.Right-Action using (actionʳ-⊗)
 open Bimodulehomomorphism h₁ using () renaming (α to α₁; linearˡ to linearˡ₁; linearʳ to linearʳ₁)
@@ -182,8 +182,8 @@ abstract
 
   -- end abstract --
 
-h₂⊗h₁ : Bimodulehomomorphism (B₂ ⊗₀ B₁) (B'₂ ⊗₀ B'₁)
-h₂⊗h₁ = record
+Tensorproduct : Bimodulehomomorphism (B₂ ⊗₀ B₁) (B'₂ ⊗₀ B'₁)
+Tensorproduct = record
   { α = α-⊗
   ; linearˡ = linearˡ-⊗
   ; linearʳ = linearʳ-⊗
