@@ -47,7 +47,7 @@ abstract
   -- for all foreseeable purposes, the particular choice of coequalizer will not matter --
   CoeqBimods : Coequalizer        act-to-the-left act-to-the-right
   CoeqBimods = local-coequalizers act-to-the-left act-to-the-right
-  
+
 -- The underlying object of that coequalizer is the underlying 1-cell of the bimodule B₂⊗B₁ --
 F-⊗ : C M₁ ⇒₁ C M₃
 F-⊗ = obj CoeqBimods
@@ -70,7 +70,7 @@ module Left-Action where
   actionˡ-∘-∘ : (F B₂ ∘₁ T M₂ ∘₁ F B₁) ∘₁ T M₁   ⇒₂   F B₂ ∘₁ T M₂ ∘₁ F B₁
   actionˡ-∘-∘ = α⇒ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒  ∘ᵥ α⇐ ◁ T M₁
 
-  actionˡ-∘ : (F B₂ ∘₁ F B₁) ∘₁ T M₁ ⇒₂  F B₂ ∘₁ F B₁
+  actionˡ-∘ : (F B₂ ∘₁ F B₁) ∘₁ T M₁   ⇒₂   F B₂ ∘₁ F B₁
   actionˡ-∘ = F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒
 
   abstract
@@ -134,7 +134,7 @@ module Left-Action where
     -- left-action --
     -- to speed-up type-checking we hide the definition of the left-action under an abstract clause --
     -- probably, no one ever wants to look into its defintion and instead only use the lemma actionˡSq-⊗ below --
-    actionˡ-⊗ : F-⊗ ∘₁ T M₁ ⇒₂ F-⊗
+    actionˡ-⊗ : F-⊗ ∘₁ T M₁   ⇒₂   F-⊗
     actionˡ-⊗ = ⇒MapBetweenCoeq
                   actionˡ-∘-∘
                   actionˡ-∘
@@ -173,10 +173,10 @@ module Right-Action where
   -}
 
   -- to define a map between the coequalizers T M₃ ∘₁ F-⊗ ⇒₂ F-⊗ we define a map of diagrams --
-  actionʳ-∘-∘ : T M₃ ∘₁ F B₂ ∘₁ T M₂ ∘₁ F B₁ ⇒₂  F B₂ ∘₁ T M₂ ∘₁ F B₁
+  actionʳ-∘-∘ : T M₃ ∘₁ F B₂ ∘₁ T M₂ ∘₁ F B₁   ⇒₂   F B₂ ∘₁ T M₂ ∘₁ F B₁
   actionʳ-∘-∘ = actionʳ B₂ ◁ (T M₂ ∘₁ F B₁) ∘ᵥ α⇐
 
-  actionʳ-∘ : T M₃ ∘₁ F B₂ ∘₁ F B₁ ⇒₂  F B₂ ∘₁ F B₁
+  actionʳ-∘ : T M₃ ∘₁ F B₂ ∘₁ F B₁   ⇒₂   F B₂ ∘₁ F B₁
   actionʳ-∘ = actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐
 
   -- to get a map of diagrams two squares have to commute --
@@ -238,7 +238,7 @@ module Right-Action where
     -- right-action --
     -- to speed-up type-checking we hide the definition of the right-action under an abstract clause --
     -- probably, no one ever wants to look into its defintion and instead only use the lemma actionʳSq-⊗ below --
-    actionʳ-⊗ : T M₃ ∘₁ F-⊗ ⇒₂ F-⊗
+    actionʳ-⊗ : T M₃ ∘₁ F-⊗   ⇒₂   F-⊗
     actionʳ-⊗ = ⇒MapBetweenCoeq
                   actionʳ-∘-∘
                   actionʳ-∘
@@ -298,27 +298,27 @@ module Associativity where
     assoc-⊗-∘arr : (actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗) ∘ᵥ α⇒) ∘ᵥ (arr ((T M₃ ▷-coeq CoeqBimods) coeq-◁ T M₁))
                  ≈ (actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T M₁)) ∘ᵥ (arr ((T M₃ ▷-coeq CoeqBimods) coeq-◁ T M₁))
     assoc-⊗-∘arr = begin
-      (actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗) ∘ᵥ α⇒) ∘ᵥ (arr ((T M₃ ▷-coeq CoeqBimods) coeq-◁ T M₁)) ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
+      (actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗) ∘ᵥ α⇒) ∘ᵥ (arr ((T M₃ ▷-coeq CoeqBimods) coeq-◁ T M₁))   ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
       ((actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗)) ∘ᵥ α⇒) ∘ᵥ (arr ((T M₃ ▷-coeq CoeqBimods) coeq-◁ T M₁)) ≈⟨ assoc₂ ⟩
-      (actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗)) ∘ᵥ α⇒ ∘ᵥ (arr ((T M₃ ▷-coeq CoeqBimods) coeq-◁ T M₁)) ≈⟨ refl⟩∘⟨ α⇒-▷-◁ ⟩
-      (actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗)) ∘ᵥ arr (T M₃ ▷-coeq (CoeqBimods coeq-◁ T M₁)) ∘ᵥ α⇒  ≈⟨ ⟺ assoc₂ ⟩
-      ((actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗)) ∘ᵥ arr (T M₃ ▷-coeq (CoeqBimods coeq-◁ T M₁))) ∘ᵥ α⇒  ≈⟨ assoc₂ ⟩∘⟨refl ⟩
-      (actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗) ∘ᵥ arr (T M₃ ▷-coeq (CoeqBimods coeq-◁ T M₁))) ∘ᵥ α⇒  ≈⟨ (refl⟩∘⟨ ∘ᵥ-distr-▷) ⟩∘⟨refl ⟩
-      (actionʳ-⊗ ∘ᵥ T M₃ ▷ (actionˡ-⊗ ∘ᵥ arr (CoeqBimods coeq-◁ T M₁))) ∘ᵥ α⇒  ≈⟨ (refl⟩∘⟨ ▷-resp-≈ (⟺ actionˡSq-⊗)) ⟩∘⟨refl ⟩
-      (actionʳ-⊗ ∘ᵥ T M₃ ▷ (arr CoeqBimods ∘ᵥ actionˡ-∘)) ∘ᵥ α⇒  ≈⟨ (refl⟩∘⟨(⟺ ∘ᵥ-distr-▷)) ⟩∘⟨refl ⟩
-      (actionʳ-⊗ ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods) ∘ᵥ T M₃ ▷ actionˡ-∘) ∘ᵥ α⇒  ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
-      ((actionʳ-⊗ ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods)) ∘ᵥ T M₃ ▷ actionˡ-∘) ∘ᵥ α⇒  ≈⟨ (⟺ actionʳSq-⊗) ⟩∘⟨refl ⟩∘⟨refl ⟩
-      ((arr CoeqBimods ∘ᵥ actionʳ-∘) ∘ᵥ T M₃ ▷ actionˡ-∘) ∘ᵥ α⇒  ≈⟨ assoc₂ ⟩
-      (arr CoeqBimods ∘ᵥ actionʳ-∘) ∘ᵥ T M₃ ▷ actionˡ-∘ ∘ᵥ α⇒  ≈⟨ assoc₂ ⟩
-      arr CoeqBimods ∘ᵥ actionʳ-∘ ∘ᵥ T M₃ ▷ actionˡ-∘ ∘ᵥ α⇒  ≈⟨ refl⟩∘⟨ assoc-∘ ⟩
-      arr CoeqBimods ∘ᵥ actionˡ-∘ ∘ᵥ actionʳ-∘ ◁ T M₁  ≈⟨ ⟺ assoc₂ ⟩
-      (arr CoeqBimods ∘ᵥ actionˡ-∘) ∘ᵥ actionʳ-∘ ◁ T M₁  ≈⟨ actionˡSq-⊗ ⟩∘⟨refl ⟩
-      (actionˡ-⊗ ∘ᵥ arr (CoeqBimods coeq-◁ T M₁)) ∘ᵥ actionʳ-∘ ◁ T M₁  ≈⟨ assoc₂ ⟩
-      actionˡ-⊗ ∘ᵥ arr (CoeqBimods coeq-◁ T M₁) ∘ᵥ actionʳ-∘ ◁ T M₁  ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-      actionˡ-⊗ ∘ᵥ (arr CoeqBimods ∘ᵥ actionʳ-∘) ◁ T M₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ actionʳSq-⊗ ⟩
-      actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods)) ◁ T M₁ ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
-      actionˡ-⊗ ∘ᵥ actionʳ-⊗ ◁ T M₁ ∘ᵥ arr ((T M₃ ▷-coeq CoeqBimods) coeq-◁ T M₁) ≈⟨ ⟺ assoc₂ ⟩
-      (actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T M₁)) ∘ᵥ (arr ((T M₃ ▷-coeq CoeqBimods) coeq-◁ T M₁)) ∎
+      (actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗)) ∘ᵥ α⇒ ∘ᵥ (arr ((T M₃ ▷-coeq CoeqBimods) coeq-◁ T M₁))   ≈⟨ refl⟩∘⟨ α⇒-▷-◁ ⟩
+      (actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗)) ∘ᵥ arr (T M₃ ▷-coeq (CoeqBimods coeq-◁ T M₁)) ∘ᵥ α⇒     ≈⟨ ⟺ assoc₂ ⟩
+      ((actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗)) ∘ᵥ arr (T M₃ ▷-coeq (CoeqBimods coeq-◁ T M₁))) ∘ᵥ α⇒   ≈⟨ assoc₂ ⟩∘⟨refl ⟩
+      (actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗) ∘ᵥ arr (T M₃ ▷-coeq (CoeqBimods coeq-◁ T M₁))) ∘ᵥ α⇒     ≈⟨ (refl⟩∘⟨ ∘ᵥ-distr-▷) ⟩∘⟨refl ⟩
+      (actionʳ-⊗ ∘ᵥ T M₃ ▷ (actionˡ-⊗ ∘ᵥ arr (CoeqBimods coeq-◁ T M₁))) ∘ᵥ α⇒                   ≈⟨ (refl⟩∘⟨ ▷-resp-≈ (⟺ actionˡSq-⊗)) ⟩∘⟨refl ⟩
+      (actionʳ-⊗ ∘ᵥ T M₃ ▷ (arr CoeqBimods ∘ᵥ actionˡ-∘)) ∘ᵥ α⇒                                 ≈⟨ (refl⟩∘⟨(⟺ ∘ᵥ-distr-▷)) ⟩∘⟨refl ⟩
+      (actionʳ-⊗ ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods) ∘ᵥ T M₃ ▷ actionˡ-∘) ∘ᵥ α⇒                     ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
+      ((actionʳ-⊗ ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods)) ∘ᵥ T M₃ ▷ actionˡ-∘) ∘ᵥ α⇒                   ≈⟨ (⟺ actionʳSq-⊗) ⟩∘⟨refl ⟩∘⟨refl ⟩
+      ((arr CoeqBimods ∘ᵥ actionʳ-∘) ∘ᵥ T M₃ ▷ actionˡ-∘) ∘ᵥ α⇒                                 ≈⟨ assoc₂ ⟩
+      (arr CoeqBimods ∘ᵥ actionʳ-∘) ∘ᵥ T M₃ ▷ actionˡ-∘ ∘ᵥ α⇒                                   ≈⟨ assoc₂ ⟩
+      arr CoeqBimods ∘ᵥ actionʳ-∘ ∘ᵥ T M₃ ▷ actionˡ-∘ ∘ᵥ α⇒                                     ≈⟨ refl⟩∘⟨ assoc-∘ ⟩
+      arr CoeqBimods ∘ᵥ actionˡ-∘ ∘ᵥ actionʳ-∘ ◁ T M₁                                           ≈⟨ ⟺ assoc₂ ⟩
+      (arr CoeqBimods ∘ᵥ actionˡ-∘) ∘ᵥ actionʳ-∘ ◁ T M₁                                         ≈⟨ actionˡSq-⊗ ⟩∘⟨refl ⟩
+      (actionˡ-⊗ ∘ᵥ arr (CoeqBimods coeq-◁ T M₁)) ∘ᵥ actionʳ-∘ ◁ T M₁                           ≈⟨ assoc₂ ⟩
+      actionˡ-⊗ ∘ᵥ arr (CoeqBimods coeq-◁ T M₁) ∘ᵥ actionʳ-∘ ◁ T M₁                             ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
+      actionˡ-⊗ ∘ᵥ (arr CoeqBimods ∘ᵥ actionʳ-∘) ◁ T M₁                                         ≈⟨ refl⟩∘⟨ ◁-resp-≈ actionʳSq-⊗ ⟩
+      actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods)) ◁ T M₁                           ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
+      actionˡ-⊗ ∘ᵥ actionʳ-⊗ ◁ T M₁ ∘ᵥ arr ((T M₃ ▷-coeq CoeqBimods) coeq-◁ T M₁)               ≈⟨ ⟺ assoc₂ ⟩
+      (actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T M₁)) ∘ᵥ (arr ((T M₃ ▷-coeq CoeqBimods) coeq-◁ T M₁))         ∎
       where
         open hom.HomReasoning
 
@@ -335,16 +335,16 @@ module Associativity where
     assoc-⊗-var = begin
       (actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗)) ∘ᵥ α⇒ ≈⟨ assoc₂ ⟩
       actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗) ∘ᵥ α⇒   ≈⟨ assoc-⊗ ⟩
-      actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T M₁)                      ∎
+      actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T M₁)         ∎
       where
         open hom.HomReasoning
 
   abstract
     sym-assoc-⊗ : actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T M₁) ∘ᵥ α⇐ ≈ actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗)
     sym-assoc-⊗ = begin
-      actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T M₁) ∘ᵥ α⇐ ≈⟨ ⟺ assoc₂ ⟩
+      actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T M₁) ∘ᵥ α⇐   ≈⟨ ⟺ assoc₂ ⟩
       (actionˡ-⊗ ∘ᵥ (actionʳ-⊗ ◁ T M₁)) ∘ᵥ α⇐ ≈⟨ ⟺ (switch-fromtoʳ associator assoc-⊗-var) ⟩
-      actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗) ∎
+      actionʳ-⊗ ∘ᵥ (T M₃ ▷ actionˡ-⊗)         ∎
       where
         open hom.HomReasoning
         open IsoReasoning using (switch-fromtoʳ)
@@ -352,25 +352,25 @@ module Associativity where
   abstract
     assoc-actionˡ-∘ : actionˡ-∘ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ μ M₁ ∘ᵥ α⇒ ≈ actionˡ-∘ ∘ᵥ actionˡ-∘ ◁ T M₁
     assoc-actionˡ-∘ = begin
-      actionˡ-∘ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ μ M₁ ∘ᵥ α⇒ ≈⟨ assoc₂ ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ μ M₁ ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ (α⇒ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ μ M₁) ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ α⇒-▷-∘₁ ⟩∘⟨refl ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ (F B₂ ▷ F B₁ ▷ μ M₁ ∘ᵥ α⇒) ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ F B₁ ▷ μ M₁ ∘ᵥ α⇒ ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ pentagon ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ F B₁ ▷ μ M₁ ∘ᵥ F B₂ ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁ ≈⟨ ⟺ assoc₂ ⟩
-      (F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ F B₁ ▷ μ M₁) ∘ᵥ F B₂ ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁ ≈⟨ ⟺ assoc₂ ⟩
+      actionˡ-∘ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ μ M₁ ∘ᵥ α⇒                                    ≈⟨ assoc₂ ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ μ M₁ ∘ᵥ α⇒                      ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ (α⇒ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ μ M₁) ∘ᵥ α⇒                    ≈⟨ refl⟩∘⟨ α⇒-▷-∘₁ ⟩∘⟨refl ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ (F B₂ ▷ F B₁ ▷ μ M₁ ∘ᵥ α⇒) ∘ᵥ α⇒                       ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ F B₁ ▷ μ M₁ ∘ᵥ α⇒ ∘ᵥ α⇒                         ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ pentagon ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ F B₁ ▷ μ M₁ ∘ᵥ F B₂ ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁     ≈⟨ ⟺ assoc₂ ⟩
+      (F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ F B₁ ▷ μ M₁) ∘ᵥ F B₂ ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁   ≈⟨ ⟺ assoc₂ ⟩
       ((F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ F B₁ ▷ μ M₁) ∘ᵥ F B₂ ▷ α⇒) ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁ ≈⟨ assoc₂ ⟩∘⟨refl ⟩
-      (F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ F B₁ ▷ μ M₁ ∘ᵥ F B₂ ▷ α⇒) ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁ ≈⟨ (refl⟩∘⟨ ∘ᵥ-distr-▷) ⟩∘⟨refl ⟩
-      (F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ (F B₁ ▷ μ M₁ ∘ᵥ α⇒)) ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁ ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
-      F B₂ ▷ (actionˡ B₁ ∘ᵥ F B₁ ▷ μ M₁ ∘ᵥ α⇒) ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁ ≈⟨ ▷-resp-≈ (assoc-actionˡ B₁) ⟩∘⟨refl ⟩
-      F B₂ ▷ (actionˡ B₁ ∘ᵥ actionˡ B₁ ◁ T M₁) ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁ ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
-      (F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ (actionˡ B₁ ◁ T M₁)) ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁ ≈⟨ assoc₂ ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ (actionˡ B₁ ◁ T M₁) ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁ ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ (F B₂ ▷ (actionˡ B₁ ◁ T M₁) ∘ᵥ α⇒) ∘ᵥ α⇒ ◁ T M₁ ≈⟨ refl⟩∘⟨ ⟺ α⇒-▷-◁ ⟩∘⟨refl ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ (α⇒ ∘ᵥ (F B₂ ▷ actionˡ B₁) ◁ T M₁) ∘ᵥ α⇒ ◁ T M₁ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ (F B₂ ▷ actionˡ B₁) ◁ T M₁ ∘ᵥ α⇒ ◁ T M₁ ≈⟨ ⟺ assoc₂ ⟩
-      (F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒) ∘ᵥ (F B₂ ▷ actionˡ B₁) ◁ T M₁ ∘ᵥ α⇒ ◁ T M₁ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-      actionˡ-∘ ∘ᵥ actionˡ-∘ ◁ T M₁ ∎
+      (F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ F B₁ ▷ μ M₁ ∘ᵥ F B₂ ▷ α⇒) ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁   ≈⟨ (refl⟩∘⟨ ∘ᵥ-distr-▷) ⟩∘⟨refl ⟩
+      (F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ (F B₁ ▷ μ M₁ ∘ᵥ α⇒)) ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁        ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
+      F B₂ ▷ (actionˡ B₁ ∘ᵥ F B₁ ▷ μ M₁ ∘ᵥ α⇒) ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁                 ≈⟨ ▷-resp-≈ (assoc-actionˡ B₁) ⟩∘⟨refl ⟩
+      F B₂ ▷ (actionˡ B₁ ∘ᵥ actionˡ B₁ ◁ T M₁) ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁                 ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
+      (F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ (actionˡ B₁ ◁ T M₁)) ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁        ≈⟨ assoc₂ ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ (actionˡ B₁ ◁ T M₁) ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁          ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ (F B₂ ▷ (actionˡ B₁ ◁ T M₁) ∘ᵥ α⇒) ∘ᵥ α⇒ ◁ T M₁        ≈⟨ refl⟩∘⟨ ⟺ α⇒-▷-◁ ⟩∘⟨refl ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ (α⇒ ∘ᵥ (F B₂ ▷ actionˡ B₁) ◁ T M₁) ∘ᵥ α⇒ ◁ T M₁        ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ (F B₂ ▷ actionˡ B₁) ◁ T M₁ ∘ᵥ α⇒ ◁ T M₁          ≈⟨ ⟺ assoc₂ ⟩
+      (F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒) ∘ᵥ (F B₂ ▷ actionˡ B₁) ◁ T M₁ ∘ᵥ α⇒ ◁ T M₁        ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
+      actionˡ-∘ ∘ᵥ actionˡ-∘ ◁ T M₁                                               ∎
       where
         open hom.HomReasoning
 
