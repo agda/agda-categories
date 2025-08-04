@@ -56,7 +56,7 @@ private
   sq-act-to-the-right = begin
     (act-to-the-right B'₂ B'₁) ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁ ≈⟨ assoc₂ ⟩
     actionˡ B'₂ ◁ F B'₁ ∘ᵥ α⇐ ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁ ≈⟨ refl⟩∘⟨ α⇐-⊚ ⟩
-    actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁ ∘ᵥ α⇐ ≈⟨ sym-assoc₂ ⟩
+    actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁ ∘ᵥ α⇐ ≈⟨ ⟺ assoc₂ ⟩
     (actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
     ((actionˡ B'₂ ∘ᵥ (α h₂ ⊚₁ id₂)) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐ ≈⟨ linearˡ h₂ ⟩⊚⟨refl ⟩∘⟨refl ⟩
     ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐ ≈⟨ refl⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
@@ -102,7 +102,7 @@ abstract
     linearˡ-∘ = begin
        (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ assoc₂ ⟩
       F B'₂ ▷ actionˡ B'₁ ∘ᵥ α⇒ ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ refl⟩∘⟨ α⇒-⊚ ⟩
-      F B'₂ ▷ actionˡ B'₁ ∘ᵥ α h₂ ⊚₁ (α h₁ ◁ T M₁) ∘ᵥ α⇒ ≈⟨ sym-assoc₂ ⟩
+      F B'₂ ▷ actionˡ B'₁ ∘ᵥ α h₂ ⊚₁ (α h₁ ◁ T M₁) ∘ᵥ α⇒ ≈⟨ ⟺ assoc₂ ⟩
       (F B'₂ ▷ actionˡ B'₁ ∘ᵥ α h₂ ⊚₁ (α h₁ ◁ T M₁)) ∘ᵥ α⇒ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
       ((id₂ ∘ᵥ α h₂) ⊚₁ (actionˡ B'₁ ∘ᵥ α h₁ ◁ T M₁)) ∘ᵥ α⇒ ≈⟨ identity₂ˡ ⟩⊚⟨ linearˡ h₁ ⟩∘⟨refl ⟩
       (α h₂ ⊚₁ (α h₁ ∘ᵥ actionˡ B₁)) ∘ᵥ α⇒ ≈⟨ ⟺ identity₂ʳ ⟩⊚⟨refl ⟩∘⟨refl ⟩
@@ -120,15 +120,15 @@ abstract
       actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T M₁ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T M₁) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
       actionˡ-⊗ B'₂ B'₁ ∘ᵥ (α-⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ◁ T M₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ (⟺ αSq-⊗) ⟩
       actionˡ-⊗ B'₂ B'₁ ∘ᵥ (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁)) ◁ T M₁ ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
-      actionˡ-⊗ B'₂ B'₁ ∘ᵥ Coequalizer.arr (CoeqBimods B'₂ B'₁) ◁ T M₁ ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ sym-assoc₂ ⟩
+      actionˡ-⊗ B'₂ B'₁ ∘ᵥ Coequalizer.arr (CoeqBimods B'₂ B'₁) ◁ T M₁ ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ ⟺ assoc₂ ⟩
       (actionˡ-⊗ B'₂ B'₁ ∘ᵥ Coequalizer.arr (CoeqBimods B'₂ B'₁) ◁ T M₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ ⟺ (actionˡSq-⊗ B'₂ B'₁) ⟩∘⟨refl ⟩
       (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ  (actionˡ-∘ B'₂ B'₁)) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ assoc₂ ⟩
       Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ  (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ refl⟩∘⟨ linearˡ-∘ ⟩
-      Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ sym-assoc₂ ⟩
+      Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ ⟺ assoc₂ ⟩
       (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁)) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ αSq-⊗ ⟩∘⟨refl ⟩
       (α-⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ assoc₂ ⟩
       α-⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ refl⟩∘⟨ actionˡSq-⊗ B₂ B₁ ⟩
-      α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T M₁) ≈⟨ sym-assoc₂ ⟩
+      α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T M₁) ≈⟨ ⟺ assoc₂ ⟩
       (α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁ coeq-◁ T M₁) ∎
       where
         open hom.HomReasoning
@@ -149,7 +149,7 @@ abstract
     linearʳ-∘ = begin
       actionʳ-∘ B'₂ B'₁ ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ assoc₂ ⟩
       actionʳ B'₂ ◁ F B'₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ refl⟩∘⟨ α⇐-⊚ ⟩
-      actionʳ B'₂ ◁ F B'₁ ∘ᵥ ((T M₃ ▷ α h₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ sym-assoc₂ ⟩
+      actionʳ B'₂ ◁ F B'₁ ∘ᵥ ((T M₃ ▷ α h₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ ⟺ assoc₂ ⟩
       (actionʳ B'₂ ◁ F B'₁ ∘ᵥ ((T M₃ ▷ α h₂) ⊚₁ α h₁)) ∘ᵥ α⇐ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
       ((actionʳ B'₂ ∘ᵥ T M₃ ▷ α h₂) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐ ≈⟨ linearʳ h₂ ⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
       ((α h₂ ∘ᵥ actionʳ B₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
@@ -167,15 +167,15 @@ abstract
       actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ α-⊗ ∘ᵥ Coequalizer.arr (T M₃ ▷-coeq CoeqBimods B₂ B₁) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
       actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ (α-⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ≈⟨ refl⟩∘⟨ ▷-resp-≈ (⟺ αSq-⊗) ⟩
       actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁)) ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
-      actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ sym-assoc₂ ⟩
+      actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ ⟺ assoc₂ ⟩
       (actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ Coequalizer.arr (CoeqBimods B'₂ B'₁)) ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ ⟺ (actionʳSq-⊗ B'₂ B'₁) ⟩∘⟨refl ⟩
       (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ actionʳ-∘ B'₂ B'₁) ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ assoc₂ ⟩
       Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ actionʳ-∘ B'₂ B'₁ ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ refl⟩∘⟨ linearʳ-∘ ⟩
-      Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ∘ᵥ actionʳ-∘ B₂ B₁ ≈⟨ sym-assoc₂ ⟩
+      Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ∘ᵥ actionʳ-∘ B₂ B₁ ≈⟨ ⟺ assoc₂ ⟩
       (Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁)) ∘ᵥ actionʳ-∘ B₂ B₁ ≈⟨ αSq-⊗ ⟩∘⟨refl ⟩
       (α-⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)) ∘ᵥ actionʳ-∘ B₂ B₁ ≈⟨ assoc₂ ⟩
       α-⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ actionʳ-∘ B₂ B₁ ≈⟨ refl⟩∘⟨ actionʳSq-⊗ B₂ B₁ ⟩
-      α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁ ∘ᵥ Coequalizer.arr (T M₃ ▷-coeq CoeqBimods B₂ B₁) ≈⟨ sym-assoc₂ ⟩
+      α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁ ∘ᵥ Coequalizer.arr (T M₃ ▷-coeq CoeqBimods B₂ B₁) ≈⟨ ⟺ assoc₂ ⟩
       (α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁) ∘ᵥ Coequalizer.arr (T M₃ ▷-coeq CoeqBimods B₂ B₁) ∎
       where
         open hom.HomReasoning
