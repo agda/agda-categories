@@ -111,21 +111,27 @@ module Left-Action where
                               act-to-the-right
                               actionˡ-∘
       sq-act-to-the-right = begin
-        act-to-the-right ∘ᵥ actionˡ-∘-∘                                                     ≈⟨ ⟺ assoc₂ ⟩
-        ((actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ α⇒) ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁ ≈⟨ assoc₂ ⟩∘⟨refl ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ α⇒) ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁   ≈⟨ (refl⟩∘⟨ associator.isoˡ) ⟩∘⟨refl ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ id₂) ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁        ≈⟨ identity₂ʳ ⟩∘⟨refl ⟩
-        actionˡ B₂ ◁ F B₁ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁                 ≈⟨ ⟺ assoc₂ ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁) ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁               ≈⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
-        (F B₂ ▷ actionˡ B₁ ∘ᵥ actionˡ B₂ ◁ (F B₁ ∘₁ T M₁)) ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁               ≈⟨ assoc₂ ⟩
-        F B₂ ▷ actionˡ B₁ ∘ᵥ actionˡ B₂ ◁ (F B₁ ∘₁ T M₁) ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁                 ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-        F B₂ ▷ actionˡ B₁ ∘ᵥ (actionˡ B₂ ◁ (F B₁ ∘₁ T M₁) ∘ᵥ α⇒) ∘ᵥ α⇐ ◁ T M₁               ≈⟨ refl⟩∘⟨ ⟺ α⇒-◁-∘₁ ⟩∘⟨refl ⟩
-        F B₂ ▷ actionˡ B₁ ∘ᵥ (α⇒ ∘ᵥ actionˡ B₂ ◁ F B₁ ◁ T M₁) ∘ᵥ α⇐ ◁ T M₁                  ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-        F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ actionˡ B₂ ◁ F B₁ ◁ T M₁ ∘ᵥ α⇐ ◁ T M₁                    ≈⟨ ⟺ assoc₂ ⟩
-        actionˡ-∘ ∘ᵥ actionˡ B₂ ◁ F B₁ ◁ T M₁ ∘ᵥ α⇐ ◁ T M₁                                  ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
+        act-to-the-right ∘ᵥ actionˡ-∘-∘                                                     ≈⟨ assoc²γβ ⟩
+        (actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ α⇒) ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁   ≈⟨ elimʳ associator.isoˡ ⟩∘⟨refl ⟩
+        actionˡ B₂ ◁ F B₁ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁                 ≈⟨ assoc²εβ ⟩
+        (actionˡ B₂ ◁ F B₁ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒) ∘ᵥ α⇐ ◁ T M₁               ≈⟨ glue′ sq-bottom sq-top ⟩∘⟨refl ⟩
+        (actionˡ-∘ ∘ᵥ actionˡ B₂ ◁ F B₁ ◁ T M₁) ∘ᵥ α⇐ ◁ T M₁                                ≈⟨ pullʳ ∘ᵥ-distr-◁ ⟩
         actionˡ-∘ ∘ᵥ act-to-the-right ◁ T M₁                                                ∎
         where
           open hom.HomReasoning
+          open MorphismReasoning using (assoc²γβ; assoc²εβ; elimʳ; glue′; pullʳ)
+          sq-bottom : CommutativeSquare
+                        ((F B₂ ∘₁ T M₂) ▷ actionˡ B₁)
+                        (actionˡ B₂ ◁ (F B₁ ∘₁ T M₁))
+                        (actionˡ B₂ ◁ F B₁)
+                        (F B₂ ▷ actionˡ B₁)
+          sq-bottom = ⟺ ◁-▷-exchg
+          sq-top : CommutativeSquare
+                     α⇒
+                     (actionˡ B₂ ◁ F B₁ ◁ T M₁)
+                     (actionˡ B₂ ◁ (F B₁ ∘₁ T M₁))
+                     α⇒
+          sq-top = ⟺ α⇒-◁-∘₁
   -- end abstract --
 
   abstract    
