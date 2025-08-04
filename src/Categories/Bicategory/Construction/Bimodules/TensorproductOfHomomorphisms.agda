@@ -11,7 +11,6 @@ module Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms
   {M₁ M₂ M₃ : Monad 𝒞} {B₂ B'₂ : Bimodule M₂ M₃} {B₁ B'₁ : Bimodule M₁ M₂}
   (h₂ : Bimodulehomomorphism B₂ B'₂) (h₁ : Bimodulehomomorphism B₁ B'₁) where
 
-open import Level
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 open Shorthands
