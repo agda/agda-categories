@@ -28,7 +28,7 @@ import Categories.Morphism.Reasoning (hom (C M₁) (C M₃)) as MorphismReasonin
 import Categories.Morphism.Reasoning.Iso (hom (C M₁) (C M₃)) as IsoReasoning
 
 {-
-To construct the tensorproduct B₂⊗B₁ we will define its underlying 1-cell
+To construct the tensorproduct of B₂ with B₁ we will define its underlying 1-cell
 to be the coequalizer of the following parallel pair in hom (C M₁) (C M₃):
 
                       act-to-the-left
