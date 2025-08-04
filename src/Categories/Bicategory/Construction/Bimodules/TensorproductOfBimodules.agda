@@ -50,7 +50,7 @@ abstract
   
 -- The underlying object of that coequalizer is the underlying 1-cell of the bimodule B₂⊗B₁ --
 F-⊗ : C M₁ ⇒₁ C M₃
-F-⊗ = Coequalizer.obj CoeqBimods
+F-⊗ = obj CoeqBimods
 
 
 module Left-Action where
