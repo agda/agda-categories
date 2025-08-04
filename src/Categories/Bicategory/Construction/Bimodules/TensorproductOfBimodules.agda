@@ -39,7 +39,7 @@ to be the coequalizer of the following parallel pair in hom (C M₁) (C M₃):
 -}
 
 -- We itroduce names to the two parallel morphism in the above diagram --
-act-to-the-left act-to-the-right : F B₂ ∘₁ T M₂ ∘₁ F B₁ ⇒₂ F B₂ ∘₁ F B₁
+act-to-the-left act-to-the-right : F B₂ ∘₁ T M₂ ∘₁ F B₁   ⇒₂   F B₂ ∘₁ F B₁
 act-to-the-left = F B₂ ▷ actionʳ B₁
 act-to-the-right = actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐
 
@@ -47,8 +47,8 @@ abstract
   -- to costruct the tensorproduct of bimodules the following coequalizer is formed --
   -- to speed-up type-checking we hide the definition of this coequalizer under an abstract clause --
   -- for all foreseeable purposes, the particular choice of coequalizer will not matter --
-  CoeqBimods : Coequalizer (act-to-the-left) (act-to-the-right)
-  CoeqBimods = local-coequalizers (act-to-the-left) (act-to-the-right)
+  CoeqBimods : Coequalizer        act-to-the-left act-to-the-right
+  CoeqBimods = local-coequalizers act-to-the-left act-to-the-right
   
 -- The underlying object of that coequalizer is the underlying 1-cell of the bimodule B₂⊗B₁ --
 F-⊗ : C M₁ ⇒₁ C M₃
@@ -69,7 +69,7 @@ module Left-Action where
                                     act-to-the-right
   -}
 
-  actionˡ-∘-∘ : (F B₂ ∘₁ T M₂ ∘₁ F B₁) ∘₁ T M₁ ⇒₂ F B₂ ∘₁ T M₂ ∘₁ F B₁
+  actionˡ-∘-∘ : (F B₂ ∘₁ T M₂ ∘₁ F B₁) ∘₁ T M₁   ⇒₂   F B₂ ∘₁ T M₂ ∘₁ F B₁
   actionˡ-∘-∘ = α⇒ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒  ∘ᵥ α⇐ ◁ T M₁
 
   actionˡ-∘ : (F B₂ ∘₁ F B₁) ∘₁ T M₁ ⇒₂  F B₂ ∘₁ F B₁
@@ -83,45 +83,29 @@ module Left-Action where
                              act-to-the-left
                              actionˡ-∘
       sq-act-to-the-left = begin
-        act-to-the-left ∘ᵥ actionˡ-∘-∘                                       ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-        F B₂ ▷ actionʳ B₁ ∘ᵥ (α⇒ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁)
-          ∘ᵥ α⇒  ∘ᵥ α⇐ ◁ T M₁                          ≈⟨ refl⟩∘⟨ α⇒-▷-∘₁ ⟩∘⟨refl ⟩
-        F B₂ ▷ actionʳ B₁ ∘ᵥ (F B₂ ▷ T M₂ ▷ actionˡ B₁ ∘ᵥ α⇒)
-          ∘ᵥ α⇒  ∘ᵥ α⇐ ◁ T M₁                          ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-        F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁ ∘ᵥ α⇒
-          ∘ᵥ α⇒  ∘ᵥ α⇐ ◁ T M₁                          ≈⟨ ⟺ assoc₂ ⟩
-        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ α⇒
-          ∘ᵥ α⇒  ∘ᵥ α⇐ ◁ T M₁                          ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ (α⇒
-          ∘ᵥ α⇒)  ∘ᵥ α⇐ ◁ T M₁                         ≈⟨ refl⟩∘⟨ ⟺ pentagon ⟩∘⟨refl ⟩
+        act-to-the-left ∘ᵥ actionˡ-∘-∘                                                                 ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
+        F B₂ ▷ actionʳ B₁ ∘ᵥ (α⇒ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁) ∘ᵥ α⇒  ∘ᵥ α⇐ ◁ T M₁                   ≈⟨ refl⟩∘⟨ α⇒-▷-∘₁ ⟩∘⟨refl ⟩
+        F B₂ ▷ actionʳ B₁ ∘ᵥ (F B₂ ▷ T M₂ ▷ actionˡ B₁ ∘ᵥ α⇒) ∘ᵥ α⇒  ∘ᵥ α⇐ ◁ T M₁                      ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+        F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇒  ∘ᵥ α⇐ ◁ T M₁                        ≈⟨ ⟺ assoc₂ ⟩
+        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ α⇒ ∘ᵥ α⇒  ∘ᵥ α⇐ ◁ T M₁                      ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
+        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ (α⇒ ∘ᵥ α⇒) ∘ᵥ α⇐ ◁ T M₁                     ≈⟨ refl⟩∘⟨ ⟺ pentagon ⟩∘⟨refl ⟩
         -- maybe this can be shortened using conjugate --
-        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ (F B₂ ▷ α⇒
-          ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁) ∘ᵥ α⇐ ◁ T M₁  ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒
-          ∘ᵥ (α⇒ ∘ᵥ α⇒ ◁ T M₁) ∘ᵥ α⇐ ◁ T M₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ assoc₂ ⟩
-        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒
-          ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁ ∘ᵥ α⇐ ◁ T M₁   ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒
-          ∘ᵥ α⇒ ∘ᵥ (α⇒ ∘ᵥ α⇐) ◁ T M₁      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ◁-resp-≈ associator.isoʳ ⟩
-        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒
-          ∘ᵥ α⇒ ∘ᵥ id₂ ◁ T M₁                                     ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ id₂◁ ⟩
-        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒
-          ∘ᵥ α⇒ ∘ᵥ id₂                                          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ identity₂ʳ ⟩
-        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒
-          ∘ᵥ α⇒                                                 ≈⟨ ⟺ assoc₂ ⟩
-        ((F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒)
-          ∘ᵥ α⇒                                                 ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩∘⟨refl ⟩
-        (F B₂ ▷ (actionʳ B₁ ∘ᵥ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒)
-          ∘ᵥ α⇒                                                 ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
-        F B₂ ▷ ((actionʳ B₁ ∘ᵥ T M₂ ▷ actionˡ B₁) ∘ᵥ α⇒)
-          ∘ᵥ α⇒                                                 ≈⟨ ▷-resp-≈ assoc₂ ⟩∘⟨refl ⟩
-        F B₂ ▷ (actionʳ B₁ ∘ᵥ T M₂ ▷ actionˡ B₁ ∘ᵥ α⇒)
-          ∘ᵥ α⇒ ≈⟨ ▷-resp-≈ (assoc B₁) ⟩∘⟨refl ⟩
-        F B₂ ▷ (actionˡ B₁ ∘ᵥ actionʳ B₁ ◁ T M₁) ∘ᵥ α⇒                  ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
-        (F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ (actionʳ B₁ ◁ T M₁)) ∘ᵥ α⇒           ≈⟨ assoc₂ ⟩
-        F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ (actionʳ B₁ ◁ T M₁) ∘ᵥ α⇒             ≈⟨ refl⟩∘⟨ ⟺ α⇒-▷-◁ ⟩
-        F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ (F B₂ ▷ actionʳ B₁) ◁ T M₁             ≈⟨ ⟺ assoc₂ ⟩
-        actionˡ-∘ ∘ᵥ (act-to-the-left) ◁ T M₁ ∎
+        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ (F B₂ ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁) ∘ᵥ α⇐ ◁ T M₁ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒ ∘ᵥ (α⇒ ∘ᵥ α⇒ ◁ T M₁) ∘ᵥ α⇐ ◁ T M₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ assoc₂ ⟩
+        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ α⇒ ◁ T M₁ ∘ᵥ α⇐ ◁ T M₁   ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
+        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ (α⇒ ∘ᵥ α⇐) ◁ T M₁        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ ◁-resp-≈ associator.isoʳ ⟩
+        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ id₂ ◁ T M₁               ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨ id₂◁ ⟩
+        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒ ∘ᵥ α⇒ ∘ᵥ id₂                      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ identity₂ʳ ⟩
+        (F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒ ∘ᵥ α⇒                             ≈⟨ ⟺ assoc₂ ⟩
+        ((F B₂ ▷ actionʳ B₁ ∘ᵥ F B₂ ▷ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒) ∘ᵥ α⇒                           ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩∘⟨refl ⟩
+        (F B₂ ▷ (actionʳ B₁ ∘ᵥ T M₂ ▷ actionˡ B₁) ∘ᵥ F B₂ ▷ α⇒) ∘ᵥ α⇒                                  ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
+        F B₂ ▷ ((actionʳ B₁ ∘ᵥ T M₂ ▷ actionˡ B₁) ∘ᵥ α⇒) ∘ᵥ α⇒                                         ≈⟨ ▷-resp-≈ assoc₂ ⟩∘⟨refl ⟩
+        F B₂ ▷ (actionʳ B₁ ∘ᵥ T M₂ ▷ actionˡ B₁ ∘ᵥ α⇒) ∘ᵥ α⇒                                           ≈⟨ ▷-resp-≈ (assoc B₁) ⟩∘⟨refl ⟩
+        F B₂ ▷ (actionˡ B₁ ∘ᵥ actionʳ B₁ ◁ T M₁) ∘ᵥ α⇒                                                 ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
+        (F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ (actionʳ B₁ ◁ T M₁)) ∘ᵥ α⇒                                        ≈⟨ assoc₂ ⟩
+        F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ (actionʳ B₁ ◁ T M₁) ∘ᵥ α⇒                                          ≈⟨ refl⟩∘⟨ ⟺ α⇒-▷-◁ ⟩
+        F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ (F B₂ ▷ actionʳ B₁) ◁ T M₁                                          ≈⟨ ⟺ assoc₂ ⟩
+        actionˡ-∘ ∘ᵥ (act-to-the-left) ◁ T M₁                                                          ∎
         where
           open hom.HomReasoning
 
@@ -131,22 +115,19 @@ module Left-Action where
                               act-to-the-right
                               actionˡ-∘
       sq-act-to-the-right = begin
-        (act-to-the-right) ∘ᵥ actionˡ-∘-∘                                                 ≈⟨ ⟺ assoc₂ ⟩
-        ((actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ α⇒) ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁
-          ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁                                        ≈⟨ assoc₂ ⟩∘⟨refl ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ α⇒) ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁
-          ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁                                        ≈⟨ (refl⟩∘⟨ associator.isoˡ) ⟩∘⟨refl ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ id₂) ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁
-          ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁                                        ≈⟨ identity₂ʳ ⟩∘⟨refl ⟩
-        actionˡ B₂ ◁ F B₁ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁   ≈⟨ ⟺ assoc₂ ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁) ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁ ≈⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
-        (F B₂ ▷ actionˡ B₁ ∘ᵥ actionˡ B₂ ◁ (F B₁ ∘₁ T M₁)) ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁ ≈⟨ assoc₂ ⟩
-        F B₂ ▷ actionˡ B₁ ∘ᵥ actionˡ B₂ ◁ (F B₁ ∘₁ T M₁) ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁   ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-        F B₂ ▷ actionˡ B₁ ∘ᵥ (actionˡ B₂ ◁ (F B₁ ∘₁ T M₁) ∘ᵥ α⇒) ∘ᵥ α⇐ ◁ T M₁ ≈⟨ refl⟩∘⟨ ⟺ α⇒-◁-∘₁ ⟩∘⟨refl ⟩
-        F B₂ ▷ actionˡ B₁ ∘ᵥ (α⇒ ∘ᵥ actionˡ B₂ ◁ F B₁ ◁ T M₁) ∘ᵥ α⇐ ◁ T M₁    ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-        F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ actionˡ B₂ ◁ F B₁ ◁ T M₁ ∘ᵥ α⇐ ◁ T M₁      ≈⟨ ⟺ assoc₂ ⟩
-        actionˡ-∘ ∘ᵥ actionˡ B₂ ◁ F B₁ ◁ T M₁ ∘ᵥ α⇐ ◁ T M₁                             ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-        actionˡ-∘ ∘ᵥ act-to-the-right ◁ T M₁                                              ∎
+        act-to-the-right ∘ᵥ actionˡ-∘-∘                                                     ≈⟨ ⟺ assoc₂ ⟩
+        ((actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ α⇒) ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁ ≈⟨ assoc₂ ⟩∘⟨refl ⟩
+        (actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ α⇒) ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁   ≈⟨ (refl⟩∘⟨ associator.isoˡ) ⟩∘⟨refl ⟩
+        (actionˡ B₂ ◁ F B₁ ∘ᵥ id₂) ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁        ≈⟨ identity₂ʳ ⟩∘⟨refl ⟩
+        actionˡ B₂ ◁ F B₁ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁                 ≈⟨ ⟺ assoc₂ ⟩
+        (actionˡ B₂ ◁ F B₁ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁) ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁               ≈⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
+        (F B₂ ▷ actionˡ B₁ ∘ᵥ actionˡ B₂ ◁ (F B₁ ∘₁ T M₁)) ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁               ≈⟨ assoc₂ ⟩
+        F B₂ ▷ actionˡ B₁ ∘ᵥ actionˡ B₂ ◁ (F B₁ ∘₁ T M₁) ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁                 ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
+        F B₂ ▷ actionˡ B₁ ∘ᵥ (actionˡ B₂ ◁ (F B₁ ∘₁ T M₁) ∘ᵥ α⇒) ∘ᵥ α⇐ ◁ T M₁               ≈⟨ refl⟩∘⟨ ⟺ α⇒-◁-∘₁ ⟩∘⟨refl ⟩
+        F B₂ ▷ actionˡ B₁ ∘ᵥ (α⇒ ∘ᵥ actionˡ B₂ ◁ F B₁ ◁ T M₁) ∘ᵥ α⇐ ◁ T M₁                  ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+        F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ actionˡ B₂ ◁ F B₁ ◁ T M₁ ∘ᵥ α⇐ ◁ T M₁                    ≈⟨ ⟺ assoc₂ ⟩
+        actionˡ-∘ ∘ᵥ actionˡ B₂ ◁ F B₁ ◁ T M₁ ∘ᵥ α⇐ ◁ T M₁                                  ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
+        actionˡ-∘ ∘ᵥ act-to-the-right ◁ T M₁                                                ∎
         where
           open hom.HomReasoning
   -- end abstract --
@@ -231,33 +212,26 @@ module Right-Action where
                               act-to-the-right
                               actionʳ-∘
       sq-act-to-the-right = begin
-        act-to-the-right ∘ᵥ actionʳ-∘-∘                                                  ≈⟨ ⟺ assoc₂ ⟩
-        ((actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ actionʳ B₂ ◁  (T M₂ ∘₁ F B₁)) ∘ᵥ α⇐    ≈⟨ assoc₂ ⟩∘⟨refl ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ (α⇐ ∘ᵥ actionʳ B₂ ◁  (T M₂ ∘₁ F B₁))) ∘ᵥ α⇐    ≈⟨ (refl⟩∘⟨ α⇐-◁-∘₁) ⟩∘⟨refl ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐)) ∘ᵥ α⇐        ≈⟨ assoc₂ ⟩
-        actionˡ B₂ ◁ F B₁ ∘ᵥ ((actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ α⇐)        ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-        actionˡ B₂ ◁ F B₁ ∘ᵥ actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ α⇐            ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ pentagon-inv ⟩
-        actionˡ B₂ ◁ F B₁ ∘ᵥ actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ (α⇐ ◁ F B₁ ∘ᵥ α⇐)
-          ∘ᵥ T M₃ ▷ α⇐                                                          ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-        actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ (α⇐ ◁ F B₁ ∘ᵥ α⇐))
-          ∘ᵥ T M₃ ▷ α⇐                                                          ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
-        actionˡ B₂ ◁ F B₁ ∘ᵥ ((actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁) ∘ᵥ α⇐)
-          ∘ᵥ T M₃ ▷ α⇐                                                          ≈⟨ ⟺ assoc₂ ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁) ∘ᵥ α⇐)
-          ∘ᵥ T M₃ ▷ α⇐                                                          ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
-        ((actionˡ B₂ ◁ F B₁ ∘ᵥ actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁) ∘ᵥ α⇐)
-          ∘ᵥ T M₃ ▷ α⇐                                                          ≈⟨ ((refl⟩∘⟨ ∘ᵥ-distr-◁) ⟩∘⟨refl) ⟩∘⟨refl ⟩
-        ((actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ∘ᵥ α⇐) ◁ F B₁) ∘ᵥ α⇐)
-          ∘ᵥ T M₃ ▷ α⇐                                                          ≈⟨ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩∘⟨refl ⟩
-        ((actionˡ B₂ ∘ᵥ actionʳ B₂ ◁ T M₂ ∘ᵥ α⇐) ◁ F B₁ ∘ᵥ α⇐)
-          ∘ᵥ T M₃ ▷ α⇐                                                          ≈⟨ ◁-resp-≈ (sym-assoc B₂) ⟩∘⟨refl ⟩∘⟨refl ⟩
-        ((actionʳ B₂ ∘ᵥ (T M₃ ▷ actionˡ B₂)) ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐      ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩∘⟨refl ⟩
-        ((actionʳ B₂ ◁ F B₁ ∘ᵥ (T M₃ ▷ actionˡ B₂) ◁ F B₁) ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐ ≈⟨ (assoc₂ ⟩∘⟨refl) ⟩
-        (actionʳ B₂ ◁ F B₁ ∘ᵥ (T M₃ ▷ actionˡ B₂) ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐   ≈⟨ (refl⟩∘⟨ ⟺ α⇐-▷-◁) ⟩∘⟨refl ⟩
-        (actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ (actionˡ B₂ ◁ F B₁)) ∘ᵥ T M₃ ▷ α⇐   ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
-        ((actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ (actionˡ B₂ ◁ F B₁)) ∘ᵥ T M₃ ▷ α⇐ ≈⟨ assoc₂ ⟩
-        (actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ (actionˡ B₂ ◁ F B₁) ∘ᵥ T M₃ ▷ α⇐   ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
-        actionʳ-∘ ∘ᵥ T M₃ ▷ (act-to-the-right)                                             ∎
+        act-to-the-right ∘ᵥ actionʳ-∘-∘                                                    ≈⟨ ⟺ assoc₂ ⟩
+        ((actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ actionʳ B₂ ◁  (T M₂ ∘₁ F B₁)) ∘ᵥ α⇐                  ≈⟨ assoc₂ ⟩∘⟨refl ⟩
+        (actionˡ B₂ ◁ F B₁ ∘ᵥ (α⇐ ∘ᵥ actionʳ B₂ ◁  (T M₂ ∘₁ F B₁))) ∘ᵥ α⇐                  ≈⟨ (refl⟩∘⟨ α⇐-◁-∘₁) ⟩∘⟨refl ⟩
+        (actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐)) ∘ᵥ α⇐                      ≈⟨ assoc₂ ⟩
+        actionˡ B₂ ◁ F B₁ ∘ᵥ ((actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ α⇐)                      ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+        actionˡ B₂ ◁ F B₁ ∘ᵥ actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ α⇐                          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ pentagon-inv ⟩
+        actionˡ B₂ ◁ F B₁ ∘ᵥ actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ (α⇐ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐    ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
+        actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ (α⇐ ◁ F B₁ ∘ᵥ α⇐)) ∘ᵥ T M₃ ▷ α⇐  ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
+        actionˡ B₂ ◁ F B₁ ∘ᵥ ((actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁) ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐  ≈⟨ ⟺ assoc₂ ⟩
+        (actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁) ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐  ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
+        ((actionˡ B₂ ◁ F B₁ ∘ᵥ actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁) ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐  ≈⟨ ((refl⟩∘⟨ ∘ᵥ-distr-◁) ⟩∘⟨refl) ⟩∘⟨refl ⟩
+        ((actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ∘ᵥ α⇐) ◁ F B₁) ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐       ≈⟨ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩∘⟨refl ⟩
+        ((actionˡ B₂ ∘ᵥ actionʳ B₂ ◁ T M₂ ∘ᵥ α⇐) ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐                ≈⟨ ◁-resp-≈ (sym-assoc B₂) ⟩∘⟨refl ⟩∘⟨refl ⟩
+        ((actionʳ B₂ ∘ᵥ (T M₃ ▷ actionˡ B₂)) ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐                    ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩∘⟨refl ⟩
+        ((actionʳ B₂ ◁ F B₁ ∘ᵥ (T M₃ ▷ actionˡ B₂) ◁ F B₁) ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐             ≈⟨ (assoc₂ ⟩∘⟨refl) ⟩
+        (actionʳ B₂ ◁ F B₁ ∘ᵥ (T M₃ ▷ actionˡ B₂) ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐               ≈⟨ (refl⟩∘⟨ ⟺ α⇐-▷-◁) ⟩∘⟨refl ⟩
+        (actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ (actionˡ B₂ ◁ F B₁)) ∘ᵥ T M₃ ▷ α⇐               ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
+        ((actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ (actionˡ B₂ ◁ F B₁)) ∘ᵥ T M₃ ▷ α⇐             ≈⟨ assoc₂ ⟩
+        (actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ (actionˡ B₂ ◁ F B₁) ∘ᵥ T M₃ ▷ α⇐               ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
+        actionʳ-∘ ∘ᵥ T M₃ ▷ act-to-the-right                                               ∎
           where
             open hom.HomReasoning
   -- end abstract --
@@ -301,24 +275,24 @@ module Associativity where
   abstract
     assoc-∘ : actionʳ-∘ ∘ᵥ T M₃ ▷ actionˡ-∘ ∘ᵥ α⇒ ≈ actionˡ-∘ ∘ᵥ actionʳ-∘ ◁ T M₁
     assoc-∘ = begin
-      actionʳ-∘ ∘ᵥ T M₃ ▷ actionˡ-∘ ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ (⟺ ∘ᵥ-distr-▷ ⟩∘⟨refl) ⟩
-      actionʳ-∘ ∘ᵥ (T M₃ ▷ F B₂ ▷ actionˡ B₁ ∘ᵥ T M₃ ▷ α⇒) ∘ᵥ α⇒ ≈⟨ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ (T M₃ ▷ F B₂ ▷ actionˡ B₁ ∘ᵥ T M₃ ▷ α⇒) ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ (α⇐ ∘ᵥ (T M₃ ▷ F B₂ ▷ actionˡ B₁ ∘ᵥ T M₃ ▷ α⇒)) ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ ((α⇐ ∘ᵥ T M₃ ▷ F B₂ ▷ actionˡ B₁) ∘ᵥ T M₃ ▷ α⇒) ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ (α⇐ ∘ᵥ T M₃ ▷ F B₂ ▷ actionˡ B₁) ∘ᵥ T M₃ ▷ α⇒ ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ α⇐-▷-∘₁ ⟩∘⟨refl ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ ((T M₃ ∘₁ F B₂) ▷ actionˡ B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇒ ∘ᵥ α⇒ ≈⟨ ⟺ assoc₂ ⟩
+      actionʳ-∘ ∘ᵥ T M₃ ▷ actionˡ-∘ ∘ᵥ α⇒                                           ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
+      actionʳ-∘ ∘ᵥ (T M₃ ▷ F B₂ ▷ actionˡ B₁ ∘ᵥ T M₃ ▷ α⇒) ∘ᵥ α⇒                    ≈⟨ assoc₂ ⟩
+      actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ (T M₃ ▷ F B₂ ▷ actionˡ B₁ ∘ᵥ T M₃ ▷ α⇒) ∘ᵥ α⇒      ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
+      actionʳ B₂ ◁ F B₁ ∘ᵥ (α⇐ ∘ᵥ (T M₃ ▷ F B₂ ▷ actionˡ B₁ ∘ᵥ T M₃ ▷ α⇒)) ∘ᵥ α⇒    ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
+      actionʳ B₂ ◁ F B₁ ∘ᵥ ((α⇐ ∘ᵥ T M₃ ▷ F B₂ ▷ actionˡ B₁) ∘ᵥ T M₃ ▷ α⇒) ∘ᵥ α⇒    ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+      actionʳ B₂ ◁ F B₁ ∘ᵥ (α⇐ ∘ᵥ T M₃ ▷ F B₂ ▷ actionˡ B₁) ∘ᵥ T M₃ ▷ α⇒ ∘ᵥ α⇒      ≈⟨ refl⟩∘⟨ α⇐-▷-∘₁ ⟩∘⟨refl ⟩
+      actionʳ B₂ ◁ F B₁ ∘ᵥ ((T M₃ ∘₁ F B₂) ▷ actionˡ B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇒ ∘ᵥ α⇒   ≈⟨ ⟺ assoc₂ ⟩
       (actionʳ B₂ ◁ F B₁ ∘ᵥ ((T M₃ ∘₁ F B₂) ▷ actionˡ B₁ ∘ᵥ α⇐)) ∘ᵥ T M₃ ▷ α⇒ ∘ᵥ α⇒ ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
       ((actionʳ B₂ ◁ F B₁ ∘ᵥ (T M₃ ∘₁ F B₂) ▷ actionˡ B₁) ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇒ ∘ᵥ α⇒ ≈⟨ assoc₂ ⟩
-      (actionʳ B₂ ◁ F B₁ ∘ᵥ (T M₃ ∘₁ F B₂) ▷ actionˡ B₁) ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇒ ∘ᵥ α⇒ ≈⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
-      (F B₂ ▷ actionˡ B₁ ∘ᵥ actionʳ B₂ ◁ (F B₁ ∘₁ T M₁)) ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇒ ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ pentagon-conjugate₁ ⟩
-      (F B₂ ▷ actionˡ B₁ ∘ᵥ actionʳ B₂ ◁ (F B₁ ∘₁ T M₁)) ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁ ≈⟨ assoc₂ ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ actionʳ B₂ ◁ (F B₁ ∘₁ T M₁) ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁ ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ (actionʳ B₂ ◁ (F B₁ ∘₁ T M₁) ∘ᵥ α⇒) ∘ᵥ α⇐ ◁ T M₁ ≈⟨ refl⟩∘⟨ ⟺ α⇒-◁-∘₁ ⟩∘⟨refl ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ (α⇒ ∘ᵥ actionʳ B₂ ◁ F B₁ ◁ T M₁) ∘ᵥ α⇐ ◁ T M₁ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ actionʳ B₂ ◁ F B₁ ◁ T M₁ ∘ᵥ α⇐ ◁ T M₁ ≈⟨ ⟺ assoc₂ ⟩
-      (F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒) ∘ᵥ actionʳ B₂ ◁ F B₁ ◁ T M₁ ∘ᵥ α⇐ ◁ T M₁ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-      actionˡ-∘ ∘ᵥ actionʳ-∘ ◁ T M₁ ∎
+      (actionʳ B₂ ◁ F B₁ ∘ᵥ (T M₃ ∘₁ F B₂) ▷ actionˡ B₁) ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇒ ∘ᵥ α⇒   ≈⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
+      (F B₂ ▷ actionˡ B₁ ∘ᵥ actionʳ B₂ ◁ (F B₁ ∘₁ T M₁)) ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇒ ∘ᵥ α⇒   ≈⟨ refl⟩∘⟨ pentagon-conjugate₁ ⟩
+      (F B₂ ▷ actionˡ B₁ ∘ᵥ actionʳ B₂ ◁ (F B₁ ∘₁ T M₁)) ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁         ≈⟨ assoc₂ ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ actionʳ B₂ ◁ (F B₁ ∘₁ T M₁) ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁           ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ (actionʳ B₂ ◁ (F B₁ ∘₁ T M₁) ∘ᵥ α⇒) ∘ᵥ α⇐ ◁ T M₁         ≈⟨ refl⟩∘⟨ ⟺ α⇒-◁-∘₁ ⟩∘⟨refl ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ (α⇒ ∘ᵥ actionʳ B₂ ◁ F B₁ ◁ T M₁) ∘ᵥ α⇐ ◁ T M₁            ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ actionʳ B₂ ◁ F B₁ ◁ T M₁ ∘ᵥ α⇐ ◁ T M₁              ≈⟨ ⟺ assoc₂ ⟩
+      (F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒) ∘ᵥ actionʳ B₂ ◁ F B₁ ◁ T M₁ ∘ᵥ α⇐ ◁ T M₁            ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
+      actionˡ-∘ ∘ᵥ actionʳ-∘ ◁ T M₁                                                 ∎
       where
         open hom.HomReasoning
 
