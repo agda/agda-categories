@@ -14,6 +14,7 @@ module Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms
 open import Level
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
+open Shorthands
 
 open LocalCoequalizers localCoeq
 open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_coeq-◁_; _▷-coeq_)
@@ -52,14 +53,14 @@ private
                           (α h₂ ⊚₁ α h₁)
   sq-act-to-the-right = begin
     (act-to-the-right B'₂ B'₁) ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁ ≈⟨ assoc₂ ⟩
-    actionˡ B'₂ ◁ F B'₁ ∘ᵥ associator.to ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁ ≈⟨ refl⟩∘⟨ α⇐-⊚ ⟩
-    actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁ ∘ᵥ associator.to ≈⟨ sym-assoc₂ ⟩
-    (actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁) ∘ᵥ associator.to ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
-    ((actionˡ B'₂ ∘ᵥ (α h₂ ⊚₁ id₂)) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ associator.to ≈⟨ linearˡ h₂ ⟩⊚⟨refl ⟩∘⟨refl ⟩
-    ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ associator.to ≈⟨ refl⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
-    ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ α h₁) ∘ᵥ associator.to ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
-    ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ (α h₁ ∘ᵥ id₂)) ∘ᵥ associator.to ≈⟨ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
-    (α h₂ ⊚₁ α h₁ ∘ᵥ actionˡ B₂ ◁ F B₁) ∘ᵥ associator.to ≈⟨ assoc₂ ⟩
+    actionˡ B'₂ ◁ F B'₁ ∘ᵥ α⇐ ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁ ≈⟨ refl⟩∘⟨ α⇐-⊚ ⟩
+    actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁ ∘ᵥ α⇐ ≈⟨ sym-assoc₂ ⟩
+    (actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
+    ((actionˡ B'₂ ∘ᵥ (α h₂ ⊚₁ id₂)) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐ ≈⟨ linearˡ h₂ ⟩⊚⟨refl ⟩∘⟨refl ⟩
+    ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐ ≈⟨ refl⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
+    ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
+    ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ (α h₁ ∘ᵥ id₂)) ∘ᵥ α⇐ ≈⟨ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
+    (α h₂ ⊚₁ α h₁ ∘ᵥ actionˡ B₂ ◁ F B₁) ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
     α h₂ ⊚₁ α h₁ ∘ᵥ (act-to-the-right B₂ B₁) ∎
     where
       open hom.HomReasoning
@@ -82,13 +83,13 @@ abstract
     linearˡ-∘ :   (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈ (α h₂ ⊚₁ α h₁) ∘ᵥ  (actionˡ-∘ B₂ B₁)
     linearˡ-∘ = begin
        (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ assoc₂ ⟩
-      F B'₂ ▷ actionˡ B'₁ ∘ᵥ associator.from ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ refl⟩∘⟨ α⇒-⊚ ⟩
-      F B'₂ ▷ actionˡ B'₁ ∘ᵥ α h₂ ⊚₁ (α h₁ ◁ T M₁) ∘ᵥ associator.from ≈⟨ sym-assoc₂ ⟩
-      (F B'₂ ▷ actionˡ B'₁ ∘ᵥ α h₂ ⊚₁ (α h₁ ◁ T M₁)) ∘ᵥ associator.from ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
-      ((id₂ ∘ᵥ α h₂) ⊚₁ (actionˡ B'₁ ∘ᵥ α h₁ ◁ T M₁)) ∘ᵥ associator.from ≈⟨ identity₂ˡ ⟩⊚⟨ linearˡ h₁ ⟩∘⟨refl ⟩
-      (α h₂ ⊚₁ (α h₁ ∘ᵥ actionˡ B₁)) ∘ᵥ associator.from ≈⟨ ⟺ identity₂ʳ ⟩⊚⟨refl ⟩∘⟨refl ⟩
-      ((α h₂ ∘ᵥ id₂) ⊚₁ (α h₁ ∘ᵥ actionˡ B₁)) ∘ᵥ associator.from ≈⟨ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
-      ((α h₂ ⊚₁ α h₁) ∘ᵥ F B₂ ▷ actionˡ B₁) ∘ᵥ associator.from ≈⟨ assoc₂ ⟩
+      F B'₂ ▷ actionˡ B'₁ ∘ᵥ α⇒ ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ refl⟩∘⟨ α⇒-⊚ ⟩
+      F B'₂ ▷ actionˡ B'₁ ∘ᵥ α h₂ ⊚₁ (α h₁ ◁ T M₁) ∘ᵥ α⇒ ≈⟨ sym-assoc₂ ⟩
+      (F B'₂ ▷ actionˡ B'₁ ∘ᵥ α h₂ ⊚₁ (α h₁ ◁ T M₁)) ∘ᵥ α⇒ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
+      ((id₂ ∘ᵥ α h₂) ⊚₁ (actionˡ B'₁ ∘ᵥ α h₁ ◁ T M₁)) ∘ᵥ α⇒ ≈⟨ identity₂ˡ ⟩⊚⟨ linearˡ h₁ ⟩∘⟨refl ⟩
+      (α h₂ ⊚₁ (α h₁ ∘ᵥ actionˡ B₁)) ∘ᵥ α⇒ ≈⟨ ⟺ identity₂ʳ ⟩⊚⟨refl ⟩∘⟨refl ⟩
+      ((α h₂ ∘ᵥ id₂) ⊚₁ (α h₁ ∘ᵥ actionˡ B₁)) ∘ᵥ α⇒ ≈⟨ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
+      ((α h₂ ⊚₁ α h₁) ∘ᵥ F B₂ ▷ actionˡ B₁) ∘ᵥ α⇒ ≈⟨ assoc₂ ⟩
       (α h₂ ⊚₁ α h₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ∎
       where
         open hom.HomReasoning
@@ -127,13 +128,13 @@ abstract
     linearʳ-∘ : actionʳ-∘ B'₂ B'₁ ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈ (α h₂ ⊚₁ α h₁) ∘ᵥ actionʳ-∘ B₂ B₁
     linearʳ-∘ = begin
       actionʳ-∘ B'₂ B'₁ ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ assoc₂ ⟩
-      actionʳ B'₂ ◁ F B'₁ ∘ᵥ associator.to ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ refl⟩∘⟨ α⇐-⊚ ⟩
-      actionʳ B'₂ ◁ F B'₁ ∘ᵥ ((T M₃ ▷ α h₂) ⊚₁ α h₁) ∘ᵥ associator.to ≈⟨ sym-assoc₂ ⟩
-      (actionʳ B'₂ ◁ F B'₁ ∘ᵥ ((T M₃ ▷ α h₂) ⊚₁ α h₁)) ∘ᵥ associator.to ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
-      ((actionʳ B'₂ ∘ᵥ T M₃ ▷ α h₂) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ associator.to ≈⟨ linearʳ h₂ ⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
-      ((α h₂ ∘ᵥ actionʳ B₂) ⊚₁ α h₁) ∘ᵥ associator.to ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
-      ((α h₂ ∘ᵥ actionʳ B₂) ⊚₁ (α h₁ ∘ᵥ id₂)) ∘ᵥ associator.to ≈⟨ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
-      ((α h₂ ⊚₁ α h₁) ∘ᵥ actionʳ B₂ ◁ F B₁) ∘ᵥ associator.to ≈⟨ assoc₂ ⟩
+      actionʳ B'₂ ◁ F B'₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ refl⟩∘⟨ α⇐-⊚ ⟩
+      actionʳ B'₂ ◁ F B'₁ ∘ᵥ ((T M₃ ▷ α h₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ sym-assoc₂ ⟩
+      (actionʳ B'₂ ◁ F B'₁ ∘ᵥ ((T M₃ ▷ α h₂) ⊚₁ α h₁)) ∘ᵥ α⇐ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
+      ((actionʳ B'₂ ∘ᵥ T M₃ ▷ α h₂) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐ ≈⟨ linearʳ h₂ ⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
+      ((α h₂ ∘ᵥ actionʳ B₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
+      ((α h₂ ∘ᵥ actionʳ B₂) ⊚₁ (α h₁ ∘ᵥ id₂)) ∘ᵥ α⇐ ≈⟨ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
+      ((α h₂ ⊚₁ α h₁) ∘ᵥ actionʳ B₂ ◁ F B₁) ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
       (α h₂ ⊚₁ α h₁) ∘ᵥ actionʳ-∘ B₂ B₁ ∎
       where
         open hom.HomReasoning
