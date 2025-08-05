@@ -424,9 +424,9 @@ module Associativity where
   abstract
     sym-assoc-actionˡ-⊗ : actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T M₁) ∘ᵥ α⇐ ≈ actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ M₁)
     sym-assoc-actionˡ-⊗ = begin
-      actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T M₁) ∘ᵥ α⇐ ≈⟨ ⟺ assoc₂ ⟩
+      actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T M₁) ∘ᵥ α⇐   ≈⟨ ⟺ assoc₂ ⟩
       (actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T M₁)) ∘ᵥ α⇐ ≈⟨ ⟺ (switch-fromtoʳ associator assoc-actionˡ-⊗-var) ⟩
-      actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ M₁) ∎
+      actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ M₁)               ∎
       where
         open hom.HomReasoning
         open IsoReasoning using (switch-fromtoʳ)
