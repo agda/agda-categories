@@ -111,12 +111,12 @@ module Left-Action where
                               act-to-the-right
                               actionˡ-∘
       sq-act-to-the-right = begin
-        act-to-the-right ∘ᵥ actionˡ-∘-∘                                                     ≈⟨ assoc²γβ ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ α⇒) ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁   ≈⟨ elimʳ associator.isoˡ ⟩∘⟨refl ⟩
-        actionˡ B₂ ◁ F B₁ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁                 ≈⟨ assoc²εβ ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒) ∘ᵥ α⇐ ◁ T M₁               ≈⟨ glue′ sq-bottom sq-top ⟩∘⟨refl ⟩
-        (actionˡ-∘ ∘ᵥ actionˡ B₂ ◁ F B₁ ◁ T M₁) ∘ᵥ α⇐ ◁ T M₁                                ≈⟨ pullʳ ∘ᵥ-distr-◁ ⟩
-        actionˡ-∘ ∘ᵥ act-to-the-right ◁ T M₁                                                ∎
+        act-to-the-right ∘ᵥ actionˡ-∘-∘                                                   ≈⟨ assoc²γβ ⟩
+        (actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ α⇒) ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁ ≈⟨ elimʳ associator.isoˡ ⟩∘⟨refl ⟩
+        actionˡ B₂ ◁ F B₁ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ T M₁               ≈⟨ assoc²εβ ⟩
+        (actionˡ B₂ ◁ F B₁ ∘ᵥ (F B₂ ∘₁ T M₂) ▷ actionˡ B₁ ∘ᵥ α⇒) ∘ᵥ α⇐ ◁ T M₁             ≈⟨ glue′ sq-bottom sq-top ⟩∘⟨refl ⟩
+        (actionˡ-∘ ∘ᵥ actionˡ B₂ ◁ F B₁ ◁ T M₁) ∘ᵥ α⇐ ◁ T M₁                              ≈⟨ pullʳ ∘ᵥ-distr-◁ ⟩
+        actionˡ-∘ ∘ᵥ act-to-the-right ◁ T M₁                                              ∎
         where
           open hom.HomReasoning
           open MorphismReasoning using (assoc²γβ; assoc²εβ; elimʳ; glue′; pullʳ)
@@ -210,32 +210,63 @@ module Right-Action where
 
       sq-act-to-the-right : CommutativeSquare
                               actionʳ-∘-∘
-                              (T M₃ ▷ (act-to-the-right))
+                              (T M₃ ▷ act-to-the-right)
                               act-to-the-right
                               actionʳ-∘
       sq-act-to-the-right = begin
-        act-to-the-right ∘ᵥ actionʳ-∘-∘                                                    ≈⟨ ⟺ assoc₂ ⟩
-        ((actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ actionʳ B₂ ◁  (T M₂ ∘₁ F B₁)) ∘ᵥ α⇐                  ≈⟨ assoc₂ ⟩∘⟨refl ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ (α⇐ ∘ᵥ actionʳ B₂ ◁  (T M₂ ∘₁ F B₁))) ∘ᵥ α⇐                  ≈⟨ (refl⟩∘⟨ α⇐-◁-∘₁) ⟩∘⟨refl ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐)) ∘ᵥ α⇐                      ≈⟨ assoc₂ ⟩
-        actionˡ B₂ ◁ F B₁ ∘ᵥ ((actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ α⇐)                      ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-        actionˡ B₂ ◁ F B₁ ∘ᵥ actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ α⇐                          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ pentagon-inv ⟩
-        actionˡ B₂ ◁ F B₁ ∘ᵥ actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ (α⇐ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐    ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-        actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ (α⇐ ◁ F B₁ ∘ᵥ α⇐)) ∘ᵥ T M₃ ▷ α⇐  ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
-        actionˡ B₂ ◁ F B₁ ∘ᵥ ((actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁) ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐  ≈⟨ ⟺ assoc₂ ⟩
-        (actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁) ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐  ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
-        ((actionˡ B₂ ◁ F B₁ ∘ᵥ actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁) ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐  ≈⟨ ((refl⟩∘⟨ ∘ᵥ-distr-◁) ⟩∘⟨refl) ⟩∘⟨refl ⟩
-        ((actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ∘ᵥ α⇐) ◁ F B₁) ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐       ≈⟨ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩∘⟨refl ⟩
-        ((actionˡ B₂ ∘ᵥ actionʳ B₂ ◁ T M₂ ∘ᵥ α⇐) ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐                ≈⟨ ◁-resp-≈ (sym-assoc B₂) ⟩∘⟨refl ⟩∘⟨refl ⟩
-        ((actionʳ B₂ ∘ᵥ (T M₃ ▷ actionˡ B₂)) ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐                    ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩∘⟨refl ⟩
-        ((actionʳ B₂ ◁ F B₁ ∘ᵥ (T M₃ ▷ actionˡ B₂) ◁ F B₁) ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐             ≈⟨ (assoc₂ ⟩∘⟨refl) ⟩
-        (actionʳ B₂ ◁ F B₁ ∘ᵥ (T M₃ ▷ actionˡ B₂) ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐               ≈⟨ (refl⟩∘⟨ ⟺ α⇐-▷-◁) ⟩∘⟨refl ⟩
-        (actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ (actionˡ B₂ ◁ F B₁)) ∘ᵥ T M₃ ▷ α⇐               ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
-        ((actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ (actionˡ B₂ ◁ F B₁)) ∘ᵥ T M₃ ▷ α⇐             ≈⟨ assoc₂ ⟩
-        (actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ (actionˡ B₂ ◁ F B₁) ∘ᵥ T M₃ ▷ α⇐               ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
-        actionʳ-∘ ∘ᵥ T M₃ ▷ act-to-the-right                                               ∎
+        act-to-the-right ∘ᵥ actionʳ-∘-∘                      ≈⟨ glue sq-right sq-left ⟩
+        actionʳ-∘ ∘ᵥ T M₃ ▷ (actionˡ B₂ ◁ F B₁) ∘ᵥ T M₃ ▷ α⇐ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
+        actionʳ-∘ ∘ᵥ T M₃ ▷ act-to-the-right                 ∎
           where
             open hom.HomReasoning
+            open MorphismReasoning using (glue; glue′)
+
+            sq-bottom-left : CommutativeSquare
+                               (actionʳ B₂ ◁ (T M₂ ∘₁ F B₁))
+                               α⇐
+                               α⇐
+                               (actionʳ B₂ ◁ T M₂ ◁ F B₁)
+            sq-bottom-left = α⇐-◁-∘₁
+
+            sq-top-left : CommutativeSquare
+                            (α⇐ {f = T M₃} {F B₂} {T M₂ ∘₁ F B₁})
+                            (T M₃ ▷ α⇐)
+                            (α⇐ {f = T M₃ ∘₁ F B₂} {T M₂} {F B₁})
+                            (α⇐ ◁ F B₁ ∘ᵥ α⇐)
+            sq-top-left = ⟺ pentagon-inv
+
+            sq-left : CommutativeSquare
+                        actionʳ-∘-∘
+                        (T M₃ ▷ α⇐)
+                        α⇐
+                        (actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁ ∘ᵥ α⇐)
+            sq-left = glue′ sq-bottom-left sq-top-left
+
+            sq-bottom-right : CommutativeSquare
+                                (actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁)
+                                ((T M₃ ▷ actionˡ B₂) ◁ F B₁)
+                                (actionˡ B₂ ◁ F B₁)
+                                (actionʳ B₂ ◁ F B₁)
+            sq-bottom-right = begin
+              actionˡ B₂ ◁ F B₁ ∘ᵥ actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
+              actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ∘ᵥ α⇐) ◁ F B₁      ≈⟨ ◁-resp-sq (sym-assoc B₂) ⟩
+              actionʳ B₂ ◁ F B₁ ∘ᵥ (T M₃ ▷ actionˡ B₂) ◁ F B₁            ∎
+            sq-top-right : CommutativeSquare
+                             α⇐
+                             (T M₃ ▷ (actionˡ B₂ ◁ F B₁))
+                             ((T M₃ ▷ actionˡ B₂) ◁ F B₁)
+                             α⇐
+            sq-top-right = ⟺ α⇐-▷-◁
+
+            sq-right : CommutativeSquare
+                         (actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁ ∘ᵥ α⇐)
+                         (T M₃ ▷ (actionˡ B₂ ◁ F B₁))
+                         (actionˡ B₂ ◁ F B₁)
+                         (actionʳ-∘)
+            sq-right = begin
+              actionˡ B₂ ◁ F B₁ ∘ᵥ actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁ ∘ᵥ α⇐   ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
+              actionˡ B₂ ◁ F B₁ ∘ᵥ (actionʳ B₂ ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁) ∘ᵥ α⇐ ≈⟨ glue′ sq-bottom-right sq-top-right ⟩
+              actionʳ-∘ ∘ᵥ T M₃ ▷ (actionˡ B₂ ◁ F B₁)            ∎
   -- end abstract --
 
   abstract
