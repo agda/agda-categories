@@ -399,7 +399,7 @@ module Associativity where
     assoc-actionˡ-⊗-∘arr = begin
       (actionˡ-⊗ ∘ᵥ (F-⊗ ▷ μ M₁) ∘ᵥ α⇒) ∘ᵥ arr ((CoeqBimods coeq-◁ T M₁) coeq-◁ T M₁) ≈⟨ glue (⟺ actionˡSq-⊗) ◁-▷-exchg-var ⟩
       arr CoeqBimods ∘ᵥ actionˡ-∘ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ μ M₁ ∘ᵥ α⇒                      ≈⟨ refl⟩∘⟨ assoc-actionˡ-∘ ⟩
-      arr CoeqBimods ∘ᵥ actionˡ-∘ ∘ᵥ actionˡ-∘ ◁ T M₁                                  ≈⟨ glue′ actionˡSq-⊗ (◁-resp-sq actionˡSq-⊗) ⟩
+      arr CoeqBimods ∘ᵥ actionˡ-∘ ∘ᵥ actionˡ-∘ ◁ T M₁                                 ≈⟨ glue′ actionˡSq-⊗ (◁-resp-sq actionˡSq-⊗) ⟩
       (actionˡ-⊗ ∘ᵥ (actionˡ-⊗ ◁ T M₁)) ∘ᵥ arr ((CoeqBimods coeq-◁ T M₁) coeq-◁ T M₁) ∎
       where
         open hom.HomReasoning
