@@ -453,27 +453,20 @@ module Associativity where
     assoc-actionʳ-⊗-∘arr : (actionʳ-⊗ ∘ᵥ μ M₃ ◁ F-⊗ ∘ᵥ α⇐) ∘ᵥ arr (T M₃ ▷-coeq (T M₃ ▷-coeq CoeqBimods))
                          ≈ (actionʳ-⊗ ∘ᵥ T M₃ ▷ actionʳ-⊗) ∘ᵥ arr (T M₃ ▷-coeq (T M₃ ▷-coeq CoeqBimods))
     assoc-actionʳ-⊗-∘arr = begin
-      (actionʳ-⊗ ∘ᵥ μ M₃ ◁ F-⊗ ∘ᵥ α⇐) ∘ᵥ arr (T M₃ ▷-coeq (T M₃ ▷-coeq CoeqBimods)) ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
-      ((actionʳ-⊗ ∘ᵥ μ M₃ ◁ F-⊗) ∘ᵥ α⇐) ∘ᵥ arr (T M₃ ▷-coeq (T M₃ ▷-coeq CoeqBimods)) ≈⟨ assoc₂ ⟩
-      (actionʳ-⊗ ∘ᵥ μ M₃ ◁ F-⊗) ∘ᵥ α⇐ ∘ᵥ arr (T M₃ ▷-coeq (T M₃ ▷-coeq CoeqBimods)) ≈⟨ refl⟩∘⟨ α⇐-▷-∘₁ ⟩
-      (actionʳ-⊗ ∘ᵥ μ M₃ ◁ F-⊗) ∘ᵥ (T M₃ ∘₁ T M₃) ▷ arr CoeqBimods ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
-      actionʳ-⊗ ∘ᵥ μ M₃ ◁ F-⊗ ∘ᵥ (T M₃ ∘₁ T M₃) ▷ arr CoeqBimods ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-      actionʳ-⊗ ∘ᵥ (μ M₃ ◁ F-⊗ ∘ᵥ (T M₃ ∘₁ T M₃) ▷ arr CoeqBimods) ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
-      actionʳ-⊗ ∘ᵥ (T M₃ ▷ arr CoeqBimods ∘ᵥ μ M₃ ◁ (F B₂ ∘₁ F B₁)) ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      actionʳ-⊗ ∘ᵥ T M₃ ▷ arr CoeqBimods ∘ᵥ μ M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ α⇐ ≈⟨ ⟺ assoc₂ ⟩
-      (actionʳ-⊗ ∘ᵥ T M₃ ▷ arr CoeqBimods) ∘ᵥ μ M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ α⇐ ≈⟨ ⟺ actionʳSq-⊗ ⟩∘⟨refl ⟩
-      (arr CoeqBimods ∘ᵥ actionʳ-∘) ∘ᵥ μ M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
-      arr CoeqBimods ∘ᵥ actionʳ-∘ ∘ᵥ μ M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ assoc-actionʳ-∘ ⟩
-      arr CoeqBimods ∘ᵥ actionʳ-∘ ∘ᵥ T M₃ ▷ actionʳ-∘ ≈⟨ ⟺ assoc₂ ⟩
-      (arr CoeqBimods ∘ᵥ actionʳ-∘) ∘ᵥ T M₃ ▷ actionʳ-∘ ≈⟨ actionʳSq-⊗ ⟩∘⟨refl ⟩
-      (actionʳ-⊗ ∘ᵥ T M₃ ▷ arr CoeqBimods) ∘ᵥ T M₃ ▷ actionʳ-∘ ≈⟨ assoc₂ ⟩
-      actionʳ-⊗ ∘ᵥ T M₃ ▷ arr CoeqBimods ∘ᵥ T M₃ ▷ actionʳ-∘ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
-      actionʳ-⊗ ∘ᵥ T M₃ ▷ (arr CoeqBimods ∘ᵥ actionʳ-∘) ≈⟨ refl⟩∘⟨ ▷-resp-≈ actionʳSq-⊗ ⟩
-      actionʳ-⊗ ∘ᵥ T M₃ ▷ (actionʳ-⊗ ∘ᵥ T M₃ ▷ arr CoeqBimods) ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
-      actionʳ-⊗ ∘ᵥ T M₃ ▷ actionʳ-⊗ ∘ᵥ arr (T M₃ ▷-coeq (T M₃ ▷-coeq CoeqBimods)) ≈⟨ ⟺ assoc₂ ⟩
+      (actionʳ-⊗ ∘ᵥ μ M₃ ◁ F-⊗ ∘ᵥ α⇐) ∘ᵥ arr (T M₃ ▷-coeq (T M₃ ▷-coeq CoeqBimods)) ≈⟨ glue (⟺ actionʳSq-⊗) ◁-▷-exchg-var ⟩
+      arr CoeqBimods ∘ᵥ actionʳ-∘ ∘ᵥ μ M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ α⇐                    ≈⟨ refl⟩∘⟨ assoc-actionʳ-∘ ⟩
+      arr CoeqBimods ∘ᵥ actionʳ-∘ ∘ᵥ T M₃ ▷ actionʳ-∘                               ≈⟨ glue′ actionʳSq-⊗ (▷-resp-sq actionʳSq-⊗) ⟩
       (actionʳ-⊗ ∘ᵥ T M₃ ▷ actionʳ-⊗) ∘ᵥ arr (T M₃ ▷-coeq (T M₃ ▷-coeq CoeqBimods)) ∎
       where
         open hom.HomReasoning
+        open MorphismReasoning using (glue; glue′)
+
+        ◁-▷-exchg-var : CommutativeSquare
+                          (T M₃ ▷ T M₃ ▷ arr CoeqBimods)
+                          (μ M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ α⇐)
+                          (μ M₃ ◁ F-⊗ ∘ᵥ α⇐)
+                          (arr (T M₃ ▷-coeq CoeqBimods))
+        ◁-▷-exchg-var = glue (⟺ ◁-▷-exchg) α⇐-▷-∘₁
 
   abstract
     assoc-actionʳ-⊗ : actionʳ-⊗ ∘ᵥ μ M₃ ◁ F-⊗ ∘ᵥ α⇐ ≈ actionʳ-⊗ ∘ᵥ T M₃ ▷ actionʳ-⊗
