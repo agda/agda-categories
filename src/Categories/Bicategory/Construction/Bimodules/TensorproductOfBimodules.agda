@@ -435,27 +435,19 @@ module Associativity where
   abstract
     assoc-actionʳ-∘ : actionʳ-∘ ∘ᵥ μ M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ α⇐ ≈ actionʳ-∘ ∘ᵥ T M₃ ▷ actionʳ-∘
     assoc-actionʳ-∘ = begin
-      actionʳ-∘ ∘ᵥ μ M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ μ M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ (α⇐ ∘ᵥ μ M₃ ◁ (F B₂ ∘₁ F B₁)) ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ α⇐-◁-∘₁ ⟩∘⟨refl ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ (μ M₃ ◁ F B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ μ M₃ ◁ F B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ pentagon-inv ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ μ M₃ ◁ F B₂ ◁ F B₁ ∘ᵥ (α⇐ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ μ M₃ ◁ F B₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇐ ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ (μ M₃ ◁ F B₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁) ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇐ ≈⟨ ⟺ assoc₂ ⟩
-      (actionʳ B₂ ◁ F B₁ ∘ᵥ μ M₃ ◁ F B₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁) ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇐ ≈⟨ (refl⟩∘⟨ ∘ᵥ-distr-◁) ⟩∘⟨refl ⟩
-      (actionʳ B₂ ◁ F B₁ ∘ᵥ (μ M₃ ◁ F B₂ ∘ᵥ α⇐) ◁ F B₁) ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇐ ≈⟨ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩
-      (actionʳ B₂ ∘ᵥ μ M₃ ◁ F B₂ ∘ᵥ α⇐) ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇐ ≈⟨ ◁-resp-≈ (assoc-actionʳ B₂) ⟩∘⟨refl ⟩
-      (actionʳ B₂ ∘ᵥ T M₃ ▷ actionʳ B₂) ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇐ ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩
-      (actionʳ B₂ ◁ F B₁ ∘ᵥ (T M₃ ▷ actionʳ B₂) ◁ F B₁) ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇐ ≈⟨ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ (T M₃ ▷ actionʳ B₂) ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇐ ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ ((T M₃ ▷ actionʳ B₂) ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐ ≈⟨ refl⟩∘⟨ ⟺ α⇐-▷-◁ ⟩∘⟨refl ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ (α⇐ ∘ᵥ T M₃ ▷ (actionʳ B₂ ◁ F B₁)) ∘ᵥ T M₃ ▷ α⇐ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ (actionʳ B₂ ◁ F B₁) ∘ᵥ T M₃ ▷ α⇐ ≈⟨ ⟺ assoc₂ ⟩
-      actionʳ-∘ ∘ᵥ T M₃ ▷ (actionʳ B₂ ◁ F B₁) ∘ᵥ T M₃ ▷ α⇐ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
-      actionʳ-∘ ∘ᵥ T M₃ ▷ actionʳ-∘ ∎
+      actionʳ-∘ ∘ᵥ μ M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ α⇐                                  ≈⟨ center α⇐-◁-∘₁ ⟩
+      actionʳ B₂ ◁ F B₁ ∘ᵥ (μ M₃ ◁ F B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ α⇐                     ≈⟨ refl⟩∘⟨ pullʳ (⟺ pentagon-inv) ⟩
+      actionʳ B₂ ◁ F B₁ ∘ᵥ μ M₃ ◁ F B₂ ◁ F B₁ ∘ᵥ (α⇐ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ T M₃ ▷ α⇐ ≈⟨ refl⟩∘⟨ pull-first ∘ᵥ-distr-◁ ⟩
+      actionʳ B₂ ◁ F B₁ ∘ᵥ (μ M₃ ◁ F B₂ ∘ᵥ α⇐) ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇐        ≈⟨ pullˡ ∘ᵥ-distr-◁ ⟩
+      (actionʳ B₂ ∘ᵥ μ M₃ ◁ F B₂ ∘ᵥ α⇐) ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇐               ≈⟨ ◁-resp-≈ (assoc-actionʳ B₂) ⟩∘⟨refl ⟩
+      (actionʳ B₂ ∘ᵥ T M₃ ▷ actionʳ B₂) ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇐               ≈⟨ pushˡ (⟺ ∘ᵥ-distr-◁) ⟩
+      actionʳ B₂ ◁ F B₁ ∘ᵥ (T M₃ ▷ actionʳ B₂) ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ α⇐        ≈⟨ refl⟩∘⟨ pullˡ (⟺ α⇐-▷-◁) ⟩
+      actionʳ B₂ ◁ F B₁ ∘ᵥ (α⇐ ∘ᵥ T M₃ ▷ (actionʳ B₂ ◁ F B₁)) ∘ᵥ T M₃ ▷ α⇐      ≈⟨ center⁻¹ refl ∘ᵥ-distr-▷ ⟩
+      actionʳ-∘ ∘ᵥ T M₃ ▷ actionʳ-∘                                             ∎
       where
         open hom.HomReasoning
+        open hom.Equiv using (refl)
+        open MorphismReasoning using (center; pullʳ; pull-first; pullˡ; pushˡ; center⁻¹)
 
   abstract
     assoc-actionʳ-⊗-∘arr : (actionʳ-⊗ ∘ᵥ μ M₃ ◁ F-⊗ ∘ᵥ α⇐) ∘ᵥ arr (T M₃ ▷-coeq (T M₃ ▷-coeq CoeqBimods))
