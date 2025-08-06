@@ -30,15 +30,14 @@ import Categories.Morphism
 import Categories.Category
 import Categories.Category.Construction.Core
 
+
 -- To get constructions of the hom-categories with implicit arguments into scope --
 private
   module HomCat {X} {Y} where
-    open Categories.Morphism (hom X Y) public using (_≅_)
-    open Categories.Category.Definitions (hom X Y) public using (CommutativeSquare)
-    open Categories.Diagram.Coequalizer (hom X Y) public
-    open Categories.Diagram.Coequalizer.Properties (hom X Y) public
-    open CoequalizerOfCoequalizer using (CoeqsAreIsomorphic) public
+    open Categories.Morphism (hom X Y) using (_≅_) public
+    open Categories.Category.Definitions (hom X Y) using (CommutativeSquare) public
     open Categories.Category.Construction.Core.Shorthands (hom X Y) using (_∘ᵢ_; _⁻¹) public
+    open Categories.Diagram.Coequalizer (hom X Y) using (Coequalizer) public
 
 open HomCat
 
@@ -49,7 +48,6 @@ open TensorproductOfBimodules using (CoeqBimods; act-to-the-left; act-to-the-rig
 
 
 -- The associator is a bimodule. We start by constructing its underlying 2-cell. --
-
 module 2-cell where
 
   -- We want to use that coequalizers commute with coeuqalizers --
@@ -138,6 +136,8 @@ module 2-cell where
             (F B₃ ▷-coeq T M₃ ▷-coeq (CoeqBimods B₂ B₁))
             associatorX
             associatorZ
+    where
+      open Categories.Diagram.Coequalizer.Properties (hom (C M₁) (C M₄)) using (CoeqOfIsomorphicDiagram)
   
   -- We would like to define
   -- coeqʰ = postcompCoequalizer (CoeqBimods B₂ B₁) F B₃
@@ -147,6 +147,8 @@ module 2-cell where
             (F B₃ ▷-coeq (CoeqBimods B₂ B₁))
             associatorY
             associatorW
+    where
+      open Categories.Diagram.Coequalizer.Properties (hom (C M₁) (C M₄)) using (CoeqOfIsomorphicDiagram)
       
   
   coeqⁱ : Coequalizer i₁ i₂
@@ -457,6 +459,8 @@ module 2-cell where
                      f⇒i₁ f⇒i₂ g⇒h₁ g⇒h₂
                      sq₁ᶠⁱ sq₂ᶠⁱ sq₁ᵍʰ sq₂ᵍʰ
                      coeqcoeqᵍʰ coeqcoeqᶠⁱ
+      where
+        open Categories.Diagram.Coequalizer.Properties.CoequalizerOfCoequalizer (hom (C M₁) (C M₄)) using (CoeqsAreIsomorphic)
 
   α⇒⊗ : (Bimodule.F ((B₃ ⊗₀ B₂) ⊗₀ B₁)) ⇒₂ (Bimodule.F (B₃ ⊗₀ B₂ ⊗₀ B₁))
   α⇒⊗ = _≅_.from Associator⊗Iso
@@ -470,7 +474,7 @@ module 2-cell where
                 sq₁ᶠⁱ sq₂ᶠⁱ sq₁ᵍʰ sq₂ᵍʰ
                 coeqcoeqᵍʰ coeqcoeqᶠⁱ
       where
-        open CoequalizerOfCoequalizer using (IsoFitsInPentagon)
+        open Categories.Diagram.Coequalizer.Properties.CoequalizerOfCoequalizer (hom (C M₁) (C M₄)) using (IsoFitsInPentagon)
 
 open 2-cell using (α⇒⊗; hexagon) public
 
@@ -765,6 +769,8 @@ module Linear-Left where
                       ∘ᵥ Bimodule.actionˡ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
                       ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
                     linearˡ∘arr∘arr
+      where
+        open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
 
   abstract
     linearˡ : Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁) ∘ᵥ α⇒⊗ ◁ T M₁
@@ -776,6 +782,8 @@ module Linear-Left where
                     (α⇒⊗
                       ∘ᵥ Bimodule.actionˡ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
                     linearˡ∘arr
+      where
+        open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
   -- end abstract --
 
 module Linear-Right where
@@ -1065,6 +1073,8 @@ module Linear-Right where
                       ∘ᵥ Bimodule.actionʳ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
                       ∘ᵥ T M₄ ▷ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                     linearʳ∘arr∘arr
+      where
+        open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
 
   abstract
     linearʳ : Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
@@ -1076,6 +1086,8 @@ module Linear-Right where
                 (Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ α⇒⊗)
                 (α⇒⊗ ∘ᵥ Bimodule.actionʳ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
                 linearʳ∘arr
+      where
+        open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
 -- end abstract --
 
 Associator⊗From : Bimodulehomomorphism ((B₃ ⊗₀ B₂) ⊗₀ B₁) (B₃ ⊗₀ B₂ ⊗₀ B₁)
