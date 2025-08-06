@@ -1099,11 +1099,10 @@ Associator⊗From = record
   ; linearʳ = Linear-Right.linearʳ
   }
 
-open import Categories.Category.Construction.Bimodules
-  renaming (Bimodules to Bimodules₁)
+open import Categories.Category.Construction.Bimodules using () renaming (Bimodules to 1-Bimodules)
 open import Categories.Category.Construction.Bimodules.Properties
 
-Associator⊗ : Categories.Morphism._≅_ (Bimodules₁ M₁ M₄) ((B₃ ⊗₀ B₂) ⊗₀ B₁) (B₃ ⊗₀ B₂ ⊗₀ B₁) 
+Associator⊗ : Categories.Morphism._≅_ (1-Bimodules M₁ M₄) ((B₃ ⊗₀ B₂) ⊗₀ B₁) (B₃ ⊗₀ B₂ ⊗₀ B₁) 
 Associator⊗ = αisIso⇒Iso Associator⊗From α⇒⊗isIso
   where
     open Bimodule-Isomorphism
