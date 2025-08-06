@@ -70,7 +70,7 @@ private
 abstract
   -- to speed-up type-echecking we hide the the underliying 2-cell α-⊗ under an abstract clause --
   -- probably, no one ever wants to look into its defintion and instead only use the lemma αSq-⊗ below --
-  α-⊗ : F-⊗ B₂ B₁ ⇒₂ F-⊗ B'₂ B'₁
+  α-⊗ : F-⊗ B₂ B₁   ⇒₂   F-⊗ B'₂ B'₁
   α-⊗ = ⇒MapBetweenCoeq
           (α h₂ ⊚₁ id₂ ⊚₁  α h₁)
           (α h₂ ⊚₁ α h₁)
@@ -98,7 +98,7 @@ abstract
   abstract
     open TensorproductOfBimodules.Left-Action using (actionˡ-∘)
 
-    linearˡ-∘ :   (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈ (α h₂ ⊚₁ α h₁) ∘ᵥ  (actionˡ-∘ B₂ B₁)
+    linearˡ-∘ : actionˡ-∘ B'₂ B'₁ ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈ (α h₂ ⊚₁ α h₁) ∘ᵥ actionˡ-∘ B₂ B₁
     linearˡ-∘ = begin
        (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ assoc₂ ⟩
       F B'₂ ▷ actionˡ B'₁ ∘ᵥ α⇒ ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ refl⟩∘⟨ α⇒-⊚ ⟩
