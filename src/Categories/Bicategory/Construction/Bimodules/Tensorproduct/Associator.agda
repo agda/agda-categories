@@ -45,10 +45,7 @@ open HomCat
 
 open Monad using (C; T)
 open Bimodule using (F; actionˡ; actionʳ)
-open Bimodule B₁ using () renaming (F to F₁; actionʳ to actionʳ₁)
-open Bimodule B₂ using () renaming (F to F₂; actionˡ to actionˡ₂; actionʳ to actionʳ₂)
-open Bimodule B₃ using () renaming (F to F₃; actionˡ to actionˡ₃; actionʳ to actionʳ₃)
-open TensorproductOfBimodules using (CoeqBimods)
+open TensorproductOfBimodules using (CoeqBimods; act-to-the-left; act-to-the-right)
 
 
 -- The associator is a bimodule. We start by constructing its underlying 2-cell. --
@@ -105,28 +102,28 @@ module 2-cell where
   associatorW = associator ⁻¹
 
   f₁ f₂ : X ⇒₂ Y
-  f₁ = TensorproductOfBimodules.act-to-the-left B₃ B₂ ◁ (T M₂ ∘₁ F B₁)
-  f₂ = TensorproductOfBimodules.act-to-the-right B₃ B₂ ◁ (T M₂ ∘₁ F B₁)
+  f₁ = act-to-the-left B₃ B₂ ◁ (T M₂ ∘₁ F B₁)
+  f₂ = act-to-the-right B₃ B₂ ◁ (T M₂ ∘₁ F B₁)
 
   g₁' g₂' : X' ⇒₂ Z'
-  g₁' = F B₃ ▷ T M₃ ▷ TensorproductOfBimodules.act-to-the-left B₂ B₁
-  g₂' = F B₃ ▷ T M₃ ▷ TensorproductOfBimodules.act-to-the-right B₂ B₁
+  g₁' = F B₃ ▷ T M₃ ▷ act-to-the-left B₂ B₁
+  g₂' = F B₃ ▷ T M₃ ▷ act-to-the-right B₂ B₁
 
   g₁ g₂ : X ⇒₂ Z
   g₁ = _≅_.from associatorZ ∘ᵥ g₁' ∘ᵥ _≅_.to associatorX
   g₂ = _≅_.from associatorZ ∘ᵥ g₂' ∘ᵥ _≅_.to associatorX
 
   h₁' h₂' : Y' ⇒₂ W'
-  h₁' = F B₃ ▷ TensorproductOfBimodules.act-to-the-left B₂ B₁
-  h₂' = F B₃ ▷ TensorproductOfBimodules.act-to-the-right B₂ B₁
+  h₁' = F B₃ ▷ act-to-the-left B₂ B₁
+  h₂' = F B₃ ▷ act-to-the-right B₂ B₁
 
   h₁ h₂ : Y ⇒₂ W
   h₁ = _≅_.from associatorW ∘ᵥ h₁' ∘ᵥ _≅_.to associatorY
   h₂ = _≅_.from associatorW ∘ᵥ h₂' ∘ᵥ _≅_.to associatorY
 
   i₁ i₂ : Z ⇒₂ W
-  i₁ = TensorproductOfBimodules.act-to-the-left B₃ B₂ ◁ F B₁
-  i₂ = TensorproductOfBimodules.act-to-the-right B₃ B₂ ◁ F B₁
+  i₁ = act-to-the-left B₃ B₂ ◁ F B₁
+  i₂ = act-to-the-right B₃ B₂ ◁ F B₁
 
 
 
@@ -156,12 +153,12 @@ module 2-cell where
   coeqⁱ = (CoeqBimods B₃ B₂) coeq-◁ F B₁
   
   f⇒i₁ f⇒i₂ : Coequalizer.obj coeqᶠ ⇒₂ Coequalizer.obj coeqⁱ
-  f⇒i₁ = TensorproductOfBimodules.act-to-the-left (B₃ ⊗₀ B₂) B₁
-  f⇒i₂ = TensorproductOfBimodules.act-to-the-right (B₃ ⊗₀ B₂) B₁
+  f⇒i₁ = act-to-the-left (B₃ ⊗₀ B₂) B₁
+  f⇒i₂ = act-to-the-right (B₃ ⊗₀ B₂) B₁
   
   g⇒h₁ g⇒h₂ : Coequalizer.obj coeqᵍ ⇒₂ Coequalizer.obj coeqʰ
-  g⇒h₁ = TensorproductOfBimodules.act-to-the-left B₃ (B₂ ⊗₀ B₁)
-  g⇒h₂ = TensorproductOfBimodules.act-to-the-right B₃ (B₂ ⊗₀ B₁)
+  g⇒h₁ = act-to-the-left B₃ (B₂ ⊗₀ B₁)
+  g⇒h₂ = act-to-the-right B₃ (B₂ ⊗₀ B₁)
 
   abstract
     sq₁ᶠⁱ : CommutativeSquare (Coequalizer.arr coeqᶠ) h₁ f⇒i₁ (Coequalizer.arr coeqⁱ)
