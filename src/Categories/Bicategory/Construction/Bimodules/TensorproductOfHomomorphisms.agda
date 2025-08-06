@@ -54,7 +54,7 @@ private
                           (act-to-the-right B'₂ B'₁)
                           (α h₂ ⊚₁ α h₁)
   sq-act-to-the-right = begin
-    (act-to-the-right B'₂ B'₁) ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁ ≈⟨ assoc₂ ⟩
+    act-to-the-right B'₂ B'₁ ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁ ≈⟨ assoc₂ ⟩
     actionˡ B'₂ ◁ F B'₁ ∘ᵥ α⇐ ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁ ≈⟨ refl⟩∘⟨ α⇐-⊚ ⟩
     actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁ ∘ᵥ α⇐ ≈⟨ ⟺ assoc₂ ⟩
     (actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
@@ -63,7 +63,7 @@ private
     ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
     ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ (α h₁ ∘ᵥ id₂)) ∘ᵥ α⇐ ≈⟨ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
     (α h₂ ⊚₁ α h₁ ∘ᵥ actionˡ B₂ ◁ F B₁) ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
-    α h₂ ⊚₁ α h₁ ∘ᵥ (act-to-the-right B₂ B₁) ∎
+    α h₂ ⊚₁ α h₁ ∘ᵥ act-to-the-right B₂ B₁ ∎
     where
       open hom.HomReasoning
 
