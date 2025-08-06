@@ -501,37 +501,34 @@ module Identity where
   abstract
     identityˡ-∘ : actionˡ-∘ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ η M₁ ∘ᵥ ρ⇐ ≈ id₂
     identityˡ-∘ = begin
-      actionˡ-∘ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ η M₁ ∘ᵥ ρ⇐ ≈⟨ assoc₂ ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ α⇒ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ η M₁ ∘ᵥ ρ⇐ ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ (α⇒ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ η M₁) ∘ᵥ ρ⇐ ≈⟨ refl⟩∘⟨ α⇒-▷-∘₁ ⟩∘⟨refl ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ (F B₂ ▷ F B₁ ▷ η M₁ ∘ᵥ α⇒) ∘ᵥ ρ⇐ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ F B₁ ▷ η M₁ ∘ᵥ α⇒ ∘ᵥ ρ⇐ ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ ⟺ unitorʳ-coherence-var₂) ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ F B₁ ▷ η M₁ ∘ᵥ F B₂ ▷ ρ⇐ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
-      F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ (F B₁ ▷ η M₁ ∘ᵥ ρ⇐) ≈⟨ ∘ᵥ-distr-▷ ⟩
-      F B₂ ▷ (actionˡ B₁ ∘ᵥ F B₁ ▷ η M₁ ∘ᵥ ρ⇐) ≈⟨ ▷-resp-≈ (identityˡ B₁) ⟩
-      F B₂ ▷ id₂ ≈⟨ ▷id₂ ⟩
-      id₂ ∎
+      actionˡ-∘ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ η M₁ ∘ᵥ ρ⇐              ≈⟨ center α⇒-▷-∘₁ ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ (F B₂ ▷ F B₁ ▷ η M₁ ∘ᵥ α⇒) ∘ᵥ ρ⇐ ≈⟨ refl⟩∘⟨ pullʳ (⟺ unitorʳ-coherence-var₂) ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ F B₁ ▷ η M₁ ∘ᵥ F B₂ ▷ ρ⇐  ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
+      F B₂ ▷ actionˡ B₁ ∘ᵥ F B₂ ▷ (F B₁ ▷ η M₁ ∘ᵥ ρ⇐)       ≈⟨ ∘ᵥ-distr-▷ ⟩
+      F B₂ ▷ (actionˡ B₁ ∘ᵥ F B₁ ▷ η M₁ ∘ᵥ ρ⇐)              ≈⟨ ▷-resp-≈ (identityˡ B₁) ⟩
+      F B₂ ▷ id₂                                            ≈⟨ ▷id₂ ⟩
+      id₂                                                   ∎
       where
         open hom.HomReasoning
+        open MorphismReasoning using (center; pullʳ)
 
   abstract
     identityˡ-⊗-∘arr : (actionˡ-⊗ ∘ᵥ F-⊗ ▷ η M₁ ∘ᵥ ρ⇐) ∘ᵥ arr CoeqBimods ≈ id₂ ∘ᵥ arr CoeqBimods
     identityˡ-⊗-∘arr = begin
-      (actionˡ-⊗ ∘ᵥ F-⊗ ▷ η M₁ ∘ᵥ ρ⇐) ∘ᵥ arr CoeqBimods ≈⟨ assoc₂ ⟩
-      actionˡ-⊗ ∘ᵥ (F-⊗ ▷ η M₁ ∘ᵥ ρ⇐) ∘ᵥ arr CoeqBimods ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      actionˡ-⊗ ∘ᵥ F-⊗ ▷ η M₁ ∘ᵥ ρ⇐ ∘ᵥ arr CoeqBimods ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ ◁-∘ᵥ-ρ⇐ ⟩
-      actionˡ-⊗ ∘ᵥ F-⊗ ▷ η M₁ ∘ᵥ arr CoeqBimods ◁ id₁ ∘ᵥ ρ⇐ ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-      actionˡ-⊗ ∘ᵥ (F-⊗ ▷ η M₁ ∘ᵥ arr CoeqBimods ◁ id₁) ∘ᵥ ρ⇐ ≈⟨ refl⟩∘⟨ ◁-▷-exchg ⟩∘⟨refl ⟩
-      actionˡ-⊗ ∘ᵥ (arr CoeqBimods ◁ T M₁ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ η M₁) ∘ᵥ ρ⇐ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      actionˡ-⊗ ∘ᵥ arr CoeqBimods ◁ T M₁ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ η M₁ ∘ᵥ ρ⇐ ≈⟨ ⟺ assoc₂ ⟩
-      (actionˡ-⊗ ∘ᵥ arr CoeqBimods ◁ T M₁) ∘ᵥ (F B₂ ∘₁ F B₁) ▷ η M₁ ∘ᵥ ρ⇐ ≈⟨ ⟺ actionˡSq-⊗ ⟩∘⟨refl ⟩
-      (arr CoeqBimods ∘ᵥ actionˡ-∘) ∘ᵥ (F B₂ ∘₁ F B₁) ▷ η M₁ ∘ᵥ ρ⇐ ≈⟨ assoc₂ ⟩
-      arr CoeqBimods ∘ᵥ actionˡ-∘ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ η M₁ ∘ᵥ ρ⇐ ≈⟨ refl⟩∘⟨ identityˡ-∘ ⟩
-      arr CoeqBimods ∘ᵥ id₂ ≈⟨ identity₂ʳ ⟩
-      arr CoeqBimods ≈⟨ ⟺ identity₂ˡ ⟩
-      id₂ ∘ᵥ arr CoeqBimods ∎
+      (actionˡ-⊗ ∘ᵥ F-⊗ ▷ η M₁ ∘ᵥ ρ⇐) ∘ᵥ arr CoeqBimods          ≈⟨ glue (⟺ actionˡSq-⊗) ◁-▷-exchg-var ⟩
+      arr CoeqBimods ∘ᵥ actionˡ-∘ ∘ᵥ (F B₂ ∘₁ F B₁) ▷ η M₁ ∘ᵥ ρ⇐ ≈⟨ elimʳ identityˡ-∘ ⟩
+      arr CoeqBimods                                             ≈⟨ ⟺ identity₂ˡ ⟩
+      id₂ ∘ᵥ arr CoeqBimods                                      ∎
       where
         open hom.HomReasoning
+        open MorphismReasoning using (glue; elimʳ)
+
+        ◁-▷-exchg-var : CommutativeSquare
+                          (arr CoeqBimods)
+                          ((F B₂ ∘₁ F B₁) ▷ η M₁ ∘ᵥ ρ⇐)
+                          (F-⊗ ▷ η M₁ ∘ᵥ ρ⇐)
+                          (arr (CoeqBimods coeq-◁ T M₁))
+        ◁-▷-exchg-var = glue ◁-▷-exchg (⟺ ◁-∘ᵥ-ρ⇐)
 
   abstract
     identityˡ-⊗ : actionˡ-⊗ ∘ᵥ F-⊗ ▷ η M₁ ∘ᵥ ρ⇐ ≈ id₂
@@ -544,11 +541,8 @@ module Identity where
   abstract
     identityʳ-∘ : actionʳ-∘ ∘ᵥ η M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ λ⇐ ≈ id₂
     identityʳ-∘ = begin
-      actionʳ-∘ ∘ᵥ η M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ λ⇐ ≈⟨ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ η M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ λ⇐ ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ (α⇐ ∘ᵥ η M₃ ◁ (F B₂ ∘₁ F B₁)) ∘ᵥ λ⇐ ≈⟨ refl⟩∘⟨ α⇐-◁-∘₁ ⟩∘⟨refl ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ (η M₃ ◁ F B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ λ⇐ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      actionʳ B₂ ◁ F B₁ ∘ᵥ η M₃ ◁ F B₂ ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ λ⇐ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ unitorˡ-coherence-inv ⟩
+      actionʳ-∘ ∘ᵥ η M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ λ⇐ ≈⟨ center α⇐-◁-∘₁ ⟩
+      actionʳ B₂ ◁ F B₁ ∘ᵥ (η M₃ ◁ F B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ λ⇐ ≈⟨ refl⟩∘⟨ pullʳ (⟺ unitorˡ-coherence-inv)  ⟩
       actionʳ B₂ ◁ F B₁ ∘ᵥ η M₃ ◁ F B₂ ◁ F B₁ ∘ᵥ λ⇐ ◁ F B₁ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
       actionʳ B₂ ◁ F B₁ ∘ᵥ (η M₃ ◁ F B₂ ∘ᵥ λ⇐) ◁ F B₁ ≈⟨ ∘ᵥ-distr-◁ ⟩
       (actionʳ B₂ ∘ᵥ η M₃ ◁ F B₂ ∘ᵥ λ⇐) ◁ F B₁ ≈⟨ ◁-resp-≈ (identityʳ B₂) ⟩
@@ -556,25 +550,25 @@ module Identity where
       id₂ ∎
       where
         open hom.HomReasoning
+        open MorphismReasoning using (center; pullʳ)
 
   abstract
     identityʳ-⊗-∘arr : (actionʳ-⊗ ∘ᵥ η M₃ ◁ F-⊗ ∘ᵥ λ⇐) ∘ᵥ arr CoeqBimods ≈ id₂ ∘ᵥ arr CoeqBimods
     identityʳ-⊗-∘arr = begin
-      (actionʳ-⊗ ∘ᵥ η M₃ ◁ F-⊗ ∘ᵥ λ⇐) ∘ᵥ arr CoeqBimods ≈⟨ assoc₂ ⟩
-      actionʳ-⊗ ∘ᵥ (η M₃ ◁ F-⊗ ∘ᵥ λ⇐) ∘ᵥ arr CoeqBimods ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      actionʳ-⊗ ∘ᵥ η M₃ ◁ F-⊗ ∘ᵥ λ⇐ ∘ᵥ arr CoeqBimods ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ ▷-∘ᵥ-λ⇐ ⟩
-      actionʳ-⊗ ∘ᵥ η M₃ ◁ F-⊗ ∘ᵥ id₁ ▷ arr CoeqBimods ∘ᵥ λ⇐ ≈⟨ refl⟩∘⟨ ⟺ assoc₂ ⟩
-      actionʳ-⊗ ∘ᵥ (η M₃ ◁ F-⊗ ∘ᵥ id₁ ▷ arr CoeqBimods) ∘ᵥ λ⇐ ≈⟨ refl⟩∘⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
-      actionʳ-⊗ ∘ᵥ (T M₃ ▷ arr CoeqBimods ∘ᵥ η M₃ ◁ (F B₂ ∘₁ F B₁)) ∘ᵥ λ⇐ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-      actionʳ-⊗ ∘ᵥ T M₃ ▷ arr CoeqBimods ∘ᵥ η M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ λ⇐ ≈⟨ ⟺ assoc₂ ⟩
-      (actionʳ-⊗ ∘ᵥ T M₃ ▷ arr CoeqBimods) ∘ᵥ η M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ λ⇐ ≈⟨ ⟺ actionʳSq-⊗ ⟩∘⟨refl ⟩
-      (arr CoeqBimods ∘ᵥ actionʳ-∘) ∘ᵥ η M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ λ⇐ ≈⟨ assoc₂ ⟩
+      (actionʳ-⊗ ∘ᵥ η M₃ ◁ F-⊗ ∘ᵥ λ⇐) ∘ᵥ arr CoeqBimods ≈⟨ glue (⟺ actionʳSq-⊗) ◁-▷-exchg-var ⟩
       arr CoeqBimods ∘ᵥ actionʳ-∘ ∘ᵥ η M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ λ⇐ ≈⟨ refl⟩∘⟨ identityʳ-∘ ⟩
       arr CoeqBimods ∘ᵥ id₂ ≈⟨ identity₂ʳ ⟩
       arr CoeqBimods ≈⟨ ⟺ identity₂ˡ ⟩
       id₂ ∘ᵥ arr CoeqBimods ∎
       where
         open hom.HomReasoning
+        open MorphismReasoning using (glue)
+        ◁-▷-exchg-var :  CommutativeSquare
+                           (arr CoeqBimods)
+                           (η M₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ λ⇐)
+                           (η M₃ ◁ F-⊗ ∘ᵥ λ⇐)
+                           (arr (T M₃ ▷-coeq CoeqBimods))
+        ◁-▷-exchg-var = glue (⟺ ◁-▷-exchg) (⟺ ▷-∘ᵥ-λ⇐)
 
   abstract
     identityʳ-⊗ : actionʳ-⊗ ∘ᵥ (η M₃ ◁ F-⊗) ∘ᵥ λ⇐ ≈ id₂
