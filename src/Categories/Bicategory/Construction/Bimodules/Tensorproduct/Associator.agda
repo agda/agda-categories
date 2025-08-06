@@ -27,6 +27,7 @@ open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 open Shorthands
+
 import Categories.Diagram.Coequalizer
 import Categories.Diagram.Coequalizer.Properties
 import Categories.Morphism
@@ -277,8 +278,7 @@ module 2-cell where
 
       arr (CoeqBimods B₃ B₂) ◁ F B₁
         ∘ᵥ α⇐
-        ∘ᵥ F B₃ ▷ (actionˡ B₂ ◁ F B₁
-                 ∘ᵥ α⇐)
+        ∘ᵥ F B₃ ▷ (actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐)
         ∘ᵥ α⇒                    ∎
 
       where
@@ -327,20 +327,16 @@ module 2-cell where
         ∘ᵥ α⇒                  ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
 
       F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ F B₃ ▷ (actionʳ B₂ ◁ F B₁
-                 ∘ᵥ α⇐)
+        ∘ᵥ F B₃ ▷ (actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐)
         ∘ᵥ F B₃ ▷ α⇒
         ∘ᵥ α⇒                  ≈⟨ sym-assoc₂ ⟩
 
       (F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ F B₃ ▷ (actionʳ B₂ ◁ F B₁
-                 ∘ᵥ α⇐))
+        ∘ᵥ F B₃ ▷ (actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐))
         ∘ᵥ F B₃ ▷ α⇒
         ∘ᵥ α⇒                  ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
 
-      F B₃ ▷ (arr (CoeqBimods B₂ B₁)
-            ∘ᵥ actionʳ B₂ ◁ F B₁
-            ∘ᵥ α⇐)
+      F B₃ ▷ (arr (CoeqBimods B₂ B₁) ∘ᵥ actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐)
         ∘ᵥ F B₃ ▷ α⇒
         ∘ᵥ α⇒                  ≈⟨ ▷-resp-≈ actionʳSq-⊗ ⟩∘⟨refl ⟩
 
@@ -368,8 +364,7 @@ module 2-cell where
 
       (F B₃ ▷ arr (CoeqBimods B₂ B₁)
         ∘ᵥ α⇒)
-        ∘ᵥ (actionˡ B₃ ◁ F B₂
-            ∘ᵥ α⇐) ◁ F B₁             ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
+        ∘ᵥ (actionˡ B₃ ◁ F B₂ ∘ᵥ α⇐) ◁ F B₁             ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
 
       (F B₃ ▷ arr (CoeqBimods B₂ B₁)
         ∘ᵥ α⇒)
@@ -471,7 +466,7 @@ module 2-cell where
 
   abstract
     hexagon : arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)) ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁) ∘ᵥ α⇒
-              ≈ α⇒⊗ ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁
+            ≈ α⇒⊗ ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁
     hexagon = IsoFitsInPentagon
                 coeqᶠ coeqᵍ coeqʰ coeqⁱ
                 f⇒i₁ f⇒i₂ g⇒h₁ g⇒h₂
