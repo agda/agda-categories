@@ -34,37 +34,37 @@ open TensorproductOfBimodules using (CoeqBimods; act-to-the-left; act-to-the-rig
 open TensorproductOfBimodules.Left-Action using (actionˡ-⊗)
 open TensorproductOfBimodules.Right-Action using (actionʳ-⊗)
 
-private
-  sq-act-to-the-left : CommutativeSquare
-                         (α h₂ ⊚₁ id₂ ⊚₁ α h₁)
-                         (act-to-the-left B₂ B₁)
-                         (act-to-the-left B'₂ B'₁)
-                         (α h₂ ⊚₁ α h₁)
-  sq-act-to-the-left = begin
-    (act-to-the-left B'₂ B'₁) ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩
-    (id₂ ∘ᵥ α h₂) ⊚₁ (actionʳ B'₁ ∘ᵥ id₂ ⊚₁ α h₁) ≈⟨ identity₂ˡ ⟩⊚⟨ linearʳ h₁ ⟩
-    α h₂ ⊚₁ (α h₁ ∘ᵥ actionʳ B₁) ≈⟨ ⟺ identity₂ʳ ⟩⊚⟨refl ⟩
-    (α h₂ ∘ᵥ id₂) ⊚₁ (α h₁ ∘ᵥ actionʳ B₁) ≈⟨ ∘ᵥ-distr-⊚ ⟩
-    α h₂ ⊚₁ α h₁ ∘ᵥ (act-to-the-left B₂ B₁) ∎
-    where
-      open hom.HomReasoning
+abstract
+  private
+    sq-act-to-the-left : CommutativeSquare
+                           (α h₂ ⊚₁ id₂ ⊚₁ α h₁)
+                           (act-to-the-left B₂ B₁)
+                           (act-to-the-left B'₂ B'₁)
+                           (α h₂ ⊚₁ α h₁)
+    sq-act-to-the-left = begin
+      (act-to-the-left B'₂ B'₁) ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩
+      (id₂ ∘ᵥ α h₂) ⊚₁ (actionʳ B'₁ ∘ᵥ id₂ ⊚₁ α h₁)    ≈⟨ identity₂ˡ ⟩⊚⟨ linearʳ h₁ ⟩
+      α h₂ ⊚₁ (α h₁ ∘ᵥ actionʳ B₁)                     ≈⟨ ⟺ identity₂ʳ ⟩⊚⟨refl ⟩
+      (α h₂ ∘ᵥ id₂) ⊚₁ (α h₁ ∘ᵥ actionʳ B₁)            ≈⟨ ∘ᵥ-distr-⊚ ⟩
+      α h₂ ⊚₁ α h₁ ∘ᵥ (act-to-the-left B₂ B₁)          ∎
+      where
+        open hom.HomReasoning
 
-  sq-act-to-the-right : CommutativeSquare
-                          (α h₂ ⊚₁ id₂ ⊚₁ α h₁)
-                          (act-to-the-right B₂ B₁)
-                          (act-to-the-right B'₂ B'₁)
-                          (α h₂ ⊚₁ α h₁)
-  sq-act-to-the-right = begin
-    act-to-the-right B'₂ B'₁ ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁         ≈⟨ pullʳ α⇐-⊚ ⟩
-    actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁ ∘ᵥ α⇐      ≈⟨ pullˡ (⟺ ∘ᵥ-distr-⊚) ⟩
-    ((actionˡ B'₂ ∘ᵥ (α h₂ ⊚₁ id₂)) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐ ≈⟨ linearˡ h₂ ⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
-    -- ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐           ≈⟨ refl⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
-    ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ α h₁) ∘ᵥ α⇐                    ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
-    ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ (α h₁ ∘ᵥ id₂)) ∘ᵥ α⇐           ≈⟨ pushˡ ∘ᵥ-distr-⊚ ⟩
-    α h₂ ⊚₁ α h₁ ∘ᵥ act-to-the-right B₂ B₁                  ∎
-    where
-      open hom.HomReasoning
-      open MorphismReasoning using (pullʳ; pullˡ; pushˡ)
+    sq-act-to-the-right : CommutativeSquare
+                            (α h₂ ⊚₁ id₂ ⊚₁ α h₁)
+                            (act-to-the-right B₂ B₁)
+                            (act-to-the-right B'₂ B'₁)
+                            (α h₂ ⊚₁ α h₁)
+    sq-act-to-the-right = begin
+      act-to-the-right B'₂ B'₁ ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁         ≈⟨ pullʳ α⇐-⊚ ⟩
+      actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁ ∘ᵥ α⇐      ≈⟨ pullˡ (⟺ ∘ᵥ-distr-⊚) ⟩
+      ((actionˡ B'₂ ∘ᵥ (α h₂ ⊚₁ id₂)) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐ ≈⟨ linearˡ h₂ ⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
+      ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ α h₁) ∘ᵥ α⇐                    ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
+      ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ (α h₁ ∘ᵥ id₂)) ∘ᵥ α⇐           ≈⟨ pushˡ ∘ᵥ-distr-⊚ ⟩
+      α h₂ ⊚₁ α h₁ ∘ᵥ act-to-the-right B₂ B₁                  ∎
+      where
+        open hom.HomReasoning
+        open MorphismReasoning using (pullʳ; pullˡ; pushˡ)
 
 abstract
   -- to speed-up type-echecking we hide the the underliying 2-cell α-⊗ under an abstract clause --
