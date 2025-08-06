@@ -19,7 +19,9 @@ open ComposeWithLocalCoequalizer 𝒞 localCoeq
 
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
-open TensorproductOfBimodules using () renaming (Tensorproduct to infixr 30 _⊗₀_)
+open TensorproductOfBimodules using (F-⊗) renaming (Tensorproduct to infixr 30 _⊗₀_)
+open TensorproductOfBimodules.Left-Action using (actionˡ-⊗)
+open TensorproductOfBimodules.Right-Action using (actionʳ-⊗)
 open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
 
 import Categories.Bicategory.Extras as Bicat
@@ -187,23 +189,23 @@ module 2-cell where
     sq₂ᶠⁱ : CommutativeSquare (arr coeqᶠ) h₂ f⇒i₂ (arr coeqⁱ)
     sq₂ᶠⁱ = begin
 
-      (Bimodule.actionˡ (B₃ ⊗₀ B₂) ◁ F B₁
+      (actionˡ-⊗ B₃ B₂ ◁ F B₁
         ∘ᵥ α⇐)
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ (T M₂ ∘₁ F B₁) ≈⟨ assoc₂ ⟩
 
-      Bimodule.actionˡ (B₃ ⊗₀ B₂) ◁ F B₁
+      actionˡ-⊗ B₃ B₂ ◁ F B₁
         ∘ᵥ α⇐
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ (T M₂ ∘₁ F B₁) ≈⟨ refl⟩∘⟨ α⇐-◁-∘₁ ⟩
 
-      Bimodule.actionˡ (B₃ ⊗₀ B₂) ◁ F B₁
+      actionˡ-⊗ B₃ B₂ ◁ F B₁
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ T M₂ ◁ F B₁
         ∘ᵥ α⇐                      ≈⟨ sym-assoc₂ ⟩
 
-      (Bimodule.actionˡ (B₃ ⊗₀ B₂) ◁ F B₁
+      (actionˡ-⊗ B₃ B₂ ◁ F B₁
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ T M₂ ◁ F B₁)
         ∘ᵥ α⇐                      ≈⟨ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩
 
-      (Bimodule.actionˡ (B₃ ⊗₀ B₂)
+      (actionˡ-⊗ B₃ B₂
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ T M₂) ◁ F B₁
         ∘ᵥ α⇐                      ≈⟨ ◁-resp-≈ (⟺ actionˡSq-⊗) ⟩∘⟨refl ⟩
 
@@ -342,17 +344,17 @@ module 2-cell where
         ∘ᵥ F B₃ ▷ α⇒
         ∘ᵥ α⇒                  ≈⟨ ▷-resp-≈ actionʳSq-⊗ ⟩∘⟨refl ⟩
 
-      F B₃ ▷ (Bimodule.actionʳ (B₂ ⊗₀ B₁)
+      F B₃ ▷ (actionʳ-⊗ B₂ B₁
         ∘ᵥ T M₃ ▷ arr (CoeqBimods B₂ B₁))
         ∘ᵥ F B₃ ▷ α⇒
         ∘ᵥ α⇒                  ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
 
-      (F B₃ ▷ Bimodule.actionʳ (B₂ ⊗₀ B₁)
+      (F B₃ ▷ actionʳ-⊗ B₂ B₁
         ∘ᵥ F B₃ ▷ T M₃ ▷ arr (CoeqBimods B₂ B₁))
         ∘ᵥ F B₃ ▷ α⇒
         ∘ᵥ α⇒                  ≈⟨ assoc₂ ⟩
 
-      F B₃ ▷ Bimodule.actionʳ (B₂ ⊗₀ B₁)
+      F B₃ ▷ actionʳ-⊗ B₂ B₁
         ∘ᵥ F B₃ ▷ T M₃ ▷ arr (CoeqBimods B₂ B₁)
         ∘ᵥ F B₃ ▷ α⇒
         ∘ᵥ α⇒                  ∎
@@ -455,7 +457,7 @@ module 2-cell where
 
   
   abstract
-    Associator⊗Iso : Bimodule.F ((B₃ ⊗₀ B₂) ⊗₀ B₁) ≅ Bimodule.F (B₃ ⊗₀ B₂ ⊗₀ B₁)
+    Associator⊗Iso : F-⊗ (B₃ ⊗₀ B₂) B₁ ≅ F-⊗ B₃ (B₂ ⊗₀ B₁)
     Associator⊗Iso = CoeqsAreIsomorphic
                      coeqᶠ coeqᵍ coeqʰ coeqⁱ
                      f⇒i₁ f⇒i₂ g⇒h₁ g⇒h₂
@@ -464,7 +466,7 @@ module 2-cell where
       where
         open Categories.Diagram.Coequalizer.Properties.CoequalizerOfCoequalizer (hom (C M₁) (C M₄)) using (CoeqsAreIsomorphic)
 
-  α⇒⊗ : (Bimodule.F ((B₃ ⊗₀ B₂) ⊗₀ B₁))   ⇒₂   (Bimodule.F (B₃ ⊗₀ B₂ ⊗₀ B₁))
+  α⇒⊗ : F-⊗ (B₃ ⊗₀ B₂) B₁   ⇒₂   F-⊗ B₃ (B₂ ⊗₀ B₁)
   α⇒⊗ = _≅_.from Associator⊗Iso
 
   abstract
@@ -483,115 +485,115 @@ open 2-cell using (α⇒⊗; hexagon) public
 module Linear-Left where
 
   abstract
-    linearˡ∘arr∘arr : ((Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+    linearˡ∘arr∘arr : ((actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
                       ∘ᵥ α⇒⊗ ◁ T M₁)
                       ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
                       ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁
                       ≈ ((α⇒⊗
-                      ∘ᵥ Bimodule.actionˡ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
+                      ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁)
                       ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
                       ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁
     linearˡ∘arr∘arr = begin
 
-      ((Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      ((actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ α⇒⊗ ◁ T M₁)
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁ ≈⟨ assoc₂ ⟩∘⟨refl ⟩
 
-      (Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      (actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ α⇒⊗ ◁ T M₁
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁ ≈⟨ assoc₂ ⟩
 
-      Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ (α⇒⊗ ◁ T M₁
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
 
-      Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ α⇒⊗ ◁ T M₁
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                                               ∘ᵥ-distr-◁ ⟩
 
-      Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ α⇒⊗ ◁ T M₁
         ∘ᵥ (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
             ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁) ◁ T M₁ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
 
-      Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ (α⇒⊗
             ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
             ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁) ◁ T M₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈
                                                    (⟺ hexagon) ⟩
 
-      Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
             ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
             ∘ᵥ α⇒) ◁ T M₁ ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
 
-      Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)) ◁ T M₁
         ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)
             ∘ᵥ α⇒) ◁ T M₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
 
-      Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)) ◁ T M₁
         ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁
         ∘ᵥ α⇒ ◁ T M₁ ≈⟨ sym-assoc₂ ⟩
 
-      (Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      (actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)) ◁ T M₁)
         ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁
         ∘ᵥ α⇒ ◁ T M₁ ≈⟨ ⟺ (actionˡSq-⊗ B₃ (B₂ ⊗₀ B₁)) ⟩∘⟨refl ⟩
 
       (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ Bimodule.actionˡ (B₂ ⊗₀ B₁)
+        ∘ᵥ F B₃ ▷ actionˡ-⊗ B₂ B₁
         ∘ᵥ α⇒)
         ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁
         ∘ᵥ α⇒ ◁ T M₁ ≈⟨ assoc₂ ⟩
 
       arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ (F B₃ ▷ Bimodule.actionˡ (B₂ ⊗₀ B₁)
+        ∘ᵥ (F B₃ ▷ actionˡ-⊗ B₂ B₁
         ∘ᵥ α⇒)
         ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁
         ∘ᵥ α⇒ ◁ T M₁ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
 
       arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ Bimodule.actionˡ (B₂ ⊗₀ B₁)
+        ∘ᵥ F B₃ ▷ actionˡ-⊗ B₂ B₁
         ∘ᵥ α⇒
         ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁
         ∘ᵥ α⇒ ◁ T M₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                                    sym-assoc₂ ⟩
 
       arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ Bimodule.actionˡ (B₂ ⊗₀ B₁)
+        ∘ᵥ F B₃ ▷ actionˡ-⊗ B₂ B₁
         ∘ᵥ (α⇒
         ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁)
         ∘ᵥ α⇒ ◁ T M₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                                    α⇒-▷-◁ ⟩∘⟨refl ⟩
 
       arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ Bimodule.actionˡ (B₂ ⊗₀ B₁)
+        ∘ᵥ F B₃ ▷ actionˡ-⊗ B₂ B₁
         ∘ᵥ (F B₃ ▷ (arr (CoeqBimods B₂ B₁) ◁ T M₁)
         ∘ᵥ α⇒)
         ∘ᵥ α⇒ ◁ T M₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                                    assoc₂ ⟩
 
       arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ Bimodule.actionˡ (B₂ ⊗₀ B₁)
+        ∘ᵥ F B₃ ▷ actionˡ-⊗ B₂ B₁
         ∘ᵥ F B₃ ▷ (arr (CoeqBimods B₂ B₁) ◁ T M₁)
         ∘ᵥ α⇒
         ∘ᵥ α⇒ ◁ T M₁ ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
 
       arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ (F B₃ ▷ Bimodule.actionˡ (B₂ ⊗₀ B₁)
+        ∘ᵥ (F B₃ ▷ actionˡ-⊗ B₂ B₁
         ∘ᵥ F B₃ ▷ (arr (CoeqBimods B₂ B₁) ◁ T M₁))
         ∘ᵥ α⇒
         ∘ᵥ α⇒ ◁ T M₁ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
 
       arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ (Bimodule.actionˡ (B₂ ⊗₀ B₁)
+        ∘ᵥ F B₃ ▷ (actionˡ-⊗ B₂ B₁
                  ∘ᵥ arr (CoeqBimods B₂ B₁) ◁ T M₁)
         ∘ᵥ α⇒
         ∘ᵥ α⇒ ◁ T M₁                 ≈⟨ refl⟩∘⟨ ▷-resp-≈
@@ -737,17 +739,17 @@ module Linear-Left where
                                                  ⟩∘⟨refl ⟩
 
       α⇒⊗
-        ∘ᵥ (Bimodule.actionˡ ((B₃ ⊗₀ B₂) ⊗₀ B₁)
+        ∘ᵥ (actionˡ-⊗ (B₃ ⊗₀ B₂) B₁
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁      ≈⟨ sym-assoc₂ ⟩
 
       (α⇒⊗
-        ∘ᵥ (Bimodule.actionˡ ((B₃ ⊗₀ B₂) ⊗₀ B₁)
+        ∘ᵥ (actionˡ-⊗ (B₃ ⊗₀ B₂) B₁
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁))
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁      ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
 
       ((α⇒⊗
-        ∘ᵥ Bimodule.actionˡ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
+        ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁)
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁      ∎
 
@@ -756,93 +758,87 @@ module Linear-Left where
         open TensorproductOfBimodules.Left-Action using (actionˡSq-⊗)
 
   abstract
-    linearˡ∘arr : (Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
-                      ∘ᵥ α⇒⊗ ◁ T M₁)
-                      ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁
-                   ≈ (α⇒⊗
-                      ∘ᵥ Bimodule.actionˡ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
-                      ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁
+    linearˡ∘arr : (actionˡ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ α⇒⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁
+                ≈ (α⇒⊗ ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁) ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁
     linearˡ∘arr = Coequalizer⇒Epi
                     ((CoeqBimods B₃ B₂) coeq-◁ F B₁ coeq-◁ T M₁)
-                    ((Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+                    ((actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
                       ∘ᵥ α⇒⊗ ◁ T M₁)
                       ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
                     ((α⇒⊗
-                      ∘ᵥ Bimodule.actionˡ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
+                      ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁)
                       ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
                     linearˡ∘arr∘arr
       where
         open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
 
   abstract
-    linearˡ : Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁) ∘ᵥ α⇒⊗ ◁ T M₁
-                      ≈ α⇒⊗ ∘ᵥ Bimodule.actionˡ ((B₃ ⊗₀ B₂) ⊗₀ B₁)
+    linearˡ : actionˡ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ α⇒⊗ ◁ T M₁
+            ≈ α⇒⊗ ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁
     linearˡ = Coequalizer⇒Epi
-                    ((CoeqBimods (B₃ ⊗₀ B₂) B₁) coeq-◁ T M₁)
-                    (Bimodule.actionˡ (B₃ ⊗₀ B₂ ⊗₀ B₁)
-                      ∘ᵥ α⇒⊗ ◁ T M₁)
-                    (α⇒⊗
-                      ∘ᵥ Bimodule.actionˡ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
-                    linearˡ∘arr
+                ((CoeqBimods (B₃ ⊗₀ B₂) B₁) coeq-◁ T M₁)
+                (actionˡ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ α⇒⊗ ◁ T M₁)
+                (α⇒⊗ ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁)
+                linearˡ∘arr
       where
         open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
   -- end abstract --
 
 module Linear-Right where
   abstract
-    linearʳ∘arr∘arr : ((Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+    linearʳ∘arr∘arr : ((actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
                         ∘ᵥ T M₄ ▷ α⇒⊗)
                         ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)
                       ≈ ((α⇒⊗
-                        ∘ᵥ Bimodule.actionʳ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
+                        ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁)
                         ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)
     linearʳ∘arr∘arr = begin
 
-      ((Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      ((actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ T M₄ ▷ α⇒⊗)
         ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ assoc₂ ⟩
 
-      (Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ T M₄ ▷ α⇒⊗)
         ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ assoc₂ ⟩
 
-      Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ T M₄ ▷ α⇒⊗
         ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                                                 ∘ᵥ-distr-▷ ⟩
 
-      Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ T M₄ ▷ α⇒⊗
         ∘ᵥ T M₄ ▷ (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
                  ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
 
-      Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ T M₄ ▷ (α⇒⊗
                  ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
                  ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ refl⟩∘⟨ ▷-resp-≈
                                                    (⟺ hexagon) ⟩
 
-      Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
                  ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
                  ∘ᵥ α⇒) ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
 
-      Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
         ∘ᵥ T M₄ ▷ (F B₃ ▷ arr (CoeqBimods B₂ B₁)
                  ∘ᵥ α⇒) ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
 
-      Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
         ∘ᵥ T M₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁)
         ∘ᵥ T M₄ ▷ α⇒ ≈⟨ sym-assoc₂ ⟩
 
-      (Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
+      (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)))
         ∘ᵥ T M₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁)
         ∘ᵥ T M₄ ▷ α⇒ ≈⟨ ⟺ (actionʳSq-⊗ B₃ (B₂ ⊗₀ B₁)) ⟩∘⟨refl ⟩
@@ -998,60 +994,60 @@ module Linear-Right where
 
       (α⇒⊗
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ (Bimodule.actionʳ (B₃ ⊗₀ B₂)
+        ∘ᵥ (actionʳ-⊗ B₃ B₂
         ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ B₂)) ◁ F B₁
         ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩
 
       (α⇒⊗
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ (Bimodule.actionʳ (B₃ ⊗₀ B₂) ◁ F B₁
+        ∘ᵥ (actionʳ-⊗ B₃ B₂ ◁ F B₁
         ∘ᵥ (T M₄ ▷ arr (CoeqBimods B₃ B₂)) ◁ F B₁)
         ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
 
       (α⇒⊗
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ Bimodule.actionʳ (B₃ ⊗₀ B₂) ◁ F B₁
+        ∘ᵥ actionʳ-⊗ B₃ B₂ ◁ F B₁
         ∘ᵥ (T M₄ ▷ arr (CoeqBimods B₃ B₂)) ◁ F B₁
         ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ α⇐-▷-◁ ⟩
 
       (α⇒⊗
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ Bimodule.actionʳ (B₃ ⊗₀ B₂) ◁ F B₁
+        ∘ᵥ actionʳ-⊗ B₃ B₂ ◁ F B₁
         ∘ᵥ α⇐
         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
 
       (α⇒⊗
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ (Bimodule.actionʳ (B₃ ⊗₀ B₂) ◁ F B₁
+        ∘ᵥ (actionʳ-⊗ B₃ B₂ ◁ F B₁
         ∘ᵥ α⇐)
         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ assoc₂ ⟩
 
       α⇒⊗
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-        ∘ᵥ (Bimodule.actionʳ (B₃ ⊗₀ B₂) ◁ F B₁
+        ∘ᵥ (actionʳ-⊗ B₃ B₂ ◁ F B₁
         ∘ᵥ α⇐)
         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
 
       α⇒⊗
         ∘ᵥ (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-        ∘ᵥ Bimodule.actionʳ (B₃ ⊗₀ B₂) ◁ F B₁
+        ∘ᵥ actionʳ-⊗ B₃ B₂ ◁ F B₁
         ∘ᵥ α⇐)
         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ refl⟩∘⟨
                                                 actionʳSq-⊗ (B₃ ⊗₀ B₂) B₁
                                               ⟩∘⟨refl ⟩
 
       α⇒⊗
-        ∘ᵥ (Bimodule.actionʳ ((B₃ ⊗₀ B₂) ⊗₀ B₁)
+        ∘ᵥ (actionʳ-⊗ (B₃ ⊗₀ B₂) B₁
         ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ sym-assoc₂ ⟩
 
       (α⇒⊗
-        ∘ᵥ Bimodule.actionʳ ((B₃ ⊗₀ B₂) ⊗₀ B₁)
+        ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁
         ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
 
       ((α⇒⊗
-        ∘ᵥ Bimodule.actionʳ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
+        ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁)
         ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ∎
 
@@ -1060,33 +1056,23 @@ module Linear-Right where
         open TensorproductOfBimodules.Right-Action using (actionʳSq-⊗)
 
   abstract
-    linearʳ∘arr : (Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
-                    ∘ᵥ T M₄ ▷ α⇒⊗)
-                    ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-                  ≈ (α⇒⊗
-                    ∘ᵥ Bimodule.actionʳ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
-                    ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+    linearʳ∘arr : (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ α⇒⊗) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+                ≈ (α⇒⊗ ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
     linearʳ∘arr = Coequalizer⇒Epi
                     (T M₄ ▷-coeq ((CoeqBimods B₃ B₂) coeq-◁ F B₁))
-                    ((Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
-                      ∘ᵥ T M₄ ▷ α⇒⊗)
-                      ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-                    ((α⇒⊗
-                      ∘ᵥ Bimodule.actionʳ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
-                      ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
+                    ((actionʳ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ α⇒⊗) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
+                    ((α⇒⊗ ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                     linearʳ∘arr∘arr
       where
         open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
 
   abstract
-    linearʳ : Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁)
-              ∘ᵥ T M₄ ▷ α⇒⊗
-              ≈ α⇒⊗
-              ∘ᵥ Bimodule.actionʳ ((B₃ ⊗₀ B₂) ⊗₀ B₁)
+    linearʳ : actionʳ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ α⇒⊗
+            ≈ α⇒⊗ ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁
     linearʳ = Coequalizer⇒Epi
                 (T M₄ ▷-coeq (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-                (Bimodule.actionʳ (B₃ ⊗₀ B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ α⇒⊗)
-                (α⇒⊗ ∘ᵥ Bimodule.actionʳ ((B₃ ⊗₀ B₂) ⊗₀ B₁))
+                (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ α⇒⊗)
+                (α⇒⊗ ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁)
                 linearʳ∘arr
       where
         open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
