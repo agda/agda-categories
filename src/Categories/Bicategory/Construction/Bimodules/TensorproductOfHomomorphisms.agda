@@ -27,6 +27,7 @@ open Coequalizer using (arr)
 open import Categories.Diagram.Coequalizer.Properties (hom (C M₁) (C M₃)) using (⇒MapBetweenCoeq; ⇒MapBetweenCoeqSq)
 import Categories.Category
 open Categories.Category.Definitions (hom (C M₁) (C M₃)) using (CommutativeSquare)
+import Categories.Morphism.Reasoning (hom (C M₁) (C M₃)) as MorphismReasoning
 
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} {M₁} {M₂} {M₃} as TensorproductOfBimodules
 open TensorproductOfBimodules using (CoeqBimods; act-to-the-left; act-to-the-right; F-⊗) renaming (Tensorproduct to infixr 30 _⊗₀_)
@@ -54,18 +55,16 @@ private
                           (act-to-the-right B'₂ B'₁)
                           (α h₂ ⊚₁ α h₁)
   sq-act-to-the-right = begin
-    act-to-the-right B'₂ B'₁ ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁ ≈⟨ assoc₂ ⟩
-    actionˡ B'₂ ◁ F B'₁ ∘ᵥ α⇐ ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁ ≈⟨ refl⟩∘⟨ α⇐-⊚ ⟩
-    actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁ ∘ᵥ α⇐ ≈⟨ ⟺ assoc₂ ⟩
-    (actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
-    ((actionˡ B'₂ ∘ᵥ (α h₂ ⊚₁ id₂)) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐ ≈⟨ linearˡ h₂ ⟩⊚⟨refl ⟩∘⟨refl ⟩
-    ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐ ≈⟨ refl⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
-    ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
-    ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ (α h₁ ∘ᵥ id₂)) ∘ᵥ α⇐ ≈⟨ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
-    (α h₂ ⊚₁ α h₁ ∘ᵥ actionˡ B₂ ◁ F B₁) ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
-    α h₂ ⊚₁ α h₁ ∘ᵥ act-to-the-right B₂ B₁ ∎
+    act-to-the-right B'₂ B'₁ ∘ᵥ α h₂ ⊚₁ id₂ ⊚₁ α h₁         ≈⟨ pullʳ α⇐-⊚ ⟩
+    actionˡ B'₂ ◁ F B'₁ ∘ᵥ (α h₂ ⊚₁ id₂) ⊚₁ α h₁ ∘ᵥ α⇐      ≈⟨ pullˡ (⟺ ∘ᵥ-distr-⊚) ⟩
+    ((actionˡ B'₂ ∘ᵥ (α h₂ ⊚₁ id₂)) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐ ≈⟨ linearˡ h₂ ⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
+    -- ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐           ≈⟨ refl⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
+    ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ α h₁) ∘ᵥ α⇐                    ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
+    ((α h₂ ∘ᵥ actionˡ B₂) ⊚₁ (α h₁ ∘ᵥ id₂)) ∘ᵥ α⇐           ≈⟨ pushˡ ∘ᵥ-distr-⊚ ⟩
+    α h₂ ⊚₁ α h₁ ∘ᵥ act-to-the-right B₂ B₁                  ∎
     where
       open hom.HomReasoning
+      open MorphismReasoning using (pullʳ; pullˡ; pushˡ)
 
 abstract
   -- to speed-up type-echecking we hide the the underliying 2-cell α-⊗ under an abstract clause --
