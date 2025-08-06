@@ -77,13 +77,13 @@ module 2-cell where
 
 -}
 
-  X Y Z W : C M₁ ⇒₁ C M₄
+  X Y Z W : C M₁   ⇒₁   C M₄
   X = (F B₃ ∘₁ T M₃ ∘₁  F B₂) ∘₁ T M₂ ∘₁ F B₁
   Y = (F B₃ ∘₁ F B₂) ∘₁ T M₂ ∘₁ F B₁
   Z = (F B₃ ∘₁ T M₃ ∘₁ F B₂) ∘₁  F B₁
   W = (F B₃ ∘₁ F B₂) ∘₁ F B₁
 
-  X' Y' Z' W' : C M₁ ⇒₁ C M₄
+  X' Y' Z' W' : C M₁   ⇒₁   C M₄
   X' = F B₃ ∘₁ T M₃ ∘₁ F B₂ ∘₁ T M₂ ∘₁ F B₁
   Y' = F B₃ ∘₁ F B₂ ∘₁ T M₂ ∘₁ F B₁
   Z' = F B₃ ∘₁ T M₃ ∘₁ F B₂ ∘₁  F B₁
@@ -156,7 +156,7 @@ module 2-cell where
   coeqⁱ : Coequalizer i₁ i₂
   coeqⁱ = (CoeqBimods B₃ B₂) coeq-◁ F B₁
   
-  f⇒i₁ f⇒i₂ : obj coeqᶠ ⇒₂ obj coeqⁱ
+  f⇒i₁ f⇒i₂ : obj coeqᶠ   ⇒₂   obj coeqⁱ
   f⇒i₁ = act-to-the-left (B₃ ⊗₀ B₂) B₁
   f⇒i₂ = act-to-the-right (B₃ ⊗₀ B₂) B₁
   
@@ -464,7 +464,7 @@ module 2-cell where
       where
         open Categories.Diagram.Coequalizer.Properties.CoequalizerOfCoequalizer (hom (C M₁) (C M₄)) using (CoeqsAreIsomorphic)
 
-  α⇒⊗ : (Bimodule.F ((B₃ ⊗₀ B₂) ⊗₀ B₁)) ⇒₂ (Bimodule.F (B₃ ⊗₀ B₂ ⊗₀ B₁))
+  α⇒⊗ : (Bimodule.F ((B₃ ⊗₀ B₂) ⊗₀ B₁))   ⇒₂   (Bimodule.F (B₃ ⊗₀ B₂ ⊗₀ B₁))
   α⇒⊗ = _≅_.from Associator⊗Iso
 
   abstract
