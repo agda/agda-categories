@@ -99,38 +99,27 @@ abstract
 
     linearˡ-∘ : actionˡ-∘ B'₂ B'₁ ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈ (α h₂ ⊚₁ α h₁) ∘ᵥ actionˡ-∘ B₂ B₁
     linearˡ-∘ = begin
-       (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ assoc₂ ⟩
-      F B'₂ ▷ actionˡ B'₁ ∘ᵥ α⇒ ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ refl⟩∘⟨ α⇒-⊚ ⟩
-      F B'₂ ▷ actionˡ B'₁ ∘ᵥ α h₂ ⊚₁ (α h₁ ◁ T M₁) ∘ᵥ α⇒ ≈⟨ ⟺ assoc₂ ⟩
-      (F B'₂ ▷ actionˡ B'₁ ∘ᵥ α h₂ ⊚₁ (α h₁ ◁ T M₁)) ∘ᵥ α⇒ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
+       (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁         ≈⟨ pullʳ α⇒-⊚ ⟩
+      F B'₂ ▷ actionˡ B'₁ ∘ᵥ α h₂ ⊚₁ (α h₁ ◁ T M₁) ∘ᵥ α⇒    ≈⟨ pullˡ (⟺ ∘ᵥ-distr-⊚) ⟩
       ((id₂ ∘ᵥ α h₂) ⊚₁ (actionˡ B'₁ ∘ᵥ α h₁ ◁ T M₁)) ∘ᵥ α⇒ ≈⟨ identity₂ˡ ⟩⊚⟨ linearˡ h₁ ⟩∘⟨refl ⟩
-      (α h₂ ⊚₁ (α h₁ ∘ᵥ actionˡ B₁)) ∘ᵥ α⇒ ≈⟨ ⟺ identity₂ʳ ⟩⊚⟨refl ⟩∘⟨refl ⟩
-      ((α h₂ ∘ᵥ id₂) ⊚₁ (α h₁ ∘ᵥ actionˡ B₁)) ∘ᵥ α⇒ ≈⟨ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
-      ((α h₂ ⊚₁ α h₁) ∘ᵥ F B₂ ▷ actionˡ B₁) ∘ᵥ α⇒ ≈⟨ assoc₂ ⟩
-      (α h₂ ⊚₁ α h₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ∎
+      (α h₂ ⊚₁ (α h₁ ∘ᵥ actionˡ B₁)) ∘ᵥ α⇒                  ≈⟨ ⟺ identity₂ʳ ⟩⊚⟨refl ⟩∘⟨refl ⟩
+      ((α h₂ ∘ᵥ id₂) ⊚₁ (α h₁ ∘ᵥ actionˡ B₁)) ∘ᵥ α⇒         ≈⟨ pushˡ ∘ᵥ-distr-⊚ ⟩
+      (α h₂ ⊚₁ α h₁) ∘ᵥ  (actionˡ-∘ B₂ B₁)                  ∎
       where
         open hom.HomReasoning
+        open MorphismReasoning using (pullʳ; pullˡ; pushˡ)
 
   abstract
     linearˡ-⊗-∘arr : (actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods B₂ B₁ coeq-◁ T M₁)
                    ≈ (α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁) ∘ᵥ arr (CoeqBimods B₂ B₁ coeq-◁ T M₁)
     linearˡ-⊗-∘arr = begin
-      (actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods B₂ B₁ coeq-◁ T M₁) ≈⟨ assoc₂ ⟩
-      actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T M₁ ∘ᵥ arr (CoeqBimods B₂ B₁ coeq-◁ T M₁) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-      actionˡ-⊗ B'₂ B'₁ ∘ᵥ (α-⊗ ∘ᵥ arr (CoeqBimods B₂ B₁)) ◁ T M₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ (⟺ αSq-⊗) ⟩
-      actionˡ-⊗ B'₂ B'₁ ∘ᵥ (arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁)) ◁ T M₁ ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
-      actionˡ-⊗ B'₂ B'₁ ∘ᵥ arr (CoeqBimods B'₂ B'₁) ◁ T M₁ ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ ⟺ assoc₂ ⟩
-      (actionˡ-⊗ B'₂ B'₁ ∘ᵥ arr (CoeqBimods B'₂ B'₁) ◁ T M₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ ⟺ (actionˡSq-⊗ B'₂ B'₁) ⟩∘⟨refl ⟩
-      (arr (CoeqBimods B'₂ B'₁) ∘ᵥ  (actionˡ-∘ B'₂ B'₁)) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ assoc₂ ⟩
+      (actionˡ-⊗ B'₂ B'₁ ∘ᵥ α-⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods B₂ B₁ coeq-◁ T M₁)   ≈⟨ glue (⟺ (actionˡSq-⊗ B'₂ B'₁)) (⟺ (◁-resp-sq αSq-⊗)) ⟩
       arr (CoeqBimods B'₂ B'₁) ∘ᵥ  (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈⟨ refl⟩∘⟨ linearˡ-∘ ⟩
-      arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ ⟺ assoc₂ ⟩
-      (arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁)) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ αSq-⊗ ⟩∘⟨refl ⟩
-      (α-⊗ ∘ᵥ arr (CoeqBimods B₂ B₁)) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ assoc₂ ⟩
-      α-⊗ ∘ᵥ arr (CoeqBimods B₂ B₁) ∘ᵥ  (actionˡ-∘ B₂ B₁) ≈⟨ refl⟩∘⟨ actionˡSq-⊗ B₂ B₁ ⟩
-      α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁ ∘ᵥ arr (CoeqBimods B₂ B₁ coeq-◁ T M₁) ≈⟨ ⟺ assoc₂ ⟩
-      (α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁) ∘ᵥ arr (CoeqBimods B₂ B₁ coeq-◁ T M₁) ∎
+      arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ∘ᵥ  (actionˡ-∘ B₂ B₁)          ≈⟨ glue′ αSq-⊗ (actionˡSq-⊗ B₂ B₁) ⟩
+      (α-⊗ ∘ᵥ actionˡ-⊗ B₂ B₁) ∘ᵥ arr (CoeqBimods B₂ B₁ coeq-◁ T M₁)            ∎
       where
         open hom.HomReasoning
+        open MorphismReasoning using (glue; glue′)
         open TensorproductOfBimodules.Left-Action using (actionˡSq-⊗)
 
   abstract
@@ -146,38 +135,27 @@ abstract
   abstract
     linearʳ-∘ : actionʳ-∘ B'₂ B'₁ ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈ (α h₂ ⊚₁ α h₁) ∘ᵥ actionʳ-∘ B₂ B₁
     linearʳ-∘ = begin
-      actionʳ-∘ B'₂ B'₁ ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ assoc₂ ⟩
-      actionʳ B'₂ ◁ F B'₁ ∘ᵥ α⇐ ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ refl⟩∘⟨ α⇐-⊚ ⟩
-      actionʳ B'₂ ◁ F B'₁ ∘ᵥ ((T M₃ ▷ α h₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ ⟺ assoc₂ ⟩
-      (actionʳ B'₂ ◁ F B'₁ ∘ᵥ ((T M₃ ▷ α h₂) ⊚₁ α h₁)) ∘ᵥ α⇐ ≈⟨ ⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
-      ((actionʳ B'₂ ∘ᵥ T M₃ ▷ α h₂) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐ ≈⟨ linearʳ h₂ ⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
-      ((α h₂ ∘ᵥ actionʳ B₂) ⊚₁ α h₁) ∘ᵥ α⇐ ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
-      ((α h₂ ∘ᵥ actionʳ B₂) ⊚₁ (α h₁ ∘ᵥ id₂)) ∘ᵥ α⇐ ≈⟨ ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
-      ((α h₂ ⊚₁ α h₁) ∘ᵥ actionʳ B₂ ◁ F B₁) ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
-      (α h₂ ⊚₁ α h₁) ∘ᵥ actionʳ-∘ B₂ B₁ ∎
+      actionʳ-∘ B'₂ B'₁ ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁)             ≈⟨ pullʳ α⇐-⊚ ⟩
+      actionʳ B'₂ ◁ F B'₁ ∘ᵥ ((T M₃ ▷ α h₂) ⊚₁ α h₁) ∘ᵥ α⇐   ≈⟨ pullˡ (⟺ ∘ᵥ-distr-⊚) ⟩
+      ((actionʳ B'₂ ∘ᵥ T M₃ ▷ α h₂) ⊚₁ (id₂ ∘ᵥ α h₁)) ∘ᵥ α⇐  ≈⟨ linearʳ h₂ ⟩⊚⟨ identity₂ˡ ⟩∘⟨refl ⟩
+      ((α h₂ ∘ᵥ actionʳ B₂) ⊚₁ α h₁) ∘ᵥ α⇐                   ≈⟨ refl⟩⊚⟨ ⟺ identity₂ʳ ⟩∘⟨refl ⟩
+      ((α h₂ ∘ᵥ actionʳ B₂) ⊚₁ (α h₁ ∘ᵥ id₂)) ∘ᵥ α⇐          ≈⟨ pushˡ ∘ᵥ-distr-⊚ ⟩
+      (α h₂ ⊚₁ α h₁) ∘ᵥ actionʳ-∘ B₂ B₁                      ∎
       where
         open hom.HomReasoning
+        open MorphismReasoning using (pullʳ; pullˡ; pushˡ)
 
   abstract
     linearʳ-⊗-∘arr : (actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ α-⊗) ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods B₂ B₁)
                    ≈ (α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁) ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods B₂ B₁)
     linearʳ-⊗-∘arr = begin
-      (actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ α-⊗) ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods B₂ B₁) ≈⟨ assoc₂ ⟩
-      actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ α-⊗ ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods B₂ B₁) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
-      actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ (α-⊗ ∘ᵥ arr (CoeqBimods B₂ B₁)) ≈⟨ refl⟩∘⟨ ▷-resp-≈ (⟺ αSq-⊗) ⟩
-      actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ (arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁)) ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
-      actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ arr (CoeqBimods B'₂ B'₁) ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ ⟺ assoc₂ ⟩
-      (actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ arr (CoeqBimods B'₂ B'₁)) ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ ⟺ (actionʳSq-⊗ B'₂ B'₁) ⟩∘⟨refl ⟩
-      (arr (CoeqBimods B'₂ B'₁) ∘ᵥ actionʳ-∘ B'₂ B'₁) ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ assoc₂ ⟩
-      arr (CoeqBimods B'₂ B'₁) ∘ᵥ actionʳ-∘ B'₂ B'₁ ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁) ≈⟨ refl⟩∘⟨ linearʳ-∘ ⟩
-      arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ∘ᵥ actionʳ-∘ B₂ B₁ ≈⟨ ⟺ assoc₂ ⟩
-      (arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁)) ∘ᵥ actionʳ-∘ B₂ B₁ ≈⟨ αSq-⊗ ⟩∘⟨refl ⟩
-      (α-⊗ ∘ᵥ arr (CoeqBimods B₂ B₁)) ∘ᵥ actionʳ-∘ B₂ B₁ ≈⟨ assoc₂ ⟩
-      α-⊗ ∘ᵥ arr (CoeqBimods B₂ B₁) ∘ᵥ actionʳ-∘ B₂ B₁ ≈⟨ refl⟩∘⟨ actionʳSq-⊗ B₂ B₁ ⟩
-      α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁ ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods B₂ B₁) ≈⟨ ⟺ assoc₂ ⟩
-      (α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁) ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods B₂ B₁) ∎
+      (actionʳ-⊗ B'₂ B'₁ ∘ᵥ T M₃ ▷ α-⊗) ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods B₂ B₁) ≈⟨ glue (⟺ (actionʳSq-⊗ B'₂ B'₁)) (⟺ (▷-resp-sq αSq-⊗)) ⟩
+      arr (CoeqBimods B'₂ B'₁) ∘ᵥ actionʳ-∘ B'₂ B'₁ ∘ᵥ T M₃ ▷ (α h₂ ⊚₁ α h₁)  ≈⟨ refl⟩∘⟨ linearʳ-∘ ⟩
+      arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ∘ᵥ actionʳ-∘ B₂ B₁           ≈⟨ glue′ αSq-⊗ (actionʳSq-⊗ B₂ B₁) ⟩
+      (α-⊗ ∘ᵥ actionʳ-⊗ B₂ B₁) ∘ᵥ arr (T M₃ ▷-coeq CoeqBimods B₂ B₁)          ∎
       where
         open hom.HomReasoning
+        open MorphismReasoning using (glue; glue′)
         open TensorproductOfBimodules.Right-Action using (actionʳSq-⊗)
 
   abstract
