@@ -40,10 +40,10 @@ Bimodules = record
       ; F-resp-≈ = λ {_} {_} {(h₂ , h₁)} {(h'₂ , h'₁)} (e₂ , e₁) → ≈Preservation.⊗₁-resp-≈ h₂ h'₂ h₁ h'₁ e₂ e₁
       }
     ; ⊚-assoc = niHelper record
-      { η = λ ((B₃ , B₂) , B₁) → _≅_.from (Associator⊗ {B₃ = B₃} {B₂} {B₁})
-      ; η⁻¹ = λ ((B₃ , B₂) , B₁) → _≅_.to (Associator⊗ {B₃ = B₃} {B₂} {B₁})
-      ; commute = λ ((f₃ , f₂) , f₁) → α⇒⊗-natural f₃ f₂ f₁
-      ; iso = λ ((B₃ , B₂) , B₁) → _≅_.iso (Associator⊗ {B₃ = B₃} {B₂} {B₁})
+      { η = λ ((B₃ , B₂) , B₁) → _≅_.from (associator-⊗ {B₃ = B₃} {B₂} {B₁})
+      ; η⁻¹ = λ ((B₃ , B₂) , B₁) → _≅_.to (associator-⊗ {B₃ = B₃} {B₂} {B₁})
+      ; commute = λ ((f₃ , f₂) , f₁) → α⇒-⊗-natural f₃ f₂ f₁
+      ; iso = λ ((B₃ , B₂) , B₁) → _≅_.iso (associator-⊗ {B₃ = B₃} {B₂} {B₁})
       }
     ; unitˡ = niHelper record
       { η = λ (_ , B) → _≅_.from (Unitorˡ⊗ {B = B})
@@ -69,9 +69,9 @@ Bimodules = record
     open import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
     open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Functorial {𝒞 = 𝒞} {localCoeq}
     open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator {𝒞 = 𝒞} {localCoeq}
-      using (Associator⊗)
+      using (associator-⊗)
     open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator.Naturality {𝒞 = 𝒞} {localCoeq}
-      using (α⇒⊗-natural)
+      using (α⇒-⊗-natural)
     import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor {𝒞 = 𝒞} {localCoeq} as Unitor
     open Unitor.Left-Unitor using (Unitorˡ⊗)
     open Unitor.Right-Unitor using (Unitorʳ⊗)

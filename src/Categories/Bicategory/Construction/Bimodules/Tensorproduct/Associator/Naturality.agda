@@ -46,119 +46,119 @@ open Bimodule B₃' using () renaming (F to F₃')
 
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator
   {o} {ℓ} {e} {t} {𝒞} {localCoeq} {M₁} {M₂} {M₃} {M₄}
-  using (Associator⊗; α⇒⊗; hexagon)
+  using (α⇒-⊗; hexagon)
   
 abstract
-  α⇒⊗-natural∘arr∘arr : ((α⇒⊗ {B₃'} {B₂'} {B₁'}
+  α⇒-⊗-natural∘arr∘arr : ((α⇒-⊗ {B₃'} {B₂'} {B₁'}
                           ∘ᵥ Bimodhom.α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
                           ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                           ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁
                         ≈ ((Bimodhom.α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
-                            ∘ᵥ α⇒⊗ {B₃} {B₂} {B₁})
+                            ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
                             ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                             ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁
-  α⇒⊗-natural∘arr∘arr = begin
+  α⇒-⊗-natural∘arr∘arr = begin
 
-    ((α⇒⊗ {B₃'} {B₂'} {B₁'}
+    ((α⇒-⊗ {B₃'} {B₂'} {B₁'}
       ∘ᵥ Bimodhom.α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
       ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
       ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ assoc₂ ⟩
 
-    (α⇒⊗ {B₃'} {B₂'} {B₁'}
+    (α⇒-⊗ {B₃'} {B₂'} {B₁'}
       ∘ᵥ Bimodhom.α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
       ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
       ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ assoc₂ ⟩
 
-    α⇒⊗ {B₃'} {B₂'} {B₁'}
+    α⇒-⊗ {B₃'} {B₂'} {B₁'}
     ∘ᵥ Bimodhom.α ((f₃ ⊗₁ f₂) ⊗₁ f₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
 
-    α⇒⊗
+    α⇒-⊗
     ∘ᵥ (Bimodhom.α ((f₃ ⊗₁ f₂) ⊗₁ f₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ refl⟩∘⟨ ⟺ (αSq-⊗ (f₃ ⊗₁ f₂) f₁) ⟩∘⟨refl ⟩
 
-    α⇒⊗
+    α⇒-⊗
     ∘ᵥ (Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
     ∘ᵥ Bimodhom.α (f₃ ⊗₁ f₂) ⊚₁ Bimodhom.α f₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
 
-    α⇒⊗
+    α⇒-⊗
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
     ∘ᵥ Bimodhom.α (f₃ ⊗₁ f₂) ⊚₁ Bimodhom.α f₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                                      ⟺ identity₂ˡ ⟩⊚⟨ ⟺ identity₂ʳ
                                    ⟩∘⟨refl ⟩
 
-    α⇒⊗
+    α⇒-⊗
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
     ∘ᵥ (id₂ ∘ᵥ Bimodhom.α (f₃ ⊗₁ f₂))
         ⊚₁ (Bimodhom.α f₁ ∘ᵥ id₂)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                                      ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
 
-    α⇒⊗
+    α⇒-⊗
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
     ∘ᵥ (Coequalizer.obj (CoeqBimods B₃' B₂') ▷ Bimodhom.α f₁
     ∘ᵥ Bimodhom.α (f₃ ⊗₁ f₂) ◁ F₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ assoc₂ ⟩
 
-    α⇒⊗
+    α⇒-⊗
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
     ∘ᵥ Coequalizer.obj (CoeqBimods B₃' B₂') ▷ Bimodhom.α f₁
     ∘ᵥ Bimodhom.α (f₃ ⊗₁ f₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨
                                      ◁-resp-sq (⟺ (αSq-⊗ f₃ f₂)) ⟩
 
-    α⇒⊗
+    α⇒-⊗
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
     ∘ᵥ Coequalizer.obj (CoeqBimods B₃' B₂') ▷ Bimodhom.α f₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃' B₂') ◁ F₁
     ∘ᵥ Bimodhom.α f₃ ⊚₁ Bimodhom.α f₂ ◁ F₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                                               sym-assoc₂ ⟩
 
-    α⇒⊗
+    α⇒-⊗
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
     ∘ᵥ (Coequalizer.obj (CoeqBimods B₃' B₂') ▷ Bimodhom.α f₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃' B₂') ◁ F₁)
     ∘ᵥ Bimodhom.α f₃ ⊚₁ Bimodhom.α f₂ ◁ F₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                                               ◁-▷-exchg ⟩∘⟨refl ⟩
 
-    α⇒⊗
+    α⇒-⊗
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
     ∘ᵥ (Coequalizer.arr (CoeqBimods B₃' B₂') ◁ F₁'
     ∘ᵥ (F₃' ∘₁ F₂') ▷ Bimodhom.α f₁)
     ∘ᵥ Bimodhom.α f₃ ⊚₁ Bimodhom.α f₂ ◁ F₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                                               assoc₂ ⟩
 
-    α⇒⊗
+    α⇒-⊗
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃' B₂') ◁ F₁'
     ∘ᵥ (F₃' ∘₁ F₂') ▷ Bimodhom.α f₁
     ∘ᵥ Bimodhom.α f₃ ⊚₁ Bimodhom.α f₂ ◁ F₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨
                                               ⟺ ∘ᵥ-distr-⊚ ⟩
 
-    α⇒⊗
+    α⇒-⊗
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃' B₂') ◁ F₁'
     ∘ᵥ (id₂ ∘ᵥ Bimodhom.α f₃ ⊚₁ Bimodhom.α f₂)
         ⊚₁ (Bimodhom.α f₁ ∘ᵥ id₂) ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨
                                      identity₂ˡ ⟩⊚⟨ identity₂ʳ ⟩
 
-    α⇒⊗
+    α⇒-⊗
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃' B₂') ◁ F₁'
     ∘ᵥ (Bimodhom.α f₃ ⊚₁ Bimodhom.α f₂)
         ⊚₁ Bimodhom.α f₁ ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
 
-    α⇒⊗
+    α⇒-⊗
     ∘ᵥ (Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃' B₂') ◁ F₁')
     ∘ᵥ (Bimodhom.α f₃ ⊚₁ Bimodhom.α f₂)
         ⊚₁ Bimodhom.α f₁ ≈⟨ sym-assoc₂ ⟩
 
-    (α⇒⊗
+    (α⇒-⊗
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃' ⊗₀ B₂') B₁')
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃' B₂') ◁ F₁')
     ∘ᵥ (Bimodhom.α f₃ ⊚₁ Bimodhom.α f₂)
@@ -272,17 +272,17 @@ abstract
     ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ hexagon {B₃} {B₂} {B₁} ⟩
 
     Bimodhom.α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
-    ∘ᵥ α⇒⊗ {B₃} {B₂} {B₁}
+    ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁}
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ sym-assoc₂ ⟩
 
     (Bimodhom.α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
-    ∘ᵥ α⇒⊗ {B₃} {B₂} {B₁})
+    ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ≈⟨ sym-assoc₂ ⟩
 
     ((Bimodhom.α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
-    ∘ᵥ α⇒⊗ {B₃} {B₂} {B₁})
+    ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁ ∎
 
@@ -290,28 +290,28 @@ abstract
       open hom.HomReasoning
       open TensorproductOfHomomorphisms using (αSq-⊗)
 
-  α⇒⊗-natural∘arr : (α⇒⊗ {B₃'} {B₂'} {B₁'}
+  α⇒-⊗-natural∘arr : (α⇒-⊗ {B₃'} {B₂'} {B₁'}
                      ∘ᵥ Bimodhom.α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
                      ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-                     ≈ (Bimodhom.α (f₃ ⊗₁ (f₂ ⊗₁ f₁)) ∘ᵥ α⇒⊗ {B₃} {B₂} {B₁})
+                     ≈ (Bimodhom.α (f₃ ⊗₁ (f₂ ⊗₁ f₁)) ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
                         ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-  α⇒⊗-natural∘arr = Coequalizer⇒Epi
+  α⇒-⊗-natural∘arr = Coequalizer⇒Epi
                       ((CoeqBimods B₃ B₂) coeq-◁ F₁)
-                      ((α⇒⊗ {B₃'} {B₂'} {B₁'}
+                      ((α⇒-⊗ {B₃'} {B₂'} {B₁'}
                         ∘ᵥ Bimodhom.α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
                         ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                       ((Bimodhom.α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
-                        ∘ᵥ α⇒⊗ {B₃} {B₂} {B₁})
+                        ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
                         ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-                      α⇒⊗-natural∘arr∘arr
+                      α⇒-⊗-natural∘arr∘arr
 
-  α⇒⊗-natural : α⇒⊗ {B₃'} {B₂'} {B₁'}
+  α⇒-⊗-natural : α⇒-⊗ {B₃'} {B₂'} {B₁'}
                 ∘ᵥ Bimodhom.α ((f₃ ⊗₁ f₂) ⊗₁ f₁)
                 ≈ Bimodhom.α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
-                  ∘ᵥ α⇒⊗ {B₃} {B₂} {B₁}
-  α⇒⊗-natural = Coequalizer⇒Epi
+                  ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁}
+  α⇒-⊗-natural = Coequalizer⇒Epi
                       (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-                      (α⇒⊗ ∘ᵥ Bimodhom.α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
-                      (Bimodhom.α (f₃ ⊗₁ f₂ ⊗₁ f₁) ∘ᵥ α⇒⊗)
-                      α⇒⊗-natural∘arr
+                      (α⇒-⊗ ∘ᵥ Bimodhom.α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
+                      (Bimodhom.α (f₃ ⊗₁ f₂ ⊗₁ f₁) ∘ᵥ α⇒-⊗)
+                      α⇒-⊗-natural∘arr
 -- end abstract --

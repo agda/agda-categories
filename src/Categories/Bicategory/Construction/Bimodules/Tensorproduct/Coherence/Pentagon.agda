@@ -39,7 +39,7 @@ open HomCat
 
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator
   {𝒞 = 𝒞} {localCoeq}
-  using (Associator⊗From; hexagon)
+  using (associator-⊗-from; hexagon)
 
 open TensorproductOfBimodules using (CoeqBimods)
 
@@ -53,7 +53,7 @@ abstract
   -- We reduce the pentagon law for the tensorproduct to the pentagon law in 𝒞 --
   -- For this, we consider a prism with the following five faces. --
 
-  face[[43]2]1⇒[43]21 : Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
+  face[[43]2]1⇒[43]21 : Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
                         ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
                         ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
                         ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
@@ -63,25 +63,25 @@ abstract
                           ∘ᵥ associator.from {f = F₄ ∘₁ F₃} {F₂} {F₁}
   face[[43]2]1⇒[43]21 = begin
   
-    Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
+    Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ sym-assoc₂ ⟩
   
-    (Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
+    (Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ sym-assoc₂ ⟩
   
-    ((Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
+    ((Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ assoc₂ ⟩∘⟨refl ⟩
   
-    (Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
+    (Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
@@ -131,7 +131,7 @@ abstract
     where
       open hom.HomReasoning
 
-  face[43]21⇒4321 : Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+  face[43]21⇒4321 : Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
                     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) (B₂ ⊗₀ B₁))
                     ∘ᵥ Coequalizer.obj (CoeqBimods B₄ B₃) ▷ Coequalizer.arr (CoeqBimods B₂ B₁)
                     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ (F₂ ∘₁ F₁)
@@ -141,31 +141,31 @@ abstract
                       ∘ᵥ associator.from {f = F₄} {F₃} {F₂ ∘₁ F₁}
   face[43]21⇒4321 = begin
   
-    Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+    Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) (B₂ ⊗₀ B₁))
     ∘ᵥ Coequalizer.obj (CoeqBimods B₄ B₃) ▷ Coequalizer.arr (CoeqBimods B₂ B₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ (F₂ ∘₁ F₁)
     ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ◁-▷-exchg ⟩
 
-    Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+    Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) (B₂ ⊗₀ B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ Coequalizer.obj (CoeqBimods B₂ B₁)
     ∘ᵥ (F₄ ∘₁ F₃) ▷ Coequalizer.arr (CoeqBimods B₂ B₁)
     ≈⟨ sym-assoc₂ ⟩
 
-    (Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+    (Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) (B₂ ⊗₀ B₁)))
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ Coequalizer.obj (CoeqBimods B₂ B₁)
     ∘ᵥ (F₄ ∘₁ F₃) ▷ Coequalizer.arr (CoeqBimods B₂ B₁)
     ≈⟨ sym-assoc₂ ⟩
 
-    ((Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+    ((Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) (B₂ ⊗₀ B₁)))
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ Coequalizer.obj (CoeqBimods B₂ B₁))
     ∘ᵥ (F₄ ∘₁ F₃) ▷ Coequalizer.arr (CoeqBimods B₂ B₁)
     ≈⟨ assoc₂ ⟩∘⟨refl ⟩
 
-    (Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+    (Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) (B₂ ⊗₀ B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ Coequalizer.obj (CoeqBimods B₂ B₁))
     ∘ᵥ (F₄ ∘₁ F₃) ▷ Coequalizer.arr (CoeqBimods B₂ B₁)
@@ -215,7 +215,7 @@ abstract
     where
       open hom.HomReasoning
 
-  face[[43]2]1⇒[432]1 : Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
+  face[[43]2]1⇒[432]1 : Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
                         ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
                         ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
                         ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
@@ -225,38 +225,38 @@ abstract
                           ∘ᵥ associator.from {f = F₄} {F₃} {F₂} ◁ F₁
   face[[43]2]1⇒[432]1 = begin
   
-    Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
+    Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ sym-assoc₂ ⟩
   
-    (Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
+    (Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ ⟺ αSq-⊗ ⟩∘⟨refl ⟩
   
     (Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁)
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂}) ◁ F₁)
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂}) ◁ F₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ assoc₂ ⟩
   
     Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁)
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂}) ◁ F₁
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂}) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
   
     Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁)
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂}) ◁ F₁
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂}) ◁ F₁
     ∘ᵥ (Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂) ◁ F₁
     ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
   
     Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁)
-    ∘ᵥ (Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂})
+    ∘ᵥ (Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂})
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂) ◁ F₁
     ≈⟨ refl⟩∘⟨ ◁-resp-≈ (⟺ (hexagon {B₃ = B₄} {B₃} {B₂})) ⟩
@@ -298,9 +298,9 @@ abstract
     
     where
       open hom.HomReasoning
-      open TensorproductOfHomomorphisms (Associator⊗From {B₃ = B₄} {B₃} {B₂}) (id-bimodule-hom {B = B₁}) using (αSq-⊗)
+      open TensorproductOfHomomorphisms (associator-⊗-from {B₃ = B₄} {B₃} {B₂}) (id-bimodule-hom {B = B₁}) using (αSq-⊗)
 
-  face[432]1⇒4[32]1 : Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+  face[432]1⇒4[32]1 : Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
                       ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁)
                       ∘ᵥ Coequalizer.arr (CoeqBimods B₄ (B₃ ⊗₀ B₂)) ◁ F₁
                       ∘ᵥ (F₄ ▷ Coequalizer.arr (CoeqBimods B₃ B₂)) ◁ F₁
@@ -310,25 +310,25 @@ abstract
                         ∘ᵥ associator.from {f = F₄} {F₃ ∘₁ F₂} {F₁}
   face[432]1⇒4[32]1 = begin
   
-    Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+    Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ (B₃ ⊗₀ B₂)) ◁ F₁
     ∘ᵥ (F₄ ▷ Coequalizer.arr (CoeqBimods B₃ B₂)) ◁ F₁
     ≈⟨ sym-assoc₂ ⟩
   
-    (Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+    (Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ (B₃ ⊗₀ B₂)) ◁ F₁
     ∘ᵥ (F₄ ▷ Coequalizer.arr (CoeqBimods B₃ B₂)) ◁ F₁
     ≈⟨ sym-assoc₂ ⟩
   
-    ((Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+    ((Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ (B₃ ⊗₀ B₂)) ◁ F₁)
     ∘ᵥ (F₄ ▷ Coequalizer.arr (CoeqBimods B₃ B₂)) ◁ F₁
     ≈⟨ assoc₂ ⟩∘⟨refl ⟩
   
-    (Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+    (Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ (B₃ ⊗₀ B₂)) ◁ F₁)
     ∘ᵥ (F₄ ▷ Coequalizer.arr (CoeqBimods B₃ B₂)) ◁ F₁
@@ -378,7 +378,7 @@ abstract
     where
       open hom.HomReasoning
 
-  face4[32]1⇒4321 : Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
+  face4[32]1⇒4321 : Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
                     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ ((B₃ ⊗₀ B₂) ⊗₀  B₁))
                     ∘ᵥ F₄ ▷ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
                     ∘ᵥ F₄ ▷ (Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁)
@@ -388,38 +388,38 @@ abstract
                       ∘ᵥ F₄ ▷ associator.from {f = F₃} {F₂} {F₁}
   face4[32]1⇒4321 = begin
 
-    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
+    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ ((B₃ ⊗₀ B₂) ⊗₀  B₁))
     ∘ᵥ F₄ ▷ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
     ∘ᵥ F₄ ▷ (Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁)
     ≈⟨ sym-assoc₂ ⟩
 
-    (Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
+    (Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ ((B₃ ⊗₀ B₂) ⊗₀  B₁)))
     ∘ᵥ F₄ ▷ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
     ∘ᵥ F₄ ▷ (Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁)
     ≈⟨ ⟺ αSq-⊗ ⟩∘⟨refl ⟩
 
     (Coequalizer.arr (CoeqBimods B₄ (B₃ ⊗₀ B₂ ⊗₀ B₁))
-    ∘ᵥ F₄ ▷ Bimodhom.α (Associator⊗From {B₃ = B₃} {B₂} {B₁}))
+    ∘ᵥ F₄ ▷ Bimodhom.α (associator-⊗-from {B₃ = B₃} {B₂} {B₁}))
     ∘ᵥ F₄ ▷ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
     ∘ᵥ F₄ ▷ (Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁)
     ≈⟨ assoc₂ ⟩
 
     Coequalizer.arr (CoeqBimods B₄ (B₃ ⊗₀ B₂ ⊗₀ B₁))
-    ∘ᵥ F₄ ▷ Bimodhom.α (Associator⊗From {B₃ = B₃} {B₂} {B₁})
+    ∘ᵥ F₄ ▷ Bimodhom.α (associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ F₄ ▷ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
     ∘ᵥ F₄ ▷ (Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁)
     ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
 
     Coequalizer.arr (CoeqBimods B₄ (B₃ ⊗₀ B₂ ⊗₀ B₁))
-    ∘ᵥ F₄ ▷ Bimodhom.α (Associator⊗From {B₃ = B₃} {B₂} {B₁})
+    ∘ᵥ F₄ ▷ Bimodhom.α (associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ F₄ ▷ (Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
              ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁)
     ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
 
     Coequalizer.arr (CoeqBimods B₄ (B₃ ⊗₀ B₂ ⊗₀ B₁))
-    ∘ᵥ F₄ ▷ (Bimodhom.α (Associator⊗From {B₃ = B₃} {B₂} {B₁})
+    ∘ᵥ F₄ ▷ (Bimodhom.α (associator-⊗-from {B₃ = B₃} {B₂} {B₁})
              ∘ᵥ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
              ∘ᵥ Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁)
     ≈⟨ refl⟩∘⟨ ▷-resp-≈ (⟺ (hexagon {B₃ = B₃} {B₂} {B₁})) ⟩
@@ -461,79 +461,79 @@ abstract
 
     where
       open hom.HomReasoning
-      open TensorproductOfHomomorphisms (id-bimodule-hom {B = B₄}) (Associator⊗From {B₃ = B₃} {B₂} {B₁}) using (αSq-⊗)
+      open TensorproductOfHomomorphisms (id-bimodule-hom {B = B₄}) (associator-⊗-from {B₃ = B₃} {B₂} {B₁}) using (αSq-⊗)
 
 abstract
-  pentagon⊗∘arr³ : (((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-                   ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-                   ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+  pentagon⊗∘arr³ : (((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+                   ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+                   ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
                    ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
                    ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁)
                    ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
-                   ≈ (((Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-                     ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
+                   ≈ (((Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+                     ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
                      ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
                      ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁)
                      ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
   pentagon⊗∘arr³ = begin
   
-    (((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+    (((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ assoc₂ ⟩
   
-    ((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+    ((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ assoc₂ ⟩
   
-    (Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+    (Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ assoc₂ ⟩
   
-    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-    ∘ᵥ (Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    ∘ᵥ (Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ refl⟩∘⟨ assoc₂ ⟩
   
-    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-      ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
+    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+      ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
       ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
       ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
       ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ refl⟩∘⟨ refl⟩∘⟨ face[[43]2]1⇒[432]1 ⟩
   
-    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
       ∘ᵥ (Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁)
       ∘ᵥ Coequalizer.arr (CoeqBimods B₄ (B₃ ⊗₀ B₂)) ◁ F₁
       ∘ᵥ (F₄ ▷ Coequalizer.arr (CoeqBimods B₃ B₂)) ◁ F₁)
       ∘ᵥ associator.from {f = F₄} {F₃} {F₂} ◁ F₁
     ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
   
-    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-      ∘ᵥ (Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+      ∘ᵥ (Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
       ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁)
       ∘ᵥ Coequalizer.arr (CoeqBimods B₄ (B₃ ⊗₀ B₂)) ◁ F₁
       ∘ᵥ (F₄ ▷ Coequalizer.arr (CoeqBimods B₃ B₂)) ◁ F₁)
     ∘ᵥ associator.from {f = F₄} {F₃} {F₂} ◁ F₁
     ≈⟨ refl⟩∘⟨ face[432]1⇒4[32]1 ⟩∘⟨refl ⟩
   
-    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
+    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
       ∘ᵥ ((Coequalizer.arr (CoeqBimods B₄ ((B₃ ⊗₀ B₂) ⊗₀  B₁))
       ∘ᵥ F₄ ▷ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
       ∘ᵥ F₄ ▷ (Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁))
@@ -541,7 +541,7 @@ abstract
     ∘ᵥ associator.from {f = F₄} {F₃} {F₂} ◁ F₁
     ≈⟨ refl⟩∘⟨ assoc₂ ⟩
   
-    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
+    Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
       ∘ᵥ (Coequalizer.arr (CoeqBimods B₄ ((B₃ ⊗₀ B₂) ⊗₀  B₁))
       ∘ᵥ F₄ ▷ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
       ∘ᵥ F₄ ▷ (Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁))
@@ -549,7 +549,7 @@ abstract
     ∘ᵥ associator.from {f = F₄} {F₃} {F₂} ◁ F₁
     ≈⟨ sym-assoc₂ ⟩
   
-      (Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
+      (Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
       ∘ᵥ Coequalizer.arr (CoeqBimods B₄ ((B₃ ⊗₀ B₂) ⊗₀  B₁))
       ∘ᵥ F₄ ▷ Coequalizer.arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
       ∘ᵥ F₄ ▷ (Coequalizer.arr (CoeqBimods B₃ B₂) ◁ F₁))
@@ -587,43 +587,43 @@ abstract
     ∘ᵥ associator.from {f = F₄ ∘₁ F₃} {F₂} {F₁}
     ≈⟨ ⟺ face[43]21⇒4321 ⟩∘⟨refl ⟩
   
-      (Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+      (Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
       ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) (B₂ ⊗₀ B₁))
       ∘ᵥ Coequalizer.obj (CoeqBimods B₄ B₃) ▷ Coequalizer.arr (CoeqBimods B₂ B₁)
       ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ (F₂ ∘₁ F₁))
     ∘ᵥ associator.from {f = F₄ ∘₁ F₃} {F₂} {F₁}
     ≈⟨ assoc₂ ⟩
   
-    Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+    Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
       ∘ᵥ (Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) (B₂ ⊗₀ B₁))
       ∘ᵥ Coequalizer.obj (CoeqBimods B₄ B₃) ▷ Coequalizer.arr (CoeqBimods B₂ B₁)
       ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ (F₂ ∘₁ F₁))
       ∘ᵥ associator.from {f = F₄ ∘₁ F₃} {F₂} {F₁}
     ≈⟨ refl⟩∘⟨ ⟺ face[[43]2]1⇒[43]21 ⟩
   
-    Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-      ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
+    Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+      ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
       ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
       ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
       ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ sym-assoc₂ ⟩
   
-    (Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
+    (Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ sym-assoc₂ ⟩
   
-    ((Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
+    ((Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁
     ≈⟨ sym-assoc₂ ⟩
       
-    (((Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
+    (((Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
     ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₄ B₃) ◁ F₂ ◁ F₁ ∎
@@ -632,70 +632,70 @@ abstract
       open hom.HomReasoning
 
 abstract
-  pentagon⊗∘arr² : ((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-                   ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-                   ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+  pentagon⊗∘arr² : ((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+                   ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+                   ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
                    ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
                    ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
-                   ≈ ((Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-                     ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
+                   ≈ ((Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+                     ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
                      ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
                      ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁
   pentagon⊗∘arr² = Coequalizer⇒Epi
   
                      ((CoeqBimods B₄ B₃) coeq-◁ F₂ coeq-◁ F₁)
                      
-                     (((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-                     ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-                     ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+                     (((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+                     ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+                     ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
                      ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
                      ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁)
                      
-                     (((Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-                     ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
+                     (((Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+                     ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
                      ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
                      ∘ᵥ Coequalizer.arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F₁)
                      
                      pentagon⊗∘arr³
 
 abstract
-  pentagon⊗∘arr : (Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-                  ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-                  ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+  pentagon⊗∘arr : (Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+                  ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+                  ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
                   ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
-                   ≈ (Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-                     ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
+                   ≈ (Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+                     ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
                      ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
   pentagon⊗∘arr = Coequalizer⇒Epi
   
                     ((CoeqBimods (B₄ ⊗₀ B₃) B₂) coeq-◁ F₁)
                      
-                    ((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-                    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-                    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+                    ((Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+                    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+                    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
                     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
                   
-                    ((Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-                    ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
+                    ((Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+                    ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
                     ∘ᵥ Coequalizer.arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
                     
                     pentagon⊗∘arr²
 
 abstract
-  pentagon⊗ : Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-              ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-              ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
-              ≈ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-                ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
+  pentagon⊗ : Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+              ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+              ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
+              ≈ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+                ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
   pentagon⊗ = Coequalizer⇒Epi
   
                 (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
                      
-                (Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ Associator⊗From {B₃ = B₃} {B₂} {B₁})
-                ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-                ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+                (Bimodhom.α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+                ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+                ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
                   
-                (Bimodhom.α (Associator⊗From {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-                ∘ᵥ Bimodhom.α (Associator⊗From {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
+                (Bimodhom.α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+                ∘ᵥ Bimodhom.α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
                     
                 pentagon⊗∘arr
