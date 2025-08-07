@@ -318,14 +318,16 @@ open 2-cell using (α⇒⊗; hexagon) public
 module Linear-Left where
 
   abstract
-    linearˡ-∘arr² : ((actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
-                      ∘ᵥ α⇒⊗ ◁ T M₁)
-                      ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
-                      ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁
-                      ≈ ((α⇒⊗
-                      ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁)
-                      ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
-                      ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁
+    linearˡ-∘arr² :
+      ((actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
+      ∘ᵥ α⇒⊗ ◁ T M₁)
+      ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
+      ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁
+      ≈
+      ((α⇒⊗
+      ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁)
+      ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
+      ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁
     linearˡ-∘arr² = begin
 
       ((actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
