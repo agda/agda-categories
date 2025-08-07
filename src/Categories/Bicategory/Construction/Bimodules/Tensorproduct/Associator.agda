@@ -239,85 +239,46 @@ module 2-cell where
     sq₂ᵍʰ = begin
 
       (F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇒)
-        ∘ᵥ (actionˡ B₃ ◁ F B₂ ∘ᵥ α⇐) ◁ F B₁             ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
+      ∘ᵥ α⇒)
+      ∘ᵥ (actionˡ B₃ ◁ F B₂ ∘ᵥ α⇐) ◁ F B₁          ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
 
       (F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇒)
-        ∘ᵥ actionˡ B₃ ◁ F B₂ ◁ F B₁
-        ∘ᵥ α⇐ ◁ F B₁                  ≈⟨ assoc₂ ⟩
+      ∘ᵥ α⇒)
+      ∘ᵥ actionˡ B₃ ◁ F B₂ ◁ F B₁
+      ∘ᵥ α⇐ ◁ F B₁                                 ≈⟨ center α⇒-◁-∘₁ ⟩
 
       F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇒
-        ∘ᵥ actionˡ B₃ ◁ F B₂ ◁ F B₁
-        ∘ᵥ α⇐ ◁ F B₁                  ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
+      ∘ᵥ (actionˡ B₃ ◁ (F B₂ ∘₁ F B₁)
+      ∘ᵥ α⇒)
+      ∘ᵥ α⇐ ◁ F B₁                                 ≈⟨ refl⟩∘⟨ pullʳ pentagon-conjugate₄ ⟩
 
       F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ (α⇒
-        ∘ᵥ actionˡ B₃ ◁ F B₂ ◁ F B₁)
-        ∘ᵥ α⇐ ◁ F B₁                  ≈⟨ refl⟩∘⟨ α⇒-◁-∘₁ ⟩∘⟨refl ⟩
-
-      F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ (actionˡ B₃ ◁ (F B₂ ∘₁ F B₁)
-        ∘ᵥ α⇒)
-        ∘ᵥ α⇐ ◁ F B₁                  ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-
-      F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ actionˡ B₃ ◁ (F B₂ ∘₁ F B₁)
-        ∘ᵥ α⇒
-        ∘ᵥ α⇐ ◁ F B₁                  ≈⟨ refl⟩∘⟨ refl⟩∘⟨
-                                                    pentagon-conjugate₄ ⟩
-
-      F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ actionˡ B₃ ◁ (F B₂ ∘₁ F B₁)
-        ∘ᵥ α⇐
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                     ≈⟨ sym-assoc₂ ⟩
-
-      (F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ actionˡ B₃ ◁ (F B₂ ∘₁ F B₁))
-        ∘ᵥ α⇐
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                     ≈⟨ ◁-▷-exchg ⟩∘⟨refl ⟩
+      ∘ᵥ actionˡ B₃ ◁ (F B₂ ∘₁ F B₁)
+      ∘ᵥ α⇐
+      ∘ᵥ F B₃ ▷ α⇒
+      ∘ᵥ α⇒                                        ≈⟨ pullˡ ◁-▷-exchg ⟩
 
       (actionˡ B₃ ◁ obj (CoeqBimods B₂ B₁)
-        ∘ᵥ (F B₃ ∘₁ T M₃) ▷ arr (CoeqBimods B₂ B₁))
-        ∘ᵥ α⇐
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                     ≈⟨ assoc₂ ⟩
+      ∘ᵥ (F B₃ ∘₁ T M₃) ▷ arr (CoeqBimods B₂ B₁))
+      ∘ᵥ α⇐
+      ∘ᵥ F B₃ ▷ α⇒
+      ∘ᵥ α⇒                                        ≈⟨ center (⟺ α⇐-▷-∘₁) ⟩
 
       actionˡ B₃ ◁ obj (CoeqBimods B₂ B₁)
-        ∘ᵥ (F B₃ ∘₁ T M₃) ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇐
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                     ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-
-      actionˡ B₃ ◁ obj (CoeqBimods B₂ B₁)
-        ∘ᵥ ((F B₃ ∘₁ T M₃) ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇐)
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                     ≈⟨ refl⟩∘⟨ ⟺ α⇐-▷-∘₁ ⟩∘⟨refl ⟩
-
-      actionˡ B₃ ◁ obj (CoeqBimods B₂ B₁)
-        ∘ᵥ (α⇐
-        ∘ᵥ F B₃ ▷ T M₃ ▷ arr (CoeqBimods B₂ B₁))
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                     ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-
-      actionˡ B₃ ◁ obj (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇐
-        ∘ᵥ F B₃ ▷ T M₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                     ≈⟨ sym-assoc₂ ⟩
+      ∘ᵥ (α⇐
+      ∘ᵥ F B₃ ▷ T M₃ ▷ arr (CoeqBimods B₂ B₁))
+      ∘ᵥ F B₃ ▷ α⇒
+      ∘ᵥ α⇒                                        ≈⟨ assoc²δγ ⟩
 
       (actionˡ B₃ ◁ obj (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇐)
-        ∘ᵥ F B₃ ▷ T M₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                     ∎
+      ∘ᵥ α⇐)
+      ∘ᵥ F B₃ ▷ T M₃ ▷ arr (CoeqBimods B₂ B₁)
+      ∘ᵥ F B₃ ▷ α⇒
+      ∘ᵥ α⇒                                        ∎
 
       where
         open hom.HomReasoning
+        open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (center; pullʳ; pullˡ; assoc²δγ)
   -- end abstract --
   
   coeqcoeqᶠⁱ : Coequalizer f⇒i₁ f⇒i₂
