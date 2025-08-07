@@ -918,12 +918,12 @@ Associator⊗From = record
   }
 
 open import Categories.Category.Construction.Bimodules using () renaming (Bimodules to 1-Bimodules)
-open import Categories.Category.Construction.Bimodules.Properties
+import Categories.Category.Construction.Bimodules.Properties
 
 Associator⊗ : Categories.Morphism._≅_ (1-Bimodules M₁ M₄) ((B₃ ⊗₀ B₂) ⊗₀ B₁) (B₃ ⊗₀ B₂ ⊗₀ B₁) 
 Associator⊗ = αisIso⇒Iso Associator⊗From α⇒⊗isIso
   where
-    open Bimodule-Isomorphism
+    open Categories.Category.Construction.Bimodules.Properties.Bimodule-Isomorphism using (αisIso⇒Iso)
     α⇒⊗isIso : Categories.Morphism.IsIso (hom (C M₁) (C M₄)) α⇒⊗
     α⇒⊗isIso = record
      { inv = _≅_.to 2-cell.Associator⊗Iso
