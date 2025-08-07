@@ -317,7 +317,7 @@ open 2-cell using (α⇒⊗; hexagon) public
 module Linear-Left where
 
   abstract
-    linearˡ∘arr∘arr : ((actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
+    linearˡ-∘arr² : ((actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
                       ∘ᵥ α⇒⊗ ◁ T M₁)
                       ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
                       ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁
@@ -325,7 +325,7 @@ module Linear-Left where
                       ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁)
                       ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
                       ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁
-    linearˡ∘arr∘arr = begin
+    linearˡ-∘arr² = begin
 
       ((actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ α⇒⊗ ◁ T M₁)
@@ -590,9 +590,9 @@ module Linear-Left where
         open TensorproductOfBimodules.Left-Action using (actionˡSq-⊗)
 
   abstract
-    linearˡ∘arr : (actionˡ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ α⇒⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁
+    linearˡ-∘arr : (actionˡ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ α⇒⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁
                 ≈ (α⇒⊗ ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁) ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁
-    linearˡ∘arr = Coequalizer⇒Epi
+    linearˡ-∘arr = Coequalizer⇒Epi
                     ((CoeqBimods B₃ B₂) coeq-◁ F B₁ coeq-◁ T M₁)
                     ((actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
                       ∘ᵥ α⇒⊗ ◁ T M₁)
@@ -600,7 +600,7 @@ module Linear-Left where
                     ((α⇒⊗
                       ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁)
                       ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
-                    linearˡ∘arr∘arr
+                    linearˡ-∘arr²
       where
         open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
 
@@ -611,14 +611,14 @@ module Linear-Left where
                 ((CoeqBimods (B₃ ⊗₀ B₂) B₁) coeq-◁ T M₁)
                 (actionˡ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ α⇒⊗ ◁ T M₁)
                 (α⇒⊗ ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁)
-                linearˡ∘arr
+                linearˡ-∘arr
       where
         open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
   -- end abstract --
 
 module Linear-Right where
   abstract
-    linearʳ∘arr∘arr : ((actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
+    linearʳ-∘arr² : ((actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
                         ∘ᵥ T M₄ ▷ α⇒⊗)
                         ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)
@@ -626,7 +626,7 @@ module Linear-Right where
                         ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁)
                         ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                         ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)
-    linearʳ∘arr∘arr = begin
+    linearʳ-∘arr² = begin
 
       ((actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
         ∘ᵥ T M₄ ▷ α⇒⊗)
@@ -888,13 +888,13 @@ module Linear-Right where
         open TensorproductOfBimodules.Right-Action using (actionʳSq-⊗)
 
   abstract
-    linearʳ∘arr : (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ α⇒⊗) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+    linearʳ-∘arr : (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ α⇒⊗) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
                 ≈ (α⇒⊗ ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-    linearʳ∘arr = Coequalizer⇒Epi
+    linearʳ-∘arr = Coequalizer⇒Epi
                     (T M₄ ▷-coeq ((CoeqBimods B₃ B₂) coeq-◁ F B₁))
                     ((actionʳ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ α⇒⊗) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                     ((α⇒⊗ ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-                    linearʳ∘arr∘arr
+                    linearʳ-∘arr²
       where
         open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
 
@@ -905,7 +905,7 @@ module Linear-Right where
                 (T M₄ ▷-coeq (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                 (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ α⇒⊗)
                 (α⇒⊗ ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁)
-                linearʳ∘arr
+                linearʳ-∘arr
       where
         open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
 -- end abstract --
