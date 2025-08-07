@@ -232,7 +232,7 @@ module 2-cell where
 
       where
         open hom.HomReasoning
-        open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (pullʳ; pullˡ; pushˡ; pushʳ; insertInner)
+        open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (pullʳ; pullˡ; pushˡ; insertInner)
         open TensorproductOfBimodules.Right-Action B₂ B₁ using (actionʳSq-⊗)
 
     sq₂ᵍʰ : CommutativeSquare i₂ (arr coeqᵍ) (arr coeqʰ) g⇒h₂
