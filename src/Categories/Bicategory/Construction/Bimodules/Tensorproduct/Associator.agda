@@ -31,6 +31,7 @@ open Shorthands
 import Categories.Diagram.Coequalizer
 import Categories.Diagram.Coequalizer.Properties
 import Categories.Morphism
+import Categories.Morphism.Reasoning
 import Categories.Category
 import Categories.Category.Construction.Core
 
@@ -191,81 +192,47 @@ module 2-cell where
       arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ F B₃ ▷ (actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ α⇒            ∎
       where
         open hom.HomReasoning
-        open import Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (pullʳ; pullˡ; pushˡ; pushʳ)
+        open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (pullʳ; pullˡ; pushˡ; pushʳ)
         open TensorproductOfBimodules.Left-Action B₃ B₂ using (actionˡSq-⊗)
 
     sq₁ᵍʰ : CommutativeSquare i₁ (arr coeqᵍ) (arr coeqʰ) g⇒h₁
     sq₁ᵍʰ = begin
 
       (F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇒)
-        ∘ᵥ (F B₃ ▷ actionʳ B₂) ◁ F B₁             ≈⟨ assoc₂ ⟩
+      ∘ᵥ α⇒)
+      ∘ᵥ (F B₃ ▷ actionʳ B₂) ◁ F B₁                              ≈⟨ pullʳ α⇒-▷-◁ ⟩
+      
+      F B₃ ▷ arr (CoeqBimods B₂ B₁)
+      ∘ᵥ F B₃ ▷ (actionʳ B₂ ◁ F B₁)
+      ∘ᵥ α⇒                                                      ≈⟨ refl⟩∘⟨ insertInner (_≅_.isoˡ (F B₃ ▷ᵢ associator)) ⟩
 
       F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇒
-        ∘ᵥ (F B₃ ▷ actionʳ B₂) ◁ F B₁             ≈⟨ refl⟩∘⟨ α⇒-▷-◁ ⟩
+      ∘ᵥ (F B₃ ▷ (actionʳ B₂ ◁ F B₁)
+      ∘ᵥ F B₃ ▷ α⇐)
+      ∘ᵥ F B₃ ▷ α⇒
+      ∘ᵥ α⇒                                                      ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
 
       F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ F B₃ ▷ (actionʳ B₂ ◁ F B₁)
-        ∘ᵥ α⇒                  ≈⟨ refl⟩∘⟨ refl⟩∘⟨
-                                               ⟺ identity₂ˡ ⟩
-
-      F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ F B₃ ▷ (actionʳ B₂ ◁ F B₁)
-        ∘ᵥ id₂
-        ∘ᵥ α⇒                  ≈⟨ refl⟩∘⟨ refl⟩∘⟨
-                                               ⟺ (_≅_.isoˡ (F B₃ ▷ᵢ associator))
-                                             ⟩∘⟨refl ⟩
-
-      F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ F B₃ ▷ (actionʳ B₂ ◁ F B₁)
-        ∘ᵥ (F B₃ ▷ α⇐
-        ∘ᵥ F B₃ ▷ α⇒)
-        ∘ᵥ α⇒                  ≈⟨ refl⟩∘⟨ refl⟩∘⟨ assoc₂ ⟩
-
-      F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ F B₃ ▷ (actionʳ B₂ ◁ F B₁)
-        ∘ᵥ F B₃ ▷ α⇐
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                  ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-
-      F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ (F B₃ ▷ (actionʳ B₂ ◁ F B₁)
-        ∘ᵥ F B₃ ▷ α⇐)
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                  ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
-
-      F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ F B₃ ▷ (actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐)
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                  ≈⟨ sym-assoc₂ ⟩
-
-      (F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ F B₃ ▷ (actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐))
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                  ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
+      ∘ᵥ F B₃ ▷ (actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐)
+      ∘ᵥ F B₃ ▷ α⇒
+      ∘ᵥ α⇒                                                      ≈⟨ pullˡ ∘ᵥ-distr-▷ ⟩
 
       F B₃ ▷ (arr (CoeqBimods B₂ B₁) ∘ᵥ actionʳ B₂ ◁ F B₁ ∘ᵥ α⇐)
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                  ≈⟨ ▷-resp-≈ actionʳSq-⊗ ⟩∘⟨refl ⟩
+      ∘ᵥ F B₃ ▷ α⇒
+      ∘ᵥ α⇒                                                      ≈⟨ ▷-resp-≈ actionʳSq-⊗ ⟩∘⟨refl ⟩
 
-      F B₃ ▷ (actionʳ-⊗ B₂ B₁
-        ∘ᵥ T M₃ ▷ arr (CoeqBimods B₂ B₁))
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                  ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
-
-      (F B₃ ▷ actionʳ-⊗ B₂ B₁
-        ∘ᵥ F B₃ ▷ T M₃ ▷ arr (CoeqBimods B₂ B₁))
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                  ≈⟨ assoc₂ ⟩
+      F B₃ ▷ (actionʳ-⊗ B₂ B₁ ∘ᵥ T M₃ ▷ arr (CoeqBimods B₂ B₁))
+      ∘ᵥ F B₃ ▷ α⇒
+      ∘ᵥ α⇒                                                      ≈⟨ pushˡ (⟺ ∘ᵥ-distr-▷) ⟩
 
       F B₃ ▷ actionʳ-⊗ B₂ B₁
-        ∘ᵥ F B₃ ▷ T M₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ F B₃ ▷ α⇒
-        ∘ᵥ α⇒                  ∎
+      ∘ᵥ F B₃ ▷ T M₃ ▷ arr (CoeqBimods B₂ B₁)
+      ∘ᵥ F B₃ ▷ α⇒
+      ∘ᵥ α⇒                                                      ∎
 
       where
         open hom.HomReasoning
+        open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (pullʳ; pullˡ; pushˡ; pushʳ; insertInner)
         open TensorproductOfBimodules.Right-Action B₂ B₁ using (actionʳSq-⊗)
 
     sq₂ᵍʰ : CommutativeSquare i₂ (arr coeqᵍ) (arr coeqʰ) g⇒h₂
