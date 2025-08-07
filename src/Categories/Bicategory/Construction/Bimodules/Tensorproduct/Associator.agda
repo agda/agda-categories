@@ -179,100 +179,19 @@ module 2-cell where
 
     sq₂ᶠⁱ : CommutativeSquare (arr coeqᶠ) h₂ f⇒i₂ (arr coeqⁱ)
     sq₂ᶠⁱ = begin
-
-      (actionˡ-⊗ B₃ B₂ ◁ F B₁
-        ∘ᵥ α⇐)
-        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ (T M₂ ∘₁ F B₁) ≈⟨ assoc₂ ⟩
-
-      actionˡ-⊗ B₃ B₂ ◁ F B₁
-        ∘ᵥ α⇐
-        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ (T M₂ ∘₁ F B₁) ≈⟨ refl⟩∘⟨ α⇐-◁-∘₁ ⟩
-
-      actionˡ-⊗ B₃ B₂ ◁ F B₁
-        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ T M₂ ◁ F B₁
-        ∘ᵥ α⇐                      ≈⟨ sym-assoc₂ ⟩
-
-      (actionˡ-⊗ B₃ B₂ ◁ F B₁
-        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ T M₂ ◁ F B₁)
-        ∘ᵥ α⇐                      ≈⟨ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩
-
-      (actionˡ-⊗ B₃ B₂
-        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ T M₂) ◁ F B₁
-        ∘ᵥ α⇐                      ≈⟨ ◁-resp-≈ (⟺ actionˡSq-⊗) ⟩∘⟨refl ⟩
-
-      (arr (CoeqBimods B₃ B₂)
-        ∘ᵥ F B₃ ▷ actionˡ B₂
-        ∘ᵥ α⇒) ◁ F B₁
-        ∘ᵥ α⇐                      ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩
-
-      (arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ (F B₃ ▷ actionˡ B₂
-        ∘ᵥ α⇒) ◁ F B₁)
-        ∘ᵥ α⇐                      ≈⟨ assoc₂ ⟩
-
-      arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ (F B₃ ▷ actionˡ B₂
-        ∘ᵥ α⇒) ◁ F B₁
-        ∘ᵥ α⇐                      ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩
-
-      arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ ((F B₃ ▷ actionˡ B₂) ◁ F B₁
-        ∘ᵥ α⇒ ◁ F B₁)
-        ∘ᵥ α⇐                      ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-
-      arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ (F B₃ ▷ actionˡ B₂) ◁ F B₁
-        ∘ᵥ α⇒ ◁ F B₁
-        ∘ᵥ α⇐                      ≈⟨ refl⟩∘⟨ refl⟩∘⟨
-                                                 pentagon-conjugate₃ ⟩
-
-      arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ (F B₃ ▷ actionˡ B₂) ◁ F B₁
-        ∘ᵥ (α⇐
-        ∘ᵥ F B₃ ▷ α⇐)
-        ∘ᵥ α⇒                    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ assoc₂ ⟩
-
-      arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ (F B₃ ▷ actionˡ B₂) ◁ F B₁
-        ∘ᵥ α⇐
-        ∘ᵥ F B₃ ▷ α⇐
-        ∘ᵥ α⇒                    ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-
-      arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ ((F B₃ ▷ actionˡ B₂) ◁ F B₁
-        ∘ᵥ α⇐)
-        ∘ᵥ F B₃ ▷ α⇐
-        ∘ᵥ α⇒                    ≈⟨ refl⟩∘⟨
-                                                 ⟺ α⇐-▷-◁
-                                               ⟩∘⟨refl ⟩
-
-      arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ (α⇐
-        ∘ᵥ F B₃ ▷ (actionˡ B₂ ◁ F B₁))
-        ∘ᵥ F B₃ ▷ α⇐
-        ∘ᵥ α⇒                    ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-
-      arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ α⇐
-        ∘ᵥ F B₃ ▷ (actionˡ B₂ ◁ F B₁)
-        ∘ᵥ F B₃ ▷ α⇐
-        ∘ᵥ α⇒                    ≈⟨ refl⟩∘⟨ refl⟩∘⟨
-                                                 sym-assoc₂ ⟩
-
-      arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ α⇐
-        ∘ᵥ (F B₃ ▷ (actionˡ B₂ ◁ F B₁)
-        ∘ᵥ F B₃ ▷ α⇐)
-        ∘ᵥ α⇒                    ≈⟨ refl⟩∘⟨ refl⟩∘⟨
-                                                 ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
-
-      arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ α⇐
-        ∘ᵥ F B₃ ▷ (actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐)
-        ∘ᵥ α⇒                    ∎
-
+      (actionˡ-⊗ B₃ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ (T M₂ ∘₁ F B₁)                ≈⟨ pullʳ α⇐-◁-∘₁ ⟩
+      actionˡ-⊗ B₃ B₂ ◁ F B₁ ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ T M₂ ◁ F B₁ ∘ᵥ α⇐                     ≈⟨ pullˡ ∘ᵥ-distr-◁ ⟩
+      (actionˡ-⊗ B₃ B₂ ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ T M₂) ◁ F B₁ ∘ᵥ α⇐                          ≈⟨ ◁-resp-≈ (⟺ actionˡSq-⊗) ⟩∘⟨refl ⟩
+      (arr (CoeqBimods B₃ B₂) ∘ᵥ F B₃ ▷ actionˡ B₂ ∘ᵥ α⇒) ◁ F B₁ ∘ᵥ α⇐                         ≈⟨ pushˡ (⟺ ∘ᵥ-distr-◁) ⟩
+      arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ (F B₃ ▷ actionˡ B₂ ∘ᵥ α⇒) ◁ F B₁ ∘ᵥ α⇐                  ≈⟨ refl⟩∘⟨ pushˡ (⟺ ∘ᵥ-distr-◁) ⟩
+      arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ (F B₃ ▷ actionˡ B₂) ◁ F B₁ ∘ᵥ α⇒ ◁ F B₁ ∘ᵥ α⇐           ≈⟨ refl⟩∘⟨ pushʳ pentagon-conjugate₃ ⟩
+      arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ ((F B₃ ▷ actionˡ B₂) ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ F B₃ ▷ α⇐) ∘ᵥ α⇒   ≈⟨ refl⟩∘⟨ pullˡ (⟺ α⇐-▷-◁) ⟩∘⟨refl ⟩
+      arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ ((α⇐ ∘ᵥ F B₃ ▷ (actionˡ B₂ ◁ F B₁)) ∘ᵥ F B₃ ▷ α⇐) ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ pullʳ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
+      arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ (α⇐ ∘ᵥ F B₃ ▷ (actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐)) ∘ᵥ α⇒          ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+      arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ F B₃ ▷ (actionˡ B₂ ◁ F B₁ ∘ᵥ α⇐) ∘ᵥ α⇒            ∎
       where
         open hom.HomReasoning
+        open import Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (pullʳ; pullˡ; pushˡ; pushʳ)
         open TensorproductOfBimodules.Left-Action B₃ B₂ using (actionˡSq-⊗)
 
     sq₁ᵍʰ : CommutativeSquare i₁ (arr coeqᵍ) (arr coeqʰ) g⇒h₁
