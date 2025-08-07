@@ -170,19 +170,9 @@ module 2-cell where
   abstract
     sq₁ᶠⁱ : CommutativeSquare (arr coeqᶠ) h₁ f⇒i₁ (arr coeqⁱ)
     sq₁ᶠⁱ = begin
-
-      obj (CoeqBimods B₃ B₂) ▷ actionʳ B₁
-        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ (T M₂ ∘₁ F B₁) ≈⟨ ◁-▷-exchg ⟩
-
-      arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ (F B₃ ∘₁ F B₂) ▷ actionʳ B₁              ≈⟨ refl⟩∘⟨
-                                                 switch-fromtoˡ associator α⇒-▷-∘₁ ⟩
-
-      arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ α⇐
-        ∘ᵥ F B₃ ▷ F B₂ ▷ actionʳ B₁
-        ∘ᵥ α⇒ ∎
-
+      obj (CoeqBimods B₃ B₂) ▷ actionʳ B₁ ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ (T M₂ ∘₁ F B₁) ≈⟨ ◁-▷-exchg ⟩
+      arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ (F B₃ ∘₁ F B₂) ▷ actionʳ B₁                   ≈⟨ refl⟩∘⟨ switch-fromtoˡ associator α⇒-▷-∘₁ ⟩
+      arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ F B₃ ▷ F B₂ ▷ actionʳ B₁ ∘ᵥ α⇒          ∎
       where
         open hom.HomReasoning
         open import Categories.Morphism.Reasoning.Iso (hom (C M₁) (C M₄))
