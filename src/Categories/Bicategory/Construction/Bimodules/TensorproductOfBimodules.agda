@@ -594,3 +594,20 @@ Tensorproduct = record
   ; identityˡ = Identity.identityˡ-⊗                      -- : actionˡ ∘ᵥ (F ▷ η M₁) ∘ᵥ ρ⇐ ≈ id₂
   ; identityʳ = Identity.identityʳ-⊗                      -- : actionʳ ∘ᵥ (η M₂ ◁ F) ∘ᵥ λ⇐ ≈ id₂
   }
+
+{-
+We want to use the helper function to consruct the tensorproduct of bimodules,
+however, currently this slows down type-checking to an extend that renders it infeasibe.
+
+Tensorproduct : Bimodule M₁ M₃
+Tensorproduct = bimodHelper (record
+  { F             = F-⊗
+  ; actionˡ       = Left-Action.actionˡ-⊗         -- : F ∘₁ T M₁ ⇒₂ F
+  ; actionʳ       = Right-Action.actionʳ-⊗        -- : T M₂ ∘₁ F ⇒₂ F
+  ; assoc         = Associativity.assoc-⊗         -- : actionʳ ∘ᵥ (T M₂ ▷ actionˡ) ∘ᵥ α⇒ ≈ actionˡ ∘ᵥ (actionʳ ◁ T M₁)
+  ; assoc-actionˡ = Associativity.assoc-actionˡ-⊗ -- : actionˡ ∘ᵥ (F ▷ μ M₁) ∘ᵥ α⇒ ≈ actionˡ ∘ᵥ (actionˡ ◁ T M₁)
+  ; assoc-actionʳ = Associativity.assoc-actionʳ-⊗ -- : actionʳ ∘ᵥ (μ M₂ ◁ F) ∘ᵥ α⇐ ≈ actionʳ ∘ᵥ (T M₂ ▷ actionʳ)
+  ; identityˡ     = Identity.identityˡ-⊗          -- : actionˡ ∘ᵥ (F ▷ η M₁) ∘ᵥ ρ⇐ ≈ id₂
+  ; identityʳ     = Identity.identityʳ-⊗          -- : actionʳ ∘ᵥ (η M₂ ◁ F) ∘ᵥ λ⇐ ≈ id₂
+  })
+-}
