@@ -289,12 +289,13 @@ module 2-cell where
 
   
   abstract
-    Associator⊗Iso : F-⊗ (B₃ ⊗₀ B₂) B₁ ≅ F-⊗ B₃ (B₂ ⊗₀ B₁)
+    ---           F ((B₃ ⊗₀ B₂) ⊗₀ B₁)   ≅   F (B₃ ⊗₀ (B₂ ⊗₀ B₁))           ---
+    Associator⊗Iso : F-⊗ (B₃ ⊗₀ B₂) B₁   ≅   F-⊗ B₃ (B₂ ⊗₀ B₁)
     Associator⊗Iso = CoeqsAreIsomorphic
-                     coeqᶠ coeqᵍ coeqʰ coeqⁱ
-                     f⇒i₁ f⇒i₂ g⇒h₁ g⇒h₂
-                     sq₁ᶠⁱ sq₂ᶠⁱ sq₁ᵍʰ sq₂ᵍʰ
-                     coeqcoeqᵍʰ coeqcoeqᶠⁱ
+                       coeqᶠ coeqᵍ coeqʰ coeqⁱ
+                       f⇒i₁ f⇒i₂ g⇒h₁ g⇒h₂
+                       sq₁ᶠⁱ sq₂ᶠⁱ sq₁ᵍʰ sq₂ᵍʰ
+                       coeqcoeqᵍʰ coeqcoeqᶠⁱ
       where
         open Categories.Diagram.Coequalizer.Properties.CoequalizerOfCoequalizer (hom (C M₁) (C M₄)) using (CoeqsAreIsomorphic)
 
