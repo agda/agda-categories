@@ -598,12 +598,8 @@ module Linear-Left where
                 ≈ (α⇒-⊗ ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁) ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁
     linearˡ-∘arr = Coequalizer⇒Epi
                     ((CoeqBimods B₃ B₂) coeq-◁ F B₁ coeq-◁ T M₁)
-                    ((actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
-                      ∘ᵥ α⇒-⊗ ◁ T M₁)
-                      ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
-                    ((α⇒-⊗
-                      ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁)
-                      ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
+                    ((actionˡ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ α⇒-⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
+                    ((α⇒-⊗ ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁) ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
                     linearˡ-∘arr²
       where
         open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
