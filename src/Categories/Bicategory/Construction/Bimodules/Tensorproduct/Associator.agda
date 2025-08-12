@@ -617,274 +617,124 @@ module Linear-Left where
   -- end abstract --
 
 module Linear-Right where
+  private
+    {-
+    To proof that
+       α⇒-⊗ : F ((B₃ ⊗₀ B₂) ⊗₀ B₁) ⇒ F (B₃ ⊗₀ B₂ ⊗₀ B₁)
+    is right-linear we first show that
+       α⇒ : F B₃ ∘₁ F B₂ ∘₁ F B₁ ⇒₂ (F B₃ ∘₁ F B₂) ∘₁ F B₁
+    is right-linear. Here F B₃ ∘₁ F B₂ ∘₁ F B₁ and (F B₃ ∘₁ F B₂) ∘₁ F B₁ are (M₁,M₄)-bimodules with right-action as below.
+    -}
+    actionʳ-∘◽⦃◽∘◽⦄ : T M₄ ∘₁ F B₃  ∘₁ F B₂ ∘₁ F B₁   ⇒₂   F B₃ ∘₁ F B₂ ∘₁ F B₁
+    actionʳ-∘◽⦃◽∘◽⦄ = actionʳ B₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ α⇐
+
+    actionʳ-⦃◽∘◽⦄∘◽ : T M₄ ∘₁ (F B₃  ∘₁ F B₂) ∘₁ F B₁   ⇒₂   (F B₃ ∘₁ F B₂) ∘₁ F B₁
+    actionʳ-⦃◽∘◽⦄∘◽ = actionʳ-∘ B₃ B₂ ◁ F B₁ ∘ᵥ α⇐
+      where
+        open TensorproductOfBimodules.Right-Action using (actionʳ-∘)
+
+    abstract
+      linearʳ-α⇒ : actionʳ-∘◽⦃◽∘◽⦄ ∘ᵥ T M₄ ▷ α⇒ ≈ α⇒ ∘ᵥ actionʳ-⦃◽∘◽⦄∘◽
+      linearʳ-α⇒ = begin
+        actionʳ-∘◽⦃◽∘◽⦄ ∘ᵥ T M₄ ▷ α⇒                   ≈⟨ glue (⟺ α⇒-◁-∘₁) pentagon-conjugate₅ ⟩
+        α⇒ ∘ᵥ actionʳ B₃ ◁ F B₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁ ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ pullˡ ∘ᵥ-distr-◁ ⟩
+        α⇒ ∘ᵥ actionʳ-⦃◽∘◽⦄∘◽                          ∎
+        where
+          open hom.HomReasoning
+          open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (glue; pullˡ)
+
   abstract
-    linearʳ-∘arr² : ((actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
-                        ∘ᵥ T M₄ ▷ α⇒-⊗)
-                        ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-                        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)
-                      ≈ ((α⇒-⊗
-                        ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁)
-                        ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-                        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)
+    linearʳ-∘arr² :
+      ((actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
+      ∘ᵥ T M₄ ▷ α⇒-⊗)
+      ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
+      ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)
+      ≈
+      ((α⇒-⊗
+      ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁)
+      ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
+      ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)
+
     linearʳ-∘arr² = begin
 
       ((actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
-        ∘ᵥ T M₄ ▷ α⇒-⊗)
-        ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ assoc₂ ⟩
+      ∘ᵥ T M₄ ▷ α⇒-⊗)
+      ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
+      ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)
+                                                 ≈⟨ pullʳ ∘ᵥ-distr-▷ ⟩
 
       (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
-        ∘ᵥ T M₄ ▷ α⇒-⊗)
-        ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ assoc₂ ⟩
+      ∘ᵥ T M₄ ▷ α⇒-⊗)
+      ∘ᵥ T M₄ ▷
+        (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
+                                                 ≈⟨ pullʳ ∘ᵥ-distr-▷ ⟩
 
       actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
-        ∘ᵥ T M₄ ▷ α⇒-⊗
-        ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ refl⟩∘⟨ refl⟩∘⟨
-                                                ∘ᵥ-distr-▷ ⟩
+      ∘ᵥ T M₄ ▷
+        (α⇒-⊗
+        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
+                                                 ≈⟨ refl⟩∘⟨ ▷-resp-≈ (⟺ hexagon) ⟩
 
       actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
-        ∘ᵥ T M₄ ▷ α⇒-⊗
-        ∘ᵥ T M₄ ▷ (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-                 ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
+      ∘ᵥ T M₄ ▷
+        (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
+        ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
+        ∘ᵥ α⇒)                                   ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
 
       actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
-        ∘ᵥ T M₄ ▷ (α⇒-⊗
-                 ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-                 ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ refl⟩∘⟨ ▷-resp-≈
-                                                   (⟺ hexagon) ⟩
-
-      actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
-        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-                 ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-                 ∘ᵥ α⇒) ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
-
-      actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
-        ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ T M₄ ▷ (F B₃ ▷ arr (CoeqBimods B₂ B₁)
-                 ∘ᵥ α⇒) ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
-
-      actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
-        ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ T M₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ T M₄ ▷ α⇒ ≈⟨ sym-assoc₂ ⟩
+      ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
+      ∘ᵥ T M₄ ▷
+        (F B₃ ▷ arr (CoeqBimods B₂ B₁)
+        ∘ᵥ α⇒)                                   ≈⟨ ⟺ (pull-last ∘ᵥ-distr-▷) ⟩
 
       (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
-        ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)))
-        ∘ᵥ T M₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ T M₄ ▷ α⇒ ≈⟨ ⟺ (actionʳSq-⊗ B₃ (B₂ ⊗₀ B₁)) ⟩∘⟨refl ⟩
+      ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
+      ∘ᵥ T M₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁))
+      ∘ᵥ T M₄ ▷ α⇒                               ≈⟨ glue′
+                                                      (⟺ (actionʳSq-⊗ B₃ (B₂ ⊗₀ B₁)))
+                                                      (glue (⟺ ◁-▷-exchg) α⇐-▷-∘₁)
+                                                  ⟩∘⟨refl ⟩
+
+      ((arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
+      ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
+      ∘ᵥ actionʳ-∘◽⦃◽∘◽⦄)
+      ∘ᵥ T M₄ ▷ α⇒                               ≈⟨ extendˡ linearʳ-α⇒ ⟩
+
+      ((arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
+      ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
+      ∘ᵥ α⇒)
+      ∘ᵥ actionʳ-⦃◽∘◽⦄∘◽                      ≈⟨ assoc₂ ⟩∘⟨refl ⟩
 
       (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ actionʳ B₃ ◁ obj (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇐)
-        ∘ᵥ T M₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ T M₄ ▷ α⇒ ≈⟨ assoc₂ ⟩
-
-      arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ (actionʳ B₃ ◁ obj (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇐)
-        ∘ᵥ T M₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ T M₄ ▷ α⇒ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-
-      arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ actionʳ B₃ ◁ obj (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇐
-        ∘ᵥ T M₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ T M₄ ▷ α⇒ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-
-      arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ actionʳ B₃ ◁ obj (CoeqBimods B₂ B₁)
-        ∘ᵥ (α⇐
-        ∘ᵥ T M₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁))
-        ∘ᵥ T M₄ ▷ α⇒ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
-                                   α⇐-▷-∘₁ ⟩∘⟨refl ⟩
-
-      arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ actionʳ B₃ ◁ obj (CoeqBimods B₂ B₁)
-        ∘ᵥ ((T M₄ ∘₁ F B₃) ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇐)
-        ∘ᵥ T M₄ ▷ α⇒ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ assoc₂ ⟩
-
-      arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ actionʳ B₃ ◁ obj (CoeqBimods B₂ B₁)
-        ∘ᵥ (T M₄ ∘₁ F B₃) ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇐
-        ∘ᵥ T M₄ ▷ α⇒ ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-
-      arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ (actionʳ B₃ ◁ obj (CoeqBimods B₂ B₁)
-        ∘ᵥ (T M₄ ∘₁ F B₃) ▷ arr (CoeqBimods B₂ B₁))
-        ∘ᵥ α⇐
-        ∘ᵥ T M₄ ▷ α⇒ ≈⟨ refl⟩∘⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
-
-      arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ actionʳ B₃ ◁ (F B₂ ∘₁ F B₁))
-        ∘ᵥ α⇐
-        ∘ᵥ T M₄ ▷ α⇒ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-
-      arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ actionʳ B₃ ◁ (F B₂ ∘₁ F B₁)
-        ∘ᵥ α⇐
-        ∘ᵥ T M₄ ▷ α⇒ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨
-                                   pentagon-conjugate₅ ⟩
-
-      arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ actionʳ B₃ ◁ (F B₂ ∘₁ F B₁)
-        ∘ᵥ α⇒
-        ∘ᵥ α⇐ ◁ F B₁
-        ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-
-      arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ (actionʳ B₃ ◁ (F B₂ ∘₁ F B₁)
-        ∘ᵥ α⇒)
-        ∘ᵥ α⇐ ◁ F B₁
-        ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
-                            ⟺ α⇒-◁-∘₁ ⟩∘⟨refl ⟩
-
-      arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ (α⇒
-        ∘ᵥ actionʳ B₃ ◁ F B₂ ◁ F B₁)
-        ∘ᵥ α⇐ ◁ F B₁
-        ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ assoc₂ ⟩
-
-      arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇒
-        ∘ᵥ actionʳ B₃ ◁ F B₂ ◁ F B₁
-        ∘ᵥ α⇐ ◁ F B₁
-        ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-
-      arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇒)
-        ∘ᵥ actionʳ B₃ ◁ F B₂ ◁ F B₁
-        ∘ᵥ α⇐ ◁ F B₁
-        ∘ᵥ α⇐ ≈⟨ sym-assoc₂ ⟩
-
-      (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇒)
-        ∘ᵥ actionʳ B₃ ◁ F B₂ ◁ F B₁
-        ∘ᵥ α⇐ ◁ F B₁
-        ∘ᵥ α⇐ ≈⟨ hexagon ⟩∘⟨refl ⟩
-
-      (α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
-        ∘ᵥ actionʳ B₃ ◁ F B₂ ◁ F B₁
-        ∘ᵥ α⇐ ◁ F B₁
-        ∘ᵥ α⇐ ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
-
-      ((α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
-        ∘ᵥ actionʳ B₃ ◁ F B₂ ◁ F B₁
-        ∘ᵥ α⇐ ◁ F B₁
-        ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-
-      ((α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
-        ∘ᵥ (actionʳ B₃ ◁ F B₂ ◁ F B₁
-        ∘ᵥ α⇐ ◁ F B₁)
-        ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩
-
-      ((α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
-        ∘ᵥ (actionʳ B₃ ◁ F B₂
-        ∘ᵥ α⇐) ◁ F B₁
-        ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
-
-      (α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ (actionʳ B₃ ◁ F B₂
-        ∘ᵥ α⇐) ◁ F B₁
-        ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-
-      (α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ (arr (CoeqBimods B₃ B₂) ◁ F B₁
-        ∘ᵥ (actionʳ B₃ ◁ F B₂
-        ∘ᵥ α⇐) ◁ F B₁)
-        ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩
-
-      (α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ (arr (CoeqBimods B₃ B₂)
-        ∘ᵥ actionʳ B₃ ◁ F B₂
-        ∘ᵥ α⇐) ◁ F B₁
-        ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ ◁-resp-≈
-                            (actionʳSq-⊗ B₃ B₂) ⟩∘⟨refl ⟩
-
-      (α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ (actionʳ-⊗ B₃ B₂
-        ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ B₂)) ◁ F B₁
-        ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩
-
-      (α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ (actionʳ-⊗ B₃ B₂ ◁ F B₁
-        ∘ᵥ (T M₄ ▷ arr (CoeqBimods B₃ B₂)) ◁ F B₁)
-        ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-
-      (α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ actionʳ-⊗ B₃ B₂ ◁ F B₁
-        ∘ᵥ (T M₄ ▷ arr (CoeqBimods B₃ B₂)) ◁ F B₁
-        ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ α⇐-▷-◁ ⟩
-
-      (α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ actionʳ-⊗ B₃ B₂ ◁ F B₁
-        ∘ᵥ α⇐
-        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-
-      (α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ (actionʳ-⊗ B₃ B₂ ◁ F B₁
-        ∘ᵥ α⇐)
-        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ assoc₂ ⟩
+      ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
+      ∘ᵥ α⇒)
+      ∘ᵥ actionʳ-⦃◽∘◽⦄∘◽                      ≈⟨ pushˡ hexagon ⟩
 
       α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-        ∘ᵥ (actionʳ-⊗ B₃ B₂ ◁ F B₁
-        ∘ᵥ α⇐)
-        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
+      ∘ᵥ (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+      ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
+      ∘ᵥ actionʳ-⦃◽∘◽⦄∘◽                      ≈⟨ refl⟩∘⟨
+                                                   glue
+                                                     (actionʳSq-⊗ (B₃ ⊗₀ B₂) B₁)
+                                                     (glue′ (◁-resp-sq (actionʳSq-⊗ B₃ B₂)) (⟺ α⇐-▷-◁))
+                                                  ⟩
 
       α⇒-⊗
-        ∘ᵥ (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-        ∘ᵥ actionʳ-⊗ B₃ B₂ ◁ F B₁
-        ∘ᵥ α⇐)
-        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ refl⟩∘⟨
-                                                actionʳSq-⊗ (B₃ ⊗₀ B₂) B₁
-                                              ⟩∘⟨refl ⟩
-
-      α⇒-⊗
-        ∘ᵥ (actionʳ-⊗ (B₃ ⊗₀ B₂) B₁
-        ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ sym-assoc₂ ⟩
-
-      (α⇒-⊗
-        ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁
-        ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ≈⟨ sym-assoc₂ ⟩∘⟨refl ⟩
+      ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁
+      ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+      ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)  ≈⟨ assoc²εα ⟩
 
       ((α⇒-⊗
         ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁)
-        ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁) ∎
+      ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
+      ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)  ∎
 
       where
         open hom.HomReasoning
+        open Categories.Morphism.Reasoning (hom (C M₁) (C M₄))
+          using (pullʳ; pushʳ; pull-last; glue′; glue; pull-center; extendˡ; pushˡ; assoc²εα)
         open TensorproductOfBimodules.Right-Action using (actionʳSq-⊗)
 
   abstract
