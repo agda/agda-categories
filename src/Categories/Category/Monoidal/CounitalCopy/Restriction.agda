@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category.Core using (Category)
-open import Categories.Category.CounitalCopy using (CounitalCopy)
+open import Categories.Category.Monoidal.CounitalCopy using (CounitalCopy)
 open import Categories.Category.Restriction using (Restriction)
 open import Data.Product using (_,_)
 
@@ -10,7 +10,7 @@ import Categories.Morphism as M
 
 -- Counital copy categories admit a non trivial restriction structure.
 
-module Categories.Category.CounitalCopy.Restriction {o ℓ e} {𝒞 : Category o ℓ e} (counitalCopy : CounitalCopy 𝒞) where
+module Categories.Category.Monoidal.CounitalCopy.Restriction {o ℓ e} {𝒞 : Category o ℓ e} (counitalCopy : CounitalCopy 𝒞) where
   open Category 𝒞
   open Equiv
   open M 𝒞

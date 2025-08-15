@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe #-}
-module Categories.Category.Monoidal.Construction.Kleisli.Restriction where
+module Categories.Category.Restriction.Construction.Kleisli where
 
 open import Level
 open import Data.Product using (_,_)
@@ -7,7 +7,7 @@ open import Data.Product using (_,_)
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Cartesian using (Cartesian)
 open import Categories.Category.Restriction using (Restriction)
-open import Categories.Category.CounitalCopy.Restriction using (restriction)
+open import Categories.Category.Monoidal.CounitalCopy.Restriction using (restriction)
 open import Categories.Monad.EquationalLifting using (EquationalLiftingMonad)
 open import Categories.Category.Construction.Kleisli using (Kleisli)
 open import Categories.Category.Monoidal.Construction.Kleisli.CounitalCopy using (Kleisli-CounitalCopy)
