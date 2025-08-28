@@ -8,23 +8,21 @@ open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 open import Data.Product using (_,_)
 
 import Categories.Category.Monoidal.Properties
+import Categories.Category.Monoidal.Utilities as MonoidalUtils
+import Categories.Category.Monoidal.Braided.Properties as BraidedProps
+
 
 -- Counital copy categories as described by Cockett & Lack in "Restriction categories III"
 
-module Categories.Category.Monoidal.CounitalCopy {o ℓ e} (𝒞 : Category o ℓ e) where
-  open Category 𝒞
-
-  record CounitalCopy : Set (suc (o ⊔ ℓ ⊔ e)) where
-    field
-      monoidal : Monoidal 𝒞
-      symmetric : Symmetric monoidal
-
-    open Symmetric symmetric public
+module Categories.Category.Monoidal.CounitalCopy where
+  record CounitalCopy {o ℓ e} {𝒞 : Category o ℓ e} {monoidal : Monoidal 𝒞} (symmetric : Symmetric monoidal) : Set (suc (o ⊔ ℓ ⊔ e)) where
+    open Category 𝒞
+    open Symmetric symmetric
+    open BraidedProps braided using () renaming (module Shorthands to BraidedShorthands)
+    open BraidedShorthands using (σ⇒)
+    open MonoidalUtils monoidal using (module Shorthands)
+    open Shorthands
     open Categories.Category.Monoidal.Properties monoidal using (monoidal-Op)
-
-    private
-      σ : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X
-      σ {X} {Y} = braiding.⇒.η (X , Y)
 
     field
       isComonoid : ∀ X → IsMonoid (monoidal-Op) X
@@ -37,10 +35,10 @@ module Categories.Category.Monoidal.CounitalCopy {o ℓ e} (𝒞 : Category o �
 
     field
       natural : ∀ {A B} (f : A ⇒ B) → Δ ∘ f ≈ (f ⊗₁ f) ∘ Δ
-      inverse₁ : Δ {unit} ∘ unitorˡ.from ≈ id
-      inverse₂ : unitorˡ.from ∘ Δ {unit} ≈ id
-      cocommutative : ∀ {A} → σ ∘ Δ ≈ Δ {A}
-      preserves : ∀ {X Y} → associator.to ∘ (id ⊗₁ associator.from) ∘ (id ⊗₁ ((σ ⊗₁ id) ∘ associator.to)) ∘ associator.from ∘ (Δ ⊗₁ Δ) ≈ Δ {X ⊗₀ Y}
+      inverse₁ : Δ {unit} ∘ λ⇒ ≈ id
+      inverse₂ : λ⇒ ∘ Δ {unit} ≈ id
+      cocommutative : ∀ {A} → σ⇒ ∘ Δ ≈ Δ {A}
+      preserves : ∀ {X Y} → α⇐ ∘ (id ⊗₁ α⇒) ∘ (id ⊗₁ ((σ⇒ ⊗₁ id) ∘ α⇐)) ∘ α⇒ ∘ (Δ ⊗₁ Δ) ≈ Δ {X ⊗₀ Y}
     
     module _ {X : Obj} where
       open IsMonoid (isComonoid X) hiding (μ; η) renaming (assoc to Δ-assoc; identityˡ to δ-identityˡ; identityʳ to δ-identityʳ) public
