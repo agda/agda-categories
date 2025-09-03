@@ -1,3 +1,8 @@
+Version 0.3.0
+===============
+
+The library has been tested using Agda 2.8.0 and stdlib 2.3.0.
+
 ## Infrastructure changes
 
 * Better caching, so that CI generally runs faster
@@ -36,6 +41,7 @@ main export `⊣equiv-preserves-diagram` is special case of `la-preserves-diagra
 	* `Categories.Functor.Slice`
 	Forgetful -> TotalSpace
 	Free -> ConstantFamily
+	
 ## New modules
 
 * `Categories.Adjoint.Instance.BaseChange`
