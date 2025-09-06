@@ -253,11 +253,26 @@ main export `⊣equiv-preserves-diagram` is special case of `la-preserves-diagra
   Each successive association is given a Greek letter, from 'α' associated all
   the way to the left, to 'ε' associated all the way to the right. Then,
   'assoc²XY' is the proof that X is equal to Y. Explicitly:
-  * α = ((i ∘ h) ∘ g) ∘ f
-  *  β = (i ∘ (h ∘ g)) ∘ f
-  *  γ = (i ∘ h) ∘ (g ∘ f)
-  *  δ = i ∘ ((h ∘ g) ∘ f)
-  *  ε = i ∘ (h ∘ (g ∘ f))
+   * 
+  ```agda
+  α = ((i ∘ h) ∘ g) ∘ f
+  ```
+  *
+  ```agda
+  β = (i ∘ (h ∘ g)) ∘ f
+  ```
+    * 
+	```agda
+	γ = (i ∘ h) ∘ (g ∘ f)
+	```
+  * 
+  ```agda
+  δ = i ∘ ((h ∘ g) ∘ f)
+  ```
+  * 
+  ```agda
+  ε = i ∘ (h ∘ (g ∘ f))
+  ```
 * `Categories.Object.Duality`
   ```agda
   IndexedCoproductOf⇒coIndexedProductOf : IndexedCoproductOf P → IndexedProductOf P
