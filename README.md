@@ -2,7 +2,7 @@
 
 Welcome to what will hopefully become the standard Category Theory library for Agda.
 
-The current library release, v0.2.0, works with Agda-2.6.4 (and 2.6.4.1) and stdlib-2.0.  The master
+The current library release, v0.3.0, works with Agda-2.8.0 and stdlib-2.3.  The master
 branch should also work with same, but may contain various incompatibilities.
 
 Note that this should be considered pre-beta software, and that backwards compability
