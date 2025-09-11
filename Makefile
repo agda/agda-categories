@@ -1,4 +1,4 @@
-.PHONY: test Everything.agda clean
+.PHONY: test html Everything.agda clean profile
 
 AGDA_EXEC = agda
 OTHEROPTS = -Werror
