@@ -1,0 +1,29 @@
+# Format of a line:
+#
+# Proper Name <Proper@email> commit name <commit@email>
+# \-----------+------------/ \----------+-------------/
+#             |                         |
+#          replace                     find
+#
+# <Proper@email> is never optional and cannot appear by itself.
+# Besides that, the other parts are optional (as long as 2 parts
+# are present).
+
+# Please keep this file in alphabetic order!
+
+Fosco Loregian <fosco.loregian@gmail.com> <tetrapharmakon@gmail.com>
+Fosco Loregian <fosco.loregian@gmail.com> fouche
+Guillaume Allais <guillaume.allais@ens-lyon.org> G. Allais
+James Deikun <james.deikun@obsidian.systems> <james@place.org>
+Jason Hu <fdhzs2010@hotmail.com> HuStmpHrrr
+Leon Vatthauer <leon.vatthauer@fau.de> <34196198+Reijix@users.noreply.github.com>
+Leon Vatthauer <leon.vatthauer@fau.de> Leon
+Manuel Bärenz <programming@manuelbaerenz.de> <m.baerenz@sonnen.de>
+Matthew Daggitt <matthewdaggitt@gmail.com> =
+Nicolas Wachsmann <nicolas.wachsmann@fau.de> <83333288+yourboynico@users.noreply.github.com>
+Reed Mullanix <reedmullanix@gmail.com> <reed.mullanix@calabrio.com>
+Reed Mullanix <reedmullanix@gmail.com> TOTBWF
+Sergey Goncharov <sergyy@gmail.com> <64401608+sergey-goncharov@users.noreply.github.com>
+Sergey Goncharov <sergyy@gmail.com> o-da <sergey.goncharov@fau.de>
+Shu Hung <shu-hung.you@eecs.northwestern.edu> shhyou
+Shu Hung <shu-hung.you@eecs.northwestern.edu> shuhung <shhyou@users.noreply.github.com>
