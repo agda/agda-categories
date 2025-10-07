@@ -78,7 +78,7 @@ jobs:
 ########################################################################
 
       - name: Install Agda
-        uses: wenkokke/setup-agda@main
+        uses: wenkokke/setup-agda@v2
         with:
           agda-version: ${{ env.AGDA_VERSION }}
           agda-stdlib-version: ${{ env.STDLIB_VERSION }}
