@@ -10,6 +10,7 @@ open import Level
 open import Categories.Bicategory.Monad.Bimodule {o} {ℓ} {e} {t} {𝒞}
 open import Categories.Bicategory.Monad.Bimodule.Homomorphism
 open Bimodulehomomorphism
+
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
 open TensorproductOfBimodules using () renaming (Tensorproduct to infixr 30 _⊗₀_)
