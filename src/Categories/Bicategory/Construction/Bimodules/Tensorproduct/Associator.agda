@@ -558,22 +558,22 @@ module Linear-Right where
 
       actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
       ∘ᵥ T M₄ ▷
-        (α⇒-⊗
-        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
+         (α⇒-⊗
+         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
                                                  ≈⟨ refl⟩∘⟨ ▷-resp-≈ (⟺ hexagon) ⟩
 
       actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
       ∘ᵥ T M₄ ▷
-        (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇒)                                   ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
+         (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
+         ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
+         ∘ᵥ α⇒)                                  ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
 
       actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
       ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
       ∘ᵥ T M₄ ▷
-        (F B₃ ▷ arr (CoeqBimods B₂ B₁)
-        ∘ᵥ α⇒)                                   ≈⟨ ⟺ (pull-last ∘ᵥ-distr-▷) ⟩
+         (F B₃ ▷ arr (CoeqBimods B₂ B₁)
+         ∘ᵥ α⇒)                                  ≈⟨ ⟺ (pull-last ∘ᵥ-distr-▷) ⟩
 
       (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
       ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
@@ -613,7 +613,7 @@ module Linear-Right where
       ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)  ≈⟨ assoc²εα ⟩
 
       ((α⇒-⊗
-        ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁)
+      ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁)
       ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
       ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)  ∎
 
