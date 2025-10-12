@@ -14,8 +14,12 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor
   {M₁ M₂ : Monad 𝒞} {B : Bimodule M₁ M₂} where
 
 open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism)
+
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
+open TensorproductOfBimodules using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
+open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
+
 open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_coeq-◁_; _▷-coeq_)
 
 Id-Bimod : {M : Monad 𝒞} → Bimodule M M
@@ -36,10 +40,6 @@ private
     open Categories.Diagram.Coequalizer.Properties (hom X Y) public
 
 open HomCat
-
---- Maybe open it upon importing??? ---
-open TensorproductOfBimodules using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
-open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
 
 -- Id-Bimod ⊗₀ B → B --
 module Left-Unitor where
