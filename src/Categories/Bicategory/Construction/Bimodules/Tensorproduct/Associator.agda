@@ -422,56 +422,52 @@ module Linear-Left where
       ((actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
       ∘ᵥ α⇒-⊗ ◁ T M₁)
       ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
-      ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁    ≈⟨ pullʳ ∘ᵥ-distr-◁ ⟩
+      ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁     ≈⟨ pullʳ ∘ᵥ-distr-◁ ⟩
 
       (actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
       ∘ᵥ α⇒-⊗ ◁ T M₁)
       ∘ᵥ (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
-         ◁ T M₁                                  ≈⟨ pullʳ ∘ᵥ-distr-◁ ⟩
+         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁) ◁ T M₁ ≈⟨ pullʳ ∘ᵥ-distr-◁ ⟩
 
       actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
       ∘ᵥ (α⇒-⊗
          ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
-         ◁ T M₁                                  ≈⟨ refl⟩∘⟨ ◁-resp-≈ (⟺ hexagon) ⟩
+         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁) ◁ T M₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ (⟺ hexagon) ⟩
 
       actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
       ∘ᵥ (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
          ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-         ∘ᵥ α⇒)
-         ◁ T M₁                                  ≈⟨ refl⟩∘⟨ (⟺ ∘ᵥ-distr-◁) ⟩
+         ∘ᵥ α⇒) ◁ T M₁                            ≈⟨ refl⟩∘⟨ (⟺ ∘ᵥ-distr-◁) ⟩
 
       actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
       ∘ᵥ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)) ◁ T M₁
       ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)
-         ∘ᵥ α⇒)
-         ◁ T M₁                                  ≈⟨  ⟺ (pull-last ∘ᵥ-distr-◁)  ⟩
+         ∘ᵥ α⇒) ◁ T M₁                            ≈⟨  ⟺ (pull-last ∘ᵥ-distr-◁)  ⟩
 
       (actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
       ∘ᵥ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)) ◁ T M₁
       ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁)
-      ∘ᵥ α⇒ ◁ T M₁                               ≈⟨ lemma-square-big ⟩∘⟨refl ⟩
+      ∘ᵥ α⇒ ◁ T M₁                                ≈⟨ lemma-square-big ⟩∘⟨refl ⟩
 
       ((arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
       ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
       ∘ᵥ actionˡ-∘◽⦃◽∘◽⦄)
-      ∘ᵥ α⇒ ◁ T M₁                               ≈⟨ glue hexagon-sq linearˡ-α⇒ ⟩
+      ∘ᵥ α⇒ ◁ T M₁                                ≈⟨ glue hexagon-sq linearˡ-α⇒ ⟩
 
       α⇒-⊗
       ∘ᵥ (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
       ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
-      ∘ᵥ actionˡ-⦃◽∘◽⦄∘◽                      ≈⟨ pushʳ lemma-square-big' ⟩
+      ∘ᵥ actionˡ-⦃◽∘◽⦄∘◽                       ≈⟨ pushʳ lemma-square-big' ⟩
 
       (α⇒-⊗
       ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁)
       ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁
-      ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁    ≈⟨ ⟺ assoc₂ ⟩
+      ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁     ≈⟨ ⟺ assoc₂ ⟩
 
       ((α⇒-⊗
       ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁)
       ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁)
-      ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁    ∎
+      ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁     ∎
 
       where
         open hom.HomReasoning
