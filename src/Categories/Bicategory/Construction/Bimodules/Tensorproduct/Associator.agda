@@ -472,8 +472,7 @@ module Linear-Left where
       where
         open hom.HomReasoning
         open Categories.Morphism.Reasoning (hom (C M₁) (C M₄))
-          using (pullʳ; pushʳ; pull-last; glue′; glue)
-        open TensorproductOfBimodules.Left-Action using (actionˡSq-⊗)
+          using (pullʳ; pushʳ; pull-last; glue)
 
   abstract
     linearˡ-∘arr : (actionˡ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ α⇒-⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁
