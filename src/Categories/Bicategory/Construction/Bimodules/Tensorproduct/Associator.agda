@@ -338,8 +338,8 @@ module Linear-Left where
        α⇒ : F B₃ ∘₁ F B₂ ∘₁ F B₁ ⇒₂ (F B₃ ∘₁ F B₂) ∘₁ F B₁
     is left-linear. Here F B₃ ∘₁ F B₂ ∘₁ F B₁ and (F B₃ ∘₁ F B₂) ∘₁ F B₁ are (M₁,M₄)-bimodules with left-action as below.
     -}
-    actionˡ-∘◽⦃◽∘◽⦄ : (F B₃  ∘₁ F B₂ ∘₁ F B₁) ∘₁ T M₁   ⇒₂   F B₃ ∘₁ F B₂ ∘₁ F B₁
-    actionˡ-∘◽⦃◽∘◽⦄ = F B₃ ▷ actionˡ-∘ B₂ B₁ ∘ᵥ α⇒
+    actionˡ-◽∘⦃◽∘◽⦄ : (F B₃  ∘₁ F B₂ ∘₁ F B₁) ∘₁ T M₁   ⇒₂   F B₃ ∘₁ F B₂ ∘₁ F B₁
+    actionˡ-◽∘⦃◽∘◽⦄ = F B₃ ▷ actionˡ-∘ B₂ B₁ ∘ᵥ α⇒
     
       where
         open TensorproductOfBimodules.Left-Action using (actionˡ-∘)
@@ -348,19 +348,17 @@ module Linear-Left where
     actionˡ-⦃◽∘◽⦄∘◽ = (F B₃ ∘₁ F B₂) ▷ actionˡ B₁  ∘ᵥ α⇒
 
     abstract
-      linearˡ-α⇒ : actionˡ-∘◽⦃◽∘◽⦄ ∘ᵥ α⇒ ◁ T M₁ ≈ α⇒ ∘ᵥ actionˡ-⦃◽∘◽⦄∘◽
+      linearˡ-α⇒ : actionˡ-◽∘⦃◽∘◽⦄ ∘ᵥ α⇒ ◁ T M₁ ≈ α⇒ ∘ᵥ actionˡ-⦃◽∘◽⦄∘◽
       linearˡ-α⇒ = begin
-        actionˡ-∘◽⦃◽∘◽⦄ ∘ᵥ α⇒ ◁ T M₁                            ≈⟨ pushˡ (⟺ ∘ᵥ-distr-▷) ⟩∘⟨refl ⟩
+        actionˡ-◽∘⦃◽∘◽⦄ ∘ᵥ α⇒ ◁ T M₁                            ≈⟨ pushˡ (⟺ ∘ᵥ-distr-▷) ⟩∘⟨refl ⟩
         (F B₃ ▷ F B₂ ▷ actionˡ B₁ ∘ᵥ F B₃ ▷ α⇒ ∘ᵥ α⇒) ∘ᵥ α⇒ ◁ T M₁ ≈⟨ glue (⟺ α⇒-▷-∘₁) pentagon-var ⟩
         α⇒ ∘ᵥ actionˡ-⦃◽∘◽⦄∘◽                                   ∎
         where
           open hom.HomReasoning
           open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (pushˡ; glue)
 
-      lemma-square-small :
-        actionˡ-∘ B₃ (B₂ ⊗₀ B₁) ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁
-        ≈
-        F B₃ ▷ arr (CoeqBimods B₂ B₁) ∘ᵥ actionˡ-∘◽⦃◽∘◽⦄
+      lemma-square-small : actionˡ-∘ B₃ (B₂ ⊗₀ B₁) ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁
+                         ≈ F B₃ ▷ arr (CoeqBimods B₂ B₁) ∘ᵥ actionˡ-◽∘⦃◽∘◽⦄
       lemma-square-small = glue (▷-resp-sq (⟺ (actionˡSq-⊗ B₂ B₁))) α⇒-▷-◁
         where
           open hom.HomReasoning
@@ -374,7 +372,7 @@ module Linear-Left where
         ≈
         (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
         ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
-        ∘ᵥ actionˡ-∘◽⦃◽∘◽⦄
+        ∘ᵥ actionˡ-◽∘⦃◽∘◽⦄
       lemma-square-big = glue′ (⟺ (actionˡSq-⊗ B₃ (B₂ ⊗₀ B₁))) lemma-square-small
         where
           open hom.HomReasoning
@@ -451,7 +449,7 @@ module Linear-Left where
 
       ((arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
       ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
-      ∘ᵥ actionˡ-∘◽⦃◽∘◽⦄)
+      ∘ᵥ actionˡ-◽∘⦃◽∘◽⦄)
       ∘ᵥ α⇒ ◁ T M₁                                ≈⟨ glue hexagon-sq linearˡ-α⇒ ⟩
 
       α⇒-⊗
@@ -506,8 +504,8 @@ module Linear-Right where
        α⇒ : F B₃ ∘₁ F B₂ ∘₁ F B₁ ⇒₂ (F B₃ ∘₁ F B₂) ∘₁ F B₁
     is right-linear. Here F B₃ ∘₁ F B₂ ∘₁ F B₁ and (F B₃ ∘₁ F B₂) ∘₁ F B₁ are (M₁,M₄)-bimodules with right-action as below.
     -}
-    actionʳ-∘◽⦃◽∘◽⦄ : T M₄ ∘₁ F B₃  ∘₁ F B₂ ∘₁ F B₁   ⇒₂   F B₃ ∘₁ F B₂ ∘₁ F B₁
-    actionʳ-∘◽⦃◽∘◽⦄ = actionʳ B₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ α⇐
+    actionʳ-◽∘⦃◽∘◽⦄ : T M₄ ∘₁ F B₃  ∘₁ F B₂ ∘₁ F B₁   ⇒₂   F B₃ ∘₁ F B₂ ∘₁ F B₁
+    actionʳ-◽∘⦃◽∘◽⦄ = actionʳ B₃ ◁ (F B₂ ∘₁ F B₁) ∘ᵥ α⇐
 
     actionʳ-⦃◽∘◽⦄∘◽ : T M₄ ∘₁ (F B₃  ∘₁ F B₂) ∘₁ F B₁   ⇒₂   (F B₃ ∘₁ F B₂) ∘₁ F B₁
     actionʳ-⦃◽∘◽⦄∘◽ = actionʳ-∘ B₃ B₂ ◁ F B₁ ∘ᵥ α⇐
@@ -515,9 +513,9 @@ module Linear-Right where
         open TensorproductOfBimodules.Right-Action using (actionʳ-∘)
 
     abstract
-      linearʳ-α⇒ : actionʳ-∘◽⦃◽∘◽⦄ ∘ᵥ T M₄ ▷ α⇒ ≈ α⇒ ∘ᵥ actionʳ-⦃◽∘◽⦄∘◽
+      linearʳ-α⇒ : actionʳ-◽∘⦃◽∘◽⦄ ∘ᵥ T M₄ ▷ α⇒ ≈ α⇒ ∘ᵥ actionʳ-⦃◽∘◽⦄∘◽
       linearʳ-α⇒ = begin
-        actionʳ-∘◽⦃◽∘◽⦄ ∘ᵥ T M₄ ▷ α⇒                   ≈⟨ glue (⟺ α⇒-◁-∘₁) pentagon-conjugate₅ ⟩
+        actionʳ-◽∘⦃◽∘◽⦄ ∘ᵥ T M₄ ▷ α⇒                   ≈⟨ glue (⟺ α⇒-◁-∘₁) pentagon-conjugate₅ ⟩
         α⇒ ∘ᵥ actionʳ B₃ ◁ F B₂ ◁ F B₁ ∘ᵥ α⇐ ◁ F B₁ ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ pullˡ ∘ᵥ-distr-◁ ⟩
         α⇒ ∘ᵥ actionʳ-⦃◽∘◽⦄∘◽                          ∎
         where
@@ -580,7 +578,7 @@ module Linear-Right where
 
       ((arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
       ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
-      ∘ᵥ actionʳ-∘◽⦃◽∘◽⦄)
+      ∘ᵥ actionʳ-◽∘⦃◽∘◽⦄)
       ∘ᵥ T M₄ ▷ α⇒                               ≈⟨ extendˡ linearʳ-α⇒ ⟩
 
       ((arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
