@@ -32,6 +32,7 @@ import Categories.Diagram.Coequalizer
 import Categories.Diagram.Coequalizer.Properties
 import Categories.Morphism
 import Categories.Morphism.Reasoning
+import Categories.Morphism.Reasoning.Iso
 import Categories.Category
 import Categories.Category.Construction.Core
 
@@ -176,7 +177,7 @@ module 2-cell where
       arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ α⇐ ∘ᵥ F B₃ ▷ F B₂ ▷ actionʳ B₁ ∘ᵥ α⇒          ∎
       where
         open hom.HomReasoning
-        open import Categories.Morphism.Reasoning.Iso (hom (C M₁) (C M₄))
+        open Categories.Morphism.Reasoning.Iso (hom (C M₁) (C M₄)) using (switch-fromtoˡ)
 
     sq₂ᶠⁱ : CommutativeSquare (arr coeqᶠ) h₂ f⇒i₂ (arr coeqⁱ)
     sq₂ᶠⁱ = begin
