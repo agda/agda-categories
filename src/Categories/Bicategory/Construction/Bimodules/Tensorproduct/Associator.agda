@@ -521,6 +521,47 @@ module Linear-Right where
           open hom.HomReasoning
           open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (glue; pullˡ)
 
+      actionʳSq-◽∘⦃◽⊗◽⦄ : F B₃ ▷ arr (CoeqBimods B₂ B₁) ∘ᵥ actionʳ-◽∘⦃◽∘◽⦄
+                           ≈ actionʳ-∘ B₃ (B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁)
+      actionʳSq-◽∘⦃◽⊗◽⦄ = glue′ ◁-▷-exchg (⟺ α⇐-▷-∘₁)
+        where
+          open hom.HomReasoning
+          open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (glue′; glue)
+
+      actionʳSq-◽⊗⦃◽⊗◽⦄ :
+        (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
+        ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
+        ∘ᵥ actionʳ-◽∘⦃◽∘◽⦄
+        ≈
+        (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
+        ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
+        ∘ᵥ T M₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁))
+      actionʳSq-◽⊗⦃◽⊗◽⦄ = glue (actionʳSq-⊗ B₃ (B₂ ⊗₀ B₁)) actionʳSq-◽∘⦃◽⊗◽⦄
+        where
+          open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (glue)
+          open TensorproductOfBimodules.Right-Action using (actionʳSq-⊗)
+      
+      actionʳSq-⦃◽⊗◽⦄∘◽ : arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ actionʳ-⦃◽∘◽⦄∘◽
+                           ≈ actionʳ-∘ (B₃ ⊗₀ B₂) B₁ ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)
+      actionʳSq-⦃◽⊗◽⦄∘◽ = glue′ (◁-resp-sq (actionʳSq-⊗ B₃ B₂)) (⟺ α⇐-▷-◁)
+        where
+          open hom.HomReasoning
+          open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (glue′)
+          open TensorproductOfBimodules.Right-Action using (actionʳSq-⊗)
+
+      actionʳSq-⦃◽⊗◽⦄⊗◽ :
+        (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
+        ∘ᵥ actionʳ-⦃◽∘◽⦄∘◽
+        ≈
+        actionʳ-⊗ (B₃ ⊗₀ B₂) B₁
+        ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+        ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)
+      actionʳSq-⦃◽⊗◽⦄⊗◽ = glue (actionʳSq-⊗ (B₃ ⊗₀ B₂) B₁) actionʳSq-⦃◽⊗◽⦄∘◽
+        where
+          open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (glue)
+          open TensorproductOfBimodules.Right-Action using (actionʳSq-⊗)
+
   abstract
     linearʳ-∘arr² :
       ((actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
@@ -593,16 +634,12 @@ module Linear-Right where
       α⇒-⊗
       ∘ᵥ (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
       ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
-      ∘ᵥ actionʳ-⦃◽∘◽⦄∘◽                      ≈⟨ refl⟩∘⟨
-                                                   glue
-                                                     (actionʳSq-⊗ (B₃ ⊗₀ B₂) B₁)
-                                                     (glue′ (◁-resp-sq (actionʳSq-⊗ B₃ B₂)) (⟺ α⇐-▷-◁))
-                                                  ⟩
+      ∘ᵥ actionʳ-⦃◽∘◽⦄∘◽                      ≈⟨ pushʳ actionʳSq-⦃◽⊗◽⦄⊗◽ ⟩
 
-      α⇒-⊗
-      ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁
+      (α⇒-⊗
+      ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁)
       ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-      ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)  ≈⟨ assoc²εα ⟩
+      ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)  ≈⟨ ⟺ assoc₂ ⟩
 
       ((α⇒-⊗
       ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁)
