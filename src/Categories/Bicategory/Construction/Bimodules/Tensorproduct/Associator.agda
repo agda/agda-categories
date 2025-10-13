@@ -358,39 +358,37 @@ module Linear-Left where
           open hom.HomReasoning
           open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (pushˡ; glue)
 
-      lemma-square-small : actionˡ-∘ B₃ (B₂ ⊗₀ B₁) ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁
-                         ≈ F B₃ ▷ arr (CoeqBimods B₂ B₁) ∘ᵥ actionˡ-◽∘⦃◽∘◽⦄
-      lemma-square-small = glue (▷-resp-sq (⟺ (actionˡSq-⊗ B₂ B₁))) α⇒-▷-◁
+      actionˡSq-◽∘⦃◽⊗◽⦄ : F B₃ ▷ arr (CoeqBimods B₂ B₁) ∘ᵥ actionˡ-◽∘⦃◽∘◽⦄
+                         ≈ actionˡ-∘ B₃ (B₂ ⊗₀ B₁) ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁
+      actionˡSq-◽∘⦃◽⊗◽⦄ = glue′ (▷-resp-sq (actionˡSq-⊗ B₂ B₁)) (⟺ α⇒-▷-◁)
+        where
+          open hom.HomReasoning
+          open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (glue′)
+          open TensorproductOfBimodules.Left-Action using (actionˡSq-⊗)
+
+      actionˡSq-◽⊗⦃◽⊗◽⦄ :
+        (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
+        ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
+        ∘ᵥ actionˡ-◽∘⦃◽∘◽⦄
+        ≈
+        actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
+        ∘ᵥ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)) ◁ T M₁
+        ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁
+      actionˡSq-◽⊗⦃◽⊗◽⦄ = glue (actionˡSq-⊗ B₃ (B₂ ⊗₀ B₁)) actionˡSq-◽∘⦃◽⊗◽⦄
         where
           open hom.HomReasoning
           open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (glue)
           open TensorproductOfBimodules.Left-Action using (actionˡSq-⊗)
 
-      lemma-square-big :
-        actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
-        ∘ᵥ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)) ◁ T M₁
-        ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁
-        ≈
-        (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-        ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
-        ∘ᵥ actionˡ-◽∘⦃◽∘◽⦄
-      lemma-square-big = glue′ (⟺ (actionˡSq-⊗ B₃ (B₂ ⊗₀ B₁))) lemma-square-small
+      actionˡSq-⦃◽⊗◽⦄∘◽ : arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ actionˡ-⦃◽∘◽⦄∘◽
+                          ≈ actionˡ-∘ (B₃ ⊗₀ B₂) B₁ ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁
+      actionˡSq-⦃◽⊗◽⦄∘◽ = glue′ (⟺ ◁-▷-exchg) (⟺ α⇒-◁-∘₁)
         where
           open hom.HomReasoning
           open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (glue′)
           open TensorproductOfBimodules.Left-Action using (actionˡSq-⊗)
 
-      lemma-square-small' :
-        arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ actionˡ-⦃◽∘◽⦄∘◽
-        ≈
-        actionˡ-∘ (B₃ ⊗₀ B₂) B₁ ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁
-      lemma-square-small' = glue′ (⟺ ◁-▷-exchg) (⟺ α⇒-◁-∘₁)
-        where
-          open hom.HomReasoning
-          open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (glue′)
-          open TensorproductOfBimodules.Left-Action using (actionˡSq-⊗)
-
-      lemma-square-big' :
+      actionˡSq-⦃◽⊗◽⦄⊗◽ :
         (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
         ∘ᵥ actionˡ-⦃◽∘◽⦄∘◽
@@ -398,7 +396,7 @@ module Linear-Left where
         actionˡ-⊗ (B₃ ⊗₀ B₂) B₁
         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ◁ T M₁
         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁
-      lemma-square-big' = glue (actionˡSq-⊗ (B₃ ⊗₀ B₂) B₁) lemma-square-small'
+      actionˡSq-⦃◽⊗◽⦄⊗◽ = glue (actionˡSq-⊗ (B₃ ⊗₀ B₂) B₁) actionˡSq-⦃◽⊗◽⦄∘◽
         where
           open hom.HomReasoning
           open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (glue)
@@ -446,7 +444,7 @@ module Linear-Left where
       (actionˡ-⊗ B₃ (B₂ ⊗₀ B₁)
       ∘ᵥ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)) ◁ T M₁
       ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁)
-      ∘ᵥ α⇒ ◁ T M₁                                ≈⟨ lemma-square-big ⟩∘⟨refl ⟩
+      ∘ᵥ α⇒ ◁ T M₁                                ≈⟨ ⟺ actionˡSq-◽⊗⦃◽⊗◽⦄ ⟩∘⟨refl ⟩
 
       ((arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
       ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
@@ -456,7 +454,7 @@ module Linear-Left where
       α⇒-⊗
       ∘ᵥ (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
       ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
-      ∘ᵥ actionˡ-⦃◽∘◽⦄∘◽                       ≈⟨ pushʳ lemma-square-big' ⟩
+      ∘ᵥ actionˡ-⦃◽∘◽⦄∘◽                       ≈⟨ pushʳ actionˡSq-⦃◽⊗◽⦄⊗◽ ⟩
 
       (α⇒-⊗
       ∘ᵥ actionˡ-⊗ (B₃ ⊗₀ B₂) B₁)
