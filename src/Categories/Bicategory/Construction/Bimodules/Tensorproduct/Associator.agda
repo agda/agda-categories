@@ -359,7 +359,7 @@ module Linear-Left where
           open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (pushˡ; glue)
 
       actionˡSq-◽∘⦃◽⊗◽⦄ : F B₃ ▷ arr (CoeqBimods B₂ B₁) ∘ᵥ actionˡ-◽∘⦃◽∘◽⦄
-                         ≈ actionˡ-∘ B₃ (B₂ ⊗₀ B₁) ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁
+                           ≈ actionˡ-∘ B₃ (B₂ ⊗₀ B₁) ∘ᵥ (F B₃ ▷ arr (CoeqBimods B₂ B₁)) ◁ T M₁
       actionˡSq-◽∘⦃◽⊗◽⦄ = glue′ (▷-resp-sq (actionˡSq-⊗ B₂ B₁)) (⟺ α⇒-▷-◁)
         where
           open hom.HomReasoning
@@ -381,7 +381,7 @@ module Linear-Left where
           open TensorproductOfBimodules.Left-Action using (actionˡSq-⊗)
 
       actionˡSq-⦃◽⊗◽⦄∘◽ : arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ actionˡ-⦃◽∘◽⦄∘◽
-                          ≈ actionˡ-∘ (B₃ ⊗₀ B₂) B₁ ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁
+                           ≈ actionˡ-∘ (B₃ ⊗₀ B₂) B₁ ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ◁ T M₁
       actionˡSq-⦃◽⊗◽⦄∘◽ = glue′ (⟺ ◁-▷-exchg) (⟺ α⇒-◁-∘₁)
         where
           open hom.HomReasoning
@@ -540,7 +540,7 @@ module Linear-Right where
         where
           open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (glue)
           open TensorproductOfBimodules.Right-Action using (actionʳSq-⊗)
-      
+
       actionʳSq-⦃◽⊗◽⦄∘◽ : arr (CoeqBimods B₃ B₂) ◁ F B₁ ∘ᵥ actionʳ-⦃◽∘◽⦄∘◽
                            ≈ actionʳ-∘ (B₃ ⊗₀ B₂) B₁ ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)
       actionʳSq-⦃◽⊗◽⦄∘◽ = glue′ (◁-resp-sq (actionʳSq-⊗ B₃ B₂)) (⟺ α⇐-▷-◁)
@@ -584,28 +584,24 @@ module Linear-Right where
 
       (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
       ∘ᵥ T M₄ ▷ α⇒-⊗)
-      ∘ᵥ T M₄ ▷
-        (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-        ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
+      ∘ᵥ T M₄ ▷ (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+         ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
                                                  ≈⟨ pullʳ ∘ᵥ-distr-▷ ⟩
 
       actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
-      ∘ᵥ T M₄ ▷
-         (α⇒-⊗
+      ∘ᵥ T M₄ ▷ (α⇒-⊗
          ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
          ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
                                                  ≈⟨ refl⟩∘⟨ ▷-resp-≈ (⟺ hexagon) ⟩
 
       actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
-      ∘ᵥ T M₄ ▷
-         (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
+      ∘ᵥ T M₄ ▷ (arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
          ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
          ∘ᵥ α⇒)                                  ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
 
       actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
       ∘ᵥ T M₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
-      ∘ᵥ T M₄ ▷
-         (F B₃ ▷ arr (CoeqBimods B₂ B₁)
+      ∘ᵥ T M₄ ▷ (F B₃ ▷ arr (CoeqBimods B₂ B₁)
          ∘ᵥ α⇒)                                  ≈⟨ ⟺ (pull-last ∘ᵥ-distr-▷) ⟩
 
       (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁)
@@ -649,17 +645,17 @@ module Linear-Right where
       where
         open hom.HomReasoning
         open Categories.Morphism.Reasoning (hom (C M₁) (C M₄))
-          using (pullʳ; pushʳ; pull-last; glue′; glue; pull-center; extendˡ; pushˡ; assoc²εα)
+          using (pullʳ; pushʳ; pull-last; glue′; glue; pull-center; extendˡ; pushˡ)
         open TensorproductOfBimodules.Right-Action using (actionʳSq-⊗)
 
   abstract
     linearʳ-∘arr : (actionʳ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ α⇒-⊗) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-                ≈ (α⇒-⊗ ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+                 ≈ (α⇒-⊗ ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
     linearʳ-∘arr = Coequalizer⇒Epi
-                    (T M₄ ▷-coeq ((CoeqBimods B₃ B₂) coeq-◁ F B₁))
-                    ((actionʳ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ α⇒-⊗) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-                    ((α⇒-⊗ ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-                    linearʳ-∘arr²
+                     (T M₄ ▷-coeq ((CoeqBimods B₃ B₂) coeq-◁ F B₁))
+                     ((actionʳ-⊗ B₃ (B₂ ⊗₀ B₁) ∘ᵥ T M₄ ▷ α⇒-⊗) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
+                     ((α⇒-⊗ ∘ᵥ actionʳ-⊗ (B₃ ⊗₀ B₂) B₁) ∘ᵥ T M₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
+                     linearʳ-∘arr²
       where
         open Categories.Diagram.Coequalizer (hom (C M₁) (C M₄)) using (Coequalizer⇒Epi)
 
