@@ -60,7 +60,7 @@ module Composition {M₁ M₂ M₃ : Monad 𝒞} {B₂ B'₂ B''₂ : Bimodule M
     (α (h₂ ⊗₁ h₁) ∘ᵥ α (g₂ ⊗₁ g₁)) ∘ᵥ arr (CoeqBimods B₂ B₁)           ∎
     where
       open hom.HomReasoning
-      open import Categories.Morphism.Reasoning.Core (hom (C M₁) (C M₃)) using (glue′) -- TODO
+      open Categories.Morphism.Reasoning (hom (C M₁) (C M₃)) using (glue′)
       open TensorproductOfHomomorphisms using (αSq-⊗)
 
   ⊗₁-distr-∘ᵥ : α (h₂ ∘ g₂ ⊗₁ h₁ ∘ g₁)
