@@ -41,7 +41,7 @@ private
 
 open HomCat
 
--- Id-Bimod ⊗₀ B → B --
+-- Id-Bimod ⊗₀ B ⇒ B --
 module Left-Unitor where
   open Bimodule B using (F; actionˡ; actionʳ; assoc; assoc-actionʳ) renaming (identityʳ to B-identityʳ)
   open Monad M₁ using () renaming (T to T₁)
