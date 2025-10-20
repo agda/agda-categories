@@ -48,9 +48,9 @@ module Composition {M₁ M₂ M₃ : Monad 𝒞} {B₂ B'₂ B''₂ : Bimodule M
                             (h₂ : Bimodulehomomorphism B'₂ B''₂) (h₁ : Bimodulehomomorphism B'₁ B''₁)
                             (g₂ : Bimodulehomomorphism B₂ B'₂) (g₁ : Bimodulehomomorphism B₁ B'₁) where
     
-  ⊗₁-distr-∘ᵥ∘arr : α (bimodule-hom-∘ h₂ g₂ ⊗₁ bimodule-hom-∘ h₁ g₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)
+  ⊗₁-distr-∘ᵥ-∘arr : α (bimodule-hom-∘ h₂ g₂ ⊗₁ bimodule-hom-∘ h₁ g₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)
                     ≈ (α (h₂ ⊗₁ h₁) ∘ᵥ α (g₂ ⊗₁ g₁)) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)
-  ⊗₁-distr-∘ᵥ∘arr = begin
+  ⊗₁-distr-∘ᵥ-∘arr = begin
     α (bimodule-hom-∘ h₂ g₂ ⊗₁ bimodule-hom-∘ h₁ g₁)
     ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)                        ≈⟨ ⟺ (αSq-⊗ (bimodule-hom-∘ h₂ g₂) (bimodule-hom-∘ h₁ g₁)) ⟩
     Coequalizer.arr (CoeqBimods B''₂ B''₁)
@@ -69,14 +69,14 @@ module Composition {M₁ M₂ M₃ : Monad 𝒞} {B₂ B'₂ B''₂ : Bimodule M
   ⊗₁-distr-∘ᵥ = Coequalizer⇒Epi (hom (C M₁) (C M₃)) (CoeqBimods B₂ B₁)
                                 (α (bimodule-hom-∘ h₂ g₂ ⊗₁ bimodule-hom-∘ h₁ g₁))
                                 (α (h₂ ⊗₁ h₁) ∘ᵥ α (g₂ ⊗₁ g₁))
-                                ⊗₁-distr-∘ᵥ∘arr
+                                ⊗₁-distr-∘ᵥ-∘arr
 
 module ≈Preservation {M₁ M₂ M₃ : Monad 𝒞} {B₂ B'₂ : Bimodule M₂ M₃} {B₁ B'₁ : Bimodule M₁ M₂}
                             (h₂ h'₂ : Bimodulehomomorphism B₂ B'₂) (h₁ h'₁ : Bimodulehomomorphism B₁ B'₁)
                             (e₂ : α h₂ ≈ α h'₂) (e₁ : α h₁ ≈ α h'₁) where
 
-  ⊗₁-resp-≈∘arr : α (h₂ ⊗₁ h₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ≈ α (h'₂ ⊗₁ h'₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)
-  ⊗₁-resp-≈∘arr = begin
+  ⊗₁-resp-≈-∘arr : α (h₂ ⊗₁ h₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ≈ α (h'₂ ⊗₁ h'₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)
+  ⊗₁-resp-≈-∘arr = begin
     α (h₂ ⊗₁ h₁) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ≈⟨ ⟺ (αSq-⊗ h₂ h₁) ⟩
     Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ≈⟨ refl⟩∘⟨ e₂ ⟩⊚⟨ e₁ ⟩
     Coequalizer.arr (CoeqBimods B'₂ B'₁) ∘ᵥ (α h'₂ ⊚₁ α h'₁) ≈⟨ αSq-⊗ h'₂ h'₁ ⟩
@@ -87,4 +87,4 @@ module ≈Preservation {M₁ M₂ M₃ : Monad 𝒞} {B₂ B'₂ : Bimodule M₂
 
   ⊗₁-resp-≈ : α (h₂ ⊗₁ h₁) ≈ α (h'₂ ⊗₁ h'₁)
   ⊗₁-resp-≈ = Coequalizer⇒Epi (hom (C M₁) (C M₃)) ((CoeqBimods B₂ B₁))
-                              (α (h₂ ⊗₁ h₁)) (α (h'₂ ⊗₁ h'₁)) (⊗₁-resp-≈∘arr)
+                              (α (h₂ ⊗₁ h₁)) (α (h'₂ ⊗₁ h'₁)) (⊗₁-resp-≈-∘arr)
