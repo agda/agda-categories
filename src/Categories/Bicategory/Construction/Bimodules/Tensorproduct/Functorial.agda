@@ -15,6 +15,7 @@ open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehom
 open Monad using (C)
 open Bimodulehomomorphism using (α)
 
+import Categories.Morphism.Reasoning
 open import Categories.Diagram.Coequalizer using (Coequalizer; Coequalizer⇒Epi)
 open Coequalizer using (arr)
 
@@ -30,12 +31,12 @@ module Identity {M₁ M₂ M₃ : Monad 𝒞} (B₂ : Bimodule M₂ M₃) (B₁ 
                  ≈ id₂ ∘ᵥ arr (CoeqBimods B₂ B₁)
   ⊗₁-resp-id₂-∘arr = begin
     α (id-bimodule-hom {B = B₂} ⊗₁ id-bimodule-hom {B = B₁}) ∘ᵥ arr (CoeqBimods B₂ B₁) ≈⟨ ⟺ αSq-⊗ ⟩
-    arr (CoeqBimods B₂ B₁) ∘ᵥ (id₂ ⊚₁ id₂) ≈⟨ refl⟩∘⟨ ⊚.identity ⟩
-    arr (CoeqBimods B₂ B₁) ∘ᵥ id₂ ≈⟨ identity₂ʳ ⟩
-    arr (CoeqBimods B₂ B₁) ≈⟨ ⟺ identity₂ˡ ⟩
-    id₂ ∘ᵥ arr (CoeqBimods B₂ B₁) ∎
+    arr (CoeqBimods B₂ B₁) ∘ᵥ (id₂ ⊚₁ id₂)                                             ≈⟨ elimʳ ⊚.identity ⟩
+    arr (CoeqBimods B₂ B₁)                                                             ≈⟨ ⟺ identity₂ˡ ⟩
+    id₂ ∘ᵥ arr (CoeqBimods B₂ B₁)                                                      ∎
     where
       open hom.HomReasoning
+      open Categories.Morphism.Reasoning (hom (C M₁) (C M₃)) using (elimʳ)
       open TensorproductOfHomomorphisms {B₂ = B₂} {B₂} {B₁} {B₁} (id-bimodule-hom) (id-bimodule-hom) using (αSq-⊗)
 
   ⊗₁-resp-id₂ : α (id-bimodule-hom {B = B₂} ⊗₁ id-bimodule-hom {B = B₁}) ≈ id₂
