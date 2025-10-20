@@ -48,11 +48,11 @@ module Composition {M₁ M₂ M₃ : Monad 𝒞} {B₂ B'₂ B''₂ : Bimodule M
                             (h₂ : Bimodulehomomorphism B'₂ B''₂) (h₁ : Bimodulehomomorphism B'₁ B''₁)
                             (g₂ : Bimodulehomomorphism B₂ B'₂) (g₁ : Bimodulehomomorphism B₁ B'₁) where
     
-  ⊗₁-distr-∘ᵥ-∘arr : α (bimodule-hom-∘ h₂ g₂ ⊗₁ bimodule-hom-∘ h₁ g₁) ∘ᵥ arr (CoeqBimods B₂ B₁)
+  ⊗₁-distr-∘ᵥ-∘arr : α (h₂ ∘ g₂ ⊗₁ h₁ ∘ g₁) ∘ᵥ arr (CoeqBimods B₂ B₁)
                     ≈ (α (h₂ ⊗₁ h₁) ∘ᵥ α (g₂ ⊗₁ g₁)) ∘ᵥ arr (CoeqBimods B₂ B₁)
   ⊗₁-distr-∘ᵥ-∘arr = begin
-    α (bimodule-hom-∘ h₂ g₂ ⊗₁ bimodule-hom-∘ h₁ g₁)
-    ∘ᵥ arr (CoeqBimods B₂ B₁)                        ≈⟨ ⟺ (αSq-⊗ (bimodule-hom-∘ h₂ g₂) (bimodule-hom-∘ h₁ g₁)) ⟩
+    α (h₂ ∘ g₂ ⊗₁ h₁ ∘ g₁)
+    ∘ᵥ arr (CoeqBimods B₂ B₁)                        ≈⟨ ⟺ (αSq-⊗ (h₂ ∘ g₂) (h₁ ∘ g₁)) ⟩
     arr (CoeqBimods B''₂ B''₁)
     ∘ᵥ ((α h₂ ∘ᵥ α g₂) ⊚₁ ((α h₁ ∘ᵥ α g₁))) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-⊚ ⟩
     arr (CoeqBimods B''₂ B''₁) ∘ᵥ (α h₂ ⊚₁ α h₁)
@@ -64,10 +64,10 @@ module Composition {M₁ M₂ M₃ : Monad 𝒞} {B₂ B'₂ B''₂ : Bimodule M
       open import Categories.Morphism.Reasoning.Core (hom (C M₁) (C M₃)) using (glue′) -- TODO
       open TensorproductOfHomomorphisms using (αSq-⊗)
 
-  ⊗₁-distr-∘ᵥ : α (bimodule-hom-∘ h₂ g₂ ⊗₁ bimodule-hom-∘ h₁ g₁)
+  ⊗₁-distr-∘ᵥ : α (h₂ ∘ g₂ ⊗₁ h₁ ∘ g₁)
                 ≈ α (h₂ ⊗₁ h₁) ∘ᵥ α (g₂ ⊗₁ g₁)
   ⊗₁-distr-∘ᵥ = Coequalizer⇒Epi (hom (C M₁) (C M₃)) (CoeqBimods B₂ B₁)
-                                (α (bimodule-hom-∘ h₂ g₂ ⊗₁ bimodule-hom-∘ h₁ g₁))
+                                (α (h₂ ∘ g₂ ⊗₁ h₁ ∘ g₁))
                                 (α (h₂ ⊗₁ h₁) ∘ᵥ α (g₂ ⊗₁ g₁))
                                 ⊗₁-distr-∘ᵥ-∘arr
 

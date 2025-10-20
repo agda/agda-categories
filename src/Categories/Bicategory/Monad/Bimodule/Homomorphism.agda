@@ -47,9 +47,11 @@ id-bimodule-hom {B} = record
       actionʳ                 ≈⟨ ⟺ identity₂ˡ ⟩
       id₂ ∘ᵥ actionʳ          ∎
 
-bimodule-hom-∘ : {B₁ B₂ B₃ : Bimodule M₁ M₂}
+infixr 40 _∘_
+
+_∘_ : {B₁ B₂ B₃ : Bimodule M₁ M₂}
                → Bimodulehomomorphism B₂ B₃ → Bimodulehomomorphism B₁ B₂ → Bimodulehomomorphism B₁ B₃
-bimodule-hom-∘ {B₁} {B₂} {B₃} g f = record
+_∘_ {B₁} {B₂} {B₃} g f = record
   { α = α g ∘ᵥ α f
   ; linearˡ = g∘f-linearˡ
   ; linearʳ = g∘f-linearʳ
