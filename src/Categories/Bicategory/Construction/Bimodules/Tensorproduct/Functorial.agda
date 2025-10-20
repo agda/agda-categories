@@ -26,9 +26,9 @@ module Identity {M₁ M₂ M₃ : Monad 𝒞} (B₂ : Bimodule M₂ M₃) (B₁ 
   open Monad M₁ using () renaming (C to C₁)
   open Monad M₃ using () renaming (C to C₃)
 
-  ⊗₁-resp-id₂∘arr : α (id-bimodule-hom {B = B₂} ⊗₁ id-bimodule-hom {B = B₁}) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)
+  ⊗₁-resp-id₂-∘arr : α (id-bimodule-hom {B = B₂} ⊗₁ id-bimodule-hom {B = B₁}) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)
                  ≈ id₂ ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁)
-  ⊗₁-resp-id₂∘arr = begin
+  ⊗₁-resp-id₂-∘arr = begin
     α (id-bimodule-hom {B = B₂} ⊗₁ id-bimodule-hom {B = B₁}) ∘ᵥ Coequalizer.arr (CoeqBimods B₂ B₁) ≈⟨ ⟺ αSq-⊗ ⟩
     Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ (id₂ ⊚₁ id₂) ≈⟨ refl⟩∘⟨ ⊚.identity ⟩
     Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ id₂ ≈⟨ identity₂ʳ ⟩
@@ -42,7 +42,7 @@ module Identity {M₁ M₂ M₃ : Monad 𝒞} (B₂ : Bimodule M₂ M₃) (B₁ 
   ⊗₁-resp-id₂ = Coequalizer⇒Epi (hom C₁ C₃) (CoeqBimods B₂ B₁)
                              (α (id-bimodule-hom {B = B₂} ⊗₁ id-bimodule-hom  {B = B₁}))
                              (α (id-bimodule-hom {B = B₂ ⊗₀ B₁}))
-                             ⊗₁-resp-id₂∘arr
+                             ⊗₁-resp-id₂-∘arr
 
 module Composition {M₁ M₂ M₃ : Monad 𝒞} {B₂ B'₂ B''₂ : Bimodule M₂ M₃} {B₁ B'₁ B''₁ : Bimodule M₁ M₂}
                             (h₂ : Bimodulehomomorphism B'₂ B''₂) (h₁ : Bimodulehomomorphism B'₁ B''₁)
