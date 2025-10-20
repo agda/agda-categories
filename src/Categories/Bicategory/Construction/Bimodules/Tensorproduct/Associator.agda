@@ -13,19 +13,15 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator
   {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞} {M₁ M₂ M₃ M₄ : Monad 𝒞}
   {B₃ : Bimodule M₃ M₄} {B₂ : Bimodule M₂ M₃} {B₁ : Bimodule M₁ M₂} where
 
-open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism)
-open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_▷-coeq_; _coeq-◁_)
-
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
-open TensorproductOfBimodules using (F-⊗; CoeqBimods; act-to-the-left; act-to-the-right) renaming (Tensorproduct to infixr 30 _⊗₀_)
-open TensorproductOfBimodules.Left-Action using (actionˡ-⊗; actionˡ-∘)
-open TensorproductOfBimodules.Right-Action using (actionʳ-⊗; actionʳ-∘)
-open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
-
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 open Shorthands
+
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism)
+open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_▷-coeq_; _coeq-◁_)
+
+open Monad using (C; T)
+open Bimodule using (F; actionˡ; actionʳ)
 
 import Categories.Diagram.Coequalizer
 import Categories.Diagram.Coequalizer.Properties
@@ -34,7 +30,6 @@ import Categories.Morphism.Reasoning
 import Categories.Morphism.Reasoning.Iso
 import Categories.Category
 import Categories.Category.Construction.Core
-
 
 -- To get constructions of the hom-categories with implicit arguments into scope --
 private
@@ -47,9 +42,12 @@ private
 
 open HomCat
 
-
-open Monad using (C; T)
-open Bimodule using (F; actionˡ; actionʳ)
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
+open TensorproductOfBimodules using (F-⊗; CoeqBimods; act-to-the-left; act-to-the-right) renaming (Tensorproduct to infixr 30 _⊗₀_)
+open TensorproductOfBimodules.Left-Action using (actionˡ-⊗; actionˡ-∘)
+open TensorproductOfBimodules.Right-Action using (actionʳ-⊗; actionʳ-∘)
+open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
 
 
 -- The associator is a bimodule. We start by constructing its underlying 2-cell. --
