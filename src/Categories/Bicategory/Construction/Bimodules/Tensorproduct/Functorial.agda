@@ -8,9 +8,9 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Functorial {o 
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 
-open import Categories.Bicategory.Monad
-open import Categories.Bicategory.Monad.Bimodule
-open import Categories.Bicategory.Monad.Bimodule.Homomorphism
+open import Categories.Bicategory.Monad using (Monad)
+open import Categories.Bicategory.Monad.Bimodule using (Bimodule)
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism; id-bimodule-hom; _∘_)
 
 open Monad using (C)
 open Bimodulehomomorphism using (α)
