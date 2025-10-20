@@ -62,15 +62,15 @@ _∘_ {B₁} {B₂} {B₃} g f = record
     open Bimodulehomomorphism using (α; linearˡ; linearʳ)
     open hom.HomReasoning
     open MR'
+    abstract
+      g∘f-linearˡ : actionˡ B₃ ∘ᵥ (α g ∘ᵥ α f) ◁ T M₁ ≈ (α g ∘ᵥ α f) ∘ᵥ actionˡ B₁
+      g∘f-linearˡ = begin
+        actionˡ B₃ ∘ᵥ (α g ∘ᵥ α f) ◁ T M₁            ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
+        actionˡ B₃ ∘ᵥ (α g ◁ T M₁) ∘ᵥ (α f ◁ T M₁)   ≈⟨ glue′ (linearˡ g) (linearˡ f) ⟩
+        (α g ∘ᵥ α f) ∘ᵥ actionˡ B₁                   ∎
 
-    g∘f-linearˡ : actionˡ B₃ ∘ᵥ (α g ∘ᵥ α f) ◁ T M₁ ≈ (α g ∘ᵥ α f) ∘ᵥ actionˡ B₁
-    g∘f-linearˡ = begin
-      actionˡ B₃ ∘ᵥ (α g ∘ᵥ α f) ◁ T M₁            ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
-      actionˡ B₃ ∘ᵥ (α g ◁ T M₁) ∘ᵥ (α f ◁ T M₁)   ≈⟨ glue′ (linearˡ g) (linearˡ f) ⟩
-      (α g ∘ᵥ α f) ∘ᵥ actionˡ B₁                   ∎
-
-    g∘f-linearʳ : actionʳ B₃ ∘ᵥ T M₂ ▷ (α g ∘ᵥ α f) ≈ (α g ∘ᵥ α f) ∘ᵥ actionʳ B₁
-    g∘f-linearʳ = begin
-      actionʳ B₃ ∘ᵥ T M₂ ▷ (α g ∘ᵥ α f)            ≈⟨ refl⟩∘⟨ (⟺ ∘ᵥ-distr-▷) ⟩
-      actionʳ B₃ ∘ᵥ (T M₂ ▷ α g) ∘ᵥ (T M₂ ▷ α f)   ≈⟨ glue′ (linearʳ g) (linearʳ f) ⟩
-      (α g ∘ᵥ α f) ∘ᵥ actionʳ B₁                   ∎
+      g∘f-linearʳ : actionʳ B₃ ∘ᵥ T M₂ ▷ (α g ∘ᵥ α f) ≈ (α g ∘ᵥ α f) ∘ᵥ actionʳ B₁
+      g∘f-linearʳ = begin
+        actionʳ B₃ ∘ᵥ T M₂ ▷ (α g ∘ᵥ α f)            ≈⟨ refl⟩∘⟨ (⟺ ∘ᵥ-distr-▷) ⟩
+        actionʳ B₃ ∘ᵥ (T M₂ ▷ α g) ∘ᵥ (T M₂ ▷ α f)   ≈⟨ glue′ (linearʳ g) (linearʳ f) ⟩
+        (α g ∘ᵥ α f) ∘ᵥ actionʳ B₁                   ∎
