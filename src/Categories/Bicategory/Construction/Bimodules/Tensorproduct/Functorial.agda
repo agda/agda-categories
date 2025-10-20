@@ -5,24 +5,23 @@ open import Categories.Bicategory.LocalCoequalizers
 
 module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Functorial {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞} where
 
+import Categories.Bicategory.Extras as Bicat
+open Bicat 𝒞
+
 open import Categories.Bicategory.Monad
-open import Level
-open import Categories.Bicategory.Monad.Bimodule {o} {ℓ} {e} {t} {𝒞}
+open import Categories.Bicategory.Monad.Bimodule
 open import Categories.Bicategory.Monad.Bimodule.Homomorphism
-open Bimodulehomomorphism
+
+open Monad using (C)
+open Bimodulehomomorphism using (α)
+
+open import Categories.Diagram.Coequalizer using (Coequalizer; Coequalizer⇒Epi)
+open Coequalizer using (arr)
 
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
-open TensorproductOfBimodules using () renaming (Tensorproduct to infixr 30 _⊗₀_)
+open TensorproductOfBimodules using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
 open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
-
-import Categories.Bicategory.Extras as Bicat
-open Bicat 𝒞
-open import Categories.Diagram.Coequalizer
-
-open TensorproductOfBimodules using (CoeqBimods)
-
-open Monad using (C)
 
 module Identity {M₁ M₂ M₃ : Monad 𝒞} (B₂ : Bimodule M₂ M₃) (B₁ : Bimodule M₁ M₂) where
 
