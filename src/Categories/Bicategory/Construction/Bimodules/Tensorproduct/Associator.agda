@@ -19,7 +19,7 @@ open ComposeWithLocalCoequalizer 𝒞 localCoeq
 
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
-open TensorproductOfBimodules using (F-⊗) renaming (Tensorproduct to infixr 30 _⊗₀_)
+open TensorproductOfBimodules using (F-⊗; CoeqBimods; act-to-the-left; act-to-the-right) renaming (Tensorproduct to infixr 30 _⊗₀_)
 open TensorproductOfBimodules.Left-Action using (actionˡ-⊗; actionˡ-∘)
 open TensorproductOfBimodules.Right-Action using (actionʳ-⊗; actionʳ-∘)
 open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
@@ -51,7 +51,6 @@ open HomCat
 
 open Monad using (C; T)
 open Bimodule using (F; actionˡ; actionʳ)
-open TensorproductOfBimodules using (CoeqBimods; act-to-the-left; act-to-the-right)
 
 
 -- The associator is a bimodule. We start by constructing its underlying 2-cell. --
