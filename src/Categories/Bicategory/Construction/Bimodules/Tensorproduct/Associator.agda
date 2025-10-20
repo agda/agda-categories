@@ -14,7 +14,6 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator
   {B₃ : Bimodule M₃ M₄} {B₂ : Bimodule M₂ M₃} {B₁ : Bimodule M₁ M₂} where
 
 open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism)
-import Categories.Bicategory.LocalCoequalizers
 open ComposeWithLocalCoequalizer 𝒞 localCoeq using (_▷-coeq_; _coeq-◁_)
 
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
