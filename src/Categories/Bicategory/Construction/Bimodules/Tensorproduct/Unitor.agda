@@ -31,23 +31,22 @@ open Shorthands
 
 open Monad using (C; T; η; μ; identityʳ; identityˡ)
 open Bimodule using (F; actionˡ; actionʳ; assoc; sym-assoc; assoc-actionʳ; assoc-actionˡ; sym-assoc-actionˡ; identityʳ; identityˡ)
--- We oveload the names identityʳ and identityˡ; Agda is able to resolve the resulting conflicts --
-
-import Categories.Diagram.Coequalizer
-import Categories.Diagram.Coequalizer.Properties
-import Categories.Morphism
-
--- To get constructions of the hom-categories with implicit arguments into scope --
-private
-  module HomCat {X} {Y} where
-    open Categories.Morphism (hom X Y) public using (_≅_)
-    open Categories.Diagram.Coequalizer (hom X Y) public
-    open Categories.Diagram.Coequalizer.Properties (hom X Y) public
-
-open HomCat
+-- We oveload the names identityʳ and identityˡ. Agda is able to resolve the resulting conflicts. --
 
 open import Categories.Category.Construction.Bimodules using () renaming (Bimodules to Bimodules₁)
 import Categories.Category.Construction.Bimodules.Properties
+
+open import Categories.Morphism (hom (C M₁) (C M₂)) using (IsIso)
+open import Categories.Diagram.Coequalizer (hom (C M₁) (C M₂))
+open import Categories.Diagram.Coequalizer.Properties (hom (C M₁) (C M₂))
+
+open import Categories.Category using (Category)
+
+-- To get equivalence of object with the category as an implicit parameter into scope --
+module Equivalence {a} {b} {c} {C : Category a b c} where
+  open import Categories.Morphism C using (_≅_) public
+
+open Equivalence
 
 -- Id-Bimod ⊗₀ B ⇒ B --
 module Left-Unitor where
@@ -199,11 +198,11 @@ module Left-Unitor where
     ; linearʳ = Linear-Right.linearʳ
     }
 
-  Unitorˡ⊗ : Categories.Morphism._≅_ (Bimodules₁ M₁ M₂) (Id-Bimod ⊗₀ B) B
+  Unitorˡ⊗ : Id-Bimod ⊗₀ B ≅ B
   Unitorˡ⊗ = αisIso⇒Iso Unitorˡ⊗From λ⇒⊗isIso
     where
       open Categories.Category.Construction.Bimodules.Properties.Bimodule-Isomorphism using (αisIso⇒Iso)
-      λ⇒⊗isIso : Categories.Morphism.IsIso (hom (C M₁) (C M₂)) λ⇒⊗
+      λ⇒⊗isIso : IsIso λ⇒⊗
       λ⇒⊗isIso = record
        { inv = _≅_.to 2-cell.Unitorˡ⊗Iso
        ; iso = _≅_.iso 2-cell.Unitorˡ⊗Iso
@@ -358,14 +357,11 @@ module Right-Unitor where
     ; linearʳ = Linear-Right.linearʳ
     }
 
-  open import Categories.Category.Construction.Bimodules renaming (Bimodules to Bimodules₁)
-  open import Categories.Category.Construction.Bimodules.Properties
-
-  Unitorʳ⊗ : Categories.Morphism._≅_ (Bimodules₁ M₁ M₂) (B ⊗₀ Id-Bimod) B
+  Unitorʳ⊗ : B ⊗₀ Id-Bimod ≅ B
   Unitorʳ⊗ = αisIso⇒Iso Unitorʳ⊗From ρ⇒⊗isIso
     where
-      open Bimodule-Isomorphism using (αisIso⇒Iso)
-      ρ⇒⊗isIso : Categories.Morphism.IsIso (hom (C M₁) (C M₂)) ρ⇒⊗
+      open Categories.Category.Construction.Bimodules.Properties.Bimodule-Isomorphism using (αisIso⇒Iso)
+      ρ⇒⊗isIso : IsIso ρ⇒⊗
       ρ⇒⊗isIso = record
        { inv = _≅_.to 2-cell.Unitorʳ⊗Iso
        ; iso = _≅_.iso 2-cell.Unitorʳ⊗Iso
