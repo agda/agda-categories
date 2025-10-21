@@ -27,6 +27,7 @@ Id-Bimod {M} = id-bimodule M
 
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞 hiding (triangle)
+open Shorthands
 
 open Monad using (C; T; η; μ; identityʳ; identityˡ)
 open Bimodule using (F; actionˡ; actionʳ; assoc; sym-assoc; assoc-actionʳ; assoc-actionˡ; sym-assoc-actionˡ; identityʳ; identityˡ)
@@ -65,10 +66,10 @@ module Left-Unitor where
     -}
 
     section₁ : T M₂ ∘₁ F B ⇒₂ T M₂ ∘₁ T M₂ ∘₁ F B
-    section₁ = η M₂ ◁ (T M₂ ∘₁ F B) ∘ᵥ unitorˡ.to
+    section₁ = η M₂ ◁ (T M₂ ∘₁ F B) ∘ᵥ λ⇐
 
     section₂ : F B ⇒₂ T M₂ ∘₁ F B
-    section₂ = η M₂ ◁ F B ∘ᵥ unitorˡ.to
+    section₂ = η M₂ ◁ F B ∘ᵥ λ⇐
 
     abstract
       actionʳ-eq : actionʳ B ∘ᵥ act-to-the-left ≈ actionʳ B ∘ᵥ act-to-the-right
@@ -78,16 +79,16 @@ module Left-Unitor where
 
       isSection₁ : act-to-the-right ∘ᵥ section₁ ≈ id₂
       isSection₁ = begin
-        (μ M₂ ◁ F B ∘ᵥ associator.to) ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B) ∘ᵥ unitorˡ.to ≈⟨ assoc₂ ⟩
-        μ M₂ ◁ F B ∘ᵥ associator.to ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B) ∘ᵥ unitorˡ.to   ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-        μ M₂ ◁ F B ∘ᵥ (associator.to ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B)) ∘ᵥ unitorˡ.to ≈⟨ refl⟩∘⟨ α⇐-◁-∘₁ ⟩∘⟨refl ⟩
-        μ M₂ ◁ F B ∘ᵥ (η M₂ ◁ T M₂ ◁ F B ∘ᵥ associator.to) ∘ᵥ unitorˡ.to    ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-        μ M₂ ◁ F B ∘ᵥ η M₂ ◁ T M₂ ◁ F B ∘ᵥ associator.to ∘ᵥ unitorˡ.to      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ unitorˡ-coherence-inv ⟩
-        μ M₂ ◁ F B ∘ᵥ η M₂ ◁ T M₂ ◁ F B ∘ᵥ unitorˡ.to ◁ F B                   ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-        μ M₂ ◁ F B ∘ᵥ (η M₂ ◁ T M₂ ∘ᵥ unitorˡ.to) ◁ F B                     ≈⟨ ∘ᵥ-distr-◁ ⟩
-        (μ M₂ ∘ᵥ η M₂ ◁ T M₂ ∘ᵥ unitorˡ.to) ◁ F B                         ≈⟨ ◁-resp-≈ (identityʳ M₂) ⟩
-        id₂ ◁ F B                                                         ≈⟨ id₂◁ ⟩
-        id₂                                                             ∎
+        (μ M₂ ◁ F B ∘ᵥ α⇐) ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B) ∘ᵥ λ⇐ ≈⟨ assoc₂ ⟩
+        μ M₂ ◁ F B ∘ᵥ α⇐ ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B) ∘ᵥ λ⇐   ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
+        μ M₂ ◁ F B ∘ᵥ (α⇐ ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B)) ∘ᵥ λ⇐ ≈⟨ refl⟩∘⟨ α⇐-◁-∘₁ ⟩∘⟨refl ⟩
+        μ M₂ ◁ F B ∘ᵥ (η M₂ ◁ T M₂ ◁ F B ∘ᵥ α⇐) ∘ᵥ λ⇐    ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+        μ M₂ ◁ F B ∘ᵥ η M₂ ◁ T M₂ ◁ F B ∘ᵥ α⇐ ∘ᵥ λ⇐      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ unitorˡ-coherence-inv ⟩
+        μ M₂ ◁ F B ∘ᵥ η M₂ ◁ T M₂ ◁ F B ∘ᵥ λ⇐ ◁ F B      ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
+        μ M₂ ◁ F B ∘ᵥ (η M₂ ◁ T M₂ ∘ᵥ λ⇐) ◁ F B          ≈⟨ ∘ᵥ-distr-◁ ⟩
+        (μ M₂ ∘ᵥ η M₂ ◁ T M₂ ∘ᵥ λ⇐) ◁ F B                ≈⟨ ◁-resp-≈ (identityʳ M₂) ⟩
+        id₂ ◁ F B                                        ≈⟨ id₂◁ ⟩
+        id₂                                              ∎
         where
           open hom.HomReasoning
 
@@ -96,12 +97,12 @@ module Left-Unitor where
 
       sections-compatible : section₂ ∘ᵥ actionʳ B ≈ act-to-the-left ∘ᵥ section₁
       sections-compatible = begin
-        (η M₂ ◁ F B ∘ᵥ unitorˡ.to) ∘ᵥ actionʳ B              ≈⟨ assoc₂ ⟩
-        η M₂ ◁ F B ∘ᵥ unitorˡ.to ∘ᵥ actionʳ B                ≈⟨ refl⟩∘⟨ ⟺ ▷-∘ᵥ-λ⇐ ⟩
-        η M₂ ◁ F B ∘ᵥ id₁ ▷ actionʳ B ∘ᵥ unitorˡ.to          ≈⟨ sym-assoc₂ ⟩
-        (η M₂ ◁ F B ∘ᵥ id₁ ▷ actionʳ B) ∘ᵥ unitorˡ.to        ≈⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
-        (T M₂ ▷ actionʳ B ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B)) ∘ᵥ unitorˡ.to ≈⟨ assoc₂ ⟩
-        T M₂ ▷ actionʳ B ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B) ∘ᵥ unitorˡ.to   ∎
+        (η M₂ ◁ F B ∘ᵥ λ⇐) ∘ᵥ actionʳ B              ≈⟨ assoc₂ ⟩
+        η M₂ ◁ F B ∘ᵥ λ⇐ ∘ᵥ actionʳ B                ≈⟨ refl⟩∘⟨ ⟺ ▷-∘ᵥ-λ⇐ ⟩
+        η M₂ ◁ F B ∘ᵥ id₁ ▷ actionʳ B ∘ᵥ λ⇐          ≈⟨ sym-assoc₂ ⟩
+        (η M₂ ◁ F B ∘ᵥ id₁ ▷ actionʳ B) ∘ᵥ λ⇐        ≈⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
+        (T M₂ ▷ actionʳ B ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B)) ∘ᵥ λ⇐ ≈⟨ assoc₂ ⟩
+        T M₂ ▷ actionʳ B ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B) ∘ᵥ λ⇐   ∎
         where
           open hom.HomReasoning
 
@@ -141,9 +142,9 @@ module Left-Unitor where
         actionˡ B ∘ᵥ λ⇒⊗ ◁ T M₁ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ◁ T M₁ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
         actionˡ B ∘ᵥ (λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)) ◁ T M₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ triangle ⟩
         actionˡ B ∘ᵥ actionʳ B ◁ T M₁ ≈⟨ ⟺ (assoc B) ⟩
-        actionʳ B ∘ᵥ T M₂ ▷ actionˡ B ∘ᵥ associator.from ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
-        (λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)) ∘ᵥ T M₂ ▷ actionˡ B ∘ᵥ associator.from ≈⟨ assoc₂ ⟩
-        λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ∘ᵥ T M₂ ▷ actionˡ B ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ actionˡSq-⊗ ⟩
+        actionʳ B ∘ᵥ T M₂ ▷ actionˡ B ∘ᵥ α⇒ ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
+        (λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)) ∘ᵥ T M₂ ▷ actionˡ B ∘ᵥ α⇒ ≈⟨ assoc₂ ⟩
+        λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ∘ᵥ T M₂ ▷ actionˡ B ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ actionˡSq-⊗ ⟩
         λ⇒⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ◁ T M₁ ≈⟨ sym-assoc₂ ⟩
         (λ⇒⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B)) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ◁ T M₁ ∎
         where
@@ -171,9 +172,9 @@ module Left-Unitor where
         actionʳ B ∘ᵥ T M₂ ▷ λ⇒⊗ ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
         actionʳ B ∘ᵥ T M₂ ▷ (λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)) ≈⟨ refl⟩∘⟨ ▷-resp-≈ triangle ⟩
         actionʳ B ∘ᵥ T M₂ ▷ actionʳ B ≈⟨ ⟺ (assoc-actionʳ B) ⟩
-        actionʳ B ∘ᵥ μ M₂ ◁ F B ∘ᵥ associator.to ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
-        (λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)) ∘ᵥ μ M₂ ◁ F B ∘ᵥ associator.to ≈⟨ assoc₂ ⟩
-        λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ∘ᵥ μ M₂ ◁ F B ∘ᵥ associator.to ≈⟨ refl⟩∘⟨ actionʳSq-⊗ ⟩
+        actionʳ B ∘ᵥ μ M₂ ◁ F B ∘ᵥ α⇐ ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
+        (λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)) ∘ᵥ μ M₂ ◁ F B ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
+        λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ∘ᵥ μ M₂ ◁ F B ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ actionʳSq-⊗ ⟩
         λ⇒⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B) ≈⟨ sym-assoc₂ ⟩
         (λ⇒⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B)) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B) ∎
         where
@@ -226,10 +227,10 @@ module Right-Unitor where
     -}
 
     section₁ : F B ∘₁ T M₁ ⇒₂ F B ∘₁ T M₁ ∘₁ T M₁
-    section₁ = F B ▷ T M₁ ▷ η M₁ ∘ᵥ F B ▷ unitorʳ.to
+    section₁ = F B ▷ T M₁ ▷ η M₁ ∘ᵥ F B ▷ ρ⇐
 
     section₂ : F B ⇒₂ F B ∘₁ T M₁
-    section₂ = F B ▷ η M₁ ∘ᵥ unitorʳ.to
+    section₂ = F B ▷ η M₁ ∘ᵥ ρ⇐
 
     abstract
       actionˡ-eq : actionˡ B ∘ᵥ act-to-the-left ≈ actionˡ B ∘ᵥ act-to-the-right
@@ -239,9 +240,9 @@ module Right-Unitor where
 
       isSection₁ : act-to-the-left ∘ᵥ section₁ ≈ id₂
       isSection₁ = begin
-        F B ▷ μ M₁ ∘ᵥ F B ▷ T M₁ ▷ η M₁ ∘ᵥ F B ▷ unitorʳ.to ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
-        F B ▷ μ M₁ ∘ᵥ F B ▷ (T M₁ ▷ η M₁ ∘ᵥ unitorʳ.to)   ≈⟨ ∘ᵥ-distr-▷ ⟩
-        F B ▷ (μ M₁ ∘ᵥ T M₁ ▷ η M₁ ∘ᵥ unitorʳ.to)       ≈⟨ ▷-resp-≈ (identityˡ M₁) ⟩
+        F B ▷ μ M₁ ∘ᵥ F B ▷ T M₁ ▷ η M₁ ∘ᵥ F B ▷ ρ⇐ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
+        F B ▷ μ M₁ ∘ᵥ F B ▷ (T M₁ ▷ η M₁ ∘ᵥ ρ⇐)   ≈⟨ ∘ᵥ-distr-▷ ⟩
+        F B ▷ (μ M₁ ∘ᵥ T M₁ ▷ η M₁ ∘ᵥ ρ⇐)       ≈⟨ ▷-resp-≈ (identityˡ M₁) ⟩
         F B ▷ id₂                                 ≈⟨ ▷id₂ ⟩
         id₂                                     ∎
         where
@@ -252,17 +253,17 @@ module Right-Unitor where
 
       sections-compatible : section₂ ∘ᵥ actionˡ B ≈ act-to-the-right ∘ᵥ section₁
       sections-compatible = begin
-        (F B ▷ η M₁ ∘ᵥ unitorʳ.to) ∘ᵥ actionˡ B                                       ≈⟨ assoc₂ ⟩
-        F B ▷ η M₁ ∘ᵥ unitorʳ.to ∘ᵥ actionˡ B                                         ≈⟨ refl⟩∘⟨ ⟺ ◁-∘ᵥ-ρ⇐ ⟩
-        F B ▷ η M₁ ∘ᵥ actionˡ B ◁ id₁ ∘ᵥ unitorʳ.to                                   ≈⟨ sym-assoc₂ ⟩
-        (F B ▷ η M₁ ∘ᵥ actionˡ B ◁ id₁) ∘ᵥ unitorʳ.to                                 ≈⟨ ◁-▷-exchg ⟩∘⟨refl ⟩
-        (actionˡ B ◁ T M₁ ∘ᵥ (F B ∘₁ T M₁) ▷ η M₁) ∘ᵥ unitorʳ.to                      ≈⟨ assoc₂ ⟩
-        actionˡ B ◁ T M₁ ∘ᵥ (F B ∘₁ T M₁) ▷ η M₁ ∘ᵥ unitorʳ.to                        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ unitorʳ-coherence-inv ⟩
-        actionˡ B ◁ T M₁ ∘ᵥ (F B ∘₁ T M₁) ▷ η M₁ ∘ᵥ associator.to ∘ᵥ F B ▷ unitorʳ.to   ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-        actionˡ B ◁ T M₁ ∘ᵥ ((F B ∘₁ T M₁) ▷ η M₁ ∘ᵥ associator.to) ∘ᵥ F B ▷ unitorʳ.to ≈⟨ refl⟩∘⟨ ⟺ α⇐-▷-∘₁ ⟩∘⟨refl ⟩
-        actionˡ B ◁ T M₁ ∘ᵥ (associator.to ∘ᵥ F B ▷ T M₁ ▷ η M₁) ∘ᵥ F B ▷ unitorʳ.to    ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-        actionˡ B ◁ T M₁ ∘ᵥ associator.to ∘ᵥ F B ▷ T M₁ ▷ η M₁ ∘ᵥ F B ▷ unitorʳ.to      ≈⟨ sym-assoc₂ ⟩
-        (actionˡ B ◁ T M₁ ∘ᵥ associator.to) ∘ᵥ F B ▷ T M₁ ▷ η M₁ ∘ᵥ F B ▷ unitorʳ.to    ∎
+        (F B ▷ η M₁ ∘ᵥ ρ⇐) ∘ᵥ actionˡ B                                       ≈⟨ assoc₂ ⟩
+        F B ▷ η M₁ ∘ᵥ ρ⇐ ∘ᵥ actionˡ B                                         ≈⟨ refl⟩∘⟨ ⟺ ◁-∘ᵥ-ρ⇐ ⟩
+        F B ▷ η M₁ ∘ᵥ actionˡ B ◁ id₁ ∘ᵥ ρ⇐                                   ≈⟨ sym-assoc₂ ⟩
+        (F B ▷ η M₁ ∘ᵥ actionˡ B ◁ id₁) ∘ᵥ ρ⇐                                 ≈⟨ ◁-▷-exchg ⟩∘⟨refl ⟩
+        (actionˡ B ◁ T M₁ ∘ᵥ (F B ∘₁ T M₁) ▷ η M₁) ∘ᵥ ρ⇐                      ≈⟨ assoc₂ ⟩
+        actionˡ B ◁ T M₁ ∘ᵥ (F B ∘₁ T M₁) ▷ η M₁ ∘ᵥ ρ⇐                        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ unitorʳ-coherence-inv ⟩
+        actionˡ B ◁ T M₁ ∘ᵥ (F B ∘₁ T M₁) ▷ η M₁ ∘ᵥ α⇐ ∘ᵥ F B ▷ ρ⇐   ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
+        actionˡ B ◁ T M₁ ∘ᵥ ((F B ∘₁ T M₁) ▷ η M₁ ∘ᵥ α⇐) ∘ᵥ F B ▷ ρ⇐ ≈⟨ refl⟩∘⟨ ⟺ α⇐-▷-∘₁ ⟩∘⟨refl ⟩
+        actionˡ B ◁ T M₁ ∘ᵥ (α⇐ ∘ᵥ F B ▷ T M₁ ▷ η M₁) ∘ᵥ F B ▷ ρ⇐    ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+        actionˡ B ◁ T M₁ ∘ᵥ α⇐ ∘ᵥ F B ▷ T M₁ ▷ η M₁ ∘ᵥ F B ▷ ρ⇐      ≈⟨ sym-assoc₂ ⟩
+        (actionˡ B ◁ T M₁ ∘ᵥ α⇐) ∘ᵥ F B ▷ T M₁ ▷ η M₁ ∘ᵥ F B ▷ ρ⇐    ∎
         where
           open hom.HomReasoning
     -- end abstract --
@@ -301,9 +302,9 @@ module Right-Unitor where
         actionˡ B ∘ᵥ ρ⇒⊗ ◁ T M₁ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ◁ T M₁ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
         actionˡ B ∘ᵥ (ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)) ◁ T M₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ triangle ⟩
         actionˡ B ∘ᵥ actionˡ B ◁ T M₁ ≈⟨ ⟺ (assoc-actionˡ B) ⟩
-        actionˡ B ∘ᵥ F B ▷ μ M₁ ∘ᵥ associator.from ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
-        (ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)) ∘ᵥ F B ▷ μ M₁ ∘ᵥ associator.from ≈⟨ assoc₂ ⟩
-        ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ∘ᵥ F B ▷ μ M₁ ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ actionˡSq-⊗ ⟩
+        actionˡ B ∘ᵥ F B ▷ μ M₁ ∘ᵥ α⇒ ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
+        (ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)) ∘ᵥ F B ▷ μ M₁ ∘ᵥ α⇒ ≈⟨ assoc₂ ⟩
+        ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ∘ᵥ F B ▷ μ M₁ ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ actionˡSq-⊗ ⟩
         ρ⇒⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ◁ T M₁ ≈⟨ sym-assoc₂ ⟩
         (ρ⇒⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod)) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ◁ T M₁ ∎
         where
@@ -330,9 +331,9 @@ module Right-Unitor where
         actionʳ B ∘ᵥ T M₂ ▷ ρ⇒⊗ ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods B Id-Bimod) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
         actionʳ B ∘ᵥ T M₂ ▷ (ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)) ≈⟨ refl⟩∘⟨ ▷-resp-≈ triangle ⟩
         actionʳ B ∘ᵥ T M₂ ▷ actionˡ B ≈⟨ ⟺ (sym-assoc B) ⟩
-        actionˡ B ∘ᵥ actionʳ B ◁ T M₁ ∘ᵥ associator.to ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
-        (ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)) ∘ᵥ actionʳ B ◁ T M₁ ∘ᵥ associator.to ≈⟨ assoc₂ ⟩
-        ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ∘ᵥ actionʳ B ◁ T M₁ ∘ᵥ associator.to ≈⟨ refl⟩∘⟨ actionʳSq-⊗ ⟩
+        actionˡ B ∘ᵥ actionʳ B ◁ T M₁ ∘ᵥ α⇐ ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
+        (ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)) ∘ᵥ actionʳ B ◁ T M₁ ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
+        ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ∘ᵥ actionʳ B ◁ T M₁ ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ actionʳSq-⊗ ⟩
         ρ⇒⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods B Id-Bimod) ≈⟨ sym-assoc₂ ⟩
         (ρ⇒⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod)) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods B Id-Bimod) ∎
         where
