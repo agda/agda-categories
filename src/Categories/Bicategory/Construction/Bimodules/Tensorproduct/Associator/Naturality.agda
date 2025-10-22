@@ -50,7 +50,7 @@ open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associato
   using (α⇒-⊗; hexagon)
   
 abstract
-  α⇒-⊗-natural∘arr∘arr : ((α⇒-⊗ {B₃'} {B₂'} {B₁'}
+  α⇒-⊗-natural-∘arr² : ((α⇒-⊗ {B₃'} {B₂'} {B₁'}
                           ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
                           ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                           ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F₁
@@ -58,7 +58,7 @@ abstract
                             ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
                             ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                             ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F₁
-  α⇒-⊗-natural∘arr∘arr = begin
+  α⇒-⊗-natural-∘arr² = begin
 
     ((α⇒-⊗ {B₃'} {B₂'} {B₁'}
       ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
@@ -291,12 +291,12 @@ abstract
       open hom.HomReasoning
       open TensorproductOfHomomorphisms using (αSq-⊗)
 
-  α⇒-⊗-natural∘arr : (α⇒-⊗ {B₃'} {B₂'} {B₁'}
+  α⇒-⊗-natural-∘arr : (α⇒-⊗ {B₃'} {B₂'} {B₁'}
                      ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
                      ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
                      ≈ (α (f₃ ⊗₁ (f₂ ⊗₁ f₁)) ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
                         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-  α⇒-⊗-natural∘arr = Coequalizer⇒Epi
+  α⇒-⊗-natural-∘arr = Coequalizer⇒Epi
                       ((CoeqBimods B₃ B₂) coeq-◁ F₁)
                       ((α⇒-⊗ {B₃'} {B₂'} {B₁'}
                         ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
@@ -304,7 +304,7 @@ abstract
                       ((α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
                         ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
                         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-                      α⇒-⊗-natural∘arr∘arr
+                      α⇒-⊗-natural-∘arr²
 
   α⇒-⊗-natural : α⇒-⊗ {B₃'} {B₂'} {B₁'}
                 ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁)
@@ -314,5 +314,5 @@ abstract
                       (CoeqBimods (B₃ ⊗₀ B₂) B₁)
                       (α⇒-⊗ ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
                       (α (f₃ ⊗₁ f₂ ⊗₁ f₁) ∘ᵥ α⇒-⊗)
-                      α⇒-⊗-natural∘arr
+                      α⇒-⊗-natural-∘arr
 -- end abstract --
