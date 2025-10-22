@@ -25,6 +25,7 @@ open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 
 
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
+open Shorthands
 import Categories.Diagram.Coequalizer
 
 -- To get constructions of the hom-categories with implicit arguments into scope --
@@ -162,19 +163,19 @@ abstract
 
     (arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ F B'₃ ▷ arr (CoeqBimods B'₂ B'₁)
-    ∘ᵥ associator.from)
+    ∘ᵥ α⇒)
     ∘ᵥ (α f₃ ⊚₁ α f₂)
         ⊚₁ α f₁ ≈⟨ assoc₂ ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ (F B'₃ ▷ arr (CoeqBimods B'₂ B'₁)
-    ∘ᵥ associator.from)
+    ∘ᵥ α⇒)
     ∘ᵥ (α f₃ ⊚₁ α f₂)
         ⊚₁ α f₁ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ F B'₃ ▷ arr (CoeqBimods B'₂ B'₁)
-    ∘ᵥ associator.from
+    ∘ᵥ α⇒
     ∘ᵥ (α f₃ ⊚₁ α f₂)
         ⊚₁ α f₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ α⇒-⊚ ⟩
 
@@ -182,7 +183,7 @@ abstract
     ∘ᵥ F B'₃ ▷ arr (CoeqBimods B'₂ B'₁)
     ∘ᵥ α f₃
        ⊚₁ (α f₂ ⊚₁ α f₁)
-    ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ refl⟩∘⟨
+    ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                           (⟺ identity₂ʳ) ⟩⊚⟨ (⟺ identity₂ˡ)
                         ⟩∘⟨refl ⟩
 
@@ -190,82 +191,82 @@ abstract
     ∘ᵥ F B'₃ ▷ arr (CoeqBimods B'₂ B'₁)
     ∘ᵥ (α f₃ ∘ᵥ id₂)
        ⊚₁ (id₂ ∘ᵥ α f₂ ⊚₁ α f₁)
-    ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ refl⟩∘⟨
+    ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                           ∘ᵥ-distr-⊚ ⟩∘⟨refl ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ F B'₃ ▷ arr (CoeqBimods B'₂ B'₁)
     ∘ᵥ (α f₃ ◁ (F B'₂ ∘₁ F B'₁)
     ∘ᵥ F B₃ ▷ α f₂ ⊚₁ α f₁)
-    ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
+    ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ (F B'₃ ▷ arr (CoeqBimods B'₂ B'₁)
     ∘ᵥ α f₃ ◁ (F B'₂ ∘₁ F B'₁)
     ∘ᵥ F B₃ ▷ α f₂ ⊚₁ α f₁)
-    ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩∘⟨refl ⟩
+    ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩∘⟨refl ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ ((F B'₃ ▷ arr (CoeqBimods B'₂ B'₁)
     ∘ᵥ α f₃ ◁ (F B'₂ ∘₁ F B'₁))
     ∘ᵥ F B₃ ▷ α f₂ ⊚₁ α f₁)
-    ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ (◁-▷-exchg ⟩∘⟨refl) ⟩∘⟨refl ⟩
+    ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ (◁-▷-exchg ⟩∘⟨refl) ⟩∘⟨refl ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ ((α f₃ ◁ F (B'₂ ⊗₀ B'₁)
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B'₂ B'₁))
     ∘ᵥ F B₃ ▷ α f₂ ⊚₁ α f₁)
-    ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ assoc₂ ⟩∘⟨refl ⟩
+    ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ assoc₂ ⟩∘⟨refl ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ (α f₃ ◁ F (B'₂ ⊗₀ B'₁)
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B'₂ B'₁)
     ∘ᵥ F B₃ ▷ α f₂ ⊚₁ α f₁)
-    ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ (refl⟩∘⟨
+    ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ (refl⟩∘⟨
                           ▷-resp-sq (αSq-⊗ f₂ f₁)) ⟩∘⟨refl ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ (α f₃ ◁ F (B'₂ ⊗₀ B'₁)
     ∘ᵥ F B₃ ▷ α (f₂ ⊗₁ f₁)
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
-    ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩∘⟨refl ⟩
+    ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩∘⟨refl ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ ((α f₃ ◁ F (B'₂ ⊗₀ B'₁)
     ∘ᵥ F B₃ ▷ α (f₂ ⊗₁ f₁))
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
-    ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ (⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl) ⟩∘⟨refl ⟩
+    ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ (⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl) ⟩∘⟨refl ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ ((α f₃ ∘ᵥ id₂)
         ⊚₁ (id₂ ∘ᵥ α (f₂ ⊗₁ f₁))
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
-    ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ (identity₂ʳ ⟩⊚⟨ identity₂ˡ ⟩∘⟨refl) ⟩∘⟨refl ⟩
+    ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ (identity₂ʳ ⟩⊚⟨ identity₂ˡ ⟩∘⟨refl) ⟩∘⟨refl ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ (α f₃ ⊚₁ α (f₂ ⊗₁ f₁)
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
-    ∘ᵥ associator.from ≈⟨ (refl⟩∘⟨ assoc₂) ⟩
+    ∘ᵥ α⇒ ≈⟨ (refl⟩∘⟨ assoc₂) ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ α f₃ ⊚₁ α (f₂ ⊗₁ f₁)
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-    ∘ᵥ associator.from ≈⟨ sym-assoc₂ ⟩
+    ∘ᵥ α⇒ ≈⟨ sym-assoc₂ ⟩
 
     (arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ α f₃ ⊚₁ α (f₂ ⊗₁ f₁))
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-    ∘ᵥ associator.from ≈⟨ αSq-⊗ f₃ (f₂ ⊗₁ f₁) ⟩∘⟨refl ⟩
+    ∘ᵥ α⇒ ≈⟨ αSq-⊗ f₃ (f₂ ⊗₁ f₁) ⟩∘⟨refl ⟩
 
     (α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
     ∘ᵥ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)))
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-    ∘ᵥ associator.from ≈⟨ assoc₂ ⟩
+    ∘ᵥ α⇒ ≈⟨ assoc₂ ⟩
 
     α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
     ∘ᵥ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁)
-    ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ hexagon {B₃} {B₂} {B₁} ⟩
+    ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ hexagon {B₃} {B₂} {B₁} ⟩
 
     α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
     ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁}
