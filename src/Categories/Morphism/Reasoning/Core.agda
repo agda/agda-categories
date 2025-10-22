@@ -248,6 +248,12 @@ glue◽▹ {a = a} {b = b} {a′ = a′} {b′ = b′} {c = c} {c′ = c′} sq 
   a′ ∘ a ≈⟨ sq ⟩
   b′ ∘ b      ∎
 
+glue◽▹′ : CommutativeSquare a b a′ b′ → b ≈ c ∘ c′ → CommutativeSquare a c′ a′ (b′ ∘ c)
+glue◽▹′ {a = a} {b = b} {a′ = a′} {b′ = b′} {c = c} {c′ = c′} sq tri = begin
+  a′ ∘ a        ≈⟨ sq ⟩
+  b′ ∘ b        ≈⟨ pushʳ tri ⟩
+  (b′ ∘ c) ∘ c′ ∎
+
 -- essentially composition in the over category
 glueTrianglesʳ : a ∘ b ≈ a′ → a′ ∘ b′ ≈ a″ → a ∘ (b ∘ b′) ≈ a″
 glueTrianglesʳ {a = a} {b = b} {a′ = a′} {b′ = b′} {a″ = a″} a∘b≡a′ a′∘b′≡a″ = begin
