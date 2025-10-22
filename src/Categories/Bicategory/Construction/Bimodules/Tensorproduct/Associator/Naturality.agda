@@ -14,7 +14,6 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator.Nat
   {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞} {M₁ M₂ M₃ M₄ : Monad 𝒞}
   {B₃ B'₃ : Bimodule M₃ M₄} {B₂ B'₂ : Bimodule M₂ M₃} {B₁ B'₁ : Bimodule M₁ M₂}
   (f₃ : Bimodulehomomorphism B₃ B'₃) (f₂ : Bimodulehomomorphism B₂ B'₂) (f₁ : Bimodulehomomorphism B₁ B'₁) where
-  --- TODO: Rename B₁' → B'₁ etc. ---
 
 import Categories.Bicategory.LocalCoequalizers
 open ComposeWithLocalCoequalizer 𝒞 localCoeq
@@ -97,27 +96,27 @@ abstract
 
     α⇒-⊗
     ∘ᵥ arr (CoeqBimods (B'₃ ⊗₀ B'₂) B'₁)
-    ∘ᵥ (Coequalizer.obj (CoeqBimods B'₃ B'₂) ▷ α f₁
+    ∘ᵥ (F (B'₃ ⊗₀ B'₂) ▷ α f₁
     ∘ᵥ α (f₃ ⊗₁ f₂) ◁ F B₁)
     ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ assoc₂ ⟩
 
     α⇒-⊗
     ∘ᵥ arr (CoeqBimods (B'₃ ⊗₀ B'₂) B'₁)
-    ∘ᵥ Coequalizer.obj (CoeqBimods B'₃ B'₂) ▷ α f₁
+    ∘ᵥ F (B'₃ ⊗₀ B'₂) ▷ α f₁
     ∘ᵥ α (f₃ ⊗₁ f₂) ◁ F B₁
     ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ refl⟩∘⟨
                                      ◁-resp-sq (⟺ (αSq-⊗ f₃ f₂)) ⟩
 
     α⇒-⊗
     ∘ᵥ arr (CoeqBimods (B'₃ ⊗₀ B'₂) B'₁)
-    ∘ᵥ Coequalizer.obj (CoeqBimods B'₃ B'₂) ▷ α f₁
+    ∘ᵥ F (B'₃ ⊗₀ B'₂) ▷ α f₁
     ∘ᵥ arr (CoeqBimods B'₃ B'₂) ◁ F B₁
     ∘ᵥ α f₃ ⊚₁ α f₂ ◁ F B₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                                               sym-assoc₂ ⟩
 
     α⇒-⊗
     ∘ᵥ arr (CoeqBimods (B'₃ ⊗₀ B'₂) B'₁)
-    ∘ᵥ (Coequalizer.obj (CoeqBimods B'₃ B'₂) ▷ α f₁
+    ∘ᵥ (F (B'₃ ⊗₀ B'₂) ▷ α f₁
     ∘ᵥ arr (CoeqBimods B'₃ B'₂) ◁ F B₁)
     ∘ᵥ α f₃ ⊚₁ α f₂ ◁ F B₁ ≈⟨ refl⟩∘⟨ refl⟩∘⟨
                                               ◁-▷-exchg ⟩∘⟨refl ⟩
@@ -213,26 +212,26 @@ abstract
     ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ (◁-▷-exchg ⟩∘⟨refl) ⟩∘⟨refl ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
-    ∘ᵥ ((α f₃ ◁ Coequalizer.obj (CoeqBimods B'₂ B'₁)
+    ∘ᵥ ((α f₃ ◁ F (B'₂ ⊗₀ B'₁)
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B'₂ B'₁))
     ∘ᵥ F B₃ ▷ α f₂ ⊚₁ α f₁)
     ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ assoc₂ ⟩∘⟨refl ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
-    ∘ᵥ (α f₃ ◁ Coequalizer.obj (CoeqBimods B'₂ B'₁)
+    ∘ᵥ (α f₃ ◁ F (B'₂ ⊗₀ B'₁)
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B'₂ B'₁)
     ∘ᵥ F B₃ ▷ α f₂ ⊚₁ α f₁)
     ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ (refl⟩∘⟨
                           ▷-resp-sq (αSq-⊗ f₂ f₁)) ⟩∘⟨refl ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
-    ∘ᵥ (α f₃ ◁ Coequalizer.obj (CoeqBimods B'₂ B'₁)
+    ∘ᵥ (α f₃ ◁ F (B'₂ ⊗₀ B'₁)
     ∘ᵥ F B₃ ▷ α (f₂ ⊗₁ f₁)
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
     ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩∘⟨refl ⟩
 
     arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
-    ∘ᵥ ((α f₃ ◁ Coequalizer.obj (CoeqBimods B'₂ B'₁)
+    ∘ᵥ ((α f₃ ◁ F (B'₂ ⊗₀ B'₁)
     ∘ᵥ F B₃ ▷ α (f₂ ⊗₁ f₁))
     ∘ᵥ F B₃ ▷ arr (CoeqBimods B₂ B₁))
     ∘ᵥ associator.from ≈⟨ refl⟩∘⟨ (⟺ ∘ᵥ-distr-⊚ ⟩∘⟨refl) ⟩∘⟨refl ⟩
