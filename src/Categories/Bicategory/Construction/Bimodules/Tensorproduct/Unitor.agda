@@ -36,6 +36,7 @@ open Bimodule using (F; actionˡ; actionʳ; assoc; sym-assoc; assoc-actionʳ; as
 open import Categories.Category.Construction.Bimodules using () renaming (Bimodules to Bimodules₁)
 import Categories.Category.Construction.Bimodules.Properties
 
+import Categories.Morphism.Reasoning
 open import Categories.Morphism (hom (C M₁) (C M₂)) using (IsIso)
 open import Categories.Diagram.Coequalizer (hom (C M₁) (C M₂))
 open import Categories.Diagram.Coequalizer.Properties (hom (C M₁) (C M₂))
@@ -57,7 +58,7 @@ module Left-Unitor where
     {-
     We want to show that the following is a coequalizer: --
 
-                           act-to-the-left                   actionʳ
+                           act-to-the-left                  actionʳ
       T M₂ ∘₁ T M₂ ∘₁ F B ==================> T M₂ ∘₁ F B -----------> F B
                            act-to-the-right
 
@@ -78,10 +79,8 @@ module Left-Unitor where
 
       isSection₁ : act-to-the-right ∘ᵥ section₁ ≈ id₂
       isSection₁ = begin
-        (μ M₂ ◁ F B ∘ᵥ α⇐) ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B) ∘ᵥ λ⇐ ≈⟨ assoc₂ ⟩
-        μ M₂ ◁ F B ∘ᵥ α⇐ ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B) ∘ᵥ λ⇐   ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-        μ M₂ ◁ F B ∘ᵥ (α⇐ ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B)) ∘ᵥ λ⇐ ≈⟨ refl⟩∘⟨ α⇐-◁-∘₁ ⟩∘⟨refl ⟩
-        μ M₂ ◁ F B ∘ᵥ (η M₂ ◁ T M₂ ◁ F B ∘ᵥ α⇐) ∘ᵥ λ⇐    ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+        (μ M₂ ◁ F B ∘ᵥ α⇐) ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B) ∘ᵥ λ⇐ ≈⟨ assoc²γδ ⟩
+        μ M₂ ◁ F B ∘ᵥ (α⇐ ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B)) ∘ᵥ λ⇐ ≈⟨ refl⟩∘⟨ pushˡ α⇐-◁-∘₁ ⟩
         μ M₂ ◁ F B ∘ᵥ η M₂ ◁ T M₂ ◁ F B ∘ᵥ α⇐ ∘ᵥ λ⇐      ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ unitorˡ-coherence-inv ⟩
         μ M₂ ◁ F B ∘ᵥ η M₂ ◁ T M₂ ◁ F B ∘ᵥ λ⇐ ◁ F B      ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
         μ M₂ ◁ F B ∘ᵥ (η M₂ ◁ T M₂ ∘ᵥ λ⇐) ◁ F B          ≈⟨ ∘ᵥ-distr-◁ ⟩
@@ -90,20 +89,16 @@ module Left-Unitor where
         id₂                                              ∎
         where
           open hom.HomReasoning
+          open Categories.Morphism.Reasoning (hom (C M₁) (C M₂)) using (assoc²γδ; pushˡ)
 
       isSection₂ : actionʳ B ∘ᵥ section₂ ≈ id₂
       isSection₂ = identityʳ B
 
       sections-compatible : section₂ ∘ᵥ actionʳ B ≈ act-to-the-left ∘ᵥ section₁
-      sections-compatible = begin
-        (η M₂ ◁ F B ∘ᵥ λ⇐) ∘ᵥ actionʳ B              ≈⟨ assoc₂ ⟩
-        η M₂ ◁ F B ∘ᵥ λ⇐ ∘ᵥ actionʳ B                ≈⟨ refl⟩∘⟨ ⟺ ▷-∘ᵥ-λ⇐ ⟩
-        η M₂ ◁ F B ∘ᵥ id₁ ▷ actionʳ B ∘ᵥ λ⇐          ≈⟨ sym-assoc₂ ⟩
-        (η M₂ ◁ F B ∘ᵥ id₁ ▷ actionʳ B) ∘ᵥ λ⇐        ≈⟨ ⟺ ◁-▷-exchg ⟩∘⟨refl ⟩
-        (T M₂ ▷ actionʳ B ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B)) ∘ᵥ λ⇐ ≈⟨ assoc₂ ⟩
-        T M₂ ▷ actionʳ B ∘ᵥ η M₂ ◁ (T M₂ ∘₁ F B) ∘ᵥ λ⇐   ∎
+      sections-compatible =  ⟺ (glue′ ◁-▷-exchg ▷-∘ᵥ-λ⇐)
         where
           open hom.HomReasoning
+          open Categories.Morphism.Reasoning (hom (C M₁) (C M₂)) using (glue′)
 
     -- end abstract --
 
@@ -135,20 +130,16 @@ module Left-Unitor where
 
     abstract
       linearˡ∘arr : (actionˡ B ∘ᵥ λ⇒⊗ ◁ T M₁) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ◁ T M₁
-                    ≈ (λ⇒⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B)) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ◁ T M₁
+                  ≈ (λ⇒⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B)) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ◁ T M₁
       linearˡ∘arr = begin
-        (actionˡ B ∘ᵥ λ⇒⊗ ◁ T M₁) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ◁ T M₁ ≈⟨ assoc₂ ⟩
-        actionˡ B ∘ᵥ λ⇒⊗ ◁ T M₁ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ◁ T M₁ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-        actionˡ B ∘ᵥ (λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)) ◁ T M₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ triangle ⟩
-        actionˡ B ∘ᵥ actionʳ B ◁ T M₁ ≈⟨ ⟺ (assoc B) ⟩
-        actionʳ B ∘ᵥ T M₂ ▷ actionˡ B ∘ᵥ α⇒ ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
-        (λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)) ∘ᵥ T M₂ ▷ actionˡ B ∘ᵥ α⇒ ≈⟨ assoc₂ ⟩
-        λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ∘ᵥ T M₂ ▷ actionˡ B ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ actionˡSq-⊗ ⟩
-        λ⇒⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ◁ T M₁ ≈⟨ sym-assoc₂ ⟩
+        (actionˡ B ∘ᵥ λ⇒⊗ ◁ T M₁) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ◁ T M₁        ≈⟨ glue◽▹ (⟺ (assoc B)) (◁-resp-tri triangle) ⟩
+        actionʳ B ∘ᵥ actionˡ-∘                                                             ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionˡSq-⊗)) ⟩
         (λ⇒⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B)) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ◁ T M₁ ∎
         where
           open hom.HomReasoning
-          open TensorproductOfBimodules.Left-Action Id-Bimod B using (actionˡSq-⊗)
+          open Categories.Morphism.Reasoning (hom (C M₁) (C M₂)) using (glue◃◽; glue◽▹)
+          open TensorproductOfBimodules.Left-Action Id-Bimod B using (actionˡSq-⊗; actionˡ-∘)
+          -- actionˡ-∘ = T M₂ ▷ actionˡ B ∘ᵥ α⇒ --
 
       linearˡ : actionˡ B ∘ᵥ λ⇒⊗ ◁ T M₁ ≈ λ⇒⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B)
       linearˡ = Coequalizer⇒Epi
@@ -165,20 +156,16 @@ module Left-Unitor where
 
     abstract
       linearʳ∘arr : (actionʳ B ∘ᵥ T M₂ ▷ λ⇒⊗) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B)
-                    ≈ (λ⇒⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B)) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B)
+                  ≈ (λ⇒⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B)) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B)
       linearʳ∘arr = begin
-        (actionʳ B ∘ᵥ T M₂ ▷  λ⇒⊗) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B) ≈⟨ assoc₂ ⟩
-        actionʳ B ∘ᵥ T M₂ ▷ λ⇒⊗ ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
-        actionʳ B ∘ᵥ T M₂ ▷ (λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)) ≈⟨ refl⟩∘⟨ ▷-resp-≈ triangle ⟩
-        actionʳ B ∘ᵥ T M₂ ▷ actionʳ B ≈⟨ ⟺ (assoc-actionʳ B) ⟩
-        actionʳ B ∘ᵥ μ M₂ ◁ F B ∘ᵥ α⇐ ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
-        (λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)) ∘ᵥ μ M₂ ◁ F B ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
-        λ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ∘ᵥ μ M₂ ◁ F B ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ actionʳSq-⊗ ⟩
-        λ⇒⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B) ≈⟨ sym-assoc₂ ⟩
+        (actionʳ B ∘ᵥ T M₂ ▷  λ⇒⊗) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B) ≈⟨ glue◽▹ (⟺ (assoc-actionʳ B)) (▷-resp-tri triangle) ⟩
+        actionʳ B ∘ᵥ actionʳ-∘                                                       ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionʳSq-⊗)) ⟩
         (λ⇒⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B)) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B) ∎
         where
           open hom.HomReasoning
-          open TensorproductOfBimodules.Right-Action Id-Bimod B using (actionʳSq-⊗)
+          open Categories.Morphism.Reasoning (hom (C M₁) (C M₂)) using (glue◃◽; glue◽▹)
+          open TensorproductOfBimodules.Right-Action Id-Bimod B using (actionʳSq-⊗; actionʳ-∘)
+          -- actionʳ-∘ = μ M₂ ◁ F B ∘ᵥ α⇐ --
 
       linearʳ : actionʳ B ∘ᵥ T M₂ ▷ λ⇒⊗ ≈ λ⇒⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B)
       linearʳ = Coequalizer⇒Epi
@@ -240,10 +227,10 @@ module Right-Unitor where
       isSection₁ : act-to-the-left ∘ᵥ section₁ ≈ id₂
       isSection₁ = begin
         F B ▷ μ M₁ ∘ᵥ F B ▷ T M₁ ▷ η M₁ ∘ᵥ F B ▷ ρ⇐ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
-        F B ▷ μ M₁ ∘ᵥ F B ▷ (T M₁ ▷ η M₁ ∘ᵥ ρ⇐)   ≈⟨ ∘ᵥ-distr-▷ ⟩
-        F B ▷ (μ M₁ ∘ᵥ T M₁ ▷ η M₁ ∘ᵥ ρ⇐)       ≈⟨ ▷-resp-≈ (identityˡ M₁) ⟩
-        F B ▷ id₂                                 ≈⟨ ▷id₂ ⟩
-        id₂                                     ∎
+        F B ▷ μ M₁ ∘ᵥ F B ▷ (T M₁ ▷ η M₁ ∘ᵥ ρ⇐)     ≈⟨ ∘ᵥ-distr-▷ ⟩
+        F B ▷ (μ M₁ ∘ᵥ T M₁ ▷ η M₁ ∘ᵥ ρ⇐)           ≈⟨ ▷-resp-≈ (identityˡ M₁) ⟩
+        F B ▷ id₂                                   ≈⟨ ▷id₂ ⟩
+        id₂                                         ∎
         where
           open hom.HomReasoning
 
@@ -251,20 +238,12 @@ module Right-Unitor where
       isSection₂ = identityˡ B
 
       sections-compatible : section₂ ∘ᵥ actionˡ B ≈ act-to-the-right ∘ᵥ section₁
-      sections-compatible = begin
-        (F B ▷ η M₁ ∘ᵥ ρ⇐) ∘ᵥ actionˡ B                                       ≈⟨ assoc₂ ⟩
-        F B ▷ η M₁ ∘ᵥ ρ⇐ ∘ᵥ actionˡ B                                         ≈⟨ refl⟩∘⟨ ⟺ ◁-∘ᵥ-ρ⇐ ⟩
-        F B ▷ η M₁ ∘ᵥ actionˡ B ◁ id₁ ∘ᵥ ρ⇐                                   ≈⟨ sym-assoc₂ ⟩
-        (F B ▷ η M₁ ∘ᵥ actionˡ B ◁ id₁) ∘ᵥ ρ⇐                                 ≈⟨ ◁-▷-exchg ⟩∘⟨refl ⟩
-        (actionˡ B ◁ T M₁ ∘ᵥ (F B ∘₁ T M₁) ▷ η M₁) ∘ᵥ ρ⇐                      ≈⟨ assoc₂ ⟩
-        actionˡ B ◁ T M₁ ∘ᵥ (F B ∘₁ T M₁) ▷ η M₁ ∘ᵥ ρ⇐                        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ unitorʳ-coherence-inv ⟩
-        actionˡ B ◁ T M₁ ∘ᵥ (F B ∘₁ T M₁) ▷ η M₁ ∘ᵥ α⇐ ∘ᵥ F B ▷ ρ⇐   ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
-        actionˡ B ◁ T M₁ ∘ᵥ ((F B ∘₁ T M₁) ▷ η M₁ ∘ᵥ α⇐) ∘ᵥ F B ▷ ρ⇐ ≈⟨ refl⟩∘⟨ ⟺ α⇐-▷-∘₁ ⟩∘⟨refl ⟩
-        actionˡ B ◁ T M₁ ∘ᵥ (α⇐ ∘ᵥ F B ▷ T M₁ ▷ η M₁) ∘ᵥ F B ▷ ρ⇐    ≈⟨ refl⟩∘⟨ assoc₂ ⟩
-        actionˡ B ◁ T M₁ ∘ᵥ α⇐ ∘ᵥ F B ▷ T M₁ ▷ η M₁ ∘ᵥ F B ▷ ρ⇐      ≈⟨ sym-assoc₂ ⟩
-        (actionˡ B ◁ T M₁ ∘ᵥ α⇐) ∘ᵥ F B ▷ T M₁ ▷ η M₁ ∘ᵥ F B ▷ ρ⇐    ∎
+      sections-compatible = glue
+                              (glue′ ◁-▷-exchg (⟺ α⇐-▷-∘₁))
+                              (glue◽▹′ (⟺ ◁-∘ᵥ-ρ⇐) (⟺ unitorʳ-coherence-inv))
         where
           open hom.HomReasoning
+          open Categories.Morphism.Reasoning (hom (C M₁) (C M₂)) using (glue; glue′; glue◽▹′)
     -- end abstract --
 
     FisCoequalizer : IsCoequalizer act-to-the-left act-to-the-right (actionˡ B)
@@ -295,20 +274,16 @@ module Right-Unitor where
 
     abstract
       linearˡ∘arr : (actionˡ B ∘ᵥ ρ⇒⊗ ◁ T M₁) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ◁ T M₁
-                    ≈ (ρ⇒⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod)) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ◁ T M₁
+                  ≈ (ρ⇒⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod)) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ◁ T M₁
       linearˡ∘arr = begin
-        (actionˡ B ∘ᵥ ρ⇒⊗ ◁ T M₁) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ◁ T M₁ ≈⟨ assoc₂ ⟩
-        actionˡ B ∘ᵥ ρ⇒⊗ ◁ T M₁ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ◁ T M₁ ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
-        actionˡ B ∘ᵥ (ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)) ◁ T M₁ ≈⟨ refl⟩∘⟨ ◁-resp-≈ triangle ⟩
-        actionˡ B ∘ᵥ actionˡ B ◁ T M₁ ≈⟨ ⟺ (assoc-actionˡ B) ⟩
-        actionˡ B ∘ᵥ F B ▷ μ M₁ ∘ᵥ α⇒ ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
-        (ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)) ∘ᵥ F B ▷ μ M₁ ∘ᵥ α⇒ ≈⟨ assoc₂ ⟩
-        ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ∘ᵥ F B ▷ μ M₁ ∘ᵥ α⇒ ≈⟨ refl⟩∘⟨ actionˡSq-⊗ ⟩
-        ρ⇒⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ◁ T M₁ ≈⟨ sym-assoc₂ ⟩
+        (actionˡ B ∘ᵥ ρ⇒⊗ ◁ T M₁) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ◁ T M₁        ≈⟨ glue◽▹ (⟺ (assoc-actionˡ B)) (◁-resp-tri triangle) ⟩
+        actionˡ B ∘ᵥ actionˡ-∘                                                             ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionˡSq-⊗)) ⟩
         (ρ⇒⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod)) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ◁ T M₁ ∎
         where
           open hom.HomReasoning
-          open TensorproductOfBimodules.Left-Action B Id-Bimod using (actionˡSq-⊗)
+          open Categories.Morphism.Reasoning (hom (C M₁) (C M₂)) using (glue◃◽; glue◽▹)
+          open TensorproductOfBimodules.Left-Action B Id-Bimod using (actionˡSq-⊗; actionˡ-∘)
+          -- actionˡ-∘ = F B ▷ μ M₁ ∘ᵥ α⇒ --
 
       linearˡ : actionˡ B ∘ᵥ ρ⇒⊗ ◁ T M₁ ≈ ρ⇒⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod)
       linearˡ = Coequalizer⇒Epi
@@ -324,20 +299,16 @@ module Right-Unitor where
 
     abstract
       linearʳ∘arr : (actionʳ B ∘ᵥ T M₂ ▷ ρ⇒⊗) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods B Id-Bimod)
-                    ≈ (ρ⇒⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod)) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods B Id-Bimod)
+                  ≈ (ρ⇒⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod)) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods B Id-Bimod)
       linearʳ∘arr = begin
-        (actionʳ B ∘ᵥ T M₂ ▷ ρ⇒⊗) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods B Id-Bimod) ≈⟨ assoc₂ ⟩
-        actionʳ B ∘ᵥ T M₂ ▷ ρ⇒⊗ ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods B Id-Bimod) ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
-        actionʳ B ∘ᵥ T M₂ ▷ (ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)) ≈⟨ refl⟩∘⟨ ▷-resp-≈ triangle ⟩
-        actionʳ B ∘ᵥ T M₂ ▷ actionˡ B ≈⟨ ⟺ (sym-assoc B) ⟩
-        actionˡ B ∘ᵥ actionʳ B ◁ T M₁ ∘ᵥ α⇐ ≈⟨ ⟺ triangle ⟩∘⟨refl ⟩
-        (ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)) ∘ᵥ actionʳ B ◁ T M₁ ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
-        ρ⇒⊗ ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ∘ᵥ actionʳ B ◁ T M₁ ∘ᵥ α⇐ ≈⟨ refl⟩∘⟨ actionʳSq-⊗ ⟩
-        ρ⇒⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods B Id-Bimod) ≈⟨ sym-assoc₂ ⟩
+        (actionʳ B ∘ᵥ T M₂ ▷ ρ⇒⊗) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods B Id-Bimod)        ≈⟨ glue◽▹ (⟺ (sym-assoc B)) (▷-resp-tri triangle) ⟩
+        actionˡ B ∘ᵥ actionʳ-∘                                                             ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionʳSq-⊗)) ⟩
         (ρ⇒⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod)) ∘ᵥ T M₂ ▷ Coequalizer.arr (CoeqBimods B Id-Bimod) ∎
         where
           open hom.HomReasoning
-          open TensorproductOfBimodules.Right-Action B Id-Bimod using (actionʳSq-⊗)
+          open Categories.Morphism.Reasoning (hom (C M₁) (C M₂)) using (glue◃◽; glue◽▹)
+          open TensorproductOfBimodules.Right-Action B Id-Bimod using (actionʳSq-⊗; actionʳ-∘)
+          -- actionʳ-∘ = actionʳ B ◁ T M₁ ∘ᵥ α⇐ --
 
       linearʳ : actionʳ B ∘ᵥ T M₂ ▷ ρ⇒⊗ ≈ ρ⇒⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod)
       linearʳ = Coequalizer⇒Epi
