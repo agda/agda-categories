@@ -134,7 +134,7 @@ module Left-Unitor where
                   ≈ (λ⇒-⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B)) ∘ᵥ arr (CoeqBimods Id-Bimod B) ◁ T M₁
       linearˡ-∘arr = begin
         (actionˡ B ∘ᵥ λ⇒-⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods Id-Bimod B) ◁ T M₁        ≈⟨ glue◽▹ (⟺ (assoc B)) (◁-resp-tri triangle) ⟩
-        actionʳ B ∘ᵥ actionˡ-∘                                                 ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionˡSq-⊗)) ⟩
+        actionʳ B ∘ᵥ actionˡ-∘                                                  ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionˡSq-⊗)) ⟩
         (λ⇒-⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B)) ∘ᵥ arr (CoeqBimods Id-Bimod B) ◁ T M₁ ∎
         where
           open hom.HomReasoning
@@ -278,7 +278,7 @@ module Right-Unitor where
                   ≈ (ρ⇒-⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod)) ∘ᵥ arr (CoeqBimods B Id-Bimod) ◁ T M₁
       linearˡ-∘arr = begin
         (actionˡ B ∘ᵥ ρ⇒-⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods B Id-Bimod) ◁ T M₁        ≈⟨ glue◽▹ (⟺ (assoc-actionˡ B)) (◁-resp-tri triangle) ⟩
-        actionˡ B ∘ᵥ actionˡ-∘                                                 ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionˡSq-⊗)) ⟩
+        actionˡ B ∘ᵥ actionˡ-∘                                                  ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionˡSq-⊗)) ⟩
         (ρ⇒-⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod)) ∘ᵥ arr (CoeqBimods B Id-Bimod) ◁ T M₁ ∎
         where
           open hom.HomReasoning
@@ -303,7 +303,7 @@ module Right-Unitor where
                   ≈ (ρ⇒-⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod)) ∘ᵥ T M₂ ▷ arr (CoeqBimods B Id-Bimod)
       linearʳ-∘arr = begin
         (actionʳ B ∘ᵥ T M₂ ▷ ρ⇒-⊗) ∘ᵥ T M₂ ▷ arr (CoeqBimods B Id-Bimod)        ≈⟨ glue◽▹ (⟺ (sym-assoc B)) (▷-resp-tri triangle) ⟩
-        actionˡ B ∘ᵥ actionʳ-∘                                                 ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionʳSq-⊗)) ⟩
+        actionˡ B ∘ᵥ actionʳ-∘                                                  ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionʳSq-⊗)) ⟩
         (ρ⇒-⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod)) ∘ᵥ T M₂ ▷ arr (CoeqBimods B Id-Bimod) ∎
         where
           open hom.HomReasoning
