@@ -116,38 +116,38 @@ module Left-Unitor where
     FCoequalizer : Coequalizer act-to-the-left act-to-the-right
     FCoequalizer = IsCoequalizer⇒Coequalizer FisCoequalizer
 
-    Unitorˡ⊗Iso : F (Id-Bimod ⊗₀ B) ≅ F B
-    Unitorˡ⊗Iso = up-to-iso (CoeqBimods Id-Bimod B) FCoequalizer
+    unitorˡ-⊗-iso : F (Id-Bimod ⊗₀ B) ≅ F B
+    unitorˡ-⊗-iso = up-to-iso (CoeqBimods Id-Bimod B) FCoequalizer
 
-    λ⇒⊗ : F (Id-Bimod ⊗₀ B) ⇒₂ F B
-    λ⇒⊗ = _≅_.from Unitorˡ⊗Iso
+    λ⇒-⊗ : F (Id-Bimod ⊗₀ B) ⇒₂ F B
+    λ⇒-⊗ = _≅_.from unitorˡ-⊗-iso
 
-    triangle : λ⇒⊗ ∘ᵥ arr (CoeqBimods Id-Bimod B) ≈ actionʳ B
+    triangle : λ⇒-⊗ ∘ᵥ arr (CoeqBimods Id-Bimod B) ≈ actionʳ B
     triangle = up-to-iso-triangle (CoeqBimods Id-Bimod B) FCoequalizer
 
-  open 2-cell using (λ⇒⊗; triangle) public
+  open 2-cell using (λ⇒-⊗; triangle) public
 
   module Linear-Left where
 
     abstract
-      linearˡ∘arr : (actionˡ B ∘ᵥ λ⇒⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods Id-Bimod B) ◁ T M₁
-                  ≈ (λ⇒⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B)) ∘ᵥ arr (CoeqBimods Id-Bimod B) ◁ T M₁
-      linearˡ∘arr = begin
-        (actionˡ B ∘ᵥ λ⇒⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods Id-Bimod B) ◁ T M₁        ≈⟨ glue◽▹ (⟺ (assoc B)) (◁-resp-tri triangle) ⟩
+      linearˡ-∘arr : (actionˡ B ∘ᵥ λ⇒-⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods Id-Bimod B) ◁ T M₁
+                  ≈ (λ⇒-⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B)) ∘ᵥ arr (CoeqBimods Id-Bimod B) ◁ T M₁
+      linearˡ-∘arr = begin
+        (actionˡ B ∘ᵥ λ⇒-⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods Id-Bimod B) ◁ T M₁        ≈⟨ glue◽▹ (⟺ (assoc B)) (◁-resp-tri triangle) ⟩
         actionʳ B ∘ᵥ actionˡ-∘                                                 ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionˡSq-⊗)) ⟩
-        (λ⇒⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B)) ∘ᵥ arr (CoeqBimods Id-Bimod B) ◁ T M₁ ∎
+        (λ⇒-⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B)) ∘ᵥ arr (CoeqBimods Id-Bimod B) ◁ T M₁ ∎
         where
           open hom.HomReasoning
           open Categories.Morphism.Reasoning (hom (C M₁) (C M₂)) using (glue◃◽; glue◽▹)
           open TensorproductOfBimodules.Left-Action Id-Bimod B using (actionˡSq-⊗; actionˡ-∘)
           -- actionˡ-∘ = T M₂ ▷ actionˡ B ∘ᵥ α⇒ --
 
-      linearˡ : actionˡ B ∘ᵥ λ⇒⊗ ◁ T M₁ ≈ λ⇒⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B)
+      linearˡ : actionˡ B ∘ᵥ λ⇒-⊗ ◁ T M₁ ≈ λ⇒-⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B)
       linearˡ = Coequalizer⇒Epi
                   ((CoeqBimods Id-Bimod B) coeq-◁ T M₁)
-                  (actionˡ B ∘ᵥ λ⇒⊗ ◁ T M₁)
-                  (λ⇒⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B))
-                  linearˡ∘arr
+                  (actionˡ B ∘ᵥ λ⇒-⊗ ◁ T M₁)
+                  (λ⇒-⊗ ∘ᵥ actionˡ (Id-Bimod ⊗₀ B))
+                  linearˡ-∘arr
         where
           open LocalCoequalizers localCoeq
     -- end abstract --
@@ -156,44 +156,44 @@ module Left-Unitor where
   module Linear-Right where
 
     abstract
-      linearʳ∘arr : (actionʳ B ∘ᵥ T M₂ ▷ λ⇒⊗) ∘ᵥ T M₂ ▷ arr (CoeqBimods Id-Bimod B)
-                  ≈ (λ⇒⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B)) ∘ᵥ T M₂ ▷ arr (CoeqBimods Id-Bimod B)
-      linearʳ∘arr = begin
-        (actionʳ B ∘ᵥ T M₂ ▷  λ⇒⊗) ∘ᵥ T M₂ ▷ arr (CoeqBimods Id-Bimod B)       ≈⟨ glue◽▹ (⟺ (assoc-actionʳ B)) (▷-resp-tri triangle) ⟩
+      linearʳ-∘arr : (actionʳ B ∘ᵥ T M₂ ▷ λ⇒-⊗) ∘ᵥ T M₂ ▷ arr (CoeqBimods Id-Bimod B)
+                  ≈ (λ⇒-⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B)) ∘ᵥ T M₂ ▷ arr (CoeqBimods Id-Bimod B)
+      linearʳ-∘arr = begin
+        (actionʳ B ∘ᵥ T M₂ ▷  λ⇒-⊗) ∘ᵥ T M₂ ▷ arr (CoeqBimods Id-Bimod B)       ≈⟨ glue◽▹ (⟺ (assoc-actionʳ B)) (▷-resp-tri triangle) ⟩
         actionʳ B ∘ᵥ actionʳ-∘                                                 ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionʳSq-⊗)) ⟩
-        (λ⇒⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B)) ∘ᵥ T M₂ ▷ arr (CoeqBimods Id-Bimod B) ∎
+        (λ⇒-⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B)) ∘ᵥ T M₂ ▷ arr (CoeqBimods Id-Bimod B) ∎
         where
           open hom.HomReasoning
           open Categories.Morphism.Reasoning (hom (C M₁) (C M₂)) using (glue◃◽; glue◽▹)
           open TensorproductOfBimodules.Right-Action Id-Bimod B using (actionʳSq-⊗; actionʳ-∘)
           -- actionʳ-∘ = μ M₂ ◁ F B ∘ᵥ α⇐ --
 
-      linearʳ : actionʳ B ∘ᵥ T M₂ ▷ λ⇒⊗ ≈ λ⇒⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B)
+      linearʳ : actionʳ B ∘ᵥ T M₂ ▷ λ⇒-⊗ ≈ λ⇒-⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B)
       linearʳ = Coequalizer⇒Epi
                   (T M₂ ▷-coeq (CoeqBimods Id-Bimod B))
-                  (actionʳ B ∘ᵥ T M₂ ▷ λ⇒⊗)
-                  (λ⇒⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B))
-                  linearʳ∘arr
+                  (actionʳ B ∘ᵥ T M₂ ▷ λ⇒-⊗)
+                  (λ⇒-⊗ ∘ᵥ actionʳ (Id-Bimod ⊗₀ B))
+                  linearʳ-∘arr
         where
           open LocalCoequalizers localCoeq
     -- end abstract --
     
 
-  Unitorˡ⊗From : Bimodulehomomorphism (Id-Bimod ⊗₀ B) B
-  Unitorˡ⊗From = record
-    { α = λ⇒⊗
+  unitorˡ-⊗-from : Bimodulehomomorphism (Id-Bimod ⊗₀ B) B
+  unitorˡ-⊗-from = record
+    { α = λ⇒-⊗
     ; linearˡ = Linear-Left.linearˡ
     ; linearʳ = Linear-Right.linearʳ
     }
 
-  Unitorˡ⊗ : Id-Bimod ⊗₀ B ≅ B
-  Unitorˡ⊗ = αisIso⇒Iso Unitorˡ⊗From λ⇒⊗isIso
+  unitorˡ-⊗ : Id-Bimod ⊗₀ B ≅ B
+  unitorˡ-⊗ = αisIso⇒Iso unitorˡ-⊗-from λ⇒-⊗isIso
     where
       open Categories.Category.Construction.Bimodules.Properties.Bimodule-Isomorphism using (αisIso⇒Iso)
-      λ⇒⊗isIso : IsIso λ⇒⊗
-      λ⇒⊗isIso = record
-       { inv = _≅_.to 2-cell.Unitorˡ⊗Iso
-       ; iso = _≅_.iso 2-cell.Unitorˡ⊗Iso
+      λ⇒-⊗isIso : IsIso λ⇒-⊗
+      λ⇒-⊗isIso = record
+       { inv = _≅_.to 2-cell.unitorˡ-⊗-iso
+       ; iso = _≅_.iso 2-cell.unitorˡ-⊗-iso
        }
 
 
@@ -260,38 +260,38 @@ module Right-Unitor where
     FCoequalizer : Coequalizer act-to-the-left act-to-the-right
     FCoequalizer = IsCoequalizer⇒Coequalizer FisCoequalizer
 
-    Unitorʳ⊗Iso : F (B ⊗₀ Id-Bimod) ≅ F B
-    Unitorʳ⊗Iso = up-to-iso (CoeqBimods B Id-Bimod) FCoequalizer
+    unitorʳ-⊗-iso : F (B ⊗₀ Id-Bimod) ≅ F B
+    unitorʳ-⊗-iso = up-to-iso (CoeqBimods B Id-Bimod) FCoequalizer
 
-    ρ⇒⊗ : F (B ⊗₀ Id-Bimod) ⇒₂ F B
-    ρ⇒⊗ = _≅_.from Unitorʳ⊗Iso
+    ρ⇒-⊗ : F (B ⊗₀ Id-Bimod) ⇒₂ F B
+    ρ⇒-⊗ = _≅_.from unitorʳ-⊗-iso
 
-    triangle : ρ⇒⊗ ∘ᵥ arr (CoeqBimods B Id-Bimod) ≈ actionˡ B
+    triangle : ρ⇒-⊗ ∘ᵥ arr (CoeqBimods B Id-Bimod) ≈ actionˡ B
     triangle = up-to-iso-triangle (CoeqBimods B Id-Bimod) FCoequalizer
 
-  open 2-cell using (ρ⇒⊗; triangle) public
+  open 2-cell using (ρ⇒-⊗; triangle) public
 
   module Linear-Left where
 
     abstract
-      linearˡ∘arr : (actionˡ B ∘ᵥ ρ⇒⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods B Id-Bimod) ◁ T M₁
-                  ≈ (ρ⇒⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod)) ∘ᵥ arr (CoeqBimods B Id-Bimod) ◁ T M₁
-      linearˡ∘arr = begin
-        (actionˡ B ∘ᵥ ρ⇒⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods B Id-Bimod) ◁ T M₁        ≈⟨ glue◽▹ (⟺ (assoc-actionˡ B)) (◁-resp-tri triangle) ⟩
+      linearˡ-∘arr : (actionˡ B ∘ᵥ ρ⇒-⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods B Id-Bimod) ◁ T M₁
+                  ≈ (ρ⇒-⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod)) ∘ᵥ arr (CoeqBimods B Id-Bimod) ◁ T M₁
+      linearˡ-∘arr = begin
+        (actionˡ B ∘ᵥ ρ⇒-⊗ ◁ T M₁) ∘ᵥ arr (CoeqBimods B Id-Bimod) ◁ T M₁        ≈⟨ glue◽▹ (⟺ (assoc-actionˡ B)) (◁-resp-tri triangle) ⟩
         actionˡ B ∘ᵥ actionˡ-∘                                                 ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionˡSq-⊗)) ⟩
-        (ρ⇒⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod)) ∘ᵥ arr (CoeqBimods B Id-Bimod) ◁ T M₁ ∎
+        (ρ⇒-⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod)) ∘ᵥ arr (CoeqBimods B Id-Bimod) ◁ T M₁ ∎
         where
           open hom.HomReasoning
           open Categories.Morphism.Reasoning (hom (C M₁) (C M₂)) using (glue◃◽; glue◽▹)
           open TensorproductOfBimodules.Left-Action B Id-Bimod using (actionˡSq-⊗; actionˡ-∘)
           -- actionˡ-∘ = F B ▷ μ M₁ ∘ᵥ α⇒ --
 
-      linearˡ : actionˡ B ∘ᵥ ρ⇒⊗ ◁ T M₁ ≈ ρ⇒⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod)
+      linearˡ : actionˡ B ∘ᵥ ρ⇒-⊗ ◁ T M₁ ≈ ρ⇒-⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod)
       linearˡ = Coequalizer⇒Epi
                   ((CoeqBimods B Id-Bimod) coeq-◁ T M₁)
-                  (actionˡ B ∘ᵥ ρ⇒⊗ ◁ T M₁)
-                  (ρ⇒⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod))
-                  linearˡ∘arr
+                  (actionˡ B ∘ᵥ ρ⇒-⊗ ◁ T M₁)
+                  (ρ⇒-⊗ ∘ᵥ actionˡ (B ⊗₀ Id-Bimod))
+                  linearˡ-∘arr
         where
           open LocalCoequalizers localCoeq
     -- end abstract --
@@ -299,42 +299,42 @@ module Right-Unitor where
   module Linear-Right where
 
     abstract
-      linearʳ∘arr : (actionʳ B ∘ᵥ T M₂ ▷ ρ⇒⊗) ∘ᵥ T M₂ ▷ arr (CoeqBimods B Id-Bimod)
-                  ≈ (ρ⇒⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod)) ∘ᵥ T M₂ ▷ arr (CoeqBimods B Id-Bimod)
-      linearʳ∘arr = begin
-        (actionʳ B ∘ᵥ T M₂ ▷ ρ⇒⊗) ∘ᵥ T M₂ ▷ arr (CoeqBimods B Id-Bimod)        ≈⟨ glue◽▹ (⟺ (sym-assoc B)) (▷-resp-tri triangle) ⟩
+      linearʳ-∘arr : (actionʳ B ∘ᵥ T M₂ ▷ ρ⇒-⊗) ∘ᵥ T M₂ ▷ arr (CoeqBimods B Id-Bimod)
+                  ≈ (ρ⇒-⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod)) ∘ᵥ T M₂ ▷ arr (CoeqBimods B Id-Bimod)
+      linearʳ-∘arr = begin
+        (actionʳ B ∘ᵥ T M₂ ▷ ρ⇒-⊗) ∘ᵥ T M₂ ▷ arr (CoeqBimods B Id-Bimod)        ≈⟨ glue◽▹ (⟺ (sym-assoc B)) (▷-resp-tri triangle) ⟩
         actionˡ B ∘ᵥ actionʳ-∘                                                 ≈⟨ ⟺ (glue◃◽ triangle (⟺ actionʳSq-⊗)) ⟩
-        (ρ⇒⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod)) ∘ᵥ T M₂ ▷ arr (CoeqBimods B Id-Bimod) ∎
+        (ρ⇒-⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod)) ∘ᵥ T M₂ ▷ arr (CoeqBimods B Id-Bimod) ∎
         where
           open hom.HomReasoning
           open Categories.Morphism.Reasoning (hom (C M₁) (C M₂)) using (glue◃◽; glue◽▹)
           open TensorproductOfBimodules.Right-Action B Id-Bimod using (actionʳSq-⊗; actionʳ-∘)
           -- actionʳ-∘ = actionʳ B ◁ T M₁ ∘ᵥ α⇐ --
 
-      linearʳ : actionʳ B ∘ᵥ T M₂ ▷ ρ⇒⊗ ≈ ρ⇒⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod)
+      linearʳ : actionʳ B ∘ᵥ T M₂ ▷ ρ⇒-⊗ ≈ ρ⇒-⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod)
       linearʳ = Coequalizer⇒Epi
                   (T M₂ ▷-coeq (CoeqBimods B Id-Bimod))
-                  (actionʳ B ∘ᵥ T M₂ ▷ ρ⇒⊗)
-                  (ρ⇒⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod))
-                  linearʳ∘arr
+                  (actionʳ B ∘ᵥ T M₂ ▷ ρ⇒-⊗)
+                  (ρ⇒-⊗ ∘ᵥ actionʳ (B ⊗₀ Id-Bimod))
+                  linearʳ-∘arr
         where
           open LocalCoequalizers localCoeq
     -- end abstract --
     
 
-  Unitorʳ⊗From : Bimodulehomomorphism (B ⊗₀ Id-Bimod) B
-  Unitorʳ⊗From = record
-    { α = ρ⇒⊗
+  unitorʳ-⊗-from : Bimodulehomomorphism (B ⊗₀ Id-Bimod) B
+  unitorʳ-⊗-from = record
+    { α = ρ⇒-⊗
     ; linearˡ = Linear-Left.linearˡ
     ; linearʳ = Linear-Right.linearʳ
     }
 
-  Unitorʳ⊗ : B ⊗₀ Id-Bimod ≅ B
-  Unitorʳ⊗ = αisIso⇒Iso Unitorʳ⊗From ρ⇒⊗isIso
+  unitorʳ-⊗ : B ⊗₀ Id-Bimod ≅ B
+  unitorʳ-⊗ = αisIso⇒Iso unitorʳ-⊗-from ρ⇒-⊗isIso
     where
       open Categories.Category.Construction.Bimodules.Properties.Bimodule-Isomorphism using (αisIso⇒Iso)
-      ρ⇒⊗isIso : IsIso ρ⇒⊗
-      ρ⇒⊗isIso = record
-       { inv = _≅_.to 2-cell.Unitorʳ⊗Iso
-       ; iso = _≅_.iso 2-cell.Unitorʳ⊗Iso
+      ρ⇒-⊗isIso : IsIso ρ⇒-⊗
+      ρ⇒-⊗isIso = record
+       { inv = _≅_.to 2-cell.unitorʳ-⊗-iso
+       ; iso = _≅_.iso 2-cell.unitorʳ-⊗-iso
        }
