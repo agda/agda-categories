@@ -180,19 +180,31 @@ _⟩⊚⟨refl = ⊚-resp-≈ˡ
 ▷-resp-≈ : α ≈ β → f ▷ α ≈ f ▷ β
 ▷-resp-≈ = refl⟩⊚⟨_
 
-▷-resp-sq : α ∘ᵥ β ≈ γ ∘ᵥ δ → f ▷ α ∘ᵥ f ▷ β ≈ f ▷ γ ∘ᵥ f ▷ δ
-▷-resp-sq {α = α} {β = β} {γ = γ} {δ = δ} {f = f} sq = begin
+◁-resp-tri : α ∘ᵥ β ≈ γ → α ◁ f ∘ᵥ β ◁ f ≈ γ ◁ f
+◁-resp-tri {α = α} {β = β} {γ = γ} {f = f} tri = begin
+  α ◁ f ∘ᵥ β ◁ f ≈⟨ ∘ᵥ-distr-◁ ⟩
+  (α ∘ᵥ β) ◁ f   ≈⟨ ◁-resp-≈ tri ⟩
+  γ ◁ f          ∎
+
+▷-resp-tri : α ∘ᵥ β ≈ γ → f ▷ α ∘ᵥ f ▷ β ≈ f ▷ γ
+▷-resp-tri {α = α} {β = β} {γ = γ} {f = f} tri = begin
   f ▷ α ∘ᵥ f ▷ β ≈⟨ ∘ᵥ-distr-▷ ⟩
-  f ▷ (α ∘ᵥ β) ≈⟨ ▷-resp-≈ sq ⟩
-  f ▷ (γ ∘ᵥ δ) ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩
-  f ▷ γ ∘ᵥ f ▷ δ ∎
+  f ▷ (α ∘ᵥ β)   ≈⟨ ▷-resp-≈ tri ⟩
+  f ▷ γ          ∎
 
 ◁-resp-sq : α ∘ᵥ β ≈ γ ∘ᵥ δ → α ◁ f ∘ᵥ β ◁ f ≈ γ ◁ f ∘ᵥ δ ◁ f
 ◁-resp-sq {α = α} {β = β} {γ = γ} {δ = δ} {f = f} sq = begin
   α ◁ f ∘ᵥ β ◁ f ≈⟨ ∘ᵥ-distr-◁ ⟩
-  (α ∘ᵥ β) ◁ f ≈⟨ ◁-resp-≈ sq ⟩
-  (γ ∘ᵥ δ)◁ f ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩
+  (α ∘ᵥ β) ◁ f   ≈⟨ ◁-resp-≈ sq ⟩
+  (γ ∘ᵥ δ)◁ f    ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩
   γ ◁ f ∘ᵥ δ ◁ f ∎
+
+▷-resp-sq : α ∘ᵥ β ≈ γ ∘ᵥ δ → f ▷ α ∘ᵥ f ▷ β ≈ f ▷ γ ∘ᵥ f ▷ δ
+▷-resp-sq {α = α} {β = β} {γ = γ} {δ = δ} {f = f} sq = begin
+  f ▷ α ∘ᵥ f ▷ β ≈⟨ ∘ᵥ-distr-▷ ⟩
+  f ▷ (α ∘ᵥ β)   ≈⟨ ▷-resp-≈ sq ⟩
+  f ▷ (γ ∘ᵥ δ)   ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩
+  f ▷ γ ∘ᵥ f ▷ δ ∎
 
 λ⇒-∘ᵥ-▷ : λ⇒ ∘ᵥ (id₁ ▷ α) ≈ α ∘ᵥ λ⇒
 λ⇒-∘ᵥ-▷ {α = α} = begin
