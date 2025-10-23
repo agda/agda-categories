@@ -9,6 +9,7 @@ open import Data.Product using (_,_)
 import Categories.Category.Construction.Core as Core
 open import Categories.Category.Construction.Functors using (Functors; module curry)
 open import Categories.Functor using (Functor)
+open import Categories.Functor.Properties using ([_]-resp-square)
 open import Categories.Functor.Bifunctor using (flip-bifunctor)
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.NaturalTransformation
@@ -24,7 +25,7 @@ private
   variable
     A B C D : Obj
     f g h i : A ⇒₁ B
-    α β γ δ : f ⇒₂ g
+    α β γ δ α′ β′ γ′ δ′ : f ⇒₂ g
 
 infixr 10 _▷ᵢ_
 infixl 10 _◁ᵢ_
@@ -158,6 +159,22 @@ refl⟩⊚⟨_ = ⊚-resp-≈ʳ
 
 _⟩⊚⟨refl : α ≈ β → α ⊚₁ γ ≈ β ⊚₁ γ
 _⟩⊚⟨refl = ⊚-resp-≈ˡ
+
+⊚-resp-sq : α ∘ᵥ β ≈ α′ ∘ᵥ β′ → γ ∘ᵥ δ ≈ γ′ ∘ᵥ δ′
+          → α ⊚₁ γ ∘ᵥ β ⊚₁ δ ≈ α′ ⊚₁ γ′ ∘ᵥ β′ ⊚₁ δ′
+⊚-resp-sq sqˡ sqʳ = [ ⊚ ]-resp-square (sqˡ , sqʳ)
+
+⊚-resp-sqˡ-degen : α ∘ᵥ β ≈ α′ ∘ᵥ β′ → α ◁ f ∘ᵥ β ⊚₁ δ ≈ α′ ⊚₁ δ ∘ᵥ β′ ◁ g
+⊚-resp-sqˡ-degen sq = ⊚-resp-sq sq (toSquare refl)
+
+⊚-resp-sqˡ-degen′ : α ∘ᵥ β ≈ α′ ∘ᵥ β′ → α ⊚₁ γ ∘ᵥ β ◁ g ≈ α′ ◁ f ∘ᵥ β′ ⊚₁ γ
+⊚-resp-sqˡ-degen′ sq = ⊚-resp-sq sq (⟺ (toSquare refl))
+
+⊚-resp-sqʳ-degen : γ ∘ᵥ δ ≈ γ′ ∘ᵥ δ′ → f ▷ γ ∘ᵥ β ⊚₁ δ ≈ β ⊚₁ γ′ ∘ᵥ g ▷ δ′
+⊚-resp-sqʳ-degen sq = ⊚-resp-sq (toSquare refl) sq
+
+⊚-resp-sqʳ-degen′ : γ ∘ᵥ δ ≈ γ′ ∘ᵥ δ′ → α ⊚₁ γ ∘ᵥ g  ▷ δ ≈ f ▷ γ′ ∘ᵥ α ⊚₁ δ′
+⊚-resp-sqʳ-degen′ sq = ⊚-resp-sq (⟺ (toSquare refl)) sq
 
 ∘ᵥ-distr-⊚ : (α ∘ᵥ γ) ⊚₁ (β ∘ᵥ δ) ≈ (α ⊚₁ β) ∘ᵥ (γ ⊚₁ δ)
 ∘ᵥ-distr-⊚ = Functor.homomorphism ⊚
