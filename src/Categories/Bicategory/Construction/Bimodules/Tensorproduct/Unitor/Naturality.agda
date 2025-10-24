@@ -22,7 +22,8 @@ open Bicat 𝒞 hiding (triangle)
 open Shorthands
 
 open Monad using (C; T)
-open Bimodulehomomorphism using (α)
+open Bimodule using (actionˡ; actionʳ)
+open Bimodulehomomorphism using (α; linearˡ; linearʳ)
 
 open import Categories.Diagram.Coequalizer (hom (C M₁) (C M₂)) using (Coequalizer; Coequalizer⇒Epi)
 open Coequalizer using (arr) 
@@ -35,8 +36,6 @@ import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor
   {o} {ℓ} {e} {t} {𝒞} {localCoeq} {M₁} {M₂} as Unitor
 
 module Left-Unitor-natural where
-  open Bimodule B using (actionʳ)
-  open Bimodule B' using () renaming (actionʳ to actionʳ')
   open Unitor.Left-Unitor using (λ⇒-⊗; triangle)
 
   abstract
@@ -44,17 +43,16 @@ module Left-Unitor-natural where
                       ≈ (α f ∘ᵥ λ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)
     λ⇒-⊗-natural-∘arr = begin
       (λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f)) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ≈⟨ assoc₂ ⟩
-      λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)   ≈⟨ refl⟩∘⟨ ⟺ αSq-⊗ ⟩
+      λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)   ≈⟨ refl⟩∘⟨ ⟺ (αSq-⊗ id-bimodule-hom f) ⟩
       λ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B') ∘ᵥ T M₂ ▷ α f                  ≈⟨ sym-assoc₂ ⟩
       (λ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B')) ∘ᵥ T M₂ ▷ α f                ≈⟨ triangle {B'} ⟩∘⟨refl ⟩
-      actionʳ' ∘ᵥ T M₂ ▷ α f                                           ≈⟨ linearʳ f ⟩
-      α f ∘ᵥ actionʳ                                                 ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
+      actionʳ B' ∘ᵥ T M₂ ▷ α f                                           ≈⟨ linearʳ f ⟩
+      α f ∘ᵥ actionʳ B                                                 ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
       α f ∘ᵥ λ⇒-⊗ {B} ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)                         ≈⟨ sym-assoc₂ ⟩
       (α f ∘ᵥ λ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)                       ∎
       where
         open hom.HomReasoning
-        open Bimodulehomomorphism using (linearʳ)
-        open TensorproductOfHomomorphisms id-bimodule-hom f using (αSq-⊗)
+        open TensorproductOfHomomorphisms using (αSq-⊗)
 
     λ⇒-⊗-natural : λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f) ≈ α f ∘ᵥ λ⇒-⊗ {B}
     λ⇒-⊗-natural = Coequalizer⇒Epi
@@ -66,8 +64,6 @@ module Left-Unitor-natural where
   -- end abstract --
 
 module Right-Unitor-natural where
-  open Bimodule B using (actionˡ)
-  open Bimodule B' using () renaming (actionˡ to actionˡ')
   open Unitor.Right-Unitor using (ρ⇒-⊗; triangle)
 
   abstract
@@ -75,17 +71,16 @@ module Right-Unitor-natural where
                       ≈ (α f ∘ᵥ ρ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)
     ρ⇒-⊗-natural-∘arr = begin
       (ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom)) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ≈⟨ assoc₂ ⟩
-      ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)   ≈⟨ refl⟩∘⟨ ⟺ αSq-⊗ ⟩
+      ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)   ≈⟨ refl⟩∘⟨ ⟺ (αSq-⊗ f id-bimodule-hom) ⟩
       ρ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods B' Id-Bimod) ∘ᵥ α f ◁ T M₁                  ≈⟨ sym-assoc₂ ⟩
       (ρ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods B' Id-Bimod)) ∘ᵥ α f ◁ T M₁                ≈⟨ triangle {B'} ⟩∘⟨refl ⟩
-      actionˡ' ∘ᵥ α f ◁ T M₁                                           ≈⟨ linearˡ f ⟩
-      α f ∘ᵥ actionˡ                                                 ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
+      actionˡ B' ∘ᵥ α f ◁ T M₁                                           ≈⟨ linearˡ f ⟩
+      α f ∘ᵥ actionˡ B                                                 ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
       α f ∘ᵥ ρ⇒-⊗ {B} ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)                         ≈⟨ sym-assoc₂ ⟩
       (α f ∘ᵥ ρ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)                       ∎
       where
         open hom.HomReasoning
-        open Bimodulehomomorphism using (linearˡ)
-        open TensorproductOfHomomorphisms f id-bimodule-hom using (αSq-⊗)
+        open TensorproductOfHomomorphisms using (αSq-⊗)
 
     ρ⇒-⊗-natural : ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom) ≈ α f ∘ᵥ ρ⇒-⊗ {B}
     ρ⇒-⊗-natural = Coequalizer⇒Epi
