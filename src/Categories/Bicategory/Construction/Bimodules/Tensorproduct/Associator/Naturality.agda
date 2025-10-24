@@ -15,17 +15,17 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator.Nat
   {B₃ B'₃ : Bimodule M₃ M₄} {B₂ B'₂ : Bimodule M₂ M₃} {B₁ B'₁ : Bimodule M₁ M₂}
   (f₃ : Bimodulehomomorphism B₃ B'₃) (f₂ : Bimodulehomomorphism B₂ B'₂) (f₁ : Bimodulehomomorphism B₁ B'₁) where
 
-import Categories.Bicategory.LocalCoequalizers
-open ComposeWithLocalCoequalizer 𝒞 localCoeq
-
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
-open TensorproductOfBimodules using () renaming (Tensorproduct to infixr 30 _⊗₀_)
-open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
-
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 open Shorthands
+
+import Categories.Bicategory.LocalCoequalizers
+open ComposeWithLocalCoequalizer 𝒞 localCoeq
+
+open Monad using (C)
+open Bimodule using (F)
+open Bimodulehomomorphism using (α)
+
 import Categories.Diagram.Coequalizer
 open import Categories.Category using (module Definitions)
 import Categories.Morphism.Reasoning
@@ -33,19 +33,16 @@ import Categories.Morphism.Reasoning
 -- To get constructions of the hom-categories with implicit arguments into scope --
 private
   module HomCat {X} {Y} where
-    open Categories.Diagram.Coequalizer (hom X Y) public
+    open Categories.Diagram.Coequalizer (hom X Y) using (Coequalizer⇒Epi; module Coequalizer) public
     open Coequalizer using (arr) public
 
 open HomCat
 
-open TensorproductOfBimodules using (CoeqBimods)
-
-open Monad using (C)
-open Bimodule using (F)
-open Bimodulehomomorphism using (α)
-
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator
-  {o} {ℓ} {e} {t} {𝒞} {localCoeq} {M₁} {M₂} {M₃} {M₄}
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
+open TensorproductOfBimodules using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
+open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator {o} {ℓ} {e} {t} {𝒞} {localCoeq} {M₁} {M₂} {M₃} {M₄}
   using (α⇒-⊗; hexagon-sq)
   
 abstract
