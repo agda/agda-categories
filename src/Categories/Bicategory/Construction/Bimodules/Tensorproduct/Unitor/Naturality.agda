@@ -28,15 +28,15 @@ open Bimodulehomomorphism using (α; linearˡ; linearʳ)
 open import Categories.Diagram.Coequalizer (hom (C M₁) (C M₂)) using (Coequalizer; Coequalizer⇒Epi)
 open Coequalizer using (arr) 
 
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
-open TensorproductOfBimodules using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
-open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
-import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor
-  {o} {ℓ} {e} {t} {𝒞} {localCoeq} {M₁} {M₂} as Unitor
+open import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
+  using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
+open import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
+  using () renaming (Tensorproduct to infixr 30 _⊗₁_)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor {𝒞 = 𝒞} {localCoeq} {M₁} {M₂}
+  using (module Left-Unitor; module Right-Unitor)
 
 module Left-Unitor-natural where
-  open Unitor.Left-Unitor using (λ⇒-⊗; triangle)
+  open Left-Unitor using (λ⇒-⊗; triangle)
 
   abstract
     λ⇒-⊗-natural-∘arr : (λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f)) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)
@@ -64,7 +64,7 @@ module Left-Unitor-natural where
   -- end abstract --
 
 module Right-Unitor-natural where
-  open Unitor.Right-Unitor using (ρ⇒-⊗; triangle)
+  open Right-Unitor using (ρ⇒-⊗; triangle)
 
   abstract
     ρ⇒-⊗-natural-∘arr : (ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom)) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)
