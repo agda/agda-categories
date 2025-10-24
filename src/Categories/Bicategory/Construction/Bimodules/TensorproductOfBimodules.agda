@@ -579,7 +579,6 @@ module Identity where
                     identityʳ-⊗-∘arr
   -- end abstract --
 
-
 Tensorproduct : Bimodule M₁ M₃
 Tensorproduct = record
   { F = F-⊗
