@@ -25,8 +25,9 @@ open Monad using (C; T)
 open Bimodule using (actionˡ; actionʳ)
 open Bimodulehomomorphism using (α; linearˡ; linearʳ)
 
+import Categories.Morphism.Reasoning
 open import Categories.Diagram.Coequalizer (hom (C M₁) (C M₂)) using (Coequalizer; Coequalizer⇒Epi)
-open Coequalizer using (arr) 
+open Coequalizer using (arr)
 
 open import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
   using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
@@ -42,16 +43,14 @@ module Left-Unitor-natural where
     λ⇒-⊗-natural-∘arr : (λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f)) ∘ᵥ arr (CoeqBimods Id-Bimod B)
                       ≈ (α f ∘ᵥ λ⇒-⊗ {B}) ∘ᵥ arr (CoeqBimods Id-Bimod B)
     λ⇒-⊗-natural-∘arr = begin
-      (λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f)) ∘ᵥ arr (CoeqBimods Id-Bimod B) ≈⟨ assoc₂ ⟩
-      λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f) ∘ᵥ arr (CoeqBimods Id-Bimod B)   ≈⟨ refl⟩∘⟨ ⟺ (αSq-⊗ id-bimodule-hom f) ⟩
-      λ⇒-⊗ {B'} ∘ᵥ arr (CoeqBimods Id-Bimod B') ∘ᵥ T M₂ ▷ α f                ≈⟨ sym-assoc₂ ⟩
-      (λ⇒-⊗ {B'} ∘ᵥ arr (CoeqBimods Id-Bimod B')) ∘ᵥ T M₂ ▷ α f              ≈⟨ triangle {B'} ⟩∘⟨refl ⟩
+      (λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f)) ∘ᵥ arr (CoeqBimods Id-Bimod B) ≈⟨ pullʳ (⟺ (αSq-⊗ id-bimodule-hom f)) ⟩
+      λ⇒-⊗ {B'} ∘ᵥ arr (CoeqBimods Id-Bimod B') ∘ᵥ T M₂ ▷ α f                ≈⟨ pullˡ (triangle {B'}) ⟩
       actionʳ B' ∘ᵥ T M₂ ▷ α f                                               ≈⟨ linearʳ f ⟩
-      α f ∘ᵥ actionʳ B                                                       ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
-      α f ∘ᵥ λ⇒-⊗ {B} ∘ᵥ arr (CoeqBimods Id-Bimod B)                         ≈⟨ sym-assoc₂ ⟩
+      α f ∘ᵥ actionʳ B                                                       ≈⟨ pushʳ (⟺ (triangle {B})) ⟩
       (α f ∘ᵥ λ⇒-⊗ {B}) ∘ᵥ arr (CoeqBimods Id-Bimod B)                       ∎
       where
         open hom.HomReasoning
+        open Categories.Morphism.Reasoning (hom (C M₁) (C M₂)) using (pullˡ; pullʳ; pushʳ)
         open TensorproductOfHomomorphisms using (αSq-⊗)
 
     λ⇒-⊗-natural : λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f) ≈ α f ∘ᵥ λ⇒-⊗ {B}
@@ -60,7 +59,6 @@ module Left-Unitor-natural where
                     (λ⇒-⊗ ∘ᵥ α (id-bimodule-hom ⊗₁ f))
                     (α f ∘ᵥ λ⇒-⊗)
                     λ⇒-⊗-natural-∘arr
-
   -- end abstract --
 
 module Right-Unitor-natural where
@@ -70,16 +68,14 @@ module Right-Unitor-natural where
     ρ⇒-⊗-natural-∘arr : (ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom)) ∘ᵥ arr (CoeqBimods B Id-Bimod)
                       ≈ (α f ∘ᵥ ρ⇒-⊗ {B}) ∘ᵥ arr (CoeqBimods B Id-Bimod)
     ρ⇒-⊗-natural-∘arr = begin
-      (ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom)) ∘ᵥ arr (CoeqBimods B Id-Bimod) ≈⟨ assoc₂ ⟩
-      ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom) ∘ᵥ arr (CoeqBimods B Id-Bimod)   ≈⟨ refl⟩∘⟨ ⟺ (αSq-⊗ f id-bimodule-hom) ⟩
-      ρ⇒-⊗ {B'} ∘ᵥ arr (CoeqBimods B' Id-Bimod) ∘ᵥ α f ◁ T M₁                ≈⟨ sym-assoc₂ ⟩
-      (ρ⇒-⊗ {B'} ∘ᵥ arr (CoeqBimods B' Id-Bimod)) ∘ᵥ α f ◁ T M₁              ≈⟨ triangle {B'} ⟩∘⟨refl ⟩
+      (ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom)) ∘ᵥ arr (CoeqBimods B Id-Bimod) ≈⟨ pullʳ (⟺ (αSq-⊗ f id-bimodule-hom)) ⟩
+      ρ⇒-⊗ {B'} ∘ᵥ arr (CoeqBimods B' Id-Bimod) ∘ᵥ α f ◁ T M₁                ≈⟨ pullˡ (triangle {B'}) ⟩
       actionˡ B' ∘ᵥ α f ◁ T M₁                                               ≈⟨ linearˡ f ⟩
-      α f ∘ᵥ actionˡ B                                                       ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
-      α f ∘ᵥ ρ⇒-⊗ {B} ∘ᵥ arr (CoeqBimods B Id-Bimod)                         ≈⟨ sym-assoc₂ ⟩
+      α f ∘ᵥ actionˡ B                                                       ≈⟨ pushʳ (⟺ (triangle {B})) ⟩
       (α f ∘ᵥ ρ⇒-⊗ {B}) ∘ᵥ arr (CoeqBimods B Id-Bimod)                       ∎
       where
         open hom.HomReasoning
+        open Categories.Morphism.Reasoning (hom (C M₁) (C M₂)) using (pullˡ; pullʳ; pushʳ)
         open TensorproductOfHomomorphisms using (αSq-⊗)
 
     ρ⇒-⊗-natural : ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom) ≈ α f ∘ᵥ ρ⇒-⊗ {B}
@@ -88,5 +84,4 @@ module Right-Unitor-natural where
                     (ρ⇒-⊗ ∘ᵥ α (f ⊗₁ id-bimodule-hom))
                     (α f ∘ᵥ ρ⇒-⊗)
                     ρ⇒-⊗-natural-∘arr
-
   -- end abstract --
