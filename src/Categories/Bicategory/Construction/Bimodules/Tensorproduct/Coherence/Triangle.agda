@@ -15,6 +15,10 @@ module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Tria
   {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞} {M₁ M₂ M₃ : Monad 𝒞}
   {B₂ : Bimodule M₂ M₃} {B₁ : Bimodule M₁ M₂} where
 
+import Categories.Bicategory.Extras as Bicat
+open Bicat 𝒞
+open Shorthands
+
 import Categories.Bicategory.LocalCoequalizers
 open ComposeWithLocalCoequalizer 𝒞 localCoeq
 
@@ -25,9 +29,6 @@ open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 
 
 Id-Bimod : {M : Monad 𝒞} → Bimodule M M
 Id-Bimod {M} = id-bimodule M
-
-import Categories.Bicategory.Extras as Bicat
-open Bicat 𝒞
 
 import Categories.Diagram.Coequalizer
 import Categories.Morphism
@@ -88,47 +89,47 @@ abstract
     Bimodhom.α (id-bimodule-hom {B = B₂} ⊗₁ unitorˡ-⊗-from {B = B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods B₂ (Id-Bimod ⊗₀ B₁))
     ∘ᵥ F₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B₁)
-    ∘ᵥ associator.from {f = F₂} {T₂} {F₁}
+    ∘ᵥ α⇒ {f = F₂} {T₂} {F₁}
     ≈⟨ sym-assoc₂ ⟩
 
     (Bimodhom.α (id-bimodule-hom {B = B₂} ⊗₁ unitorˡ-⊗-from {B = B₁})
     ∘ᵥ Coequalizer.arr (CoeqBimods B₂ (Id-Bimod ⊗₀ B₁)))
     ∘ᵥ F₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B₁)
-    ∘ᵥ associator.from {f = F₂} {T₂} {F₁}
+    ∘ᵥ α⇒ {f = F₂} {T₂} {F₁}
     ≈⟨ ⟺ (αSq-⊗ (id-bimodule-hom {B = B₂}) (unitorˡ-⊗-from {B = B₁})) ⟩∘⟨refl ⟩
 
     (Coequalizer.arr (CoeqBimods B₂ B₁)
     ∘ᵥ F₂ ▷ Bimodhom.α (unitorˡ-⊗-from {B = B₁}))
     ∘ᵥ F₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B₁)
-    ∘ᵥ associator.from {f = F₂} {T₂} {F₁}
+    ∘ᵥ α⇒ {f = F₂} {T₂} {F₁}
     ≈⟨ assoc₂ ⟩
 
     Coequalizer.arr (CoeqBimods B₂ B₁)
     ∘ᵥ F₂ ▷ Bimodhom.α (unitorˡ-⊗-from {B = B₁})
     ∘ᵥ F₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B₁)
-    ∘ᵥ associator.from {f = F₂} {T₂} {F₁}
+    ∘ᵥ α⇒ {f = F₂} {T₂} {F₁}
     ≈⟨ refl⟩∘⟨ sym-assoc₂ ⟩
 
     Coequalizer.arr (CoeqBimods B₂ B₁)
     ∘ᵥ (F₂ ▷ Bimodhom.α (unitorˡ-⊗-from {B = B₁})
     ∘ᵥ F₂ ▷ Coequalizer.arr (CoeqBimods Id-Bimod B₁))
-    ∘ᵥ associator.from {f = F₂} {T₂} {F₁}
+    ∘ᵥ α⇒ {f = F₂} {T₂} {F₁}
     ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
 
     Coequalizer.arr (CoeqBimods B₂ B₁)
     ∘ᵥ F₂ ▷ (Bimodhom.α (unitorˡ-⊗-from {B = B₁})
             ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B₁))
-    ∘ᵥ associator.from {f = F₂} {T₂} {F₁}
+    ∘ᵥ α⇒ {f = F₂} {T₂} {F₁}
     ≈⟨ refl⟩∘⟨ ▷-resp-≈ (left-unitor-triangle {B = B₁}) ⟩∘⟨refl ⟩
 
     Coequalizer.arr (CoeqBimods B₂ B₁)
     ∘ᵥ F₂ ▷ actionʳ₁
-    ∘ᵥ associator.from {f = F₂} {T₂} {F₁}
+    ∘ᵥ α⇒ {f = F₂} {T₂} {F₁}
     ≈⟨ sym-assoc₂ ⟩
 
     (Coequalizer.arr (CoeqBimods B₂ B₁)
     ∘ᵥ F₂ ▷ actionʳ₁)
-    ∘ᵥ associator.from {f = F₂} {T₂} {F₁}
+    ∘ᵥ α⇒ {f = F₂} {T₂} {F₁}
     ≈⟨ ⟺ (switch-tofromʳ associator F₂⊗F₁equality-var) ⟩
 
     Coequalizer.arr (CoeqBimods B₂ B₁)
@@ -159,12 +160,12 @@ abstract
       
       F₂⊗F₁equality-var : (Coequalizer.arr (CoeqBimods B₂ B₁)
                           ∘ᵥ actionˡ₂ ◁ F₁)
-                          ∘ᵥ associator.to {f = F₂} {T₂} {F₁}
+                          ∘ᵥ α⇐ {f = F₂} {T₂} {F₁}
                           ≈ Coequalizer.arr (CoeqBimods B₂ B₁)
                             ∘ᵥ F₂ ▷ actionʳ₁
       F₂⊗F₁equality-var = begin
-        (Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ actionˡ₂ ◁ F₁) ∘ᵥ associator.to ≈⟨ assoc₂ ⟩
-        Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ actionˡ₂ ◁ F₁ ∘ᵥ associator.to ≈⟨ ⟺ (Coequalizer.equality (CoeqBimods B₂ B₁)) ⟩
+        (Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ actionˡ₂ ◁ F₁) ∘ᵥ α⇐ ≈⟨ assoc₂ ⟩
+        Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ actionˡ₂ ◁ F₁ ∘ᵥ α⇐ ≈⟨ ⟺ (Coequalizer.equality (CoeqBimods B₂ B₁)) ⟩
         Coequalizer.arr (CoeqBimods B₂ B₁) ∘ᵥ F₂ ▷ actionʳ₁ ∎
 
   triangle⊗∘arr : (Bimodhom.α (id-bimodule-hom {B = B₂} ⊗₁ unitorˡ-⊗-from {B = B₁})
