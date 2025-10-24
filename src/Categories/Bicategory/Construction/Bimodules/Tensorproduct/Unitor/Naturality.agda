@@ -5,14 +5,14 @@ open import Categories.Bicategory.LocalCoequalizers
 
 open import Categories.Bicategory.Monad
 open import Categories.Bicategory.Monad.Bimodule
-open import Categories.Bicategory.Monad.Bimodule.Homomorphism renaming (Bimodulehomomorphism to Bimodhom)
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism
 
 
 -- We will show that the left- and right-unitor in the bicategory of monads and bimodules is natural. --
 
 module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor.Naturality
   {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞}
-  {M₁ M₂ : Monad 𝒞} {B B' : Bimodule M₁ M₂} (f : Bimodhom B B') where
+  {M₁ M₂ : Monad 𝒞} {B B' : Bimodule M₁ M₂} (f : Bimodulehomomorphism B B') where
 
 Id-Bimod : {M : Monad 𝒞} → Bimodule M M
 Id-Bimod {M} = id-bimodule M
@@ -21,15 +21,11 @@ import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞 hiding (triangle)
 open Shorthands
 
-open Monad M₁ using () renaming (T to T₁; C to C₁)
-open Monad M₂ using () renaming (T to T₂; C to C₂)
+open Monad using (C; T)
+open Bimodulehomomorphism using (α)
 
-import Categories.Diagram.Coequalizer
-import Categories.Diagram.Coequalizer.Properties
-
-open import Categories.Diagram.Coequalizer (hom C₁ C₂) public
-open import Categories.Diagram.Coequalizer.Properties (hom C₁ C₂) public
-
+open import Categories.Diagram.Coequalizer (hom (C M₁) (C M₂)) using (Coequalizer; Coequalizer⇒Epi)
+open Coequalizer using (arr) 
 
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
 import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
@@ -44,28 +40,28 @@ module Left-Unitor-natural where
   open Unitor.Left-Unitor using (λ⇒-⊗; triangle)
 
   abstract
-    λ⇒-⊗-natural∘arr : (λ⇒-⊗ {B'} ∘ᵥ Bimodhom.α (id-bimodule-hom ⊗₁ f)) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)
-                      ≈ (Bimodhom.α f ∘ᵥ λ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)
-    λ⇒-⊗-natural∘arr = begin
-      (λ⇒-⊗ {B'} ∘ᵥ Bimodhom.α (id-bimodule-hom ⊗₁ f)) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ≈⟨ assoc₂ ⟩
-      λ⇒-⊗ {B'} ∘ᵥ Bimodhom.α (id-bimodule-hom ⊗₁ f) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)   ≈⟨ refl⟩∘⟨ ⟺ αSq-⊗ ⟩
-      λ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B') ∘ᵥ T₂ ▷ Bimodhom.α f                  ≈⟨ sym-assoc₂ ⟩
-      (λ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B')) ∘ᵥ T₂ ▷ Bimodhom.α f                ≈⟨ triangle {B'} ⟩∘⟨refl ⟩
-      actionʳ' ∘ᵥ T₂ ▷ Bimodhom.α f                                           ≈⟨ linearʳ ⟩
-      Bimodhom.α f ∘ᵥ actionʳ                                                 ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
-      Bimodhom.α f ∘ᵥ λ⇒-⊗ {B} ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)                         ≈⟨ sym-assoc₂ ⟩
-      (Bimodhom.α f ∘ᵥ λ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)                       ∎
+    λ⇒-⊗-natural-∘arr : (λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f)) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)
+                      ≈ (α f ∘ᵥ λ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)
+    λ⇒-⊗-natural-∘arr = begin
+      (λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f)) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ≈⟨ assoc₂ ⟩
+      λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)   ≈⟨ refl⟩∘⟨ ⟺ αSq-⊗ ⟩
+      λ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B') ∘ᵥ T M₂ ▷ α f                  ≈⟨ sym-assoc₂ ⟩
+      (λ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B')) ∘ᵥ T M₂ ▷ α f                ≈⟨ triangle {B'} ⟩∘⟨refl ⟩
+      actionʳ' ∘ᵥ T M₂ ▷ α f                                           ≈⟨ linearʳ f ⟩
+      α f ∘ᵥ actionʳ                                                 ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
+      α f ∘ᵥ λ⇒-⊗ {B} ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)                         ≈⟨ sym-assoc₂ ⟩
+      (α f ∘ᵥ λ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)                       ∎
       where
         open hom.HomReasoning
-        open Bimodhom f using (linearʳ)
+        open Bimodulehomomorphism using (linearʳ)
         open TensorproductOfHomomorphisms id-bimodule-hom f using (αSq-⊗)
 
-    λ⇒-⊗-natural : λ⇒-⊗ {B'} ∘ᵥ Bimodhom.α (id-bimodule-hom ⊗₁ f) ≈ Bimodhom.α f ∘ᵥ λ⇒-⊗ {B}
+    λ⇒-⊗-natural : λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f) ≈ α f ∘ᵥ λ⇒-⊗ {B}
     λ⇒-⊗-natural = Coequalizer⇒Epi
                     (CoeqBimods Id-Bimod B)
-                    (λ⇒-⊗ ∘ᵥ Bimodhom.α (id-bimodule-hom ⊗₁ f))
-                    (Bimodhom.α f ∘ᵥ λ⇒-⊗)
-                    λ⇒-⊗-natural∘arr
+                    (λ⇒-⊗ ∘ᵥ α (id-bimodule-hom ⊗₁ f))
+                    (α f ∘ᵥ λ⇒-⊗)
+                    λ⇒-⊗-natural-∘arr
 
   -- end abstract --
 
@@ -75,27 +71,27 @@ module Right-Unitor-natural where
   open Unitor.Right-Unitor using (ρ⇒-⊗; triangle)
 
   abstract
-    ρ⇒-⊗-natural∘arr : (ρ⇒-⊗ {B'} ∘ᵥ Bimodhom.α (f ⊗₁ id-bimodule-hom)) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)
-                      ≈ (Bimodhom.α f ∘ᵥ ρ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)
-    ρ⇒-⊗-natural∘arr = begin
-      (ρ⇒-⊗ {B'} ∘ᵥ Bimodhom.α (f ⊗₁ id-bimodule-hom)) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ≈⟨ assoc₂ ⟩
-      ρ⇒-⊗ {B'} ∘ᵥ Bimodhom.α (f ⊗₁ id-bimodule-hom) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)   ≈⟨ refl⟩∘⟨ ⟺ αSq-⊗ ⟩
-      ρ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods B' Id-Bimod) ∘ᵥ Bimodhom.α f ◁ T₁                  ≈⟨ sym-assoc₂ ⟩
-      (ρ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods B' Id-Bimod)) ∘ᵥ Bimodhom.α f ◁ T₁                ≈⟨ triangle {B'} ⟩∘⟨refl ⟩
-      actionˡ' ∘ᵥ Bimodhom.α f ◁ T₁                                           ≈⟨ linearˡ ⟩
-      Bimodhom.α f ∘ᵥ actionˡ                                                 ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
-      Bimodhom.α f ∘ᵥ ρ⇒-⊗ {B} ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)                         ≈⟨ sym-assoc₂ ⟩
-      (Bimodhom.α f ∘ᵥ ρ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)                       ∎
+    ρ⇒-⊗-natural-∘arr : (ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom)) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)
+                      ≈ (α f ∘ᵥ ρ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)
+    ρ⇒-⊗-natural-∘arr = begin
+      (ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom)) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ≈⟨ assoc₂ ⟩
+      ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)   ≈⟨ refl⟩∘⟨ ⟺ αSq-⊗ ⟩
+      ρ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods B' Id-Bimod) ∘ᵥ α f ◁ T M₁                  ≈⟨ sym-assoc₂ ⟩
+      (ρ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods B' Id-Bimod)) ∘ᵥ α f ◁ T M₁                ≈⟨ triangle {B'} ⟩∘⟨refl ⟩
+      actionˡ' ∘ᵥ α f ◁ T M₁                                           ≈⟨ linearˡ f ⟩
+      α f ∘ᵥ actionˡ                                                 ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
+      α f ∘ᵥ ρ⇒-⊗ {B} ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)                         ≈⟨ sym-assoc₂ ⟩
+      (α f ∘ᵥ ρ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)                       ∎
       where
         open hom.HomReasoning
-        open Bimodhom f using (linearˡ)
+        open Bimodulehomomorphism using (linearˡ)
         open TensorproductOfHomomorphisms f id-bimodule-hom using (αSq-⊗)
 
-    ρ⇒-⊗-natural : ρ⇒-⊗ {B'} ∘ᵥ Bimodhom.α (f ⊗₁ id-bimodule-hom) ≈ Bimodhom.α f ∘ᵥ ρ⇒-⊗ {B}
+    ρ⇒-⊗-natural : ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom) ≈ α f ∘ᵥ ρ⇒-⊗ {B}
     ρ⇒-⊗-natural = Coequalizer⇒Epi
                     (CoeqBimods B Id-Bimod)
-                    (ρ⇒-⊗ ∘ᵥ Bimodhom.α (f ⊗₁ id-bimodule-hom))
-                    (Bimodhom.α f ∘ᵥ ρ⇒-⊗)
-                    ρ⇒-⊗-natural∘arr
+                    (ρ⇒-⊗ ∘ᵥ α (f ⊗₁ id-bimodule-hom))
+                    (α f ∘ᵥ ρ⇒-⊗)
+                    ρ⇒-⊗-natural-∘arr
 
   -- end abstract --
