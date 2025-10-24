@@ -46,45 +46,48 @@ open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associato
   using (α⇒-⊗; hexagon-sq)
   
 abstract
-  α⇒-⊗-natural-∘arr² : ((α⇒-⊗ {B'₃} {B'₂} {B'₁}
-                          ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
-                          ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-                          ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁
-                        ≈ ((α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
-                            ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
-                            ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-                            ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁
+  α⇒-⊗-natural-∘arr² :
+    ((α⇒-⊗ {B'₃} {B'₂} {B'₁}
+    ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
+    ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
+    ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁
+    ≈
+    ((α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
+    ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
+    ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
+    ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁
+
   α⇒-⊗-natural-∘arr² = begin
 
     ((α⇒-⊗ {B'₃} {B'₂} {B'₁}
     ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
     ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-    ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ≈⟨ assoc₂ ⟩
+    ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁     ≈⟨ assoc₂ ⟩
 
     (α⇒-⊗ {B'₃} {B'₂} {B'₁}
     ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
     ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-    ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ≈⟨ ⟺ associator-∘'⇒associator-⊗' ⟩
+    ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁     ≈⟨ ⟺ associator-∘'⇒associator-⊗' ⟩
 
     (arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ F B'₃ ▷ arr (CoeqBimods B'₂ B'₁))
     ∘ᵥ α⇒
-    ∘ᵥ (α f₃ ⊚₁ α f₂) ⊚₁ α f₁ ≈⟨ refl⟩∘⟨ α⇒-⊚ ⟩
+    ∘ᵥ (α f₃ ⊚₁ α f₂) ⊚₁ α f₁            ≈⟨ refl⟩∘⟨ α⇒-⊚ ⟩
 
     (arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁))
     ∘ᵥ F B'₃ ▷ arr (CoeqBimods B'₂ B'₁))
     ∘ᵥ α f₃ ⊚₁ (α f₂ ⊚₁ α f₁)
-    ∘ᵥ α⇒ ≈⟨ associator-∘⇒associator-⊗ ⟩
+    ∘ᵥ α⇒                                ≈⟨ associator-∘⇒associator-⊗ ⟩
 
     (α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
     ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
     ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-    ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ≈⟨ ⟺ assoc₂ ⟩
+    ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁     ≈⟨ ⟺ assoc₂ ⟩
 
     ((α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
     ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
     ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-    ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁ ∎
+    ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁     ∎
 
     where
       open hom.HomReasoning
@@ -113,29 +116,19 @@ abstract
 
 
 abstract
-  α⇒-⊗-natural-∘arr : (α⇒-⊗ {B'₃} {B'₂} {B'₁}
-                     ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
-                     ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-                     ≈ (α (f₃ ⊗₁ (f₂ ⊗₁ f₁)) ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
-                        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+  α⇒-⊗-natural-∘arr : (α⇒-⊗ {B'₃} {B'₂} {B'₁} ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁)) ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+                    ≈ (α (f₃ ⊗₁ (f₂ ⊗₁ f₁)) ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁}) ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
   α⇒-⊗-natural-∘arr = Coequalizer⇒Epi
-                      ((CoeqBimods B₃ B₂) coeq-◁ F B₁)
-                      ((α⇒-⊗ {B'₃} {B'₂} {B'₁}
-                        ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
-                        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-                      ((α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
-                        ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁})
-                        ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-                      α⇒-⊗-natural-∘arr²
+                        ((CoeqBimods B₃ B₂) coeq-◁ F B₁)
+                        ((α⇒-⊗ {B'₃} {B'₂} {B'₁} ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁)) ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
+                        ((α (f₃ ⊗₁ (f₂ ⊗₁ f₁)) ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁}) ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
+                        α⇒-⊗-natural-∘arr²
 
 abstract
-  α⇒-⊗-natural : α⇒-⊗ {B'₃} {B'₂} {B'₁}
-                ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁)
-                ≈ α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
-                  ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁}
+  α⇒-⊗-natural : α⇒-⊗ {B'₃} {B'₂} {B'₁} ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁)
+               ≈ α (f₃ ⊗₁ (f₂ ⊗₁ f₁)) ∘ᵥ α⇒-⊗ {B₃} {B₂} {B₁}
   α⇒-⊗-natural = Coequalizer⇒Epi
-                      (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-                      (α⇒-⊗ ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
-                      (α (f₃ ⊗₁ f₂ ⊗₁ f₁) ∘ᵥ α⇒-⊗)
-                      α⇒-⊗-natural-∘arr
--- end abstract --
+                   (CoeqBimods (B₃ ⊗₀ B₂) B₁)
+                   (α⇒-⊗ ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
+                   (α (f₃ ⊗₁ f₂ ⊗₁ f₁) ∘ᵥ α⇒-⊗)
+                   α⇒-⊗-natural-∘arr
