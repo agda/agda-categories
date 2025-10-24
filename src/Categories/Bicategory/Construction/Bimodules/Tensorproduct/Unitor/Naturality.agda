@@ -39,17 +39,17 @@ module Left-Unitor-natural where
   open Left-Unitor using (λ⇒-⊗; triangle)
 
   abstract
-    λ⇒-⊗-natural-∘arr : (λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f)) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)
-                      ≈ (α f ∘ᵥ λ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)
+    λ⇒-⊗-natural-∘arr : (λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f)) ∘ᵥ arr (CoeqBimods Id-Bimod B)
+                      ≈ (α f ∘ᵥ λ⇒-⊗ {B}) ∘ᵥ arr (CoeqBimods Id-Bimod B)
     λ⇒-⊗-natural-∘arr = begin
-      (λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f)) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B) ≈⟨ assoc₂ ⟩
-      λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)   ≈⟨ refl⟩∘⟨ ⟺ (αSq-⊗ id-bimodule-hom f) ⟩
-      λ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B') ∘ᵥ T M₂ ▷ α f                  ≈⟨ sym-assoc₂ ⟩
-      (λ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B')) ∘ᵥ T M₂ ▷ α f                ≈⟨ triangle {B'} ⟩∘⟨refl ⟩
-      actionʳ B' ∘ᵥ T M₂ ▷ α f                                           ≈⟨ linearʳ f ⟩
-      α f ∘ᵥ actionʳ B                                                 ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
-      α f ∘ᵥ λ⇒-⊗ {B} ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)                         ≈⟨ sym-assoc₂ ⟩
-      (α f ∘ᵥ λ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods Id-Bimod B)                       ∎
+      (λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f)) ∘ᵥ arr (CoeqBimods Id-Bimod B) ≈⟨ assoc₂ ⟩
+      λ⇒-⊗ {B'} ∘ᵥ α (id-bimodule-hom ⊗₁ f) ∘ᵥ arr (CoeqBimods Id-Bimod B)   ≈⟨ refl⟩∘⟨ ⟺ (αSq-⊗ id-bimodule-hom f) ⟩
+      λ⇒-⊗ {B'} ∘ᵥ arr (CoeqBimods Id-Bimod B') ∘ᵥ T M₂ ▷ α f                ≈⟨ sym-assoc₂ ⟩
+      (λ⇒-⊗ {B'} ∘ᵥ arr (CoeqBimods Id-Bimod B')) ∘ᵥ T M₂ ▷ α f              ≈⟨ triangle {B'} ⟩∘⟨refl ⟩
+      actionʳ B' ∘ᵥ T M₂ ▷ α f                                               ≈⟨ linearʳ f ⟩
+      α f ∘ᵥ actionʳ B                                                       ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
+      α f ∘ᵥ λ⇒-⊗ {B} ∘ᵥ arr (CoeqBimods Id-Bimod B)                         ≈⟨ sym-assoc₂ ⟩
+      (α f ∘ᵥ λ⇒-⊗ {B}) ∘ᵥ arr (CoeqBimods Id-Bimod B)                       ∎
       where
         open hom.HomReasoning
         open TensorproductOfHomomorphisms using (αSq-⊗)
@@ -67,17 +67,17 @@ module Right-Unitor-natural where
   open Right-Unitor using (ρ⇒-⊗; triangle)
 
   abstract
-    ρ⇒-⊗-natural-∘arr : (ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom)) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)
-                      ≈ (α f ∘ᵥ ρ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)
+    ρ⇒-⊗-natural-∘arr : (ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom)) ∘ᵥ arr (CoeqBimods B Id-Bimod)
+                      ≈ (α f ∘ᵥ ρ⇒-⊗ {B}) ∘ᵥ arr (CoeqBimods B Id-Bimod)
     ρ⇒-⊗-natural-∘arr = begin
-      (ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom)) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod) ≈⟨ assoc₂ ⟩
-      ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)   ≈⟨ refl⟩∘⟨ ⟺ (αSq-⊗ f id-bimodule-hom) ⟩
-      ρ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods B' Id-Bimod) ∘ᵥ α f ◁ T M₁                  ≈⟨ sym-assoc₂ ⟩
-      (ρ⇒-⊗ {B'} ∘ᵥ Coequalizer.arr (CoeqBimods B' Id-Bimod)) ∘ᵥ α f ◁ T M₁                ≈⟨ triangle {B'} ⟩∘⟨refl ⟩
-      actionˡ B' ∘ᵥ α f ◁ T M₁                                           ≈⟨ linearˡ f ⟩
-      α f ∘ᵥ actionˡ B                                                 ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
-      α f ∘ᵥ ρ⇒-⊗ {B} ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)                         ≈⟨ sym-assoc₂ ⟩
-      (α f ∘ᵥ ρ⇒-⊗ {B}) ∘ᵥ Coequalizer.arr (CoeqBimods B Id-Bimod)                       ∎
+      (ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom)) ∘ᵥ arr (CoeqBimods B Id-Bimod) ≈⟨ assoc₂ ⟩
+      ρ⇒-⊗ {B'} ∘ᵥ α (f ⊗₁ id-bimodule-hom) ∘ᵥ arr (CoeqBimods B Id-Bimod)   ≈⟨ refl⟩∘⟨ ⟺ (αSq-⊗ f id-bimodule-hom) ⟩
+      ρ⇒-⊗ {B'} ∘ᵥ arr (CoeqBimods B' Id-Bimod) ∘ᵥ α f ◁ T M₁                ≈⟨ sym-assoc₂ ⟩
+      (ρ⇒-⊗ {B'} ∘ᵥ arr (CoeqBimods B' Id-Bimod)) ∘ᵥ α f ◁ T M₁              ≈⟨ triangle {B'} ⟩∘⟨refl ⟩
+      actionˡ B' ∘ᵥ α f ◁ T M₁                                               ≈⟨ linearˡ f ⟩
+      α f ∘ᵥ actionˡ B                                                       ≈⟨ refl⟩∘⟨ ⟺ (triangle {B}) ⟩
+      α f ∘ᵥ ρ⇒-⊗ {B} ∘ᵥ arr (CoeqBimods B Id-Bimod)                         ≈⟨ sym-assoc₂ ⟩
+      (α f ∘ᵥ ρ⇒-⊗ {B}) ∘ᵥ arr (CoeqBimods B Id-Bimod)                       ∎
       where
         open hom.HomReasoning
         open TensorproductOfHomomorphisms using (αSq-⊗)
