@@ -26,11 +26,6 @@ open Monad using (T)
 open Bimodule using (F; actionˡ; actionʳ)
 open Bimodulehomomorphism using (α)
 
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
-open TensorproductOfBimodules using () renaming (Tensorproduct to infixr 30 _⊗₀_)
-open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
-
 Id-Bimod : {M : Monad 𝒞} → Bimodule M M
 Id-Bimod {M} = id-bimodule M
 
@@ -48,16 +43,15 @@ private
 
 open HomCat
 
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator
-  {𝒞 = 𝒞} {localCoeq}
+open import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq}
+  using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
+open import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq}
+  using (αSq-⊗) renaming (Tensorproduct to infixr 30 _⊗₁_)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator {𝒞 = 𝒞} {localCoeq}
   using (associator-⊗-from; hexagon)
-import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor
-  {𝒞 = 𝒞} {localCoeq} as Unitor
-open Unitor.Left-Unitor using (unitorˡ-⊗-from) renaming (triangle to left-unitor-triangle)
-open Unitor.Right-Unitor using (unitorʳ-⊗-from) renaming (triangle to right-unitor-triangle)
-
-open TensorproductOfBimodules using (CoeqBimods)
-open TensorproductOfHomomorphisms using (αSq-⊗)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor {𝒞 = 𝒞} {localCoeq} using (module Left-Unitor; module Right-Unitor)
+open Left-Unitor using (unitorˡ-⊗-from) renaming (triangle to left-unitor-triangle)
+open Right-Unitor using (unitorʳ-⊗-from) renaming (triangle to right-unitor-triangle)
 
 abstract
   triangle⊗∘arr² : ((α (id-bimodule-hom {B = B₂} ⊗₁ unitorˡ-⊗-from {B = B₁})
