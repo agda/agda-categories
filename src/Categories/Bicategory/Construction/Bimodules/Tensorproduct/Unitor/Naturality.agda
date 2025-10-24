@@ -12,39 +12,29 @@ open import Categories.Bicategory.Monad.Bimodule.Homomorphism renaming (Bimodule
 
 module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor.Naturality
   {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞}
-  {M₁ M₂ : Monad 𝒞}
-  {B B' : Bimodule M₁ M₂}
-  (f : Bimodhom B B') where
-
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
-open TensorproductOfBimodules using () renaming (Tensorproduct to infixr 30 _⊗₀_)
-open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
+  {M₁ M₂ : Monad 𝒞} {B B' : Bimodule M₁ M₂} (f : Bimodhom B B') where
 
 Id-Bimod : {M : Monad 𝒞} → Bimodule M M
 Id-Bimod {M} = id-bimodule M
 
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞 hiding (triangle)
+open Shorthands
+
+open Monad M₁ using () renaming (T to T₁; C to C₁)
+open Monad M₂ using () renaming (T to T₂; C to C₂)
 
 import Categories.Diagram.Coequalizer
 import Categories.Diagram.Coequalizer.Properties
--- import Categories.Morphism
 
--- To get constructions of the hom-categories with implicit arguments into scope --
-private
-  module HomCat {X} {Y} where
-    -- open Categories.Morphism (hom X Y) public using (_≅_)
-    open Categories.Diagram.Coequalizer (hom X Y) public
-    open Categories.Diagram.Coequalizer.Properties (hom X Y) public
+open import Categories.Diagram.Coequalizer (hom C₁ C₂) public
+open import Categories.Diagram.Coequalizer.Properties (hom C₁ C₂) public
 
-open HomCat
 
-open Monad M₁ using () renaming (T to T₁)
-open Monad M₂ using () renaming (T to T₂)
-
-open TensorproductOfBimodules using (CoeqBimods)
-
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
+open TensorproductOfBimodules using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
+open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
 import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor
   {o} {ℓ} {e} {t} {𝒞} {localCoeq} {M₁} {M₂} as Unitor
 
