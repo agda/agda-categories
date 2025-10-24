@@ -91,29 +91,31 @@ abstract
 
     where
       open hom.HomReasoning
-      open TensorproductOfHomomorphisms using (αSq-⊗)
       open Definitions (hom (C M₁) (C M₄)) using (CommutativeSquare)
+      open TensorproductOfHomomorphisms using (αSq-⊗)
       open Categories.Morphism.Reasoning (hom (C M₁) (C M₄)) using (glue; glue′)
 
-      associator-∘'⇒associator-⊗' : CommutativeSquare
-                                      (α⇒ {f = F B'₃} {F B'₂} {F B'₁} ∘ᵥ (α f₃ ⊚₁ α f₂) ⊚₁ α f₁)
-                                      (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
-                                      (arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁)) ∘ᵥ F B'₃ ▷ arr (CoeqBimods B'₂ B'₁))
-                                      (α⇒-⊗ {B₃ = B'₃} {B'₂} {B'₁} ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
-      associator-∘'⇒associator-⊗' = glue′
-                                      (hexagon-sq {B₃ = B'₃} {B'₂} {B'₁})
-                                      (glue (αSq-⊗ (f₃ ⊗₁ f₂) f₁) (⊚-resp-sqˡ-degen (αSq-⊗ f₃ f₂)))
+      abstract
+        associator-∘'⇒associator-⊗' : CommutativeSquare
+                                        (α⇒ {f = F B'₃} {F B'₂} {F B'₁} ∘ᵥ (α f₃ ⊚₁ α f₂) ⊚₁ α f₁)
+                                        (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
+                                        (arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁)) ∘ᵥ F B'₃ ▷ arr (CoeqBimods B'₂ B'₁))
+                                        (α⇒-⊗ {B₃ = B'₃} {B'₂} {B'₁} ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
+        associator-∘'⇒associator-⊗' = glue′
+                                        (hexagon-sq {B₃ = B'₃} {B'₂} {B'₁})
+                                        (glue (αSq-⊗ (f₃ ⊗₁ f₂) f₁) (⊚-resp-sqˡ-degen (αSq-⊗ f₃ f₂)))
 
-      associator-∘⇒associator-⊗ : CommutativeSquare
+        associator-∘⇒associator-⊗ : CommutativeSquare
                                       (α f₃ ⊚₁ α f₂ ⊚₁ α f₁ ∘ᵥ α⇒ {f = F B₃} {F B₂} {F B₁})
                                       (arr (CoeqBimods (B₃ ⊗₀ B₂) B₁) ∘ᵥ arr (CoeqBimods B₃ B₂) ◁ F B₁)
                                       (arr (CoeqBimods B'₃ (B'₂ ⊗₀ B'₁)) ∘ᵥ F B'₃ ▷ arr (CoeqBimods B'₂ B'₁))
                                       (α (f₃ ⊗₁ f₂ ⊗₁ f₁) ∘ᵥ α⇒-⊗ {B₃ = B₃} {B₂} {B₁})
-      associator-∘⇒associator-⊗ = glue′
-                                    (glue (αSq-⊗ f₃ (f₂ ⊗₁ f₁)) (⊚-resp-sqʳ-degen (αSq-⊗ f₂ f₁)))
-                                    (hexagon-sq {B₃ = B₃} {B₂} {B₁})
+        associator-∘⇒associator-⊗ = glue′
+                                      (glue (αSq-⊗ f₃ (f₂ ⊗₁ f₁)) (⊚-resp-sqʳ-degen (αSq-⊗ f₂ f₁)))
+                                      (hexagon-sq {B₃ = B₃} {B₂} {B₁})
 
 
+abstract
   α⇒-⊗-natural-∘arr : (α⇒-⊗ {B'₃} {B'₂} {B'₁}
                      ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁))
                      ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
@@ -129,6 +131,7 @@ abstract
                         ∘ᵥ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
                       α⇒-⊗-natural-∘arr²
 
+abstract
   α⇒-⊗-natural : α⇒-⊗ {B'₃} {B'₂} {B'₁}
                 ∘ᵥ α ((f₃ ⊗₁ f₂) ⊗₁ f₁)
                 ≈ α (f₃ ⊗₁ (f₂ ⊗₁ f₁))
