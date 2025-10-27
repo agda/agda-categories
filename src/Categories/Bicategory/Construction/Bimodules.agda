@@ -59,7 +59,7 @@ Bimodules = record
       }
     }
   ; triangle = λ {_} {_} {_} {B₁} {B₂} → triangle-⊗ {B₂ = B₂} {B₁}
-  ; pentagon = λ {_} {_} {_} {_} {_} {B₁} {B₂} {B₃} {B₄} → pentagon⊗ {B₄ = B₄} {B₃} {B₂} {B₁}
+  ; pentagon = λ {_} {_} {_} {_} {_} {B₁} {B₂} {B₃} {B₄} → pentagon-⊗ {B₄ = B₄} {B₃} {B₂} {B₁}
   }
   where
     open import Data.Product using (_,_)
@@ -79,6 +79,6 @@ Bimodules = record
     open Unitor-Naturality.Left-Unitor-natural using (λ⇒-⊗-natural)
     open Unitor-Naturality.Right-Unitor-natural using (ρ⇒-⊗-natural)
     open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Pentagon {𝒞 = 𝒞} {localCoeq}
-      using (pentagon⊗)
+      using (pentagon-⊗)
     open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Triangle {𝒞 = 𝒞} {localCoeq}
       using (triangle-⊗)
