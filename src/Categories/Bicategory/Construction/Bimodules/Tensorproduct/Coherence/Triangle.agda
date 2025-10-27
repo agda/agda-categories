@@ -56,51 +56,54 @@ open Left-Unitor using (unitorˡ-⊗-from) renaming (triangle to unitorˡ-triang
 open Right-Unitor using (unitorʳ-⊗-from) renaming (triangle to unitorʳ-triangle)
 
 abstract
-  triangle-⊗-∘arr² : ((α (id-bimodule-hom {B = B₂} ⊗₁ unitorˡ-⊗-from {B = B₁})
-                   ∘ᵥ α (associator-⊗-from {B₃ = B₂} {Id-Bimod} {B₁}))
-                   ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁))
-                   ∘ᵥ arr (CoeqBimods B₂ Id-Bimod) ◁ F B₁
-                   ≈ (α (unitorʳ-⊗-from {B = B₂} ⊗₁ id-bimodule-hom {B = B₁})
-                     ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁))
-                     ∘ᵥ arr (CoeqBimods B₂ Id-Bimod) ◁ F B₁
+  triangle-⊗-∘arr² :
+    ((α (id-bimodule-hom {B = B₂} ⊗₁ unitorˡ-⊗-from {B = B₁})
+    ∘ᵥ α (associator-⊗-from {B₃ = B₂} {Id-Bimod} {B₁}))
+    ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁))
+    ∘ᵥ arr (CoeqBimods B₂ Id-Bimod) ◁ F B₁
+    ≈
+    (α (unitorʳ-⊗-from {B = B₂} ⊗₁ id-bimodule-hom {B = B₁})
+    ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁))
+    ∘ᵥ arr (CoeqBimods B₂ Id-Bimod) ◁ F B₁
+
   triangle-⊗-∘arr² = begin
 
     ((α (id-bimodule-hom {B = B₂} ⊗₁ unitorˡ-⊗-from {B = B₁})
     ∘ᵥ α (associator-⊗-from {B₃ = B₂} {Id-Bimod} {B₁}))
     ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁))
     ∘ᵥ arr (CoeqBimods B₂ Id-Bimod) ◁ F B₁
-    ≈⟨ assoc₂ ⟩
+                                                              ≈⟨ assoc₂ ⟩
 
     (α (id-bimodule-hom {B = B₂} ⊗₁ unitorˡ-⊗-from {B = B₁})
     ∘ᵥ α (associator-⊗-from {B₃ = B₂} {Id-Bimod} {B₁}))
     ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁)
     ∘ᵥ arr (CoeqBimods B₂ Id-Bimod) ◁ F B₁
-    ≈⟨ extendˡ (⟺ (hexagon-sq {B₃ = B₂} {Id-Bimod} {B₁})) ⟩
+                                                              ≈⟨ extendˡ (⟺ (hexagon-sq {B₃ = B₂} {Id-Bimod} {B₁})) ⟩
 
     (α (id-bimodule-hom {B = B₂} ⊗₁ unitorˡ-⊗-from {B = B₁})
     ∘ᵥ (arr (CoeqBimods B₂ (Id-Bimod ⊗₀ B₁))
     ∘ᵥ F B₂ ▷ arr (CoeqBimods Id-Bimod B₁)))
     ∘ᵥ α⇒ {f = F B₂} {T M₂} {F B₁}
-    ≈⟨ ⟺ (pullˡ associator-∘⇒unitor-⊗) ⟩
+                                                              ≈⟨ ⟺ (pullˡ associator-∘⇒unitor-⊗) ⟩
 
     (arr (CoeqBimods B₂ B₁)
     ∘ᵥ actionˡ B₂ ◁ F B₁)
     ∘ᵥ α⇐ {f = F B₂} {T M₂} {F B₁}
     ∘ᵥ α⇒ {f = F B₂} {T M₂} {F B₁}
-    ≈⟨ elimʳ associator.isoˡ ⟩
+                                                              ≈⟨ elimʳ associator.isoˡ ⟩
 
     arr (CoeqBimods B₂ B₁)
     ∘ᵥ actionˡ B₂ ◁ F B₁
-    ≈⟨ id⇒unitor-⊗ ⟩
+                                                              ≈⟨ id⇒unitor-⊗ ⟩
 
     α (unitorʳ-⊗-from {B = B₂} ⊗₁ id-bimodule-hom {B = B₁})
     ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁)
     ∘ᵥ arr (CoeqBimods B₂ Id-Bimod) ◁ F B₁
-    ≈⟨ ⟺ assoc₂ ⟩
+                                                              ≈⟨ ⟺ assoc₂ ⟩
 
     (α (unitorʳ-⊗-from {B = B₂} ⊗₁ id-bimodule-hom {B = B₁})
     ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁))
-    ∘ᵥ arr (CoeqBimods B₂ Id-Bimod) ◁ F B₁ ∎
+    ∘ᵥ arr (CoeqBimods B₂ Id-Bimod) ◁ F B₁                    ∎
 
     where
       open hom.HomReasoning
@@ -124,8 +127,7 @@ abstract
         ∘ᵥ α⇐ {f = F B₂} {T M₂} {F B₁}          ≈⟨ ⟺ (equality (CoeqBimods B₂ B₁)) ⟩
 
         arr (CoeqBimods B₂ B₁)
-        ∘ᵥ F B₂ ▷ actionʳ B₁                    ≈⟨ ⟺ (glue▹◽ (▷-resp-tri unitorˡ-triangle) (⟺ (αSq-⊗ id-bimodule-hom unitorˡ-⊗-from)))
-                                                        ⟩
+        ∘ᵥ F B₂ ▷ actionʳ B₁                    ≈⟨ ⟺ (glue▹◽ (▷-resp-tri unitorˡ-triangle) (⟺ (αSq-⊗ id-bimodule-hom unitorˡ-⊗-from))) ⟩
 
         α (id-bimodule-hom ⊗₁ unitorˡ-⊗-from)
         ∘ᵥ arr (CoeqBimods B₂ (Id-Bimod ⊗₀ B₁))
@@ -141,28 +143,26 @@ abstract
 
       id⇒unitor-⊗ = ⟺ (glue▹◽ (◁-resp-tri unitorʳ-triangle) (⟺ (αSq-⊗ unitorʳ-⊗-from id-bimodule-hom)))
 
-  triangle-⊗-∘arr : (α (id-bimodule-hom {B = B₂} ⊗₁ unitorˡ-⊗-from {B = B₁})
-                  ∘ᵥ α (associator-⊗-from {B₃ = B₂} {Id-Bimod} {B₁}))
-                  ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁)
-                  ≈ α (unitorʳ-⊗-from {B = B₂} ⊗₁ id-bimodule-hom {B = B₁})
-                    ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁)
+
+  triangle-⊗-∘arr :
+    (α (id-bimodule-hom {B = B₂} ⊗₁ unitorˡ-⊗-from {B = B₁})
+    ∘ᵥ α (associator-⊗-from {B₃ = B₂} {Id-Bimod} {B₁}))
+    ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁)
+    ≈
+    α (unitorʳ-⊗-from {B = B₂} ⊗₁ id-bimodule-hom {B = B₁})
+    ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁)
                     
   triangle-⊗-∘arr = Coequalizer⇒Epi
-                    ((CoeqBimods B₂ Id-Bimod) coeq-◁ F B₁)
-                    ((α (id-bimodule-hom ⊗₁ unitorˡ-⊗-from)
-                    ∘ᵥ α associator-⊗-from)
-                    ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁))
-                    (α (unitorʳ-⊗-from ⊗₁ id-bimodule-hom)
-                    ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁))
-                    triangle-⊗-∘arr²
+                      ((CoeqBimods B₂ Id-Bimod) coeq-◁ F B₁)
+                      ((α (id-bimodule-hom ⊗₁ unitorˡ-⊗-from) ∘ᵥ α associator-⊗-from) ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁))
+                      (α (unitorʳ-⊗-from ⊗₁ id-bimodule-hom) ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁))
+                      triangle-⊗-∘arr²
   
-  triangle-⊗ : α (id-bimodule-hom {B = B₂} ⊗₁ unitorˡ-⊗-from {B = B₁})
-              ∘ᵥ α (associator-⊗-from {B₃ = B₂} {Id-Bimod} {B₁})
-              ≈ α (unitorʳ-⊗-from {B = B₂} ⊗₁ id-bimodule-hom {B = B₁})
+  triangle-⊗ : α (id-bimodule-hom {B = B₂} ⊗₁ unitorˡ-⊗-from {B = B₁}) ∘ᵥ α (associator-⊗-from {B₃ = B₂} {Id-Bimod} {B₁})
+             ≈ α (unitorʳ-⊗-from {B = B₂} ⊗₁ id-bimodule-hom {B = B₁})
 
   triangle-⊗ = Coequalizer⇒Epi
-                (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁)
-                (α (id-bimodule-hom ⊗₁ unitorˡ-⊗-from)
-                ∘ᵥ α associator-⊗-from)
-                (α (unitorʳ-⊗-from ⊗₁ id-bimodule-hom))
-                triangle-⊗-∘arr
+                 (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁)
+                 (α (id-bimodule-hom ⊗₁ unitorˡ-⊗-from) ∘ᵥ α associator-⊗-from)
+                 (α (unitorʳ-⊗-from ⊗₁ id-bimodule-hom))
+                 triangle-⊗-∘arr
