@@ -140,7 +140,6 @@ abstract
         α (unitorʳ-⊗-from {B = B₂} ⊗₁ id-bimodule-hom {B = B₁})
         ∘ᵥ arr (CoeqBimods (B₂ ⊗₀ Id-Bimod) B₁)
         ∘ᵥ arr (CoeqBimods B₂ Id-Bimod) ◁ F B₁
-
       id⇒unitor-⊗ = ⟺ (glue▹◽ (◁-resp-tri unitorʳ-triangle) (⟺ (αSq-⊗ unitorʳ-⊗-from id-bimodule-hom)))
 
 
