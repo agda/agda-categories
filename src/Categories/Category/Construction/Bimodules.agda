@@ -8,7 +8,7 @@ module Categories.Category.Construction.Bimodules {o ℓ e t} {𝒞 : Bicategory
 open import Level
 open import Categories.Category
 open import Categories.Bicategory.Monad.Bimodule using (Bimodule)
-open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism; id-bimodule-hom; bimodule-hom-∘)
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism; id-bimodule-hom; _∘_)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 
@@ -18,7 +18,7 @@ Bimodules = record
   ; _⇒_ = Bimodulehomomorphism
   ; _≈_ = λ h₁ h₂ → α h₁ ≈ α h₂
   ; id = id-bimodule-hom
-  ; _∘_ = bimodule-hom-∘
+  ; _∘_ = _∘_
   ; assoc = assoc₂
   ; sym-assoc = sym-assoc₂
   ; identityˡ = identity₂ˡ
