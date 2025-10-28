@@ -240,15 +240,18 @@ abstract
       open Categories.Morphism.Reasoning (hom (C M₁) (C M₅)) using (assoc²αδ; assoc²δα; glue; glue′)
 
 abstract
-  pentagon-⊗-∘arr² : ((α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
-                   ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-                   ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
-                   ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
-                   ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁
-                   ≈ ((α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-                     ∘ᵥ α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
-                     ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
-                     ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁
+  pentagon-⊗-∘arr² :
+    ((α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+    ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
+    ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁
+    ≈
+    ((α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
+    ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
+    ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁
+
   pentagon-⊗-∘arr² = Coequalizer⇒Epi
 
                      ((CoeqBimods B₄ B₃) coeq-◁ F B₂ coeq-◁ F B₁)
@@ -267,13 +270,16 @@ abstract
                      pentagon-⊗-∘arr³
 
 abstract
-  pentagon-⊗-∘arr : (α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
-                  ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-                  ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
-                  ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
-                   ≈ (α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-                     ∘ᵥ α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
-                     ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
+  pentagon-⊗-∘arr :
+    (α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+    ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
+    ≈
+    (α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
+    ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
+
   pentagon-⊗-∘arr = Coequalizer⇒Epi
 
                     ((CoeqBimods (B₄ ⊗₀ B₃) B₂) coeq-◁ F B₁)
@@ -290,11 +296,14 @@ abstract
                     pentagon-⊗-∘arr²
 
 abstract
-  pentagon-⊗ : α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
-              ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-              ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
-              ≈ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
-                ∘ᵥ α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
+  pentagon-⊗ :
+    α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
+    ≈
+    α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
+
   pentagon-⊗ = Coequalizer⇒Epi
 
                 (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
