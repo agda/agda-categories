@@ -86,24 +86,25 @@ abstract
       (α⇒ {f = F B₄} {F B₃} {F B₂ ∘₁ F B₁})
       (α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁}))
       ((arr (CoeqBimods B₄ (B₃ ⊗₀ B₂ ⊗₀ B₁)) ∘ᵥ F B₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))) ∘ᵥ F B₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁))
+
   face[43]21⇒4321 = begin
 
     α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
     ∘ᵥ (arr (CoeqBimods (B₄ ⊗₀ B₃) (B₂ ⊗₀ B₁))
     ∘ᵥ F (B₄ ⊗₀ B₃) ▷ arr (CoeqBimods B₂ B₁))
     ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ (F B₂ ∘₁ F B₁)
-    ≈⟨ refl⟩∘⟨ extendˡ ◁-▷-exchg ⟩
+                                                    ≈⟨ refl⟩∘⟨ extendˡ ◁-▷-exchg ⟩
 
     α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
     ∘ᵥ (arr (CoeqBimods (B₄ ⊗₀ B₃) (B₂ ⊗₀ B₁))
     ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F (B₂ ⊗₀ B₁))
     ∘ᵥ (F B₄ ∘₁ F B₃) ▷ arr (CoeqBimods B₂ B₁)
-    ≈⟨ glue′ (⟺ (hexagon-sq {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})) α⇒-▷-∘₁ ⟩
+                                                    ≈⟨ glue′ (⟺ (hexagon-sq {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})) α⇒-▷-∘₁ ⟩
 
     ((arr (CoeqBimods B₄ (B₃ ⊗₀ B₂ ⊗₀ B₁))
     ∘ᵥ F B₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)))
     ∘ᵥ F B₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁))
-    ∘ᵥ α⇒ {f = F B₄} {F B₃} {F B₂ ∘₁ F B₁} ∎
+    ∘ᵥ α⇒ {f = F B₄} {F B₃} {F B₂ ∘₁ F B₁}          ∎
 
     where
       open hom.HomReasoning
@@ -120,22 +121,22 @@ abstract
     α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁)
     ∘ᵥ (arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁)
-    ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+    ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁          ≈⟨ refl⟩∘⟨ assoc₂ ⟩
 
     α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁)
     ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁
-    ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁ ≈⟨ ⟺ (glue αSq-⊗ (◁-resp-long-sq′ hexagon-sq)) ⟩
+    ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁          ≈⟨ ⟺ (glue αSq-⊗ (◁-resp-long-sq′ hexagon-sq)) ⟩
 
     (arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁)
     ∘ᵥ arr (CoeqBimods B₄ (B₃ ⊗₀ B₂)) ◁ F B₁
     ∘ᵥ (F B₄ ▷ arr (CoeqBimods B₃ B₂)) ◁ F B₁)
-    ∘ᵥ α⇒ {f = F B₄} {F B₃} {F B₂} ◁ F B₁ ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
+    ∘ᵥ α⇒ {f = F B₄} {F B₃} {F B₂} ◁ F B₁            ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
 
     ((arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁)
     ∘ᵥ arr (CoeqBimods B₄ (B₃ ⊗₀ B₂)) ◁ F B₁)
     ∘ᵥ (F B₄ ▷ arr (CoeqBimods B₃ B₂)) ◁ F B₁)
-    ∘ᵥ α⇒ {f = F B₄} {F B₃} {F B₂} ◁ F B₁ ∎
+    ∘ᵥ α⇒ {f = F B₄} {F B₃} {F B₂} ◁ F B₁            ∎
 
     where
       open hom.HomReasoning
@@ -165,25 +166,22 @@ abstract
     α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ (arr (CoeqBimods B₄ ((B₃ ⊗₀ B₂) ⊗₀  B₁))
     ∘ᵥ F B₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
-    ∘ᵥ F B₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)                             ≈⟨ refl⟩∘⟨ assoc₂ ⟩
+    ∘ᵥ F B₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)         ≈⟨ refl⟩∘⟨ assoc₂ ⟩
 
     α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ arr (CoeqBimods B₄ ((B₃ ⊗₀ B₂) ⊗₀  B₁))
     ∘ᵥ F B₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
-    ∘ᵥ F B₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)                             ≈⟨ glue′
-                                                                               (⟺ αSq-⊗)
-                                                                               (▷-resp-long-sq (⟺ (hexagon-sq {B₃ = B₃} {B₂} {B₁})))
-                                                                           ⟩
+    ∘ᵥ F B₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)         ≈⟨ glue′ (⟺ αSq-⊗) (▷-resp-long-sq (⟺ (hexagon-sq {B₃ = B₃} {B₂} {B₁}))) ⟩
 
     (arr (CoeqBimods B₄ (B₃ ⊗₀ B₂ ⊗₀ B₁))
     ∘ᵥ F B₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))
     ∘ᵥ F B₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁))
-    ∘ᵥ F B₄ ▷ α⇒ {f = F B₃} {F B₂} {F B₁}                                 ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
+    ∘ᵥ F B₄ ▷ α⇒ {f = F B₃} {F B₂} {F B₁}              ≈⟨ ⟺ assoc₂ ⟩∘⟨refl ⟩
 
     ((arr (CoeqBimods B₄ (B₃ ⊗₀ B₂ ⊗₀ B₁))
     ∘ᵥ F B₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)))
     ∘ᵥ F B₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁))
-    ∘ᵥ F B₄ ▷ α⇒ {f = F B₃} {F B₂} {F B₁}                                 ∎
+    ∘ᵥ F B₄ ▷ α⇒ {f = F B₃} {F B₂} {F B₁}              ∎
 
     where
       open hom.HomReasoning
@@ -213,7 +211,7 @@ abstract
     ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
     ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁)
     ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁
-    ≈⟨ assoc²αδ ⟩
+                                                         ≈⟨ assoc²αδ ⟩
 
     (α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
@@ -221,7 +219,7 @@ abstract
     ∘ᵥ (arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁)
     ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁
-    ≈⟨ glue face4[32]1⇒4321 (glue face[432]1⇒4[32]1 face[[43]2]1⇒[432]1) ⟩
+                                                         ≈⟨ glue face4[32]1⇒4321 (glue face[432]1⇒4[32]1 face[[43]2]1⇒[432]1) ⟩
 
     ((arr (CoeqBimods B₄ (B₃ ⊗₀ B₂ ⊗₀ B₁))
     ∘ᵥ F B₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)))
@@ -229,27 +227,27 @@ abstract
     ∘ᵥ F B₄ ▷ α⇒ {f = F B₃} {F B₂} {F B₁}
     ∘ᵥ α⇒ {f = F B₄} {F B₃ ∘₁ F B₂} {F B₁}
     ∘ᵥ α⇒ {f = F B₄} {F B₃} {F B₂} ◁ F B₁
-    ≈⟨ refl⟩∘⟨ pentagon ⟩
+                                                         ≈⟨ refl⟩∘⟨ pentagon ⟩
 
     ((arr (CoeqBimods B₄ (B₃ ⊗₀ B₂ ⊗₀ B₁))
     ∘ᵥ F B₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁)))
     ∘ᵥ F B₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁))
     ∘ᵥ α⇒ {f = F B₄} {F B₃} {F B₂ ∘₁ F B₁}
     ∘ᵥ α⇒ {f = F B₄ ∘₁ F B₃} {F B₂} {F B₁}
-    ≈⟨ ⟺ (glue face[43]21⇒4321 face[[43]2]1⇒[43]21) ⟩
+                                                         ≈⟨ ⟺ (glue face[43]21⇒4321 face[[43]2]1⇒[43]21) ⟩
 
     (α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
     ∘ᵥ α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
     ∘ᵥ (arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁)
     ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁
-    ≈⟨ assoc²δα ⟩
+                                                         ≈⟨ assoc²δα ⟩
 
     (((α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
     ∘ᵥ α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
     ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
     ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁)
-    ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁ ∎
+    ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁              ∎
 
     where
       open hom.HomReasoning
