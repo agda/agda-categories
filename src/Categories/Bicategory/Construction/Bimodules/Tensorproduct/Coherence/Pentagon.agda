@@ -49,6 +49,22 @@ open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator {𝒞 = 𝒞} {localCoeq}
   using (associator-⊗-from; hexagon-sq)
 
+private
+  module Whiskering-⊗ {N₁ N₂ N₃ : Monad 𝒞} where
+    -- We introduce the following two shorthands to improve the readablity of the code. --
+
+    _⊗-▷_   : {R R' : Bimodule N₁ N₂} (L : Bimodule N₂ N₃) (f : Bimodulehomomorphism R R')
+            → Bimodulehomomorphism (L ⊗₀ R) (L ⊗₀ R')
+    L ⊗-▷ f = id-bimodule-hom {B = L} ⊗₁ f
+    {-# INLINE _⊗-▷_ #-}
+
+    _◁-⊗_   : {L L' : Bimodule N₂ N₃} (f : Bimodulehomomorphism L L') (R : Bimodule N₁ N₂)
+            → Bimodulehomomorphism (L ⊗₀ R) (L' ⊗₀ R)
+    f ◁-⊗ R = f ⊗₁ id-bimodule-hom {B = R}
+    {-# INLINE _◁-⊗_ #-}
+
+open Whiskering-⊗
+
 abstract
   -- We reduce the pentagon law for the tensorproduct to the pentagon law in 𝒞 --
   -- For this, we consider a prism with the following five faces. --
@@ -97,16 +113,16 @@ abstract
     CommutativeSquare
       ((arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁) ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁) ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁)
       (α⇒ {f = F B₄} {F B₃} {F B₂} ◁ F B₁)
-      (α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+      (α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁))
       ((arr (CoeqBimods (B₄ ⊗₀ B₃ ⊗₀ B₂) B₁) ∘ᵥ arr (CoeqBimods B₄ (B₃ ⊗₀ B₂)) ◁ F B₁) ∘ᵥ (F B₄ ▷ arr (CoeqBimods B₃ B₂)) ◁ F B₁)
 
   face[[43]2]1⇒[432]1 = begin
-    α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
+    α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁)
     ∘ᵥ (arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁)
     ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁ ≈⟨ refl⟩∘⟨ assoc₂ ⟩
 
-    α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
+    α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁)
     ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁
     ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁ ≈⟨ ⟺ (glue αSq-⊗ (◁-resp-long-sq′ hexagon-sq)) ⟩
@@ -141,17 +157,17 @@ abstract
     CommutativeSquare
       ((arr (CoeqBimods B₄ ((B₃ ⊗₀ B₂) ⊗₀  B₁)) ∘ᵥ F B₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)) ∘ᵥ F B₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁))
       (F B₄ ▷ α⇒ {f = F B₃} {F B₂} {F B₁})
-      (α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁}))
+      (α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁}))
       ((arr (CoeqBimods B₄ (B₃ ⊗₀ B₂ ⊗₀ B₁)) ∘ᵥ F B₄ ▷ arr (CoeqBimods B₃ (B₂ ⊗₀ B₁))) ∘ᵥ F B₄ ▷ F B₃ ▷ arr (CoeqBimods B₂ B₁))
 
   face4[32]1⇒4321 = begin
 
-    α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ (arr (CoeqBimods B₄ ((B₃ ⊗₀ B₂) ⊗₀  B₁))
     ∘ᵥ F B₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁))
     ∘ᵥ F B₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)                             ≈⟨ refl⟩∘⟨ assoc₂ ⟩
 
-    α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ arr (CoeqBimods B₄ ((B₃ ⊗₀ B₂) ⊗₀  B₁))
     ∘ᵥ F B₄ ▷ arr (CoeqBimods (B₃ ⊗₀ B₂) B₁)
     ∘ᵥ F B₄ ▷ (arr (CoeqBimods B₃ B₂) ◁ F B₁)                             ≈⟨ glue′
@@ -176,9 +192,9 @@ abstract
 
 abstract
   pentagon-⊗-∘arr³ :
-    (((α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    (((α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁))
     ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
     ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁)
     ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁
@@ -191,17 +207,17 @@ abstract
 
   pentagon-⊗-∘arr³ = begin
 
-    (((α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    (((α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁))
     ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
     ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁)
     ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁
     ≈⟨ assoc²αδ ⟩
 
-    (α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    (α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁))
     ∘ᵥ (arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁)
     ∘ᵥ arr (CoeqBimods B₄ B₃) ◁ F B₂ ◁ F B₁
@@ -241,9 +257,9 @@ abstract
 
 abstract
   pentagon-⊗-∘arr² :
-    ((α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    ((α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁))
     ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
     ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁
     ≈
@@ -256,9 +272,9 @@ abstract
 
                      ((CoeqBimods B₄ B₃) coeq-◁ F B₂ coeq-◁ F B₁)
 
-                     (((α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+                     (((α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
                      ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-                     ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+                     ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁))
                      ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
                      ∘ᵥ arr (CoeqBimods (B₄ ⊗₀ B₃) B₂) ◁ F B₁)
 
@@ -271,9 +287,9 @@ abstract
 
 abstract
   pentagon-⊗-∘arr :
-    (α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    (α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁))
     ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
     ≈
     (α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
@@ -284,9 +300,9 @@ abstract
 
                     ((CoeqBimods (B₄ ⊗₀ B₃) B₂) coeq-◁ F B₁)
 
-                    ((α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+                    ((α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
                     ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-                    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+                    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁))
                     ∘ᵥ arr (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁))
 
                     ((α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
@@ -297,9 +313,9 @@ abstract
 
 abstract
   pentagon-⊗ :
-    α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+    α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
     ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁})
+    ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁)
     ≈
     α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
     ∘ᵥ α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁})
@@ -308,9 +324,9 @@ abstract
 
                 (CoeqBimods ((B₄ ⊗₀ B₃) ⊗₀ B₂) B₁)
 
-                (α (id-bimodule-hom {B = B₄} ⊗₁ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
+                (α (B₄ ⊗-▷ associator-⊗-from {B₃ = B₃} {B₂} {B₁})
                 ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃ ⊗₀ B₂} {B₁})
-                ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ⊗₁ id-bimodule-hom {B = B₁}))
+                ∘ᵥ α (associator-⊗-from {B₃ = B₄} {B₃} {B₂} ◁-⊗ B₁))
 
                 (α (associator-⊗-from {B₃ = B₄} {B₃} {B₂ ⊗₀ B₁})
                 ∘ᵥ α (associator-⊗-from {B₃ = B₄ ⊗₀ B₃} {B₂} {B₁}))
