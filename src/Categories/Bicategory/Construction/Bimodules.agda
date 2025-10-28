@@ -28,12 +28,13 @@ open import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorp
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Functorial {𝒞 = 𝒞} {localCoeq}
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator {𝒞 = 𝒞} {localCoeq} using (associator-⊗)
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator.Naturality {𝒞 = 𝒞} {localCoeq} using (α⇒-⊗-natural)
-import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor {𝒞 = 𝒞} {localCoeq} as Unitor
-open Unitor.Left-Unitor using (unitorˡ-⊗)
-open Unitor.Right-Unitor using (unitorʳ-⊗)
-import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor.Naturality {𝒞 = 𝒞} {localCoeq} as Unitor-Naturality
-open Unitor-Naturality.Left-Unitor-natural using (λ⇒-⊗-natural)
-open Unitor-Naturality.Right-Unitor-natural using (ρ⇒-⊗-natural)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor {𝒞 = 𝒞} {localCoeq} using (module Left-Unitor; module Right-Unitor)
+open Left-Unitor using (unitorˡ-⊗)
+open Right-Unitor using (unitorʳ-⊗)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor.Naturality {𝒞 = 𝒞} {localCoeq}
+  using (module Left-Unitor-natural; module Right-Unitor-natural)
+open Left-Unitor-natural using (λ⇒-⊗-natural)
+open Right-Unitor-natural using (ρ⇒-⊗-natural)
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Pentagon {𝒞 = 𝒞} {localCoeq} using (pentagon-⊗)
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Triangle {𝒞 = 𝒞} {localCoeq} using (triangle-⊗)
 
