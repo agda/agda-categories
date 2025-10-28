@@ -23,7 +23,7 @@ open Shorthands
 
 open Monad using (C)
 open Bimodule using (F)
-open import Categories.Bicategory.Monad.Bimodule.Homomorphism
+open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism; id-bimodule-hom)
 open Bimodulehomomorphism using (α)
 
 open import Categories.Category using (module Definitions)
