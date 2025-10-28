@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --safe --lossy-unification  #-}
+{-# OPTIONS --without-K --safe --lossy-unification #-}
 -- lossy unification speeds up type checking by preventing Agda from unfolding all definitions
 
 open import Categories.Bicategory
