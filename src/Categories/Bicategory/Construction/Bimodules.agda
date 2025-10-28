@@ -20,6 +20,23 @@ open import Categories.Category
 private
   module Bimodules₁ M₁ M₂ = Category (Bimodules₁ M₁ M₂)
 
+open import Data.Product using (_,_)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
+open import Categories.Morphism using (_≅_)
+open import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules using () renaming (Tensorproduct to infixr 30 _⊗₀_)
+open import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Functorial {𝒞 = 𝒞} {localCoeq}
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator {𝒞 = 𝒞} {localCoeq} using (associator-⊗)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator.Naturality {𝒞 = 𝒞} {localCoeq} using (α⇒-⊗-natural)
+import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor {𝒞 = 𝒞} {localCoeq} as Unitor
+open Unitor.Left-Unitor using (unitorˡ-⊗)
+open Unitor.Right-Unitor using (unitorʳ-⊗)
+import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor.Naturality {𝒞 = 𝒞} {localCoeq} as Unitor-Naturality
+open Unitor-Naturality.Left-Unitor-natural using (λ⇒-⊗-natural)
+open Unitor-Naturality.Right-Unitor-natural using (ρ⇒-⊗-natural)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Pentagon {𝒞 = 𝒞} {localCoeq} using (pentagon-⊗)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Triangle {𝒞 = 𝒞} {localCoeq} using (triangle-⊗)
+
 Bimodules : Bicategory (o ⊔ ℓ ⊔ e) (ℓ ⊔ e) e (o ⊔ ℓ ⊔ e ⊔ t)
 Bimodules = record
   { enriched = record
@@ -61,24 +78,3 @@ Bimodules = record
   ; triangle = λ {_} {_} {_} {B₁} {B₂} → triangle-⊗ {B₂ = B₂} {B₁}
   ; pentagon = λ {_} {_} {_} {_} {_} {B₁} {B₂} {B₃} {B₄} → pentagon-⊗ {B₄ = B₄} {B₃} {B₂} {B₁}
   }
-  where
-    open import Data.Product using (_,_)
-    open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
-    open import Categories.Morphism using (_≅_)
-    open import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules using () renaming (Tensorproduct to infixr 30 _⊗₀_)
-    open import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
-    open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Functorial {𝒞 = 𝒞} {localCoeq}
-    open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator {𝒞 = 𝒞} {localCoeq}
-      using (associator-⊗)
-    open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator.Naturality {𝒞 = 𝒞} {localCoeq}
-      using (α⇒-⊗-natural)
-    import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor {𝒞 = 𝒞} {localCoeq} as Unitor
-    open Unitor.Left-Unitor using (unitorˡ-⊗)
-    open Unitor.Right-Unitor using (unitorʳ-⊗)
-    import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor.Naturality {𝒞 = 𝒞} {localCoeq} as Unitor-Naturality
-    open Unitor-Naturality.Left-Unitor-natural using (λ⇒-⊗-natural)
-    open Unitor-Naturality.Right-Unitor-natural using (ρ⇒-⊗-natural)
-    open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Pentagon {𝒞 = 𝒞} {localCoeq}
-      using (pentagon-⊗)
-    open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Triangle {𝒞 = 𝒞} {localCoeq}
-      using (triangle-⊗)
