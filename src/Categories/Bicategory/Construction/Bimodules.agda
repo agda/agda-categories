@@ -5,24 +5,23 @@ open import Categories.Bicategory
 open import Categories.Bicategory.LocalCoequalizers
 
 module Categories.Bicategory.Construction.Bimodules {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞} where
+open import Level using (_⊔_)
+open import Data.Product using (_,_)
 
-open import Categories.Bicategory.Monad
-open import Level
-
-open import Categories.Bicategory.Monad.Bimodule
-import Categories.Category.Construction.Bimodules
-open Categories.Category.Construction.Bimodules {o} {ℓ} {e} {t} {𝒞} renaming (Bimodules to 1-Bimodules)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
-open import Categories.Category
 
+open import Categories.Bicategory.Monad using (Monad)
+open import Categories.Bicategory.Monad.Bimodule using (Bimodule; id-bimodule)
 
+open import Categories.Category.Construction.Bimodules {𝒞 = 𝒞} using ()renaming (Bimodules to 1-Bimodules)
+open import Categories.Category using (Category)
 private
   module 1-Bimodules M₁ M₂ = Category (1-Bimodules M₁ M₂)
 
-open import Data.Product using (_,_)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
 open import Categories.Morphism using (_≅_)
+
 open import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules using () renaming (Tensorproduct to infixr 30 _⊗₀_)
 open import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
 open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Functorial {𝒞 = 𝒞} {localCoeq}
