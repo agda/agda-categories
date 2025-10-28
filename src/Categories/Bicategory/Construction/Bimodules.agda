@@ -11,14 +11,14 @@ open import Level
 
 open import Categories.Bicategory.Monad.Bimodule
 import Categories.Category.Construction.Bimodules
-open Categories.Category.Construction.Bimodules {o} {ℓ} {e} {t} {𝒞} renaming (Bimodules to Bimodules₁)
+open Categories.Category.Construction.Bimodules {o} {ℓ} {e} {t} {𝒞} renaming (Bimodules to 1-Bimodules)
 import Categories.Bicategory.Extras as Bicat
 open Bicat 𝒞
 open import Categories.Category
 
 
 private
-  module Bimodules₁ M₁ M₂ = Category (Bimodules₁ M₁ M₂)
+  module 1-Bimodules M₁ M₂ = Category (1-Bimodules M₁ M₂)
 
 open import Data.Product using (_,_)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
@@ -42,12 +42,12 @@ Bimodules : Bicategory (o ⊔ ℓ ⊔ e) (ℓ ⊔ e) e (o ⊔ ℓ ⊔ e ⊔ t)
 Bimodules = record
   { enriched = record
     { Obj = Monad 𝒞
-    ; hom = Bimodules₁
+    ; hom = 1-Bimodules
     ; id = λ {M} → record
     { F₀ = λ _ → id-bimodule M
-    ; F₁ = λ _ → Bimodules₁.id M M
+    ; F₁ = λ _ → 1-Bimodules.id M M
     ; identity = hom.Equiv.refl
-    ; homomorphism = hom.Equiv.sym (Bimodules₁.identity² M M)
+    ; homomorphism = hom.Equiv.sym (1-Bimodules.identity² M M)
     ; F-resp-≈ = λ _ → hom.Equiv.refl
     }
     ; ⊚ = record
