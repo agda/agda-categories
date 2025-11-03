@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 open import Categories.Category
-import Categories.Category.Monoidal as M
+import Categories.Category.Monoidal.Core as M
 
 -- Properties of Monoidal Categories
 
