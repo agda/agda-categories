@@ -97,6 +97,14 @@ module _ {F G : Bifunctor C D E} (α : NaturalTransformation F G) where
   appʳ′ : ∀ X → NaturalTransformation (appʳ F X) (appʳ G X)
   appʳ′ X = α ∘ₕ idN
 
+  open NaturalTransformation α
+  flip-bifunctor-NT : NaturalTransformation (flip-bifunctor F) (flip-bifunctor G)
+  flip-bifunctor-NT = record
+      { η = λ (X , Y) → η (Y , X)
+      ; commute = λ (f , g) → commute (g , f)
+      ; sym-commute = λ (f , g) → sym-commute (g , f)
+      }
+
 -- unlift universe level
 module _ {c ℓ ℓ′ e} {F G : Functor C (Setoids c ℓ)} (α : NaturalTransformation (LiftSetoids ℓ′ e ∘F F) (LiftSetoids ℓ′ e ∘F G)) where
   open NaturalTransformation α
