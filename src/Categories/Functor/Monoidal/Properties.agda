@@ -67,7 +67,7 @@ module _ (C : MonoidalCategory o ℓ e) where
     }
 
   idF-IsMonoidal : IsMonoidalFunctor C C idF
-  idF-IsMonoidal = IsStrongMonoidalFunctor.isMonoidal idF-IsStrongMonoidal
+  idF-IsMonoidal = IsStrongMonoidalFunctor.isLaxMonoidal idF-IsStrongMonoidal
 
   idF-StrongMonoidal : StrongMonoidalFunctor C C
   idF-StrongMonoidal = record { isStrongMonoidal = idF-IsStrongMonoidal }
@@ -222,7 +222,7 @@ module _ (A : MonoidalCategory o ℓ e) (B : MonoidalCategory o′ ℓ′ e′) 
           module G  = Functor G
           module CF = IsStrongMonoidalFunctor CF
           module CG = IsStrongMonoidalFunctor CG
-          module ∘  = IsMonoidalFunctor (∘-IsMonoidal CG.isMonoidal CF.isMonoidal)
+          module ∘  = IsMonoidalFunctor (∘-IsMonoidal CG.isLaxMonoidal CF.isLaxMonoidal)
 
 module _ {A : MonoidalCategory o ℓ e} {B : MonoidalCategory o′ ℓ′ e′} {C : MonoidalCategory o″ ℓ″ e″} where
 

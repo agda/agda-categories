@@ -136,7 +136,7 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
 
   πˡ-IsMonoidalFunctor : IsMonoidalFunctor D₁×D₂ D₁ πˡ
   πˡ-IsMonoidalFunctor =
-    IsStrongMonoidalFunctor.isMonoidal πˡ-IsStrongMonoidalFunctor
+    IsStrongMonoidalFunctor.isLaxMonoidal πˡ-IsStrongMonoidalFunctor
 
   πˡ-StrongMonoidalFunctor : StrongMonoidalFunctor D₁×D₂ D₁
   πˡ-StrongMonoidalFunctor = record
@@ -177,7 +177,7 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
 
   πʳ-IsMonoidalFunctor : IsMonoidalFunctor D₁×D₂ D₂ πʳ
   πʳ-IsMonoidalFunctor =
-    IsStrongMonoidalFunctor.isMonoidal πʳ-IsStrongMonoidalFunctor
+    IsStrongMonoidalFunctor.isLaxMonoidal πʳ-IsStrongMonoidalFunctor
 
   πʳ-StrongMonoidalFunctor : StrongMonoidalFunctor D₁×D₂ D₂
   πʳ-StrongMonoidalFunctor = record
