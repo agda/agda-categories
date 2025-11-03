@@ -89,13 +89,16 @@ module _ where
     to iso₂ ∘ i ∘ from iso₁ ≈˘⟨ switch-fromtoˡ iso₂ sq₂ ⟩
     g ∎
 
+id-iso : ∀ {X} → Iso (id {X}) (id {X})
+id-iso = record
+  { isoˡ = identity²
+  ; isoʳ = identity²
+  }
+
 id-is-iso : ∀ {X} → IsIso (id {X})
 id-is-iso = record
   { inv = id
-  ; iso = record
-    { isoˡ = identity²
-    ; isoʳ = identity²
-    }
+  ; iso = id-iso
   }
 
 --------------------------------------------------------------------------------
