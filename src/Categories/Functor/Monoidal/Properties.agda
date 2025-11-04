@@ -11,6 +11,7 @@ open import Categories.Category.BinaryProducts using (BinaryProducts)
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Monoidal.Bundle using (MonoidalCategory)
 open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
+open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Category.Product using (_⁂_)
 open import Categories.Functor.Properties using ([_]-resp-square; [_]-resp-∘; [_]-resp-≅; [_]-resp-Iso)
@@ -21,7 +22,6 @@ open import Categories.NaturalTransformation using (NaturalTransformation; ntHel
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_; niHelper)
 
 import Categories.Object.Terminal as ⊤
-import Categories.Object.Product as P
 import Categories.Morphism as M
 import Categories.Morphism.Reasoning as MR
 import Categories.Morphism.Properties as MP
@@ -57,6 +57,10 @@ private
       open Functor F public
       open IsStrongMonoidalFunctor F-IsStrongMonoidal public
       open MonoidalCategory D
+      ε⇒ : unit ⇒ F₀ C.unit
+      ε⇒ = ε.from
+      ε⇐ : F₀ C.unit ⇒ unit
+      ε⇐ = ε.to
       φ⇒ : {X Y : C.Obj} → F₀ X ⊗₀ F₀ Y ⇒ F₀ (X C.⊗₀ Y)
       φ⇒ {X} {Y} = ⊗-homo.⇒.η (X , Y)
       φ⇐ : {X Y : C.Obj} → F₀ (X C.⊗₀ Y) ⇒ F₀ X ⊗₀ F₀ Y
@@ -112,7 +116,6 @@ module _ (A : MonoidalCategory o ℓ e) (B : MonoidalCategory o′ ℓ′ e′) 
     module A = WithShorthands A
     module B = WithShorthands B
     module C = WithShorthands C
-    open P C.U
     open M C.U
     open MR C.U
 
@@ -187,7 +190,6 @@ module _ (A : MonoidalCategory o ℓ e) (B : MonoidalCategory o′ ℓ′ e′) 
     module A = WithShorthands A
     module B = WithShorthands B
     module C = WithShorthands C
-    open P C.U
     open M C.U
     open MR C.U
 
@@ -228,54 +230,81 @@ module _ {A : MonoidalCategory o ℓ e} {B : MonoidalCategory o′ ℓ′ e′} 
     where
       open MonoidalFunctor using (isMonoidal)
 
+private
+
+  module WithCartesianShorthands (C : CartesianCategory o ℓ e) where
+    open CartesianCategory C public
+    open BinaryProducts products public renaming (_⁂_ to infixr 10 _×₁_)
+    open CartesianMonoidal cartesian using (monoidal)
+    open ⊗-Reasoning monoidal public
+    open ⊤.Terminal terminal public
+
 module _ (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′) where
+
   private
-    module C = CartesianCategory C
-    module D = CartesianCategory D
-    module PC = BinaryProducts C.products
-    module PD = BinaryProducts D.products
-    module TC = ⊤.Terminal C.terminal
-    module TD = ⊤.Terminal D.terminal
-    open D.HomReasoning
-    open MR D.U
+
+    module C = WithCartesianShorthands C
+    module D = WithCartesianShorthands D
+    open D hiding (project₁; project₂; unique)
+    open MR U
 
   module _ (F : StrongMonoidalFunctor C.monoidalCategory D.monoidalCategory) where
-    private
-      module F = StrongMonoidalFunctor F
 
-      F-resp-⊤ : ⊤.IsTerminal D.U (F.F₀ TC.⊤)
-      F-resp-⊤ = ⊤.Terminal.⊤-is-terminal (⊤.transport-by-iso D.U D.terminal F.ε)
+    private
+
+      module F = StrongMonoidalFunctor F
+      open FunctorShorthands.Strong F.isStrongMonoidal
+
+      F-resp-⊤ : ⊤.IsTerminal U (F₀ C.⊤)
+      F-resp-⊤ = ⊤.Terminal.⊤-is-terminal (⊤.transport-by-iso D.U D.terminal ε)
       module F-resp-⊤ = ⊤.IsTerminal F-resp-⊤
 
-      lemma₁ : ∀ {X} → F.ε.from D.∘ TD.! {F.₀ X} D.≈ F.₁ (TC.! {X})
-      lemma₁ = F-resp-⊤.!-unique _
+      lemma₁ : ∀ {X} → F₁ (C.! {X}) ≈ ε⇒ ∘ !
+      lemma₁ = Equiv.sym (F-resp-⊤.!-unique _)
 
-      π₁-comm : ∀ {X Y} → F.F₁ PC.π₁ D.∘ F.⊗-homo.⇒.η (X , Y) D.≈ PD.π₁
-      π₁-comm {X} {Y} = begin
-        F.F₁ PC.π₁ D.∘ F.⊗-homo.⇒.η (X , Y)                                                    ≈˘⟨ [ F.F ]-resp-∘ (C.Equiv.trans PC.project₁ C.identityˡ) ⟩∘⟨refl ⟩
-        (F.F₁ PC.π₁ D.∘ F.F₁ (C.id PC.⁂ TC.!)) D.∘ F.⊗-homo.⇒.η (X , Y)                        ≈⟨ pullʳ (F.⊗-homo.⇒.sym-commute _) ⟩
-        F.F₁ PC.π₁ D.∘ F.⊗-homo.⇒.η (X , TC.⊤) D.∘ (F.F₁ C.id PD.⁂ F.F₁ TC.!)                  ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ ([ F.₀ X PD.×- ]-resp-∘ lemma₁ ○ Functor.F-resp-≈ PD.-×- (⟺ F.identity , D.Equiv.refl)) ⟩
-        F.F₁ PC.π₁ D.∘ F.⊗-homo.⇒.η (X , TC.⊤) D.∘ (D.id PD.⁂ F.ε.from) D.∘ (D.id PD.⁂ TD.!)   ≈⟨ D.∘-resp-≈ʳ D.sym-assoc ○ D.sym-assoc ⟩
-        (F.F₁ PC.π₁ D.∘ F.⊗-homo.⇒.η (X , TC.⊤) D.∘ (D.id PD.⁂ F.ε.from)) D.∘ (D.id PD.⁂ TD.!) ≈⟨ F.unitaryʳ ⟩∘⟨refl ⟩
-        PD.π₁ D.∘ (D.id PD.⁂ TD.!)                                                              ≈⟨ PD.project₁ ○ D.identityˡ ⟩
-        PD.π₁                                                                                   ∎
+      π₁-comm : ∀ {X Y} → F₁ C.π₁ ∘ φ⇒ {X} {Y} ≈ π₁
+      π₁-comm = begin
+        F₁ C.π₁ ∘ φ⇒                        ≈⟨ pullˡ ([ F.F ]-resp-∘ (C.project₁ C.○ C.identityˡ)) ⟨
+        F₁ C.π₁ ∘ F₁ (C.id C.×₁ C.!) ∘ φ⇒   ≈⟨ refl⟩∘⟨ ⊗-homo.⇒.sym-commute _  ⟩
+        F₁ C.π₁ ∘ φ⇒ ∘ F₁ C.id ×₁ F₁ C.!    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ identity ⟩⊗⟨ lemma₁ ⟩
+        F₁ C.π₁ ∘ φ⇒ ∘ id ×₁ (ε⇒ ∘ !)       ≈⟨ refl⟩∘⟨ pushʳ split₂ʳ ⟩
+        F₁ C.π₁ ∘ (φ⇒ ∘ id ×₁ ε⇒) ∘ id ×₁ ! ≈⟨ pullˡ unitaryʳ ⟩
+        π₁ ∘ id ×₁ !                        ≈⟨ D.project₁ ○ identityˡ ⟩
+        π₁                                  ∎
 
-      π₂-comm : ∀ {X Y} → F.F₁ PC.π₂ D.∘ F.⊗-homo.⇒.η (X , Y) D.≈ PD.π₂
+      π₂-comm : ∀ {X Y} → F₁ C.π₂ ∘ φ⇒ {X} {Y} ≈ π₂
       π₂-comm {X} {Y} = begin
-        F.F₁ PC.π₂ D.∘ F.⊗-homo.⇒.η (X , Y)                                                ≈˘⟨ [ F.F ]-resp-∘ (C.Equiv.trans PC.project₂ C.identityˡ) ⟩∘⟨refl ⟩
-        (F.F₁ PC.π₂ D.∘ F.F₁ (TC.! PC.⁂ C.id)) D.∘ F.⊗-homo.⇒.η (X , Y)                      ≈⟨ pullʳ (F.⊗-homo.⇒.sym-commute _) ⟩
-        F.F₁ PC.π₂ D.∘ F.⊗-homo.⇒.η (TC.⊤ , Y) D.∘ (F.F₁ TC.! PD.⁂ F.F₁ C.id)                 ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ ([ PD.-× F.₀ Y ]-resp-∘ lemma₁ ○ Functor.F-resp-≈ PD.-×- (D.Equiv.refl , ⟺ F.identity)) ⟩
-        F.F₁ PC.π₂ D.∘ F.⊗-homo.⇒.η (TC.⊤ , Y) D.∘ (F.ε.from PD.⁂ D.id) D.∘ (TD.! PD.⁂ D.id)   ≈⟨ D.∘-resp-≈ʳ D.sym-assoc ○ D.sym-assoc ⟩
-        (F.F₁ PC.π₂ D.∘ F.⊗-homo.⇒.η (TC.⊤ , Y) D.∘ (F.ε.from PD.⁂ D.id)) D.∘ (TD.! PD.⁂ D.id) ≈⟨ F.unitaryˡ ⟩∘⟨refl ⟩
-        PD.π₂ D.∘ (TD.! PD.⁂ D.id)                                                           ≈⟨ PD.project₂ ○ D.identityˡ ⟩
-        PD.π₂                                                                              ∎
+        F₁ C.π₂ ∘ φ⇒                        ≈⟨ pullˡ ([ F.F ]-resp-∘ (C.project₂ C.○ C.identityˡ)) ⟨
+        F₁ C.π₂ ∘ F₁ (C.! C.×₁ C.id) ∘ φ⇒   ≈⟨ refl⟩∘⟨ ⊗-homo.⇒.sym-commute _ ⟩
+        F₁ C.π₂ ∘ φ⇒ ∘ F₁ C.! ×₁ F₁ C.id    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ lemma₁ ⟩⊗⟨ identity ⟩
+        F₁ C.π₂ ∘ φ⇒ ∘ (ε⇒ ∘ !) ×₁ id       ≈⟨ refl⟩∘⟨ pushʳ split₁ʳ ⟩
+        F₁ C.π₂ ∘ (φ⇒ ∘ ε⇒ ×₁ id) ∘ ! ×₁ id ≈⟨ pullˡ unitaryˡ ⟩
+        π₂ ∘ ! ×₁ id                        ≈⟨ D.project₂ ○ identityˡ ⟩
+        π₂                                  ∎
 
-      unique : ∀ {X A B} {h : X D.⇒ F.₀ (A PC.× B)} {i : X D.⇒ F.₀ A} {j : X D.⇒ F.₀ B} →
-                 F.₁ PC.π₁ D.∘ h D.≈ i →
-                 F.₁ PC.π₂ D.∘ h D.≈ j →
-                 F.⊗-homo.⇒.η (A , B) D.∘ PD.⟨ i , j ⟩ D.≈ h
-      unique  eq₁ eq₂ = ⟺ (switch-tofromˡ F.⊗-homo.FX≅GX (⟺ (PD.unique (pullˡ (⟺ (switch-fromtoʳ F.⊗-homo.FX≅GX π₁-comm)) ○ eq₁)
-                                                                      (pullˡ (⟺ (switch-fromtoʳ F.⊗-homo.FX≅GX π₂-comm)) ○ eq₂))))
+      unique : ∀ {X A B} {h : X ⇒ F₀ (A C.× B)} {i : X ⇒ F₀ A} {j : X ⇒ F₀ B} →
+                 F₁ C.π₁ ∘ h ≈ i →
+                 F₁ C.π₂ ∘ h ≈ j →
+                 φ⇒ ∘ ⟨ i , j ⟩ ≈ h
+      unique {h = h} {i} {j} eq₁ eq₂ = ⟺ (switch-tofromˡ ⊗-homo.FX≅GX (⟺ (D.unique eq₁′ eq₂′)))
+        where
+          eq₁′ : π₁ ∘ φ⇐ ∘ h ≈ i
+          eq₁′ = pullˡ (⟺ (switch-fromtoʳ ⊗-homo.FX≅GX π₁-comm)) ○ eq₁
+          eq₂′ : π₂ ∘ φ⇐ ∘ h ≈ j
+          eq₂′ = pullˡ (⟺ (switch-fromtoʳ ⊗-homo.FX≅GX π₂-comm)) ○ eq₂
+
+      project₁ : {A B : C.Obj} {iA : D.Obj} {h : iA D.⇒ F₀ A} {i : iA ⇒ F₀ B} →
+                 F₁ C.π₁ ∘ φ⇒ ∘ ⟨ h , i ⟩ ≈ h
+      project₁ {h = h} {i} = begin
+        F.₁ C.π₁ ∘ φ⇒ ∘ ⟨ h , i ⟩ ≈⟨ pullˡ π₁-comm ⟩
+        π₁ ∘ ⟨ h , i ⟩            ≈⟨ D.project₁ ⟩
+        h                         ∎
+      project₂ : {A B : C.Obj} {iA : Obj} {h : iA ⇒ F₀ A} {i : iA ⇒ F₀ B} →
+                 F₁ C.π₂ ∘ φ⇒ ∘ ⟨  h , i ⟩ ≈ i
+      project₂ {h = h} {i} = begin
+        F₁ C.π₂ ∘ φ⇒ ∘ ⟨ h , i ⟩  ≈⟨ pullˡ π₂-comm ⟩
+        π₂ ∘ ⟨ h , i ⟩            ≈⟨ D.project₂ ⟩
+        i                         ∎
 
     StrongMonoidal⇒Cartesian : CartesianF C D
     StrongMonoidal⇒Cartesian = record
@@ -283,30 +312,10 @@ module _ (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′
       ; isCartesian = record
         { F-resp-⊤ = F-resp-⊤
         ; F-resp-× = λ {A B} → record
-          { ⟨_,_⟩    = λ f g → F.⊗-homo.⇒.η _ D.∘ PD.⟨ f , g ⟩
+          { ⟨_,_⟩    = λ f g → φ⇒ ∘ ⟨ f , g ⟩
           ; project₁ = project₁ {A} {B}
           ; project₂ = project₂ {A} {B}
           ; unique   = unique
           }
         }
       }
-      where
-        import Categories.Object.Product.Core
-        project₁ : {A B : C.Obj} {iA : D.Obj} {h : iA D.⇒ F.F₀ A} {i : iA D.⇒ F.F₀ B} →
-                    F.F₁ PC.π₁ D.∘
-                    F.⊗-homo.⇒.η (A , B) D.∘
-                    Categories.Object.Product.Core.Product.⟨ PD.product , h ⟩ i
-                    D.≈ h
-        project₁ {A} {B} {_} {h} {i} = begin
-            F.₁ PC.π₁ D.∘ F.⊗-homo.⇒.η _ D.∘ PD.⟨ h , i ⟩ ≈⟨ pullˡ π₁-comm ⟩
-            PD.π₁ D.∘ PD.⟨ h , i ⟩                         ≈⟨ PD.project₁ ⟩
-            h                                            ∎
-        project₂ : {A B : C.Obj} {iA : D.Obj} {h : iA D.⇒ F.F₀ A} {i : iA D.⇒ F.F₀ B} →
-            F.F₁ PC.π₂ D.∘
-            F.⊗-homo.⇒.η (A , B) D.∘
-            Categories.Object.Product.Core.Product.⟨ PD.product , h ⟩ i
-            D.≈ i
-        project₂ {_} {_} {_} {h} {i} = begin
-            F.₁ PC.π₂ D.∘ F.⊗-homo.⇒.η _ D.∘ PD.⟨ h , i ⟩ ≈⟨ pullˡ π₂-comm ⟩
-            PD.π₂ D.∘ PD.⟨ h , i ⟩                        ≈⟨ PD.project₂ ⟩
-            i                                           ∎
