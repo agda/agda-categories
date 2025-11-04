@@ -10,9 +10,12 @@ open import Categories.Category.Product
 open import Categories.Category.Monoidal
 
 open import Categories.Functor hiding (id)
+open import Categories.Functor.Properties using ([_]-resp-≅)
 open import Categories.NaturalTransformation hiding (id)
 open import Categories.NaturalTransformation.NaturalIsomorphism
 
+import Categories.Category.Construction.Core as Core
+import Categories.Category.Monoidal.Utilities as ⊗-Utilities
 import Categories.Morphism as Mor
 
 private
@@ -72,6 +75,11 @@ module _  (C : MonoidalCategory o ℓ e) (D : MonoidalCategory o′ ℓ′ e′)
     open Functor F public
     open IsMonoidalFunctor isMonoidal public
 
+module _  (C : MonoidalCategory o ℓ e) (D : MonoidalCategory o′ ℓ′ e′) where
+  private
+    module C = MonoidalCategory C
+    module D = MonoidalCategory D
+    open Mor D.U
 
   -- strong monoidal functor
   record IsStrongMonoidalFunctor (F : Functor C.U D.U) : Set (o ⊔ ℓ ⊔ ℓ′ ⊔ e′) where
@@ -113,13 +121,59 @@ module _  (C : MonoidalCategory o ℓ e) (D : MonoidalCategory o′ ℓ′ e′)
                       ≈ unitorʳ.from
                       ⟩
 
-    isMonoidal : IsMonoidalFunctor F
-    isMonoidal = record
+    isLaxMonoidal : IsMonoidalFunctor C D F
+    isLaxMonoidal = record
       { ε             = ε.from
       ; ⊗-homo        = ⊗-homo.F⇒G
       ; associativity = associativity
       ; unitaryˡ      = unitaryˡ
       ; unitaryʳ      = unitaryʳ
+      }
+
+    private
+
+      module F = Functor F
+
+      φ : {X Y : C.Obj} → F₀ X ⊗₀ F₀ Y ≅ F₀ (X C.⊗₀ Y)
+      φ = ⊗-homo.FX≅GX
+
+      Fα : {X Y Z : C.Obj} → F₀ ((X C.⊗₀ Y) C.⊗₀ Z) ≅ F₀ (X C.⊗₀ (Y C.⊗₀ Z))
+      Fα = [ F ]-resp-≅ C.associator
+
+      Fλ : {X : C.Obj} → F₀ (C.unit C.⊗₀ X) ≅ F₀ X
+      Fλ = [ F ]-resp-≅ C.unitorˡ
+
+      Fρ : {X : C.Obj} → F₀ (X C.⊗₀ C.unit) ≅ F₀ X
+      Fρ = [ F ]-resp-≅ C.unitorʳ
+
+      α : {A B C : Obj} → (A ⊗₀ B) ⊗₀ C ≅ A ⊗₀ (B ⊗₀ C)
+      α = D.associator
+
+      λ- : {A : Obj} → unit ⊗₀ A ≅ A
+      λ- = D.unitorˡ
+
+      ρ : {A : Obj} → A ⊗₀ unit ≅ A
+      ρ = D.unitorʳ
+
+    open ⊗-Utilities monoidal using (_⊗ᵢ_)
+    open Core.Shorthands U using (⌞_⌟; to-≈; _∘ᵢ_; idᵢ; _≈ᵢ_)
+
+    associativityᵢ : {X Y Z : C.Obj} → Fα {X} {Y} {Z} ∘ᵢ φ ∘ᵢ φ ⊗ᵢ idᵢ ≈ᵢ φ ∘ᵢ idᵢ ⊗ᵢ φ ∘ᵢ α
+    associativityᵢ = ⌞ associativity ⌟
+
+    unitaryˡᵢ : {X : C.Obj} → Fλ {X} ∘ᵢ φ ∘ᵢ ε ⊗ᵢ idᵢ ≈ᵢ λ-
+    unitaryˡᵢ = ⌞ unitaryˡ ⌟
+
+    unitaryʳᵢ : {X : C.Obj} → Fρ {X} ∘ᵢ φ ∘ᵢ idᵢ ⊗ᵢ ε ≈ᵢ ρ
+    unitaryʳᵢ = ⌞ unitaryʳ ⌟
+
+    isOplaxMonoidal : IsMonoidalFunctor C.op D.op F.op
+    isOplaxMonoidal = record
+      { ε             = ε.to
+      ; ⊗-homo        = ⊗-homo.⇐.op
+      ; associativity = to-≈ associativityᵢ
+      ; unitaryˡ      = to-≈ unitaryˡᵢ
+      ; unitaryʳ      = to-≈ unitaryʳᵢ
       }
 
   record StrongMonoidalFunctor : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
@@ -130,5 +184,5 @@ module _  (C : MonoidalCategory o ℓ e) (D : MonoidalCategory o′ ℓ′ e′)
     open Functor F public
     open IsStrongMonoidalFunctor isStrongMonoidal public
 
-    monoidalFunctor : MonoidalFunctor
-    monoidalFunctor = record { F = F ; isMonoidal = isMonoidal }
+    monoidalFunctor : MonoidalFunctor C D
+    monoidalFunctor = record { F = F ; isMonoidal = isLaxMonoidal }
