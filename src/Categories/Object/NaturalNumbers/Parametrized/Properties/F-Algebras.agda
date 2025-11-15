@@ -1,3 +1,5 @@
+{-# OPTIONS --without-K --safe #-}
+
 open import Level
 open import Categories.Category.Core
 open import Categories.Object.Terminal using (Terminal)
