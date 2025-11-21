@@ -19,7 +19,7 @@ private
     f g : A ⇒ B
 
 ------------------------------------------------------------------------------
--- Def from http://ncatlab.org/nlab/show/traced+monoidal+category
+-- Def from Traced monoidal categories (Joyal, Street, & Verity, 1994)
 --
 -- A symmetric monoidal category (C,⊗,1,b) (where b is the symmetry) is
 -- said to be traced if it is equipped with a natural family of functions
@@ -47,6 +47,11 @@ record Traced : Set (levelOfTerm M) where
 
   field
     trace : ∀ {X A B} → A ⊗₀ X ⇒ B ⊗₀ X → A ⇒ B
+    trace-resp-≈ : f ≈ g → trace f ≈ trace g
+
+    slide : trace (f ∘ id ⊗₁ g) ≈ trace (id ⊗₁ g ∘ f)
+    tightenₗ : trace (f ⊗₁ id ∘ g) ≈ f ∘ trace g
+    tightenᵣ : trace (f ∘ g ⊗₁ id) ≈ trace f ∘ g
 
     vanishing₁  : trace {X = unit} (f ⊗₁ id) ≈ f
     vanishing₂  : trace {X = X} (trace {X = Y} (associator.to ∘ f ∘ associator.from))
