@@ -12,6 +12,7 @@ open import Level
 open import Data.Product using (_,_)
 
 open import Categories.Category.Monoidal.Symmetric M
+open import Categories.Category.Monoidal.Reasoning M
 
 private
   variable
@@ -19,10 +20,10 @@ private
     f g : A ⇒ B
 
 ------------------------------------------------------------------------------
--- Def from http://ncatlab.org/nlab/show/traced+monoidal+category
+-- Def from Traced monoidal categories (Joyal, Street, & Verity, 1996)
 --
 -- A symmetric monoidal category (C,⊗,1,b) (where b is the symmetry) is
--- said to be traced if it is equipped with a natural family of functions
+-- said to be traced if it is equipped with a natural family* of functions
 --
 -- TrXA,B:C(A⊗X,B⊗X)→C(A,B)
 -- satisfying three axioms:
@@ -33,6 +34,8 @@ private
 -- Superposing: TrXC⊗A,C⊗B(idC⊗f)=idC⊗TrXA,B(f) (for all f:A⊗X→B⊗X)
 --
 -- Yanking: TrXX,X(bX,X)=idX
+--
+-- (*) this means the family needs to be "natural" in A, B, and X!
 
 -- Traced monoidal category
 --  is a symmetric monoidal category with a trace operation
@@ -47,6 +50,13 @@ record Traced : Set (levelOfTerm M) where
 
   field
     trace : ∀ {X A B} → A ⊗₀ X ⇒ B ⊗₀ X → A ⇒ B
+    trace-resp-≈ : f ≈ g → trace f ≈ trace g
+
+    -- dinaturality in X
+    slide : trace (f ∘ id ⊗₁ g) ≈ trace (id ⊗₁ g ∘ f)
+    -- naturality in A and B
+    tightenₗ : trace (f ⊗₁ id ∘ g) ≈ f ∘ trace g
+    tightenᵣ : trace (f ∘ g ⊗₁ id) ≈ trace f ∘ g
 
     vanishing₁  : trace {X = unit} (f ⊗₁ id) ≈ f
     vanishing₂  : trace {X = X} (trace {X = Y} (associator.to ∘ f ∘ associator.from))
