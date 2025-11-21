@@ -12,6 +12,7 @@ open import Level
 open import Data.Product using (_,_)
 
 open import Categories.Category.Monoidal.Symmetric M
+open import Categories.Category.Monoidal.Reasoning M
 
 private
   variable
@@ -19,7 +20,7 @@ private
     f g : A ⇒ B
 
 ------------------------------------------------------------------------------
--- Def from Traced monoidal categories (Joyal, Street, & Verity, 1994)
+-- Def from Traced monoidal categories (Joyal, Street, & Verity, 1996)
 --
 -- A symmetric monoidal category (C,⊗,1,b) (where b is the symmetry) is
 -- said to be traced if it is equipped with a natural family of functions
