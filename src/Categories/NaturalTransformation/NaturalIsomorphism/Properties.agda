@@ -7,9 +7,11 @@ open import Level
 open import Categories.Category
 open import Categories.Category.Instance.Setoids
 open import Categories.Functor renaming (id to idF)
+open import Categories.Functor.Bifunctor using (Bifunctor; flip-bifunctor)
 open import Categories.Functor.Construction.LiftSetoids
 open import Categories.NaturalTransformation.NaturalIsomorphism
 open import Categories.NaturalTransformation.Properties
+open import Data.Product using (_,_)
 
 import Categories.Morphism as Mor
 import Categories.Morphism.Properties as Morₚ
@@ -18,7 +20,7 @@ import Categories.Morphism.Reasoning as MR
 private
   variable
     o ℓ e : Level
-    C D : Category o ℓ e
+    C D E : Category o ℓ e
 
 
 module _ {F G : Functor C D} where
@@ -100,6 +102,18 @@ module _ {F : Endofunctor C} where
               F₁ f ∘ ⇐.η A ≈⟨ eq ⟩∘⟨refl ⟩
               id ∘ ⇐.η A   ≈˘⟨ id-comm ⟩
               ⇐.η A ∘ id   ∎
+
+-- properties of natural isomorphisms over bifunctors
+module _ {F G : Bifunctor C D E} where
+
+  flip-bifunctor-NI : F ≃ G → flip-bifunctor F ≃ flip-bifunctor G
+  flip-bifunctor-NI α = record
+      { F⇒G = flip-bifunctor-NT F⇒G
+      ; F⇐G = flip-bifunctor-NT F⇐G
+      ; iso = λ (X , Y) → iso (Y , X)
+      }
+    where
+      open NaturalIsomorphism α
 
 -- unlift universe level
 module _ {c ℓ ℓ′ e} {F G : Functor C (Setoids c ℓ)} (α : LiftSetoids ℓ′ e ∘F F ≃ LiftSetoids ℓ′ e ∘F G) where

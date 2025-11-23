@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category using (Category; module Commutation)
-open import Categories.Category.Monoidal
+open import Categories.Category.Monoidal.Core
 open import Categories.Category.Monoidal.Braided using (Braided)
 
 module Categories.Category.Monoidal.Braided.Properties
@@ -15,9 +15,9 @@ open import Categories.Category.Monoidal.Reasoning M
 import Categories.Category.Monoidal.Utilities M as MonoidalUtilities
 open import Categories.Functor using (Functor)
 open import Categories.Morphism.Reasoning C hiding (push-eq)
-open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
+open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper; module ≃)
 open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
-  using (push-eq)
+  using (push-eq; flip-bifunctor-NI)
 
 open Category C
 open Commutation C
@@ -136,17 +136,28 @@ braiding-coherence-inv = to-≈ braiding-coherence-iso
 
 inv-Braided : Braided M
 inv-Braided = record
-  { braiding = niHelper (record
-    { η       = λ _ → σ⇐
-    ; η⁻¹     = λ _ → σ⇒
-    ; commute = λ{ (f , g) → braiding.⇐.commute (g , f) }
-    ; iso     = λ{ (X , Y) → record
-      { isoˡ = braiding.iso.isoʳ (Y , X)
-      ; isoʳ = braiding.iso.isoˡ (Y , X) } }
-    })
+  { braiding = ≃.sym (flip-bifunctor-NI braiding)
   ; hexagon₁ = hexagon₂-inv
   ; hexagon₂ = hexagon₁-inv
   }
+
+-- The opposite monoidal category is braided.
+
+braided-Op : Braided monoidal-Op
+braided-Op = record
+    { braiding = braiding.op′
+    ; hexagon₁ = hexagon₁-inv
+    ; hexagon₂ = hexagon₂-inv
+    }
+
+-- The inverse of the braiding is also a braiding on the opposite monoidal category.
+
+inv-braided-Op : Braided monoidal-Op
+inv-braided-Op = record
+    { braiding = ≃.sym (flip-bifunctor-NI braiding.op′)
+    ; hexagon₁ = hexagon₂
+    ; hexagon₂ = hexagon₁
+    }
 
 -- A variant of the above coherence law for the inverse of the braiding.
 
