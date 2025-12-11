@@ -19,7 +19,7 @@ open import Categories.Category.Construction.Presheaves using (Presheaves′; Pr
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Functor.Core using (Functor)
 open import Categories.Functor.Hom using (Hom[_][_,_])
-open import Categories.Functor.Properties using ([_]-resp-∘; [_]-resp-square)
+open import Categories.Functor.Properties using ([_]-resp-∘; [_]-resp-square; [_]-resp-inverse)
 open import Categories.Functor.Presheaf using (Presheaf)
 open import Categories.NaturalTransformation using (NaturalTransformation; ntHelper)
 open import Categories.Object.Product.Core using (Product) -- elide
@@ -212,9 +212,7 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
         F.₁ Δ ⟨$⟩ (α.η (X × X) ⟨$⟩ (H.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ y))
           ≈⟨ α.sym-commute Δ ⟩
         α.η X ⟨$⟩ (H.₁ Δ ⟨$⟩ (H.F₁ π₁ ⟨$⟩ x) , G.₁ Δ ⟨$⟩ (G.₁ π₂ ⟨$⟩ y))
-          ≈⟨ cong (α.η X) ([ H ]-resp-∘ project₁ , [ G ]-resp-∘ project₂) ⟩
-        α.η X ⟨$⟩ (H.F₁ C.id ⟨$⟩ x , G.F₁ C.id ⟨$⟩ y)
-          ≈⟨ cong (α.η X) (H.identity , G.identity) ⟩
+          ≈⟨ cong (α.η X) ([ H ]-resp-inverse project₁ , [ G ]-resp-inverse project₂) ⟩
         α.η X ⟨$⟩ (x , y)
           ∎ }
     ; curry-unique = λ {F G H} {α β} eq {X} {x} {Y} {z} →

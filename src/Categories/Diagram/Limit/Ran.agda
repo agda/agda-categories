@@ -64,8 +64,8 @@ module _ {o ℓ e o′ ℓ′ e′ o″ ℓ″ e″} {C : Category o′ ℓ′ e
         ; sym-commute = λ _ → [ X ]-resp-square id-comm
         }
       ; iso = λ _ → record
-        { isoˡ = [ X ]-resp-∘ C.identity² ○ X.identity
-        ; isoʳ = [ X ]-resp-∘ C.identity² ○ X.identity
+        { isoˡ = [ X ]-resp-inverse C.identity²
+        ; isoʳ = [ X ]-resp-inverse C.identity²
         }
       }
       where open MR C using (id-comm-sym; id-comm)
