@@ -210,8 +210,8 @@ module _ (A : MonoidalCategory o ℓ e) (B : MonoidalCategory o′ ℓ′ e′) 
         ; commute = λ _ → pullʳ ([ G ]-resp-square (CF.⊗-homo.⇐.commute _)) ○ pullˡ (CG.⊗-homo.⇐.commute _) ○ C.assoc
         }
       ; iso = λ _ → record
-        { isoˡ = cancelInner ([ G ]-resp-∘ (CF.⊗-homo.iso.isoˡ _) ○ G.identity) ○ CG.⊗-homo.iso.isoˡ _
-        ; isoʳ = cancelInner (CG.⊗-homo.iso.isoʳ _) ○ [ G ]-resp-∘ (CF.⊗-homo.iso.isoʳ _) ○ G.identity
+        { isoˡ = cancelInner ([ G ]-resp-inverse (CF.⊗-homo.iso.isoˡ _)) ○ CG.⊗-homo.iso.isoˡ _
+        ; isoʳ = cancelInner (CG.⊗-homo.iso.isoʳ _) ○ [ G ]-resp-inverse (CF.⊗-homo.iso.isoʳ _)
         }
       }
     ; associativity = ∘.associativity
