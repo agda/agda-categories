@@ -17,12 +17,13 @@ open import Categories.Category.Monoidal.Properties CM using (coherence-inv₁)
 open import Categories.Category.Monoidal.Reasoning CM
 open import Categories.Category.Monoidal.Utilities CM using (module Shorthands; pentagon-inv; triangle-inv)
 open import Categories.Monad using (Monad)
+open import Categories.Monad.Morphism using (Monad⇒-id)
 open import Categories.Morphism.Reasoning C
 open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.Functor using (Endofunctor; Functor)
-open import Categories.Functor.Bifunctor.Properties using ([_]-commute)
+open import Categories.Functor.Bifunctor.Properties using ([_]-commute; [_]-decompose₁)
 open import Categories.Functor.Properties using ([_]-resp-∘; [_]-resp-square; [_]-resp-inverse)
-open import Categories.Object.Monoid CM using (Monoid)
+open import Categories.Object.Monoid CM using (Monoid; Monoid⇒)
 open import Function.Base using (_$_)
 
 open Category C
@@ -93,3 +94,22 @@ module _ (m : Monoid) where
     ; identityˡ = μ-identityˡ
     ; identityʳ = μ-identityʳ
     }
+
+-- a monoid morphism induces a monad morphism
+Monoid⇒-Monad⇒ : ∀ {m n} → Monoid⇒ m n → Monad⇒-id (ActionM n) (ActionM m)
+Monoid⇒-Monad⇒ {m} {n} f = record
+  { α = ntHelper record
+    { η = λ X → arr ⊗₁ id
+    ; commute = λ f → Equiv.sym [ ⊗ ]-commute
+    }
+  ; unit-comp = pullˡ ([ -⊗ _ ]-resp-∘ preserves-η)
+  ; mult-comp = begin
+    arr ⊗₁ id ∘ m.μ ⊗₁ id ∘ α⇐                       ≈⟨ extendʳ ([ -⊗ _ ]-resp-square preserves-μ) ⟩
+    n.μ ⊗₁ id ∘ (arr ⊗₁ arr) ⊗₁ id ∘ α⇐              ≈⟨ pullʳ assoc-commute-to ⟨
+    (n.μ ⊗₁ id ∘ α⇐) ∘ arr ⊗₁ (arr ⊗₁ id)            ≈⟨ refl⟩∘⟨ [ ⊗ ]-decompose₁ ⟩
+    (n.μ ⊗₁ id ∘ α⇐) ∘ arr ⊗₁ id ∘ id ⊗₁ (arr ⊗₁ id) ∎
+  }
+  where
+    module m = Monoid m
+    module n = Monoid n
+    open Monoid⇒ f
