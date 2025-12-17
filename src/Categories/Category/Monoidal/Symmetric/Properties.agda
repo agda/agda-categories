@@ -1,16 +1,17 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category using (Category)
-open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Category.Monoidal.Core using (Monoidal)
 open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 
 module Categories.Category.Monoidal.Symmetric.Properties
   {o ℓ e} {C : Category o ℓ e} {M : Monoidal C} (SM : Symmetric M) where
 
-open import Data.Product using (_,_)
-
 import Categories.Category.Monoidal.Braided.Properties as BraidedProperties
+
+open import Categories.Category.Monoidal.Properties M using (monoidal-Op)
 open import Categories.Morphism.Reasoning C
+open import Data.Product using (_,_)
 
 open Category C
 open HomReasoning
@@ -27,3 +28,13 @@ braiding-selfInverse = introʳ commutative ○ cancelˡ (braiding.iso.isoˡ _)
 
 inv-commutative : ∀ {X Y} → braiding.⇐.η (X , Y) ∘ braiding.⇐.η (Y , X) ≈ id
 inv-commutative = ∘-resp-≈ braiding-selfInverse braiding-selfInverse ○ commutative
+
+-- The opposite monoidal category is symmetric
+
+open BraidedProperties braided using (braided-Op)
+
+symmetric-Op : Symmetric monoidal-Op
+symmetric-Op = record
+    { braided = braided-Op
+    ; commutative = inv-commutative
+    }
