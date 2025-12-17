@@ -8,8 +8,8 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Categories.Category
-open import Categories.Category.Monoidal
+open import Categories.Category.Core using (Category)
+open import Categories.Category.Monoidal.Core using (Monoidal)
 
 module Categories.Monad.Construction.Action {o ℓ e} {C : Category o ℓ e} (CM : Monoidal C) where
 
@@ -42,13 +42,13 @@ module _ (m : Monoid) where
     module A = Functor ActionF
 
     η : ∀ X → X ⇒ A.₀ X
-    η X = m.η ⊗₁ id ∘ unitorˡ.to
+    η _ = m.η ⊗₁ id ∘ λ⇐
  
     η-commute : ∀ {X Y} (f : X ⇒ Y) → η Y ∘ f ≈ A.₁ f ∘ η X
     η-commute f = glue (Equiv.sym [ ⊗ ]-commute) unitorˡ-commute-to
 
     μ : ∀ X → A.₀ (A.₀ X) ⇒ A.₀ X
-    μ X = m.μ ⊗₁ id ∘ associator.to
+    μ _ = m.μ ⊗₁ id ∘ α⇐
 
     μ-commute : ∀ {X Y} (f : X ⇒ Y) → μ Y ∘ A.₁ (A.₁ f) ≈ A.₁ f ∘ μ X
     μ-commute f = glue (Equiv.sym [ ⊗ ]-commute) (assoc-commute-to ○ ∘-resp-≈ˡ (⊗-resp-≈ˡ ⊗.identity))
@@ -99,8 +99,8 @@ module _ (m : Monoid) where
 Monoid⇒-Monad⇒ : ∀ {m n} → Monoid⇒ m n → Monad⇒-id (ActionM n) (ActionM m)
 Monoid⇒-Monad⇒ {m} {n} f = record
   { α = ntHelper record
-    { η = λ X → arr ⊗₁ id
-    ; commute = λ f → Equiv.sym [ ⊗ ]-commute
+    { η = λ _ → arr ⊗₁ id
+    ; commute = λ _ → Equiv.sym [ ⊗ ]-commute
     }
   ; unit-comp = pullˡ ([ -⊗ _ ]-resp-∘ preserves-η)
   ; mult-comp = begin
