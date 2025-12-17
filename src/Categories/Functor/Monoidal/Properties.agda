@@ -197,7 +197,7 @@ module _ (A : MonoidalCategory o ℓ e) (B : MonoidalCategory o′ ℓ′ e′) 
                     IsStrongMonoidalFunctor B C G → IsStrongMonoidalFunctor A B F →
                     IsStrongMonoidalFunctor A C (G ∘F F)
   ∘-IsStrongMonoidal {F} {G} CG CF = record
-    { ε             = ≅.trans G.ε ([ G ]-resp-≅ F.ε)
+    { ε             = ε
     ; ⊗-homo        = ⊗-homo
     ; associativity = G∘F.associativity
     ; unitaryˡ      = G∘F.unitaryˡ
@@ -209,6 +209,8 @@ module _ (A : MonoidalCategory o ℓ e) (B : MonoidalCategory o′ ℓ′ e′) 
       module G∘F = FunctorShorthands.Lax (∘-IsMonoidal A B C G.isLaxMonoidal F.isLaxMonoidal)
       module G∘F-op = FunctorShorthands.Lax (∘-IsMonoidal A.op B.op C.op G.isOplaxMonoidal F.isOplaxMonoidal)
       open MP C.U
+      ε : C.unit ≅ Functor.F₀ (G ∘F F) A.unit
+      ε = ≅.trans G.ε ([ G ]-resp-≅ F.ε) 
       ⊗-homo : C.⊗ ∘F (G ∘F F ⁂ G ∘F F) ≃ (G ∘F F) ∘F A.⊗
       ⊗-homo = record
         { F⇒G = G∘F.⊗-homo

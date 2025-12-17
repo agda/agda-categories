@@ -68,22 +68,16 @@ _∘⊣⊢_ {C = C} {D} {E} {L} {R} {L′} {R′} L⊣⊢R L′⊣⊢R′ = with
       ; iso = λ c → record
         { isoˡ = begin
           (⊣⊢₁.unit.⇐.η c ∘ R.₁ (⊣⊢₂.unit.⇐.η (L.₀ c))) ∘ R.₁ (⊣⊢₂.unit.⇒.η (L.₀ c)) ∘ ⊣⊢₁.unit.⇒.η c
-            ≈⟨ center ([ R ]-resp-∘ (⊣⊢₂.unit.iso.isoˡ (L.₀ c))) ⟩
-          ⊣⊢₁.unit.⇐.η c ∘ R.₁ D.id ∘ ⊣⊢₁.unit.⇒.η c
-            ≈⟨ refl⟩∘⟨ elimˡ R.identity ⟩
+            ≈⟨ cancelInner ([ R ]-resp-inverse (⊣⊢₂.unit.iso.isoˡ (L.₀ c))) ⟩
           ⊣⊢₁.unit.⇐.η c ∘ ⊣⊢₁.unit.⇒.η c
             ≈⟨ ⊣⊢₁.unit.iso.isoˡ c ⟩
           id
             ∎
         ; isoʳ = begin
           (R.₁ (⊣⊢₂.unit.⇒.η (L.₀ c)) ∘ ⊣⊢₁.unit.⇒.η c) ∘ ⊣⊢₁.unit.⇐.η c ∘ R.₁ (⊣⊢₂.unit.⇐.η (L.₀ c))
-            ≈⟨ center (⊣⊢₁.unit.iso.isoʳ c) ⟩
-          R.₁ (⊣⊢₂.unit.⇒.η (L.₀ c)) ∘ id ∘ R.₁ (⊣⊢₂.unit.⇐.η (L.₀ c))
-            ≈⟨ refl⟩∘⟨ identityˡ ⟩
+            ≈⟨ cancelInner (⊣⊢₁.unit.iso.isoʳ c) ⟩
           R.₁ (⊣⊢₂.unit.⇒.η (L.₀ c)) ∘ R.₁ (⊣⊢₂.unit.⇐.η (L.₀ c))
-            ≈⟨ [ R ]-resp-∘ (⊣⊢₂.unit.iso.isoʳ (L.₀ c)) ⟩
-          R.₁ D.id
-            ≈⟨ R.identity ⟩
+            ≈⟨ [ R ]-resp-inverse (⊣⊢₂.unit.iso.isoʳ (L.₀ c)) ⟩
           id
             ∎
         }
@@ -123,20 +117,14 @@ _∘⊣⊢_ {C = C} {D} {E} {L} {R} {L′} {R′} L⊣⊢R L′⊣⊢R′ = with
       ; iso = λ e → record
         { isoˡ = begin
           (L′.₁ (⊣⊢₁.counit.⇐.η (R′.₀ e)) ∘ ⊣⊢₂.counit.⇐.η e) ∘ ⊣⊢₂.counit.⇒.η e ∘ L′.₁ (⊣⊢₁.counit.⇒.η (R′.₀ e))
-            ≈⟨ center (⊣⊢₂.counit.iso.isoˡ e) ⟩
-          L′.₁ (⊣⊢₁.counit.⇐.η (R′.₀ e)) ∘ id ∘ L′.₁ (⊣⊢₁.counit.⇒.η (R′.₀ e))
-            ≈⟨ refl⟩∘⟨ identityˡ ⟩
+            ≈⟨ cancelInner (⊣⊢₂.counit.iso.isoˡ e) ⟩
           L′.₁ (⊣⊢₁.counit.⇐.η (R′.₀ e)) ∘ L′.₁ (⊣⊢₁.counit.⇒.η (R′.₀ e))
-            ≈⟨ [ L′ ]-resp-∘ (⊣⊢₁.counit.iso.isoˡ (R′.₀ e)) ⟩
-          L′.₁ D.id
-            ≈⟨ L′.identity ⟩
+            ≈⟨ [ L′ ]-resp-inverse (⊣⊢₁.counit.iso.isoˡ (R′.₀ e)) ⟩
           id
             ∎
         ; isoʳ = begin
           (⊣⊢₂.counit.⇒.η e ∘ L′.₁ (⊣⊢₁.counit.⇒.η (R′.₀ e))) ∘ L′.₁ (⊣⊢₁.counit.⇐.η (R′.₀ e)) ∘ ⊣⊢₂.counit.⇐.η e
-            ≈⟨ center ([ L′ ]-resp-∘ (⊣⊢₁.counit.iso.isoʳ (R′.₀ e))) ⟩
-          ⊣⊢₂.counit.⇒.η e ∘ L′.₁ D.id ∘ ⊣⊢₂.counit.⇐.η e
-            ≈⟨ refl⟩∘⟨ elimˡ L′.identity ⟩
+            ≈⟨ cancelInner ([ L′ ]-resp-inverse (⊣⊢₁.counit.iso.isoʳ (R′.₀ e))) ⟩
           ⊣⊢₂.counit.⇒.η e ∘ ⊣⊢₂.counit.⇐.η e
             ≈⟨ ⊣⊢₂.counit.iso.isoʳ e ⟩
           id
@@ -158,7 +146,7 @@ _∘⊣⊢_ {C = C} {D} {E} {L} {R} {L′} {R′} L⊣⊢R L′⊣⊢R′ = with
       ⊣⊢₂.counit.⇒.η (L′.₀ (L.₀ c)) ∘ (L′.₁ (⊣⊢₂.unit.⇒.η (L.₀ c)) ∘ L′.₁ (⊣⊢₁.counit.⇒.η (L.₀ c))) ∘ L′.₁ (L.₁ (⊣⊢₁.unit.⇒.η c))
         ≈⟨ pull-first ⊣⊢₂.zig ⟩
       id ∘ L′.₁ (⊣⊢₁.counit.⇒.η (L.₀ c)) ∘ L′.₁ (L.₁ (⊣⊢₁.unit.⇒.η c))
-        ≈⟨ elimʳ (([ L′ ]-resp-∘ ⊣⊢₁.zig) ○ L′.identity) ⟩
+        ≈⟨ elimʳ ([ L′ ]-resp-inverse ⊣⊢₁.zig) ⟩
       id
         ∎
       where open E

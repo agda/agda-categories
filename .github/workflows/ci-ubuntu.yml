@@ -31,8 +31,8 @@ on:
 ########################################################################
 
 env:
-  AGDA_VERSION: "2.7.0.1"
-  STDLIB_VERSION: "2.1"
+  AGDA_VERSION: "2.8.0"
+  STDLIB_VERSION: "2.3"
 
   AGDA: agda --auto-inline -Werror +RTS -M6G -H3.5G -A128M -RTS -i . -i src/
 
@@ -43,7 +43,7 @@ jobs:
 
       # By default github actions do not pull the repo
       - name: Checkout agda-categories
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
 ########################################################################
 ## SETTINGS
@@ -53,35 +53,34 @@ jobs:
         run: |
           # Only deploy if the build follows from pushing to master
           if [[ '${{ github.ref }}' == 'refs/heads/master' ]]; then
-             echo "AGDA_DEPLOY=true" >> $GITHUB_ENV
+             echo "AGDA_DEPLOY=true" >> "${GITHUB_ENV}"
           fi
-
-########################################################################
-## CACHING
-########################################################################
-
-      # This caching step allows us to save a lot of building time by only
-      # downloading ghc and cabal and rebuilding Agda if absolutely necessary
-      # i.e. if we change either the version of Agda, ghc, or cabal that we want
-      # to use for the build.
-      - name: Open cache
-        uses: actions/cache@v4
-        id: cache-everything
-        with:
-          path: |
-            ~/.agda
-            ~/_build
-          key: ${{ runner.os }}-agda-${{ env.AGDA_VERSION }}
 
 ########################################################################
 ## INSTALLATION STEPS
 ########################################################################
 
       - name: Install Agda
-        uses: wenkokke/setup-agda@main
+        uses: agda/agda-setup-action@v1
+        id: setup
         with:
           agda-version: ${{ env.AGDA_VERSION }}
           agda-stdlib-version: ${{ env.STDLIB_VERSION }}
+
+########################################################################
+## CACHING: RESTORE
+########################################################################
+
+      # This caching step allows us to save a lot of building time by
+      # saving the previous build.
+      - name: Restore cache
+        uses: actions/cache/restore@v5
+        id: cache
+        with:
+          path: |
+            ${{ steps.setup.outputs.agda-dir }}
+            _build
+          key: ${{ runner.os }}-agda-${{ env.AGDA_VERSION }}-commit-${{ github.sha }}
 
 ########################################################################
 ## TESTING
@@ -107,8 +106,23 @@ jobs:
 ########################################################################
 
       - name: Deploy HTML
-        uses: JamesIves/github-pages-deploy-action@v4.7.3
-        if: ${{ success() && env.AGDA_DEPLOY }}
+        uses: JamesIves/github-pages-deploy-action@v4
+        if: success() && env.AGDA_DEPLOY
         with:
           branch: gh-pages
           folder: html
+
+########################################################################
+## CACHING: SAVE
+########################################################################
+
+      # This caching step allows us to save a lot of building time by
+      # saving the previous build.
+      - name: Save cache
+        uses: actions/cache/save@v5
+        if: always()
+        with:
+          path: |
+            ${{ steps.setup.outputs.agda-dir }}
+            _build
+          key: ${{ steps.cache.outputs.cache-primary-key }}

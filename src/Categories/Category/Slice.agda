@@ -10,7 +10,6 @@ open HomReasoning
 open Equiv
 
 open import Level
-open import Function.Base using (_$_)
 open import Relation.Binary.Core using (Rel)
 
 open import Categories.Morphism.Reasoning 𝒞
@@ -42,7 +41,7 @@ Slice A       = record
   ; _≈_       = λ where
     (slicearr {f} _) (slicearr {g} _) → f ≈ g
   ; id        = slicearr identityʳ
-  ; _∘_       = _∘′_
+  ; _∘_       = λ (slicearr △) (slicearr △′) → slicearr (glueTrianglesʳ △ △′)
   ; assoc     = assoc
   ; sym-assoc = sym-assoc
   ; identityˡ = identityˡ
@@ -55,8 +54,3 @@ Slice A       = record
     }
   ; ∘-resp-≈  = ∘-resp-≈
   }
-  where _∘′_ : Slice⇒ Y Z → Slice⇒ X Y → Slice⇒ X Z
-        _∘′_ {Y = sliceobj y} {Z = sliceobj z} {X = sliceobj x} (slicearr {g} △) (slicearr {f} △′) = slicearr $ begin
-          z ∘ g ∘ f ≈⟨ pullˡ △ ⟩
-          y ∘ f     ≈⟨ △′ ⟩
-          x         ∎

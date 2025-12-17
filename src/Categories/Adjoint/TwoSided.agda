@@ -54,8 +54,7 @@ record _⊣⊢_ (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ lev
   zag⁻¹ : {B : D.Obj} → unit.⇐.η (R.₀ B) C.∘ R.₁ (counit.⇐.η B) C.≈ C.id
   zag⁻¹ {B} = begin
     unit.⇐.η (R.₀ B) C.∘ R.₁ (counit.⇐.η B)   ≈˘⟨ flip-fromʳ unit.FX≅GX zag ⟩∘⟨refl ⟩
-    R.₁ (counit.⇒.η B) C.∘ R.₁ (counit.⇐.η B) ≈⟨ [ R ]-resp-∘ (counit.iso.isoʳ B) ⟩
-    R.₁ D.id                                  ≈⟨ R.identity ⟩
+    R.₁ (counit.⇒.η B) C.∘ R.₁ (counit.⇐.η B) ≈⟨ [ R ]-resp-inverse (counit.iso.isoʳ B) ⟩
     C.id                                      ∎
     where open C.HomReasoning
           open MR C
@@ -63,8 +62,7 @@ record _⊣⊢_ (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ lev
   zig⁻¹ : {A : C.Obj} → L.₁ (unit.⇐.η A) D.∘ counit.⇐.η (L.₀ A) D.≈ D.id
   zig⁻¹ {A} = begin
       L.₁ (unit.⇐.η A) D.∘ counit.⇐.η (L.₀ A) ≈˘⟨ refl⟩∘⟨ flip-fromˡ counit.FX≅GX zig ⟩
-      L.₁ (unit.⇐.η A) D.∘ L.₁ (unit.⇒.η A)   ≈⟨ [ L ]-resp-∘ (unit.iso.isoˡ A) ⟩
-      L.₁ C.id                                ≈⟨ L.identity ⟩
+      L.₁ (unit.⇐.η A) D.∘ L.₁ (unit.⇒.η A)   ≈⟨ [ L ]-resp-inverse (unit.iso.isoˡ A) ⟩
       D.id                                    ∎
       where open D.HomReasoning
             open MR D
@@ -124,8 +122,7 @@ private
             helper = begin
               R.₁ (L.₁ (R.₁ (counit.⇒.η B) ∘ unit.⇒.η (R.₀ B)))             ≈⟨ Functor.homomorphism (R ∘F L) ⟩
               R.₁ (L.₁ (R.₁ (counit.⇒.η B))) ∘ R.₁ (L.₁ (unit.⇒.η (R.₀ B))) ≈˘⟨ R.F-resp-≈ (F≃id-comm₁ counit) ⟩∘⟨refl ⟩
-              R.₁ (counit.⇒.η (L.₀ (R.₀ B))) ∘ R.₁ (L.₁ (unit.⇒.η (R.₀ B))) ≈⟨ [ R ]-resp-∘ zig ⟩
-              R.₁ D.id                                                      ≈⟨ R.identity ⟩
+              R.₁ (counit.⇒.η (L.₀ (R.₀ B))) ∘ R.₁ (L.₁ (unit.⇒.η (R.₀ B))) ≈⟨ [ R ]-resp-inverse zig ⟩
               id                                                            ∎
 
   record WithZag (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ levelOfTerm R) where
@@ -152,8 +149,7 @@ private
             helper = begin
               L.₁ (R.₁ (counit.⇒.η (L.₀ A) ∘ L.₁ (unit.⇒.η A)))               ≈⟨ Functor.homomorphism (L ∘F R) ⟩
               (L.₁ (R.₁ (counit.⇒.η (L.₀ A))) ∘ L.₁ (R.₁ (L.₁ (unit.⇒.η A)))) ≈˘⟨ refl⟩∘⟨ L.F-resp-≈ (F≃id-comm₂ (≃.sym unit)) ⟩
-              L.₁ (R.₁ (counit.⇒.η (L.₀ A))) ∘ L.₁ (unit.⇒.η (R.₀ (L.₀ A)))   ≈⟨ [ L ]-resp-∘ zag ⟩
-              L.₁ C.id                                                       ≈⟨ L.identity ⟩
+              L.₁ (R.₁ (counit.⇒.η (L.₀ A))) ∘ L.₁ (unit.⇒.η (R.₀ (L.₀ A)))   ≈⟨ [ L ]-resp-inverse zag ⟩
               id                                                              ∎
 
 module _ {L : Functor C D} {R : Functor D C} where

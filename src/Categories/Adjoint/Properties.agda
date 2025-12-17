@@ -20,7 +20,7 @@ open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Hom using (Hom[_][-,-])
 open import Categories.Functor.Construction.Constant using (const!)
 open import Categories.Functor.Construction.LiftSetoids using (LiftSetoids)
-open import Categories.Functor.Properties using ([_]-resp-square; [_]-resp-∘)
+open import Categories.Functor.Properties using ([_]-resp-square; [_]-resp-inverse)
 open import Categories.Functor.Limits using (Continuous; Cocontinuous)
 open import Categories.Functor.Bifunctor using (Bifunctor; appʳ; appˡ)
 open import Categories.Functor.Bifunctor.Properties using ([_]-decompose₁; [_]-decompose₂; [_]-commute)
@@ -206,7 +206,7 @@ module _ {L : Functor J K} {R : Functor K J} (L⊣R : L ⊣ R) {F : Functor K C}
       ; commute = λ {X} → begin
         proj (L.₀ X) ∘ rep A′                                 ≈⟨ commute ⟩
         F.₁ (counit.η (L.₀ X)) ∘ A.ψ (R.₀ (L.₀ X))            ≈⟨ refl⟩∘⟨ A.commute (unit.η X) ⟨
-        F.₁ (counit.η (L.₀ X)) ∘ F.₁ (L.₁ (unit.η X)) ∘ A.ψ X ≈⟨ cancelˡ ([ F ]-resp-∘ zig ○ F.identity) ⟩
+        F.₁ (counit.η (L.₀ X)) ∘ F.₁ (L.₁ (unit.η X)) ∘ A.ψ X ≈⟨ cancelˡ ([ F ]-resp-inverse zig) ⟩
         A.ψ X                                                 ∎
       }
 
@@ -266,10 +266,7 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
       }
     ; assoc     = [ R ]-resp-square (counit.commute _)
     ; sym-assoc = [ R ]-resp-square (counit.sym-commute _)
-    ; identityˡ = λ {X} → begin
-      μ′.η X C.∘ R.F₁ (L.F₁ (unit.η X)) ≈⟨ [ R ]-resp-∘ zig ⟩
-      R.F₁ D.id                         ≈⟨ R.identity ⟩
-      C.id                              ∎
+    ; identityˡ = [ R ]-resp-inverse zig
     ; identityʳ = zag
     }
     where open C.HomReasoning
