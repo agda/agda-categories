@@ -213,34 +213,24 @@ Functor-NI-setoid C D = record
   ; isEquivalence = isEquivalence
   }
 
-module LeftRightId (F : Functor C D) where
-  module D = Category D
-
-  iso-id-id : (X : Category.Obj C) → Morphism.Iso D {A = Functor.F₀ F X} D.id D.id
-  iso-id-id X = record { isoˡ = D.identityˡ ; isoʳ = D.identityʳ }
-
 -- Left and Right and 'Central' Unitors, Natural Isomorphisms.
 module _ {F : Functor C D} where
-  open Category.HomReasoning D
-  open Functor F
-  open LeftRightId F
-  open Category D
+  open Morphismₚ D
 
   unitorˡ : ℱ.id ∘F F ≃ F
-  unitorˡ = record { F⇒G = id∘F⇒F ; F⇐G = F⇒id∘F ; iso = iso-id-id }
+  unitorˡ = record { F⇒G = id∘F⇒F ; F⇐G = F⇒id∘F ; iso = λ _ → id-iso }
 
   unitorʳ : F ∘F ℱ.id ≃ F
-  unitorʳ = record { F⇒G = F∘id⇒F ; F⇐G = F⇒F∘id ; iso = iso-id-id }
+  unitorʳ = record { F⇒G = F∘id⇒F ; F⇐G = F⇒F∘id ; iso = λ _ → id-iso }
 
 unitor² : {C : Category o ℓ e} → ℱ.id ∘F ℱ.id ≃ ℱ.id {C = C}
-unitor² = record { F⇒G = id∘id⇒id ; F⇐G = id⇒id∘id ; iso = LeftRightId.iso-id-id ℱ.id }
+unitor² {C = C} = record { F⇒G = id∘id⇒id ; F⇐G = id⇒id∘id ; iso = λ _ → id-iso }
+  where open Morphismₚ C
 
 -- associator
 module _ (F : Functor B C) (G : Functor C D) (H : Functor D E) where
-  open Category.HomReasoning E
   open Category E
-  open Functor
-  open LeftRightId (H ∘F (G ∘F F))
+  open Morphismₚ E
 
   private
     -- components of α
@@ -251,8 +241,8 @@ module _ (F : Functor B C) (G : Functor C D) (H : Functor D E) where
     assocˡ = ntHelper record { η = λ _ → id ; commute = λ _ → MR.id-comm-sym E }
 
   associator : (H ∘F G) ∘F F ≃ H ∘F (G ∘F F)
-  associator = record { F⇒G = assocʳ ; F⇐G = assocˡ ; iso = iso-id-id }
+  associator = record { F⇒G = assocʳ ; F⇐G = assocˡ ; iso = λ _ → id-iso }
 
   -- useful when building functor categories
   sym-associator : H ∘F (G ∘F F) ≃ (H ∘F G) ∘F F
-  sym-associator = record { F⇒G = assocˡ ; F⇐G = assocʳ ; iso = iso-id-id }
+  sym-associator = record { F⇒G = assocˡ ; F⇐G = assocʳ ; iso = λ _ → id-iso }

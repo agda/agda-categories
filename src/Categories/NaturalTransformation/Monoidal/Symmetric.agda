@@ -22,7 +22,7 @@ open import Level
 
 open import Categories.Category.Monoidal using (SymmetricMonoidalCategory)
 import Categories.Functor.Monoidal.Symmetric as BMF
-open import Categories.Functor.Monoidal.Properties using ()
+open import Categories.Functor.Monoidal.Symmetric.Properties using ()
   renaming (∘-SymmetricMonoidal to _∘Fˡ_; ∘-StrongSymmetricMonoidal to _∘Fˢ_)
 open import Categories.NaturalTransformation as NT using (NaturalTransformation)
 import Categories.NaturalTransformation.Monoidal as MNT

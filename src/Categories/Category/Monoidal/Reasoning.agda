@@ -1,7 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category using (Category)
-open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Category.Monoidal.Core using (Monoidal)
 
 module Categories.Category.Monoidal.Reasoning {o ℓ e} {C : Category o ℓ e} (M : Monoidal C) where
 

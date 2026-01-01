@@ -29,7 +29,13 @@ module Bifunctor (H : Bifunctor C D E) where
   reduce-× F G = H ∘F (F ⁂ G)
 
   flip : Bifunctor D C E
-  flip = H ∘F Swap
+  flip = record
+      { F₀ = λ (X , Y) → F₀ (Y , X)
+      ; F₁ = λ (f , g) → F₁ (g , f)
+      ; identity = λ { {A , B} → identity {B , A} }
+      ; homomorphism = λ { {f = (f , f′)} {g , g′} → homomorphism {f = (f′ , f)} {g′ , g} }
+      ; F-resp-≈ = λ (≈f , ≈g) → F-resp-≈ (≈g , ≈f) 
+      }
 
   appˡ : Category.Obj C → Functor D E
   appˡ c = H ∘F constˡ c
@@ -70,5 +76,5 @@ open Bifunctor public using (appˡ; appʳ) renaming (flip to flip-bifunctor)
 overlap-× : ∀ (H : Bifunctor C D E) (F : Functor A C) (G : Functor A D) → Functor A E
 overlap-× H = Bifunctor.overlap-× H
 
-reduce-× : ∀ (H : Bifunctor C D E) (F : Functor A C) (G : Functor B D) -> Bifunctor A B E
+reduce-× : ∀ (H : Bifunctor C D E) (F : Functor A C) (G : Functor B D) → Bifunctor A B E
 reduce-× H = Bifunctor.reduce-× H
