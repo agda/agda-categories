@@ -16,11 +16,12 @@ open import Categories.Category.Monoidal.Instance.Cats
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Functor.Construction.Constant using (constNat)
+import Categories.Morphism.Properties as MP
 import Categories.Morphism.Reasoning as MR
 open import Categories.NaturalTransformation
   using (NaturalTransformation; _∘ˡ_) renaming (id to idNT)
 open import Categories.NaturalTransformation.NaturalIsomorphism
-  using (NaturalIsomorphism; _≃_; module LeftRightId)
+  using (NaturalIsomorphism; _≃_)
 open import Categories.Object.Terminal using (Terminal)
 
 -- It's easier to define exponentials with respect to the *canonical*
@@ -55,14 +56,14 @@ module CanonicallyCartesianClosed {l} where
       ; commute     = λ _ → ⟺ (MR.id-comm B ○ ∘-resp-≈ʳ B commute)
       ; sym-commute = λ _ → MR.id-comm B ○ ∘-resp-≈ʳ B commute
       }
-    ; iso = iso-id-id
+    ; iso = λ _ → id-iso
     }
     where
       open Functor G renaming (F₀ to G₀; F₁ to G₁)
       open Category hiding (_∘_)
       open Category B using (_∘_)
       open HomReasoning B
-      open LeftRightId G
+      open MP B
 
       commute : ∀ {a₁ a₂ b₁ b₂} {f₁ : C [ a₁ , b₁ ]} {f₂ : A [ a₂ , b₂ ]} →
                 B [ (G₁ (f₁ , id A) ∘ G₁ (id C , f₂)) ≈ G₁ (f₁ , f₂) ]
@@ -105,7 +106,6 @@ module CanonicallyCartesianClosed {l} where
       open Category B using (_∘_)
       open HomReasoning B
       open NaturalTransformation
-      open LeftRightId H
 
       commute₁ : ∀ {a b c} (f : A [ a , b ]) →
                  B [ (η (H₁ (id C)) b ∘ (H₀ c $₁ f)) ≈ H₀ c $₁ f ]
