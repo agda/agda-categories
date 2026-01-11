@@ -93,10 +93,10 @@ abstract
 -- end abstract --
 
 
+  open TensorproductOfBimodules.Left-Action using (actionˡ-∘)
+
   -- to speed up type-checking we hide the proof of linearity under several small abstract clause --
   abstract
-    open TensorproductOfBimodules.Left-Action using (actionˡ-∘)
-
     linearˡ-∘ : actionˡ-∘ B'₂ B'₁ ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁ ≈ (α h₂ ⊚₁ α h₁) ∘ᵥ actionˡ-∘ B₂ B₁
     linearˡ-∘ = begin
        (actionˡ-∘ B'₂ B'₁) ∘ᵥ (α h₂ ⊚₁ α h₁) ◁ T M₁         ≈⟨ pullʳ α⇒-⊚ ⟩
