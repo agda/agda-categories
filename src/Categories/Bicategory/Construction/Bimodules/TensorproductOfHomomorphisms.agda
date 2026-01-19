@@ -7,7 +7,7 @@ open import Categories.Bicategory.Monad.Bimodule
 open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism)
 
 module Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms
-  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞}
+  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} (localCoeq : LocalCoequalizers 𝒞)
   {M₁ M₂ M₃ : Monad 𝒞} {B₂ B'₂ : Bimodule M₂ M₃} {B₁ B'₁ : Bimodule M₁ M₂}
   (h₂ : Bimodulehomomorphism B₂ B'₂) (h₁ : Bimodulehomomorphism B₁ B'₁) where
 
@@ -29,7 +29,7 @@ import Categories.Category
 open Categories.Category.Definitions (hom (C M₁) (C M₃)) using (CommutativeSquare)
 import Categories.Morphism.Reasoning (hom (C M₁) (C M₃)) as MorphismReasoning
 
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} {M₁} {M₂} {M₃} as TensorproductOfBimodules
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules localCoeq {M₁} {M₂} {M₃} as TensorproductOfBimodules
 open TensorproductOfBimodules using (CoeqBimods; act-to-the-left; act-to-the-right; F-⊗) renaming (Tensorproduct to infixr 30 _⊗₀_)
 open TensorproductOfBimodules.Left-Action using (actionˡ-⊗)
 open TensorproductOfBimodules.Right-Action using (actionʳ-⊗)

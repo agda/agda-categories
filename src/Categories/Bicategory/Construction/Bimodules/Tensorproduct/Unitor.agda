@@ -10,13 +10,13 @@ open import Categories.Bicategory.Monad.Bimodule
 -- We will define the left- and right-unitor in the bicategory of monads and bimodules. --
 
 module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor
-  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞}
+  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} (localCoeq : LocalCoequalizers 𝒞)
   {M₁ M₂ : Monad 𝒞} {B : Bimodule M₁ M₂} where
 
 open import Categories.Bicategory.Monad.Bimodule.Homomorphism using (Bimodulehomomorphism)
 
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules localCoeq as TensorproductOfBimodules
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms localCoeq as TensorproductOfHomomorphisms
 open TensorproductOfBimodules using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
 open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
 

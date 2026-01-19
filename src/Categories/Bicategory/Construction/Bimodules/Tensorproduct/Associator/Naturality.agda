@@ -11,7 +11,7 @@ open import Categories.Bicategory.Monad.Bimodule.Homomorphism
 -- We will define the associator in the bicategory of monads and bimodules. --
 
 module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator.Naturality
-  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞} {M₁ M₂ M₃ M₄ : Monad 𝒞}
+  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} (localCoeq : LocalCoequalizers 𝒞) {M₁ M₂ M₃ M₄ : Monad 𝒞}
   {B₃ B'₃ : Bimodule M₃ M₄} {B₂ B'₂ : Bimodule M₂ M₃} {B₁ B'₁ : Bimodule M₁ M₂}
   (f₃ : Bimodulehomomorphism B₃ B'₃) (f₂ : Bimodulehomomorphism B₂ B'₂) (f₁ : Bimodulehomomorphism B₁ B'₁) where
 
@@ -38,11 +38,11 @@ private
 
 open HomCat
 
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules localCoeq as TensorproductOfBimodules
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms localCoeq as TensorproductOfHomomorphisms
 open TensorproductOfBimodules using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
 open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator {o} {ℓ} {e} {t} {𝒞} {localCoeq} {M₁} {M₂} {M₃} {M₄}
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator localCoeq {M₁} {M₂} {M₃} {M₄}
   using (α⇒-⊗; hexagon-sq)
   
 abstract

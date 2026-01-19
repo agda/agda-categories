@@ -11,7 +11,7 @@ open import Categories.Bicategory.Monad.Bimodule.Homomorphism
 -- We will show that the left- and right-unitor in the bicategory of monads and bimodules is natural. --
 
 module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor.Naturality
-  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞}
+  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} (localCoeq : LocalCoequalizers 𝒞)
   {M₁ M₂ : Monad 𝒞} {B B' : Bimodule M₁ M₂} (f : Bimodulehomomorphism B B') where
 
 Id-Bimod : {M : Monad 𝒞} → Bimodule M M
@@ -29,11 +29,11 @@ import Categories.Morphism.Reasoning
 open import Categories.Diagram.Coequalizer (hom (C M₁) (C M₂)) using (Coequalizer; Coequalizer⇒Epi)
 open Coequalizer using (arr)
 
-open import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
+open import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules localCoeq as TensorproductOfBimodules
   using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
-open import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
+open import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms localCoeq as TensorproductOfHomomorphisms
   using () renaming (Tensorproduct to infixr 30 _⊗₁_)
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor {𝒞 = 𝒞} {localCoeq} {M₁} {M₂}
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor localCoeq {M₁} {M₂}
   using (module Left-Unitor; module Right-Unitor)
 
 module Left-Unitor-natural where

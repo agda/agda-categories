@@ -6,7 +6,7 @@ open import Categories.Bicategory.Monad
 open import Categories.Bicategory.Monad.Bimodule
 
 module Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules
-  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞}
+  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} (localCoeq : LocalCoequalizers 𝒞)
   {M₁ M₂ M₃ : Monad 𝒞} (B₂ : Bimodule M₂ M₃) (B₁ : Bimodule M₁ M₂) where
 
 import Categories.Bicategory.Extras as Bicat

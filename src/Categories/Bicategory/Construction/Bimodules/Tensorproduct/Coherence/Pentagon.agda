@@ -11,7 +11,7 @@ open import Categories.Bicategory.Monad.Bimodule
 -- satisfies the pentagon law. --
 
 module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Pentagon
-  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞} {M₁ M₂ M₃ M₄ M₅ : Monad 𝒞}
+  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} (localCoeq : LocalCoequalizers 𝒞) {M₁ M₂ M₃ M₄ M₅ : Monad 𝒞}
   {B₄ : Bimodule M₄ M₅} {B₃ : Bimodule M₃ M₄} {B₂ : Bimodule M₂ M₃} {B₁ : Bimodule M₁ M₂} where
 
 import Categories.Bicategory.LocalCoequalizers
@@ -42,12 +42,11 @@ private
 
 open HomCat
 
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} as TensorproductOfBimodules
-import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} as TensorproductOfHomomorphisms
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules localCoeq as TensorproductOfBimodules
+import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms localCoeq as TensorproductOfHomomorphisms
 open TensorproductOfBimodules using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
 open TensorproductOfHomomorphisms using () renaming (Tensorproduct to infixr 30 _⊗₁_)
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator {𝒞 = 𝒞} {localCoeq}
-  using (associator-⊗-from; hexagon-sq)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator localCoeq using (associator-⊗-from; hexagon-sq)
 
 private
   module Whiskering-⊗ {N₁ N₂ N₃ : Monad 𝒞} where

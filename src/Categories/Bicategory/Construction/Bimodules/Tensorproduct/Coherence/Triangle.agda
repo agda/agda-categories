@@ -12,7 +12,7 @@ open import Categories.Bicategory.Monad.Bimodule.Homomorphism
 -- satisfies the triangle law. --
 
 module Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Triangle
-  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞} {M₁ M₂ M₃ : Monad 𝒞}
+  {o ℓ e t} {𝒞 : Bicategory o ℓ e t} (localCoeq : LocalCoequalizers 𝒞) {M₁ M₂ M₃ : Monad 𝒞}
   {B₂ : Bimodule M₂ M₃} {B₁ : Bimodule M₁ M₂} where
 
 import Categories.Bicategory.Extras as Bicat
@@ -45,13 +45,13 @@ private
 
 open HomCat
 
-open import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq}
+open import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules localCoeq
   using (CoeqBimods) renaming (Tensorproduct to infixr 30 _⊗₀_)
-open import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq}
+open import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms localCoeq
   using (αSq-⊗) renaming (Tensorproduct to infixr 30 _⊗₁_)
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator {𝒞 = 𝒞} {localCoeq}
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator localCoeq
   using (associator-⊗-from; hexagon; hexagon-sq)
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor {𝒞 = 𝒞} {localCoeq} using (module Left-Unitor; module Right-Unitor)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor localCoeq using (module Left-Unitor; module Right-Unitor)
 open Left-Unitor using (unitorˡ-⊗-from) renaming (triangle to unitorˡ-triangle)
 open Right-Unitor using (unitorʳ-⊗-from) renaming (triangle to unitorʳ-triangle)
 
