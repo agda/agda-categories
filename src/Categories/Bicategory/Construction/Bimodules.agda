@@ -1,5 +1,5 @@
 {-# OPTIONS --without-K --safe --lossy-unification #-}
--- lossy unification speeds up type checking by preventing Agda from unfolding all definitions
+-- lossy unification is required to complete type-checking
 
 open import Categories.Bicategory
 open import Categories.Bicategory.LocalCoequalizers
