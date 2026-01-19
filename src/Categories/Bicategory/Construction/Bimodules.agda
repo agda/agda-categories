@@ -24,18 +24,18 @@ open import Categories.Morphism using (_≅_)
 
 open import Categories.Bicategory.Construction.Bimodules.TensorproductOfBimodules {𝒞 = 𝒞} {localCoeq} using () renaming (Tensorproduct to infixr 30 _⊗₀_)
 open import Categories.Bicategory.Construction.Bimodules.TensorproductOfHomomorphisms {𝒞 = 𝒞} {localCoeq} using () renaming (Tensorproduct to infixr 30 _⊗₁_)
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Functorial
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator using (associator-⊗)
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator.Naturality using (α⇒-⊗-natural)
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor using (module Left-Unitor; module Right-Unitor)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Functorial {𝒞 = 𝒞} {localCoeq}
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator {𝒞 = 𝒞} {localCoeq} using (associator-⊗)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Associator.Naturality {𝒞 = 𝒞} {localCoeq} using (α⇒-⊗-natural)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor {𝒞 = 𝒞} {localCoeq} using (module Left-Unitor; module Right-Unitor)
 open Left-Unitor using (unitorˡ-⊗)
 open Right-Unitor using (unitorʳ-⊗)
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor.Naturality
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Unitor.Naturality {𝒞 = 𝒞} {localCoeq}
   using (module Left-Unitor-natural; module Right-Unitor-natural)
 open Left-Unitor-natural using (λ⇒-⊗-natural)
 open Right-Unitor-natural using (ρ⇒-⊗-natural)
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Pentagon using (pentagon-⊗)
-open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Triangle using (triangle-⊗)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Pentagon {𝒞 = 𝒞} {localCoeq} using (pentagon-⊗)
+open import Categories.Bicategory.Construction.Bimodules.Tensorproduct.Coherence.Triangle {𝒞 = 𝒞} {localCoeq} using (triangle-⊗)
 
 Bimodules : Bicategory (o ⊔ ℓ ⊔ e) (ℓ ⊔ e) e (o ⊔ ℓ ⊔ e ⊔ t)
 Bimodules = record
