@@ -4,7 +4,7 @@
 open import Categories.Bicategory
 open import Categories.Bicategory.LocalCoequalizers
 
-module Categories.Bicategory.Construction.Bimodules {o ℓ e t} {𝒞 : Bicategory o ℓ e t} {localCoeq : LocalCoequalizers 𝒞} where
+module Categories.Bicategory.Construction.Bimodules {o ℓ e t} (𝒞 : Bicategory o ℓ e t) (localCoeq : LocalCoequalizers 𝒞) where
 open import Level using (_⊔_)
 open import Data.Product using (_,_)
 
