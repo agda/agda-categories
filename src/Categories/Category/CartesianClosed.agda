@@ -56,7 +56,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   open CartesianMonoidal cartesian using (A×⊤≅A)
   open BinaryProducts cartesian.products using (_×_; product; π₁; π₂; ⟨_,_⟩;
     project₁; project₂; η; ⟨⟩-cong₂; ⟨⟩∘; _⁂_; ⟨⟩-congˡ; ⟨⟩-congʳ;
-    first∘first; firstid; first; second; first↔second; second∘second; ⁂-cong₂; -×_)
+    first∘first; firstid; first; second; first↔second; second∘second; second-cong; -×_)
   open Terminal cartesian.terminal using (⊤; !; !-unique₂; ⊤-id)
 
   B^A×A : ∀ B A → Product (B ^ A) A
@@ -194,7 +194,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     ; identity     = λ-cong (identityˡ ○ (elimʳ (id×id product))) ○ η-id′
     ; homomorphism = λ-unique₂′ helper
     ; F-resp-≈     = λ where
-      (eq₁ , eq₂) → λ-cong (∘-resp-≈ eq₂ (∘-resp-≈ʳ (⁂-cong₂ refl eq₁)))
+      (eq₁ , eq₂) → λ-cong (∘-resp-≈ eq₂ (∘-resp-≈ʳ (second-cong eq₁)))
     }
     where helper : eval′ ∘ first (λg ((g ∘ f) ∘ eval′ ∘ second (h ∘ i)))
                  ≈ eval′ ∘ first (λg (g ∘ eval′ ∘ second i) ∘ λg (f ∘ eval′ ∘ second h))
