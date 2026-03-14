@@ -63,3 +63,7 @@ record Traced : Set (levelOfTerm M) where
                 ≈ trace {X = X ⊗₀ Y} f
     superposing : trace {X = X} (associator.to ∘ id {Y} ⊗₁ f ∘ associator.from) ≈ id {Y} ⊗₁ trace {X = X} f
     yanking     : trace (braiding.⇒.η (X , X)) ≈ id
+
+  -- utility for hom reasoning
+  trace⟨_⟩ : f ≈ g → trace f ≈ trace g
+  trace⟨_⟩ = trace-resp-≈

@@ -34,6 +34,10 @@ record HasDagger {o ℓ e} (C : Category o ℓ e) : Set (o ⊔ ℓ ⊔ e) where
   isSelfAdjoint : ∀ {A} → Pred (A ⇒ A) e
   isSelfAdjoint f = f † ≈ f
 
+  -- utility for hom reasoning
+  ⟨_⟩† : ∀ {A B} {f g : A ⇒ B} → f ≈ g → f † ≈ g †
+  ⟨_⟩† = †-resp-≈
+
 record DaggerCategory o ℓ e : Set (suc (o ⊔ ℓ ⊔ e)) where
   field
     C : Category o ℓ e
