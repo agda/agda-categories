@@ -2,18 +2,19 @@
 
 module Categories.Category.Monoidal.Instance.PartialFunctions where
 
-open import Data.Maybe using (Maybe; nothing; just; map; zip)
+open import Data.Maybe using (Maybe; nothing; just; maybe; map; zip)
 open import Data.Maybe.Properties using (just-injective)
 open import Data.Product
-  using (_×_; _,_; proj₁; proj₂)
-  renaming (swap to swap×; assocʳ′ to assocʳ×; assocˡ′ to assocˡ×)
+  using (_×_; _,_; proj₁; proj₂; uncurry′)
+  renaming (map to map×; swap to swap×; assocʳ′ to assocʳ×; assocˡ′ to assocˡ×)
 open import Data.Sum
   using (_⊎_; inj₁; inj₂; [_,_]′)
-  renaming (swap to swap⊎; assocʳ to assocʳ⊎; assocˡ to assocˡ⊎)
+  renaming (map to map⊎; swap to swap⊎; assocʳ to assocʳ⊎; assocˡ to assocˡ⊎)
+open import Data.Sum.Properties
 open import Data.Unit using (⊤; tt)
 open import Data.Unit.Polymorphic using () renaming (⊤ to ⊤*; tt to tt*)
 open import Data.Empty.Polymorphic using () renaming (⊥ to ⊥*; ⊥-elim to ⊥*-elim)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; subst₂)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; cong₂; sym; trans; subst₂)
 open import Function using (_∘_; case_of_)
 open import Level
 
@@ -35,9 +36,10 @@ module Product {o : Level} where
 
     P⊗ : Bifunctor P P P
 
-    P⊗ .F₀ (X , Y)         = X × Y
-    P⊗ .F₁ (f , g) (x , y) = zip (f x) (g y)
-    P⊗ .identity   (x , y) = refl
+    P⊗ .F₀         = uncurry′ _×_
+    P⊗ .F₁ (f , g) = uncurry′ zip ∘ map× f g
+
+    P⊗ .identity _ = refl
 
     P⊗ .homomorphism {f = f₁ , f₂} (x₁ , x₂)
       with f₁ x₁ | f₂ x₂
@@ -199,11 +201,10 @@ module Sum {o : Level} where
 
     P⊕ : Bifunctor P P P
 
-    P⊕ .F₀ (X , Y)          = X ⊎ Y
-    P⊕ .F₁ (f , g) (inj₁ x) = map inj₁ (f x)
-    P⊕ .F₁ (f , g) (inj₂ y) = map inj₂ (g y)
-    P⊕ .identity   (inj₁ x) = refl
-    P⊕ .identity   (inj₂ y) = refl
+    P⊕ .F₀         = uncurry′ _⊎_
+    P⊕ .F₁ (f , g) = [ map inj₁ ∘ f , map inj₂ ∘ g ]′
+
+    P⊕ .identity x = trans (sym ([,]-∘ just x)) (cong just (map-id x))
 
     P⊕ .homomorphism {f = f₁ , f₂} (inj₁ x₁)
       with f₁ x₁
@@ -214,10 +215,8 @@ module Sum {o : Level} where
     ... | nothing = refl
     ... | just y₂ = refl
 
-    P⊕ .F-resp-≈ {f = f₁ , f₂} {g = g₁ , g₂} (f₁≗g₁ , f₂≗g₂) (inj₁ x₁) =
-      cong (map inj₁) (f₁≗g₁ x₁)
-    P⊕ .F-resp-≈ {f = f₁ , f₂} {g = g₁ , g₂} (f₁≗g₁ , f₂≗g₂) (inj₂ x₂) =
-      cong (map inj₂) (f₂≗g₂ x₂)
+    P⊕ .F-resp-≈ {f = f₁ , f₂} {g = g₁ , g₂} (f₁≗g₁ , f₂≗g₂) =
+      [,]-cong (cong (maybe _ _) ∘ f₁≗g₁) (cong (maybe _ _) ∘ f₂≗g₂)
 
   module _ where
     open Monoidal
