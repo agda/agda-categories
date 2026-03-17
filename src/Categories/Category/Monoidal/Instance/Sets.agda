@@ -85,108 +85,95 @@ module Rig {o : Level} where
     module Sets⊎ = Coproduct
     module Sets× = Product
 
+  open RigCategory
+
   Sets-Rig : RigCategory S Sets⊎.Sets-Symmetric Sets×.Sets-Symmetric
-  Sets-Rig = record
-    { annₗ = record
-      { from = λ ()
-      ; to   = λ ()
-      ; iso  = record
-        { isoˡ = λ ()
-        ; isoʳ = λ ()
-        }
-      }
-    ; annᵣ = record
-      { from = λ ()
-      ; to   = λ ()
-      ; iso  = record
-        { isoˡ = λ ()
-        ; isoʳ = λ ()
-        }
-      }
-    ; distribₗ = record
-      { from = λ
-        { (x , inj₁ y) → inj₁ (x , y)
-        ; (x , inj₂ z) → inj₂ (x , z)
-        }
-      ; to   = λ
-        { (inj₁ (x , y)) → x , inj₁ y
-        ; (inj₂ (x , z)) → x , inj₂ z
-        }
-      ; iso  = record
-        { isoˡ = λ
-          { (x , inj₁ y) → refl
-          ; (x , inj₂ z) → refl
-          }
-        ; isoʳ = λ
-          { (inj₁ (x , y)) → refl
-          ; (inj₂ (x , z)) → refl
-          }
-        }
-      }
-    ; distribᵣ = record
-      { from = λ
-        { (inj₁ x , z) → inj₁ (x , z)
-        ; (inj₂ y , z) → inj₂ (y , z)
-        }
-      ; to   = λ
-        { (inj₁ (x , z)) → inj₁ x , z
-        ; (inj₂ (y , z)) → inj₂ y , z
-        }
-      ; iso  = record
-        { isoˡ = λ
-          { (inj₁ x , z) → refl
-          ; (inj₂ y , z) → refl
-          }
-        ; isoʳ = λ
-          { (inj₁ (x , z)) → refl
-          ; (inj₂ (y , z)) → refl
-          }
-        }
-      }
-    ; annₗ-commute = λ ()
-    ; annᵣ-commute = λ ()
-    ; dl-commute = λ
-      { (x , inj₁ y) → refl
-      ; (x , inj₂ z) → refl
-      }
-    ; dr-commute = λ
-      { (inj₁ x , z) → refl
-      ; (inj₂ y , z) → refl
-      }
-    ; laplazaI     = λ
-      { (a , inj₁ b) → refl
-      ; (a , inj₂ c) → refl
-      }
-    ; laplazaII    = λ
-      { (inj₁ a , c) → refl
-      ; (inj₂ b , c) → refl
-      }
-    ; laplazaIV    = λ
-      { (inj₁       a  , d) → refl
-      ; (inj₂ (inj₁ b) , d) → refl
-      ; (inj₂ (inj₂ c) , d) → refl
-      }
-    ; laplazaVI    = λ
-      { (a , b , inj₁ c) → refl
-      ; (a , b , inj₂ d) → refl
-      }
-    ; laplazaIX    = λ
-      { (inj₁ a , inj₁ c) → refl
-      ; (inj₁ a , inj₂ d) → refl
-      ; (inj₂ b , inj₁ c) → refl
-      ; (inj₂ b , inj₂ d) → refl
-      }
-    ; laplazaX     = λ ()
-    ; laplazaXI    = λ ()
-    ; laplazaXIII  = λ ()
-    ; laplazaXV    = λ ()
-    ; laplazaXVI   = λ ()
-    ; laplazaXVII  = λ ()
-    ; laplazaXIX   = λ
-      { (a , inj₂ b) → refl
-      }
-    ; laplazaXXIII = λ
-      { (lift tt , inj₁ a) → refl
-      ; (lift tt , inj₂ b) → refl
+
+  Sets-Rig .annₗ = record
+    { from = λ ()
+    ; to   = λ ()
+    ; iso  = record
+      { isoˡ = λ ()
+      ; isoʳ = λ ()
       }
     }
+  Sets-Rig .annᵣ = record
+    { from = λ ()
+    ; to   = λ ()
+    ; iso  = record
+      { isoˡ = λ ()
+      ; isoʳ = λ ()
+      }
+    }
+
+  Sets-Rig .distribₗ = record
+    { from = λ
+      { (x , inj₁ y) → inj₁ (x , y)
+      ; (x , inj₂ z) → inj₂ (x , z)
+      }
+    ; to   = λ
+      { (inj₁ (x , y)) → x , inj₁ y
+      ; (inj₂ (x , z)) → x , inj₂ z
+      }
+    ; iso  = record
+      { isoˡ = λ
+        { (x , inj₁ y) → refl
+        ; (x , inj₂ z) → refl
+        }
+      ; isoʳ = λ
+        { (inj₁ (x , y)) → refl
+        ; (inj₂ (x , z)) → refl
+        }
+      }
+    }
+  Sets-Rig .distribᵣ = record
+    { from = λ
+      { (inj₁ x , z) → inj₁ (x , z)
+      ; (inj₂ y , z) → inj₂ (y , z)
+      }
+    ; to   = λ
+      { (inj₁ (x , z)) → inj₁ x , z
+      ; (inj₂ (y , z)) → inj₂ y , z
+      }
+    ; iso  = record
+      { isoˡ = λ
+        { (inj₁ x , z) → refl
+        ; (inj₂ y , z) → refl
+        }
+      ; isoʳ = λ
+        { (inj₁ (x , z)) → refl
+        ; (inj₂ (y , z)) → refl
+        }
+      }
+    }
+
+  Sets-Rig .annₗ-commute ()
+  Sets-Rig .annᵣ-commute ()
+
+  Sets-Rig .dl-commute (x , inj₁ y) = refl
+  Sets-Rig .dl-commute (x , inj₂ z) = refl
+  Sets-Rig .dr-commute (inj₁ x , z) = refl
+  Sets-Rig .dr-commute (inj₂ y , z) = refl
+
+  Sets-Rig .laplazaI     (a , inj₁ b)        = refl
+  Sets-Rig .laplazaI     (a , inj₂ c)        = refl
+  Sets-Rig .laplazaII    (inj₁ a , c)        = refl
+  Sets-Rig .laplazaII    (inj₂ b , c)        = refl
+  Sets-Rig .laplazaIV    (inj₁       a  , d) = refl
+  Sets-Rig .laplazaIV    (inj₂ (inj₁ b) , d) = refl
+  Sets-Rig .laplazaIV    (inj₂ (inj₂ c) , d) = refl
+  Sets-Rig .laplazaVI    (a , b , inj₁ c)    = refl
+  Sets-Rig .laplazaVI    (a , b , inj₂ d)    = refl
+  Sets-Rig .laplazaIX    (inj₁ a , inj₁ c)   = refl
+  Sets-Rig .laplazaIX    (inj₁ a , inj₂ d)   = refl
+  Sets-Rig .laplazaIX    (inj₂ b , inj₁ c)   = refl
+  Sets-Rig .laplazaIX    (inj₂ b , inj₂ d)   = refl
+  Sets-Rig .laplazaX     ()
+  Sets-Rig .laplazaXI    ()
+  Sets-Rig .laplazaXIII  ()
+  Sets-Rig .laplazaXV    ()
+  Sets-Rig .laplazaXVI   ()
+  Sets-Rig .laplazaXVII  ()
+  Sets-Rig .laplazaXIX   (a , inj₂ b)        = refl
+  Sets-Rig .laplazaXXIII (lift tt , inj₁ a)  = refl
+  Sets-Rig .laplazaXXIII (lift tt , inj₂ b)  = refl
