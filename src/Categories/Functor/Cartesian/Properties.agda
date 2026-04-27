@@ -27,7 +27,7 @@ private
 
 module _ (C : CartesianCategory o ℓ e) where
   open CartesianCategory C using (terminal; U; products)
-  open BinaryProducts products using (product)
+   using (product)
   open ⊤.Terminal terminal
   open P U
 

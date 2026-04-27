@@ -235,11 +235,9 @@ module _ {A : MonoidalCategory o ℓ e} {B : MonoidalCategory o′ ℓ′ e′} 
 private
 
   module WithCartesianShorthands (C : CartesianCategory o ℓ e) where
-    open CartesianCategory C public
-    open BinaryProducts products public renaming (_⁂_ to infixr 10 _×₁_)
+    open CartesianCategory C public renaming (_⁂_ to infixr 10 _×₁_)
     open CartesianMonoidal cartesian using (monoidal)
     open ⊗-Reasoning monoidal public
-    open ⊤.Terminal terminal public
 
 module _ (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′) where
 

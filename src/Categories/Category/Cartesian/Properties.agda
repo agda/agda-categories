@@ -87,8 +87,6 @@ module _ (prods : BinaryProducts) (pullbacks : ∀ {A B X} (f : A ⇒ X) (g : B 
 
 module Prods (car : Cartesian) where
   open Cartesian car
-  open BinaryProducts products
-  open Terminal terminal
 
   -- for lists
 

@@ -81,7 +81,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     }
 
   open Cartesian isCartesian
-  open BinaryProducts products using (_⁂_)
+   using (_⁂_)
 
   field
 

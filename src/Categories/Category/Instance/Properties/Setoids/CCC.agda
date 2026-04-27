@@ -52,8 +52,7 @@ module _ ℓ where
     }
     where
       open Setoids-Cartesian
-      open BinaryProducts products using (_×_; π₁; π₂; ⟨_,_⟩; project₁; project₂; unique)
-      open Terminal terminal using (⊤; !; !-unique)
+       using (_×_; π₁; π₂; ⟨_,_⟩; project₁; project₂; unique; ⊤; !; !-unique)
 
   Setoids-CCC : CartesianClosed S
   Setoids-CCC = Equivalence.fromCanonical S Setoids-Canonical

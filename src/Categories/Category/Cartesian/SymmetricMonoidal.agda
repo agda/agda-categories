@@ -5,11 +5,9 @@ open import Categories.Category.Cartesian using (Cartesian)
 
 -- Defines the following properties of a Category:
 -- Cartesian.SymmetricMonoidal
---    a Cartesian category is Symmetric Monoidal if its induced monoidal structure is symmetric
+--    a Cartesian category is Symmetric Monoidal
 
 module Categories.Category.Cartesian.SymmetricMonoidal {o ℓ e} (𝒞 : Category o ℓ e) (cartesian : Cartesian 𝒞) where
-
-open import Data.Product using (_,_)
 
 open Category 𝒞
 open Commutation 𝒞
@@ -26,11 +24,10 @@ private
   variable
     W X Y Z : Obj
 
-open Cartesian cartesian using (products)
+open Cartesian cartesian
 open CartesianMonoidal cartesian using (monoidal)
 open Sym monoidal using (Symmetric; symmetricHelper)
 open Monoidal monoidal using (_⊗₀_; _⊗₁_; module associator)
-open BinaryProducts products
 
 private
   B : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X

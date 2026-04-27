@@ -30,12 +30,12 @@ private
 
 module CartesianMonoidal (cartesian : Cartesian 𝒞) where
   open Commutation 𝒞
-  open Terminal (Cartesian.terminal cartesian)  using (⊤; !; !-unique; !-unique₂)
-  open BinaryProducts (Cartesian.products cartesian) using (π₁; π₂; ⟨_,_⟩; _×_; _⁂_;
+  open Cartesian cartesian using (π₁; π₂; ⟨_,_⟩; _×_; _⁂_;
     _×-; -×_; ⟨⟩∘; ⟨⟩-cong₂; -×-; ×-assoc; assocˡ∘⁂; assocʳ∘⁂; ⁂∘⟨⟩;
     first∘⟨⟩; second∘⟨⟩; ⟨⟩-congˡ; ⟨⟩-congʳ; π₁∘⁂; π₂∘⁂; assocˡ∘⟨⟩;
     assocˡ; assocʳ;
-    η; unique; project₁; project₂)
+    η; unique; project₁; project₂;
+    ⊤; !; !-unique; !-unique₂)
 
   ⊤×A≅A : ⊤ × A ≅ A
   ⊤×A≅A = record

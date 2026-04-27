@@ -3,7 +3,7 @@
 open import Level
 open import Categories.Category.Core
 open import Categories.Object.Terminal using (Terminal)
-open import Categories.Category.Cocartesian using (BinaryCoproducts)
+open import Categories.Category.BinaryCoproducts using (BinaryCoproducts)
 
 -- A NNO is an inital algebra for the 'X ↦ ⊤ + X' endofunctor.
 module Categories.Object.NaturalNumbers.Properties.F-Algebras {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (𝒞-Coproducts : BinaryCoproducts 𝒞) where
