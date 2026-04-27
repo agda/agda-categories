@@ -98,7 +98,7 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
 
   ※-distrib₂ : {o₁ ℓ₁ e₁ o₂ ℓ₂ e₂ : Level} {A : Category o₁ ℓ₁ e₁} {B : Category o₂ ℓ₂ e₂}
     → (F : Functor A C) → (G : Functor B D)
-    → ((F ∘F πˡ) ※ (G ∘F πʳ)) ≃ (F ⁂ G)
+    → ((F ∘F πˡ) ※ (G ∘F πʳ)) ≃ (F ×₁ G)
   ※-distrib₂ F G = record
     { F⇒G = ntHelper record { η = λ X → C.id , D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }
     ; F⇐G = ntHelper record { η = λ X → C.id , D.id ; commute = λ _ → MR.id-comm-sym C , MR.id-comm-sym D }

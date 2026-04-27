@@ -54,11 +54,11 @@ open Shorthands
 
 private
   [x⊗y]⊗z : Bifunctor (Product C C) C C
-  [x⊗y]⊗z = ⊗ ∘F (⊗ ⁂ idF)
+  [x⊗y]⊗z = ⊗ ∘F (⊗ ×₁ idF)
 
   -- note how this one needs re-association to typecheck (i.e. be correct)
   x⊗[y⊗z] : Bifunctor (Product C C) C C
-  x⊗[y⊗z] = ⊗ ∘F (idF ⁂ ⊗) ∘F assocˡ _ _ _
+  x⊗[y⊗z] = ⊗ ∘F (idF ×₁ ⊗) ∘F assocˡ _ _ _
 
 unitor-coherenceʳ : [ (A ⊗₀ unit) ⊗₀ unit ⇒ A ⊗₀ unit ]⟨ ρ⇒ ⊗₁ C.id ≈ ρ⇒ ⟩
 unitor-coherenceʳ = cancel-fromˡ unitorʳ unitorʳ-commute-from

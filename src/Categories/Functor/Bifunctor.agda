@@ -26,7 +26,7 @@ module Bifunctor (H : Bifunctor C D E) where
   overlap-× F G = H ∘F (F ※ G)
 
   reduce-× : ∀ (F : Functor A C) (G : Functor B D) → Bifunctor A B E
-  reduce-× F G = H ∘F (F ⁂ G)
+  reduce-× F G = H ∘F (F ×₁ G)
 
   flip : Bifunctor D C E
   flip = record

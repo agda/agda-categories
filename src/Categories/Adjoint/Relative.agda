@@ -19,7 +19,7 @@ open import Relation.Binary using (Setoid)
 -- be explicit in imports to 'see' where the information comes from
 open import Categories.Adjoint
 open import Categories.Category.Core using (Category)
-open import Categories.Category.Product using (Product; _⁂_)
+open import Categories.Category.Product using (Product; _×₁_)
 open import Categories.Category.Instance.Setoids
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor)
@@ -49,10 +49,10 @@ record RelativeAdjoint {C : Category o ℓ e} (D : Category o ℓ e) (J : Functo
     module J = Functor J
 
   Hom[L-,-] : Bifunctor E.op D (Setoids _ _)
-  Hom[L-,-] = Hom[ D ][-,-] ∘F (L.op ⁂ idF)
+  Hom[L-,-] = Hom[ D ][-,-] ∘F (L.op ×₁ idF)
 
   Hom[J-,R-] : Bifunctor E.op D (Setoids _ _)
-  Hom[J-,R-] = Hom[ C ][-,-] ∘F (J.op ⁂ R)
+  Hom[J-,R-] = Hom[ C ][-,-] ∘F (J.op ×₁ R)
 
   module Hom[L-,-] = Functor Hom[L-,-]
   module Hom[J-,R-] = Functor Hom[J-,R-]

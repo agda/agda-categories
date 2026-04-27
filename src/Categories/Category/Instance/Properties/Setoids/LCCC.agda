@@ -338,7 +338,7 @@ module _ {o} where
           module gY = Setoid g.Y
           module hY = Setoid h.Y
 
-        curry-unique : eval Sl.∘ (α products.⁂ Sl.id) Sl.≈ β → α Sl.≈ curry β
+        curry-unique : eval Sl.∘ (α products.×₁ Sl.id) Sl.≈ β → α Sl.≈ curry β
         curry-unique eq {z} = record
           { idx≈ = α.△
           ; map≈ = λ img →

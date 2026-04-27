@@ -18,7 +18,7 @@ open import Data.Product using (_,_)
 import Categories.Bicategory.Extras as BicategoryExtras
 open import Categories.Category using (Category; _[_,_]; module Commutation)
 open import Categories.Category.Instance.One using (shift)
-open import Categories.Category.Product using (_⁂_)
+open import Categories.Category.Product using (_×₁_)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.NaturalTransformation.NaturalIsomorphism
@@ -40,7 +40,7 @@ record Pseudofunctor : Set (o ⊔ ℓ ⊔ e ⊔ t ⊔ o′ ⊔ ℓ′ ⊔ e′ �
     -- For maximal generality, shift the levels of One. P preserves id
     P-identity : {A : C.Obj} →  D.id {P₀ A} ∘F shift o′ ℓ′ e′ ≃ P₁ ∘F (C.id {A})
     -- P preserves composition
-    P-homomorphism : {x y z : C.Obj} → D.⊚ ∘F (P₁ ⁂ P₁) ≃ P₁ ∘F C.⊚ {x} {y} {z}
+    P-homomorphism : {x y z : C.Obj} → D.⊚ ∘F (P₁ ×₁ P₁) ≃ P₁ ∘F C.⊚ {x} {y} {z}
     -- P preserves ≃
 
   module P₁ {x} {y} = Functor (P₁ {x} {y})

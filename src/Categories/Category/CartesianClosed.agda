@@ -55,8 +55,8 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
 
   open CartesianMonoidal cartesian using (A×⊤≅A)
   open BinaryProducts cartesian.products using (_×_; product; π₁; π₂; ⟨_,_⟩;
-    project₁; project₂; η; ⟨⟩-cong₂; ⟨⟩∘; _⁂_; ⟨⟩-congˡ; ⟨⟩-congʳ;
-    first∘first; firstid; first; second; first↔second; second∘second; ⁂-cong₂; -×_)
+    project₁; project₂; η; ⟨⟩-cong₂; ⟨⟩∘; _×₁_; ⟨⟩-congˡ; ⟨⟩-congʳ;
+    first∘first; firstid; first; second; first↔second; second∘second; ×₁-cong₂; -×_)
   open Terminal cartesian.terminal using (⊤; !; !-unique₂; ⊤-id)
 
   B^A×A : ∀ B A → Product (B ^ A) A
@@ -80,7 +80,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   β : eval ∘ λg f ×id ≈ f
   β = exp.β product
 
-  subst : λg f ∘ g ≈ λg (f ∘ (g ⁂ id))
+  subst : λg f ∘ g ≈ λg (f ∘ (g ×₁ id))
   subst = exp.subst product product
 
   η-exp : λg (eval ∘ f ×id) ≈ f
@@ -125,19 +125,19 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   eval′ = eval ∘ to
     where open _≅_ B^A×A-iso
 
-  λ-unique′ : eval′ ∘ (f ⁂ id) ≈ g → f ≈ λg g
+  λ-unique′ : eval′ ∘ (f ×₁ id) ≈ g → f ≈ λg g
   λ-unique′ eq = exp.λ-unique product (⟺ (pullʳ [ product ⇒ product ⇒ exp.product ]repack∘×) ○ eq)
 
-  λ-unique₂′ : eval′ ∘ (f ⁂ id) ≈ eval′ ∘ (g ⁂ id) → f ≈ g
+  λ-unique₂′ : eval′ ∘ (f ×₁ id) ≈ eval′ ∘ (g ×₁ id) → f ≈ g
   λ-unique₂′ eq = (λ-unique′ eq) ○ ⟺ (λ-unique′ refl)
 
-  β′ : eval′ ∘ (λg f ⁂ id) ≈ f
+  β′ : eval′ ∘ (λg f ×₁ id) ≈ f
   β′ {f = f} = begin
-    eval′ ∘ (λg f ⁂ id) ≈⟨ pullʳ [ product ⇒ product ⇒ exp.product ]repack∘× ⟩
+    eval′ ∘ (λg f ×₁ id) ≈⟨ pullʳ [ product ⇒ product ⇒ exp.product ]repack∘× ⟩
     eval ∘ λg f ×id     ≈⟨ β ⟩
     f                   ∎
 
-  η-exp′ : λg (eval′ ∘ (f ⁂ id)) ≈ f
+  η-exp′ : λg (eval′ ∘ (f ×₁ id)) ≈ f
   η-exp′ = sym (λ-unique′ refl)
 
   η-id′ : λg (eval′ {B = B} {A = A}) ≈ id
@@ -159,29 +159,29 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     ; to   = let open _≅_ A×⊤≅A in λg from
     ; iso  = record
       { isoˡ = λ-unique₂′ $ begin
-        eval′ ∘ ((λg π₁ ∘ eval′ ∘ ⟨ id , ! ⟩) ⁂ id)          ≈˘⟨ refl⟩∘⟨ first∘first ⟩
-        eval′ ∘ ((λg π₁ ⁂ id) ∘ ((eval′ ∘ ⟨ id , ! ⟩) ⁂ id)) ≈⟨ pullˡ β′ ⟩
-        π₁ ∘ ((eval′ ∘ ⟨ id , ! ⟩) ⁂ id)                     ≈⟨ helper ⟩
-        eval′ ∘ (id ⁂ id)                                    ∎
+        eval′ ∘ ((λg π₁ ∘ eval′ ∘ ⟨ id , ! ⟩) ×₁ id)           ≈˘⟨ refl⟩∘⟨ first∘first ⟩
+        eval′ ∘ ((λg π₁ ×₁ id) ∘ ((eval′ ∘ ⟨ id , ! ⟩) ×₁ id)) ≈⟨ pullˡ β′ ⟩
+        π₁ ∘ ((eval′ ∘ ⟨ id , ! ⟩) ×₁ id)                      ≈⟨ helper ⟩
+        eval′ ∘ (id ×₁ id)                                     ∎
       ; isoʳ = firstid ! $ begin
-        ((eval′ ∘ ⟨ id , ! ⟩) ∘ λg π₁) ⁂ id                  ≈˘⟨ first∘first ⟩
-        (eval′ ∘ ⟨ id , ! ⟩ ⁂ id) ∘ (λg π₁ ⁂ id)             ≈⟨ helper′ ⟩∘⟨refl ⟩
-        (⟨ id , ! ⟩ ∘ eval′) ∘ (λg π₁ ⁂ id)                  ≈⟨ pullʳ β′ ⟩
-        ⟨ id , ! ⟩ ∘ π₁                                      ≈⟨ ⟨⟩∘ ⟩
-        ⟨ id ∘ π₁ , ! ∘ π₁ ⟩                                 ≈⟨ ⟨⟩-cong₂ identityˡ !-unique₂ ⟩
-        ⟨ π₁ , π₂ ⟩                                          ≈⟨ η ⟩
-        id                                                   ∎
+        ((eval′ ∘ ⟨ id , ! ⟩) ∘ λg π₁) ×₁ id       ≈˘⟨ first∘first ⟩
+        (eval′ ∘ ⟨ id , ! ⟩ ×₁ id) ∘ (λg π₁ ×₁ id) ≈⟨ helper′ ⟩∘⟨refl ⟩
+        (⟨ id , ! ⟩ ∘ eval′) ∘ (λg π₁ ×₁ id)       ≈⟨ pullʳ β′ ⟩
+        ⟨ id , ! ⟩ ∘ π₁                            ≈⟨ ⟨⟩∘ ⟩
+        ⟨ id ∘ π₁ , ! ∘ π₁ ⟩                       ≈⟨ ⟨⟩-cong₂ identityˡ !-unique₂ ⟩
+        ⟨ π₁ , π₂ ⟩                                ≈⟨ η ⟩
+        id                                         ∎
       }
     }
     where helper = begin
-            π₁ ∘ ((eval′ ∘ ⟨ id , ! ⟩) ⁂ id)                 ≈⟨ project₁ ⟩
+            π₁ ∘ ((eval′ ∘ ⟨ id , ! ⟩) ×₁ id)                ≈⟨ project₁ ⟩
             (eval′ ∘ ⟨ id , ! ⟩) ∘ π₁                        ≈⟨ pullʳ ⟨⟩∘ ⟩
             eval′ ∘ ⟨ id ∘ π₁ , ! ∘ π₁ ⟩                     ≈⟨ refl⟩∘⟨ ⟨⟩-congˡ !-unique₂ ⟩
-            eval′ ∘ (id ⁂ id)                                ∎
+            eval′ ∘ (id ×₁ id)                               ∎
           helper′ = let open _≅_ A×⊤≅A in begin
-            (eval′ ∘ ⟨ id , ! ⟩) ⁂ id                        ≈⟨ introˡ isoˡ ⟩
-            (⟨ id , ! ⟩ ∘ π₁) ∘ ((eval′ ∘ ⟨ id , ! ⟩) ⁂ id)  ≈⟨ pullʳ helper ⟩
-            ⟨ id , ! ⟩ ∘ (eval′ ∘ (id ⁂ id))                 ≈⟨ refl⟩∘⟨ elimʳ (id×id product) ⟩
+            (eval′ ∘ ⟨ id , ! ⟩) ×₁ id                       ≈⟨ introˡ isoˡ ⟩
+            (⟨ id , ! ⟩ ∘ π₁) ∘ ((eval′ ∘ ⟨ id , ! ⟩) ×₁ id) ≈⟨ pullʳ helper ⟩
+            ⟨ id , ! ⟩ ∘ (eval′ ∘ (id ×₁ id))                ≈⟨ refl⟩∘⟨ elimʳ (id×id product) ⟩
             ⟨ id , ! ⟩ ∘ eval′                               ∎
 
   -- we use -⇨- to represent the bifunctor.
@@ -194,7 +194,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     ; identity     = λ-cong (identityˡ ○ (elimʳ (id×id product))) ○ η-id′
     ; homomorphism = λ-unique₂′ helper
     ; F-resp-≈     = λ where
-      (eq₁ , eq₂) → λ-cong (∘-resp-≈ eq₂ (∘-resp-≈ʳ (⁂-cong₂ refl eq₁)))
+      (eq₁ , eq₂) → λ-cong (∘-resp-≈ eq₂ (∘-resp-≈ʳ (×₁-cong₂ refl eq₁)))
     }
     where helper : eval′ ∘ first (λg ((g ∘ f) ∘ eval′ ∘ second (h ∘ i)))
                  ≈ eval′ ∘ first (λg (g ∘ eval′ ∘ second i) ∘ λg (f ∘ eval′ ∘ second h))

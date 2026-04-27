@@ -28,7 +28,7 @@ private
   open module F = Functor F using (F₀; F₁)
   module G = Functor G
 
-open Wedges (Hom[ D ][-,-] ∘F (F.op ⁂ G))
+open Wedges (Hom[ D ][-,-] ∘F (F.op ×₁ G))
 open D
 open HomReasoning
 open MR D
@@ -37,7 +37,7 @@ open ∫ hiding (dinatural)
 open Wedge
 open Func
 
-NTs-are-End : ∫ (Hom[ D ][-,-] ∘F (F.op ⁂ G))
+NTs-are-End : ∫ (Hom[ D ][-,-] ∘F (F.op ×₁ G))
 NTs-are-End .wedge .E = (≃-setoid F G)
 NTs-are-End .wedge .dinatural = dtHelper record
   { α = λ C → record

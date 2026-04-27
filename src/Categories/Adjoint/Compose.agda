@@ -12,7 +12,7 @@ open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 -- be explicit in imports to 'see' where the information comes from
 open import Categories.Adjoint using (Adjoint; _⊣_)
 open import Categories.Category.Core using (Category)
-open import Categories.Category.Product using (Product; _⁂_)
+open import Categories.Category.Product using (Product; _×₁_)
 open import Categories.Category.Instance.Setoids
 open import Categories.Morphism
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
