@@ -78,10 +78,10 @@ module _ (i : Initial) where
     t : Terminal
     t = ⊥⇒op⊤ i
 
-  pushout-⊥⇒coproduct : Pushout (! {X}) (! {Y}) → Coproduct X Y
+  pushout-⊥⇒coproduct : Pushout (¡ {X}) (¡ {Y}) → Coproduct X Y
   pushout-⊥⇒coproduct p = coProduct⇒Coproduct (pullback-⊤⇒product t (Pushout⇒coPullback p))
 
-  coproduct⇒pushout-⊥ : Coproduct X Y → Pushout (! {X}) (! {Y})
+  coproduct⇒pushout-⊥ : Coproduct X Y → Pushout (¡ {X}) (¡ {Y})
   coproduct⇒pushout-⊥ c = coPullback⇒Pushout (product⇒pullback-⊤ t (Coproduct⇒coProduct c))
 
 pushout-resp-≈ : Pushout f g → f ≈ h → g ≈ i → Pushout h i

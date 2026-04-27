@@ -39,9 +39,9 @@ module _ (S : StrongEquivalence C D) where
   -- see below the proof for the abbreviations that make the proof readable
   pres-IsInitial : {c : C.Obj} (i : IsInitial C c) → IsInitial D (F.₀ c)
   pres-IsInitial {c} i = record
-    { ! = λ {A} →  F∘G≈id.⇒.η A D.∘ F.₁ (! i)
-    ; !-unique = λ {A} f → begin  {- f : F.₀ c D.⇒ A -}
-      FG⇒ A D.∘ F.₁ (! i)                                            ≈⟨ (refl⟩∘⟨ F.F-resp-≈ (!-unique i _)) ⟩
+    { ¡ = λ {A} →  F∘G≈id.⇒.η A D.∘ F.₁ (¡ i)
+    ; ¡-unique = λ {A} f → begin  {- f : F.₀ c D.⇒ A -}
+      FG⇒ A D.∘ F.₁ (¡ i)                                           ≈⟨ (refl⟩∘⟨ F.F-resp-≈ (¡-unique i _)) ⟩
       FG⇒ A D.∘ F.₁ ((G.₁ f C.∘ GF⇒) C.∘ G.₁ FG⇐′ C.∘ GF⇐)          ≈⟨ (refl⟩∘⟨ F.homomorphism) ⟩
       FG⇒ A D.∘ F.₁ (G.₁ f C.∘ GF⇒) D.∘ F.₁ (G.₁ FG⇐′ C.∘ GF⇐)      ≈⟨ (refl⟩∘⟨ refl⟩∘⟨ (F.homomorphism ○ (D.Equiv.sym (F≃id-comm₂ F∘G≈id) ⟩∘⟨refl))) ⟩
       FG⇒ A D.∘ F.₁ (G.₁ f C.∘ GF⇒) D.∘ FG⇐ D.∘ F.F₁ GF⇐            ≈⟨ (refl⟩∘⟨ F.homomorphism ⟩∘⟨refl) ⟩

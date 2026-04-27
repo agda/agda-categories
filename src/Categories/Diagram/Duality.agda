@@ -163,8 +163,8 @@ module _ {F : Functor J C} where
     { terminal = record
       { ⊤             = Cocone⇒coCone ⊥
       ; ⊤-is-terminal = record
-        { !        = Cocone⇒⇒coCone⇒ !
-        ; !-unique = λ f → !-unique (coCone⇒⇒Cocone⇒ f)
+        { !        = Cocone⇒⇒coCone⇒ ¡
+        ; !-unique = λ f → ¡-unique (coCone⇒⇒Cocone⇒ f)
         }
       }
     }
