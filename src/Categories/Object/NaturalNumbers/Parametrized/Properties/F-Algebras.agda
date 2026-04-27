@@ -3,7 +3,7 @@
 open import Level
 open import Categories.Category.Core
 open import Categories.Object.Terminal using (Terminal)
-open import Categories.Category.Cocartesian using (BinaryCoproducts)
+open import Categories.Category.BinaryCoproducts using (BinaryCoproducts)
 open import Categories.Category.Cartesian using (Cartesian)
 
 -- A parametrized NNO corresponds to existence of a (⊤ + (-)) algebra and initiality of the PNNO algebra
@@ -24,8 +24,6 @@ open Cartesian 𝒞-Cartesian
 open HomReasoning
 open Equiv
 open MR 𝒞
-open BinaryProducts products
-open Terminal terminal
 
 open import Categories.Object.NaturalNumbers.Parametrized 𝒞 𝒞-Cartesian
 open import Categories.Object.NaturalNumbers.Properties.F-Algebras 𝒞 terminal 𝒞-Coproducts

@@ -24,10 +24,9 @@ open import Categories.Object.Terminal using (Terminal)
 
 open Category 𝒞
 open CartesianClosed 𝓥 using (_^_; eval′; cartesian)
-open Cartesian cartesian using (products; terminal)
+open Cartesian cartesian hiding (!; !-unique₂)
 open CartesianMonoidalClosed 𝒞 𝓥 using (closedMonoidal)
-open BinaryProducts products
-open Terminal terminal using (⊤)
+
 open HomReasoning
 
 private
@@ -35,7 +34,7 @@ private
 
 PointSurjective : ∀ {A X Y : Obj} → (X ⇒ Y ^ A) → Set (ℓ ⊔ e)
 PointSurjective {A = A} {X = X} {Y = Y} ϕ =
-  ∀ (f : A ⇒ Y) → Σ[ x ∈ ⊤ ⇒ X ] (∀ (a : ⊤ ⇒ A) → eval′ ∘ first ϕ ∘ ⟨ x , a ⟩  ≈ f ∘ a)
+  ∀ (f : A ⇒ Y) → Σ[ x ∈ ⊤ ⇒ X ] (∀ (a : ⊤ ⇒ A) → eval′ ∘ first ϕ ∘ ⟨ x , a ⟩ ≈ f ∘ a)
 
 lawvere-fixed-point : ∀ {A B : Obj} → (ϕ : A ⇒ B ^ A) → PointSurjective ϕ → (f : B ⇒ B) → Σ[ s ∈ ⊤ ⇒ B ] f ∘ s ≈ s
 lawvere-fixed-point {A = A} {B = B} ϕ surjective f = g ∘ x , g-fixed-point

@@ -5,7 +5,7 @@ open import Categories.Category.Core
 open import Categories.Object.Terminal using (Terminal)
 open import Categories.Category.Cartesian using (Cartesian)
 open import Categories.Category.BinaryProducts using (BinaryProducts)
-open import Categories.Category.Cocartesian using (BinaryCoproducts)
+open import Categories.Category.BinaryCoproducts using (BinaryCoproducts)
 open import Categories.Category.CartesianClosed using (CartesianClosed)
 
 -- In CCCs every NNO is a PNNO
@@ -14,9 +14,7 @@ module Categories.Object.NaturalNumbers.Properties.Parametrized {o ℓ e} (𝒞 
 
 open Category 𝒞
 open CartesianClosed 𝒞-CartesianClosed using (cartesian; λg; eval′; β′; λ-inj; λ-cong; η-exp′; λ-unique′; subst)
-open Cartesian cartesian using (terminal; products)
-open BinaryProducts products renaming (unique′ to bp-unique′)
-open Terminal terminal
+open Cartesian cartesian renaming (unique′ to bp-unique′)
 
 open import Categories.Object.NaturalNumbers 𝒞 terminal using (NNO)
 open import Categories.Object.NaturalNumbers.Parametrized 𝒞 cartesian using (ParametrizedNNO)

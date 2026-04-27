@@ -6,7 +6,7 @@ open import Categories.Category.Core using (Category)
 
 module Categories.Category.BinaryProducts {o ℓ e} (𝒞 : Category o ℓ e) where
 
-open import Level hiding (suc)
+open import Level using (levelOfTerm)
 open import Data.Product using (uncurry)
 
 open Category 𝒞
@@ -29,7 +29,6 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
 
   infixr 7 _×_
   infixr 8 _⁂_
-  infix 11 ⟨_,_⟩
 
   field
     product : ∀ {A B} → Product A B
@@ -46,11 +45,7 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   ×-assoc : X × Y × Z ≅ (X × Y) × Z
   ×-assoc = Associative product product product product
 
-  open product hiding (⟨_,_⟩; ∘-distribʳ-⟨⟩) public
-
-  -- define it like this instead of reexporting to redefine fixity
-  ⟨_,_⟩ : X ⇒ A → X ⇒ B → X ⇒ A × B
-  ⟨_,_⟩ = Product.⟨_,_⟩ product
+  open product renaming (⟨_,_⟩ to infix 11 ⟨_,_⟩) public
 
   _⁂_ : A ⇒ B → C ⇒ D → A × C ⇒ B × D
   f ⁂ g = [ product ⇒ product ] f × g
