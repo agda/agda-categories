@@ -24,7 +24,8 @@ private
   variable
     W X Y Z : Obj
 
-open Cartesian cartesian
+open Cartesian cartesian using (π₁; π₂; ⟨_,_⟩; ⟨⟩-congʳ; ⟨⟩-congˡ; ⟨⟩-cong₂; 
+  swap; swap∘⟨⟩; swap∘swap; assocˡ; assocˡ∘⟨⟩; ⁂∘⟨⟩; ⟨⟩∘; swap∘⁂)
 open CartesianMonoidal cartesian using (monoidal)
 open Sym monoidal using (Symmetric; symmetricHelper)
 open Monoidal monoidal using (_⊗₀_; _⊗₁_; module associator)
@@ -42,7 +43,7 @@ hexagon : [ (X ⊗₀ Y) ⊗₀ Z ⇒ Y ⊗₀ Z ⊗₀ X ]⟨
             associator.from
           ⟩
 hexagon = begin
-      id ⊗₁ swap ∘ assocˡ ∘ swap ⊗₁ id                        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘ ⟩
+      id ⊗₁ swap ∘ assocˡ ∘ swap ⊗₁ id                          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘ ⟩
       id ⊗₁ swap ∘ assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₁ ∘ π₁ ⟩ , id ∘ π₂ ⟩ ≈⟨ refl⟩∘⟨ assocˡ∘⟨⟩ ⟩
       id ⊗₁ swap ∘ ⟨ π₂ ∘ π₁ , ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩          ≈⟨ ⁂∘⟨⟩ ⟩
       ⟨ id ∘ π₂ ∘ π₁ , swap ∘ ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩           ≈⟨ ⟨⟩-cong₂ identityˡ swap∘⟨⟩ ⟩

@@ -24,7 +24,7 @@ open import Categories.Object.Terminal using (Terminal)
 
 open Category 𝒞
 open CartesianClosed 𝓥 using (_^_; eval′; cartesian)
-open Cartesian cartesian hiding (!; !-unique₂)
+open Cartesian cartesian using (_×_; ⟨_,_⟩; π₁; π₂; project₁; project₂; first; _⁂_; ⊤; ⟨⟩∘; ⁂∘⟨⟩; -×_)
 open CartesianMonoidalClosed 𝒞 𝓥 using (closedMonoidal)
 
 open HomReasoning
@@ -56,11 +56,11 @@ lawvere-fixed-point {A = A} {B = B} ϕ surjective f = g ∘ x , g-fixed-point
 
     g-fixed-point : f ∘ (g ∘ x) ≈ g ∘ x
     g-fixed-point = begin
-      f ∘ g ∘ x                       ≈˘⟨  refl⟩∘⟨ g-surjective ⟩
-      f ∘ eval′ ∘ first ϕ ∘ ⟨ x , x ⟩  ≈⟨ refl⟩∘⟨ refl⟩∘⟨ lemma ϕ id x ⟩
-      f ∘ eval′ ∘ ⟨ ϕ , id ⟩ ∘ x       ≈⟨ ∘-resp-≈ʳ sym-assoc ○ sym-assoc ⟩
-      (f ∘ eval′ ∘ ⟨ ϕ , id ⟩) ∘ x     ≡⟨⟩
-      g ∘ x                            ∎
+      f ∘ g ∘ x                       ≈˘⟨ refl⟩∘⟨ g-surjective ⟩
+      f ∘ eval′ ∘ first ϕ ∘ ⟨ x , x ⟩ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ lemma ϕ id x ⟩
+      f ∘ eval′ ∘ ⟨ ϕ , id ⟩ ∘ x      ≈⟨ ∘-resp-≈ʳ sym-assoc ○ sym-assoc ⟩
+      (f ∘ eval′ ∘ ⟨ ϕ , id ⟩) ∘ x    ≡⟨⟩
+      g ∘ x                           ∎
 
 initial→product-initial : ∀ {⊥ A} → IsInitial ⊥ → IsInitial (⊥ × A)
 initial→product-initial {⊥} {A} i = initial.⊥-is-initial
@@ -81,10 +81,10 @@ initial→strict-initial {⊥} i .is-strict f = record
   ; to = !
   ; iso = record
     { isoˡ = begin
-      ! ∘ f                ≈˘⟨ refl⟩∘⟨ project₁ ⟩
-      ! ∘ π₁ ∘ ⟨ f , id ⟩   ≈⟨ pullˡ (initial-product.!-unique₂ (! ∘ π₁) π₂)  ⟩
-      π₂ ∘ ⟨ f , id ⟩       ≈⟨ project₂ ⟩
-      id                    ∎
+      ! ∘ f               ≈˘⟨ refl⟩∘⟨ project₁ ⟩
+      ! ∘ π₁ ∘ ⟨ f , id ⟩ ≈⟨ pullˡ (initial-product.!-unique₂ (! ∘ π₁) π₂)  ⟩
+      π₂ ∘ ⟨ f , id ⟩     ≈⟨ project₂ ⟩
+      id                  ∎
     ; isoʳ = !-unique₂ (f ∘ !) id
     }
   }

@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --safe #-}
 
-open import Categories.Category using (Category)
+open import Categories.Category.Core using (Category)
 
 -- Defines the induced Monoidal structure of a Cocartesian Category
 
@@ -27,7 +27,7 @@ private
 -- The cocartesian structure induces a monoidal one: 𝒞 is cocartesian monoidal.
 
 module CocartesianMonoidal (cocartesian : Cocartesian) where
-  open Cocartesian cocartesian
+  open Cocartesian cocartesian using (⊥; _+_; _+-; -+_; -+-; +-assoc; module Dual)
   private module op-cartesianMonoidal = CartesianMonoidal Dual.op-cartesian
 
   ⊥+A≅A : ⊥ + A ≅ A
@@ -63,17 +63,20 @@ module CocartesianMonoidal (cocartesian : Cocartesian) where
     ; assoc-commute-to     = ⟺ assoc-commute-from
     -- the proof idea of triangle is that the opposite triangle is obtained for free,
     -- but notice that triangle and the opposite triangle form isomorphism.
-    ; triangle             = λ {X Y} →
-                               Iso-≈ triangle
-                                     (Iso-∘ ([ X +- ]-resp-Iso (Iso-swap (iso ⊥+A≅A)))
-                                            (iso +-assoc))
-                                     ([ -+ Y ]-resp-Iso (Iso-swap (iso A+⊥≅A)))
-    ; pentagon             = λ {X Y Z W} →
-                               Iso-≈ pentagon
-                                     (Iso-∘ ([ X +- ]-resp-Iso (iso +-assoc))
-                                     (Iso-∘ (iso +-assoc)
-                                            ([ -+ W ]-resp-Iso (iso +-assoc))))
-                                     (Iso-∘ (iso +-assoc) (iso +-assoc))
+    ; triangle             = triangle'
+    ; pentagon             = λ {X Y Z W} → pentagon' {X} {Y} {Z} {W}
     }
-    where open op-cartesianMonoidal
-          open _≅_
+    where 
+    open op-cartesianMonoidal
+    open _≅_
+    triangle' = λ {X Y} →
+                          Iso-≈ triangle
+                                (Iso-∘ ([ X +- ]-resp-Iso (Iso-swap (iso ⊥+A≅A)))
+                                      (iso +-assoc))
+                                ([ -+ Y ]-resp-Iso (Iso-swap (iso A+⊥≅A)))
+    pentagon' = λ {X Y Z W} →
+                          Iso-≈ pentagon
+                                (Iso-∘ ([ X +- ]-resp-Iso (iso +-assoc))
+                                (Iso-∘ (iso +-assoc)
+                                      ([ -+ W ]-resp-Iso (iso +-assoc))))
+                                (Iso-∘ (iso +-assoc) (iso +-assoc))

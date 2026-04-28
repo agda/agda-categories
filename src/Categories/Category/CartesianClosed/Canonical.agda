@@ -80,8 +80,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     ; products = record { product = ×-product }
     }
 
-  open Cartesian isCartesian
-   using (_⁂_)
+  open Cartesian isCartesian using (_⁂_)
 
   field
 
