@@ -32,9 +32,9 @@ module _ (extensive : Extensive 𝒞) where
       gf≈hf = sym CP.inject₁ ○ CP.inject₂
 
   to-⊥-is-iso : ∀ {A} (f : A ⇒ ⊥) → IsIso f
-  to-⊥-is-iso f .M.IsIso.inv = CC.initial.!
+  to-⊥-is-iso f .M.IsIso.inv = ¡
   to-⊥-is-iso f .M.IsIso.iso .M.Iso.isoʳ = ¡-unique₂ _ _
-  to-⊥-is-iso f .M.IsIso.iso .M.Iso.isoˡ = equal-inj id (pullback-of-cp-is-cp' pb₁ pb₂) (initial.! ∘ f) id
+  to-⊥-is-iso f .M.IsIso.iso .M.Iso.isoˡ = equal-inj id (pullback-of-cp-is-cp' pb₁ pb₂) (¡ ∘ f) id
     where
       pb₁ : Pullback (i₁ ∘ f) i₁
       pb₁ = record
@@ -69,7 +69,7 @@ module _ (extensive : Extensive 𝒞) where
     where
       open Pullback using (p₁; p₂; commute)
 
-      clash : ∀ {Q} {h₁ : Q ⇒ B} {h₂ : Q ⇒ A + C} → i₁ ∘ h₁ ≈ (f +₁ g) ∘ h₂ → Pullback.P (pullback₂ h₂) ⇒ initial.⊥
+      clash : ∀ {Q} {h₁ : Q ⇒ B} {h₂ : Q ⇒ A + C} → i₁ ∘ h₁ ≈ (f +₁ g) ∘ h₂ → Pullback.P (pullback₂ h₂) ⇒ ⊥
       clash {_}{h₁}{h₂} eq = IsPullback.universal disjoint
         (begin
             i₁ ∘ h₁ ∘ p₁ (pullback₂ h₂)                     ≈⟨ extendʳ eq ⟩
@@ -130,9 +130,9 @@ module _ (extensive : Extensive 𝒞) where
    where
      jm : JointMono₂ (f +₁ g) CC.+-swap
      jm h₁ h₂ h = begin
-       h₁                                      ≈⟨ introˡ CC.+-swap∘swap  ⟩ 
+       h₁                                      ≈⟨ introˡ CC.+-swap∘+-swap  ⟩ 
        (CC.+-swap ∘ CC.+-swap) ∘  h₁           ≈⟨ pullʳ (h (nzero zero)) ⟩ 
-       CC.+-swap ∘ CC.+-swap ∘ h₂              ≈⟨ cancelˡ CC.+-swap∘swap  ⟩
+       CC.+-swap ∘ CC.+-swap ∘ h₂              ≈⟨ cancelˡ CC.+-swap∘+-swap  ⟩
        h₂                                      ∎ 
 
      other-pb : IsPullback g (CC.+-swap ∘ i₂) (CC.+-swap ∘ i₂) (g +₁ f)
