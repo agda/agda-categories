@@ -97,8 +97,8 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   π₂∘⁂ : π₂ ∘ (f ⁂ g) ≈ g ∘ π₂
   π₂∘⁂ {f = f} {g} = project₂
 
-  π₂∘fist : π₂ ∘ first f ≈ π₂ {_}{C}
-  π₂∘fist = π₂∘⁂ ○ identityˡ
+  π₂∘first : π₂ ∘ first f ≈ π₂ {_}{C}
+  π₂∘first = π₂∘⁂ ○ identityˡ
 
   π₁∘second : π₁ ∘ second f ≈ π₁ {C}
   π₁∘second = π₁∘⁂ ○ identityˡ
