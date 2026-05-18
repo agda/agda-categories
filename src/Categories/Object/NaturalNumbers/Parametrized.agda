@@ -71,16 +71,6 @@ record ParametrizedNNO : Set (o ⊔ ℓ ⊔ e) where
 
   open IsParametrizedNNO isParametrizedNNO public
 
-  -- s⁻¹ : N ⇒ N
-  -- s⁻¹ = IsNNO.universal (IsParametrizedNNO.isNNO isParametrizedNNO) z {!!}
-
-  sum : N × N ⇒ N
-  sum = universal id s
-
-  sub : N × N ⇒ N
-  sub = universal id {!monus!}
-  
-
 -- every PNNO is also a NNO (the other direction only holds in CCCs)
 PNNO⇒NNO : ParametrizedNNO → NNO
 PNNO⇒NNO pnno = record { N = ParametrizedNNO.N pnno ; isNNO = ParametrizedNNO.isNNO pnno }
