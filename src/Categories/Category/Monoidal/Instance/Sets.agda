@@ -16,6 +16,8 @@ open import Categories.Category.BinaryProducts using (BinaryProducts)
 import Categories.Category.Cartesian as Cartesian
 open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
 import Categories.Category.Cocartesian as Cocartesian
+import Categories.Category.BinaryCoproducts as BinaryCoproducts
+import Categories.Category.Cocartesian.Monoidal as CM
 open import Categories.Category.Instance.EmptySet
 open import Categories.Category.Instance.Sets
 open import Categories.Category.Instance.SingletonSet
@@ -52,6 +54,7 @@ module Coproduct {o : Level} where
   private
     S = Sets o
     open Cocartesian S
+    open BinaryCoproducts S
 
   Sets-has-all : BinaryCoproducts
   Sets-has-all = record { coproduct = λ {A} {B} → record
@@ -68,4 +71,4 @@ module Coproduct {o : Level} where
   Sets-is = record { initial = EmptySet-⊥ ; coproducts = Sets-has-all }
 
   Sets-Monoidal : Monoidal S
-  Sets-Monoidal = Cocartesian.CocartesianMonoidal.+-monoidal S Sets-is
+  Sets-Monoidal = CM.CocartesianMonoidal.+-monoidal Sets-is

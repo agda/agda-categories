@@ -36,7 +36,7 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
     S = Setoids o′ ℓ′
     open Prod C using (id×id)
     open Cartesian Car
-    open BinaryProducts products
+    
 
   Pres-exp : (F : Presheaf C S) (X : C.Obj) → Presheaf C S
   Pres-exp F X = record

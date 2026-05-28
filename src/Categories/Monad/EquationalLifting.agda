@@ -19,8 +19,7 @@ import Categories.Morphism.Reasoning as MR
 
 module Categories.Monad.EquationalLifting {o ℓ e} {C : Category o ℓ e} (cartesian : Cartesian C) where
   open Category C
-  open Cartesian cartesian using (products)
-  open BinaryProducts products hiding (η)
+  open Cartesian cartesian hiding (η)
 
   open CartesianMonoidal cartesian using (monoidal)
   open Symmetric (symmetric C cartesian) using (braided)

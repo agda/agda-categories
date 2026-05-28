@@ -11,13 +11,10 @@ module Categories.Object.NaturalNumbers.Parametrized {o ℓ e} (𝒞 : Category 
 
 open import Level
 open Category 𝒞
-open Cartesian 𝒞-Cartesian
+open Cartesian 𝒞-Cartesian using (_×_; π₂; ⟨_,_⟩; ⟨⟩∘; ⟨⟩-cong₂; _⁂_; ⁂∘⟨⟩; project₂; terminal; ⊤; !; !-unique₂)
 open HomReasoning
 open Equiv
-
-open BinaryProducts products hiding (η; unique)
 open import Categories.Object.NaturalNumbers 𝒞 terminal using (IsNNO; NNO) renaming (up-to-iso to nno-up-to-iso)
-open Terminal terminal using (⊤; !; !-unique₂)
 
 open import Categories.Morphism 𝒞 using (_≅_)
 open import Categories.Morphism.Reasoning 𝒞

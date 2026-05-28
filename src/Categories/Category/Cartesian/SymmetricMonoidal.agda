@@ -5,11 +5,9 @@ open import Categories.Category.Cartesian using (Cartesian)
 
 -- Defines the following properties of a Category:
 -- Cartesian.SymmetricMonoidal
---    a Cartesian category is Symmetric Monoidal if its induced monoidal structure is symmetric
+--    a Cartesian category is Symmetric Monoidal
 
 module Categories.Category.Cartesian.SymmetricMonoidal {o ℓ e} (𝒞 : Category o ℓ e) (cartesian : Cartesian 𝒞) where
-
-open import Data.Product using (_,_)
 
 open Category 𝒞
 open Commutation 𝒞
@@ -26,11 +24,11 @@ private
   variable
     W X Y Z : Obj
 
-open Cartesian cartesian using (products)
+open Cartesian cartesian using (π₁; π₂; ⟨_,_⟩; ⟨⟩-congʳ; ⟨⟩-congˡ; ⟨⟩-cong₂; 
+  swap; swap∘⟨⟩; swap∘swap; assocˡ; assocˡ∘⟨⟩; ⁂∘⟨⟩; ⟨⟩∘; swap∘⁂)
 open CartesianMonoidal cartesian using (monoidal)
 open Sym monoidal using (Symmetric; symmetricHelper)
 open Monoidal monoidal using (_⊗₀_; _⊗₁_; module associator)
-open BinaryProducts products
 
 private
   B : ∀ {X Y} → X ⊗₀ Y ⇒ Y ⊗₀ X
@@ -45,7 +43,7 @@ hexagon : [ (X ⊗₀ Y) ⊗₀ Z ⇒ Y ⊗₀ Z ⊗₀ X ]⟨
             associator.from
           ⟩
 hexagon = begin
-      id ⊗₁ swap ∘ assocˡ ∘ swap ⊗₁ id                        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘ ⟩
+      id ⊗₁ swap ∘ assocˡ ∘ swap ⊗₁ id                          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘ ⟩
       id ⊗₁ swap ∘ assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₁ ∘ π₁ ⟩ , id ∘ π₂ ⟩ ≈⟨ refl⟩∘⟨ assocˡ∘⟨⟩ ⟩
       id ⊗₁ swap ∘ ⟨ π₂ ∘ π₁ , ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩          ≈⟨ ⁂∘⟨⟩ ⟩
       ⟨ id ∘ π₂ ∘ π₁ , swap ∘ ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩           ≈⟨ ⟨⟩-cong₂ identityˡ swap∘⟨⟩ ⟩
