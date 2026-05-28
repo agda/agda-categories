@@ -31,6 +31,10 @@ record IsParametrizedNNO (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
   η : ∀ {A} → universal ⟨ id , z ∘ ! ⟩ (id ⁂ s) ≈ id {A × N}
   η = ⟺ (unique (⟺ identityˡ) id-comm)
 
+  uniform : ∀ {A X Y} {f : A ⇒ X} {g : X ⇒ X} {g′ : Y ⇒ Y} {h : X ⇒ Y} → h ∘ g ≈ g′ ∘ h → h ∘ universal f g ≈ universal (h ∘ f) g′
+  uniform nat = unique (∘-resp-≈ʳ commute₁ ○ ⟺ assoc)
+                       (sym-assoc ○ ∘-resp-≈ˡ (⟺ nat) ○ assoc ○ ∘-resp-≈ʳ commute₂ ○ sym-assoc)
+
   universal-cong : ∀ {A X} → {f f′ : A ⇒ X} → {g g′ : X ⇒ X} → f ≈ f′ → g ≈ g′ → universal f g ≈ universal f′ g′
   universal-cong f≈f′ g≈g′ = unique (⟺ f≈f′ ○  commute₁) (∘-resp-≈ˡ (⟺ g≈g′) ○ commute₂)
 
