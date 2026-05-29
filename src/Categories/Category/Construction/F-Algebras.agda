@@ -79,7 +79,7 @@ module Lambek {𝒞 : Category o ℓ e} {F : Endofunctor 𝒞} (I : Initial (F-A
 
     -- By initiality, we get the following morphism
     f : F-Algebra-Morphism ⊥ F⊥
-    f = !
+    f = ¡
 
     module FAM = F-Algebra-Morphism f
 

@@ -18,8 +18,8 @@ open Functor
 -- Unlike for ⊤ being Terminal, Agda can't deduce these, need to be explicit
 Zero-⊥ : Initial
 Zero-⊥ .⊥ = Zero
-Zero-⊥ .⊥-is-initial .! .F₀ ()
-Zero-⊥ .⊥-is-initial .!-unique f = niHelper record
+Zero-⊥ .⊥-is-initial .¡ .F₀ ()
+Zero-⊥ .⊥-is-initial .¡-unique f = niHelper record
   { η = λ()
   ; η⁻¹ = λ()
   ; commute = λ{ {()} }

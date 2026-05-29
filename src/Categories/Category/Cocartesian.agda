@@ -30,9 +30,7 @@ record Cocartesian : Set (levelOfTerm 𝒞) where
     initial    : Initial
     coproducts : BinaryCoproducts
 
-  open Initial initial
-    renaming (! to ¡; !-unique to ¡-unique; !-unique₂ to ¡-unique₂)
-    public
+  open Initial initial public
   open BinaryCoproducts coproducts hiding (module Dual) public
 
   times : Obj → ℕ → Obj
