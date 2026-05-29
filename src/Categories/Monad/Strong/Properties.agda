@@ -100,7 +100,7 @@ module Left {V : Monoidal C} {M : Monad C} (left : Strength V M) where
         F.₁ ((f ⊗₁ g) ∘ B⇐) ∘ σ ∘ B⇒       ≈⟨ pushˡ F.homomorphism ⟩
         F.₁ (f ⊗₁ g) ∘ F.₁ B⇐ ∘ σ ∘ B⇒     ∎
 
-    right-strengthen : NaturalTransformation (⊗ ∘F (F ⁂ idF)) (F ∘F ⊗)
+    right-strengthen : NaturalTransformation (⊗ ∘F (F ×₁ idF)) (F ∘F ⊗)
     right-strengthen = ntHelper (record
       { η = λ _ → τ
       ; commute = λ (f , g) → τ-commute f g

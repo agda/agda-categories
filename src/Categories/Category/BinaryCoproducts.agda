@@ -57,10 +57,10 @@ record BinaryCoproducts : Set (levelOfTerm 𝒞) where
   +-assoc = op-≅⇒≅ (op-binaryProducts.×-assoc)
 
   -- Don't use Dual.op-binaryProducts here, since it makes Agda solve with
-  -- Dual.op-binaryProducts._⁂_ instead of +₁
+  -- Dual.op-binaryProducts._×₁_ instead of +₁
   open BinaryProducts record { product = Coproduct⇒coProduct coproduct }
     using ()
-    renaming ( _⁂_          to infixr 7 _+₁_
+    renaming ( _×₁_          to infixr 7 _+₁_
              ; ⟨⟩-congʳ     to []-congʳ
              ; ⟨⟩-congˡ     to []-congˡ
              ; assocˡ       to +-assocʳ
@@ -70,13 +70,13 @@ record BinaryCoproducts : Set (levelOfTerm 𝒞) where
              ; swap         to +-swap
              ; first        to +-first
              ; second       to +-second
-             ; π₁∘⁂         to +₁∘i₁
-             ; π₂∘⁂         to +₁∘i₂
-             ; ⁂-cong₂      to +₁-cong₂
-             ; ⁂∘⟨⟩         to []∘+₁
+             ; π₁∘×₁         to +₁∘i₁
+             ; π₂∘×₁         to +₁∘i₂
+             ; ×₁-cong₂      to +₁-cong₂
+             ; ×₁∘⟨⟩         to []∘+₁
              ; first∘⟨⟩     to []∘+-first
              ; second∘⟨⟩    to []∘+-second
-             ; ⁂∘⁂          to +₁∘+₁
+             ; ×₁∘×₁          to +₁∘+₁
              ; ⟨⟩∘          to ∘[]
              ; first∘first  to +-first∘+-first
              ; second∘second to +-second∘+-second
@@ -85,17 +85,17 @@ record BinaryCoproducts : Set (levelOfTerm 𝒞) where
              ; first↔second to +-second↔+-first
              ; firstid      to +-firstid
              ; swap∘⟨⟩      to []∘+-swap
-             ; swap∘⁂       to +₁∘+-swap
+             ; swap∘×₁       to +₁∘+-swap
              ; swap∘swap    to +-swap∘+-swap
              ; swap-epi     to +-swap-epi
              ; swap-mono    to +-swap-mono
              ; assocʳ∘⟨⟩    to []∘+-assocʳ
              ; assocˡ∘⟨⟩    to []∘+-assocˡ
-             ; assocʳ∘⁂     to +₁∘+-assocʳ
-             ; assocˡ∘⁂     to +₁∘+-assocˡ
+             ; assocʳ∘×₁     to +₁∘+-assocʳ
+             ; assocˡ∘×₁     to +₁∘+-assocˡ
              ; Δ            to ∇
              ; Δ∘           to ∘∇
-             ; ⁂∘Δ          to ∇∘+₁
+             ; ×₁∘Δ          to ∇∘+₁
              )
     public
 

@@ -34,7 +34,7 @@ module _  (C : MonoidalCategory o ℓ e) (D : MonoidalCategory o′ ℓ′ e′)
 
     field
       ε      : D.U [ D.unit , F₀ C.unit ]
-      ⊗-homo : NaturalTransformation (D.⊗ ∘F (F ⁂ F)) (F ∘F C.⊗)
+      ⊗-homo : NaturalTransformation (D.⊗ ∘F (F ×₁ F)) (F ∘F C.⊗)
 
     module ⊗-homo = NaturalTransformation ⊗-homo
 
@@ -87,7 +87,7 @@ module _  (C : MonoidalCategory o ℓ e) (D : MonoidalCategory o′ ℓ′ e′)
 
     field
       ε      : D.unit ≅ F₀ C.unit
-      ⊗-homo : D.⊗ ∘F (F ⁂ F) ≃ F ∘F C.⊗
+      ⊗-homo : D.⊗ ∘F (F ×₁ F) ≃ F ∘F C.⊗
 
     module ε      = _≅_ ε
     module ⊗-homo = NaturalIsomorphism ⊗-homo

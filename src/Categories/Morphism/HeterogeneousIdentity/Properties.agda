@@ -67,4 +67,4 @@ module _ (C : Category o ℓ e) (D : Category o′ ℓ′ e′) where
 
   ×-hid : ∀ {A₁ A₂ B₁ B₂} (p : A₁ ≡ B₁) (q : A₂ ≡ B₂) →
           (hid C p ,, hid D q) ≈ hid (Product C D) (cong₂ _,,_ p q)
-  ×-hid p q = BF-hid {C₁ = C} {C₂ = D} (idF ⁂ idF) p q
+  ×-hid p q = BF-hid {C₁ = C} {C₂ = D} (idF ×₁ idF) p q

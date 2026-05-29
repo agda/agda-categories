@@ -55,7 +55,7 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
       in begin
         F.₁ (second (f C.∘ g)) ⟨$⟩ x                ≈˘⟨ [ F ]-resp-∘ second∘second ⟩
         F.₁ (second g) ⟨$⟩ (F.₁ (second f) ⟨$⟩ x) ∎
-    ; F-resp-≈     = λ {Y Z} {f g} eq → F.F-resp-≈ (⁂-cong₂ C.Equiv.refl eq)
+    ; F-resp-≈     = λ {Y Z} {f g} eq → F.F-resp-≈ (×₁-cong₂ C.Equiv.refl eq)
     }
     where module F = Functor F
 
@@ -79,7 +79,7 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
       in begin
         F₁ (first (f C.∘ g)) ⟨$⟩ x              ≈˘⟨ [ F ]-resp-∘ first∘first ⟩
         F₁ (first g) ⟨$⟩ (F₁ (first f) ⟨$⟩ x) ∎
-    ; F-resp-≈     = λ {A B} {f g} eq → F-resp-≈ (⁂-cong₂ eq C.Equiv.refl)
+    ; F-resp-≈     = λ {A B} {f g} eq → F-resp-≈ (×₁-cong₂ eq C.Equiv.refl)
     }
     where open Functor F
 
@@ -113,7 +113,7 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
           F.₁ C.id ⟨$⟩ (α.η Y ⟨$⟩ x)         ≈⟨ F.identity ⟩
           α.η Y ⟨$⟩ x                        ∎
       ; homomorphism = λ {X Y Z} → Setoid.sym (F.₀ (Z × _)) ([ F ]-resp-∘ first∘first)
-      ; F-resp-≈     = λ eq → F.F-resp-≈ (⁂-cong₂ eq C.Equiv.refl)
+      ; F-resp-≈     = λ eq → F.F-resp-≈ (×₁-cong₂ eq C.Equiv.refl)
       }
 
 module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
@@ -121,8 +121,8 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
     module C  = Category C using (identityˡ; id; module HomReasoning)
     module CH = C.HomReasoning
     P = Presheaves′ o o C
-    open BinaryProducts (Cartesian.products Car) using (_×_; π₁; π₂; ⟨_,_⟩; Δ; first; second; _⁂_; Δ∘; ⁂∘Δ; second∘first;
-      π₁∘⁂; π₂∘⁂; project₁; project₂; η; product)
+    open BinaryProducts (Cartesian.products Car) using (_×_; π₁; π₂; ⟨_,_⟩; Δ; first; second; _×₁_; Δ∘; ×₁∘Δ; second∘first;
+      π₁∘×₁; π₂∘×₁; project₁; project₂; η; product)
     open Preₚ.IsCartesian C o o using () renaming (Presheaves-Cartesian to PC)
     module PPC = BinaryProducts PC.products using (π₁; π₂; _×_; project₁; project₂; ⟨_,_⟩; unique)
     module TPC = Terminal PC.terminal using (⊤; !; !-unique)
@@ -162,7 +162,7 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
           in  begin
             F.₁ Δ ⟨$⟩ (F.₁ (first f) ⟨$⟩ (α.η Y ⟨$⟩ (G.₁ f ⟨$⟩ x)))    ≈⟨ cong (F.₁ Δ ∙ F.₁ (first f)) (α.commute f) ⟩
             F.₁ Δ ∙ (F.₁ (first f) ∙ F.₁ (second f)) ⟨$⟩ (α.η X ⟨$⟩ x) ≈⟨ cong (F.₁ Δ) ([ F ]-resp-∘ second∘first) ⟩
-            F.₁ Δ ⟨$⟩ (F.₁ (f ⁂ f) ⟨$⟩ (α.η X ⟨$⟩ x))                 ≈⟨ [ F ]-resp-∘ ⁂∘Δ ⟩
+            F.₁ Δ ⟨$⟩ (F.₁ (f ×₁ f) ⟨$⟩ (α.η X ⟨$⟩ x))                 ≈⟨ [ F ]-resp-∘ ×₁∘Δ ⟩
             F.₁ ⟨ f , f ⟩ ⟨$⟩ (α.η X ⟨$⟩ x)                           ≈˘⟨ [ F ]-resp-∘ Δ∘ ⟩
             F.₁ f ⟨$⟩ (F.₁ Δ ⟨$⟩ (α.η X ⟨$⟩ x))
               ∎ }
@@ -183,8 +183,8 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
               let open SetoidR (H.₀ (X × Z))
               in begin
                 α.η (X × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ (G.₁ f ⟨$⟩ y))
-                  ≈˘⟨ cong (α.η (X × Z)) ( [ F ]-resp-∘ (π₁∘⁂ CH.○ C.identityˡ)
-                                           , [ G ]-resp-square π₂∘⁂) ⟩
+                  ≈˘⟨ cong (α.η (X × Z)) ( [ F ]-resp-∘ (π₁∘×₁ CH.○ C.identityˡ)
+                                           , [ G ]-resp-square π₂∘×₁) ⟩
                 α.η (X × Z) ⟨$⟩ (F.₁ (second f) ∙ F.₁ π₁ ⟨$⟩ x , G.₁ (second f) ⟨$⟩ (G.₁ π₂ ⟨$⟩ y))
                   ≈⟨ α.commute (second f) ⟩
                 H.₁ (second f) ⟨$⟩ (α.η (X × Y) ⟨$⟩ (F.₁ π₁ ⟨$⟩ x , G.₁ π₂ ⟨$⟩ y))
@@ -195,7 +195,7 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
         ; commute = λ {X Y} f {FX Z} {GZ} →
           let open SetoidR (H.₀ (Y × Z)) in begin
           α.η (Y × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ (F.₁ f ⟨$⟩ FX) , G.₁ π₂ ⟨$⟩ GZ)
-            ≈˘⟨ cong (α.η _) (([ F ]-resp-square π₁∘⁂) , ([ G ]-resp-∘ (π₂∘⁂ CH.○ C.identityˡ))) ⟩
+            ≈˘⟨ cong (α.η _) (([ F ]-resp-square π₁∘×₁) , ([ G ]-resp-∘ (π₂∘×₁ CH.○ C.identityˡ))) ⟩
           α.η (Y × Z) ⟨$⟩ (F.₁ (first f) ⟨$⟩ (F.₁ π₁ ⟨$⟩ FX) , G.₁ (first f) ⟨$⟩ (G.₁ π₂ ⟨$⟩ GZ))
             ≈⟨ α.commute (first f) ⟩
           H.₁ (first f) ⟨$⟩ (α.η (X × Z) ⟨$⟩ (F.₁ π₁ ⟨$⟩ FX , G.₁ π₂ ⟨$⟩ GZ)) ∎
@@ -228,8 +228,8 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
         αXx.η Y ⟨$⟩ z
           ≈˘⟨ G.identity ⟩
         G.₁ C.id ⟨$⟩ (αXx.η Y ⟨$⟩ z)
-          ≈˘⟨ [ G ]-resp-∘ (⁂∘Δ CH.○ η) ⟩
-        G.₁ Δ ⟨$⟩ (G.F₁ (π₁ ⁂ π₂) ⟨$⟩ (αXx.η Y ⟨$⟩ z))
+          ≈˘⟨ [ G ]-resp-∘ (×₁∘Δ CH.○ η) ⟩
+        G.₁ Δ ⟨$⟩ (G.F₁ (π₁ ×₁ π₂) ⟨$⟩ (αXx.η Y ⟨$⟩ z))
           ≈˘⟨ cong (G.₁ Δ) ([ G ]-resp-∘ second∘first) ⟩
         G.₁ Δ ⟨$⟩ (G.₁ (first π₁) ⟨$⟩ (G.₁ (second π₂) ⟨$⟩ (αXx.η Y ⟨$⟩ z)))
           ≈⟨ cong (G.₁ Δ ∙ G.₁ (first π₁)) (αXx.sym-commute π₂) ⟩

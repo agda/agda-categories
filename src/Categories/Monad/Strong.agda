@@ -14,7 +14,7 @@ open import Data.Product using (_,_)
 open import Categories.Category.Core using (Category)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Category.Monoidal using (Monoidal)
-open import Categories.Category.Product using (_⁂_)
+open import Categories.Category.Product using (_×₁_)
 open import Categories.NaturalTransformation using (NaturalTransformation)
 open import Categories.Monad using (Monad)
 import Categories.Category.Monoidal.Reasoning as MonoidalReasoning
@@ -36,7 +36,7 @@ record Strength {C : Category o ℓ e} (V : Monoidal C) (M : Monad C) : Set (o �
   open NaturalTransformation M.μ renaming (η to μ)
   open Functor F
   field
-    strengthen : NaturalTransformation (⊗ ∘F (idF ⁂ F)) (F ∘F ⊗)
+    strengthen : NaturalTransformation (⊗ ∘F (idF ×₁ F)) (F ∘F ⊗)
 
   module strengthen = NaturalTransformation strengthen
   private
@@ -83,7 +83,7 @@ record RightStrength {C : Category o ℓ e} (V : Monoidal C) (M : Monad C) : Set
   open NaturalTransformation M.μ renaming (η to μ)
   open Functor F
   field
-    strengthen : NaturalTransformation (⊗ ∘F (F ⁂ idF)) (F ∘F ⊗)
+    strengthen : NaturalTransformation (⊗ ∘F (F ×₁ idF)) (F ∘F ⊗)
 
   module strengthen = NaturalTransformation strengthen
   private

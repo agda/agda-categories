@@ -14,7 +14,7 @@ open import Relation.Binary using (Rel; IsEquivalence; Setoid)
 -- be explicit in imports to 'see' where the information comes from
 open import Categories.Adjoint using (Adjoint; _⊣_)
 open import Categories.Category.Core using (Category)
-open import Categories.Category.Product using (Product; _⁂_)
+open import Categories.Category.Product using (Product; _×₁_)
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Morphism using (Iso)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
@@ -68,10 +68,10 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ e} {L : Functor C D} {R :
 
   private
     Hom[L-,-] : Bifunctor C.op D (Setoids _ _)
-    Hom[L-,-] = Hom[ D ][-,-] ∘F (L.op ⁂ idF)
+    Hom[L-,-] = Hom[ D ][-,-] ∘F (L.op ×₁ idF)
 
     Hom[-,R-] : Bifunctor C.op D (Setoids _ _)
-    Hom[-,R-] = Hom[ C ][-,-] ∘F (idF ⁂ R)
+    Hom[-,R-] = Hom[ C ][-,-] ∘F (idF ×₁ R)
 
   module _ (Hni : NaturalIsomorphism Hom[L-,-] Hom[-,R-]) where
     open NaturalIsomorphism Hni
@@ -162,10 +162,10 @@ module _ {C : Category o ℓ e} {D : Category o′ ℓ′ e′} {L : Functor C D
     open Func
 
     Hom[L-,-] : Bifunctor C.op D (Setoids _ _)
-    Hom[L-,-] = LiftSetoids ℓ e ∘F Hom[ D ][-,-] ∘F (L.op ⁂ idF)
+    Hom[L-,-] = LiftSetoids ℓ e ∘F Hom[ D ][-,-] ∘F (L.op ×₁ idF)
 
     Hom[-,R-] : Bifunctor C.op D (Setoids _ _)
-    Hom[-,R-] = LiftSetoids ℓ′ e′ ∘F Hom[ C ][-,-] ∘F (idF ⁂ R)
+    Hom[-,R-] = LiftSetoids ℓ′ e′ ∘F Hom[ C ][-,-] ∘F (idF ×₁ R)
 
   module _ (Hni : Hom[L-,-] ≃ Hom[-,R-]) where
     open NaturalIsomorphism Hni using (module ⇒; module ⇐; iso)

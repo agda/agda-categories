@@ -13,7 +13,7 @@ open import Categories.Category.Monoidal.Bundle using (MonoidalCategory)
 open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
 open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
-open import Categories.Category.Product using (_⁂_)
+open import Categories.Category.Product using (_×₁_)
 open import Categories.Functor.Properties using ([_]-resp-square; [_]-resp-∘; [_]-resp-≅; [_]-resp-Iso)
 open import Categories.Functor.Cartesian using (CartesianF)
 open import Categories.Functor.Monoidal
@@ -85,7 +85,7 @@ module _ (C : MonoidalCategory o ℓ e) where
     ; unitaryʳ      = elimʳ (elimʳ ⊗.identity)
     }
     where
-      ⊗-homomorphism : ⊗ ∘F (idF ⁂ idF) ≃ idF ∘F ⊗
+      ⊗-homomorphism : ⊗ ∘F (idF ×₁ idF) ≃ idF ∘F ⊗
       ⊗-homomorphism = niHelper record
         { η   = λ _ → id
         ; η⁻¹ = λ _ → id
@@ -144,7 +144,7 @@ module _ (A : MonoidalCategory o ℓ e) (B : MonoidalCategory o′ ℓ′ e′) 
         (G.₁ F.φ ∘ G.φ) ∘ G.₁ (F.₁ f) ⊗₁ G.₁ (F.₁ g)  ≈⟨ pullʳ (G.⊗-homo.commute _) ⟩
         G.₁ F.φ ∘ G.₁ (F.₁ f B.⊗₁ F.₁ g) ∘ G.φ        ≈⟨ extendʳ ([ G ]-resp-square (F.⊗-homo.commute _)) ⟩
         G.₁ (F.₁ (f A.⊗₁ g)) ∘ G.₁ F.φ ∘ G.φ          ∎
-      ⊗-homo : NaturalTransformation (C.⊗ ∘F ((G ∘F F) ⁂ (G ∘F F))) ((G ∘F F) ∘F A.⊗)
+      ⊗-homo : NaturalTransformation (C.⊗ ∘F ((G ∘F F) ×₁ (G ∘F F))) ((G ∘F F) ∘F A.⊗)
       ⊗-homo = ntHelper record
         { η       = λ (X , Y) → G.₁ F.φ ∘ G.φ
         ; commute = λ (f , g) → commute f g
@@ -211,7 +211,7 @@ module _ (A : MonoidalCategory o ℓ e) (B : MonoidalCategory o′ ℓ′ e′) 
       open MP C.U
       ε : C.unit ≅ Functor.F₀ (G ∘F F) A.unit
       ε = ≅.trans G.ε ([ G ]-resp-≅ F.ε) 
-      ⊗-homo : C.⊗ ∘F (G ∘F F ⁂ G ∘F F) ≃ (G ∘F F) ∘F A.⊗
+      ⊗-homo : C.⊗ ∘F (G ∘F F ×₁ G ∘F F) ≃ (G ∘F F) ∘F A.⊗
       ⊗-homo = record
         { F⇒G = G∘F.⊗-homo
         ; F⇐G = G∘F-op.⊗-homo.op
@@ -235,7 +235,7 @@ module _ {A : MonoidalCategory o ℓ e} {B : MonoidalCategory o′ ℓ′ e′} 
 private
 
   module WithCartesianShorthands (C : CartesianCategory o ℓ e) where
-    open CartesianCategory C public renaming (_⁂_ to infixr 10 _×₁_)
+    open CartesianCategory C public
     open CartesianMonoidal cartesian using (monoidal)
     open ⊗-Reasoning monoidal public
 
@@ -264,23 +264,23 @@ module _ (C : CartesianCategory o ℓ e) (D : CartesianCategory o′ ℓ′ e′
 
       π₁-comm : ∀ {X Y} → F₁ C.π₁ ∘ φ⇒ {X} {Y} ≈ π₁
       π₁-comm = begin
-        F₁ C.π₁ ∘ φ⇒                        ≈⟨ pullˡ ([ F.F ]-resp-∘ (C.project₁ C.○ C.identityˡ)) ⟨
-        F₁ C.π₁ ∘ F₁ (C.id C.×₁ C.!) ∘ φ⇒   ≈⟨ refl⟩∘⟨ ⊗-homo.⇒.sym-commute _  ⟩
-        F₁ C.π₁ ∘ φ⇒ ∘ F₁ C.id ×₁ F₁ C.!    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ identity ⟩⊗⟨ lemma₁ ⟩
-        F₁ C.π₁ ∘ φ⇒ ∘ id ×₁ (ε⇒ ∘ !)       ≈⟨ refl⟩∘⟨ pushʳ split₂ʳ ⟩
-        F₁ C.π₁ ∘ (φ⇒ ∘ id ×₁ ε⇒) ∘ id ×₁ ! ≈⟨ pullˡ unitaryʳ ⟩
-        π₁ ∘ id ×₁ !                        ≈⟨ D.project₁ ○ identityˡ ⟩
-        π₁                                  ∎
+        F₁ C.π₁ ∘ φ⇒                                ≈⟨ pullˡ ([ F.F ]-resp-∘ (C.project₁ C.○ C.identityˡ)) ⟨
+        F₁ C.π₁ ∘ F₁ (C.id C.×₁ C.!) ∘ φ⇒           ≈⟨ refl⟩∘⟨ ⊗-homo.⇒.sym-commute _  ⟩
+        F₁ C.π₁ ∘ φ⇒ ∘ (F₁ C.id D.×₁ F₁ C.!)        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ identity ⟩⊗⟨ lemma₁ ⟩
+        F₁ C.π₁ ∘ φ⇒ ∘ (id D.×₁ (ε⇒ ∘ !))           ≈⟨ refl⟩∘⟨ pushʳ split₂ʳ ⟩
+        F₁ C.π₁ ∘ (φ⇒ ∘ (id D.×₁ ε⇒)) ∘ (id D.×₁ !) ≈⟨ pullˡ unitaryʳ ⟩
+        π₁ ∘ (id D.×₁ !)                            ≈⟨ D.project₁ ○ identityˡ ⟩
+        π₁                                          ∎
 
       π₂-comm : ∀ {X Y} → F₁ C.π₂ ∘ φ⇒ {X} {Y} ≈ π₂
       π₂-comm {X} {Y} = begin
-        F₁ C.π₂ ∘ φ⇒                        ≈⟨ pullˡ ([ F.F ]-resp-∘ (C.project₂ C.○ C.identityˡ)) ⟨
-        F₁ C.π₂ ∘ F₁ (C.! C.×₁ C.id) ∘ φ⇒   ≈⟨ refl⟩∘⟨ ⊗-homo.⇒.sym-commute _ ⟩
-        F₁ C.π₂ ∘ φ⇒ ∘ F₁ C.! ×₁ F₁ C.id    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ lemma₁ ⟩⊗⟨ identity ⟩
-        F₁ C.π₂ ∘ φ⇒ ∘ (ε⇒ ∘ !) ×₁ id       ≈⟨ refl⟩∘⟨ pushʳ split₁ʳ ⟩
-        F₁ C.π₂ ∘ (φ⇒ ∘ ε⇒ ×₁ id) ∘ ! ×₁ id ≈⟨ pullˡ unitaryˡ ⟩
-        π₂ ∘ ! ×₁ id                        ≈⟨ D.project₂ ○ identityˡ ⟩
-        π₂                                  ∎
+        F₁ C.π₂ ∘ φ⇒                                ≈⟨ pullˡ ([ F.F ]-resp-∘ (C.project₂ C.○ C.identityˡ)) ⟨
+        F₁ C.π₂ ∘ F₁ (C.! C.×₁ C.id) ∘ φ⇒           ≈⟨ refl⟩∘⟨ ⊗-homo.⇒.sym-commute _ ⟩
+        F₁ C.π₂ ∘ φ⇒ ∘ (F₁ C.! D.×₁ F₁ C.id)        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ lemma₁ ⟩⊗⟨ identity ⟩
+        F₁ C.π₂ ∘ φ⇒ ∘ ((ε⇒ ∘ !) D.×₁ id)           ≈⟨ refl⟩∘⟨ pushʳ split₁ʳ ⟩
+        F₁ C.π₂ ∘ (φ⇒ ∘ (ε⇒ D.×₁ id)) ∘ (! D.×₁ id) ≈⟨ pullˡ unitaryˡ ⟩
+        π₂ ∘ (! D.×₁ id)                            ≈⟨ D.project₂ ○ identityˡ ⟩
+        π₂                                          ∎
 
       unique : ∀ {X A B} {h : X ⇒ F₀ (A C.× B)} {i : X ⇒ F₀ A} {j : X ⇒ F₀ B} →
                  F₁ C.π₁ ∘ h ≈ i →

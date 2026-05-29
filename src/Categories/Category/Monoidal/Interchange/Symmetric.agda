@@ -18,7 +18,7 @@ import Categories.Category.Monoidal.Interchange.Braided as BraidedInterchange
   using (module swapInner; swapInner-braiding)
 import Categories.Category.Monoidal.Reasoning M as MonoidalReasoning
 import Categories.Category.Monoidal.Utilities M as MonoidalUtilities
-open import Categories.Category.Product using (_⁂_; assocˡ)
+open import Categories.Category.Product using (_×₁_; assocˡ)
 open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (_≃_; niHelper)
