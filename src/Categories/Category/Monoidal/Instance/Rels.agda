@@ -62,8 +62,8 @@ module _ {o ℓ} where
     { initial = record
       { ⊥ = ⊥
       ; ⊥-is-initial = record
-        { ! = λ ()
-        ; !-unique = λ _ → (λ { {()} }) , (λ { {()} })
+        { ¡ = λ ()
+        ; ¡-unique = λ _ → (λ { {()} }) , (λ { {()} })
         }
       }
     ; coproducts = record

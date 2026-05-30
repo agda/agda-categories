@@ -30,8 +30,8 @@ private
 
 IsInitial⇒coIsTerminal : IsInitial X → IsTerminal X
 IsInitial⇒coIsTerminal is⊥ = record
-  { !        = !
-  ; !-unique = !-unique
+  { !        = ¡
+  ; !-unique = ¡-unique
   }
   where open IsInitial is⊥
 
@@ -44,8 +44,8 @@ IsInitial⇒coIsTerminal is⊥ = record
 
 coIsTerminal⇒IsInitial : IsTerminal X → IsInitial X
 coIsTerminal⇒IsInitial is⊤ = record
-  { !        = !
-  ; !-unique = !-unique
+  { ¡        = !
+  ; ¡-unique = !-unique
   }
   where open IsTerminal is⊤
 
@@ -105,7 +105,7 @@ coIndexedProductOf⇒IndexedCoproductOf ΠP = record
 -- Zero objects are autodual
 IsZero⇒coIsZero : IsZero C Z → IsZero op Z
 IsZero⇒coIsZero is-zero = record
-  { isInitial = record { ! = ! ; !-unique = !-unique }
+  { isInitial = record { ¡ = ! ; ¡-unique = !-unique }
   ; isTerminal = record { ! = ¡ ; !-unique = ¡-unique }
   }
   where
@@ -113,7 +113,7 @@ IsZero⇒coIsZero is-zero = record
 
 coIsZero⇒IsZero : IsZero op Z → IsZero C Z
 coIsZero⇒IsZero co-is-zero = record
-  { isInitial = record { ! = ! ; !-unique = !-unique }
+  { isInitial = record { ¡ = ! ; ¡-unique = !-unique }
   ; isTerminal = record { ! = ¡ ; !-unique = ¡-unique }
   }
   where

@@ -73,8 +73,8 @@ Nat-Cocartesian = record
   { initial = record
     { ⊥ = 0
     ; ⊥-is-initial = record
-      { ! = λ ()
-      ; !-unique = λ _ ()
+      { ¡ = λ ()
+      ; ¡-unique = λ _ ()
       }
     }
   ; coproducts = record { coproduct = λ {m} {n} → Coprod m n }
