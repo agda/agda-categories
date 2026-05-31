@@ -80,7 +80,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     ; products = record { product = ×-product }
     }
 
-  open Cartesian isCartesian using (_⁂_)
+  open Cartesian isCartesian using (_×₁_)
 
   field
 
@@ -90,9 +90,9 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     eval  : B ^ A × A ⇒ B
     curry : C × A ⇒ B → C ⇒ B ^ A
 
-    eval-comp  : eval ∘ (curry f ⁂ id) ≈ f
+    eval-comp  : eval ∘ (curry f ×₁ id) ≈ f
 
-    curry-unique : eval ∘ (f ⁂ id) ≈ g → f ≈ curry g
+    curry-unique : eval ∘ (f ×₁ id) ≈ g → f ≈ curry g
 
   curry-resp-≈ : f ≈ g → curry f ≈ curry g
   curry-resp-≈ f≈g = curry-unique (eval-comp ○ f≈g)
@@ -111,7 +111,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
       begin
         eval ∘ [ C⊗A ⇒ ×-product ] curry (g ∘ repack ×-product C⊗A) ×id
       ≈˘⟨ pullʳ [ ×-product ⇒ ×-product ]×∘⟨⟩ ⟩
-        (eval ∘ (curry (g ∘ repack ×-product C⊗A) ⁂ id)) ∘ repack C⊗A ×-product
+        (eval ∘ (curry (g ∘ repack ×-product C⊗A) ×₁ id)) ∘ repack C⊗A ×-product
       ≈⟨ eval-comp ⟩∘⟨refl ⟩
         (g ∘ repack ×-product C⊗A) ∘ repack C⊗A ×-product
       ≈⟨ cancelʳ (repack∘repack≈id ×-product C⊗A) ⟩
@@ -119,7 +119,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
       ∎
     ; λ-unique = λ {C} C⊗A {g} {f} hyp →
       curry-unique (begin
-        eval ∘ (f ⁂ id)
+        eval ∘ (f ×₁ id)
       ≈˘⟨ pullʳ [ C⊗A ⇒ ×-product ]×∘⟨⟩ ⟩
         (eval ∘ [ C⊗A ⇒ ×-product ] f ×id) ∘ repack ×-product C⊗A
       ≈⟨ hyp ⟩∘⟨refl ⟩

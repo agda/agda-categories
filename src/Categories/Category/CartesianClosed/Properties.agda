@@ -24,7 +24,7 @@ open import Categories.Object.Terminal using (Terminal)
 
 open Category 𝒞
 open CartesianClosed 𝓥 using (_^_; eval′; cartesian)
-open Cartesian cartesian using (_×_; ⟨_,_⟩; π₁; π₂; project₁; project₂; first; _⁂_; ⊤; ⟨⟩∘; ⁂∘⟨⟩; -×_)
+open Cartesian cartesian using (_×_; ⟨_,_⟩; π₁; π₂; project₁; project₂; first; _×₁_; ⊤; ⟨⟩∘; ×₁∘⟨⟩; -×_)
 open CartesianMonoidalClosed 𝒞 𝓥 using (closedMonoidal)
 
 open HomReasoning
@@ -48,9 +48,9 @@ lawvere-fixed-point {A = A} {B = B} ϕ surjective f = g ∘ x , g-fixed-point
     g-surjective : eval′ ∘ first ϕ ∘ ⟨ x , x ⟩ ≈ g ∘ x
     g-surjective = proj₂ (surjective g) x
 
-    lemma : ∀ {A B C D} → (f : B ⇒ C) → (g : B ⇒ D) → (h : A ⇒ B) → (f ⁂ g) ∘ ⟨ h , h ⟩ ≈ ⟨ f , g ⟩ ∘ h
+    lemma : ∀ {A B C D} → (f : B ⇒ C) → (g : B ⇒ D) → (h : A ⇒ B) → (f ×₁ g) ∘ ⟨ h , h ⟩ ≈ ⟨ f , g ⟩ ∘ h
     lemma f g h = begin
-      (f ⁂ g) ∘ ⟨ h , h ⟩ ≈⟨  ⁂∘⟨⟩ ⟩
+      (f ×₁ g) ∘ ⟨ h , h ⟩ ≈⟨  ×₁∘⟨⟩ ⟩
       ⟨ f ∘ h , g ∘ h ⟩   ≈˘⟨ ⟨⟩∘ ⟩
       ⟨ f , g ⟩ ∘ h       ∎
 

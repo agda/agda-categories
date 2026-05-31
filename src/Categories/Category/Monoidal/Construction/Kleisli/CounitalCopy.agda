@@ -67,14 +67,14 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (ELM : Equationa
     ; identityʳ = identityʳ'
     }
     where
-    assoc' : (ψ ∘ ((η ∘ ⟨ id , id ⟩) ⁂ η)) * ∘ η ∘ ⟨ id , id ⟩
-           ≈ ((η ∘ α⇐) * ∘ ψ ∘ (η ⁂ (η ∘ ⟨ id , id ⟩))) * ∘ η ∘ ⟨ id , id ⟩
+    assoc' : (ψ ∘ ((η ∘ ⟨ id , id ⟩) ×₁ η)) * ∘ η ∘ ⟨ id , id ⟩
+           ≈ ((η ∘ α⇐) * ∘ ψ ∘ (η ×₁ (η ∘ ⟨ id , id ⟩))) * ∘ η ∘ ⟨ id , id ⟩
     assoc' = begin 
-      (ψ ∘ ((η ∘ ⟨ id , id ⟩) ⁂ η)) * ∘ η ∘ ⟨ id , id ⟩ 
+      (ψ ∘ ((η ∘ ⟨ id , id ⟩) ×₁ η)) * ∘ η ∘ ⟨ id , id ⟩ 
         ≈⟨ pullˡ *-identityʳ ⟩ 
-      (ψ ∘ ((η ∘ ⟨ id , id ⟩) ⁂ η)) ∘ ⟨ id , id ⟩ 
-        ≈⟨ pullʳ (⁂∘⟨⟩ ○ ⟨⟩-cong₂ identityʳ refl ○ sym ⁂∘⟨⟩) ⟩ 
-      ψ ∘ (η ⁂ η) ∘ ⟨ ⟨ id , id ⟩ , id ⟩ 
+      (ψ ∘ ((η ∘ ⟨ id , id ⟩) ×₁ η)) ∘ ⟨ id , id ⟩ 
+        ≈⟨ pullʳ (×₁∘⟨⟩ ○ ⟨⟩-cong₂ identityʳ refl ○ sym ×₁∘⟨⟩) ⟩ 
+      ψ ∘ (η ×₁ η) ∘ ⟨ ⟨ id , id ⟩ , id ⟩ 
         ≈⟨ pullˡ ψ-η ⟩ 
       η ∘ ⟨ ⟨ id , id ⟩ , id ⟩ 
         ≈˘⟨ pullʳ assocʳ∘⟨⟩ ⟩ 
@@ -82,31 +82,31 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (ELM : Equationa
         ≈˘⟨ pullˡ *-identityʳ ⟩ 
       (η ∘ α⇐) * ∘ η ∘ ⟨ id , ⟨ id , id ⟩ ⟩ 
         ≈˘⟨ refl⟩∘⟨ pullˡ ψ-η ⟩ 
-      (η ∘ α⇐) * ∘ ψ ∘ (η ⁂ η) ∘ ⟨ id , ⟨ id , id ⟩ ⟩ 
-        ≈˘⟨ pullʳ (pullʳ (⁂∘⟨⟩ ○ ⟨⟩-cong₂ refl identityʳ ○ sym ⁂∘⟨⟩)) ⟩ 
-      ((η ∘ α⇐) * ∘ ψ ∘ (η ⁂ (η ∘ ⟨ id , id ⟩))) ∘ ⟨ id , id ⟩ 
+      (η ∘ α⇐) * ∘ ψ ∘ (η ×₁ η) ∘ ⟨ id , ⟨ id , id ⟩ ⟩ 
+        ≈˘⟨ pullʳ (pullʳ (×₁∘⟨⟩ ○ ⟨⟩-cong₂ refl identityʳ ○ sym ×₁∘⟨⟩)) ⟩ 
+      ((η ∘ α⇐) * ∘ ψ ∘ (η ×₁ (η ∘ ⟨ id , id ⟩))) ∘ ⟨ id , id ⟩ 
         ≈˘⟨ pullˡ *-identityʳ ⟩ 
-      ((η ∘ α⇐) * ∘ ψ ∘ (η ⁂ (η ∘ ⟨ id , id ⟩))) * ∘ η ∘ ⟨ id , id ⟩ 
+      ((η ∘ α⇐) * ∘ ψ ∘ (η ×₁ (η ∘ ⟨ id , id ⟩))) * ∘ η ∘ ⟨ id , id ⟩ 
         ∎ 
-    identityˡ' : η ∘ ⟨ ! , id ⟩ ≈ (ψ ∘ ((η ∘ !) ⁂ η)) * ∘ η ∘ ⟨ id , id ⟩
+    identityˡ' : η ∘ ⟨ ! , id ⟩ ≈ (ψ ∘ ((η ∘ !) ×₁ η)) * ∘ η ∘ ⟨ id , id ⟩
     identityˡ' = begin 
       η ∘ ⟨ ! , id ⟩ 
         ≈˘⟨ pullˡ ψ-η ⟩ 
-      ψ ∘ (η ⁂ η) ∘ ⟨ ! , id ⟩ 
-        ≈˘⟨ pullʳ (⁂∘⟨⟩ ○ ⟨⟩-cong₂ identityʳ identityʳ ○ sym (⁂∘⟨⟩ ○ ⟨⟩-cong₂ refl identityʳ)) ⟩ 
-      (ψ ∘ ((η ∘ !) ⁂ η)) ∘ ⟨ id , id ⟩ 
+      ψ ∘ (η ×₁ η) ∘ ⟨ ! , id ⟩ 
+        ≈˘⟨ pullʳ (×₁∘⟨⟩ ○ ⟨⟩-cong₂ identityʳ identityʳ ○ sym (×₁∘⟨⟩ ○ ⟨⟩-cong₂ refl identityʳ)) ⟩ 
+      (ψ ∘ ((η ∘ !) ×₁ η)) ∘ ⟨ id , id ⟩ 
         ≈˘⟨ pullˡ *-identityʳ ⟩ 
-      (ψ ∘ ((η ∘ !) ⁂ η)) * ∘ η ∘ ⟨ id , id ⟩ 
+      (ψ ∘ ((η ∘ !) ×₁ η)) * ∘ η ∘ ⟨ id , id ⟩ 
         ∎
-    identityʳ' : η ∘ ⟨ id , ! ⟩ ≈ (ψ ∘ (η ⁂ (η ∘ !))) * ∘ η ∘ ⟨ id , id ⟩
+    identityʳ' : η ∘ ⟨ id , ! ⟩ ≈ (ψ ∘ (η ×₁ (η ∘ !))) * ∘ η ∘ ⟨ id , id ⟩
     identityʳ' = begin 
       η ∘ ⟨ id , ! ⟩ 
         ≈˘⟨ pullˡ ψ-η ⟩ 
-      ψ ∘ (η ⁂ η) ∘ ⟨ id , ! ⟩ 
-        ≈˘⟨ pullʳ (⁂∘⟨⟩ ○ ⟨⟩-cong₂ refl identityʳ ○ sym ⁂∘⟨⟩) ⟩ 
-      (ψ ∘ (η ⁂ (η ∘ !))) ∘ ⟨ id , id ⟩ 
+      ψ ∘ (η ×₁ η) ∘ ⟨ id , ! ⟩ 
+        ≈˘⟨ pullʳ (×₁∘⟨⟩ ○ ⟨⟩-cong₂ refl identityʳ ○ sym ×₁∘⟨⟩) ⟩ 
+      (ψ ∘ (η ×₁ (η ∘ !))) ∘ ⟨ id , id ⟩ 
         ≈˘⟨ pullˡ *-identityʳ ⟩ 
-      (ψ ∘ (η ⁂ (η ∘ !))) * ∘ η ∘ ⟨ id , id ⟩ 
+      (ψ ∘ (η ×₁ (η ∘ !))) * ∘ η ∘ ⟨ id , id ⟩ 
         ∎ 
 
   Kleisli-CounitalCopy : CounitalCopy (Kleisli-Symmetric (symmetric 𝒞 cartesian) commutativeMonad)
@@ -119,13 +119,13 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (ELM : Equationa
     ; preserves = preserves'
     }
     where
-    natural' : ∀ {A B} (f : A ⇒ M.F.₀ B) → (η ∘ Δ) * ∘ f ≈ (ψ ∘ (f ⁂ f)) * ∘ η ∘ Δ
+    natural' : ∀ {A B} (f : A ⇒ M.F.₀ B) → (η ∘ Δ) * ∘ f ≈ (ψ ∘ (f ×₁ f)) * ∘ η ∘ Δ
     natural' f = begin 
       (η ∘ Δ) * ∘ f           ≈⟨ *⇒F₁ ⟩∘⟨refl ⟩ 
       M.F.₁ Δ ∘ f             ≈˘⟨ pullˡ ψ-lifting ⟩ 
-      ψ ∘ Δ ∘ f               ≈˘⟨ pullʳ (⁂∘Δ ○ sym Δ∘) ⟩ 
-      (ψ ∘ (f ⁂ f)) ∘ Δ       ≈˘⟨ pullˡ *-identityʳ ⟩ 
-      (ψ ∘ (f ⁂ f)) * ∘ η ∘ Δ ∎
+      ψ ∘ Δ ∘ f               ≈˘⟨ pullʳ (×₁∘Δ ○ sym Δ∘) ⟩ 
+      (ψ ∘ (f ×₁ f)) ∘ Δ       ≈˘⟨ pullˡ *-identityʳ ⟩ 
+      (ψ ∘ (f ×₁ f)) * ∘ η ∘ Δ ∎
     inverse₁' : (η ∘ Δ) * ∘ (η ∘ λ⇒) ≈ η
     inverse₁' = begin 
       (η ∘ Δ) * ∘ (η ∘ λ⇒) ≈⟨ pullˡ *-identityʳ ⟩ 
@@ -142,29 +142,29 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (ELM : Equationa
       (η ∘ swap) * ∘ η ∘ ⟨ id , id ⟩ ≈⟨ extendʳ *-identityʳ ⟩ 
       η ∘ swap ∘ ⟨ id , id ⟩         ≈⟨ refl⟩∘⟨ swap∘⟨⟩ ⟩ 
       η ∘ ⟨ id , id ⟩                ∎
-    preserves' : ∀ {X Y} → (η ∘ α⇐) * ∘ (ψ ∘ (η ⁂ (η ∘ α⇒))) * ∘ (ψ ∘ (η ⁂ ((ψ ∘ ((η ∘ swap) ⁂ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) * ∘ (ψ ∘ ((η ∘ Δ) ⁂ (η ∘ Δ)))
+    preserves' : ∀ {X Y} → (η ∘ α⇐) * ∘ (ψ ∘ (η ×₁ (η ∘ α⇒))) * ∘ (ψ ∘ (η ×₁ ((ψ ∘ ((η ∘ swap) ×₁ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) * ∘ (ψ ∘ ((η ∘ Δ) ×₁ (η ∘ Δ)))
                ≈ η ∘ Δ {X × Y}
     preserves' = begin 
-      (η ∘ α⇐) * ∘ (ψ ∘ (η ⁂ (η ∘ α⇒))) * ∘ (ψ ∘ (η ⁂ ((ψ ∘ ((η ∘ swap) ⁂ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) * ∘ (ψ ∘ ((η ∘ Δ) ⁂ (η ∘ Δ))) 
+      (η ∘ α⇐) * ∘ (ψ ∘ (η ×₁ (η ∘ α⇒))) * ∘ (ψ ∘ (η ×₁ ((ψ ∘ ((η ∘ swap) ×₁ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) * ∘ (ψ ∘ ((η ∘ Δ) ×₁ (η ∘ Δ))) 
         ≈⟨ refl⟩∘⟨ refl⟩∘⟨ helper ⟩ 
-      (η ∘ α⇐) * ∘ (ψ ∘ (η ⁂ (η ∘ α⇒))) * ∘ ((η ∘ (id ⁂ ((swap ⁂ id) ∘ α⇐))) ∘ α⇒) ∘ (Δ ⁂ Δ)
+      (η ∘ α⇐) * ∘ (ψ ∘ (η ×₁ (η ∘ α⇒))) * ∘ ((η ∘ (id ×₁ ((swap ×₁ id) ∘ α⇐))) ∘ α⇒) ∘ (Δ ×₁ Δ)
         ≈⟨ refl⟩∘⟨ (pullˡ (pullˡ (pullˡ *-identityʳ))) ⟩ 
-      (η ∘ α⇐) * ∘ (((ψ ∘ (η ⁂ (η ∘ α⇒))) ∘ (id ⁂ (swap ⁂ id) ∘ α⇐)) ∘ α⇒) ∘ (Δ ⁂ Δ)
-        ≈˘⟨ refl⟩∘⟨ (((∘-resp-≈ʳ (⁂∘⁂ ○ ⁂-cong₂ identityʳ refl)) ⟩∘⟨refl) ⟩∘⟨refl) ⟩∘⟨refl ⟩ 
-      (η ∘ α⇐) * ∘ (((ψ ∘ (η ⁂ η) ∘ (id ⁂ α⇒)) ∘ (id ⁂ (swap ⁂ id) ∘ α⇐)) ∘ α⇒) ∘ (Δ ⁂ Δ)
+      (η ∘ α⇐) * ∘ (((ψ ∘ (η ×₁ (η ∘ α⇒))) ∘ (id ×₁ (swap ×₁ id) ∘ α⇐)) ∘ α⇒) ∘ (Δ ×₁ Δ)
+        ≈˘⟨ refl⟩∘⟨ (((∘-resp-≈ʳ (×₁∘×₁ ○ ×₁-cong₂ identityʳ refl)) ⟩∘⟨refl) ⟩∘⟨refl) ⟩∘⟨refl ⟩ 
+      (η ∘ α⇐) * ∘ (((ψ ∘ (η ×₁ η) ∘ (id ×₁ α⇒)) ∘ (id ×₁ (swap ×₁ id) ∘ α⇐)) ∘ α⇒) ∘ (Δ ×₁ Δ)
         ≈⟨ refl⟩∘⟨ ((pullˡ ψ-η ⟩∘⟨refl) ⟩∘⟨refl) ⟩∘⟨refl ⟩ 
-      (η ∘ α⇐) * ∘ (((η ∘ (id ⁂ α⇒)) ∘ (id ⁂ (swap ⁂ id) ∘ α⇐)) ∘ α⇒) ∘ (Δ ⁂ Δ)
+      (η ∘ α⇐) * ∘ (((η ∘ (id ×₁ α⇒)) ∘ (id ×₁ (swap ×₁ id) ∘ α⇐)) ∘ α⇒) ∘ (Δ ×₁ Δ)
         ≈⟨ pullˡ (pullˡ (pullˡ (pullˡ *-identityʳ))) ⟩ 
-      ((((η ∘ α⇐) ∘ (id ⁂ α⇒)) ∘ (id ⁂ (swap ⁂ id) ∘ α⇐)) ∘ α⇒) ∘ (Δ ⁂ Δ)
+      ((((η ∘ α⇐) ∘ (id ×₁ α⇒)) ∘ (id ×₁ (swap ×₁ id) ∘ α⇐)) ∘ α⇒) ∘ (Δ ×₁ Δ)
         ≈⟨ refl⟩∘⟨ ⟨⟩-cong₂ (⟨⟩∘ ○ ⟨⟩-cong₂ identityˡ identityˡ) (⟨⟩∘ ○ ⟨⟩-cong₂ identityˡ identityˡ) ⟩ 
-      ((((η ∘ α⇐) ∘ (id ⁂ α⇒)) ∘ (id ⁂ (swap ⁂ id) ∘ α⇐)) ∘ α⇒) ∘ ⟨ ⟨ π₁ , π₁ ⟩ , ⟨ π₂ , π₂ ⟩ ⟩
+      ((((η ∘ α⇐) ∘ (id ×₁ α⇒)) ∘ (id ×₁ (swap ×₁ id) ∘ α⇐)) ∘ α⇒) ∘ ⟨ ⟨ π₁ , π₁ ⟩ , ⟨ π₂ , π₂ ⟩ ⟩
         ≈⟨ pullʳ assocˡ∘⟨⟩ ⟩ 
-      (((η ∘ α⇐) ∘ (id ⁂ α⇒)) ∘ (id ⁂ (swap ⁂ id) ∘ α⇐)) ∘ ⟨ π₁ , ⟨ π₁ , ⟨ π₂ , π₂ ⟩ ⟩ ⟩
-        ≈⟨ pullʳ (⁂∘⟨⟩ ○ ⟨⟩-cong₂ identityˡ (pullʳ assocʳ∘⟨⟩)) ⟩ 
-      ((η ∘ α⇐) ∘ (id ⁂ α⇒)) ∘ ⟨ π₁ , (swap ⁂ id) ∘ ⟨ ⟨ π₁ , π₂ ⟩ , π₂ ⟩ ⟩
-        ≈⟨ refl⟩∘⟨ ⟨⟩-cong₂ refl (⁂∘⟨⟩ ○ ⟨⟩-cong₂ swap∘⟨⟩ identityˡ) ⟩ 
-      ((η ∘ α⇐) ∘ (id ⁂ α⇒)) ∘ ⟨ π₁ , ⟨ ⟨ π₂ , π₁ ⟩ , π₂ ⟩ ⟩
-        ≈⟨ pullʳ (⁂∘⟨⟩ ○ ⟨⟩-cong₂ identityˡ assocˡ∘⟨⟩) ⟩ 
+      (((η ∘ α⇐) ∘ (id ×₁ α⇒)) ∘ (id ×₁ (swap ×₁ id) ∘ α⇐)) ∘ ⟨ π₁ , ⟨ π₁ , ⟨ π₂ , π₂ ⟩ ⟩ ⟩
+        ≈⟨ pullʳ (×₁∘⟨⟩ ○ ⟨⟩-cong₂ identityˡ (pullʳ assocʳ∘⟨⟩)) ⟩ 
+      ((η ∘ α⇐) ∘ (id ×₁ α⇒)) ∘ ⟨ π₁ , (swap ×₁ id) ∘ ⟨ ⟨ π₁ , π₂ ⟩ , π₂ ⟩ ⟩
+        ≈⟨ refl⟩∘⟨ ⟨⟩-cong₂ refl (×₁∘⟨⟩ ○ ⟨⟩-cong₂ swap∘⟨⟩ identityˡ) ⟩ 
+      ((η ∘ α⇐) ∘ (id ×₁ α⇒)) ∘ ⟨ π₁ , ⟨ ⟨ π₂ , π₁ ⟩ , π₂ ⟩ ⟩
+        ≈⟨ pullʳ (×₁∘⟨⟩ ○ ⟨⟩-cong₂ identityˡ assocˡ∘⟨⟩) ⟩ 
       (η ∘ α⇐) ∘ ⟨ π₁ , ⟨ π₂ , ⟨ π₁ , π₂ ⟩ ⟩ ⟩
         ≈⟨ pullʳ assocʳ∘⟨⟩ ⟩ 
       η ∘ ⟨ ⟨ π₁ , π₂ ⟩ , ⟨ π₁ , π₂ ⟩ ⟩
@@ -172,27 +172,27 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (ELM : Equationa
       η ∘ Δ 
         ∎
       where
-      helper : (ψ ∘ (η ⁂ ((ψ ∘ ((η ∘ swap) ⁂ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) * ∘ (ψ ∘ ((η ∘ Δ) ⁂ (η ∘ Δ))) ≈ ((η ∘ (id ⁂ ((swap ⁂ id) ∘ α⇐))) ∘ α⇒) ∘ (Δ ⁂ Δ)
+      helper : (ψ ∘ (η ×₁ ((ψ ∘ ((η ∘ swap) ×₁ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) * ∘ (ψ ∘ ((η ∘ Δ) ×₁ (η ∘ Δ))) ≈ ((η ∘ (id ×₁ ((swap ×₁ id) ∘ α⇐))) ∘ α⇒) ∘ (Δ ×₁ Δ)
       helper = begin
-        (ψ ∘ (η ⁂ ((ψ ∘ ((η ∘ swap) ⁂ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) * ∘ (ψ ∘ ((η ∘ Δ) ⁂ (η ∘ Δ))) 
-          ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ ∘-resp-≈ʳ ⁂∘⁂ ⟩ 
-        (ψ ∘ (η ⁂ ((ψ ∘ ((η ∘ swap) ⁂ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) * ∘ (ψ ∘ (η ⁂ η) ∘ (Δ ⁂ Δ)) 
+        (ψ ∘ (η ×₁ ((ψ ∘ ((η ∘ swap) ×₁ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) * ∘ (ψ ∘ ((η ∘ Δ) ×₁ (η ∘ Δ))) 
+          ≈˘⟨ refl⟩∘⟨ refl⟩∘⟨ ∘-resp-≈ʳ ×₁∘×₁ ⟩ 
+        (ψ ∘ (η ×₁ ((ψ ∘ ((η ∘ swap) ×₁ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) * ∘ (ψ ∘ (η ×₁ η) ∘ (Δ ×₁ Δ)) 
           ≈⟨ refl⟩∘⟨ refl⟩∘⟨ pullˡ ψ-η ⟩ 
-        (ψ ∘ (η ⁂ ((ψ ∘ ((η ∘ swap) ⁂ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) * ∘ (η ∘ (Δ ⁂ Δ)) 
+        (ψ ∘ (η ×₁ ((ψ ∘ ((η ∘ swap) ×₁ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) * ∘ (η ∘ (Δ ×₁ Δ)) 
           ≈⟨ refl⟩∘⟨ pullˡ *-identityʳ ⟩ 
-        (ψ ∘ (η ⁂ ((ψ ∘ ((η ∘ swap) ⁂ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) ∘ (Δ ⁂ Δ) 
+        (ψ ∘ (η ×₁ ((ψ ∘ ((η ∘ swap) ×₁ η)) * ∘ η ∘ α⇐))) * ∘ (η ∘ α⇒) ∘ (Δ ×₁ Δ) 
           ≈⟨ pullˡ (pullˡ *-identityʳ) ⟩ 
-        ((ψ ∘ (η ⁂ ((ψ ∘ ((η ∘ swap) ⁂ η)) * ∘ η ∘ α⇐))) ∘ α⇒) ∘ (Δ ⁂ Δ) 
-          ≈˘⟨ ((refl⟩∘⟨ (⁂-cong₂ refl (∘-resp-≈ˡ (*-resp-≈ (∘-resp-≈ʳ (⁂∘⁂ ○ ⁂-cong₂ refl identityʳ)))))) ⟩∘⟨refl) ⟩∘⟨refl ⟩ 
-        ((ψ ∘ (η ⁂ ((ψ ∘ (η ⁂ η) ∘ (swap ⁂ id)) * ∘ η ∘ α⇐))) ∘ α⇒) ∘ (Δ ⁂ Δ) 
-          ≈⟨ ((refl⟩∘⟨ (⁂-cong₂ refl (∘-resp-≈ˡ (*-resp-≈ (pullˡ ψ-η))))) ⟩∘⟨refl) ⟩∘⟨refl ⟩ 
-        ((ψ ∘ (η ⁂ ((η ∘ (swap ⁂ id)) * ∘ η ∘ α⇐))) ∘ α⇒) ∘ (Δ ⁂ Δ)
-          ≈⟨ ((refl⟩∘⟨ (⁂-cong₂ refl (pullˡ *-identityʳ ○ assoc))) ⟩∘⟨refl) ⟩∘⟨refl ⟩ 
-        ((ψ ∘ (η ⁂ (η ∘ (swap ⁂ id) ∘ α⇐))) ∘ α⇒) ∘ (Δ ⁂ Δ)
-          ≈˘⟨ ((refl⟩∘⟨ (⁂∘⁂ ○ ⁂-cong₂ identityʳ refl)) ⟩∘⟨refl) ⟩∘⟨refl ⟩ 
-        ((ψ ∘ (η ⁂ η) ∘ (id ⁂ ((swap ⁂ id) ∘ α⇐))) ∘ α⇒) ∘ (Δ ⁂ Δ)
+        ((ψ ∘ (η ×₁ ((ψ ∘ ((η ∘ swap) ×₁ η)) * ∘ η ∘ α⇐))) ∘ α⇒) ∘ (Δ ×₁ Δ) 
+          ≈˘⟨ ((refl⟩∘⟨ (×₁-cong₂ refl (∘-resp-≈ˡ (*-resp-≈ (∘-resp-≈ʳ (×₁∘×₁ ○ ×₁-cong₂ refl identityʳ)))))) ⟩∘⟨refl) ⟩∘⟨refl ⟩ 
+        ((ψ ∘ (η ×₁ ((ψ ∘ (η ×₁ η) ∘ (swap ×₁ id)) * ∘ η ∘ α⇐))) ∘ α⇒) ∘ (Δ ×₁ Δ) 
+          ≈⟨ ((refl⟩∘⟨ (×₁-cong₂ refl (∘-resp-≈ˡ (*-resp-≈ (pullˡ ψ-η))))) ⟩∘⟨refl) ⟩∘⟨refl ⟩ 
+        ((ψ ∘ (η ×₁ ((η ∘ (swap ×₁ id)) * ∘ η ∘ α⇐))) ∘ α⇒) ∘ (Δ ×₁ Δ)
+          ≈⟨ ((refl⟩∘⟨ (×₁-cong₂ refl (pullˡ *-identityʳ ○ assoc))) ⟩∘⟨refl) ⟩∘⟨refl ⟩ 
+        ((ψ ∘ (η ×₁ (η ∘ (swap ×₁ id) ∘ α⇐))) ∘ α⇒) ∘ (Δ ×₁ Δ)
+          ≈˘⟨ ((refl⟩∘⟨ (×₁∘×₁ ○ ×₁-cong₂ identityʳ refl)) ⟩∘⟨refl) ⟩∘⟨refl ⟩ 
+        ((ψ ∘ (η ×₁ η) ∘ (id ×₁ ((swap ×₁ id) ∘ α⇐))) ∘ α⇒) ∘ (Δ ×₁ Δ)
           ≈⟨ (pullˡ ψ-η ⟩∘⟨refl) ⟩∘⟨refl ⟩ 
-        ((η ∘ (id ⁂ ((swap ⁂ id) ∘ α⇐))) ∘ α⇒) ∘ (Δ ⁂ Δ)
+        ((η ∘ (id ×₁ ((swap ×₁ id) ∘ α⇐))) ∘ α⇒) ∘ (Δ ×₁ Δ)
           ∎
 
 
