@@ -112,8 +112,8 @@ Thinnings = record
 
 []-initial : IsInitial Thinnings []
 []-initial = record
-  { ! = Sublist-[]-universal _
-  ; !-unique = λ f → Category.Equiv.reflexive Thinnings (Sublist-[]-irrelevant _ f)
+  { ¡ = Sublist-[]-universal _
+  ; ¡-unique = λ f → Category.Equiv.reflexive Thinnings (Sublist-[]-irrelevant _ f)
   }
 
 initial : Initial Thinnings

@@ -72,18 +72,18 @@ private
     IsTerminal (F-Coalgebras F) T →
     IsInitial (F-Algebras (Functor.op F)) (F-Coalgebra⇒coF-Algebra T)
   coIsTerminal⇒Initial {C = C} {F = F} {T = T} isTT = record
-    { ! =
-        F-Coalgebra-Morphism⇒coF-Algebra-Morphism ¡
-    ; !-unique =
+    { ¡ =
+        F-Coalgebra-Morphism⇒coF-Algebra-Morphism !
+    ; ¡-unique =
         λ  γ  → Functor.F-resp-≈ (F-Coalgebras⇒coF-Algebras F)
-        {f = ¡}
+        {f = !}
         {g = coF-Algebra-Morphism⇒F-Coalgebra-Morphism γ}
-        (¡-unique (coF-Algebra-Morphism⇒F-Coalgebra-Morphism γ))
+        (!-unique (coF-Algebra-Morphism⇒F-Coalgebra-Morphism γ))
     }
     where
       open Category (F-Algebras (Functor.op F))
       open MR (F-Algebras (Functor.op F))
-      open IsTerminal isTT renaming (! to ¡; !-unique to ¡-unique)
+      open IsTerminal isTT
       open HomReasoning
       open Equiv
 

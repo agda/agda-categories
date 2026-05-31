@@ -106,7 +106,7 @@ module _ {C : Category o ℓ e} (Com : Complete (o ⊔ ℓ ⊔ o′) (o ⊔ ℓ 
   SolutionSet⇒Initial = record
     { ⊥            = equalizer.obj
     ; ⊥-is-initial = record
-      { !        = ! _
-      ; !-unique = !-unique
+      { ¡        = ! _
+      ; ¡-unique = !-unique
       }
     }

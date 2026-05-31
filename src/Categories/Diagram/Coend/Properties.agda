@@ -33,8 +33,8 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ �
   Coend⇒Initial c = record
     { ⊥ = cowedge
     ; ⊥-is-initial = record
-      { ! = λ {A} → record { u = factor A ; commute = universal }
-      ; !-unique = λ {A} f → unique {A} (Cowedge-Morphism.commute f)
+      { ¡ = λ {A} → record { u = factor A ; commute = universal }
+      ; ¡-unique = λ {A} f → unique {A} (Cowedge-Morphism.commute f)
       }
     }
     where
@@ -43,9 +43,9 @@ module _ {o ℓ e o′ ℓ′ e′} {C : Category o ℓ e} {D : Category o′ �
   Initial⇒Coend : Initial Cowedges → Coend F
   Initial⇒Coend i = record
     { cowedge = ⊥
-    ; factor = λ W → u {W₂ = W} !
-    ; universal = commute !
-    ; unique = λ {_} {g} x → !-unique (record { u = g ; commute = x })
+    ; factor = λ W → u {W₂ = W} ¡
+    ; universal = commute ¡
+    ; unique = λ {_} {g} x → ¡-unique (record { u = g ; commute = x })
     }
     where
     open Initial.Initial i

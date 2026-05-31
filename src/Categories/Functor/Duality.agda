@@ -37,8 +37,8 @@ module _ (G : Functor C D) {J : Category o ℓ e} where
                                           PreservesLimit G.op L →
                                           PreservesColimit G (coLimit⇒Colimit C L)
   coPreservesLimit⇒PreservesCoLimit L is⊤ = record
-    { !        = λ {K} → coCone⇒⇒Cocone⇒ _ (! {Cocone⇒coCone _ K})
-    ; !-unique = λ f → !-unique (Cocone⇒⇒coCone⇒ _ f)
+    { ¡        = λ {K} → coCone⇒⇒Cocone⇒ _ (! {Cocone⇒coCone _ K})
+    ; ¡-unique = λ f → !-unique (Cocone⇒⇒coCone⇒ _ f)
     }
     where open IsTerminal is⊤
 
@@ -46,8 +46,8 @@ module _ (G : Functor C D) {J : Category o ℓ e} where
                                         PreservesColimit G L →
                                         PreservesLimit G.op (Colimit⇒coLimit C L)
   PreservesColimit⇒coPreservesLimit L is⊥ = record
-    { !        = λ {K} → Cocone⇒⇒coCone⇒ _ (! {coCone⇒Cocone _ K})
-    ; !-unique = λ f → !-unique (coCone⇒⇒Cocone⇒ _ f)
+    { !        = λ {K} → Cocone⇒⇒coCone⇒ _ (¡ {coCone⇒Cocone _ K})
+    ; !-unique = λ f → ¡-unique (coCone⇒⇒Cocone⇒ _ f)
     }
     where open IsInitial is⊥
 

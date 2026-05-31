@@ -78,14 +78,14 @@ initial→strict-initial i .is-initial = i
 -- proof from https://math.stackexchange.com/a/4877251/606410
 initial→strict-initial {⊥} i .is-strict f = record
   { from = f
-  ; to = !
+  ; to = ¡
   ; iso = record
     { isoˡ = begin
-      ! ∘ f               ≈˘⟨ refl⟩∘⟨ project₁ ⟩
-      ! ∘ π₁ ∘ ⟨ f , id ⟩ ≈⟨ pullˡ (initial-product.!-unique₂ (! ∘ π₁) π₂)  ⟩
+      ¡ ∘ f               ≈˘⟨ refl⟩∘⟨ project₁ ⟩
+      ¡ ∘ π₁ ∘ ⟨ f , id ⟩ ≈⟨ pullˡ (initial-product.¡-unique₂ (¡ ∘ π₁) π₂)  ⟩
       π₂ ∘ ⟨ f , id ⟩     ≈⟨ project₂ ⟩
       id                  ∎
-    ; isoʳ = !-unique₂ (f ∘ !) id
+    ; isoʳ = ¡-unique₂ (f ∘ ¡) id
     }
   }
   where open IsInitial i

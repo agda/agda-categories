@@ -19,7 +19,7 @@ module _ {o : Level} where
 
   EmptySet-⊥ : Initial
   EmptySet-⊥ .Initial.⊥ = ⊥
-  EmptySet-⊥ .Initial.⊥-is-initial .IsInitial.! ()
+  EmptySet-⊥ .Initial.⊥-is-initial .IsInitial.¡ ()
 
 module _ {c ℓ : Level} where
   open Init (Setoids c ℓ)
@@ -35,10 +35,10 @@ module _ {c ℓ : Level} where
   EmptySetoid-⊥ = record
     { ⊥            = EmptySetoid
     ; ⊥-is-initial = record
-      { !        = record
+      { ¡        = record
         { to = λ ()
         ; cong  = λ { {()} }
         }
-      ; !-unique = λ { _ {()} }
+      ; ¡-unique = λ { _ {()} }
       }
     }
