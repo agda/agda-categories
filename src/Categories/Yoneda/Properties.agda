@@ -13,7 +13,7 @@ open import Relation.Binary.Bundles using (module Setoid)
 import Relation.Binary.Reasoning.Setoid as SetoidR
 open import Data.Product using (_,_; Σ)
 
-open import Categories.Category.Product using (_×₁_)
+open import Categories.Category.Product using (_⁂_)
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Properties using (Full; Faithful; FullyFaithful)
@@ -87,10 +87,10 @@ module _ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} where
         module F = Functor F using (₀; ₁; identity)
         module G = Functor G using (₀; ₁; identity)
         Hom[-,F-] : Bifunctor C.op D (Setoids ℓ e)
-        Hom[-,F-] = Hom[ C ][-,-] ∘F (idF ×₁ F)
+        Hom[-,F-] = Hom[ C ][-,-] ∘F (idF ⁂ F)
 
         Hom[-,G-] : Bifunctor C.op D (Setoids ℓ e)
-        Hom[-,G-] = Hom[ C ][-,-] ∘F (idF ×₁ G)
+        Hom[-,G-] = Hom[ C ][-,-] ∘F (idF ⁂ G)
 
       nat-appʳ : ∀ X → NaturalTransformation Hom[-,F-] Hom[-,G-] →
                        NaturalTransformation Hom[ C ][-, F.₀ X ] Hom[ C ][-, G.₀ X ]
@@ -116,10 +116,10 @@ module _ {o′ ℓ′ e′} {D : Category o′ ℓ′ e′} where
       module F = Functor F using (₀)
       module G = Functor G using (₀)
       Hom[-,F-] : Bifunctor C.op D (Setoids ℓ e)
-      Hom[-,F-] = Hom[ C ][-,-] ∘F (idF ×₁ F)
+      Hom[-,F-] = Hom[ C ][-,-] ∘F (idF ⁂ F)
 
       Hom[-,G-] : Bifunctor C.op D (Setoids ℓ e)
-      Hom[-,G-] = Hom[ C ][-,-] ∘F (idF ×₁ G)
+      Hom[-,G-] = Hom[ C ][-,-] ∘F (idF ⁂ G)
 
     -- The implicits given below are sometimes needed (yellow), sometimes make an enormous difference in
     -- typechecking time. For example, in yoneda.⇒.commute, "nat-appʳ X F⇐G" is needed, while

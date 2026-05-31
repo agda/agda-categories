@@ -21,7 +21,7 @@ open import Level using (_⊔_)
 import Categories.Category.Monoidal.Construction.Product as MonoidalProduct
 open import Categories.Category.Monoidal.Core using (Monoidal)
 import Categories.Category.Monoidal.Utilities as MonoidalUtilities
-open import Categories.Category.Product using (_×₁_)
+open import Categories.Category.Product using (_⁂_)
 open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_; niHelper)
 open import Categories.Morphism C using (_≅_; module ≅)
@@ -82,7 +82,7 @@ record HasInterchange (M : Monoidal C) : Set (o ⊔ ℓ ⊔ e) where
 
   -- The interchange is a natural isomorphism.
 
-  naturalIso : ⊗ ∘F (⊗ ×₁ ⊗) ≃ ⊗ ∘F MonoidalProduct.⊗ M M
+  naturalIso : ⊗ ∘F (⊗ ⁂ ⊗) ≃ ⊗ ∘F MonoidalProduct.⊗ M M
   naturalIso = niHelper (record
     { η       = λ _ → i⇒
     ; η⁻¹     = λ _ → i⇐

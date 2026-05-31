@@ -17,7 +17,7 @@ private
   module D = SymmetricMonoidalCategory D
 
 open import Categories.Category using (module Commutation)
-open import Categories.Category.Product using (_×₁_)
+open import Categories.Category.Product using (_⁂_)
 import Categories.Category.Construction.Core as Core
 import Categories.Functor as Func
 open import Categories.Category.Monoidal.Properties using (module Kelly's)
@@ -100,7 +100,7 @@ module Underlying where
 
   module unitF = Functor unitF
 
-  unitF-⊗-homo : D.⊗ ∘F (unitF ×₁ unitF) ≃ unitF ∘F C.⊗
+  unitF-⊗-homo : D.⊗ ∘F (unitF ⁂ unitF) ≃ unitF ∘F C.⊗
   unitF-⊗-homo = niHelper (record
     { η            = λ _ → λ⇒
     ; η⁻¹          = λ _ → λ⇐

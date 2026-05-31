@@ -13,7 +13,7 @@ open import Relation.Binary.PropositionalEquality as ≡ using (_≡_)
 
 -- be explicit in imports to 'see' where the information comes from
 open import Categories.Category.Core using (Category)
-open import Categories.Category.Product using (Product; _×₁_)
+open import Categories.Category.Product using (Product; _⁂_)
 open import Categories.Category.Instance.Setoids using (Setoids)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor)
@@ -80,10 +80,10 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
           open MR C
 
   Hom[L-,-] : Bifunctor C.op D (Setoids _ _)
-  Hom[L-,-] = Hom[ D ][-,-] ∘F (L.op ×₁ idF)
+  Hom[L-,-] = Hom[ D ][-,-] ∘F (L.op ⁂ idF)
 
   Hom[-,R-] : Bifunctor C.op D (Setoids _ _)
-  Hom[-,R-] = Hom[ C ][-,-] ∘F (idF ×₁ R)
+  Hom[-,R-] = Hom[ C ][-,-] ∘F (idF ⁂ R)
 
   module Hom[L-,-] = Functor Hom[L-,-]
   module Hom[-,R-] = Functor Hom[-,R-]
@@ -173,10 +173,10 @@ record Adjoint (L : Functor C D) (R : Functor D C) : Set (levelOfTerm L ⊔ leve
 
 
     Hom[L-,-]′ : Bifunctor C.op D (Setoids _ _)
-    Hom[L-,-]′ = LiftSetoids (levelℓ C) (levele C) ∘F Hom[ D ][-,-] ∘F (L.op ×₁ idF)
+    Hom[L-,-]′ = LiftSetoids (levelℓ C) (levele C) ∘F Hom[ D ][-,-] ∘F (L.op ⁂ idF)
 
     Hom[-,R-]′ : Bifunctor C.op D (Setoids _ _)
-    Hom[-,R-]′ = LiftSetoids (levelℓ D) (levele D) ∘F Hom[ C ][-,-] ∘F (idF ×₁ R)
+    Hom[-,R-]′ = LiftSetoids (levelℓ D) (levele D) ∘F Hom[ C ][-,-] ∘F (idF ⁂ R)
 
     Hom-NI : NaturalIsomorphism Hom[L-,-]′ Hom[-,R-]′
     Hom-NI = record

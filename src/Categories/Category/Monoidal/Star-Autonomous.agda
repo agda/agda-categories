@@ -8,7 +8,7 @@ module Categories.Category.Monoidal.Star-Autonomous {o ℓ e} {C : Category o �
 
 open import Level
 
-open import Categories.Category.Product using (_×₁_; assocˡ)
+open import Categories.Category.Product using (_⁂_; assocˡ)
 open import Categories.Functor using (Functor; _∘F_; id)
 open import Categories.Functor.Properties using (FullyFaithful)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_)
@@ -29,4 +29,4 @@ record Star-Autonomous : Set (levelOfTerm M) where
   field
     FF-Star : FullyFaithful Star
     A**≃A  : (Star ∘F Starₒₚ) ≃ id
-    𝒞[A⊗B,C*]≃𝒞[A,B⊗C*] : Hom[-,-] ∘F (⊗ₒₚ ×₁ Star) ≃ Hom[-,-] ∘F (id ×₁ (Star ∘F ⊗ₒₚ)) ∘F assocˡ _ _ _
+    𝒞[A⊗B,C*]≃𝒞[A,B⊗C*] : Hom[-,-] ∘F (⊗ₒₚ ⁂ Star) ≃ Hom[-,-] ∘F (id ⁂ (Star ∘F ⊗ₒₚ)) ∘F assocˡ _ _ _

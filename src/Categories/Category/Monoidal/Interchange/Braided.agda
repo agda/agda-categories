@@ -20,7 +20,7 @@ open import Categories.Category.Monoidal.Interchange using (HasInterchange)
 open import Categories.Category.Monoidal.Properties using (module Kelly's)
 import Categories.Category.Monoidal.Reasoning as MonoidalReasoning
 import Categories.Category.Monoidal.Utilities as MonoidalUtilities
-open import Categories.Category.Product using (_×₁_; assocˡ)
+open import Categories.Category.Product using (_⁂_; assocˡ)
 open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (_≃_; niHelper)
@@ -73,7 +73,7 @@ swapInner-natural {f = f} {g = g} {h = h} {i = i} = begin
     α⇐ ∘ f ⊗₁ h ⊗₁ (g ⊗₁ i) ∘ id ⊗₁ swapˡ ∘ α⇒      ≈⟨ extendʳ assoc-commute-to ⟩
     (f ⊗₁ h) ⊗₁ (g ⊗₁ i) ∘ α⇐ ∘ id ⊗₁ swapˡ ∘ α⇒    ∎
 
-swapInner-naturalIsomorphism : ⊗ ∘F (⊗ ×₁ ⊗) ≃ ⊗ ∘F MonoidalProduct.⊗ M M
+swapInner-naturalIsomorphism : ⊗ ∘F (⊗ ⁂ ⊗) ≃ ⊗ ∘F MonoidalProduct.⊗ M M
 swapInner-naturalIsomorphism = niHelper (record
   { η       = λ _ → i⇒
   ; η⁻¹     = λ _ → i⇐

@@ -143,7 +143,7 @@ module _ {F G : Bifunctor (Category.op C) C D} where
   infixl 9 _∘ʳ_
 
   _∘ʳ_ : ∀ {E : Category o ℓ e} →
-           DinaturalTransformation F G → (K : Functor E C) → DinaturalTransformation (F ∘F ((Functor.op K) ×₁ K)) (G ∘F ((Functor.op K) ×₁ K))
+           DinaturalTransformation F G → (K : Functor E C) → DinaturalTransformation (F ∘F ((Functor.op K) ⁂ K)) (G ∘F ((Functor.op K) ⁂ K))
   _∘ʳ_ {E = E} β K = dtHelper record
     { α       = λ X → α (F₀ K X)
     ; commute = λ {X Y} f → begin

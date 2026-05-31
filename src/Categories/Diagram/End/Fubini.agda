@@ -8,7 +8,7 @@ open import Function using (_$_)
 
 open import Categories.Category using (Category; _[_,_]; _[_∘_])
 open import Categories.Category.Construction.Functors using (Functors; curry)
-open import Categories.Category.Product using (πˡ; πʳ; _×₁_; _※_; Swap) renaming (Product to _×ᶜ_)
+open import Categories.Category.Product using (πˡ; πʳ; _⁂_; _※_; Swap) renaming (Product to _×ᶜ_)
 open import Categories.Diagram.End using () renaming (End to ∫)
 open import Categories.Diagram.End.Properties using (end-η-commute; end-unique)
 open import Categories.Diagram.End.Parameterized using () renaming (EndF to ⨏)
@@ -37,7 +37,7 @@ module Functor-Swaps  (F : Bifunctor (Category.op C ×ᶜ Category.op P) (C ×�
 
   -- An end of F ′′ is the same as F, but the order in the product category is reversed
   _′′ : Bifunctor (Category.op P ×ᶜ Category.op C) (P ×ᶜ C) D
-  _′′ = F ∘F (Swap ×₁ Swap)
+  _′′ = F ∘F (Swap ⁂ Swap)
 
 open Functor-Swaps
 

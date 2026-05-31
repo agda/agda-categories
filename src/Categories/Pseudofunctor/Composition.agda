@@ -10,7 +10,7 @@ open import Categories.Bicategory using (Bicategory)
 import Categories.Bicategory.Extras as BicategoryExt
 open import Categories.Category using (Category)
 open import Categories.Category.Instance.One using (shift)
-open import Categories.Category.Product using (_×₁_)
+open import Categories.Category.Product using (_⁂_)
 open import Categories.Functor using (Functor; _∘F_)
 import Categories.Morphism.Reasoning as MorphismReasoning
 open import Categories.NaturalTransformation using (NaturalTransformation)
@@ -81,10 +81,10 @@ _∘P_ {o″ = o″} {ℓ″ = ℓ″} {e″ = e″} {C = C} {D = D} {E = E} F G
         open MorphismReasoning (hom FGx FGx)
 
     F∘G-h = λ {x y z} → F₁ ⓘˡ G.P-homomorphism {x} {y} {z}
-    F-h∘G = λ {x y z} → F.P-homomorphism {G₀ x} {G₀ y} {G₀ z} ⓘʳ (G₁ ×₁ G₁)
+    F-h∘G = λ {x y z} → F.P-homomorphism {G₀ x} {G₀ y} {G₀ z} ⓘʳ (G₁ ⁂ G₁)
 
     P-homomorphism : ∀ {x y z} →
-                     E.⊚ ∘F (F₁ ∘F G₁ ×₁ F₁ ∘F G₁) ≃
+                     E.⊚ ∘F (F₁ ∘F G₁ ⁂ F₁ ∘F G₁) ≃
                        (F₁ ∘F G₁) ∘F C.⊚ {x} {y} {z}
     P-homomorphism {x} {y} {z} = niHelper (record
       { η       = λ f,g → ⇒.η F∘G-h f,g ∘ᵥ ⇒.η F-h∘G f,g

@@ -13,7 +13,7 @@ open import Categories.Category.Monoidal.Bundle using (MonoidalCategory)
 open import Categories.Category.Cartesian.Bundle using (CartesianCategory)
 open import Categories.Category.Cartesian.Monoidal using (module CartesianMonoidal)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
-open import Categories.Category.Product using (_×₁_)
+open import Categories.Category.Product using (_⁂_)
 open import Categories.Functor.Properties using ([_]-resp-square; [_]-resp-∘; [_]-resp-≅; [_]-resp-Iso)
 open import Categories.Functor.Cartesian using (CartesianF)
 open import Categories.Functor.Monoidal
@@ -85,7 +85,7 @@ module _ (C : MonoidalCategory o ℓ e) where
     ; unitaryʳ      = elimʳ (elimʳ ⊗.identity)
     }
     where
-      ⊗-homomorphism : ⊗ ∘F (idF ×₁ idF) ≃ idF ∘F ⊗
+      ⊗-homomorphism : ⊗ ∘F (idF ⁂ idF) ≃ idF ∘F ⊗
       ⊗-homomorphism = niHelper record
         { η   = λ _ → id
         ; η⁻¹ = λ _ → id
@@ -144,7 +144,7 @@ module _ (A : MonoidalCategory o ℓ e) (B : MonoidalCategory o′ ℓ′ e′) 
         (G.₁ F.φ ∘ G.φ) ∘ G.₁ (F.₁ f) ⊗₁ G.₁ (F.₁ g)  ≈⟨ pullʳ (G.⊗-homo.commute _) ⟩
         G.₁ F.φ ∘ G.₁ (F.₁ f B.⊗₁ F.₁ g) ∘ G.φ        ≈⟨ extendʳ ([ G ]-resp-square (F.⊗-homo.commute _)) ⟩
         G.₁ (F.₁ (f A.⊗₁ g)) ∘ G.₁ F.φ ∘ G.φ          ∎
-      ⊗-homo : NaturalTransformation (C.⊗ ∘F ((G ∘F F) ×₁ (G ∘F F))) ((G ∘F F) ∘F A.⊗)
+      ⊗-homo : NaturalTransformation (C.⊗ ∘F ((G ∘F F) ⁂ (G ∘F F))) ((G ∘F F) ∘F A.⊗)
       ⊗-homo = ntHelper record
         { η       = λ (X , Y) → G.₁ F.φ ∘ G.φ
         ; commute = λ (f , g) → commute f g
@@ -211,7 +211,7 @@ module _ (A : MonoidalCategory o ℓ e) (B : MonoidalCategory o′ ℓ′ e′) 
       open MP C.U
       ε : C.unit ≅ Functor.F₀ (G ∘F F) A.unit
       ε = ≅.trans G.ε ([ G ]-resp-≅ F.ε) 
-      ⊗-homo : C.⊗ ∘F (G ∘F F ×₁ G ∘F F) ≃ (G ∘F F) ∘F A.⊗
+      ⊗-homo : C.⊗ ∘F (G ∘F F ⁂ G ∘F F) ≃ (G ∘F F) ∘F A.⊗
       ⊗-homo = record
         { F⇒G = G∘F.⊗-homo
         ; F⇐G = G∘F-op.⊗-homo.op

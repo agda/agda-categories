@@ -20,7 +20,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂; map) renaming ([_,_] to ⟦_,
 open import Data.Vec.N-ary hiding (curryⁿ)
 open import Function.Base as Fun using (flip; _$_) renaming (_∘_ to _∙_; id to idf)
 
-open import Categories.Category.Product using (Product; _×₁_)
+open import Categories.Category.Product using (Product; _⁂_)
 open import Categories.Functor hiding (id)
 open import Categories.Functor.Bifunctor using (Bifunctor; overlap-×)
 
@@ -149,7 +149,7 @@ split = record
   }
 
 reduce′ : (H : Bifunctor C C C) (F : Powerendo′ I) (G : Powerendo′ J) → Powerendo′ (I ⊎ J)
-reduce′ H F G = H ∘F (F ×₁ G) ∘F split
+reduce′ H F G = H ∘F (F ⁂ G) ∘F split
 
 reduce : ∀ (H : Bifunctor C C C) {n m} (F : Powerendo n) (G : Powerendo m) → Powerendo (n + m)
 reduce H F G = flattenP $ reduce′ H F G

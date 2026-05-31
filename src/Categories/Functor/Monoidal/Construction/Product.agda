@@ -236,10 +236,10 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
            {F : Functor (U C₁) (U D₁)} {G : Functor (U C₂) (U D₂)} where
     private C₁×C₂ = Product-MonoidalCategory C₁ C₂
 
-    ×₁-IsMonoidalFunctor : IsMonoidalFunctor C₁ D₁ F →
+    ⁂-IsMonoidalFunctor : IsMonoidalFunctor C₁ D₁ F →
                           IsMonoidalFunctor C₂ D₂ G →
-                          IsMonoidalFunctor C₁×C₂ D₁×D₂ (F ×₁ G)
-    ×₁-IsMonoidalFunctor FM GM = record
+                          IsMonoidalFunctor C₁×C₂ D₁×D₂ (F ⁂ G)
+    ⁂-IsMonoidalFunctor FM GM = record
       { ε         = FM.ε , GM.ε
       ; ⊗-homo    = ntHelper record
         { η       = λ ((X₁ , X₂) , (Y₁ , Y₂)) →
@@ -255,10 +255,10 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
         module FM = IsMonoidalFunctor FM
         module GM = IsMonoidalFunctor GM
 
-    ×₁-IsStrongMonoidalFunctor : IsStrongMonoidalFunctor C₁ D₁ F →
+    ⁂-IsStrongMonoidalFunctor : IsStrongMonoidalFunctor C₁ D₁ F →
                                 IsStrongMonoidalFunctor C₂ D₂ G →
-                                IsStrongMonoidalFunctor C₁×C₂ D₁×D₂ (F ×₁ G)
-    ×₁-IsStrongMonoidalFunctor FM GM = record
+                                IsStrongMonoidalFunctor C₁×C₂ D₁×D₂ (F ⁂ G)
+    ⁂-IsStrongMonoidalFunctor FM GM = record
       { ε         = record
         { from    = FM.ε.from , GM.ε.from
         ; to      = FM.ε.to   , GM.ε.to
@@ -291,18 +291,18 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
            {C₂ : MonoidalCategory o′₂ ℓ′₂ e′₂} where
     private C₁×C₂ = Product-MonoidalCategory C₁ C₂
 
-    ×₁-MonoidalFunctor : MonoidalFunctor C₁ D₁ → MonoidalFunctor C₂ D₂ →
+    ⁂-MonoidalFunctor : MonoidalFunctor C₁ D₁ → MonoidalFunctor C₂ D₂ →
                         MonoidalFunctor C₁×C₂ D₁×D₂
-    ×₁-MonoidalFunctor FM GM = record
-      { isMonoidal = ×₁-IsMonoidalFunctor (isMonoidal FM) (isMonoidal GM) }
+    ⁂-MonoidalFunctor FM GM = record
+      { isMonoidal = ⁂-IsMonoidalFunctor (isMonoidal FM) (isMonoidal GM) }
       where open MonoidalFunctor using (isMonoidal)
 
-    ×₁-StrongMonoidalFunctor : StrongMonoidalFunctor C₁ D₁ →
+    ⁂-StrongMonoidalFunctor : StrongMonoidalFunctor C₁ D₁ →
                               StrongMonoidalFunctor C₂ D₂ →
                               StrongMonoidalFunctor C₁×C₂ D₁×D₂
-    ×₁-StrongMonoidalFunctor FM GM = record
+    ⁂-StrongMonoidalFunctor FM GM = record
       { isStrongMonoidal =
-        ×₁-IsStrongMonoidalFunctor (isStrongMonoidal FM) (isStrongMonoidal GM)
+        ⁂-IsStrongMonoidalFunctor (isStrongMonoidal FM) (isStrongMonoidal GM)
       }
       where open StrongMonoidalFunctor using (isStrongMonoidal)
 
@@ -412,22 +412,22 @@ module _ {D₁ : BraidedMonoidalCategory o₁ ℓ₁ e₁}
            {F : Functor (U C₁) (U D₁)} {G : Functor (U C₂) (U D₂)} where
     private C₁×C₂ = Product-BraidedMonoidalCategory C₁ C₂
 
-    ×₁-IsBraidedMonoidalFunctor : Lax.IsBraidedMonoidalFunctor C₁ D₁ F →
+    ⁂-IsBraidedMonoidalFunctor : Lax.IsBraidedMonoidalFunctor C₁ D₁ F →
                                  Lax.IsBraidedMonoidalFunctor C₂ D₂ G →
-                                 Lax.IsBraidedMonoidalFunctor C₁×C₂ D₁×D₂ (F ×₁ G)
-    ×₁-IsBraidedMonoidalFunctor FB GB = record
-      { isMonoidal      = ×₁-IsMonoidalFunctor (isMonoidal FB) (isMonoidal GB)
+                                 Lax.IsBraidedMonoidalFunctor C₁×C₂ D₁×D₂ (F ⁂ G)
+    ⁂-IsBraidedMonoidalFunctor FB GB = record
+      { isMonoidal      = ⁂-IsMonoidalFunctor (isMonoidal FB) (isMonoidal GB)
       ; braiding-compat = braiding-compat FB , braiding-compat GB
       }
       where open Lax.IsBraidedMonoidalFunctor
 
-    ×₁-IsStrongBraidedMonoidalFunctor :
+    ⁂-IsStrongBraidedMonoidalFunctor :
       Strong.IsBraidedMonoidalFunctor C₁ D₁ F →
       Strong.IsBraidedMonoidalFunctor C₂ D₂ G →
-      Strong.IsBraidedMonoidalFunctor C₁×C₂ D₁×D₂ (F ×₁ G)
-    ×₁-IsStrongBraidedMonoidalFunctor FB GB = record
+      Strong.IsBraidedMonoidalFunctor C₁×C₂ D₁×D₂ (F ⁂ G)
+    ⁂-IsStrongBraidedMonoidalFunctor FB GB = record
       { isStrongMonoidal =
-        ×₁-IsStrongMonoidalFunctor (isStrongMonoidal FB) (isStrongMonoidal GB)
+        ⁂-IsStrongMonoidalFunctor (isStrongMonoidal FB) (isStrongMonoidal GB)
       ; braiding-compat  = braiding-compat FB , braiding-compat GB
       }
       where open Strong.IsBraidedMonoidalFunctor
@@ -436,21 +436,21 @@ module _ {D₁ : BraidedMonoidalCategory o₁ ℓ₁ e₁}
            {C₂ : BraidedMonoidalCategory o′₂ ℓ′₂ e′₂} where
     private C₁×C₂ = Product-BraidedMonoidalCategory C₁ C₂
 
-    ×₁-BraidedMonoidalFunctor : Lax.BraidedMonoidalFunctor C₁ D₁ →
+    ⁂-BraidedMonoidalFunctor : Lax.BraidedMonoidalFunctor C₁ D₁ →
                                Lax.BraidedMonoidalFunctor C₂ D₂ →
                                Lax.BraidedMonoidalFunctor C₁×C₂ D₁×D₂
-    ×₁-BraidedMonoidalFunctor FB GB = record
+    ⁂-BraidedMonoidalFunctor FB GB = record
       { isBraidedMonoidal =
-        ×₁-IsBraidedMonoidalFunctor (isBraidedMonoidal FB) (isBraidedMonoidal GB)
+        ⁂-IsBraidedMonoidalFunctor (isBraidedMonoidal FB) (isBraidedMonoidal GB)
       }
       where open Lax.BraidedMonoidalFunctor
 
-    ×₁-StrongBraidedMonoidalFunctor : Strong.BraidedMonoidalFunctor C₁ D₁ →
+    ⁂-StrongBraidedMonoidalFunctor : Strong.BraidedMonoidalFunctor C₁ D₁ →
                                      Strong.BraidedMonoidalFunctor C₂ D₂ →
                                      Strong.BraidedMonoidalFunctor C₁×C₂ D₁×D₂
-    ×₁-StrongBraidedMonoidalFunctor FB GB = record
+    ⁂-StrongBraidedMonoidalFunctor FB GB = record
       { isBraidedMonoidal =
-        ×₁-IsStrongBraidedMonoidalFunctor (isBraidedMonoidal FB)
+        ⁂-IsStrongBraidedMonoidalFunctor (isBraidedMonoidal FB)
                                          (isBraidedMonoidal GB)
       }
       where open Strong.BraidedMonoidalFunctor
@@ -515,21 +515,21 @@ module _ {D₁ : SymmetricMonoidalCategory o₁ ℓ₁ e₁}
            {C₂ : SymmetricMonoidalCategory o′₂ ℓ′₂ e′₂} where
     private C₁×C₂ = Product-SymmetricMonoidalCategory C₁ C₂
 
-    ×₁-SymmetricMonoidalFunctor : Lax.SymmetricMonoidalFunctor C₁ D₁ →
+    ⁂-SymmetricMonoidalFunctor : Lax.SymmetricMonoidalFunctor C₁ D₁ →
                                  Lax.SymmetricMonoidalFunctor C₂ D₂ →
                                  Lax.SymmetricMonoidalFunctor C₁×C₂ D₁×D₂
-    ×₁-SymmetricMonoidalFunctor FB GB = record
+    ⁂-SymmetricMonoidalFunctor FB GB = record
       { isBraidedMonoidal =
-        ×₁-IsBraidedMonoidalFunctor (isBraidedMonoidal FB) (isBraidedMonoidal GB)
+        ⁂-IsBraidedMonoidalFunctor (isBraidedMonoidal FB) (isBraidedMonoidal GB)
       }
       where open Lax.SymmetricMonoidalFunctor
 
-    ×₁-StrongSymmetricMonoidalFunctor : Strong.SymmetricMonoidalFunctor C₁ D₁ →
+    ⁂-StrongSymmetricMonoidalFunctor : Strong.SymmetricMonoidalFunctor C₁ D₁ →
                                        Strong.SymmetricMonoidalFunctor C₂ D₂ →
                                        Strong.SymmetricMonoidalFunctor C₁×C₂ D₁×D₂
-    ×₁-StrongSymmetricMonoidalFunctor FB GB = record
+    ⁂-StrongSymmetricMonoidalFunctor FB GB = record
       { isBraidedMonoidal =
-        ×₁-IsStrongBraidedMonoidalFunctor (isBraidedMonoidal FB)
+        ⁂-IsStrongBraidedMonoidalFunctor (isBraidedMonoidal FB)
                                          (isBraidedMonoidal GB)
       }
       where open Strong.SymmetricMonoidalFunctor

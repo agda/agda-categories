@@ -56,9 +56,9 @@ F ※ G = record
         module G = Functor G
 
 -- general product of functors
-infixr 2 _×₁_
-_×₁_ : ∀ (F₁ : Functor C₁ D₁) (F₂ : Functor C₂ D₂) → Functor (Product C₁ C₂) (Product D₁ D₂)
-F ×₁ G = record
+infixr 2 _⁂_
+_⁂_ : ∀ (F₁ : Functor C₁ D₁) (F₂ : Functor C₂ D₂) → Functor (Product C₁ C₂) (Product D₁ D₂)
+F ⁂ G = record
   { F₀           = map F.F₀ G.F₀
   ; F₁           = map F.F₁ G.F₁
   ; identity     = F.identity , G.identity
@@ -68,14 +68,14 @@ F ×₁ G = record
   where module F = Functor F
         module G = Functor G
 
--- Natural Transformations respect the ×₁ product
-infixr 5 _×₁ⁿ_
-_×₁ⁿ_ : ∀ {C₁ : Category o₁ ℓ₁ e₁} {D₁ : Category o′₁ ℓ′₁ e′₁}
+-- Natural Transformations respect the ⁂ product
+infixr 5 _⁂ⁿ_
+_⁂ⁿ_ : ∀ {C₁ : Category o₁ ℓ₁ e₁} {D₁ : Category o′₁ ℓ′₁ e′₁}
          {C₂ : Category o₂ ℓ₂ e₂} {D₂ : Category o′₂ ℓ′₂ e′₂}
          {F₁ G₁ : Functor C₁ D₁} {F₂ G₂ : Functor C₂ D₂}
          (α : NaturalTransformation F₁ G₁) (β : NaturalTransformation F₂ G₂) →
-         NaturalTransformation (F₁ ×₁ F₂) (G₁ ×₁ G₂)
-α ×₁ⁿ β = ntHelper record
+         NaturalTransformation (F₁ ⁂ F₂) (G₁ ⁂ G₂)
+α ⁂ⁿ β = ntHelper record
   { η       = map⁎′ α.η β.η
   ; commute = map⁎′ α.commute β.commute
   }
@@ -97,15 +97,15 @@ _※ⁿ_ : ∀ {D₁ : Category o ℓ e} {D₂ : Category o′ ℓ′ e′}
         module β = NaturalTransformation β
 
 -- Natural Isomorphisms too
-infixr 5 _×₁ⁿⁱ_
-_×₁ⁿⁱ_ : ∀ {C₁ : Category o₁ ℓ₁ e₁} {D₁ : Category o′₁ ℓ′₁ e′₁}
+infixr 5 _⁂ⁿⁱ_
+_⁂ⁿⁱ_ : ∀ {C₁ : Category o₁ ℓ₁ e₁} {D₁ : Category o′₁ ℓ′₁ e′₁}
           {C₂ : Category o₂ ℓ₂ e₂} {D₂ : Category o′₂ ℓ′₂ e′₂}
           {F₁ G₁ : Functor C₁ D₁} {F₂ G₂ : Functor C₂ D₂}
           (α : NaturalIsomorphism F₁ G₁) (β : NaturalIsomorphism F₂ G₂) →
-          NaturalIsomorphism (F₁ ×₁ F₂) (G₁ ×₁ G₂)
-α ×₁ⁿⁱ β = record
-  { F⇒G = α.F⇒G ×₁ⁿ β.F⇒G
-  ; F⇐G = α.F⇐G ×₁ⁿ β.F⇐G
+          NaturalIsomorphism (F₁ ⁂ F₂) (G₁ ⁂ G₂)
+α ⁂ⁿⁱ β = record
+  { F⇒G = α.F⇒G ⁂ⁿ β.F⇒G
+  ; F⇐G = α.F⇐G ⁂ⁿ β.F⇐G
   ; iso = λ where
     (X , Y) → record
       { isoˡ = isoˡ (α.iso X) , isoˡ (β.iso Y)

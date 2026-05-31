@@ -10,7 +10,7 @@ open import Categories.Bicategory using (Bicategory)
 import Categories.Bicategory.Extras as BicategoryExt
 open import Categories.Category using (Category)
 open import Categories.Category.Instance.One using (shift)
-open import Categories.Category.Product using (_×₁_)
+open import Categories.Category.Product using (_⁂_)
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 import Categories.Morphism.Reasoning as MorphismReasoning
 open import Categories.NaturalTransformation using (NaturalTransformation)
@@ -44,7 +44,7 @@ idP {o} {ℓ} {e} {t} {C = C} = record
       ; iso     = λ _ → record { isoˡ = hom.identity² ; isoʳ = hom.identity² }
       })
 
-    P-homomorphism : ∀ {x y z} → ⊚ ∘F (idF ×₁ idF) ≃ idF ∘F ⊚ {x} {y} {z}
+    P-homomorphism : ∀ {x y z} → ⊚ ∘F (idF ⁂ idF) ≃ idF ∘F ⊚ {x} {y} {z}
     P-homomorphism {x} {_} {z} = niHelper (record
       { η       = λ _ → id₂
       ; η⁻¹     = λ _ → id₂
