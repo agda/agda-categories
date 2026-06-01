@@ -6,7 +6,7 @@ open import Categories.Category.Core using (Category)
 
 module Categories.Category.BinaryProducts {o ℓ e} (𝒞 : Category o ℓ e) where
 
-open import Level hiding (suc)
+open import Level using (levelOfTerm)
 open import Data.Product using (uncurry)
 
 open Category 𝒞
@@ -29,7 +29,6 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
 
   infixr 7 _×_
   infixr 8 _⁂_
-  infix 11 ⟨_,_⟩
 
   field
     product : ∀ {A B} → Product A B
@@ -46,11 +45,7 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   ×-assoc : X × Y × Z ≅ (X × Y) × Z
   ×-assoc = Associative product product product product
 
-  open product hiding (⟨_,_⟩; ∘-distribʳ-⟨⟩) public
-
-  -- define it like this instead of reexporting to redefine fixity
-  ⟨_,_⟩ : X ⇒ A → X ⇒ B → X ⇒ A × B
-  ⟨_,_⟩ = Product.⟨_,_⟩ product
+  open product renaming (⟨_,_⟩ to infix 11 ⟨_,_⟩) public
 
   _⁂_ : A ⇒ B → C ⇒ D → A × C ⇒ B × D
   f ⁂ g = [ product ⇒ product ] f × g
@@ -84,12 +79,24 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   second : C ⇒ D → A × C ⇒ A × D
   second g = id ⁂ g
 
+  first-cong : f ≈ g → first {C = C} f ≈ first g
+  first-cong f≈g = ⟨⟩-congʳ (∘-resp-≈ˡ f≈g)
+
+  second-cong : f ≈ g → second {A = A} f ≈ second g
+  second-cong f≈g = ⟨⟩-congˡ (∘-resp-≈ˡ f≈g)
+
   -- Just to make this more obvious
   π₁∘⁂ : π₁ ∘ (f ⁂ g) ≈ f ∘ π₁
   π₁∘⁂ {f = f} {g} = project₁
 
   π₂∘⁂ : π₂ ∘ (f ⁂ g) ≈ g ∘ π₂
   π₂∘⁂ {f = f} {g} = project₂
+
+  π₂∘first : π₂ ∘ first f ≈ π₂ {_}{C}
+  π₂∘first = π₂∘⁂ ○ identityˡ
+
+  π₁∘second : π₁ ∘ second f ≈ π₁ {C}
+  π₁∘second = π₁∘⁂ ○ identityˡ
 
   ⁂-cong₂ : f ≈ g → h ≈ i → f ⁂ h ≈ g ⁂ i
   ⁂-cong₂ = [ product ⇒ product ]×-cong₂
@@ -105,6 +112,12 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
 
   ⁂∘⁂ : (f ⁂ g) ∘ (f′ ⁂ g′) ≈ (f ∘ f′) ⁂ (g ∘ g′)
   ⁂∘⁂ = [ product ⇒ product ⇒ product ]×∘×
+
+  first∘⁂ : first f ∘ (f′ ⁂ g′) ≈ (f ∘ f′ ⁂ g′)
+  first∘⁂ = ⁂∘⁂ ○ ⁂-cong₂ Equiv.refl identityˡ
+
+  second∘⁂ : second g ∘ (f′ ⁂ g′) ≈ (f′ ⁂ g ∘ g′)
+  second∘⁂ = ⁂∘⁂ ○ ⁂-cong₂ identityˡ Equiv.refl
 
   ⟨⟩∘ : ⟨ f , g ⟩ ∘ h ≈ ⟨ f ∘ h , g ∘ h ⟩
   ⟨⟩∘ = [ product ]⟨⟩∘

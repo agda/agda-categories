@@ -16,7 +16,7 @@ open import Categories.Object.Product.Morphisms 𝒞
 
 open Category 𝒞
 open Cartesian C
-open BinaryProducts products
+
 open Equiv
 open HomReasoning
 open Group using (μ)

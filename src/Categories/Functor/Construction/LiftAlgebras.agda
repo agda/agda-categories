@@ -53,15 +53,15 @@ liftInitial μT = record
     ; α = ⦅ F₀ ⊥ ⦆
     }
   ; ⊥-is-initial = record
-    { ! = λ {A = X} →
+    { ¡ = λ {A = X} →
       let
         a = F-Coalgebra.A X
         c = F-Coalgebra.α X
       in record
       { f = ⦅ a ⦆
-      ; commutes = !-unique₂ (c ∘ ⦅ a ⦆) (F₁ ⦅ a ⦆ ∘ ⦅ F₀ ⊥ ⦆)
+      ; commutes = ¡-unique₂ (c ∘ ⦅ a ⦆) (F₁ ⦅ a ⦆ ∘ ⦅ F₀ ⊥ ⦆)
       }
-    ; !-unique = λ {A = X} g → !-unique (F-Coalgebra-Morphism.f g)
+    ; ¡-unique = λ {A = X} g → ¡-unique (F-Coalgebra-Morphism.f g)
     }
   }
   where
@@ -71,5 +71,5 @@ liftInitial μT = record
     open MR (F-Algebras T)
     open HomReasoning
     open Equiv
-    ⦅_⦆ = λ X → ! {A = X} -- "banana brackets" (Meijer 1991)
+    ⦅_⦆ = λ X → ¡ {A = X} -- "banana brackets" (Meijer 1991)
     open Functor LiftAlgebras

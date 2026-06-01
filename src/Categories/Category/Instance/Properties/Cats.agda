@@ -33,9 +33,7 @@ module CanonicallyCartesianClosed {l} where
     module Cats = Category (Cats l l l)
     module Cart = Cartesian (Product.Cats-is {l} {l} {l})
   open Cats using (_⇒_) renaming (Obj to Cat)
-  open Cart using (products; terminal)
-  open Terminal terminal
-  open BinaryProducts products using (_×_; _⁂_; π₁; π₂; ⟨_,_⟩; project₁; project₂; unique)
+  open Cart using (_×_; π₁; π₂; unique; ⟨_,_⟩; _⁂_; project₁; project₂; !; !-unique)
 
   infixr 9 _^_
 

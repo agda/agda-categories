@@ -19,8 +19,7 @@ open HomReasoning
 open Equiv
 
 open Distributive distributive
-open Cartesian cartesian using (products)
-open BinaryProducts products
+open Cartesian cartesian
 open Cocartesian cocartesian
 
 -- distribution and injection

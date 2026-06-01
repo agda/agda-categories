@@ -65,11 +65,11 @@ module _ {F : Functor J C} {OP : IndexedCoproductOf (Functor.₀ F)} {MP : Index
           }
         }
       ; ⊥-is-initial = record
-        { ! = λ {A} → record
+        { ¡ = λ {A} → record
           { arr = coequalize (bang-lemma A)
           ; commute = ⟺ (pushˡ universal) ○ OP.commute
           }
-        ; !-unique = λ f → Equiv.sym (unique (OP.unique (assoc ○ Cocone⇒.commute f)))
+        ; ¡-unique = λ f → Equiv.sym (unique (OP.unique (assoc ○ Cocone⇒.commute f)))
         }
       }
     }

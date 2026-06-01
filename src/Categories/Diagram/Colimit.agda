@@ -43,7 +43,7 @@ record Colimit : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   open Cocone colimit hiding (coapex) renaming (N to coapex; ψ to proj; commute to colimit-commute) public
 
   rep-cocone : ∀ K → colimit ⇨ K
-  rep-cocone K = initial.! {K}
+  rep-cocone K = initial.¡ {K}
 
   rep : ∀ K → coapex ⇒ Cocone.N K
   rep K = arr
@@ -70,7 +70,7 @@ record Colimit : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   unrep-cone f = unrep (_⇨_.arr f)
 
   g-η : ∀ {f : coapex ⇒ X} → rep (unrep f) ≈ f
-  g-η {f = f} = initial.!-unique (coconify f)
+  g-η {f = f} = initial.¡-unique (coconify f)
 
   η-cocone : Cocones [ rep-cocone colimit ≈ Category.id Cocones ]
   η-cocone = initial.⊥-id (rep-cocone colimit)
@@ -79,13 +79,13 @@ record Colimit : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
   η = η-cocone
 
   rep-cocone∘ : Cocones [ Cocones [ q ∘ rep-cocone K ] ≈ rep-cocone K′ ]
-  rep-cocone∘ {K = K} {q = q} = Equiv.sym (initial.!-unique (Cocones [ q ∘ rep-cocone K ]))
+  rep-cocone∘ {K = K} {q = q} = Equiv.sym (initial.¡-unique (Cocones [ q ∘ rep-cocone K ]))
 
   rep∘ : ∀ {q : K ⇨ K′} → _⇨_.arr q ∘ rep K ≈ rep K′
   rep∘ {q = q} = rep-cocone∘ {q = q}
 
   rep-cone-self-id : Cocones [ rep-cocone colimit ≈  Cocones.id  ]
-  rep-cone-self-id = initial.!-unique ( Cocones.id )
+  rep-cone-self-id = initial.¡-unique ( Cocones.id )
 
   rep-self-id : rep colimit ≈ id
   rep-self-id = rep-cone-self-id

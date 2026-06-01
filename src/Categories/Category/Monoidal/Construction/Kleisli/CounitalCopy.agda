@@ -38,9 +38,7 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (ELM : Equationa
   open MR 𝒞
   open HomReasoning
   open Equiv
-  open Cartesian cartesian
-  open Terminal terminal
-  open BinaryProducts products renaming (η to prod-η)
+  open Cartesian cartesian renaming (η to prod-η)
 
   open EquationalLiftingMonad ELM hiding (identityˡ)
   open Monad M using (μ)

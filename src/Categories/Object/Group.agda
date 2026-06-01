@@ -16,10 +16,7 @@ open import Categories.Object.Monoid (CartesianMonoidal.monoidal C)
 open import Categories.Object.Terminal 𝒞
 
 open Category 𝒞
-open Cartesian C
-module Π = BinaryProducts products
-open BinaryProducts products using (_×_; _⁂_; ⟨_,_⟩)
-open Terminal terminal
+open Cartesian C using (_×_; _⁂_; ⟨_,_⟩; !)
 
 record IsGroup (G : Obj) : Set (ℓ ⊔ e) where
   -- any group object is also a monoid object

@@ -22,11 +22,6 @@ record IsZero (Z : Obj) : Set (o ⊔ ℓ ⊔ e) where
     isTerminal : IsTerminal Z
 
   open IsInitial isInitial public
-    renaming
-    ( ! to ¡
-    ; !-unique to ¡-unique
-    ; !-unique₂ to ¡-unique₂
-    )
   open IsTerminal isTerminal public
 
   zero⇒ : ∀ {A B : Obj} → A ⇒ B

@@ -11,13 +11,10 @@ module Categories.Object.NaturalNumbers.Parametrized {o ℓ e} (𝒞 : Category 
 
 open import Level
 open Category 𝒞
-open Cartesian 𝒞-Cartesian
+open Cartesian 𝒞-Cartesian using (_×_; π₂; ⟨_,_⟩; ⟨⟩∘; ⟨⟩-cong₂; _⁂_; ⁂∘⟨⟩; project₂; terminal; ⊤; !; !-unique₂)
 open HomReasoning
 open Equiv
-
-open BinaryProducts products hiding (η; unique)
 open import Categories.Object.NaturalNumbers 𝒞 terminal using (IsNNO; NNO) renaming (up-to-iso to nno-up-to-iso)
-open Terminal terminal using (⊤; !; !-unique₂)
 
 open import Categories.Morphism 𝒞 using (_≅_)
 open import Categories.Morphism.Reasoning 𝒞
@@ -33,6 +30,10 @@ record IsParametrizedNNO (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
 
   η : ∀ {A} → universal ⟨ id , z ∘ ! ⟩ (id ⁂ s) ≈ id {A × N}
   η = ⟺ (unique (⟺ identityˡ) id-comm)
+
+  uniform : ∀ {A X Y} {f : A ⇒ X} {g : X ⇒ X} {g′ : Y ⇒ Y} {h : X ⇒ Y} → h ∘ g ≈ g′ ∘ h → h ∘ universal f g ≈ universal (h ∘ f) g′
+  uniform nat = unique (∘-resp-≈ʳ commute₁ ○ ⟺ assoc)
+                       (sym-assoc ○ ∘-resp-≈ˡ (⟺ nat) ○ assoc ○ ∘-resp-≈ʳ commute₂ ○ sym-assoc)
 
   universal-cong : ∀ {A X} → {f f′ : A ⇒ X} → {g g′ : X ⇒ X} → f ≈ f′ → g ≈ g′ → universal f g ≈ universal f′ g′
   universal-cong f≈f′ g≈g′ = unique (⟺ f≈f′ ○  commute₁) (∘-resp-≈ˡ (⟺ g≈g′) ○ commute₂)

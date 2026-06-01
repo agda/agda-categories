@@ -3,7 +3,7 @@
 open import Level
 open import Categories.Category.Core
 open import Categories.Object.Terminal using (Terminal)
-open import Categories.Category.Cocartesian using (BinaryCoproducts)
+open import Categories.Category.BinaryCoproducts using (BinaryCoproducts)
 open import Categories.Category.Cartesian using (Cartesian)
 
 -- A parametrized NNO corresponds to existence of a (⊤ + (-)) algebra and initiality of the PNNO algebra
@@ -24,8 +24,6 @@ open Cartesian 𝒞-Cartesian
 open HomReasoning
 open Equiv
 open MR 𝒞
-open BinaryProducts products
-open Terminal terminal
 
 open import Categories.Object.NaturalNumbers.Parametrized 𝒞 𝒞-Cartesian
 open import Categories.Object.NaturalNumbers.Properties.F-Algebras 𝒞 terminal 𝒞-Coproducts
@@ -46,20 +44,20 @@ Initial⇒PNNO algebra isInitial = record
   ; isParametrizedNNO = record
     { z = z
     ; s = s
-    ; universal = λ {A} {X} f g → F-Algebra-Morphism.f (isInitial.! A {A = alg′ f g})
+    ; universal = λ {A} {X} f g → F-Algebra-Morphism.f (isInitial.¡ A {A = alg′ f g})
     ; commute₁ = λ {A} {X} {f} {g} → begin
       f                                                                       ≈˘⟨ inject₁ ⟩
       [ f , g ] ∘ i₁                                                          ≈˘⟨ refl⟩∘⟨ (+₁∘i₁ ○ identityʳ) ⟩
-      [ f , g ] ∘ (id +₁ F-Algebra-Morphism.f (isInitial.! A)) ∘ i₁           ≈˘⟨ extendʳ (F-Algebra-Morphism.commutes (isInitial.! A {A = alg′ f g})) ⟩
-      F-Algebra-Morphism.f (isInitial.! A) ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ] ∘ i₁ ≈⟨ refl⟩∘⟨ inject₁ ⟩
-      (F-Algebra-Morphism.f (IsInitial.! (isInitial A))) ∘ ⟨ id , z ∘ ! ⟩     ∎
+      [ f , g ] ∘ (id +₁ F-Algebra-Morphism.f (isInitial.¡ A)) ∘ i₁           ≈˘⟨ extendʳ (F-Algebra-Morphism.commutes (isInitial.¡ A {A = alg′ f g})) ⟩
+      F-Algebra-Morphism.f (isInitial.¡ A) ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ] ∘ i₁ ≈⟨ refl⟩∘⟨ inject₁ ⟩
+      (F-Algebra-Morphism.f (isInitial.¡ A)) ∘ ⟨ id , z ∘ ! ⟩     ∎
     ; commute₂ = λ {A} {X} {f} {g} → begin
-      g ∘ F-Algebra-Morphism.f (IsInitial.! (isInitial A))                      ≈˘⟨ pullˡ inject₂ ⟩
-      [ f , g ] ∘ i₂ ∘ F-Algebra-Morphism.f (IsInitial.! (isInitial A))         ≈˘⟨ refl⟩∘⟨ +₁∘i₂ ⟩
-      [ f , g ] ∘ (id +₁ F-Algebra-Morphism.f (IsInitial.! (isInitial A))) ∘ i₂ ≈˘⟨ extendʳ (F-Algebra-Morphism.commutes (isInitial.! A {A = alg′ f g})) ⟩
-      F-Algebra-Morphism.f (isInitial.! A) ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ] ∘  i₂  ≈⟨ refl⟩∘⟨ inject₂ ⟩
-      F-Algebra-Morphism.f (IsInitial.! (isInitial A)) ∘ (id ⁂ s)               ∎
-    ; unique = λ {A} {X} {f} {g} {u} eqᶻ eqˢ → ⟺ $ isInitial.!-unique A {A = alg′ f g} (record
+      g ∘ F-Algebra-Morphism.f (isInitial.¡ A)                      ≈˘⟨ pullˡ inject₂ ⟩
+      [ f , g ] ∘ i₂ ∘ F-Algebra-Morphism.f (isInitial.¡ A)         ≈˘⟨ refl⟩∘⟨ +₁∘i₂ ⟩
+      [ f , g ] ∘ (id +₁ F-Algebra-Morphism.f (isInitial.¡ A)) ∘ i₂ ≈˘⟨ extendʳ (F-Algebra-Morphism.commutes (isInitial.¡ A {A = alg′ f g})) ⟩
+      F-Algebra-Morphism.f (isInitial.¡ A) ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ] ∘  i₂  ≈⟨ refl⟩∘⟨ inject₂ ⟩
+      F-Algebra-Morphism.f (isInitial.¡ A) ∘ (id ⁂ s)               ∎
+    ; unique = λ {A} {X} {f} {g} {u} eqᶻ eqˢ → ⟺ $ isInitial.¡-unique A {A = alg′ f g} (record
       { f = u
       ; commutes = begin
         u ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ]              ≈˘⟨ +-g-η ⟩
@@ -91,7 +89,7 @@ PNNO⇒Initial₂ : (pnno : ParametrizedNNO)
   → (∀ A → IsInitial (F-Algebras (A +-))
                       (PNNO-Algebra A (ParametrizedNNO.N pnno) (ParametrizedNNO.z pnno) (ParametrizedNNO.s pnno)))
 PNNO⇒Initial₂ pnno A = record
-  { ! = λ {alg} → record
+  { ¡ = λ {alg} → record
     { f = universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂)
     ; commutes = begin
       universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ∘ [ ⟨ id , z ∘ ! ⟩ , id ⁂ s ]  ≈⟨ ∘[] ⟩
@@ -101,7 +99,7 @@ PNNO⇒Initial₂ pnno A = record
       , ((F-Algebra.α alg ∘ i₂) ∘ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂)) ] ≈˘⟨ ∘[] ○ []-cong₂ (∘-resp-≈ʳ identityʳ) sym-assoc ⟩
       F-Algebra.α alg ∘ (id +₁ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂))      ∎
     }
-  ; !-unique = λ {X} f →
+  ; ¡-unique = λ {X} f →
     let commute₁ = begin
           F-Algebra.α X ∘ i₁                                        ≈˘⟨ refl⟩∘⟨ (+₁∘i₁ ○ identityʳ) ⟩
           F-Algebra.α X ∘ (id +₁ F-Algebra-Morphism.f f) ∘ i₁       ≈˘⟨ extendʳ (F-Algebra-Morphism.commutes f) ⟩

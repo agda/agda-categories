@@ -23,8 +23,7 @@ record Distributive : Set (levelOfTerm 𝒞) where
     cartesian : Cartesian 𝒞
     cocartesian : Cocartesian 𝒞
 
-  open Cartesian cartesian using (products)
-  open BinaryProducts products
+  open Cartesian cartesian
   open Cocartesian cocartesian
 
   distributeˡ : ∀ {A B C : Obj} → A × B + A × C ⇒ A × (B + C)
