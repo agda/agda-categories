@@ -56,11 +56,11 @@ lawvere-fixed-point {A = A} {B = B} ϕ surjective f = g ∘ x , g-fixed-point
 
     g-fixed-point : f ∘ (g ∘ x) ≈ g ∘ x
     g-fixed-point = begin
-      f ∘ g ∘ x                       ≈˘⟨ refl⟩∘⟨ g-surjective ⟩
+      f ∘ g ∘ x                      ≈˘⟨ refl⟩∘⟨ g-surjective ⟩
       f ∘ eval ∘ first ϕ ∘ ⟨ x , x ⟩ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ lemma ϕ id x ⟩
       f ∘ eval ∘ ⟨ ϕ , id ⟩ ∘ x      ≈⟨ ∘-resp-≈ʳ sym-assoc ○ sym-assoc ⟩
       (f ∘ eval ∘ ⟨ ϕ , id ⟩) ∘ x    ≡⟨⟩
-      g ∘ x                           ∎
+      g ∘ x                          ∎
 
 initial→product-initial : ∀ {⊥ A} → IsInitial ⊥ → IsInitial (⊥ × A)
 initial→product-initial {⊥} {A} i = initial.⊥-is-initial
