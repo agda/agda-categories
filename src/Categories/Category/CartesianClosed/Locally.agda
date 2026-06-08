@@ -15,7 +15,7 @@ open import Categories.Category.Slice C
 open import Categories.Category.Slice.Properties C
 
 open import Categories.Object.Product
-open import Categories.Object.Exponential
+import Categories.Object.Exponential.Canonical as Exponentials
 open import Categories.Object.Terminal
 import Categories.Diagram.Pullback as P
 import Categories.Diagram.Pullback.Properties C as Pₚ
@@ -69,57 +69,52 @@ record Locally : Set (levelOfTerm C) where
 
 module _ (LCCC : Locally) (t : Terminal C) where
   open Locally LCCC
-  open Terminal t
   open HomReasoning
   open Equiv
 
   cartesian : Cartesian C
   cartesian = record
     { terminal = t
-    ; products = record { product = Pₚ.pullback-⊤⇒product t (product⇒pullback (sliceProd.product ⊤)) }
+    ; products = record { product = Pₚ.pullback-⊤⇒product t (product⇒pullback (sliceProd.product (Terminal.⊤ t))) }
     }
+
+  open Cartesian cartesian
 
   cartesianClosed : CartesianClosed C
   cartesianClosed = record
     { cartesian = cartesian
     ; exp       = λ {A B} →
       let open Exponential (exp {sliceobj (! {A})} {sliceobj (! {B})})
+               renaming (eval to slice-eval; λg to slice-λg; β to slice-β)
       in record
       { B^A      = Y B^A
-      ; product  =
-        -- this is tricky. how product is implemented requires special care. for example, the following
-        -- code also gives a product that type checks, but it is impossible to work with.
-        -- Pₚ.pullback-⊤⇒product t (Pₚ.pullback-resp-≈ (product⇒pullback product) !-unique₂ refl)
-        --
-        -- another quirk of proof relevance.
-        let open Product (Slice ⊤) (exp.product {sliceobj (! {A})} {sliceobj (! {B})})
-        in record
-           { A×B      = Y A×B
-           ; π₁       = h π₁
-           ; π₂       = h π₂
-           ; ⟨_,_⟩    = λ f g → h ⟨ slicearr {h = f} (⟺ (!-unique _)) , slicearr {h = g} (⟺ (!-unique _)) ⟩
-           ; project₁ = project₁
-           ; project₂ = project₂
-           ; unique   = unique {h = slicearr (⟺ (!-unique _))}
-           }
-      ; eval     = h eval
-      ; λg       = λ {X} p f → h (λg (pullback⇒product′ t (Pₚ.product⇒pullback-⊤ t p)) (lift t f))
-                         -- what looks like an identity proof below is not quite, as it is not
-                         -- "proof relevant", the 2 underlying arrows contain different proofs.
-      ; β        = λ p → ∘-resp-≈ʳ (exp.product.⟨⟩-cong₂ refl refl) ○
-                         β (pullback⇒product′ t (Pₚ.product⇒pullback-⊤ t p))
-      ; λ-unique = λ p eq → λ-unique (pullback⇒product′ t (Pₚ.product⇒pullback-⊤ t p))
-                                     {h = slicearr (⟺ (!-unique _))}
-                                     (∘-resp-≈ʳ (exp.product.⟨⟩-cong₂ refl refl) ○ eq)
+      ; eval     = h (slice-eval ∘ˢ ⟨ slicearr {h = π₁} (⟺ (!-unique _)) , slicearr {h = π₂} (⟺ (!-unique _)) ⟩ˢ)
+      ; λg       = λ {X} f → h (slice-λg (slicearr {h = f} (Terminal.!-unique₂ t))) 
+      ; β        = λ {g = g} → begin 
+        h (slice-eval ∘ˢ ⟨ slicearr {h = π₁} (⟺ (!-unique _)) , slicearr {h = π₂} (⟺ (!-unique _)) ⟩ˢ) ∘ (h (slice-λg (slicearr (Terminal.!-unique₂ t))) ⁂ id) 
+          ≈⟨ refl ⟩ 
+        (h slice-eval ∘ h ⟨ slicearr {h = π₁} (⟺ (!-unique _)) , slicearr {h = π₂} (⟺ (!-unique _)) ⟩ˢ) ∘ (h (slice-λg (slicearr (Terminal.!-unique₂ t))) ⁂ id) 
+          ≈⟨ pullʳ (sym (uniqueˢ {h = slicearr !-unique₂} (pullˡ project₁ˢ ○ project₁) (pullˡ project₂ˢ ○ project₂))) ⟩ 
+        h slice-eval ∘ h (slice-λg (slicearr (Terminal.!-unique₂ t)) ⁂ˢ idˢ) ≈⟨ slice-β ⟩ 
+        g ∎
+      ; λ-unique = λ {g = f} {g} eq → λ-unique (begin
+        h slice-eval ∘ h (slicearr {h = g} !-unique₂ ⁂ˢ idˢ) 
+          ≈˘⟨ pullʳ (⟨⟩∘ˢ {h = slicearr !-unique₂} ○ ⟨⟩-cong₂ˢ project₁ project₂) ⟩ 
+        h (slice-eval ∘ˢ ⟨ slicearr {h = π₁} (⟺ (!-unique _)) , slicearr {h = π₂} (⟺ (!-unique _)) ⟩ˢ) ∘ (g ⁂ id) 
+          ≈⟨ eq ⟩ 
+        f ∎)
       }
     }
-    where open sliceCCC ⊤ using (exp)
+    where open sliceCCC ⊤ using (exp) renaming (cartesian to sliceCartesian)
+          open Exponentials sliceCartesian
           open SliceObj
           open Slice⇒
+          open MR C
+          open Cartesian sliceCartesian renaming 
+            (π₁ to π₁ˢ; π₂ to π₂ˢ; ⟨_,_⟩ to ⟨_,_⟩ˢ; _⁂_ to _⁂ˢ_; unique to uniqueˢ
+            ; project₁ to project₁ˢ; project₂ to project₂ˢ; ⟨⟩∘ to ⟨⟩∘ˢ; ⟨⟩-cong₂ to ⟨⟩-cong₂ˢ) 
+            using ()
+          open Category (Slice _) renaming (_∘_ to _∘ˢ_; id to idˢ) using ()
 
   finitelyComplete : FinitelyComplete
-  finitelyComplete = record
-    { cartesian = cartesian
-    ; equalizer = λ f g → prods×pullbacks⇒equalizers (Cartesian.products cartesian)
-                                                     (λ {_ _ X} h i → product⇒pullback (sliceProd.product X))
-    }
+  finitelyComplete = Pₚ.pullback-⊤⇒FinitelyComplete pullbacks t

@@ -68,6 +68,7 @@ record BinaryCoproducts : Set (levelOfTerm 𝒞) where
              ; assocˡ∘assocʳ to +-assocˡ∘+-assocʳ
              ; assocʳ∘assocˡ to +-assocʳ∘+-assocˡ
              ; swap         to +-swap
+             ; id⁂id        to id+₁id
              ; first        to +-first
              ; second       to +-second
              ; π₁∘⁂         to +₁∘i₁
