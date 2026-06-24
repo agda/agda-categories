@@ -13,6 +13,8 @@ open import Categories.Diagram.Pullback.Properties 𝒞
 open import Categories.Object.Kernel 𝒞-Zero
 open import Categories.Object.Terminal 𝒞
 
+open import Categories.Object.Zero.Properties
+
 open import Categories.Morphism 𝒞
 open import Categories.Morphism.Reasoning 𝒞
 
@@ -105,6 +107,19 @@ module _ (K : Kernel f) where
     g₁ ≈⟨ unique refl ⟩
     universal universal-∘ ≈˘⟨ unique eq ⟩
     g₂ ∎
+
+  kernel-mono-zero : Mono f → kernel⇒ ≈ zero⇒
+  kernel-mono-zero mono-f = zero-mono-factor 𝒞-Zero f kernel⇒ mono-f $ begin
+    f ∘ kernel⇒ ≈⟨ commute ⟩
+    zero⇒ ∎
+
+isKernel-zero-id : ∀ {A B} → IsKernel id (zero⇒ {A} {B})
+isKernel-zero-id = record
+  { commute = zero-∘ʳ id
+  ; universal = λ {_} {h} _ → h
+  ; factors = ⟺ (identityˡ)
+  ; unique = λ eq → ⟺ identityˡ ○ ⟺ eq
+  }
 
 module _ (has-kernels : ∀ {A B} → (f : A ⇒ B) → Kernel f) where
 
