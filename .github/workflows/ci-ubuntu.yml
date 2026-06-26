@@ -74,7 +74,7 @@ jobs:
       # This caching step allows us to save a lot of building time by
       # saving the previous build.
       - name: Restore cache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         id: cache
         with:
           path: |
@@ -119,7 +119,7 @@ jobs:
       # This caching step allows us to save a lot of building time by
       # saving the previous build.
       - name: Save cache
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         if: always()
         with:
           path: |
