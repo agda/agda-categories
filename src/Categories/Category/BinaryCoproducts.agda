@@ -61,41 +61,41 @@ record BinaryCoproducts : Set (levelOfTerm 𝒞) where
   open BinaryProducts record { product = Coproduct⇒coProduct coproduct }
     using ()
     renaming ( _×₁_          to infixr 7 _+₁_
-             ; ⟨⟩-congʳ     to []-congʳ
-             ; ⟨⟩-congˡ     to []-congˡ
-             ; assocˡ       to +-assocʳ
-             ; assocʳ       to +-assocˡ
+             ; ⟨⟩-congʳ      to []-congʳ
+             ; ⟨⟩-congˡ      to []-congˡ
+             ; assocˡ        to +-assocʳ
+             ; assocʳ        to +-assocˡ
              ; assocˡ∘assocʳ to +-assocˡ∘+-assocʳ
              ; assocʳ∘assocˡ to +-assocʳ∘+-assocˡ
-             ; swap         to +-swap
-             ; id⁂id        to id+₁id
-             ; first        to +-first
-             ; second       to +-second
+             ; swap          to +-swap
+             ; id×₁id        to id+₁id
+             ; first         to +-first
+             ; second        to +-second
              ; π₁∘×₁         to +₁∘i₁
              ; π₂∘×₁         to +₁∘i₂
              ; ×₁-cong₂      to +₁-cong₂
              ; ×₁∘⟨⟩         to []∘+₁
-             ; first∘⟨⟩     to []∘+-first
-             ; second∘⟨⟩    to []∘+-second
-             ; ×₁∘×₁          to +₁∘+₁
-             ; ⟨⟩∘          to ∘[]
-             ; first∘first  to +-first∘+-first
+             ; first∘⟨⟩      to []∘+-first
+             ; second∘⟨⟩     to []∘+-second
+             ; ×₁∘×₁         to +₁∘+₁
+             ; ⟨⟩∘           to ∘[]
+             ; first∘first   to +-first∘+-first
              ; second∘second to +-second∘+-second
-             ; first∘second to +-first∘+-second
-             ; second∘first to +-second∘+-first
-             ; first↔second to +-second↔+-first
-             ; firstid      to +-firstid
-             ; swap∘⟨⟩      to []∘+-swap
+             ; first∘second  to +-first∘+-second
+             ; second∘first  to +-second∘+-first
+             ; first↔second  to +-second↔+-first
+             ; firstid       to +-firstid
+             ; swap∘⟨⟩       to []∘+-swap
              ; swap∘×₁       to +₁∘+-swap
-             ; swap∘swap    to +-swap∘+-swap
-             ; swap-epi     to +-swap-epi
-             ; swap-mono    to +-swap-mono
-             ; assocʳ∘⟨⟩    to []∘+-assocʳ
-             ; assocˡ∘⟨⟩    to []∘+-assocˡ
+             ; swap∘swap     to +-swap∘+-swap
+             ; swap-epi      to +-swap-epi
+             ; swap-mono     to +-swap-mono
+             ; assocʳ∘⟨⟩     to []∘+-assocʳ
+             ; assocˡ∘⟨⟩     to []∘+-assocˡ
              ; assocʳ∘×₁     to +₁∘+-assocʳ
              ; assocˡ∘×₁     to +₁∘+-assocˡ
-             ; Δ            to ∇
-             ; Δ∘           to ∘∇
+             ; Δ             to ∇
+             ; Δ∘            to ∘∇
              ; ×₁∘Δ          to ∇∘+₁
              )
     public

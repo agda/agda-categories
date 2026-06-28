@@ -24,7 +24,7 @@ open import Categories.Object.Terminal using (Terminal)
 
 open Category 𝒞
 open CartesianClosed 𝓥 using (_^_; eval; cartesian)
-open Cartesian cartesian using (_×_; ⟨_,_⟩; π₁; π₂; project₁; project₂; first; _⁂_; ⊤; ⟨⟩∘; ⁂∘⟨⟩; -×_)
+open Cartesian cartesian using (_×_; ⟨_,_⟩; π₁; π₂; project₁; project₂; first; _×₁_; ⊤; ⟨⟩∘; ×₁∘⟨⟩; -×_)
 open CartesianMonoidalClosed 𝒞 𝓥 using (closedMonoidal)
 
 open HomReasoning
