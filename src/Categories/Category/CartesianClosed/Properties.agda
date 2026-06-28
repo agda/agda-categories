@@ -51,8 +51,8 @@ lawvere-fixed-point {A = A} {B = B} ϕ surjective f = g ∘ x , g-fixed-point
     lemma : ∀ {A B C D} → (f : B ⇒ C) → (g : B ⇒ D) → (h : A ⇒ B) → (f ×₁ g) ∘ ⟨ h , h ⟩ ≈ ⟨ f , g ⟩ ∘ h
     lemma f g h = begin
       (f ×₁ g) ∘ ⟨ h , h ⟩ ≈⟨  ×₁∘⟨⟩ ⟩
-      ⟨ f ∘ h , g ∘ h ⟩   ≈˘⟨ ⟨⟩∘ ⟩
-      ⟨ f , g ⟩ ∘ h       ∎
+      ⟨ f ∘ h , g ∘ h ⟩    ≈˘⟨ ⟨⟩∘ ⟩
+      ⟨ f , g ⟩ ∘ h        ∎
 
     g-fixed-point : f ∘ (g ∘ x) ≈ g ∘ x
     g-fixed-point = begin

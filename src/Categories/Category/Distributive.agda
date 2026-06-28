@@ -46,17 +46,17 @@ record Distributive : Set (levelOfTerm 𝒞) where
         [ ((swap +₁ swap) ∘ inv) ∘ (id ×₁ i₁) ∘ swap , ((swap +₁ swap) ∘ inv) ∘ (id ×₁ i₂) ∘ swap ]     ≈˘⟨ ∘[] ⟩
         ((swap +₁ swap) ∘ inv) ∘ [ (id ×₁ i₁) ∘ swap , (id ×₁ i₂) ∘ swap ]                              ≈˘⟨ refl⟩∘⟨ []∘+₁ ⟩
         ((swap +₁ swap) ∘ inv) ∘ [ (id ×₁ i₁) , (id ×₁ i₂) ] ∘ (swap +₁ swap)                           ≈⟨ cancelInner isoˡ ⟩
-        (swap +₁ swap) ∘ (swap +₁ swap)                                                               ≈⟨ +₁∘+₁ ⟩
-        (swap ∘ swap) +₁ (swap ∘ swap)                                                                ≈⟨ +₁-cong₂ swap∘swap swap∘swap ⟩
-        (id +₁ id)                                                                                    ≈⟨ +-unique id-comm-sym id-comm-sym ⟩
-        id                                                                                            ∎
+        (swap +₁ swap) ∘ (swap +₁ swap)                                                                 ≈⟨ +₁∘+₁ ⟩
+        (swap ∘ swap) +₁ (swap ∘ swap)                                                                  ≈⟨ +₁-cong₂ swap∘swap swap∘swap ⟩
+        (id +₁ id)                                                                                      ≈⟨ +-unique id-comm-sym id-comm-sym ⟩
+        id                                                                                              ∎
       ; isoʳ = begin
-        [ i₁ ×₁ id , i₂ ×₁ id ] ∘ ((swap +₁ swap) ∘ inv) ∘ swap  ≈⟨ pull-first []∘+₁ ⟩
-        [ (i₁ ×₁ id) ∘ swap , (i₂ ×₁ id) ∘ swap ] ∘ inv ∘ swap   ≈˘⟨ []-cong₂ swap∘×₁ swap∘×₁ ⟩∘⟨refl ⟩
-        [ swap ∘ (id ×₁ i₁) , swap ∘ (id ×₁ i₂) ] ∘ inv ∘ swap   ≈˘⟨ ∘[] ⟩∘⟨refl ⟩
-        (swap ∘ [ (id ×₁ i₁) , (id ×₁ i₂) ]) ∘ inv ∘ swap        ≈⟨ cancelInner isoʳ  ⟩
-        swap ∘ swap                                            ≈⟨ swap∘swap ⟩
-        id                                                     ∎
+        [ i₁ ×₁ id , i₂ ×₁ id ] ∘ ((swap +₁ swap) ∘ inv) ∘ swap ≈⟨ pull-first []∘+₁ ⟩
+        [ (i₁ ×₁ id) ∘ swap , (i₂ ×₁ id) ∘ swap ] ∘ inv ∘ swap  ≈˘⟨ []-cong₂ swap∘×₁ swap∘×₁ ⟩∘⟨refl ⟩
+        [ swap ∘ (id ×₁ i₁) , swap ∘ (id ×₁ i₂) ] ∘ inv ∘ swap  ≈˘⟨ ∘[] ⟩∘⟨refl ⟩
+        (swap ∘ [ (id ×₁ i₁) , (id ×₁ i₂) ]) ∘ inv ∘ swap       ≈⟨ cancelInner isoʳ  ⟩
+        swap ∘ swap                                             ≈⟨ swap∘swap ⟩
+        id                                                      ∎
       }
     }
     where

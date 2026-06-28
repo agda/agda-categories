@@ -135,13 +135,13 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   first∘second {f = f} {g = g} = begin
     first f ∘ second g       ≈⟨ first∘⟨⟩ ⟩
     ⟨ f ∘ id ∘ π₁ , g ∘ π₂ ⟩ ≈⟨ ⟨⟩-congʳ (∘-resp-≈ʳ identityˡ) ⟩
-    f ×₁ g                    ∎
+    f ×₁ g                   ∎
 
   second∘first : second f ∘ first g ≈ g ×₁ f
   second∘first {f = f} {g = g} = begin
-    second f ∘ first g ≈⟨ second∘⟨⟩ ⟩
+    second f ∘ first g       ≈⟨ second∘⟨⟩ ⟩
     ⟨ g ∘ π₁ , f ∘ id ∘ π₂ ⟩ ≈⟨ ⟨⟩-congˡ (∘-resp-≈ʳ identityˡ) ⟩
-    g ×₁ f ∎
+    g ×₁ f                   ∎
 
   first↔second : first f ∘ second g ≈ second g ∘ first f
   first↔second = [ product ⇒ product , product ⇒ product ]first↔second
@@ -243,7 +243,7 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
 
   ×₁∘Δ : (f ×₁ g) ∘ Δ ≈ ⟨ f , g ⟩
   ×₁∘Δ {f = f} {g = g} = begin
-    (f ×₁ g) ∘ Δ         ≈⟨ ×₁∘⟨⟩ ⟩
+    (f ×₁ g) ∘ Δ        ≈⟨ ×₁∘⟨⟩ ⟩
     ⟨ f ∘ id , g ∘ id ⟩ ≈⟨ ⟨⟩-cong₂ identityʳ identityʳ ⟩
     ⟨ f , g ⟩           ∎
 

@@ -48,13 +48,13 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
       in begin
         F.₁ (second C.id) ⟨$⟩ x ≈⟨ F.F-resp-≈ (id×id (product {X} {A})) ⟩
         F.F₁ C.id ⟨$⟩ x         ≈⟨ F.identity ⟩
-        x                      ∎
+        x                       ∎
     ; homomorphism = λ {Y Z W} {f} {g} {x} →
       let open Setoid  (F.₀ (X × Y))
           open SetoidR (F.₀ (X × W))
       in begin
         F.₁ (second (f C.∘ g)) ⟨$⟩ x                ≈˘⟨ [ F ]-resp-∘ second∘second ⟩
-        F.₁ (second g) ⟨$⟩ (F.₁ (second f) ⟨$⟩ x) ∎
+        F.₁ (second g) ⟨$⟩ (F.₁ (second f) ⟨$⟩ x)   ∎
     ; F-resp-≈     = λ {Y Z} {f g} eq → F.F-resp-≈ (×₁-cong₂ C.Equiv.refl eq)
     }
     where module F = Functor F
@@ -78,7 +78,7 @@ module FromCartesian o′ ℓ′ {o ℓ e} {C : Category o ℓ e} (Car : Cartesi
           open SetoidR (F₀ (Z × W))
       in begin
         F₁ (first (f C.∘ g)) ⟨$⟩ x              ≈˘⟨ [ F ]-resp-∘ first∘first ⟩
-        F₁ (first g) ⟨$⟩ (F₁ (first f) ⟨$⟩ x) ∎
+        F₁ (first g) ⟨$⟩ (F₁ (first f) ⟨$⟩ x)   ∎
     ; F-resp-≈     = λ {A B} {f g} eq → F-resp-≈ (×₁-cong₂ eq C.Equiv.refl)
     }
     where open Functor F
@@ -163,9 +163,9 @@ module FromCartesianCCC {o} {C : Category o o o} (Car : Cartesian C) where
             F.₁ Δ ⟨$⟩ (F.₁ (first f) ⟨$⟩ (α.η Y ⟨$⟩ (G.₁ f ⟨$⟩ x)))    ≈⟨ cong (F.₁ Δ ∙ F.₁ (first f)) (α.commute f) ⟩
             F.₁ Δ ∙ (F.₁ (first f) ∙ F.₁ (second f)) ⟨$⟩ (α.η X ⟨$⟩ x) ≈⟨ cong (F.₁ Δ) ([ F ]-resp-∘ second∘first) ⟩
             F.₁ Δ ⟨$⟩ (F.₁ (f ×₁ f) ⟨$⟩ (α.η X ⟨$⟩ x))                 ≈⟨ [ F ]-resp-∘ ×₁∘Δ ⟩
-            F.₁ ⟨ f , f ⟩ ⟨$⟩ (α.η X ⟨$⟩ x)                           ≈˘⟨ [ F ]-resp-∘ Δ∘ ⟩
-            F.₁ f ⟨$⟩ (F.₁ Δ ⟨$⟩ (α.η X ⟨$⟩ x))
-              ∎ }
+            F.₁ ⟨ f , f ⟩ ⟨$⟩ (α.η X ⟨$⟩ x)                            ≈˘⟨ [ F ]-resp-∘ Δ∘ ⟩
+            F.₁ f ⟨$⟩ (F.₁ Δ ⟨$⟩ (α.η X ⟨$⟩ x))                        ∎
+            }
         }
     ; curry        = λ {F G H} α →
       let module F = Functor F

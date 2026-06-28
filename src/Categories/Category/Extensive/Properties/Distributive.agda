@@ -58,18 +58,18 @@ module Categories.Category.Extensive.Properties.Distributive {o ℓ e} (𝒞 : C
           ; universal = λ {_} {h₁} {h₂} H → ⟨ π₁ ∘ h₁ , h₂ ⟩
           ; p₁∘universal≈h₁ = λ {X} {h₁} {h₂} {eq} → begin
               (id ×₁ g) ∘ ⟨ π₁ ∘ h₁ , h₂ ⟩ ≈⟨ ×₁∘⟨⟩ ⟩
-              ⟨ id ∘ π₁ ∘ h₁ , g ∘ h₂ ⟩   ≈⟨ ⟨⟩-congʳ identityˡ ⟩
-              ⟨ π₁ ∘ h₁ , g ∘ h₂ ⟩        ≈˘⟨ ⟨⟩-congˡ eq ⟩
-              ⟨ π₁ ∘ h₁ , π₂ ∘ h₁ ⟩       ≈⟨ g-η ⟩
-              h₁                          ∎
+              ⟨ id ∘ π₁ ∘ h₁ , g ∘ h₂ ⟩    ≈⟨ ⟨⟩-congʳ identityˡ ⟩
+              ⟨ π₁ ∘ h₁ , g ∘ h₂ ⟩         ≈˘⟨ ⟨⟩-congˡ eq ⟩
+              ⟨ π₁ ∘ h₁ , π₂ ∘ h₁ ⟩        ≈⟨ g-η ⟩
+              h₁                           ∎
           ; p₂∘universal≈h₂ = project₂
           ; unique-diagram = λ {X} {h₁} {h₂} eq₁ eq₂ → BP.unique′ (begin
-              π₁ ∘ h₁            ≈⟨ pushˡ (introˡ refl) ⟩
-              id ∘ π₁ ∘ h₁       ≈⟨ extendʳ π₁∘×₁  ⟨
+              π₁ ∘ h₁             ≈⟨ pushˡ (introˡ refl) ⟩
+              id ∘ π₁ ∘ h₁        ≈⟨ extendʳ π₁∘×₁  ⟨
               π₁ ∘ (id ×₁ g) ∘ h₁ ≈⟨ refl⟩∘⟨ eq₁ ⟩
               π₁ ∘ (id ×₁ g) ∘ h₂ ≈⟨ extendʳ π₁∘×₁  ⟩
-              id ∘ π₁ ∘ h₂       ≈⟨ pullˡ (elimˡ refl) ⟩
-              π₁ ∘ h₂            ∎) eq₂
+              id ∘ π₁ ∘ h₂        ≈⟨ pullˡ (elimˡ refl) ⟩
+              π₁ ∘ h₂             ∎) eq₂
           } }
 
         -- by the diagram we get the canonical distributivity (iso-)morphism

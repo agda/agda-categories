@@ -41,23 +41,23 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
 
   λ-inj : ∀ {f g : X × A ⇒ B} → λg f ≈ λg g → f ≈ g
   λ-inj {f = f} {g = g} eq = begin
-    f                                      ≈˘⟨ β ⟩
-    eval ∘ (λg f ×₁ id)  ≈⟨ refl⟩∘⟨ ×₁-cong₂ eq refl ⟩
+    f                   ≈˘⟨ β ⟩
+    eval ∘ (λg f ×₁ id) ≈⟨ refl⟩∘⟨ ×₁-cong₂ eq refl ⟩
     eval ∘ (λg g ×₁ id) ≈⟨ β ⟩
-    g                                      ∎
+    g                   ∎
 
   subst : {f : X × A ⇒ B} {g : Y ⇒ X} → λg f ∘ g ≈ λg (f ∘ (g ×₁ id))
   subst {f = f} {g = g} = λ-unique (begin
-    eval ∘ (λg f ∘ g ×₁ id)        ≈˘⟨ refl⟩∘⟨ (×₁∘×₁ ○ ×₁-cong₂ refl identityʳ) ⟩
+    eval ∘ (λg f ∘ g ×₁ id)         ≈˘⟨ refl⟩∘⟨ (×₁∘×₁ ○ ×₁-cong₂ refl identityʳ) ⟩
     eval ∘ (λg f ×₁ id) ∘ (g ×₁ id) ≈⟨ pullˡ β ⟩
-    f ∘ (g ×₁ id)                  ∎)
+    f ∘ (g ×₁ id)                   ∎)
 
   η-id : λg eval ≈ id
   η-id = begin
-    λg eval               ≈˘⟨ identityʳ ⟩
-    λg eval ∘ id          ≈⟨ subst ⟩
+    λg eval                ≈˘⟨ identityʳ ⟩
+    λg eval ∘ id           ≈⟨ subst ⟩
     λg (eval ∘ (id ×₁ id)) ≈⟨ η ⟩
-    id                    ∎
+    id                     ∎
 
   λ-unique′ : ∀ {h i : X ⇒ B^A} →
                 eval ∘ (h ×₁ id) ≈ eval ∘ (i ×₁ id) → h ≈ i
@@ -87,12 +87,12 @@ record Exponential (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
               [ e₁ ]λ  (g ∘ (id ×₁ f))
               ≈ [ e₁ ]λ ([ e₂ ]eval ∘ (id ×₁ f)) ∘ [ e₂ ]λ g
 λ-distrib e₁ e₂ {f} {g} = ⟺ (e₁.λ-unique (begin 
-  e₁.eval ∘ (e₁.λg (e₂.eval ∘ (id ×₁ f)) ∘ e₂.λg g ×₁ id)        ≈˘⟨ refl⟩∘⟨ (×₁∘×₁ ○ ×₁-cong₂ refl identity²) ⟩ 
+  e₁.eval ∘ (e₁.λg (e₂.eval ∘ (id ×₁ f)) ∘ e₂.λg g ×₁ id)         ≈˘⟨ refl⟩∘⟨ (×₁∘×₁ ○ ×₁-cong₂ refl identity²) ⟩ 
   e₁.eval ∘ (e₁.λg (e₂.eval ∘ (id ×₁ f)) ×₁ id) ∘ (e₂.λg g ×₁ id) ≈⟨ pullˡ e₁.β ⟩ 
-  (e₂.eval ∘ (id ×₁ f)) ∘ (e₂.λg g ×₁ id)                        ≈⟨ assoc ⟩ 
-  e₂.eval ∘ (id ×₁ f) ∘ (e₂.λg g ×₁ id)                          ≈˘⟨ refl⟩∘⟨ first↔second ⟩ 
-  e₂.eval ∘ (e₂.λg g ×₁ id) ∘ (id ×₁ f)                          ≈⟨ pullˡ e₂.β ⟩ 
-  g ∘ (id ×₁ f)                                                 ∎))
+  (e₂.eval ∘ (id ×₁ f)) ∘ (e₂.λg g ×₁ id)                         ≈⟨ assoc ⟩ 
+  e₂.eval ∘ (id ×₁ f) ∘ (e₂.λg g ×₁ id)                           ≈˘⟨ refl⟩∘⟨ first↔second ⟩ 
+  e₂.eval ∘ (e₂.λg g ×₁ id) ∘ (id ×₁ f)                           ≈⟨ pullˡ e₂.β ⟩ 
+  g ∘ (id ×₁ f)                                                   ∎))
   where module e₁ = Exponential e₁
         module e₂ = Exponential e₂
 
@@ -140,12 +140,12 @@ transport-by-iso {X = X} e e≅X = record
   ; λg              = λ g → from ∘ e.λg g
   ; β               = λ {g = g} → begin  
     (e.eval ∘ (to ×₁ id)) ∘ (from ∘ e.λg g ×₁ id) ≈⟨ pullʳ (×₁∘×₁ ○ ×₁-cong₂ (cancelˡ isoˡ) identity²) ⟩
-    e.eval ∘ (e.λg g ×₁ id)                      ≈⟨ e.β ⟩ 
-    g                                           ∎
+    e.eval ∘ (e.λg g ×₁ id)                       ≈⟨ e.β ⟩ 
+    g                                             ∎
   ; λ-unique        = λ {g = g} {h = h} eq → switch-tofromˡ e≅X (e.λ-unique (begin 
-    e.eval ∘ (to ∘ h ×₁ id)          ≈˘⟨ pullʳ (×₁∘×₁ ○ ×₁-cong₂ refl identity²) ⟩ 
+    e.eval ∘ (to ∘ h ×₁ id)           ≈˘⟨ pullʳ (×₁∘×₁ ○ ×₁-cong₂ refl identity²) ⟩ 
     (e.eval ∘ (to ×₁ id)) ∘ (h ×₁ id) ≈⟨ eq ⟩
-    g                               ∎))
+    g                                 ∎))
   }
   where module e = Exponential e
         open _≅_ e≅X

@@ -121,9 +121,9 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (ELM : Equationa
     where
     natural' : ∀ {A B} (f : A ⇒ M.F.₀ B) → (η ∘ Δ) * ∘ f ≈ (ψ ∘ (f ×₁ f)) * ∘ η ∘ Δ
     natural' f = begin 
-      (η ∘ Δ) * ∘ f           ≈⟨ *⇒F₁ ⟩∘⟨refl ⟩ 
-      M.F.₁ Δ ∘ f             ≈˘⟨ pullˡ ψ-lifting ⟩ 
-      ψ ∘ Δ ∘ f               ≈˘⟨ pullʳ (×₁∘Δ ○ sym Δ∘) ⟩ 
+      (η ∘ Δ) * ∘ f            ≈⟨ *⇒F₁ ⟩∘⟨refl ⟩ 
+      M.F.₁ Δ ∘ f              ≈˘⟨ pullˡ ψ-lifting ⟩ 
+      ψ ∘ Δ ∘ f                ≈˘⟨ pullʳ (×₁∘Δ ○ sym Δ∘) ⟩ 
       (ψ ∘ (f ×₁ f)) ∘ Δ       ≈˘⟨ pullˡ *-identityʳ ⟩ 
       (ψ ∘ (f ×₁ f)) * ∘ η ∘ Δ ∎
     inverse₁' : (η ∘ Δ) * ∘ (η ∘ λ⇒) ≈ η

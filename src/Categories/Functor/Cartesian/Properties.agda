@@ -117,14 +117,14 @@ module _ {C : CartesianCategory o ℓ e} {D : CartesianCategory o′ ℓ′ e′
             (begin
               F.₁ CP.π₁ D.∘ F.×-iso.to Z W D.∘ (F.₁ f DP.×₁ F.₁ g) ≈⟨ pullˡ F.F-resp-×.project₁ ⟩
               DP.π₁ D.∘ (F.₁ f DP.×₁ F.₁ g)                        ≈⟨ DP.project₁ ⟩
-              F.₁ f D.∘ DP.π₁                                     ≈˘⟨ pullʳ F.F-resp-×.project₁ ⟩
-              (F.₁ f D.∘ F.₁ CP.π₁) D.∘ F.×-iso.to X Y            ≈˘⟨ pullˡ ([ F.F ]-resp-square CP.project₁) ⟩
+              F.₁ f D.∘ DP.π₁                                      ≈˘⟨ pullʳ F.F-resp-×.project₁ ⟩
+              (F.₁ f D.∘ F.₁ CP.π₁) D.∘ F.×-iso.to X Y             ≈˘⟨ pullˡ ([ F.F ]-resp-square CP.project₁) ⟩
               F.₁ CP.π₁ D.∘ F.₁ (f CP.×₁ g) D.∘ F.×-iso.to X Y     ∎)
             (begin
               F.₁ CP.π₂ D.∘ F.×-iso.to Z W D.∘ (F.₁ f DP.×₁ F.₁ g) ≈⟨ pullˡ F.F-resp-×.project₂ ⟩
               DP.π₂ D.∘ (F.₁ f DP.×₁ F.₁ g)                        ≈⟨ DP.project₂ ⟩
-              F.₁ g D.∘ DP.π₂                                    ≈˘⟨ pullʳ F.F-resp-×.project₂ ⟩
-              (F.₁ g D.∘ F.₁ CP.π₂) D.∘ F.×-iso.to X Y           ≈˘⟨ pullˡ ([ F.F ]-resp-square CP.project₂) ⟩
+              F.₁ g D.∘ DP.π₂                                      ≈˘⟨ pullʳ F.F-resp-×.project₂ ⟩
+              (F.₁ g D.∘ F.₁ CP.π₂) D.∘ F.×-iso.to X Y             ≈˘⟨ pullˡ ([ F.F ]-resp-square CP.project₂) ⟩
               F.₁ CP.π₂ D.∘ F.₁ (f CP.×₁ g) D.∘ F.×-iso.to X Y     ∎)
           }
         }
@@ -152,14 +152,14 @@ module _ {C : CartesianCategory o ℓ e} {D : CartesianCategory o′ ℓ′ e′
           ∎
       ; unitaryˡ      = begin
         F.₁ CP.π₂ D.∘ F.F-resp-×.⟨ DP.π₁ , DP.π₂ ⟩ D.∘ (F.F-resp-⊤.! DP.×₁ D.id) ≈⟨ pullˡ F.F-resp-×.project₂ ⟩
-        DP.π₂ D.∘ (F.F-resp-⊤.! DP.×₁ D.id)                                     ≈⟨ DP.project₂ ⟩
-        D.id D.∘ DP.π₂                                                         ≈⟨ D.identityˡ ⟩
-        DP.π₂                                                                  ∎
+        DP.π₂ D.∘ (F.F-resp-⊤.! DP.×₁ D.id)                                      ≈⟨ DP.project₂ ⟩
+        D.id D.∘ DP.π₂                                                           ≈⟨ D.identityˡ ⟩
+        DP.π₂                                                                    ∎
       ; unitaryʳ      = begin
         F.₁ CP.π₁ D.∘ F.F-resp-×.⟨ DP.π₁ , DP.π₂ ⟩ D.∘ (D.id DP.×₁ F.F-resp-⊤.!) ≈⟨ pullˡ F.F-resp-×.project₁ ⟩
-        DP.π₁ D.∘ (D.id DP.×₁ F.F-resp-⊤.!)                                     ≈⟨ DP.project₁ ⟩
-        D.id D.∘ DP.π₁                                                         ≈⟨ D.identityˡ ⟩
-        DP.π₁                                                                  ∎
+        DP.π₁ D.∘ (D.id DP.×₁ F.F-resp-⊤.!)                                      ≈⟨ DP.project₁ ⟩
+        D.id D.∘ DP.π₁                                                           ≈⟨ D.identityˡ ⟩
+        DP.π₁                                                                    ∎
       }
     }
     where module F = CartesianF F
@@ -175,10 +175,10 @@ module _ {C : CartesianCategory o ℓ e} {D : CartesianCategory o′ ℓ′ e′
           { η       = λ { (X , Y) → F.×-iso.from X Y }
           ; commute = λ { {X , Y} {Z , W} (f , g) →
             begin
-              DP.⟨ F.₁ CP.π₁ , F.₁ CP.π₂ ⟩ D.∘ F.₁ (f CP.×₁ g)                    ≈⟨ DP.⟨⟩∘ ⟩
+              DP.⟨ F.₁ CP.π₁ , F.₁ CP.π₂ ⟩ D.∘ F.₁ (f CP.×₁ g)                     ≈⟨ DP.⟨⟩∘ ⟩
               DP.⟨ F.₁ CP.π₁ D.∘ F.₁ (f CP.×₁ g) , F.₁ CP.π₂ D.∘ F.₁ (f CP.×₁ g) ⟩ ≈⟨ DP.⟨⟩-cong₂ ([ F.F ]-resp-square CP.project₁) ([ F.F ]-resp-square CP.project₂) ⟩
-              DP.⟨ F.₁ f D.∘ F.F₁ CP.π₁ , F.₁ g D.∘ F.F₁ CP.π₂ ⟩                 ≈˘⟨ DP.×₁∘⟨⟩ ⟩
-              (F.₁ f DP.×₁ F.₁ g) D.∘ DP.⟨ F.F₁ CP.π₁ , F.F₁ CP.π₂ ⟩              ∎ }
+              DP.⟨ F.₁ f D.∘ F.F₁ CP.π₁ , F.₁ g D.∘ F.F₁ CP.π₂ ⟩                   ≈˘⟨ DP.×₁∘⟨⟩ ⟩
+              (F.₁ f DP.×₁ F.₁ g) D.∘ DP.⟨ F.F₁ CP.π₁ , F.F₁ CP.π₂ ⟩               ∎ }
           }
         ; iso = λ { (X , Y) → record
           { isoˡ = F.×-iso.isoʳ X Y

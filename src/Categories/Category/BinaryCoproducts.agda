@@ -61,28 +61,34 @@ record BinaryCoproducts : Set (levelOfTerm 𝒞) where
   open BinaryProducts record { product = Coproduct⇒coProduct coproduct }
     using ()
     renaming ( _×₁_          to infixr 7 _+₁_
-             ; ⟨⟩-congʳ      to []-congʳ
-             ; ⟨⟩-congˡ      to []-congˡ
              ; assocˡ        to +-assocʳ
              ; assocʳ        to +-assocˡ
-             ; assocˡ∘assocʳ to +-assocˡ∘+-assocʳ
              ; assocʳ∘assocˡ to +-assocʳ∘+-assocˡ
+             ; assocˡ∘assocʳ to +-assocˡ∘+-assocʳ
+             ; ⟨⟩-congʳ      to []-congʳ
+             ; ⟨⟩-congˡ      to []-congˡ
              ; swap          to +-swap
              ; id×₁id        to id+₁id
              ; first         to +-first
              ; second        to +-second
+             ; first-cong    to +-first-cong
+             ; second-cong   to +-second-cong
              ; π₁∘×₁         to +₁∘i₁
              ; π₂∘×₁         to +₁∘i₂
+             ; π₂∘first      to +-first∘i₂
+             ; π₁∘second     to +-second∘i₁
              ; ×₁-cong₂      to +₁-cong₂
              ; ×₁∘⟨⟩         to []∘+₁
              ; first∘⟨⟩      to []∘+-first
              ; second∘⟨⟩     to []∘+-second
              ; ×₁∘×₁         to +₁∘+₁
+             ; first∘×₁      to +₁∘+-first
+             ; second∘×₁     to +₁∘+-second
              ; ⟨⟩∘           to ∘[]
              ; first∘first   to +-first∘+-first
              ; second∘second to +-second∘+-second
-             ; first∘second  to +-first∘+-second
-             ; second∘first  to +-second∘+-first
+             ; first∘second  to +-second∘+-first
+             ; second∘first  to +-first∘+-second
              ; first↔second  to +-second↔+-first
              ; firstid       to +-firstid
              ; swap∘⟨⟩       to []∘+-swap

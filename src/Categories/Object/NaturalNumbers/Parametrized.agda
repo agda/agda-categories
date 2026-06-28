@@ -49,11 +49,11 @@ record IsParametrizedNNO (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
       universal q f ∘ ⟨ ! ∘ z , id ∘ z ⟩ ≈˘⟨ pullʳ ⟨⟩∘ ⟩
       (universal q f ∘ ⟨ ! , id ⟩) ∘ z   ∎
     ; s-commute = λ {A} {q} {f} → begin
-      f ∘ universal q f ∘ ⟨ ! , id ⟩          ≈⟨ pullˡ commute₂ ⟩
+      f ∘ universal q f ∘ ⟨ ! , id ⟩           ≈⟨ pullˡ commute₂ ⟩
       (universal q f ∘ (id ×₁ s)) ∘ ⟨ ! , id ⟩ ≈⟨ pullʳ ×₁∘⟨⟩ ⟩
-      universal q f ∘ ⟨ id ∘ ! , s ∘ id ⟩     ≈⟨ refl⟩∘⟨ ⟨⟩-cong₂ !-unique₂ id-comm ⟩
-      universal q f ∘ ⟨ ! ∘ s , id ∘ s ⟩      ≈˘⟨ pullʳ ⟨⟩∘ ⟩
-      (universal q f ∘ ⟨ ! , id ⟩) ∘ s        ∎
+      universal q f ∘ ⟨ id ∘ ! , s ∘ id ⟩      ≈⟨ refl⟩∘⟨ ⟨⟩-cong₂ !-unique₂ id-comm ⟩
+      universal q f ∘ ⟨ ! ∘ s , id ∘ s ⟩       ≈˘⟨ pullʳ ⟨⟩∘ ⟩
+      (universal q f ∘ ⟨ ! , id ⟩) ∘ s         ∎
     ; unique = λ {A} {q} {f} {u} eqᶻ eqˢ → begin
       u                          ≈⟨ introʳ project₂ ○ sym-assoc ⟩
       (u ∘ π₂) ∘ ⟨ ! , id ⟩      ≈⟨ unique (eqᶻ ○ (pushʳ (z∘! ○ (⟺ project₂))))
