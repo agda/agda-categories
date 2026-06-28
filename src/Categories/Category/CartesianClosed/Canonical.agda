@@ -22,7 +22,7 @@ open import Function using (flip)
 open import Categories.Category.BinaryProducts 𝒞
 open import Categories.Category.Cartesian 𝒞 using (Cartesian)
 import Categories.Category.CartesianClosed 𝒞 as 𝒞-CC
-open import Categories.Object.Exponential 𝒞 using (Exponential)
+import Categories.Object.Exponential.Canonical as Exponentials
 open import Categories.Object.Product 𝒞
 open import Categories.Object.Terminal 𝒞 using (Terminal)
 open import Categories.Morphism.Reasoning 𝒞
@@ -82,6 +82,8 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
 
   open Cartesian isCartesian using (_×₁_)
 
+  open Exponentials isCartesian using (Exponential)
+
   field
 
     -- Canonical exponentials (w.r.t. the canonical products)
@@ -98,33 +100,14 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
   curry-resp-≈ f≈g = curry-unique (eval-comp ○ f≈g)
 
   -- The above defines canonical exponentials, making 𝒞 cartesian closed.
-  --
-  -- NOTE: below we use "⊗" to indicate "non-canonical" products.
 
   ^-exponential : ∀ {A B} → Exponential A B
   ^-exponential {A} {B} = record
     { B^A      = B ^ A
-    ; product  = ×-product
     ; eval     = eval
-    ; λg       = λ C⊗A f → curry (f ∘ repack ×-product C⊗A)
-    ; β        = λ {C} C⊗A {g} →
-      begin
-        eval ∘ [ C⊗A ⇒ ×-product ] curry (g ∘ repack ×-product C⊗A) ×id
-      ≈˘⟨ pullʳ [ ×-product ⇒ ×-product ]×∘⟨⟩ ⟩
-        (eval ∘ (curry (g ∘ repack ×-product C⊗A) ×₁ id)) ∘ repack C⊗A ×-product
-      ≈⟨ eval-comp ⟩∘⟨refl ⟩
-        (g ∘ repack ×-product C⊗A) ∘ repack C⊗A ×-product
-      ≈⟨ cancelʳ (repack∘repack≈id ×-product C⊗A) ⟩
-        g
-      ∎
-    ; λ-unique = λ {C} C⊗A {g} {f} hyp →
-      curry-unique (begin
-        eval ∘ (f ×₁ id)
-      ≈˘⟨ pullʳ [ C⊗A ⇒ ×-product ]×∘⟨⟩ ⟩
-        (eval ∘ [ C⊗A ⇒ ×-product ] f ×id) ∘ repack ×-product C⊗A
-      ≈⟨ hyp ⟩∘⟨refl ⟩
-        g ∘ repack ×-product C⊗A
-      ∎)
+    ; λg       = λ f → curry f
+    ; β        = eval-comp
+    ; λ-unique = curry-unique
     }
 
 module Equivalence where
@@ -151,10 +134,10 @@ module Equivalence where
     ; π₂-comp    = project₂
     ; ⟨,⟩-unique = unique
     ; _^_   = _^_
-    ; eval  = eval′
+    ; eval  = eval
     ; curry = λg
-    ; eval-comp    = β′
-    ; curry-unique = λ-unique′
+    ; eval-comp    = β
+    ; curry-unique = λ-unique
     }
     where
       open CartesianClosed′ cc

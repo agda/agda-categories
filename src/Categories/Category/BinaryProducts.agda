@@ -14,7 +14,7 @@ open HomReasoning
 
 open import Categories.Object.Product 𝒞
 open import Categories.Morphism 𝒞 using (_≅_; module Iso; Mono; Epi)
-open import Categories.Morphism.Reasoning 𝒞 using (pullʳ; pullˡ; elimʳ; cancelˡ; cancelʳ; introˡ; introʳ)
+open import Categories.Morphism.Reasoning 𝒞 using (pullʳ; pullˡ; elimʳ; cancelˡ; cancelʳ; introˡ; introʳ; id-comm)
 open import Categories.Category.Monoidal.Core using (Monoidal)
 
 open import Categories.Functor using (Functor) renaming (id to idF)
@@ -70,6 +70,9 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
 
   swap : A × B ⇒ B × A
   swap = ⟨ π₂ , π₁ ⟩
+
+  id⁂id : id {A} ⁂ id {B} ≈ id
+  id⁂id = unique id-comm id-comm
 
   -- TODO: this is probably harder to use than necessary because of this definition. Maybe make a version
   -- that doesn't have an explicit id in it, too?
