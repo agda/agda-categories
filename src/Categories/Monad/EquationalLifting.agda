@@ -41,12 +41,12 @@ module Categories.Monad.EquationalLifting {o ℓ e} {C : Category o ℓ e} (cart
 
     ψ-lifting : ∀ {X} → ψ ∘ Δ ≈ M.F.₁ (Δ {X})
     ψ-lifting = begin 
-      (τ * ∘ σ) ∘ Δ          ≈⟨ pullʳ lifting ⟩ 
-      τ * ∘ M.F.₁ ⟨ η , id ⟩ ≈⟨ *∘F₁ ⟩ 
-      (τ ∘ ⟨ η , id ⟩) *     ≈⟨ *-resp-≈ (∘-resp-≈ʳ (sym ⁂∘Δ)) ⟩ 
-      (τ ∘ (η ⁂ id) ∘ Δ) *   ≈⟨ *-resp-≈ (pullˡ (RightStrength.η-comm rightStrength)) ⟩ 
-      (η ∘ Δ) *              ≈⟨ *⇒F₁ ⟩ 
-      M.F.₁ Δ                ∎
+      (τ * ∘ σ) ∘ Δ           ≈⟨ pullʳ lifting ⟩ 
+      τ * ∘ M.F.₁ ⟨ η , id ⟩  ≈⟨ *∘F₁ ⟩ 
+      (τ ∘ ⟨ η , id ⟩) *      ≈⟨ *-resp-≈ (∘-resp-≈ʳ (sym ×₁∘Δ)) ⟩ 
+      (τ ∘ (η ×₁ id) ∘ Δ) *   ≈⟨ *-resp-≈ (pullˡ (RightStrength.η-comm rightStrength)) ⟩ 
+      (η ∘ Δ) *               ≈⟨ *⇒F₁ ⟩ 
+      M.F.₁ Δ                 ∎
 
   record EquationalLiftingMonad : Set (o ⊔ ℓ ⊔ e) where
     field

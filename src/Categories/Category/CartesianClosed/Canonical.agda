@@ -80,7 +80,7 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     ; products = record { product = ×-product }
     }
 
-  open Cartesian isCartesian using (_⁂_)
+  open Cartesian isCartesian using (_×₁_)
 
   open Exponentials isCartesian using (Exponential)
 
@@ -92,9 +92,9 @@ record CartesianClosed : Set (levelOfTerm 𝒞) where
     eval  : B ^ A × A ⇒ B
     curry : C × A ⇒ B → C ⇒ B ^ A
 
-    eval-comp  : eval ∘ (curry f ⁂ id) ≈ f
+    eval-comp  : eval ∘ (curry f ×₁ id) ≈ f
 
-    curry-unique : eval ∘ (f ⁂ id) ≈ g → f ≈ curry g
+    curry-unique : eval ∘ (f ×₁ id) ≈ g → f ≈ curry g
 
   curry-resp-≈ : f ≈ g → curry f ≈ curry g
   curry-resp-≈ f≈g = curry-unique (eval-comp ○ f≈g)

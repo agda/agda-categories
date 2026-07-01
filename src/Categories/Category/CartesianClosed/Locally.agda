@@ -91,16 +91,16 @@ module _ (LCCC : Locally) (t : Terminal C) where
       ; eval     = h (slice-eval ∘ˢ ⟨ slicearr {h = π₁} (⟺ (!-unique _)) , slicearr {h = π₂} (⟺ (!-unique _)) ⟩ˢ)
       ; λg       = λ {X} f → h (slice-λg (slicearr {h = f} (Terminal.!-unique₂ t))) 
       ; β        = λ {g = g} → begin 
-        h (slice-eval ∘ˢ ⟨ slicearr {h = π₁} (⟺ (!-unique _)) , slicearr {h = π₂} (⟺ (!-unique _)) ⟩ˢ) ∘ (h (slice-λg (slicearr (Terminal.!-unique₂ t))) ⁂ id) 
+        h (slice-eval ∘ˢ ⟨ slicearr {h = π₁} (⟺ (!-unique _)) , slicearr {h = π₂} (⟺ (!-unique _)) ⟩ˢ) ∘ (h (slice-λg (slicearr (Terminal.!-unique₂ t))) ×₁ id) 
           ≈⟨ refl ⟩ 
-        (h slice-eval ∘ h ⟨ slicearr {h = π₁} (⟺ (!-unique _)) , slicearr {h = π₂} (⟺ (!-unique _)) ⟩ˢ) ∘ (h (slice-λg (slicearr (Terminal.!-unique₂ t))) ⁂ id) 
+        (h slice-eval ∘ h ⟨ slicearr {h = π₁} (⟺ (!-unique _)) , slicearr {h = π₂} (⟺ (!-unique _)) ⟩ˢ) ∘ (h (slice-λg (slicearr (Terminal.!-unique₂ t))) ×₁ id) 
           ≈⟨ pullʳ (sym (uniqueˢ {h = slicearr !-unique₂} (pullˡ project₁ˢ ○ project₁) (pullˡ project₂ˢ ○ project₂))) ⟩ 
-        h slice-eval ∘ h (slice-λg (slicearr (Terminal.!-unique₂ t)) ⁂ˢ idˢ) ≈⟨ slice-β ⟩ 
+        h slice-eval ∘ h (slice-λg (slicearr (Terminal.!-unique₂ t)) ×₁ˢ idˢ) ≈⟨ slice-β ⟩ 
         g ∎
       ; λ-unique = λ {g = f} {g} eq → λ-unique (begin
-        h slice-eval ∘ h (slicearr {h = g} !-unique₂ ⁂ˢ idˢ) 
+        h slice-eval ∘ h (slicearr {h = g} !-unique₂ ×₁ˢ idˢ) 
           ≈˘⟨ pullʳ (⟨⟩∘ˢ {h = slicearr !-unique₂} ○ ⟨⟩-cong₂ˢ project₁ project₂) ⟩ 
-        h (slice-eval ∘ˢ ⟨ slicearr {h = π₁} (⟺ (!-unique _)) , slicearr {h = π₂} (⟺ (!-unique _)) ⟩ˢ) ∘ (g ⁂ id) 
+        h (slice-eval ∘ˢ ⟨ slicearr {h = π₁} (⟺ (!-unique _)) , slicearr {h = π₂} (⟺ (!-unique _)) ⟩ˢ) ∘ (g ×₁ id) 
           ≈⟨ eq ⟩ 
         f ∎)
       }
@@ -111,7 +111,7 @@ module _ (LCCC : Locally) (t : Terminal C) where
           open Slice⇒
           open MR C
           open Cartesian sliceCartesian renaming 
-            (π₁ to π₁ˢ; π₂ to π₂ˢ; ⟨_,_⟩ to ⟨_,_⟩ˢ; _⁂_ to _⁂ˢ_; unique to uniqueˢ
+            (π₁ to π₁ˢ; π₂ to π₂ˢ; ⟨_,_⟩ to ⟨_,_⟩ˢ; _×₁_ to _×₁ˢ_; unique to uniqueˢ
             ; project₁ to project₁ˢ; project₂ to project₂ˢ; ⟨⟩∘ to ⟨⟩∘ˢ; ⟨⟩-cong₂ to ⟨⟩-cong₂ˢ) 
             using ()
           open Category (Slice _) renaming (_∘_ to _∘ˢ_; id to idˢ) using ()

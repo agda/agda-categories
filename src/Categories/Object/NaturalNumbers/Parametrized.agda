@@ -11,7 +11,7 @@ module Categories.Object.NaturalNumbers.Parametrized {o ℓ e} (𝒞 : Category 
 
 open import Level
 open Category 𝒞
-open Cartesian 𝒞-Cartesian using (_×_; π₂; ⟨_,_⟩; ⟨⟩∘; ⟨⟩-cong₂; _⁂_; ⁂∘⟨⟩; project₂; terminal; ⊤; !; !-unique₂)
+open Cartesian 𝒞-Cartesian using (_×_; π₂; ⟨_,_⟩; ⟨⟩∘; ⟨⟩-cong₂; _×₁_; ×₁∘⟨⟩; project₂; terminal; ⊤; !; !-unique₂)
 open HomReasoning
 open Equiv
 open import Categories.Object.NaturalNumbers 𝒞 terminal using (IsNNO; NNO) renaming (up-to-iso to nno-up-to-iso)
@@ -25,10 +25,10 @@ record IsParametrizedNNO (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
     s : N ⇒ N
     universal : ∀ {A X} → A ⇒ X → X ⇒ X → A × N ⇒ X
     commute₁ : ∀ {A X} {f : A ⇒ X} {g : X ⇒ X} → f ≈ universal f g ∘ ⟨ id , z ∘ ! ⟩
-    commute₂ : ∀ {A X} {f : A ⇒ X} {g : X ⇒ X} → g ∘ (universal f g) ≈ (universal f g) ∘ (id ⁂ s)
-    unique : ∀ {A X} {f : A ⇒ X} {g : X ⇒ X} {u : A × N ⇒ X} → f ≈ u ∘ ⟨ id , z ∘ ! ⟩ → g ∘ u ≈ u ∘ (id ⁂ s) → u ≈ universal f g
+    commute₂ : ∀ {A X} {f : A ⇒ X} {g : X ⇒ X} → g ∘ (universal f g) ≈ (universal f g) ∘ (id ×₁ s)
+    unique : ∀ {A X} {f : A ⇒ X} {g : X ⇒ X} {u : A × N ⇒ X} → f ≈ u ∘ ⟨ id , z ∘ ! ⟩ → g ∘ u ≈ u ∘ (id ×₁ s) → u ≈ universal f g
 
-  η : ∀ {A} → universal ⟨ id , z ∘ ! ⟩ (id ⁂ s) ≈ id {A × N}
+  η : ∀ {A} → universal ⟨ id , z ∘ ! ⟩ (id ×₁ s) ≈ id {A × N}
   η = ⟺ (unique (⟺ identityˡ) id-comm)
 
   uniform : ∀ {A X Y} {f : A ⇒ X} {g : X ⇒ X} {g′ : Y ⇒ Y} {h : X ⇒ Y} → h ∘ g ≈ g′ ∘ h → h ∘ universal f g ≈ universal (h ∘ f) g′
@@ -49,11 +49,11 @@ record IsParametrizedNNO (N : Obj) : Set (o ⊔ ℓ ⊔ e) where
       universal q f ∘ ⟨ ! ∘ z , id ∘ z ⟩ ≈˘⟨ pullʳ ⟨⟩∘ ⟩
       (universal q f ∘ ⟨ ! , id ⟩) ∘ z   ∎
     ; s-commute = λ {A} {q} {f} → begin
-      f ∘ universal q f ∘ ⟨ ! , id ⟩          ≈⟨ pullˡ commute₂ ⟩
-      (universal q f ∘ (id ⁂ s)) ∘ ⟨ ! , id ⟩ ≈⟨ pullʳ ⁂∘⟨⟩ ⟩
-      universal q f ∘ ⟨ id ∘ ! , s ∘ id ⟩     ≈⟨ refl⟩∘⟨ ⟨⟩-cong₂ !-unique₂ id-comm ⟩
-      universal q f ∘ ⟨ ! ∘ s , id ∘ s ⟩      ≈˘⟨ pullʳ ⟨⟩∘ ⟩
-      (universal q f ∘ ⟨ ! , id ⟩) ∘ s        ∎
+      f ∘ universal q f ∘ ⟨ ! , id ⟩           ≈⟨ pullˡ commute₂ ⟩
+      (universal q f ∘ (id ×₁ s)) ∘ ⟨ ! , id ⟩ ≈⟨ pullʳ ×₁∘⟨⟩ ⟩
+      universal q f ∘ ⟨ id ∘ ! , s ∘ id ⟩      ≈⟨ refl⟩∘⟨ ⟨⟩-cong₂ !-unique₂ id-comm ⟩
+      universal q f ∘ ⟨ ! ∘ s , id ∘ s ⟩       ≈˘⟨ pullʳ ⟨⟩∘ ⟩
+      (universal q f ∘ ⟨ ! , id ⟩) ∘ s         ∎
     ; unique = λ {A} {q} {f} {u} eqᶻ eqˢ → begin
       u                          ≈⟨ introʳ project₂ ○ sym-assoc ⟩
       (u ∘ π₂) ∘ ⟨ ! , id ⟩      ≈⟨ unique (eqᶻ ○ (pushʳ (z∘! ○ (⟺ project₂))))
