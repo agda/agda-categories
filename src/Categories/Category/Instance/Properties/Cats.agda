@@ -33,7 +33,7 @@ module CanonicallyCartesianClosed {l} where
     module Cats = Category (Cats l l l)
     module Cart = Cartesian (Product.Cats-is {l} {l} {l})
   open Cats using (_⇒_) renaming (Obj to Cat)
-  open Cart using (_×_; π₁; π₂; unique; ⟨_,_⟩; _⁂_; project₁; project₂; !; !-unique)
+  open Cart using (_×_; π₁; π₂; unique; ⟨_,_⟩; _×₁_; project₁; project₂; !; !-unique)
 
   infixr 9 _^_
 
@@ -42,7 +42,7 @@ module CanonicallyCartesianClosed {l} where
 
   -- The β law (aka computation principle) for exponential objects
 
-  eval-comp : ∀ {A B C} {G : C × A ⇒ B} → eval ∘F (curry.F₀ G ⁂ idF) ≃ G
+  eval-comp : ∀ {A B C} {G : C × A ⇒ B} → eval ∘F (curry.F₀ G ×₁ idF) ≃ G
   eval-comp {A} {B} {C} {G} = record
     { F⇒G = record
       { η           = λ _ → id B
@@ -75,7 +75,7 @@ module CanonicallyCartesianClosed {l} where
 
   -- The η law (aka uniqueness principle) for exponential objects
 
-  η-exp : ∀ {A B C} {H : C ⇒ B ^ A} → H ≃ curry.F₀ (eval ∘F (H ⁂ idF))
+  η-exp : ∀ {A B C} {H : C ⇒ B ^ A} → H ≃ curry.F₀ (eval ∘F (H ×₁ idF))
   η-exp {A} {B} {C} {H} = record
     { F⇒G = record
       { η = λ _ → record
@@ -120,13 +120,13 @@ module CanonicallyCartesianClosed {l} where
         η (H₁ f) a                     ∎
 
   curry-unique : ∀ {A B C} {G : C ⇒ B ^ A} {H : C × A ⇒ B} →
-                 eval ∘F (G ⁂ idF) ≃ H → G ≃ curry.F₀ H
+                 eval ∘F (G ×₁ idF) ≃ H → G ≃ curry.F₀ H
   curry-unique {A} {B} {C} {G} {H} hyp =
     begin
       G
     ≈⟨ η-exp {A} {B} {C} {G} ⟩
-      curry.F₀ (eval ∘F (G ⁂ idF))
-    ≈⟨ curry.resp-NI {F = eval ∘F (G ⁂ idF)} {H} hyp ⟩
+      curry.F₀ (eval ∘F (G ×₁ idF))
+    ≈⟨ curry.resp-NI {F = eval ∘F (G ×₁ idF)} {H} hyp ⟩
       curry.F₀ H
     ∎
     where

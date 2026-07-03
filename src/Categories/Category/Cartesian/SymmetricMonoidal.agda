@@ -25,7 +25,7 @@ private
     W X Y Z : Obj
 
 open Cartesian cartesian using (π₁; π₂; ⟨_,_⟩; ⟨⟩-congʳ; ⟨⟩-congˡ; ⟨⟩-cong₂; 
-  swap; swap∘⟨⟩; swap∘swap; assocˡ; assocˡ∘⟨⟩; ⁂∘⟨⟩; ⟨⟩∘; swap∘⁂)
+  swap; swap∘⟨⟩; swap∘swap; assocˡ; assocˡ∘⟨⟩; ×₁∘⟨⟩; ⟨⟩∘; swap∘×₁)
 open CartesianMonoidal cartesian using (monoidal)
 open Sym monoidal using (Symmetric; symmetricHelper)
 open Monoidal monoidal using (_⊗₀_; _⊗₁_; module associator)
@@ -45,7 +45,7 @@ hexagon : [ (X ⊗₀ Y) ⊗₀ Z ⇒ Y ⊗₀ Z ⊗₀ X ]⟨
 hexagon = begin
       id ⊗₁ swap ∘ assocˡ ∘ swap ⊗₁ id                          ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘ ⟩
       id ⊗₁ swap ∘ assocˡ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₁ ∘ π₁ ⟩ , id ∘ π₂ ⟩ ≈⟨ refl⟩∘⟨ assocˡ∘⟨⟩ ⟩
-      id ⊗₁ swap ∘ ⟨ π₂ ∘ π₁ , ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩          ≈⟨ ⁂∘⟨⟩ ⟩
+      id ⊗₁ swap ∘ ⟨ π₂ ∘ π₁ , ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩          ≈⟨ ×₁∘⟨⟩ ⟩
       ⟨ id ∘ π₂ ∘ π₁ , swap ∘ ⟨ π₁ ∘ π₁ , id ∘ π₂ ⟩ ⟩           ≈⟨ ⟨⟩-cong₂ identityˡ swap∘⟨⟩ ⟩
       ⟨ π₂ ∘ π₁ , ⟨ id ∘ π₂ , π₁ ∘ π₁ ⟩ ⟩                       ≈⟨ ⟨⟩-congˡ (⟨⟩-congʳ identityˡ) ⟩
       ⟨ π₂ ∘ π₁ , ⟨ π₂ , π₁ ∘ π₁ ⟩ ⟩                            ≈˘⟨ assocˡ∘⟨⟩ ⟩
@@ -57,11 +57,11 @@ symmetric = symmetricHelper record
   { braiding    = record
     { F⇒G = ntHelper record
       { η       = λ _ → swap
-      ; commute = λ _ → swap∘⁂
+      ; commute = λ _ → swap∘×₁
       }
     ; F⇐G = ntHelper record
       { η       = λ _ → swap
-      ; commute = λ _ → swap∘⁂
+      ; commute = λ _ → swap∘×₁
       }
     ; iso = λ _ → record
       { isoˡ = swap∘swap
