@@ -55,6 +55,15 @@ _⟩⊗⟨refl = ⊗-resp-≈ˡ
 ⊗-distrib-over-∘ : ((f ∘ h) ⊗₁ (g ∘ i)) ≈ ((f ⊗₁ g) ∘ (h ⊗₁ i))
 ⊗-distrib-over-∘ = homomorphism
 
+⊗-cancel : ∀ {X₁ Y₁ X₂ Y₂}
+             {f₁ : X₁ ⇒ Y₁} {f₂ : Y₁ ⇒ X₁} {g₁ : X₂ ⇒ Y₂} {g₂ : Y₂ ⇒ X₂}
+             → f₁ ∘ f₂ ≈ id → g₁ ∘ g₂ ≈ id → (f₁ ⊗₁ g₁) ∘ (f₂ ⊗₁ g₂) ≈ id
+⊗-cancel {f₁ = f₁} {f₂} {g₁} {g₂} f-inv g-inv = begin
+  (f₁ ⊗₁ g₁) ∘ (f₂ ⊗₁ g₂)        ≈˘⟨ ⊗-distrib-over-∘ ⟩
+  (f₁ ∘ f₂) ⊗₁ (g₁ ∘ g₂)         ≈⟨ f-inv ⟩⊗⟨ g-inv ⟩
+  id ⊗₁ id                       ≈⟨ Monoidal.⊗.identity M ⟩
+  id                             ∎
+
 -- Parallel commutation
 
 parallel : ∀ {X₁ X₂ Y₁ Y₂ Z₁ Z₂ W₁ W₂}
