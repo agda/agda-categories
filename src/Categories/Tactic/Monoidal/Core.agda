@@ -42,7 +42,6 @@ open import Relation.Binary.PropositionalEquality
 open import Algebra.Bundles using (Monoid)
 open import Algebra.Morphism.Structures using (module MonoidMorphisms)
 
-import Categories.Category.Construction.Core as Construction
 open import Categories.Tactic.Monoidal.Free public
 open import Categories.Morphism 𝒞 using (_≅_; module ≅)
 open import Categories.Category.Monoidal.Utilities M
@@ -54,8 +53,6 @@ open import Categories.Morphism.Reasoning 𝒞
 open Category 𝒞
 open Monoidal M hiding (⊗; _⊗-; -⊗_)
 open Monoidal M using (module ⊗)
-open Construction.Shorthands 𝒞 using (module Commutationᵢ)
-open Commutationᵢ using (connectᵢ)
 open Shorthands using (α⇒; α⇐; λ⇒; λ⇐; ρ⇒; ρ⇐)
 open Free Atom using (Ob; ‹_›; I; _⊗_; nf; ⇒⇒nf; invert; idₘ; module NormalForm)
   renaming
@@ -105,18 +102,14 @@ eval-homo = IsMonoidHomomorphism.homo eval-homomorphism
 strictify : (X : Ob) → eval (nf X) ≅ ⟦ X ⟧₀
 strictify ‹ x ›   = unitorʳ
 strictify I       = ≅.refl
-strictify (X ⊗ Y) =
-  eval-homo (nf X) (nf Y)      ≅⟨ eval (nf X) ⊗₀ eval (nf Y) ⟩
-  strictify X ⊗ᵢ strictify Y
+strictify (X ⊗ Y) = ≅.trans (eval-homo (nf X) (nf Y)) (strictify X ⊗ᵢ strictify Y)
 
 -- Object-level coherence: any two objects with the same normal form are
 -- canonically isomorphic.  No Mac Lane theorem is needed here; this is the free
 -- monoid interpretation transported along `strictify`.
 object-coherence : nf X ≡ nf Y → ⟦ X ⟧₀ ≅ ⟦ Y ⟧₀
 object-coherence {X} {Y} p =
-  ≅.sym (strictify X)          ≅⟨ eval (nf X) ⟩
-  ≅.reflexive (cong eval p)    ≅⟨ eval (nf Y) ⟩
-  strictify Y
+  ≅.trans (≅.sym (strictify X)) (≅.trans (≅.reflexive (cong eval p)) (strictify Y))
 
 -- ----------------------------------------------------------------------------
 -- §3: Morphism interpretation and semantic invertibility
