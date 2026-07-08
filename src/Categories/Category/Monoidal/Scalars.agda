@@ -19,7 +19,7 @@ module Categories.Category.Monoidal.Scalars
 
 open import Algebra.Bundles using (Monoid)
 
-open import Categories.Morphism.Endomorphism 𝒞 using (End; End-∘-Monoid)
+open import Categories.Object.Endomorphism 𝒞 using (Endo; Endo-∘-Monoid)
 open import Categories.Category.Monoidal.Reasoning M
 open import Categories.Category.Monoidal.Utilities M using (module Shorthands)
 import Categories.Category.Monoidal.Properties M as MonoidalProps
@@ -31,10 +31,10 @@ open Shorthands
 open MonoidalProps.Kelly's
 
 Scalar : Set _
-Scalar = End unit
+Scalar = Endo unit
 
 Scalar-Monoid : Monoid _ _
-Scalar-Monoid = End-∘-Monoid unit
+Scalar-Monoid = Endo-∘-Monoid unit
 
 private
   variable
@@ -72,30 +72,24 @@ module Action where
   ·ˡ-∘ : ∀ {s t : Scalar} {f : B ⇒ C} {g : A ⇒ B} →
     (s ·ₛ t) ·ˡ (f ∘ g) ≈ (s ·ˡ f) ∘ (t ·ˡ g)
   ·ˡ-∘ {s = s} {t} {f} {g} = begin
-    λ⇒ ∘ ((s ·ₛ t) ⊗₁ (f ∘ g)) ∘ λ⇐                   ≈⟨ refl⟩∘⟨ ⊗-distrib-over-∘ ⟩∘⟨refl ⟩
-    λ⇒ ∘ ((s ⊗₁ f) ∘ (t ⊗₁ g)) ∘ λ⇐                   ≈⟨ refl⟩∘⟨ assoc ⟩
+    λ⇒ ∘ ((s ·ₛ t) ⊗₁ (f ∘ g)) ∘ λ⇐                   ≈⟨ refl⟩∘⟨ pushˡ ⊗-distrib-over-∘ ⟩
     λ⇒ ∘ ((s ⊗₁ f) ∘ ((t ⊗₁ g) ∘ λ⇐))                 ≈⟨ refl⟩∘⟨ refl⟩∘⟨ insertˡ unitorˡ.isoˡ ⟩
-    λ⇒ ∘ ((s ⊗₁ f) ∘ (λ⇐ ∘ (λ⇒ ∘ ((t ⊗₁ g) ∘ λ⇐))))   ≈⟨ refl⟩∘⟨ sym-assoc ⟩
-    λ⇒ ∘ (((s ⊗₁ f) ∘ λ⇐) ∘ (λ⇒ ∘ ((t ⊗₁ g) ∘ λ⇐)))   ≈⟨ sym-assoc ⟩
+    λ⇒ ∘ ((s ⊗₁ f) ∘ (λ⇐ ∘ (λ⇒ ∘ ((t ⊗₁ g) ∘ λ⇐))))   ≈⟨ assoc²εβ ⟩
     (λ⇒ ∘ ((s ⊗₁ f) ∘ λ⇐)) ∘ (λ⇒ ∘ ((t ⊗₁ g) ∘ λ⇐))   ∎
 
   ·ʳ-∘ : ∀ {s t : Scalar} {f : B ⇒ C} {g : A ⇒ B} →
     (f ∘ g) ·ʳ (s ·ₛ t) ≈ (f ·ʳ s) ∘ (g ·ʳ t)
   ·ʳ-∘ {s = s} {t} {f} {g} = begin
-    ρ⇒ ∘ ((f ∘ g) ⊗₁ (s ·ₛ t)) ∘ ρ⇐                   ≈⟨ refl⟩∘⟨ ⊗-distrib-over-∘ ⟩∘⟨refl ⟩
-    ρ⇒ ∘ ((f ⊗₁ s) ∘ (g ⊗₁ t)) ∘ ρ⇐                   ≈⟨ refl⟩∘⟨ assoc ⟩
+    ρ⇒ ∘ ((f ∘ g) ⊗₁ (s ·ₛ t)) ∘ ρ⇐                   ≈⟨ refl⟩∘⟨ pushˡ ⊗-distrib-over-∘ ⟩
     ρ⇒ ∘ ((f ⊗₁ s) ∘ ((g ⊗₁ t) ∘ ρ⇐))                 ≈⟨ refl⟩∘⟨ refl⟩∘⟨ insertˡ unitorʳ.isoˡ ⟩
-    ρ⇒ ∘ ((f ⊗₁ s) ∘ (ρ⇐ ∘ (ρ⇒ ∘ ((g ⊗₁ t) ∘ ρ⇐))))   ≈⟨ refl⟩∘⟨ sym-assoc ⟩
-    ρ⇒ ∘ (((f ⊗₁ s) ∘ ρ⇐) ∘ (ρ⇒ ∘ ((g ⊗₁ t) ∘ ρ⇐)))   ≈⟨ sym-assoc ⟩
+    ρ⇒ ∘ ((f ⊗₁ s) ∘ (ρ⇐ ∘ (ρ⇒ ∘ ((g ⊗₁ t) ∘ ρ⇐))))   ≈⟨ assoc²εβ ⟩
     (ρ⇒ ∘ ((f ⊗₁ s) ∘ ρ⇐)) ∘ (ρ⇒ ∘ ((g ⊗₁ t) ∘ ρ⇐))   ∎
 
   unit-merge : ∀ {f : A ⇒ unit} {g : B ⇒ unit} →
     f ∘ ρ⇒ ∘ (id ⊗₁ g) ≈ λ⇒ ∘ (f ⊗₁ g)
   unit-merge {f = f} {g} = begin
-    f ∘ ρ⇒ ∘ (id ⊗₁ g)              ≈⟨ sym-assoc ⟩
-    (f ∘ ρ⇒) ∘ (id ⊗₁ g)            ≈˘⟨ unitorʳ-commute-from ⟩∘⟨refl ⟩
-    (ρ⇒ ∘ (f ⊗₁ id)) ∘ (id ⊗₁ g)    ≈⟨ assoc ⟩
-    ρ⇒ ∘ (f ⊗₁ id) ∘ (id ⊗₁ g)      ≈⟨ refl⟩∘⟨ merge₂ʳ ⟩
+    f ∘ ρ⇒ ∘ (id ⊗₁ g)              ≈⟨ pullˡ (⟺ unitorʳ-commute-from) ⟩
+    (ρ⇒ ∘ (f ⊗₁ id)) ∘ (id ⊗₁ g)    ≈⟨ pullʳ merge₂ʳ ⟩
     ρ⇒ ∘ (f ⊗₁ (id ∘ g))            ≈⟨ refl⟩∘⟨ refl⟩⊗⟨ identityˡ ⟩
     ρ⇒ ∘ (f ⊗₁ g)                   ≈˘⟨ coherence₃ ⟩∘⟨refl ⟩
     λ⇒ ∘ (f ⊗₁ g)                   ∎

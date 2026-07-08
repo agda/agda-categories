@@ -1,20 +1,23 @@
 {-# OPTIONS --without-K --safe #-}
 
+-- The endomorphisms of an object form a monoid under composition.
+-- See https://ncatlab.org/nlab/show/endomorphism+monoid for this.
+
 open import Categories.Category.Core using (Category)
 
-module Categories.Morphism.Endomorphism {o ℓ e} (𝒞 : Category o ℓ e) where
+module Categories.Object.Endomorphism {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Algebra.Bundles using (Monoid)
 open import Data.Product using (_,_)
 
 open Category 𝒞
 
-End : Obj → Set _
-End X = X ⇒ X
+Endo : Obj → Set _
+Endo X = X ⇒ X
 
-End-∘-Monoid : Obj → Monoid _ _
-End-∘-Monoid X = record
-  { Carrier = End X
+Endo-∘-Monoid : Obj → Monoid _ _
+Endo-∘-Monoid X = record
+  { Carrier = Endo X
   ; _≈_ = _≈_
   ; _∙_ = _∘_
   ; ε = id
