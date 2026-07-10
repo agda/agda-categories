@@ -10,14 +10,15 @@
 -- Abramsky and Coecke, "A categorical semantics of quantum protocols", §6
 -- (LiCS 2004, arXiv:quant-ph/0402130, doi:10.1109/LICS.2004.1319636),
 -- where scalars are C(I,I) for the tensor unit I.
+-- By the Eckmann–Hilton argument, the scalars are commutative under composition.
 
 open import Categories.Category.Core using (Category)
-open import Categories.Category.Monoidal using (Monoidal)
+open import Categories.Category.Monoidal.Core using (Monoidal)
 
 module Categories.Category.Monoidal.Scalars
     {o ℓ e} {𝒞 : Category o ℓ e} (M : Monoidal 𝒞) where
 
-open import Algebra.Bundles using (Monoid)
+open import Algebra.Bundles using (Monoid; CommutativeMonoid)
 
 open import Categories.Object.Endomorphism 𝒞 using (Endo; Endo-∘-Monoid)
 open import Categories.Category.Monoidal.Reasoning M
@@ -33,14 +34,15 @@ open MonoidalProps.Kelly's
 Scalar : Set _
 Scalar = Endo unit
 
-Scalar-Monoid : Monoid _ _
-Scalar-Monoid = Endo-∘-Monoid unit
-
 private
+  Scalar-Base-Monoid : Monoid _ _
+  Scalar-Base-Monoid = Endo-∘-Monoid unit
+
   variable
     A B C : Obj
+    s t : Scalar
 
-open Monoid Scalar-Monoid public using () renaming (_∙_ to _·ₛ_; ε to idₛ)
+open Monoid Scalar-Base-Monoid public using () renaming (_∙_ to _·ₛ_; ε to idₛ)
 
 module Action where
   infixl 7 _·ˡ_ _·ʳ_
@@ -51,10 +53,10 @@ module Action where
   _·ʳ_ : A ⇒ B → Scalar → A ⇒ B
   f ·ʳ s = ρ⇒ ∘ (f ⊗₁ s) ∘ ρ⇐
 
-  ·ˡ-resp-≈ : ∀ {s t : Scalar} {f g : A ⇒ B} → s ≈ t → f ≈ g → s ·ˡ f ≈ t ·ˡ g
+  ·ˡ-resp-≈ : {f g : A ⇒ B} → s ≈ t → f ≈ g → s ·ˡ f ≈ t ·ˡ g
   ·ˡ-resp-≈ s≈t f≈g = ∘-resp-≈ʳ (∘-resp-≈ˡ (s≈t ⟩⊗⟨ f≈g))
 
-  ·ʳ-resp-≈ : ∀ {s t : Scalar} {f g : A ⇒ B} → f ≈ g → s ≈ t → f ·ʳ s ≈ g ·ʳ t
+  ·ʳ-resp-≈ : {f g : A ⇒ B} → f ≈ g → s ≈ t → f ·ʳ s ≈ g ·ʳ t
   ·ʳ-resp-≈ f≈g s≈t = ∘-resp-≈ʳ (∘-resp-≈ˡ (f≈g ⟩⊗⟨ s≈t))
 
   id-·ˡ : ∀ {f : A ⇒ B} → idₛ ·ˡ f ≈ f
@@ -69,7 +71,7 @@ module Action where
     (f ∘ ρ⇒) ∘ ρ⇐         ≈⟨ cancelʳ unitorʳ.isoʳ ⟩
     f                     ∎
 
-  ·ˡ-∘ : ∀ {s t : Scalar} {f : B ⇒ C} {g : A ⇒ B} →
+  ·ˡ-∘ : ∀ {f : B ⇒ C} {g : A ⇒ B} →
     (s ·ₛ t) ·ˡ (f ∘ g) ≈ (s ·ˡ f) ∘ (t ·ˡ g)
   ·ˡ-∘ {s = s} {t} {f} {g} = begin
     λ⇒ ∘ ((s ·ₛ t) ⊗₁ (f ∘ g)) ∘ λ⇐                   ≈⟨ refl⟩∘⟨ pushˡ ⊗-distrib-over-∘ ⟩
@@ -77,7 +79,7 @@ module Action where
     λ⇒ ∘ ((s ⊗₁ f) ∘ (λ⇐ ∘ (λ⇒ ∘ ((t ⊗₁ g) ∘ λ⇐))))   ≈⟨ assoc²εβ ⟩
     (λ⇒ ∘ ((s ⊗₁ f) ∘ λ⇐)) ∘ (λ⇒ ∘ ((t ⊗₁ g) ∘ λ⇐))   ∎
 
-  ·ʳ-∘ : ∀ {s t : Scalar} {f : B ⇒ C} {g : A ⇒ B} →
+  ·ʳ-∘ : ∀ {f : B ⇒ C} {g : A ⇒ B} →
     (f ∘ g) ·ʳ (s ·ₛ t) ≈ (f ·ʳ s) ∘ (g ·ʳ t)
   ·ʳ-∘ {s = s} {t} {f} {g} = begin
     ρ⇒ ∘ ((f ∘ g) ⊗₁ (s ·ₛ t)) ∘ ρ⇐                   ≈⟨ refl⟩∘⟨ pushˡ ⊗-distrib-over-∘ ⟩
@@ -95,3 +97,73 @@ module Action where
     λ⇒ ∘ (f ⊗₁ g)                   ∎
 
 open Action public
+
+-- Scalars are commutative: the Eckmann–Hilton argument.
+-- See https://ncatlab.org/nlab/show/Eckmann-Hilton+argument for this.
+-- On C(I,I) composition and tensor are unital operations that interchange (by
+-- bifunctoriality of ⊗), so they coincide and commute (B. Eckmann & P. Hilton,
+-- "Group-like structures in general categories I", Math. Ann. 145 (1962) 227–255).
+-- Concretely the two actions agree on scalars (the unitors coincide on the unit),
+-- while `s ·ʳ t` is `s ∘ t` and `s ·ˡ t` is `t ∘ s`.
+module Eckmann-Hilton where
+  private
+    -- A scalar sandwiched between the unitors in either slot is itself: swap the
+    -- unitors by coherence₃ and apply id-·ˡ / id-·ʳ.
+    absorbᵣ : ρ⇒ ∘ (id ⊗₁ s) ∘ ρ⇐ ≈ s
+    absorbᵣ {s} = begin
+      ρ⇒ ∘ (id ⊗₁ s) ∘ ρ⇐  ≈⟨ ⟺ coherence₃ ⟩∘⟨ refl⟩∘⟨ ⟺ coherence-inv₃ ⟩
+      λ⇒ ∘ (id ⊗₁ s) ∘ λ⇐  ≈⟨ id-·ˡ ⟩
+      s                    ∎
+
+    absorbₗ : λ⇒ ∘ (s ⊗₁ id) ∘ λ⇐ ≈ s
+    absorbₗ {s} = begin
+      λ⇒ ∘ (s ⊗₁ id) ∘ λ⇐  ≈⟨ coherence₃ ⟩∘⟨ refl⟩∘⟨ coherence-inv₃ ⟩
+      ρ⇒ ∘ (s ⊗₁ id) ∘ ρ⇐  ≈⟨ id-·ʳ ⟩
+      s                    ∎
+
+  -- The two actions agree on a scalar: the unitors coincide on the unit.
+  ·ʳ≈·ˡ : s ·ʳ t ≈ s ·ˡ t
+  ·ʳ≈·ˡ = ⟺ coherence₃ ⟩∘⟨ refl⟩∘⟨ ⟺ coherence-inv₃
+
+  -- Acting by a scalar on a scalar is composition: slide the acting scalar out
+  -- past its unitor; the other unitor absorbs the scalar acted on.
+  ·ʳ-scalar : s ·ʳ t ≈ s ∘ t
+  ·ʳ-scalar {s} {t} = begin
+    ρ⇒ ∘ (s ⊗₁ t) ∘ ρ⇐                 ≈⟨ refl⟩∘⟨ serialize₁₂ ⟩∘⟨refl ⟩
+    ρ⇒ ∘ ((s ⊗₁ id) ∘ (id ⊗₁ t)) ∘ ρ⇐  ≈⟨ refl⟩∘⟨ assoc ⟩
+    ρ⇒ ∘ (s ⊗₁ id) ∘ (id ⊗₁ t) ∘ ρ⇐    ≈⟨ pullˡ unitorʳ-commute-from ⟩
+    (s ∘ ρ⇒) ∘ (id ⊗₁ t) ∘ ρ⇐          ≈⟨ assoc ⟩
+    s ∘ ρ⇒ ∘ (id ⊗₁ t) ∘ ρ⇐            ≈⟨ refl⟩∘⟨ absorbᵣ ⟩
+    s ∘ t                              ∎
+
+  ·ˡ-scalar : s ·ˡ t ≈ t ∘ s
+  ·ˡ-scalar {s} {t} = begin
+    λ⇒ ∘ (s ⊗₁ t) ∘ λ⇐                 ≈⟨ refl⟩∘⟨ serialize₂₁ ⟩∘⟨refl ⟩
+    λ⇒ ∘ ((id ⊗₁ t) ∘ (s ⊗₁ id)) ∘ λ⇐  ≈⟨ refl⟩∘⟨ assoc ⟩
+    λ⇒ ∘ (id ⊗₁ t) ∘ (s ⊗₁ id) ∘ λ⇐    ≈⟨ pullˡ unitorˡ-commute-from ⟩
+    (t ∘ λ⇒) ∘ (s ⊗₁ id) ∘ λ⇐          ≈⟨ assoc ⟩
+    t ∘ λ⇒ ∘ (s ⊗₁ id) ∘ λ⇐            ≈⟨ refl⟩∘⟨ absorbₗ ⟩
+    t ∘ s                              ∎
+
+  -- Eckmann–Hilton: s ∘ t = s ·ʳ t = s ·ˡ t = t ∘ s.
+  scalar-comm : (s t : Scalar) → s ·ₛ t ≈ t ·ₛ s
+  scalar-comm s t = begin
+    s ∘ t   ≈˘⟨ ·ʳ-scalar ⟩
+    s ·ʳ t  ≈⟨ ·ʳ≈·ˡ ⟩
+    s ·ˡ t  ≈⟨ ·ˡ-scalar ⟩
+    t ∘ s   ∎
+
+  -- The scalars form a commutative monoid under composition.
+  Scalar-Monoid : CommutativeMonoid _ _
+  Scalar-Monoid = record
+    { Carrier = Scalar
+    ; _≈_ = _≈_
+    ; _∙_ = _·ₛ_
+    ; ε   = idₛ
+    ; isCommutativeMonoid = record
+      { isMonoid = Monoid.isMonoid Scalar-Base-Monoid
+      ; comm     = scalar-comm
+      }
+    }
+
+open Eckmann-Hilton public
