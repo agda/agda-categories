@@ -45,10 +45,11 @@ open import Categories.Tactic.Monoidal.Free public
 open import Categories.Morphism 𝒞 using (_≅_; module ≅)
 open import Categories.Category.Monoidal.Utilities M
   using (_⊗ᵢ_; Obj-⊗-Monoid; module Shorthands; pentagon-inv)
-open import Categories.Category.Monoidal.Properties M
-  using (coherence₂; coherence₃; coherence-inv₁)
+open import Categories.Category.Monoidal.Properties M using (coherence₃)
 open import Categories.Category.Monoidal.Reasoning M
 open import Categories.Morphism.Reasoning 𝒞
+open import Categories.Category.Monoidal.Reassociation M
+  using (pentagon-assoc; λ⇐-assoc; ρ⇒-assoc)
 
 open Category 𝒞
 open Monoidal M hiding (⊗; _⊗-; -⊗_)
@@ -168,38 +169,6 @@ coherence-from-loop {f = f} {g} loop = begin
 -- §5: Naturality of strictification
 -- ----------------------------------------------------------------------------
 
-private
-  id⊗α-cancel : (id {P} ⊗₁ α⇐ {Q} {R} {S}) ∘ (id ⊗₁ α⇒) ≈ id
-  id⊗α-cancel = ⊗-cancel identity² associator.isoˡ
-
-  assoc-shuffle
-    : α⇒ {P ⊗₀ Q} {R} {S} ∘ (α⇐ {P} {Q} {R} ⊗₁ id) ∘ α⇐ {P} {Q ⊗₀ R} {S}
-      ≈ α⇐ {P} {Q} {R ⊗₀ S} ∘ (id ⊗₁ α⇒ {Q} {R} {S})
-  assoc-shuffle = begin
-    α⇒ ∘ ((α⇐ ⊗₁ id) ∘ α⇐)                               ≈⟨ refl⟩∘⟨ pentagon-tail ⟩
-    α⇒ ∘ ((α⇐ ∘ α⇐) ∘ (id ⊗₁ α⇒))                        ≈⟨ refl⟩∘⟨ assoc ⟩
-    α⇒ ∘ α⇐ ∘ α⇐ ∘ (id ⊗₁ α⇒)                            ≈⟨ cancelˡ associator.isoʳ ⟩
-    α⇐ ∘ (id ⊗₁ α⇒)                                      ∎
-    where
-      pentagon-tail : (α⇐ {P} {Q} {R} ⊗₁ id {S}) ∘ α⇐ {P} {Q ⊗₀ R} {S}
-                      ≈ (α⇐ {P ⊗₀ Q} {R} {S} ∘ α⇐ {P} {Q} {R ⊗₀ S}) ∘ (id {P} ⊗₁ α⇒ {Q} {R} {S})
-      pentagon-tail = begin
-        (α⇐ ⊗₁ id) ∘ α⇐                                  ≈⟨ insertʳ id⊗α-cancel ⟩
-        (((α⇐ ⊗₁ id) ∘ α⇐) ∘ (id ⊗₁ α⇐)) ∘ (id ⊗₁ α⇒)    ≈⟨ pentagon-inv ⟩∘⟨refl ⟩
-        (α⇐ ∘ α⇐) ∘ (id ⊗₁ α⇒)                           ∎
-
-  λ⇐-assoc : α⇒ ∘ (λ⇐ {P} ⊗₁ id {Q}) ≈ λ⇐
-  λ⇐-assoc = begin
-    α⇒ ∘ (λ⇐ ⊗₁ id)            ≈⟨ refl⟩∘⟨ ⟺ coherence-inv₁ ⟩
-    α⇒ ∘ (α⇐ ∘ λ⇐)             ≈⟨ cancelˡ associator.isoʳ ⟩
-    λ⇐ ∎
-
-  ρ⇒-assoc : ρ⇒ ∘ α⇐ {P} {Q} {unit} ≈ id ⊗₁ ρ⇒
-  ρ⇒-assoc = begin
-    ρ⇒ ∘ α⇐                    ≈˘⟨ coherence₂ ⟩∘⟨refl ⟩
-    (id ⊗₁ ρ⇒ ∘ α⇒) ∘ α⇐       ≈⟨ cancelʳ associator.isoʳ ⟩
-    id ⊗₁ ρ⇒                   ∎
-
 -- `μ⇒ x y` is the forward direction of the homomorphism's multiplicativity
 -- witness: it merges two normalized products.
 μ⇒ : (x y : List Atom) → eval (x ++ y) ⇒ (eval x ⊗₀ eval y)
@@ -249,7 +218,7 @@ substₑ-cons refl = ⟺ ⊗.identity
   α⇒ ∘ (α⇐ ⊗₁ id) ∘ (α⇐ ∘ (id ⊗₁ ((μ-bs-v ⊗₁ id) ∘ μ-bsv-w)))
     ≈⟨ refl⟩∘⟨ sym-assoc ⟩
   α⇒ ∘ ((α⇐ ⊗₁ id) ∘ α⇐) ∘ (id ⊗₁ ((μ-bs-v ⊗₁ id) ∘ μ-bsv-w))
-    ≈⟨ pullˡ assoc-shuffle ⟩
+    ≈⟨ pullˡ pentagon-assoc ⟩
   (α⇐ ∘ (id ⊗₁ α⇒)) ∘ (id ⊗₁ ((μ-bs-v ⊗₁ id) ∘ μ-bsv-w))
     ≈⟨ pullʳ merge₂ˡ ⟩
   α⇐ ∘ (id ⊗₁ (α⇒ ∘ (μ-bs-v ⊗₁ id) ∘ μ-bsv-w))
