@@ -32,7 +32,7 @@ on:
 
 env:
   AGDA_VERSION: "2.8.0"
-  STDLIB_VERSION: "2.3"
+  STDLIB_VERSION: "2.4"
 
   AGDA: agda --auto-inline -Werror +RTS -M6G -H3.5G -A128M -RTS -i . -i src/
 
