@@ -70,26 +70,27 @@ bimodHelper {M₁} {M₂} B = record
     open hom.HomReasoning
     open MR'
 
-    sym-assoc : actionˡ ∘ᵥ (actionʳ ◁ T M₁) ∘ᵥ α⇐ ≈ actionʳ ∘ᵥ (T M₂ ▷ actionˡ)
-    sym-assoc = begin
-      actionˡ ∘ᵥ (actionʳ ◁ T M₁) ∘ᵥ α⇐         ≈⟨ pullˡ (⟺ assoc) ⟩
-      (actionʳ ∘ᵥ (T M₂ ▷ actionˡ) ∘ᵥ α⇒) ∘ᵥ α⇐ ≈⟨ assoc²βγ ⟩
-      (actionʳ ∘ᵥ (T M₂ ▷ actionˡ)) ∘ᵥ α⇒ ∘ᵥ α⇐ ≈⟨ elimʳ associator.isoʳ ⟩
-      actionʳ ∘ᵥ (T M₂ ▷ actionˡ)               ∎
+    abstract
+      sym-assoc : actionˡ ∘ᵥ (actionʳ ◁ T M₁) ∘ᵥ α⇐ ≈ actionʳ ∘ᵥ (T M₂ ▷ actionˡ)
+      sym-assoc = begin
+        actionˡ ∘ᵥ (actionʳ ◁ T M₁) ∘ᵥ α⇐         ≈⟨ pullˡ (⟺ assoc) ⟩
+        (actionʳ ∘ᵥ (T M₂ ▷ actionˡ) ∘ᵥ α⇒) ∘ᵥ α⇐ ≈⟨ assoc²βγ ⟩
+        (actionʳ ∘ᵥ (T M₂ ▷ actionˡ)) ∘ᵥ α⇒ ∘ᵥ α⇐ ≈⟨ elimʳ associator.isoʳ ⟩
+        actionʳ ∘ᵥ (T M₂ ▷ actionˡ)               ∎
 
-    sym-assoc-actionˡ : actionˡ ∘ᵥ (actionˡ ◁ T M₁) ∘ᵥ α⇐ ≈ actionˡ ∘ᵥ (F ▷ μ M₁)
-    sym-assoc-actionˡ = begin
-      actionˡ ∘ᵥ (actionˡ ◁ T M₁) ∘ᵥ α⇐   ≈⟨ pullˡ (⟺ assoc-actionˡ) ⟩
-      (actionˡ ∘ᵥ (F ▷ μ M₁) ∘ᵥ α⇒) ∘ᵥ α⇐ ≈⟨ assoc²βγ ⟩
-      (actionˡ ∘ᵥ (F ▷ μ M₁)) ∘ᵥ α⇒ ∘ᵥ α⇐ ≈⟨ elimʳ associator.isoʳ ⟩
-      actionˡ ∘ᵥ (F ▷ μ M₁)               ∎
+      sym-assoc-actionˡ : actionˡ ∘ᵥ (actionˡ ◁ T M₁) ∘ᵥ α⇐ ≈ actionˡ ∘ᵥ (F ▷ μ M₁)
+      sym-assoc-actionˡ = begin
+        actionˡ ∘ᵥ (actionˡ ◁ T M₁) ∘ᵥ α⇐   ≈⟨ pullˡ (⟺ assoc-actionˡ) ⟩
+        (actionˡ ∘ᵥ (F ▷ μ M₁) ∘ᵥ α⇒) ∘ᵥ α⇐ ≈⟨ assoc²βγ ⟩
+        (actionˡ ∘ᵥ (F ▷ μ M₁)) ∘ᵥ α⇒ ∘ᵥ α⇐ ≈⟨ elimʳ associator.isoʳ ⟩
+        actionˡ ∘ᵥ (F ▷ μ M₁)               ∎
 
-    sym-assoc-actionʳ : actionʳ ∘ᵥ (T M₂ ▷ actionʳ) ∘ᵥ α⇒ ≈ actionʳ ∘ᵥ (μ M₂ ◁ F)
-    sym-assoc-actionʳ = begin
-      actionʳ ∘ᵥ (T M₂ ▷ actionʳ) ∘ᵥ α⇒   ≈⟨ pullˡ (⟺ assoc-actionʳ) ⟩
-      (actionʳ ∘ᵥ (μ M₂ ◁ F) ∘ᵥ α⇐) ∘ᵥ α⇒ ≈⟨ assoc²βγ ⟩
-      (actionʳ ∘ᵥ (μ M₂ ◁ F)) ∘ᵥ α⇐ ∘ᵥ α⇒ ≈⟨ elimʳ associator.isoˡ ⟩
-      actionʳ ∘ᵥ (μ M₂ ◁ F)               ∎
+      sym-assoc-actionʳ : actionʳ ∘ᵥ (T M₂ ▷ actionʳ) ∘ᵥ α⇒ ≈ actionʳ ∘ᵥ (μ M₂ ◁ F)
+      sym-assoc-actionʳ = begin
+        actionʳ ∘ᵥ (T M₂ ▷ actionʳ) ∘ᵥ α⇒   ≈⟨ pullˡ (⟺ assoc-actionʳ) ⟩
+        (actionʳ ∘ᵥ (μ M₂ ◁ F) ∘ᵥ α⇐) ∘ᵥ α⇒ ≈⟨ assoc²βγ ⟩
+        (actionʳ ∘ᵥ (μ M₂ ◁ F)) ∘ᵥ α⇐ ∘ᵥ α⇒ ≈⟨ elimʳ associator.isoˡ ⟩
+        actionʳ ∘ᵥ (μ M₂ ◁ F)               ∎
 
 id-bimodule : (M : Monad 𝒞) → Bimodule M M
 id-bimodule M = record

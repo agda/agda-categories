@@ -7,6 +7,7 @@ module Categories.Category.Monoidal.Utilities {o ℓ e} {C : Category o ℓ e} (
 
 open import Level
 open import Function using (_$_)
+open import Algebra.Bundles using (Monoid)
 open import Data.Product using (_×_; _,_; curry′)
 
 open import Categories.Category.Product
@@ -20,6 +21,7 @@ open import Categories.NaturalTransformation.NaturalIsomorphism
 
 open import Categories.Morphism.Isomorphism C using (lift-triangle′; lift-pentagon′)
 open import Categories.Morphism.Reasoning C
+import Categories.Morphism C as Morphism
 
 private
   module C = Category C
@@ -139,3 +141,21 @@ pentagon-inv = to-≈ pentagon-iso
 
 refl⊗refl≃refl : idᵢ {A} ⊗ᵢ idᵢ {B} ≈ᵢ idᵢ
 refl⊗refl≃refl = ⌞ ⊗.identity ⌟
+
+Obj-⊗-Monoid : Monoid o (ℓ ⊔ e)
+Obj-⊗-Monoid = record
+  { Carrier = Obj
+  ; _≈_ = _≅_
+  ; _∙_ = _⊗₀_
+  ; ε   = unit
+  ; isMonoid = record
+    { isSemigroup = record
+      { assoc = λ x y z → associator {x} {y} {z}
+      ; isMagma = record
+        { isEquivalence = Morphism.≅-isEquivalence
+        ; ∙-cong = _⊗ᵢ_
+        }
+      }
+    ; identity = (λ x → unitorˡ {x}) , (λ x → unitorʳ {x})
+    }
+  }

@@ -18,13 +18,13 @@ module _ {o′ ℓ′ e′} {F : Functor (Zero {o′} {ℓ′} {e′}) C} where
   colimit⇒⊥ L = record
     { ⊥        = coapex
     ; ⊥-is-initial = record
-      { !        = rep record
+      { ¡        = rep record
         { coapex = record
           { ψ       = λ ()
           ; commute = λ { {()} }
           }
         }
-      ; !-unique = λ f → initial.!-unique record
+      ; ¡-unique = λ f → initial.¡-unique record
         { arr     = f
         ; commute = λ { {()} }
         }
@@ -45,15 +45,15 @@ module _ {o′ ℓ′ e′} {F : Functor (Zero {o′} {ℓ′} {e′}) C} where
           }
         }
       ; ⊥-is-initial = record
-        { !        = λ {K} →
+        { ¡        = λ {K} →
           let open Cocone F K
           in record
-          { arr     = !
+          { arr     = ¡
           ; commute = λ { {()} }
           }
-        ; !-unique = λ f →
+        ; ¡-unique = λ f →
           let module f = Cocone⇒ F f
-          in !-unique f.arr
+          in ¡-unique f.arr
         }
       }
     }

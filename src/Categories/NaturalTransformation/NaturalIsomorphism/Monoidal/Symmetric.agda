@@ -19,7 +19,7 @@ open import Relation.Binary using (IsEquivalence)
 
 open import Categories.Category.Monoidal using (SymmetricMonoidalCategory)
 import Categories.Functor.Monoidal.Symmetric as SMF
-open import Categories.Functor.Monoidal.Properties using () renaming
+open import Categories.Functor.Monoidal.Symmetric.Properties using () renaming
   ( idF-SymmetricMonoidal to idFˡ  ; idF-StrongSymmetricMonoidal to idFˢ
   ; ∘-SymmetricMonoidal   to _∘Fˡ_ ; ∘-StrongSymmetricMonoidal   to _∘Fˢ_
   )

@@ -16,7 +16,7 @@ open import Categories.Object.Product.Morphisms 𝒞
 
 open Category 𝒞
 open Cartesian C
-open BinaryProducts products
+
 open Equiv
 open HomReasoning
 open Group using (μ)
@@ -35,7 +35,7 @@ Groups = record
     }
   ; _∘_ = λ f g → record
     { arr = arr f ∘ arr g
-    ; preserves-μ = glue (preserves-μ f) (preserves-μ g) ○ ∘-resp-≈ʳ ⁂∘⁂
+    ; preserves-μ = glue (preserves-μ f) (preserves-μ g) ○ ∘-resp-≈ʳ ×₁∘×₁
     ; preserves-η = glueTrianglesˡ (preserves-η f) (preserves-η g)
     ; preserves-ι = glue (preserves-ι f) (preserves-ι g)
     }

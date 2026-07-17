@@ -276,22 +276,16 @@ product {B = B} {C = C} {A = A} = record
   { F₀ = uncurry′ _∘F_
   ; F₁ = uncurry′ _∘ₕ_
   ; identity = λ {f} → identityʳ ○ identity {D = C} (proj₁ f)
-  ; homomorphism = λ { {_ , F₂} {G₁ , G₂} {H₁ , _} {f₁ , f₂} {g₁ , g₂} {x} → begin
-      F₁ H₁ (η g₂ x B.∘ η f₂ x) ∘ η g₁ (F₀ F₂ x) ∘ η f₁ (F₀ F₂ x)
-        ≈⟨ ∘-resp-≈ˡ (homomorphism H₁) ⟩
-      ((F₁ H₁ (η g₂ x) ∘ F₁ H₁ (η f₂ x)) ∘ η g₁ (F₀ F₂ x) ∘ η f₁ (F₀ F₂ x))
-        ≈⟨ center (⟺ (commute g₁ (η f₂ x))) ⟩
-      F₁ H₁ (η g₂ x) ∘ (η g₁ (F₀ G₂ x) ∘ F₁  G₁ (η f₂ x)) ∘ η f₁ (F₀ F₂ x)
-        ≈⟨ pull-first refl ⟩
-      (F₁ H₁ (η g₂ x) ∘ η g₁ (F₀ G₂ x)) ∘ F₁ G₁ (η f₂ x) ∘ η f₁ (F₀ F₂ x)
-        ∎ }
+  ; homomorphism = λ {_} {(G₁ , _)} {(H₁ , _)} {(f₁ , f₂)} {(g₁ , g₂)} → begin
+      F₁ H₁ (η g₂ _ B.∘ η f₂ _) ∘ η g₁ _ ∘ η f₁ _  ≈⟨ ∘-resp-≈ˡ (homomorphism H₁) ⟩
+      (F₁ H₁ (η g₂ _) ∘ F₁ H₁ _) ∘ η g₁ _ ∘ η f₁ _ ≈⟨ extend² (sym-commute g₁ (η f₂ _)) ⟩
+      (F₁ H₁ (η g₂ _) ∘ η g₁ _) ∘ F₁ G₁ _ ∘ η f₁ _ ∎
   ; F-resp-≈ = λ { {_} {g₁ , _} (≈₁ , ≈₂) → ∘-resp-≈ (F-resp-≈ g₁ ≈₂) ≈₁ }
   }
   where
     open Category C
     open MR C
     open HomReasoning
-    open Equiv
     open Functor
     module B = Category B
     open NaturalTransformation

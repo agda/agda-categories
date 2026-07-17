@@ -3,11 +3,14 @@ open import Categories.Category.Core using (Category)
 
 module Categories.Diagram.Pullback {o ℓ e} (C : Category o ℓ e) where
 
+open import Categories.Category using (module Definitions)
+
 open Category C
+open Definitions C 
 open HomReasoning
 open Equiv
 
-open import Level
+open import Level using (_⊔_)
 open import Data.Product using (_,_; ∃)
 open import Function using (flip; _$_) renaming (_∘_ to _●_)
 open import Categories.Morphism C
@@ -16,10 +19,22 @@ open import Categories.Diagram.Equalizer C hiding (up-to-iso)
 open import Categories.Morphism.Reasoning C as Square
   renaming (glue to glue-square) hiding (id-unique)
 
+open import Data.Fin using (Fin; zero) renaming (suc to nzero)
+
 private
   variable
     A B X Y Z : Obj
     f g h h₁ h₂ i i₁ i₂ j k : A ⇒ B
+
+-- Possibly, refactor pullbacks through it at some point
+record IsWeakPullback {P : Obj} (p₁ : P ⇒ X) (p₂ : P ⇒ Y) (f : X ⇒ Z) (g : Y ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
+  field
+    commute         : f ∘ p₁ ≈ g ∘ p₂
+    universal       : ∀ {h₁ : A ⇒ X} {h₂ : A ⇒ Y} → f ∘ h₁ ≈ g ∘ h₂ → A ⇒ P
+    p₁∘universal≈h₁ : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} →
+                        p₁ ∘ universal eq ≈ h₁
+    p₂∘universal≈h₂ : ∀ {eq : f ∘ h₁ ≈ g ∘ h₂} →
+                        p₂ ∘ universal eq ≈ h₂
 
 -- Proof that a given square is a pullback
 record IsPullback {P : Obj} (p₁ : P ⇒ X) (p₂ : P ⇒ Y) (f : X ⇒ Z) (g : Y ⇒ Z) : Set (o ⊔ ℓ ⊔ e) where
@@ -97,6 +112,9 @@ swap p = record
   }
   where open Pullback p
 
+jmono : (p : Pullback f g) → JointMono₂ (Pullback.p₁ p) (Pullback.p₂ p)
+jmono p _ _ 2fam = Pullback.unique-diagram p (2fam zero) (2fam (nzero zero))
+
 glue : (p : Pullback f g) → Pullback h (Pullback.p₁ p) → Pullback (f ∘ h) g
 glue {h = h} p q = record
   { p₁              = q.p₁
@@ -113,39 +131,48 @@ glue {h = h} p q = record
               h ∘ q.p₁ ∘ j    ≈⟨ refl⟩∘⟨ eq₁ ⟩
               h ∘ q.p₁ ∘ i    ≈⟨ extendʳ q.commute ⟩
               p.p₁ ∘ q.p₂ ∘ i ∎
-        in q.unique-diagram eq₁ (p.unique-diagram eq′ (sym-assoc ○ eq₂ ○ assoc))
+        in q.unique-diagram eq₁ (p.unique-diagram eq′ (sym-assoc ○ eq₂ ○ assoc)) 
     }
   }
   where module p = Pullback p
         module q = Pullback q
 
+unglue′ : (p : CommutativeSquare h₁ k f h₂) →
+          (q : CommutativeSquare h i g h₁) →
+          JointMono₂ h₁ k →
+          IsPullback h (k ∘ i) (f ∘ g) h₂ →
+          IsPullback h i g h₁
+
+unglue′ {k = k}{i = i} p q jm is-pb = record
+  { commute = q
+  ; universal = λ eq → is-pb.universal (glue-square p eq)
+  ; p₁∘universal≈h₁ = is-pb.p₁∘universal≈h₁
+  ; p₂∘universal≈h₂ = λ {_ _ j eq} → jm
+      (i ∘ is-pb.universal (glue-square p eq)) j
+      λ{ zero →  pullˡ (⟺ q) ○ pullʳ is-pb.p₁∘universal≈h₁ ○ eq
+       ; (nzero _) → sym-assoc ○ is-pb.p₂∘universal≈h₂ }
+  ; unique-diagram = λ eq₁ eq₂ → is-pb.unique-diagram eq₁ (extendˡ eq₂) 
+  }
+    where module is-pb = IsPullback is-pb
+
 unglue : (p : Pullback f g) → Pullback (f ∘ h) g → Pullback h (Pullback.p₁ p)
 unglue {f = f} {g = g} {h = h} p q = record
-  { p₁              = q.p₁
-  ; p₂              = p₂′
-  ; isPullback = record
-    { commute         = ⟺ p.p₁∘universal≈h₁
-    ; universal       = λ {_ h₁ h₂} eq → q.universal $ begin
-      (f ∘ h) ∘ h₁      ≈⟨ pullʳ eq ⟩
-      f ∘ p.p₁ ∘ h₂     ≈⟨ extendʳ p.commute ⟩
-      g ∘ p.p₂ ∘ h₂     ∎
-    ; p₁∘universal≈h₁ = q.p₁∘universal≈h₁
-    ; p₂∘universal≈h₂ = λ {_ _ _ eq} →
-      p.unique-diagram ((pullˡ p.p₁∘universal≈h₁) ○ pullʳ q.p₁∘universal≈h₁ ○ eq)
-                       (pullˡ p.p₂∘universal≈h₂ ○ q.p₂∘universal≈h₂)
-    ; unique-diagram  = λ {_ j i} eq₁ eq₂ →
-        let eq′ : q.p₂ ∘ j ≈ q.p₂ ∘ i
-            eq′ = begin
-              q.p₂ ∘ j       ≈⟨ pushˡ (⟺ p.p₂∘universal≈h₂) ⟩
-              p.p₂ ∘ p₂′ ∘ j ≈⟨ refl⟩∘⟨ eq₂ ⟩
-              p.p₂ ∘ p₂′ ∘ i ≈⟨ pullˡ p.p₂∘universal≈h₂ ⟩
-              q.p₂ ∘ i ∎
-        in q.unique-diagram eq₁ eq′
-    }
+  { p₁ = q.p₁
+  ; p₂ = p.universal (sym-assoc ○ q.commute)
+  ; isPullback = unglue′ p.commute (⟺ p.p₁∘universal≈h₁)
+      (λ _ _ z → p.unique-diagram (z zero) (z (nzero zero))) ispb
   }
-  where module p = Pullback p
-        module q = Pullback q
-        p₂′ = p.universal (sym-assoc ○ q.commute) -- used twice above
+    where
+      module p = Pullback p
+      module q = Pullback q
+
+      ispb : IsPullback q.p₁ (p.p₂ ∘ p.universal (sym-assoc ○ q.commute)) (f ∘ h) g
+      ispb .IsPullback.commute = q.commute ○ ∘-resp-≈ʳ (⟺ p.p₂∘universal≈h₂)
+      ispb .IsPullback.universal = q.universal
+      ispb .IsPullback.p₁∘universal≈h₁ = q.p₁∘universal≈h₁
+      ispb .IsPullback.p₂∘universal≈h₂ = ∘-resp-≈ˡ p.p₂∘universal≈h₂ ○ q.p₂∘universal≈h₂
+      ispb .IsPullback.unique-diagram  eq₁ eq₂ =
+        q.unique-diagram eq₁ (∘-resp-≈ˡ (⟺ p.p₂∘universal≈h₂) ○ eq₂ ○ ∘-resp-≈ˡ p.p₂∘universal≈h₂)
 
 Product×Equalizer⇒Pullback :
   (p : Product A B) → Equalizer (f ∘ Product.π₁ p) (g ∘ Product.π₂ p) →
@@ -242,3 +269,13 @@ module _ (p : Pullback f g) where
             h ∘ g ∘ p₂             ≈⟨ cancelˡ isoˡ ⟩
             p₂                     ≈˘⟨ identityʳ ⟩
             p₂ ∘ id                ∎
+
+module _ (p : IsWeakPullback f g h k) where
+  open IsWeakPullback p
+
+  MonoWeakPullback⇒Pullback : Mono f → IsPullback f g h k
+  MonoWeakPullback⇒Pullback fm .IsPullback.commute = commute
+  MonoWeakPullback⇒Pullback fm .IsPullback.universal = universal
+  MonoWeakPullback⇒Pullback fm .IsPullback.p₁∘universal≈h₁ = p₁∘universal≈h₁
+  MonoWeakPullback⇒Pullback fm .IsPullback.p₂∘universal≈h₂ = p₂∘universal≈h₂
+  MonoWeakPullback⇒Pullback fm .IsPullback.unique-diagram {_}{i}{k} eq _ = fm i k eq

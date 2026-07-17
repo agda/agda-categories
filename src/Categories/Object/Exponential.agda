@@ -3,7 +3,9 @@ open import Categories.Category
 
 -- Exponential Object
 
--- TODO: Where is the notation from? It is neither from Wikipedia nor the nLab.
+-- NOTE: when working in a cartesian category, 
+-- you probably want to use Categories.Object.Exponential.Canonical
+
 module Categories.Object.Exponential {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open Category 𝒞

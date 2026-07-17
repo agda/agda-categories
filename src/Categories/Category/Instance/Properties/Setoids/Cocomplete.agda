@@ -66,7 +66,7 @@ Setoids-Cocomplete o ℓ e c ℓ′ {J} F = record
         }
       }
     ; ⊥-is-initial = record
-      { !        = λ {K} →
+      { ¡        = λ {K} →
         let module K = Cocone K
         in record
         { arr     = record
@@ -75,7 +75,7 @@ Setoids-Cocomplete o ℓ e c ℓ′ {J} F = record
           }
         ; commute = Setoid.refl K.N
         }
-      ; !-unique = λ { {K} f {a , Sa} →
+      ; ¡-unique = λ { {K} f {a , Sa} →
         let module K = Cocone K
             module f = Cocone⇒ f
             open RS K.N

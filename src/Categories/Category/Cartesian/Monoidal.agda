@@ -30,12 +30,12 @@ private
 
 module CartesianMonoidal (cartesian : Cartesian 𝒞) where
   open Commutation 𝒞
-  open Terminal (Cartesian.terminal cartesian)  using (⊤; !; !-unique; !-unique₂)
-  open BinaryProducts (Cartesian.products cartesian) using (π₁; π₂; ⟨_,_⟩; _×_; _⁂_;
-    _×-; -×_; ⟨⟩∘; ⟨⟩-cong₂; -×-; ×-assoc; assocˡ∘⁂; assocʳ∘⁂; ⁂∘⟨⟩;
-    first∘⟨⟩; second∘⟨⟩; ⟨⟩-congˡ; ⟨⟩-congʳ; π₁∘⁂; π₂∘⁂; assocˡ∘⟨⟩;
+  open Cartesian cartesian using (π₁; π₂; ⟨_,_⟩; _×_; _×₁_;
+    _×-; -×_; ⟨⟩∘; ⟨⟩-cong₂; -×-; ×-assoc; assocˡ∘×₁; assocʳ∘×₁; ×₁∘⟨⟩;
+    first∘⟨⟩; second∘⟨⟩; ⟨⟩-congˡ; ⟨⟩-congʳ; π₁∘×₁; π₂∘×₁; assocˡ∘⟨⟩;
     assocˡ; assocʳ;
-    η; unique; project₁; project₂)
+    η; unique; project₁; project₂;
+    ⊤; !; !-unique; !-unique₂)
 
   ⊤×A≅A : ⊤ × A ≅ A
   ⊤×A≅A = record
@@ -105,7 +105,7 @@ module CartesianMonoidal (cartesian : Cartesian 𝒞) where
     infixr 8 _⊗₁_
 
     _⊗₀_ = _×_
-    _⊗₁_ = _⁂_
+    _⊗₁_ = _×₁_
     α⇒   = assocˡ
 
   private
@@ -117,17 +117,17 @@ module CartesianMonoidal (cartesian : Cartesian 𝒞) where
                  α⇒
                ⟩
    pentagon             = begin
-      (id ⁂ α⇒) ∘ α⇒ ∘ (α⇒ ⁂ id)                                        ≈⟨ pullˡ second∘⟨⟩ ⟩
-      ⟨ π₁ ∘ π₁ , α⇒ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ∘ (α⇒ ⁂ id)                     ≈⟨ ⟨⟩∘ ⟩
-      ⟨ (π₁ ∘ π₁) ∘ (α⇒ ⁂ id) , (α⇒ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩) ∘ (α⇒ ⁂ id) ⟩     ≈⟨ ⟨⟩-cong₂ (pullʳ π₁∘⁂) (pullʳ ⟨⟩∘) ⟩
-      ⟨ π₁ ∘ α⇒ ∘ π₁ , α⇒ ∘ ⟨ (π₂ ∘ π₁) ∘ (α⇒ ⁂ id) , π₂ ∘ (α⇒ ⁂ id) ⟩ ⟩  ≈⟨ ⟨⟩-cong₂ (pullˡ project₁) ( refl⟩∘⟨ ⟨⟩-cong₂ (pullʳ π₁∘⁂) π₂∘⁂) ⟩
-      ⟨ (π₁ ∘ π₁) ∘ π₁ , α⇒ ∘ ⟨ π₂ ∘ α⇒ ∘ π₁ , id ∘ π₂ ⟩ ⟩                ≈⟨ ⟨⟩-cong₂ assoc (refl⟩∘⟨ ⟨⟩-cong₂ (pullˡ project₂) identityˡ) ⟩
+      (id ×₁ α⇒) ∘ α⇒ ∘ (α⇒ ×₁ id)                                         ≈⟨ pullˡ second∘⟨⟩ ⟩
+      ⟨ π₁ ∘ π₁ , α⇒ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ∘ (α⇒ ×₁ id)                     ≈⟨ ⟨⟩∘ ⟩
+      ⟨ (π₁ ∘ π₁) ∘ (α⇒ ×₁ id) , (α⇒ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩) ∘ (α⇒ ×₁ id) ⟩    ≈⟨ ⟨⟩-cong₂ (pullʳ π₁∘×₁) (pullʳ ⟨⟩∘) ⟩
+      ⟨ π₁ ∘ α⇒ ∘ π₁ , α⇒ ∘ ⟨ (π₂ ∘ π₁) ∘ (α⇒ ×₁ id) , π₂ ∘ (α⇒ ×₁ id) ⟩ ⟩ ≈⟨ ⟨⟩-cong₂ (pullˡ project₁) ( refl⟩∘⟨ ⟨⟩-cong₂ (pullʳ π₁∘×₁) π₂∘×₁) ⟩
+      ⟨ (π₁ ∘ π₁) ∘ π₁ , α⇒ ∘ ⟨ π₂ ∘ α⇒ ∘ π₁ , id ∘ π₂ ⟩ ⟩                 ≈⟨ ⟨⟩-cong₂ assoc (refl⟩∘⟨ ⟨⟩-cong₂ (pullˡ project₂) identityˡ) ⟩
       ⟨ π₁₁₁ , α⇒ ∘ ⟨ ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ π₁ , π₂ ⟩ ⟩                       ≈⟨ ⟨⟩-congˡ (refl⟩∘⟨ ⟨⟩-congʳ ⟨⟩∘) ⟩
       ⟨ π₁₁₁ , α⇒ ∘ ⟨ ⟨ (π₂ ∘ π₁) ∘ π₁ , π₂ ∘ π₁ ⟩ , π₂ ⟩ ⟩                ≈⟨ ⟨⟩-congˡ assocˡ∘⟨⟩ ⟩
-      ⟨ π₁₁₁ , ⟨ (π₂ ∘ π₁) ∘ π₁ , ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ⟩                      ≈˘⟨ ⟨⟩-congˡ (⟨⟩-cong₂ (Equiv.trans (pullʳ project₁) sym-assoc) project₂) ⟩
-      ⟨ π₁₁₁ , ⟨ (π₂ ∘ π₁) ∘ α⇒ , π₂ ∘ α⇒ ⟩ ⟩                             ≈˘⟨ ⟨⟩-cong₂ (pullʳ project₁) ⟨⟩∘ ⟩
-      ⟨ (π₁ ∘ π₁) ∘ α⇒ , ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ α⇒ ⟩                          ≈˘⟨ ⟨⟩∘ ⟩
-      α⇒ ∘ α⇒                                                           ∎
+      ⟨ π₁₁₁ , ⟨ (π₂ ∘ π₁) ∘ π₁ , ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ⟩                     ≈˘⟨ ⟨⟩-congˡ (⟨⟩-cong₂ (Equiv.trans (pullʳ project₁) sym-assoc) project₂) ⟩
+      ⟨ π₁₁₁ , ⟨ (π₂ ∘ π₁) ∘ α⇒ , π₂ ∘ α⇒ ⟩ ⟩                              ≈˘⟨ ⟨⟩-cong₂ (pullʳ project₁) ⟨⟩∘ ⟩
+      ⟨ (π₁ ∘ π₁) ∘ α⇒ , ⟨ π₂ ∘ π₁ , π₂ ⟩ ∘ α⇒ ⟩                           ≈˘⟨ ⟨⟩∘ ⟩
+      α⇒ ∘ α⇒                                                              ∎
       where
         π₁₁₁ = π₁ ∘ π₁ ∘ π₁
 
@@ -142,11 +142,11 @@ module CartesianMonoidal (cartesian : Cartesian 𝒞) where
     ; unitorˡ-commute-to   = let open NaturalIsomorphism ⊤×--id in ⇐.commute _
     ; unitorʳ-commute-from = project₁
     ; unitorʳ-commute-to   = let open NaturalIsomorphism -×⊤-id in ⇐.commute _
-    ; assoc-commute-from   = assocˡ∘⁂
-    ; assoc-commute-to     = assocʳ∘⁂
+    ; assoc-commute-from   = assocˡ∘×₁
+    ; assoc-commute-to     = assocʳ∘×₁
     ; triangle             = begin
-      (id ⁂ π₂) ∘ assocˡ                       ≈⟨ ⁂∘⟨⟩ ⟩
-      ⟨ id ∘ π₁ ∘ π₁ , π₂ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩ ≈⟨ ⟨⟩-cong₂ (pullˡ identityˡ) (project₂ ○ (⟺ identityˡ)) ⟩
-      π₁ ⁂ id                                  ∎
+      (id ×₁ π₂) ∘ assocˡ                       ≈⟨ ×₁∘⟨⟩ ⟩
+      ⟨ id ∘ π₁ ∘ π₁ , π₂ ∘ ⟨ π₂ ∘ π₁ , π₂ ⟩ ⟩  ≈⟨ ⟨⟩-cong₂ (pullˡ identityˡ) (project₂ ○ (⟺ identityˡ)) ⟩
+      π₁ ×₁ id                                  ∎
     ; pentagon             = pentagon
     }

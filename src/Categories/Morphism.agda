@@ -13,6 +13,7 @@ module Categories.Morphism {o ℓ e} (𝒞 : Category o ℓ e) where
 
 open import Level
 open import Relation.Binary hiding (_⇒_)
+open import Data.Fin using (Fin; zero) renaming (suc to nzero)
 
 open import Categories.Morphism.Reasoning.Core 𝒞
 
@@ -28,6 +29,9 @@ Mono {A = A} f = ∀ {C} → (g₁ g₂ : C ⇒ A) → f ∘ g₁ ≈ f ∘ g₂
 JointMono : {ι : Level} (I : Set ι) (B : I → Obj) → ((i : I) → A ⇒ B i) → Set (o ⊔ ℓ ⊔ e ⊔ ι)
 JointMono {A} I B f = ∀ {C} → (g₁ g₂ : C ⇒ A) → ((i : I) → f i ∘ g₁ ≈ f i ∘ g₂) → g₁ ≈ g₂
 
+JointMono₂ : (f : A ⇒ B) (g : A ⇒ C) → Set (o ⊔ ℓ ⊔ e)
+JointMono₂ {A}{B}{C} f g = JointMono (Fin 2) (λ{zero → B; (nzero _) → C}) (λ{zero → f; (nzero _) → g})
+
 record _↣_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field
     mor  : A ⇒ B
@@ -38,6 +42,9 @@ Epi {B = B} f = ∀ {C} → (g₁ g₂ : B ⇒ C) → g₁ ∘ f ≈ g₂ ∘ f 
 
 JointEpi : (I : Set) (A : I → Obj) → ((i : I) → A i ⇒ B) → Set (o ⊔ ℓ ⊔ e)
 JointEpi {B} I A f = ∀ {C} → (g₁ g₂ : B ⇒ C) → ((i : I) → g₁ ∘ f i ≈ g₂ ∘ f i) → g₁ ≈ g₂
+
+JointEpi₂ : (f : A ⇒ B) (g : C ⇒ B) → Set (o ⊔ ℓ ⊔ e)
+JointEpi₂ {A}{B}{C} f g = JointEpi (Fin 2) (λ{zero → A; (nzero _) → C}) (λ{zero → f; (nzero _) → g})
 
 record _↠_ (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   field

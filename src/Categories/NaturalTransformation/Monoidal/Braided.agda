@@ -22,7 +22,7 @@ open import Level
 
 open import Categories.Category.Monoidal using (BraidedMonoidalCategory)
 import Categories.Functor.Monoidal.Braided as BMF
-open import Categories.Functor.Monoidal.Properties using ()
+open import Categories.Functor.Monoidal.Braided.Properties using ()
   renaming (∘-BraidedMonoidal to _∘Fˡ_; ∘-StrongBraidedMonoidal to _∘Fˢ_)
 open import Categories.NaturalTransformation as NT using (NaturalTransformation)
 import Categories.NaturalTransformation.Monoidal as MNT

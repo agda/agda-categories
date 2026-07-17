@@ -16,9 +16,10 @@ open import Categories.Functor hiding (id)
 open import Categories.Functor.Bifunctor
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.Functor.Limits
-open import Categories.NaturalTransformation renaming (_∘ʳ_ to _▹ⁿ_; id to idN)
+open import Categories.NaturalTransformation renaming (id to idN)
 open import Categories.NaturalTransformation.Dinatural hiding (_≃_)
 open import Categories.NaturalTransformation.NaturalIsomorphism renaming (_≃_ to _≃ⁱ_)
+open import Categories.NaturalTransformation.Properties using (flip-bifunctor-NT)
 open import Categories.NaturalTransformation.Equivalence
 
 import Categories.Category.Construction.Wedges as Wedges
@@ -42,7 +43,7 @@ F ♯ = curry.₀ F.flip
 
 end-η♯ : {F G : Functor (P ×ᶜ (Category.op C ×ᶜ C)) D} (η : NaturalTransformation F G)
          ⦃ ef : ∫ (F ♯) ⦄ ⦃ eg : ∫ (G ♯) ⦄ → NaturalTransformation (∫.E ef) (∫.E eg)
-end-η♯ η ⦃ ef ⦄ ⦃ eg ⦄ = end-η (curry.₁ (η ▹ⁿ Swap))
+end-η♯ η ⦃ ef ⦄ ⦃ eg ⦄ = end-η (curry.₁ (flip-bifunctor-NT η))
 
 module _ (F : Functor (P ×ᶜ ((Category.op C) ×ᶜ C)) D) {ω : ∀ X → ∫ (appˡ F X)} where
   private

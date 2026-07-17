@@ -20,7 +20,7 @@ open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Hom using (Hom[_][-,-])
 open import Categories.Functor.Construction.Constant using (const!)
 open import Categories.Functor.Construction.LiftSetoids using (LiftSetoids)
-open import Categories.Functor.Properties using ([_]-resp-square; [_]-resp-∘)
+open import Categories.Functor.Properties using ([_]-resp-square; [_]-resp-inverse)
 open import Categories.Functor.Limits using (Continuous; Cocontinuous)
 open import Categories.Functor.Bifunctor using (Bifunctor; appʳ; appˡ)
 open import Categories.Functor.Bifunctor.Properties using ([_]-decompose₁; [_]-decompose₂; [_]-commute)
@@ -206,7 +206,7 @@ module _ {L : Functor J K} {R : Functor K J} (L⊣R : L ⊣ R) {F : Functor K C}
       ; commute = λ {X} → begin
         proj (L.₀ X) ∘ rep A′                                 ≈⟨ commute ⟩
         F.₁ (counit.η (L.₀ X)) ∘ A.ψ (R.₀ (L.₀ X))            ≈⟨ refl⟩∘⟨ A.commute (unit.η X) ⟨
-        F.₁ (counit.η (L.₀ X)) ∘ F.₁ (L.₁ (unit.η X)) ∘ A.ψ X ≈⟨ cancelˡ ([ F ]-resp-∘ zig ○ F.identity) ⟩
+        F.₁ (counit.η (L.₀ X)) ∘ F.₁ (L.₁ (unit.η X)) ∘ A.ψ X ≈⟨ cancelˡ ([ F ]-resp-inverse zig) ⟩
         A.ψ X                                                 ∎
       }
 
@@ -266,10 +266,7 @@ module _ {L : Functor C D} {R : Functor D C} (L⊣R : L ⊣ R) where
       }
     ; assoc     = [ R ]-resp-square (counit.commute _)
     ; sym-assoc = [ R ]-resp-square (counit.sym-commute _)
-    ; identityˡ = λ {X} → begin
-      μ′.η X C.∘ R.F₁ (L.F₁ (unit.η X)) ≈⟨ [ R ]-resp-∘ zig ⟩
-      R.F₁ D.id                         ≈⟨ R.identity ⟩
-      C.id                              ∎
+    ; identityˡ = [ R ]-resp-inverse zig
     ; identityʳ = zag
     }
     where open C.HomReasoning
@@ -293,10 +290,10 @@ module _ {R : Functor D C} where
     { initial = record
       { ⊥        = record { f = unit.η X }
       ; ⊥-is-initial = record
-        { !        =
+        { ¡        =
           let open C.HomReasoning
           in record { commute = LRadjunct≈id ○ ⟺ C.identityʳ }
-        ; !-unique = λ {A} g →
+        ; ¡-unique = λ {A} g →
           let open D.HomReasoning
           in -, (begin
             Radjunct (f A)            ≈⟨ Radjunct-resp-≈ (C.Equiv.sym (C.Equiv.trans (commute g) (C.identityʳ {f = f A}))) ⟩
@@ -320,7 +317,7 @@ module _ {R : Functor D C} where
       ; commute = λ {X Y} i →
         let open C.HomReasoning
             open MR C using (pullʳ; cancelˡ; cancelʳ)
-        in proj₂ $ umors.!-unique₂ (R.F₀ X)
+        in proj₂ $ umors.¡-unique₂ (R.F₀ X)
            {record { f = R.F₁ i }}
            (record
            { h       = ε Y D.∘ L₁ (R.F₁ i)
@@ -344,7 +341,7 @@ module _ {R : Functor D C} where
       let open C.HomReasoning
           open MR C using (pullʳ; cancelˡ; id-comm-sym)
           α = f (umors.⊥ c)
-      in proj₂ $ umors.!-unique₂ c
+      in proj₂ $ umors.¡-unique₂ c
          {record { f = α }}
          (record
          { h       = ε (L₀ c) D.∘ L₁ α
@@ -369,20 +366,20 @@ module _ {R : Functor D C} where
           commaObj∘g {X} {Y} g = record { f = f (umors.⊥ Y) C.∘ g }
 
           ⊥X⇒⊥Y : ∀ {X Y} (g : X C.⇒ Y) → (X ↙ R) [ umors.⊥ X , commaObj∘g g ]
-          ⊥X⇒⊥Y {X} {Y} g = umors.! X {commaObj∘g g}
+          ⊥X⇒⊥Y {X} {Y} g = umors.¡ X {commaObj∘g g}
 
           L₀ : ∀ X → D.Obj
           L₀ X         = β (umors.⊥ X)
           L₁ : ∀ {X Y} → X C.⇒ Y → β (umors.⊥ X) D.⇒ β (umors.⊥ Y)
           L₁ {X} {Y} g = h (⊥X⇒⊥Y g)
           L-Hom : ∀ {X Y Z} {i : X C.⇒ Y} {j : Y C.⇒ Z} → D [ L₁ (C [ j ∘ i ]) ≈ (D [ L₁ j ∘ L₁ i ]) ]
-          L-Hom {X} {Y} {Z} {i} {j} = proj₂ $ umors.!-unique₂ X (umors.! X) $
+          L-Hom {X} {Y} {Z} {i} {j} = proj₂ $ umors.¡-unique₂ X (umors.¡ X) $
               record { commute = begin
-                R.F₁ (h (umors.! Y) D.∘ h (umors.! X)) C.∘ f (umors.⊥ X)
+                R.F₁ (h (umors.¡ Y) D.∘ h (umors.¡ X)) C.∘ f (umors.⊥ X)
                   ≈⟨ (C.∘-resp-≈ˡ R.homomorphism) ○ C.assoc ⟩
-                R.F₁ (h (umors.! Y)) C.∘ R.F₁ (h (umors.! X)) C.∘ f (umors.⊥ X)
+                R.F₁ (h (umors.¡ Y)) C.∘ R.F₁ (h (umors.¡ X)) C.∘ f (umors.⊥ X)
                   ≈⟨ (C.∘-resp-≈ʳ (commute (⊥X⇒⊥Y i) ○ C.identityʳ)) ○ C.sym-assoc ⟩
-                (R.F₁ (h (umors.! Y)) C.∘ f (umors.⊥ Y)) C.∘ i
+                (R.F₁ (h (umors.¡ Y)) C.∘ f (umors.⊥ Y)) C.∘ i
                   ≈⟨ pushˡ (commute (⊥X⇒⊥Y j) ○ C.identityʳ) ⟩
                 f (umors.⊥ Z) C.∘ j C.∘ i
                   ≈˘⟨ C.identityʳ ⟩
@@ -394,11 +391,11 @@ module _ {R : Functor D C} where
           L            = record
             { F₀           = L₀
             ; F₁           = L₁
-            ; identity     = λ {X} → proj₂ $ umors.!-unique X $
+            ; identity     = λ {X} → proj₂ $ umors.¡-unique X $
               record { commute = elimˡ R.identity ○ ⟺ C.identityʳ ○ ⟺ C.identityʳ }
             ; homomorphism = L-Hom
-            ; F-resp-≈     = λ {X} eq → proj₂ $ umors.!-unique₂ X (umors.! X) $
-              record { commute = commute (umors.! X) ○ C.∘-resp-≈ˡ (C.∘-resp-≈ʳ (⟺ eq)) }
+            ; F-resp-≈     = λ {X} eq → proj₂ $ umors.¡-unique₂ X (umors.¡ X) $
+              record { commute = commute (umors.¡ X) ○ C.∘-resp-≈ˡ (C.∘-resp-≈ʳ (⟺ eq)) }
             }
             where open C.HomReasoning using (_○_; ⟺)
                   open MR C using (elimˡ)
@@ -406,7 +403,7 @@ module _ {R : Functor D C} where
           ⊥Rd    : (d : D.Obj) → CommaObj (const! (R.F₀ d)) R
           ⊥Rd d    = umors.⊥ (R.F₀ d)
           ⊥Rd⇒id : (d : D.Obj) →  (R.F₀ d ↙ R) [ ⊥Rd d , record { f = C.id } ]
-          ⊥Rd⇒id d = umors.! (R.F₀ d) {record { f = C.id }}
+          ⊥Rd⇒id d = umors.¡ (R.F₀ d) {record { f = C.id }}
           ε      : ∀ d → L₀ (R.F₀ d) D.⇒ d
           ε d      = h (⊥Rd⇒id d)
 

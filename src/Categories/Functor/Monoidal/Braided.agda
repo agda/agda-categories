@@ -88,7 +88,7 @@ module Strong where
 
     isLaxBraidedMonoidal : Lax.IsBraidedMonoidalFunctor F
     isLaxBraidedMonoidal = record
-      { isMonoidal      = isMonoidal
+      { isMonoidal      = isLaxMonoidal
       ; braiding-compat = braiding-compat
       }
 

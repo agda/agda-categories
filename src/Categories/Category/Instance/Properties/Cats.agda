@@ -16,11 +16,12 @@ open import Categories.Category.Monoidal.Instance.Cats
 open import Categories.Functor using (Functor; _∘F_) renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Functor.Construction.Constant using (constNat)
+import Categories.Morphism.Properties as MP
 import Categories.Morphism.Reasoning as MR
 open import Categories.NaturalTransformation
   using (NaturalTransformation; _∘ˡ_) renaming (id to idNT)
 open import Categories.NaturalTransformation.NaturalIsomorphism
-  using (NaturalIsomorphism; _≃_; module LeftRightId)
+  using (NaturalIsomorphism; _≃_)
 open import Categories.Object.Terminal using (Terminal)
 
 -- It's easier to define exponentials with respect to the *canonical*
@@ -32,9 +33,7 @@ module CanonicallyCartesianClosed {l} where
     module Cats = Category (Cats l l l)
     module Cart = Cartesian (Product.Cats-is {l} {l} {l})
   open Cats using (_⇒_) renaming (Obj to Cat)
-  open Cart using (products; terminal)
-  open Terminal terminal
-  open BinaryProducts products using (_×_; _⁂_; π₁; π₂; ⟨_,_⟩; project₁; project₂; unique)
+  open Cart using (_×_; π₁; π₂; unique; ⟨_,_⟩; _×₁_; project₁; project₂; !; !-unique)
 
   infixr 9 _^_
 
@@ -43,7 +42,7 @@ module CanonicallyCartesianClosed {l} where
 
   -- The β law (aka computation principle) for exponential objects
 
-  eval-comp : ∀ {A B C} {G : C × A ⇒ B} → eval ∘F (curry.F₀ G ⁂ idF) ≃ G
+  eval-comp : ∀ {A B C} {G : C × A ⇒ B} → eval ∘F (curry.F₀ G ×₁ idF) ≃ G
   eval-comp {A} {B} {C} {G} = record
     { F⇒G = record
       { η           = λ _ → id B
@@ -55,14 +54,14 @@ module CanonicallyCartesianClosed {l} where
       ; commute     = λ _ → ⟺ (MR.id-comm B ○ ∘-resp-≈ʳ B commute)
       ; sym-commute = λ _ → MR.id-comm B ○ ∘-resp-≈ʳ B commute
       }
-    ; iso = iso-id-id
+    ; iso = λ _ → id-iso
     }
     where
       open Functor G renaming (F₀ to G₀; F₁ to G₁)
       open Category hiding (_∘_)
       open Category B using (_∘_)
       open HomReasoning B
-      open LeftRightId G
+      open MP B
 
       commute : ∀ {a₁ a₂ b₁ b₂} {f₁ : C [ a₁ , b₁ ]} {f₂ : A [ a₂ , b₂ ]} →
                 B [ (G₁ (f₁ , id A) ∘ G₁ (id C , f₂)) ≈ G₁ (f₁ , f₂) ]
@@ -76,7 +75,7 @@ module CanonicallyCartesianClosed {l} where
 
   -- The η law (aka uniqueness principle) for exponential objects
 
-  η-exp : ∀ {A B C} {H : C ⇒ B ^ A} → H ≃ curry.F₀ (eval ∘F (H ⁂ idF))
+  η-exp : ∀ {A B C} {H : C ⇒ B ^ A} → H ≃ curry.F₀ (eval ∘F (H ×₁ idF))
   η-exp {A} {B} {C} {H} = record
     { F⇒G = record
       { η = λ _ → record
@@ -105,7 +104,6 @@ module CanonicallyCartesianClosed {l} where
       open Category B using (_∘_)
       open HomReasoning B
       open NaturalTransformation
-      open LeftRightId H
 
       commute₁ : ∀ {a b c} (f : A [ a , b ]) →
                  B [ (η (H₁ (id C)) b ∘ (H₀ c $₁ f)) ≈ H₀ c $₁ f ]
@@ -122,13 +120,13 @@ module CanonicallyCartesianClosed {l} where
         η (H₁ f) a                     ∎
 
   curry-unique : ∀ {A B C} {G : C ⇒ B ^ A} {H : C × A ⇒ B} →
-                 eval ∘F (G ⁂ idF) ≃ H → G ≃ curry.F₀ H
+                 eval ∘F (G ×₁ idF) ≃ H → G ≃ curry.F₀ H
   curry-unique {A} {B} {C} {G} {H} hyp =
     begin
       G
     ≈⟨ η-exp {A} {B} {C} {G} ⟩
-      curry.F₀ (eval ∘F (G ⁂ idF))
-    ≈⟨ curry.resp-NI {F = eval ∘F (G ⁂ idF)} {H} hyp ⟩
+      curry.F₀ (eval ∘F (G ×₁ idF))
+    ≈⟨ curry.resp-NI {F = eval ∘F (G ×₁ idF)} {H} hyp ⟩
       curry.F₀ H
     ∎
     where

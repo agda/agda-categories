@@ -89,13 +89,16 @@ module _ where
     to iso₂ ∘ i ∘ from iso₁ ≈˘⟨ switch-fromtoˡ iso₂ sq₂ ⟩
     g ∎
 
+id-iso : ∀ {X} → Iso (id {X}) (id {X})
+id-iso = record
+  { isoˡ = identity²
+  ; isoʳ = identity²
+  }
+
 id-is-iso : ∀ {X} → IsIso (id {X})
 id-is-iso = record
   { inv = id
-  ; iso = record
-    { isoˡ = identity²
-    ; isoʳ = identity²
-    }
+  ; iso = id-iso
   }
 
 --------------------------------------------------------------------------------
@@ -150,6 +153,20 @@ _∘↠_ : B ↠ C → A ↠ B → A ↠ C
 f ∘↠ g = record { mor = mor f ∘ mor g ; epi = Epi-∘ (epi f) (epi g) }
   where
     open _↠_
+
+Retract⇒Epi : ∀ {X Y} → (f : Retract X Y) → Epi (Retract.retract f)
+Retract⇒Epi {X}{Y} f g₁ g₂ eq = begin
+  g₁                                                   ≈⟨ introʳ (Retract.is-retract f) ⟩
+  g₁ ∘ Retract.retract f ∘ Retract.section f           ≈⟨ extendʳ eq ⟩ 
+  g₂ ∘ Retract.retract f ∘ Retract.section f           ≈⟨ elimʳ (Retract.is-retract f) ⟩ 
+  g₂ ∎
+
+Retract⇒Mono : ∀ {X Y} → (f : Retract X Y) → Mono (Retract.section f)
+Retract⇒Mono {X}{Y} f g₁ g₂ eq = begin
+  g₁                                                   ≈⟨ introˡ (Retract.is-retract f) ⟩ 
+  (Retract.retract f ∘ Retract.section f) ∘ g₁         ≈⟨ extendˡ eq ⟩ 
+  (Retract.retract f ∘ Retract.section f) ∘ g₂         ≈⟨ elimˡ (Retract.is-retract f) ⟩
+  g₂ ∎
 
 --------------------------------------------------------------------------------
 -- Isomorphism from a section and a retraction

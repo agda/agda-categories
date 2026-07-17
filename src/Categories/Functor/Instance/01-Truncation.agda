@@ -2,9 +2,9 @@
 
 module Categories.Functor.Instance.01-Truncation where
 
--- (0,1)-trucation of categories as a functor from Cats to Posets.
+-- (0,1)-truncation of categories as a functor from Cats to Posets.
 --
--- This is the right-adjoint of the inclusion functor from Posets to
+-- This is the left-adjoint of the inclusion functor from Posets to
 -- Cats (see Categories.Functor.Adjoint.Instance.01-Truncation)
 
 open import Level using (_⊔_)

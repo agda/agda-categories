@@ -19,7 +19,7 @@ open import Relation.Binary using (IsEquivalence)
 
 open import Categories.Category.Monoidal using (BraidedMonoidalCategory)
 import Categories.Functor.Monoidal.Braided as BMF
-open import Categories.Functor.Monoidal.Properties using () renaming
+open import Categories.Functor.Monoidal.Braided.Properties using () renaming
   ( idF-BraidedMonoidal to idFˡ  ; idF-StrongBraidedMonoidal to idFˢ
   ; ∘-BraidedMonoidal   to _∘Fˡ_ ; ∘-StrongBraidedMonoidal   to _∘Fˢ_
   )

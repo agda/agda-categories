@@ -3,7 +3,7 @@
 open import Level
 open import Categories.Category.Core
 open import Categories.Object.Terminal using (Terminal)
-open import Categories.Category.Cocartesian using (BinaryCoproducts)
+open import Categories.Category.BinaryCoproducts using (BinaryCoproducts)
 
 -- A NNO is an inital algebra for the 'X ↦ ⊤ + X' endofunctor.
 module Categories.Object.NaturalNumbers.Properties.F-Algebras {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Terminal : Terminal 𝒞) (𝒞-Coproducts : BinaryCoproducts 𝒞) where
@@ -32,18 +32,18 @@ Initial⇒NNO initial = record
     { z = ⊥.α ∘ i₁
     ; s = ⊥.α ∘ i₂
     ; universal = λ {A} q f →
-      F-Algebra-Morphism.f (initial.! {A = alg q f})
+      F-Algebra-Morphism.f (initial.¡ {A = alg q f})
     ; z-commute = λ {A} {q} {f} → begin
       q                                                       ≈˘⟨ inject₁ ⟩
       [ q , f ] ∘ i₁                                          ≈˘⟨ refl⟩∘⟨ (+₁∘i₁ ○ identityʳ) ⟩
-      [ q , f ] ∘ (id +₁ F-Algebra-Morphism.f initial.!) ∘ i₁ ≈˘⟨ extendʳ (F-Algebra-Morphism.commutes (initial.! {A = alg q f})) ⟩
-      F-Algebra-Morphism.f initial.! ∘ ⊥.α ∘ i₁               ∎
+      [ q , f ] ∘ (id +₁ F-Algebra-Morphism.f initial.¡) ∘ i₁ ≈˘⟨ extendʳ (F-Algebra-Morphism.commutes (initial.¡ {A = alg q f})) ⟩
+      F-Algebra-Morphism.f initial.¡ ∘ ⊥.α ∘ i₁               ∎
     ; s-commute = λ {A} {q} {f} → begin
-      f ∘ F-Algebra-Morphism.f initial.!                      ≈˘⟨ pullˡ inject₂ ⟩
-      [ q , f ] ∘ i₂ ∘ F-Algebra-Morphism.f initial.!         ≈˘⟨ refl⟩∘⟨ +₁∘i₂ ⟩
-      [ q , f ] ∘ (id +₁ F-Algebra-Morphism.f initial.!) ∘ i₂ ≈˘⟨ extendʳ $ F-Algebra-Morphism.commutes (initial.! {A = alg q f}) ⟩
-      F-Algebra-Morphism.f initial.! ∘ ⊥.α ∘ i₂               ∎
-    ; unique = λ {A} {f} {q} {u} eqᶻ eqˢ → ⟺ $ initial.!-unique $ record
+      f ∘ F-Algebra-Morphism.f initial.¡                      ≈˘⟨ pullˡ inject₂ ⟩
+      [ q , f ] ∘ i₂ ∘ F-Algebra-Morphism.f initial.¡         ≈˘⟨ refl⟩∘⟨ +₁∘i₂ ⟩
+      [ q , f ] ∘ (id +₁ F-Algebra-Morphism.f initial.¡) ∘ i₂ ≈˘⟨ extendʳ $ F-Algebra-Morphism.commutes (initial.¡ {A = alg q f}) ⟩
+      F-Algebra-Morphism.f initial.¡ ∘ ⊥.α ∘ i₂               ∎
+    ; unique = λ {A} {f} {q} {u} eqᶻ eqˢ → ⟺ $ initial.¡-unique $ record
       { f = u
       ; commutes = begin
         u ∘ ⊥.α                             ≈˘⟨ +-g-η ⟩
@@ -70,7 +70,7 @@ NNO⇒Initial nno = record
     ; α = [ z , s ]
     }
   ; ⊥-is-initial = record
-    { ! = λ {alg} → record
+    { ¡ = λ {alg} → record
       { f = universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂)
       ; commutes = begin
         universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂) ∘ [ z , s ]                                         ≈⟨ ∘[] ⟩
@@ -79,7 +79,7 @@ NNO⇒Initial nno = record
         [ F-Algebra.α alg ∘ i₁ , F-Algebra.α alg ∘ (i₂ ∘ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂)) ] ≈˘⟨ ∘[] ○ []-cong₂ (∘-resp-≈ʳ identityʳ) refl ⟩
         F-Algebra.α alg ∘ (id +₁ universal (F-Algebra.α alg ∘ i₁) (F-Algebra.α alg ∘ i₂))                           ∎
       }
-    ; !-unique = λ {A} f →
+    ; ¡-unique = λ {A} f →
       let z-commutes = begin
             F-Algebra.α A ∘ i₁                                  ≈˘⟨ refl⟩∘⟨ (+₁∘i₁ ○ identityʳ) ⟩
             F-Algebra.α A ∘ (id +₁ F-Algebra-Morphism.f f) ∘ i₁ ≈˘⟨ extendʳ (F-Algebra-Morphism.commutes f) ⟩

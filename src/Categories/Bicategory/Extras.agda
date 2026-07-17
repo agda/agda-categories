@@ -9,6 +9,7 @@ open import Data.Product using (_,_)
 import Categories.Category.Construction.Core as Core
 open import Categories.Category.Construction.Functors using (Functors; module curry)
 open import Categories.Functor using (Functor)
+open import Categories.Functor.Properties using ([_]-resp-square)
 open import Categories.Functor.Bifunctor using (flip-bifunctor)
 open import Categories.Functor.Bifunctor.Properties
 open import Categories.NaturalTransformation
@@ -24,7 +25,7 @@ private
   variable
     A B C D : Obj
     f g h i : A ⇒₁ B
-    α β γ δ : f ⇒₂ g
+    α β γ δ α′ β′ γ′ δ′ : f ⇒₂ g
 
 infixr 10 _▷ᵢ_
 infixl 10 _◁ᵢ_
@@ -159,6 +160,22 @@ refl⟩⊚⟨_ = ⊚-resp-≈ʳ
 _⟩⊚⟨refl : α ≈ β → α ⊚₁ γ ≈ β ⊚₁ γ
 _⟩⊚⟨refl = ⊚-resp-≈ˡ
 
+⊚-resp-sq : α ∘ᵥ β ≈ α′ ∘ᵥ β′ → γ ∘ᵥ δ ≈ γ′ ∘ᵥ δ′
+          → α ⊚₁ γ ∘ᵥ β ⊚₁ δ ≈ α′ ⊚₁ γ′ ∘ᵥ β′ ⊚₁ δ′
+⊚-resp-sq sqˡ sqʳ = [ ⊚ ]-resp-square (sqˡ , sqʳ)
+
+⊚-resp-sqˡ-degen : α ∘ᵥ β ≈ α′ ∘ᵥ β′ → α ◁ f ∘ᵥ β ⊚₁ δ ≈ α′ ⊚₁ δ ∘ᵥ β′ ◁ g
+⊚-resp-sqˡ-degen sq = ⊚-resp-sq sq (toSquare refl)
+
+⊚-resp-sqˡ-degen′ : α ∘ᵥ β ≈ α′ ∘ᵥ β′ → α ⊚₁ γ ∘ᵥ β ◁ g ≈ α′ ◁ f ∘ᵥ β′ ⊚₁ γ
+⊚-resp-sqˡ-degen′ sq = ⊚-resp-sq sq (⟺ (toSquare refl))
+
+⊚-resp-sqʳ-degen : γ ∘ᵥ δ ≈ γ′ ∘ᵥ δ′ → f ▷ γ ∘ᵥ β ⊚₁ δ ≈ β ⊚₁ γ′ ∘ᵥ g ▷ δ′
+⊚-resp-sqʳ-degen sq = ⊚-resp-sq (toSquare refl) sq
+
+⊚-resp-sqʳ-degen′ : γ ∘ᵥ δ ≈ γ′ ∘ᵥ δ′ → α ⊚₁ γ ∘ᵥ g  ▷ δ ≈ f ▷ γ′ ∘ᵥ α ⊚₁ δ′
+⊚-resp-sqʳ-degen′ sq = ⊚-resp-sq (⟺ (toSquare refl)) sq
+
 ∘ᵥ-distr-⊚ : (α ∘ᵥ γ) ⊚₁ (β ∘ᵥ δ) ≈ (α ⊚₁ β) ∘ᵥ (γ ⊚₁ δ)
 ∘ᵥ-distr-⊚ = Functor.homomorphism ⊚
 
@@ -180,19 +197,59 @@ _⟩⊚⟨refl = ⊚-resp-≈ˡ
 ▷-resp-≈ : α ≈ β → f ▷ α ≈ f ▷ β
 ▷-resp-≈ = refl⟩⊚⟨_
 
-▷-resp-sq : α ∘ᵥ β ≈ γ ∘ᵥ δ → f ▷ α ∘ᵥ f ▷ β ≈ f ▷ γ ∘ᵥ f ▷ δ
-▷-resp-sq {α = α} {β = β} {γ = γ} {δ = δ} {f = f} sq = begin
+◁-resp-tri : α ∘ᵥ β ≈ γ → α ◁ f ∘ᵥ β ◁ f ≈ γ ◁ f
+◁-resp-tri {α = α} {β = β} {γ = γ} {f = f} tri = begin
+  α ◁ f ∘ᵥ β ◁ f ≈⟨ ∘ᵥ-distr-◁ ⟩
+  (α ∘ᵥ β) ◁ f   ≈⟨ ◁-resp-≈ tri ⟩
+  γ ◁ f          ∎
+
+▷-resp-tri : α ∘ᵥ β ≈ γ → f ▷ α ∘ᵥ f ▷ β ≈ f ▷ γ
+▷-resp-tri {α = α} {β = β} {γ = γ} {f = f} tri = begin
   f ▷ α ∘ᵥ f ▷ β ≈⟨ ∘ᵥ-distr-▷ ⟩
-  f ▷ (α ∘ᵥ β) ≈⟨ ▷-resp-≈ sq ⟩
-  f ▷ (γ ∘ᵥ δ) ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩
-  f ▷ γ ∘ᵥ f ▷ δ ∎
+  f ▷ (α ∘ᵥ β)   ≈⟨ ▷-resp-≈ tri ⟩
+  f ▷ γ          ∎
 
 ◁-resp-sq : α ∘ᵥ β ≈ γ ∘ᵥ δ → α ◁ f ∘ᵥ β ◁ f ≈ γ ◁ f ∘ᵥ δ ◁ f
 ◁-resp-sq {α = α} {β = β} {γ = γ} {δ = δ} {f = f} sq = begin
   α ◁ f ∘ᵥ β ◁ f ≈⟨ ∘ᵥ-distr-◁ ⟩
-  (α ∘ᵥ β) ◁ f ≈⟨ ◁-resp-≈ sq ⟩
-  (γ ∘ᵥ δ)◁ f ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩
+  (α ∘ᵥ β) ◁ f   ≈⟨ ◁-resp-≈ sq ⟩
+  (γ ∘ᵥ δ)◁ f    ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩
   γ ◁ f ∘ᵥ δ ◁ f ∎
+
+▷-resp-sq : α ∘ᵥ β ≈ γ ∘ᵥ δ → f ▷ α ∘ᵥ f ▷ β ≈ f ▷ γ ∘ᵥ f ▷ δ
+▷-resp-sq {α = α} {β = β} {γ = γ} {δ = δ} {f = f} sq = begin
+  f ▷ α ∘ᵥ f ▷ β ≈⟨ ∘ᵥ-distr-▷ ⟩
+  f ▷ (α ∘ᵥ β)   ≈⟨ ▷-resp-≈ sq ⟩
+  f ▷ (γ ∘ᵥ δ)   ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩
+  f ▷ γ ∘ᵥ f ▷ δ ∎
+
+▷-resp-long-sq : α ∘ᵥ β ∘ᵥ γ ≈ (β′ ∘ᵥ γ′) ∘ᵥ α′ → f ▷ α ∘ᵥ f ▷ β ∘ᵥ f ▷ γ ≈ (f ▷ β′ ∘ᵥ f ▷ γ′) ∘ᵥ f ▷ α′
+▷-resp-long-sq {α = α} {β = β} {γ = γ} {β′ = β′} {γ′ = γ′} {α′ = α′} {f = f} sq = begin
+  f ▷ α ∘ᵥ f ▷ β ∘ᵥ f ▷ γ      ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-▷ ⟩
+  f ▷ α ∘ᵥ f ▷ (β ∘ᵥ γ)        ≈⟨ ▷-resp-sq sq ⟩
+  f ▷ (β′ ∘ᵥ γ′) ∘ᵥ f ▷ α′     ≈⟨ ⟺ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
+  (f ▷ β′ ∘ᵥ f ▷ γ′) ∘ᵥ f ▷ α′ ∎
+
+▷-resp-long-sq′ : (α ∘ᵥ β) ∘ᵥ γ ≈ γ′ ∘ᵥ (α′ ∘ᵥ β′) → (f ▷ α ∘ᵥ f ▷ β) ∘ᵥ f ▷ γ ≈ f ▷ γ′ ∘ᵥ f ▷ α′ ∘ᵥ f ▷ β′
+▷-resp-long-sq′ {α = α} {β = β} {γ = γ} {γ′ = γ′} {α′ = α′} {β′ = β′} {f = f} sq = begin
+  (f ▷ α ∘ᵥ f ▷ β) ∘ᵥ f ▷ γ    ≈⟨ ∘ᵥ-distr-▷ ⟩∘⟨refl ⟩
+  f ▷ (α ∘ᵥ β) ∘ᵥ f ▷ γ        ≈⟨ ▷-resp-sq sq ⟩
+  f ▷ γ′ ∘ᵥ f ▷ (α′ ∘ᵥ β′)     ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-▷ ⟩
+  f ▷ γ′ ∘ᵥ (f ▷ α′ ∘ᵥ f ▷ β′) ∎
+
+◁-resp-long-sq : α ∘ᵥ β ∘ᵥ γ ≈ (β′ ∘ᵥ γ′) ∘ᵥ α′ → α ◁ f ∘ᵥ β ◁ f ∘ᵥ γ ◁ f ≈ (β′ ◁ f ∘ᵥ γ′ ◁ f) ∘ᵥ α′ ◁ f
+◁-resp-long-sq {α = α} {β = β} {γ = γ} {β′ = β′} {γ′ = γ′} {α′ = α′} {f = f} sq = begin
+  α ◁ f ∘ᵥ β ◁ f ∘ᵥ γ ◁ f      ≈⟨ refl⟩∘⟨ ∘ᵥ-distr-◁ ⟩
+  α ◁ f ∘ᵥ (β ∘ᵥ γ) ◁ f        ≈⟨ ◁-resp-sq sq ⟩
+  (β′ ∘ᵥ γ′) ◁ f ∘ᵥ α′ ◁ f     ≈⟨ ⟺ ∘ᵥ-distr-◁ ⟩∘⟨refl  ⟩
+  (β′ ◁ f ∘ᵥ γ′ ◁ f) ∘ᵥ α′ ◁ f ∎
+
+◁-resp-long-sq′ : (α ∘ᵥ β) ∘ᵥ γ ≈ γ′ ∘ᵥ (α′ ∘ᵥ β′) → (α ◁ f ∘ᵥ β ◁ f) ∘ᵥ γ ◁ f ≈ γ′ ◁ f ∘ᵥ α′ ◁ f ∘ᵥ β′ ◁ f
+◁-resp-long-sq′ {α = α} {β = β} {γ = γ} {γ′ = γ′} {α′ = α′} {β′ = β′} {f = f} sq = begin
+  (α ◁ f ∘ᵥ β ◁ f) ∘ᵥ γ ◁ f    ≈⟨ ∘ᵥ-distr-◁ ⟩∘⟨refl ⟩
+  (α ∘ᵥ β) ◁ f ∘ᵥ γ ◁ f        ≈⟨ ◁-resp-sq sq ⟩
+  γ′ ◁ f ∘ᵥ (α′ ∘ᵥ β′) ◁ f     ≈⟨ refl⟩∘⟨ ⟺ ∘ᵥ-distr-◁ ⟩
+  γ′ ◁ f ∘ᵥ (α′ ◁ f ∘ᵥ β′ ◁ f) ∎
 
 λ⇒-∘ᵥ-▷ : λ⇒ ∘ᵥ (id₁ ▷ α) ≈ α ∘ᵥ λ⇒
 λ⇒-∘ᵥ-▷ {α = α} = begin
@@ -280,30 +337,38 @@ pentagon-conjugate₂ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ 
                       i ▷ α⇒ ∘ᵥ α⇒ ≈
                       α⇒ {f = i} {h} {g ∘₁ f} ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ f
 pentagon-conjugate₂ {f = f} {g} {h} {i} = begin
-    i ▷ α⇒ ∘ᵥ α⇒         ≈⟨ switch-fromtoʳ (associator ◁ᵢ f) pentagon-var ⟩
-    (α⇒ ∘ᵥ α⇒) ∘ᵥ α⇐ ◁ f ≈⟨ assoc₂ ⟩
-    α⇒ {f = i} {h} {g ∘₁ f} ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ f ∎
+  i ▷ α⇒ ∘ᵥ α⇒         ≈⟨ switch-fromtoʳ (associator ◁ᵢ f) pentagon-var ⟩
+  (α⇒ ∘ᵥ α⇒) ∘ᵥ α⇐ ◁ f ≈⟨ assoc₂ ⟩
+  α⇒ {f = i} {h} {g ∘₁ f} ∘ᵥ α⇒ ∘ᵥ α⇐ ◁ f ∎
 
 pentagon-conjugate₃ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
                       α⇒ ◁ f ∘ᵥ α⇐ ≈
                       (α⇐ ∘ᵥ i ▷ α⇐) ∘ᵥ α⇒ {f = i} {h} {g ∘₁ f}
 pentagon-conjugate₃ {f = f} {g} {h} {i} = begin
-    α⇒ ◁ f ∘ᵥ α⇐         ≈⟨ ⟺ (conjugate-to associator (associator ◁ᵢ f) pentagon-inv-var) ⟩
-    (α⇐ ∘ᵥ i ▷ α⇐) ∘ᵥ α⇒ ∎
+  α⇒ ◁ f ∘ᵥ α⇐         ≈⟨ ⟺ (conjugate-to associator (associator ◁ᵢ f) pentagon-inv-var) ⟩
+  (α⇐ ∘ᵥ i ▷ α⇐) ∘ᵥ α⇒ ∎
 
 pentagon-conjugate₄ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
                       α⇒ ∘ᵥ α⇐ ◁ f ≈
                       α⇐ {f = i} {h} {g ∘₁ f} ∘ᵥ i ▷ α⇒ ∘ᵥ α⇒
 pentagon-conjugate₄ {f = f} {g} {h} {i} = begin
-    α⇒ ∘ᵥ α⇐ ◁ f       ≈⟨ ⟺ (conjugate-from (associator ◁ᵢ f) associator pentagon-var) ⟩
-    α⇐ ∘ᵥ i ▷ α⇒ ∘ᵥ α⇒ ∎
+  α⇒ ∘ᵥ α⇐ ◁ f       ≈⟨ ⟺ (conjugate-from (associator ◁ᵢ f) associator pentagon-var) ⟩
+  α⇐ ∘ᵥ i ▷ α⇒ ∘ᵥ α⇒ ∎
 
 pentagon-conjugate₅ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
                       α⇐ {f = i} {h} {g ∘₁ f} ∘ᵥ i ▷ α⇒ ≈
                       α⇒ ∘ᵥ α⇐ ◁ f ∘ᵥ α⇐
 pentagon-conjugate₅ {f = f} {g} {h} {i} = begin
-    α⇐ ∘ᵥ i ▷ α⇒       ≈⟨ conjugate-to (i ▷ᵢ associator) associator (⟺ pentagon-inv) ⟩
-    α⇒ ∘ᵥ α⇐ ◁ f ∘ᵥ α⇐ ∎
+  α⇐ ∘ᵥ i ▷ α⇒       ≈⟨ conjugate-to (i ▷ᵢ associator) associator (⟺ pentagon-inv) ⟩
+  α⇒ ∘ᵥ α⇐ ◁ f ∘ᵥ α⇐ ∎
+
+pentagon-conjugate₆ : ∀ {E} {f : A ⇒₁ B} {g : B ⇒₁ C} {h : C ⇒₁ D} {i : D ⇒₁ E} →
+                      (α⇐ {f = i} {h} {g ∘₁ f} ∘ᵥ i ▷ α⇒) ∘ᵥ α⇒ ≈
+                      α⇒ ∘ᵥ α⇐ ◁ f
+pentagon-conjugate₆ {f = f} {g} {h} {i} = begin
+  (α⇐ ∘ᵥ i ▷ α⇒) ∘ᵥ α⇒ ≈⟨ assoc₂ ⟩
+  α⇐ ∘ᵥ i ▷ α⇒ ∘ᵥ α⇒ ≈⟨ pentagon-conjugate₁ ⟩
+  α⇒ ∘ᵥ α⇐ ◁ f ∎
 
 
 module UnitorCoherence where

@@ -93,19 +93,19 @@ module _ (F : Functor C D) where
     D [ F₁ i ∘ F₁ g ]  ∎
     where open D.HomReasoning
 
+  [_]-resp-inverse : C [ C [ f ∘ g ] ≈ C.id ] → D [ D [ F₁ f ∘ F₁ g ] ≈ D.id ]
+  [_]-resp-inverse {f = f} {g = g} eq = begin
+    F₁ f D.∘ F₁ g ≈⟨ [_]-resp-∘ eq ⟩
+    F₁ C.id       ≈⟨ identity ⟩
+    D.id          ∎
+    where open D.HomReasoning
+
   [_]-resp-Iso : Iso C f g → Iso D (F₁ f) (F₁ g)
   [_]-resp-Iso {f = f} {g = g} iso = record
-    { isoˡ = begin
-      F₁ g D.∘ F₁ f    ≈⟨ [ isoˡ ]-resp-∘ ⟩
-      F₁ C.id          ≈⟨ identity ⟩
-      D.id             ∎
-    ; isoʳ = begin
-      F₁ f D.∘ F₁ g    ≈⟨ [ isoʳ ]-resp-∘ ⟩
-      F₁ C.id          ≈⟨ identity ⟩
-      D.id             ∎
+    { isoˡ = [_]-resp-inverse isoˡ
+    ; isoʳ = [_]-resp-inverse isoʳ
     }
     where open Iso iso
-          open D.HomReasoning
 
   [_]-resp-≅ : F₀ Preserves _≅_ C ⟶ _≅_ D
   [_]-resp-≅ i≅j = record

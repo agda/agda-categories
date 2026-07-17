@@ -18,16 +18,24 @@ open import Categories.Category.Monoidal.Symmetric using (Symmetric)
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Bifunctor using (Bifunctor)
 open import Categories.Functor.Monoidal
+import Categories.Category.Monoidal.Utilities as ⊗-Util
 import Categories.Functor.Monoidal.Braided as BMF
 import Categories.Functor.Monoidal.Symmetric as SMF
 import Categories.Morphism as Morphism
 import Categories.Morphism.Reasoning as MorphismReasoning
+import Categories.Morphism.Properties as MorphismProperties
 open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (niHelper)
 
 private
+
   variable
     o ℓ e o₁ ℓ₁ e₁ o′₁ ℓ′₁ e′₁ o₂ ℓ₂ e₂ o′₂ ℓ′₂ e′₂ : Level
+
+  module WithShorthands (C : MonoidalCategory o ℓ e) where
+    open MonoidalCategory C public
+    open ⊗-Util monoidal using (module Shorthands)
+    open Shorthands public
 
 module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o₂ ℓ₂ e₂} where
 
@@ -44,10 +52,10 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
                           IsMonoidalFunctor C D₁×D₂ (F ※ G)
     ※-IsMonoidalFunctor FM GM = record
       { ε         = FM.ε , GM.ε
-      ; ⊗-homo    = ntHelper (record
+      ; ⊗-homo    = ntHelper record
         { η       = λ XY → FM.⊗-homo.η XY , GM.⊗-homo.η XY
         ; commute = λ fg → FM.⊗-homo.commute fg , GM.⊗-homo.commute fg
-        })
+        }
       ; associativity = FM.associativity , GM.associativity
       ; unitaryˡ      = FM.unitaryˡ , GM.unitaryˡ
       ; unitaryʳ      = FM.unitaryʳ , GM.unitaryʳ
@@ -68,7 +76,7 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
           ; isoʳ  = FM.ε.isoʳ , GM.ε.isoʳ
           }
         }
-      ; ⊗-homo    = niHelper (record
+      ; ⊗-homo    = niHelper record
         { η       = < FM.⊗-homo.⇒.η , GM.⊗-homo.⇒.η >
         ; η⁻¹     = < FM.⊗-homo.⇐.η , GM.⊗-homo.⇐.η >
         ; commute = < FM.⊗-homo.⇒.commute , GM.⊗-homo.⇒.commute >
@@ -76,7 +84,7 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
           { isoˡ  = FM.⊗-homo.iso.isoˡ XY , GM.⊗-homo.iso.isoˡ XY
           ; isoʳ  = FM.⊗-homo.iso.isoʳ XY , GM.⊗-homo.iso.isoʳ XY
           }
-        })
+        }
       ; associativity = FM.associativity , GM.associativity
       ; unitaryˡ      = FM.unitaryˡ , GM.unitaryˡ
       ; unitaryʳ      = FM.unitaryʳ , GM.unitaryʳ
@@ -108,35 +116,51 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
   πˡ-IsStrongMonoidalFunctor : IsStrongMonoidalFunctor D₁×D₂ D₁ πˡ
   πˡ-IsStrongMonoidalFunctor = record
     { ε             = ≅.refl
-    ; ⊗-homo        = niHelper (record
+    ; ⊗-homo        = niHelper record
       { η           = λ _ → id
       ; η⁻¹         = λ _ → id
       ; commute     = λ _ → id-comm-sym
-      ; iso         = λ _ → record { isoˡ = identity² ; isoʳ = identity² }
-      })
-    ; associativity = begin
-        associator.from ∘ id ∘ id ⊗₁ id   ≈⟨ refl⟩∘⟨ elimʳ ⊗.identity ⟩
-        associator.from ∘ id              ≈⟨ id-comm ⟩
-        id ∘ associator.from              ≈⟨ pushˡ (introʳ ⊗.identity) ⟩
-        id ∘ id ⊗₁ id ∘ associator.from   ∎
-    ; unitaryˡ      = begin
-        unitorˡ.from ∘ id ∘ id ⊗₁ id   ≈⟨ refl⟩∘⟨ elimʳ ⊗.identity ⟩
-        unitorˡ.from ∘ id              ≈⟨ identityʳ ⟩
-        unitorˡ.from                   ∎
-    ; unitaryʳ      = begin
-        unitorʳ.from ∘ id ∘ id ⊗₁ id   ≈⟨ refl⟩∘⟨ elimʳ ⊗.identity ⟩
-        unitorʳ.from ∘ id              ≈⟨ identityʳ ⟩
-        unitorʳ.from                   ∎
+      ; iso         = λ _ → id-iso
+      }
+    ; associativity = λ {(X₁ , X₂) (Y₁ , Y₂) (Z₁ , Z₂)} → associativity X₁ Y₁ Z₁ X₂ Y₂ Z₂
+    ; unitaryˡ      = λ {(X₁ , X₂)} → unitaryˡ X₁ X₂
+    ; unitaryʳ      = λ {(X₁ , X₂)} → unitaryʳ X₁ X₂
     }
     where
-      open MonoidalCategory D₁
-      open HomReasoning
+      module D₁ = WithShorthands D₁
+      module D₂ = WithShorthands D₂
+      open D₁.HomReasoning
       open Morphism (U D₁) using (module ≅)
       open MorphismReasoning (U D₁)
+      open MorphismProperties (U D₁) using (id-iso)
+      open D₁
+      associativity
+          : (X₁ Y₁ Z₁ : D₁.Obj)
+            (X₂ Y₂ Z₂ : D₂.Obj)
+          → α⇒ {X₁} {Y₁} {Z₁} ∘ id ∘ id ⊗₁ id ≈ id ∘ id ⊗₁ id ∘ α⇒
+      associativity X₁ Y₁ Z₁ X₂ Y₂ Z₂ = begin
+        α⇒ ∘ id ∘ id ⊗₁ id   ≈⟨ refl⟩∘⟨ elimʳ ⊗.identity ⟩
+        α⇒ ∘ id              ≈⟨ id-comm ⟩
+        id ∘ α⇒              ≈⟨ pushˡ (introʳ ⊗.identity) ⟩
+        id ∘ id ⊗₁ id ∘ α⇒   ∎
+      unitaryˡ
+          : (X₁ : D₁.Obj) (X₂ : D₂.Obj)
+          → λ⇒ ∘ id ∘ ⊗.F₁ (id , id) ≈ unitorˡ.from
+      unitaryˡ X₁ X₂ = begin
+        λ⇒ ∘ id ∘ id ⊗₁ id   ≈⟨ refl⟩∘⟨ elimʳ ⊗.identity ⟩
+        λ⇒ ∘ id              ≈⟨ identityʳ ⟩
+        λ⇒                   ∎
+      unitaryʳ
+          : (X₁ : D₁.Obj) (X₂ : D₂.Obj)
+          → ρ⇒ ∘ id ∘ id ⊗₁ id ≈ unitorʳ.from
+      unitaryʳ X₁ X₂ = begin
+        ρ⇒ ∘ id ∘ id ⊗₁ id   ≈⟨ refl⟩∘⟨ elimʳ ⊗.identity ⟩
+        ρ⇒ ∘ id              ≈⟨ identityʳ ⟩
+        ρ⇒                   ∎
 
   πˡ-IsMonoidalFunctor : IsMonoidalFunctor D₁×D₂ D₁ πˡ
   πˡ-IsMonoidalFunctor =
-    IsStrongMonoidalFunctor.isMonoidal πˡ-IsStrongMonoidalFunctor
+    IsStrongMonoidalFunctor.isLaxMonoidal πˡ-IsStrongMonoidalFunctor
 
   πˡ-StrongMonoidalFunctor : StrongMonoidalFunctor D₁×D₂ D₁
   πˡ-StrongMonoidalFunctor = record
@@ -149,35 +173,52 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
   πʳ-IsStrongMonoidalFunctor : IsStrongMonoidalFunctor D₁×D₂ D₂ πʳ
   πʳ-IsStrongMonoidalFunctor = record
     { ε             = ≅.refl
-    ; ⊗-homo        = niHelper (record
+    ; ⊗-homo        = niHelper record
       { η           = λ _ → id
       ; η⁻¹         = λ _ → id
       ; commute     = λ _ → id-comm-sym
-      ; iso         = λ _ → record { isoˡ = identity² ; isoʳ = identity² }
-      })
-    ; associativity = begin
-        associator.from ∘ id ∘ id ⊗₁ id   ≈⟨ refl⟩∘⟨ elimʳ ⊗.identity ⟩
-        associator.from ∘ id              ≈⟨ id-comm ⟩
-        id ∘ associator.from              ≈⟨ pushˡ (introʳ ⊗.identity) ⟩
-        id ∘ id ⊗₁ id ∘ associator.from   ∎
-    ; unitaryˡ      = begin
-        unitorˡ.from ∘ id ∘ id ⊗₁ id   ≈⟨ refl⟩∘⟨ elimʳ ⊗.identity ⟩
-        unitorˡ.from ∘ id              ≈⟨ identityʳ ⟩
-        unitorˡ.from                   ∎
-    ; unitaryʳ      = begin
-        unitorʳ.from ∘ id ∘ id ⊗₁ id   ≈⟨ refl⟩∘⟨ elimʳ ⊗.identity ⟩
-        unitorʳ.from ∘ id              ≈⟨ identityʳ ⟩
-        unitorʳ.from                   ∎
+      ; iso         = λ _ → id-iso
+      }
+    ; associativity = λ {(X₁ , X₂) (Y₁ , Y₂) (Z₁ , Z₂)} → associativity X₁ Y₁ Z₁ X₂ Y₂ Z₂
+    ; unitaryˡ      = λ {(X₁ , X₂)} → unitaryˡ X₁ X₂
+    ; unitaryʳ      = λ {(X₁ , X₂)} → unitaryʳ X₁ X₂
     }
     where
-      open MonoidalCategory D₂
-      open HomReasoning
+      module D₁ = WithShorthands D₁
+      module D₂ = WithShorthands D₂
+      open D₂
       open Morphism (U D₂) using (module ≅)
       open MorphismReasoning (U D₂)
+      open MorphismProperties (U D₂) using (id-iso)
+      open HomReasoning
+      associativity
+          : (X₁ Y₁ Z₁ : D₁.Obj)
+            (X₂ Y₂ Z₂ : D₂.Obj)
+          → α⇒ {X₂} {Y₂} {Z₂} ∘ id ∘ id ⊗₁ id ≈ id ∘ id ⊗₁ id ∘ α⇒
+      associativity X₁ Y₁ Z₁ X₂ Y₂ Z₂ = begin
+        α⇒ ∘ id ∘ id ⊗₁ id   ≈⟨ refl⟩∘⟨ elimʳ ⊗.identity ⟩
+        α⇒ ∘ id              ≈⟨ id-comm ⟩
+        id ∘ α⇒              ≈⟨ pushˡ (introʳ ⊗.identity) ⟩
+        id ∘ id ⊗₁ id ∘ α⇒   ∎
+      unitaryˡ
+          : (X₁ : D₁.Obj)
+          (X₂ : D₂.Obj)
+          → λ⇒ ∘ id ∘ ⊗.F₁ (id , id) ≈ unitorˡ.from
+      unitaryˡ X₁ X₂ = begin
+        λ⇒ ∘ id ∘ id ⊗₁ id   ≈⟨ refl⟩∘⟨ elimʳ ⊗.identity ⟩
+        λ⇒ ∘ id              ≈⟨ identityʳ ⟩
+        λ⇒                   ∎
+      unitaryʳ
+          : (X₁ : D₁.Obj) (X₂ : D₂.Obj)
+          → ρ⇒ ∘ id ∘ id ⊗₁ id ≈ unitorʳ.from
+      unitaryʳ X₁ X₂ = begin
+        ρ⇒ ∘ id ∘ id ⊗₁ id   ≈⟨ refl⟩∘⟨ elimʳ ⊗.identity ⟩
+        ρ⇒ ∘ id              ≈⟨ identityʳ ⟩
+        ρ⇒                   ∎
 
   πʳ-IsMonoidalFunctor : IsMonoidalFunctor D₁×D₂ D₂ πʳ
   πʳ-IsMonoidalFunctor =
-    IsStrongMonoidalFunctor.isMonoidal πʳ-IsStrongMonoidalFunctor
+    IsStrongMonoidalFunctor.isLaxMonoidal πʳ-IsStrongMonoidalFunctor
 
   πʳ-StrongMonoidalFunctor : StrongMonoidalFunctor D₁×D₂ D₂
   πʳ-StrongMonoidalFunctor = record
@@ -200,12 +241,12 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
                           IsMonoidalFunctor C₁×C₂ D₁×D₂ (F ⁂ G)
     ⁂-IsMonoidalFunctor FM GM = record
       { ε         = FM.ε , GM.ε
-      ; ⊗-homo    = ntHelper (record
-        { η       = λ{ ((X₁ , X₂) , (Y₁ , Y₂)) →
-                    FM.⊗-homo.η (X₁ , Y₁) , GM.⊗-homo.η (X₂ , Y₂) }
-        ; commute = λ{ ((f₁ , f₂) , (g₁ , g₂)) →
-                    FM.⊗-homo.commute (f₁ , g₁) , GM.⊗-homo.commute (f₂ , g₂) }
-        })
+      ; ⊗-homo    = ntHelper record
+        { η       = λ ((X₁ , X₂) , (Y₁ , Y₂)) →
+                    FM.⊗-homo.η (X₁ , Y₁) , GM.⊗-homo.η (X₂ , Y₂)
+        ; commute = λ ((f₁ , f₂) , (g₁ , g₂)) →
+                    FM.⊗-homo.commute (f₁ , g₁) , GM.⊗-homo.commute (f₂ , g₂)
+        }
       ; associativity = FM.associativity , GM.associativity
       ; unitaryˡ      = FM.unitaryˡ , GM.unitaryˡ
       ; unitaryʳ      = FM.unitaryʳ , GM.unitaryʳ
@@ -226,19 +267,18 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
           ; isoʳ  = FM.ε.isoʳ , GM.ε.isoʳ
           }
         }
-      ; ⊗-homo    = niHelper (record
-        { η       = λ{ ((X₁ , X₂) , (Y₁ , Y₂)) →
-                    FM.⊗-homo.⇒.η (X₁ , Y₁) , GM.⊗-homo.⇒.η (X₂ , Y₂) }
-        ; η⁻¹     = λ{ ((X₁ , X₂) , (Y₁ , Y₂)) →
-                    FM.⊗-homo.⇐.η (X₁ , Y₁) , GM.⊗-homo.⇐.η (X₂ , Y₂) }
-        ; commute = λ{ ((f₁ , f₂) , (g₁ , g₂)) →
-                    FM.⊗-homo.⇒.commute (f₁ , g₁) ,
-                    GM.⊗-homo.⇒.commute (f₂ , g₂) }
-        ; iso     = λ{ ((X₁ , X₂) , (Y₁ , Y₂)) → record
+      ; ⊗-homo    = niHelper record
+        { η       = λ ((X₁ , X₂) , (Y₁ , Y₂)) →
+                    FM.⊗-homo.⇒.η (X₁ , Y₁) , GM.⊗-homo.⇒.η (X₂ , Y₂)
+        ; η⁻¹     = λ ((X₁ , X₂) , (Y₁ , Y₂)) →
+                    FM.⊗-homo.⇐.η (X₁ , Y₁) , GM.⊗-homo.⇐.η (X₂ , Y₂)
+        ; commute = λ ((f₁ , f₂) , (g₁ , g₂)) →
+                    FM.⊗-homo.⇒.commute (f₁ , g₁) , GM.⊗-homo.⇒.commute (f₂ , g₂)
+        ; iso     = λ ((X₁ , X₂) , (Y₁ , Y₂)) → record
           { isoˡ  = FM.⊗-homo.iso.isoˡ (X₁ , Y₁) , GM.⊗-homo.iso.isoˡ (X₂ , Y₂)
           ; isoʳ  = FM.⊗-homo.iso.isoʳ (X₁ , Y₁) , GM.⊗-homo.iso.isoʳ (X₂ , Y₂)
-          } }
-        })
+          }
+        }
       ; associativity = FM.associativity , GM.associativity
       ; unitaryˡ      = FM.unitaryˡ , GM.unitaryˡ
       ; unitaryʳ      = FM.unitaryʳ , GM.unitaryʳ

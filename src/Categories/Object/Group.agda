@@ -16,10 +16,7 @@ open import Categories.Object.Monoid (CartesianMonoidal.monoidal C)
 open import Categories.Object.Terminal 𝒞
 
 open Category 𝒞
-open Cartesian C
-module Π = BinaryProducts products
-open BinaryProducts products using (_×_; _⁂_; ⟨_,_⟩)
-open Terminal terminal
+open Cartesian C using (_×_; _×₁_; ⟨_,_⟩; !)
 
 record IsGroup (G : Obj) : Set (ℓ ⊔ e) where
   -- any group object is also a monoid object
@@ -50,6 +47,6 @@ open Group
 record Group⇒ (G H : Group) : Set (ℓ ⊔ e) where
   field
     arr : Carrier G ⇒ Carrier H
-    preserves-μ : arr ∘ μ G ≈ μ H ∘ (arr ⁂ arr)
+    preserves-μ : arr ∘ μ G ≈ μ H ∘ (arr ×₁ arr)
     preserves-η : arr ∘ η G ≈ η H
     preserves-ι : arr ∘ ι G ≈ ι H ∘ arr

@@ -39,7 +39,7 @@ Inclusion {c} {ℓ₁} e = record
     }
   }
 
--- Trunc is left-adjoint to the inclusion functor from Setoids to Groupoids
+-- Trunc is left-adjoint to the inclusion functor from Posets to Categories
 
 TruncAdj : ∀ {o ℓ e} → Trunc ⊣ Inclusion {o} {ℓ} e
 TruncAdj {o} {ℓ} {e} = record
