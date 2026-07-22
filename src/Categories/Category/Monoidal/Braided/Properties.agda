@@ -7,11 +7,13 @@ open import Categories.Category.Monoidal.Braided using (Braided)
 module Categories.Category.Monoidal.Braided.Properties
   {o ℓ e} {C : Category o ℓ e} {M : Monoidal C} (BM : Braided M) where
 
+open import Algebra.Bundles using (CommutativeMonoid; Monoid)
 open import Data.Product using (_,_)
 
 import Categories.Category.Construction.Core C as Core
 open import Categories.Category.Monoidal.Properties M
 open import Categories.Category.Monoidal.Reasoning M
+open import Categories.Category.Monoidal.Scalars M using (Scalar; _·ʳ_; _·ˡ_)
 import Categories.Category.Monoidal.Utilities M as MonoidalUtilities
 open import Categories.Functor using (Functor)
 open import Categories.Morphism.Reasoning C hiding (push-eq)
@@ -22,7 +24,8 @@ open import Categories.NaturalTransformation.NaturalIsomorphism.Properties
 open Category C
 open Commutation C
 open Braided BM
-open MonoidalUtilities using (_⊗ᵢ_; unitorʳ-naturalIsomorphism)
+open MonoidalUtilities using
+  (_⊗ᵢ_; Obj-⊗-Monoid; unitorˡ-naturalIsomorphism; unitorʳ-naturalIsomorphism)
 open MonoidalUtilities.Shorthands
 open Core.Shorthands
 open Commutationᵢ
@@ -40,6 +43,14 @@ module Shorthands where
 
   σ⇐ : ∀ {X Y} → Y ⊗₀ X ⇒ X ⊗₀ Y
   σ⇐ {X} {Y} = braiding.⇐.η (X , Y)
+
+  σ⇒-comm : ∀ {X Y Z W} {f : X ⇒ Y} {g : Z ⇒ W} →
+            σ⇒ ∘ (f ⊗₁ g) ≈ (g ⊗₁ f) ∘ σ⇒
+  σ⇒-comm {f = f} {g} = braiding.⇒.commute (f , g)
+
+  σ⇐-comm : ∀ {X Y Z W} {f : X ⇒ Y} {g : Z ⇒ W} →
+            σ⇐ ∘ (g ⊗₁ f) ≈ (f ⊗₁ g) ∘ σ⇐
+  σ⇐-comm {f = f} {g} = braiding.⇐.commute (f , g)
 
   σ = braiding.FX≅GX
 
@@ -92,6 +103,27 @@ private
     (σ⇒ ∘ id ⊗₁ λ⇒) ∘ α⇒                ≈⟨ pullʳ triangle ⟩
     σ⇒ ∘ ρ⇒ ⊗₁ id                       ∎)
 
+  ρ⇒-α⇐ : id {X} ⊗₁ ρ⇒ {Y} ≈ ρ⇒ ∘ α⇐
+  ρ⇒-α⇐ = switch-fromtoʳ associator coherence₂
+
+  λ⇒-α⇐ : id {X} ⊗₁ λ⇒ {Y} ≈ ρ⇒ ⊗₁ id ∘ α⇐
+  λ⇒-α⇐ = switch-fromtoʳ associator triangle
+
+  braiding-coherence⊗unit′ : [ unit ⊗₀ (unit ⊗₀ X) ⇒ unit ⊗₀ X ]⟨
+                               id ⊗₁ σ⇒            ⇒⟨ unit ⊗₀ (X ⊗₀ unit) ⟩
+                               id ⊗₁ ρ⇒
+                             ≈ id ⊗₁ λ⇒
+                             ⟩
+  braiding-coherence⊗unit′ = cancel-fromˡ braiding.FX≅GX (begin
+    σ⇒ ∘ id ⊗₁ ρ⇒ ∘ id ⊗₁ σ⇒         ≈⟨ pullˡ (⟺ (glue◽◃ unitorʳ-commute-from (⟺ ρ⇒-α⇐))) ⟩
+    (ρ⇒ ∘ σ⇒ ⊗₁ id ∘ α⇐) ∘ id ⊗₁ σ⇒  ≈⟨ assoc ⟩
+    ρ⇒ ∘ (σ⇒ ⊗₁ id ∘ α⇐) ∘ id ⊗₁ σ⇒  ≈⟨ refl⟩∘⟨ hexagon₂ ⟩
+    ρ⇒ ∘ (α⇐ ∘ σ⇒) ∘ α⇐              ≈⟨ refl⟩∘⟨ assoc ⟩
+    ρ⇒ ∘ α⇐ ∘ σ⇒ ∘ α⇐                ≈⟨ pullˡ (⟺ ρ⇒-α⇐) ⟩
+    id ⊗₁ ρ⇒ ∘ σ⇒ ∘ α⇐               ≈˘⟨ pushˡ σ⇒-comm ⟩
+    (σ⇒ ∘ ρ⇒ ⊗₁ id) ∘ α⇐             ≈⟨ pullʳ (⟺ λ⇒-α⇐) ⟩
+    σ⇒ ∘ id ⊗₁ λ⇒                    ∎)
+
 -- The desired theorem follows from |braiding-coherence⊗unit| by
 -- translating it along the right unitor (which is a natural iso).
 
@@ -105,6 +137,20 @@ braiding-coherence = push-eq unitorʳ-naturalIsomorphism (begin
   (λ⇒ ⊗₁ id) ∘ (σ⇒ ⊗₁ id)   ≈⟨ braiding-coherence⊗unit ⟩
   ρ⇒  ⊗₁ id                 ∎)
   where open Functor (-⊗ unit)
+
+-- The unit is transparent to the braiding on the left as well.  Same translation,
+-- along the left unitor this time.
+
+braiding-coherence′ : [ unit ⊗₀ X ⇒ X ]⟨
+                        σ⇒              ⇒⟨ X ⊗₀ unit ⟩
+                        ρ⇒
+                      ≈ λ⇒
+                      ⟩
+braiding-coherence′ = push-eq unitorˡ-naturalIsomorphism (begin
+  id ⊗₁ (ρ⇒ ∘ σ⇒)           ≈⟨ homomorphism ⟩
+  (id ⊗₁ ρ⇒) ∘ (id ⊗₁ σ⇒)   ≈⟨ braiding-coherence⊗unit′ ⟩
+  id ⊗₁ λ⇒                  ∎)
+  where open Functor (unit ⊗-)
 
 -- Variants of the hexagon identities defined on isos.
 
@@ -129,8 +175,22 @@ hexagon₂-inv = to-≈ hexagon₂-iso
 braiding-coherence-iso : unitorˡ ∘ᵢ σ ≈ᵢ unitorʳ {X}
 braiding-coherence-iso = ⌞ braiding-coherence ⌟
 
+braiding-coherence-iso′ : unitorʳ ∘ᵢ σ ≈ᵢ unitorˡ {X}
+braiding-coherence-iso′ = ⌞ braiding-coherence′ ⌟
+
 braiding-coherence-inv : σ⇐ ∘ λ⇐ ≈ ρ⇐ {X}
 braiding-coherence-inv = to-≈ braiding-coherence-iso
+
+braiding-coherence-inv′ : σ⇐ ∘ ρ⇐ ≈ λ⇐ {X}
+braiding-coherence-inv′ = to-≈ braiding-coherence-iso′
+
+-- ... and the same two, solved for the braiding itself.
+
+braiding-coherence-σ : σ⇒ {X} {unit} ≈ λ⇐ ∘ ρ⇒
+braiding-coherence-σ = switch-fromtoˡ unitorˡ braiding-coherence
+
+braiding-coherence-σ′ : σ⇒ {unit} {X} ≈ ρ⇐ ∘ λ⇒
+braiding-coherence-σ′ = switch-fromtoˡ unitorʳ braiding-coherence′
 
 -- The inverse of the braiding is also a braiding on M.
 
@@ -187,3 +247,29 @@ assoc-reverse = begin
   α⇐                                    ∎
   where
     hex₁' = conjugate-from associator (idᵢ ⊗ᵢ σ) (⟺ (hexagon₁ ○ sym-assoc))
+
+-- Scalars are central: the left and right actions of a scalar on any morphism agree in a
+-- braided monoidal category. Conjugating |f ⊗₁ s| by the braiding swaps the two tensor factors,
+-- and |braiding-coherence| identifies the two unitor sandwiches |ρ …| and |λ …|.
+
+scalar-central : {f : X ⇒ Y} {s : Scalar} → f ·ʳ s ≈ s ·ˡ f
+scalar-central {f = f} {s = s} = begin
+  ρ⇒ ∘ (f ⊗₁ s) ∘ ρ⇐                ≈˘⟨ braiding-coherence ⟩∘⟨ refl⟩∘⟨ braiding-coherence-inv ⟩
+  (λ⇒ ∘ σ⇒) ∘ (f ⊗₁ s) ∘ (σ⇐ ∘ λ⇐)  ≈⟨ assoc ⟩
+  λ⇒ ∘ σ⇒ ∘ (f ⊗₁ s) ∘ (σ⇐ ∘ λ⇐)    ≈⟨ refl⟩∘⟨ pullˡ σ⇒-comm ⟩
+  λ⇒ ∘ ((s ⊗₁ f) ∘ σ⇒) ∘ (σ⇐ ∘ λ⇐)  ≈⟨ refl⟩∘⟨ cancelInner (braiding.iso.isoʳ _) ⟩
+  λ⇒ ∘ (s ⊗₁ f) ∘ λ⇐                ∎
+
+-- The monoid of objects is commutative up to the braiding isomorphism.
+
+Obj-⊗-Comm-Monoid : CommutativeMonoid _ _
+Obj-⊗-Comm-Monoid = record
+  { Carrier = Obj
+  ; _≈_ = _≅_
+  ; _∙_ = _⊗₀_
+  ; ε   = unit
+  ; isCommutativeMonoid = record
+    { isMonoid = Monoid.isMonoid Obj-⊗-Monoid
+    ; comm     = λ X Y → σ {X , Y}
+    }
+  }
