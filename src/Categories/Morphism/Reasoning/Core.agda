@@ -7,6 +7,7 @@ open import Categories.Category
 
   Identity : reasoning about identity
   Assoc4   : associativity combinators for composites of 4 morphisms
+  AssocN   : reassociate the tail of longer composites
   Pulls  : use a ∘ b ≈ c as left-to-right rewrite
   Pushes : use c ≈ a ∘ b as a left-to-right rewrite
   IntroElim : introduce/eliminate an equivalent-to-id arrow
@@ -129,6 +130,22 @@ module Pushes (c≡ab : c ≈ a ∘ b) where
     a ∘ (b ∘ f) ∎
 
 open Pushes public
+
+module AssocN where
+  private
+    variable
+      A B D E U W Z : Obj
+
+  reassoc-tail₅ : {f : Z ⇒ U} {g : E ⇒ Z} {h : D ⇒ E} {i : B ⇒ D} {j : A ⇒ B} →
+    f ∘ g ∘ h ∘ i ∘ j ≈ (f ∘ g ∘ h ∘ i) ∘ j
+  reassoc-tail₅ = pushʳ assoc²εβ
+
+  reassoc-tail₆ : {f : Z ⇒ U} {g : E ⇒ Z} {h : D ⇒ E} {i : W ⇒ D}
+    {j : B ⇒ W} {k : A ⇒ B} →
+    f ∘ g ∘ h ∘ i ∘ j ∘ k ≈ (f ∘ g ∘ h ∘ i ∘ j) ∘ k
+  reassoc-tail₆ = pushʳ reassoc-tail₅
+
+open AssocN public
 
 -- Introduce/Elimilate an equivalent-to-identity
 -- on left, right or 'in the middle' of something existing
