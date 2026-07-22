@@ -121,6 +121,10 @@ split₁ˡ {f = f} {g} {h} = begin
   (f ∘ g) ⊗₁ (id ∘ h)   ≈⟨ ⊗-distrib-over-∘ ⟩
   f ⊗₁ id ∘ g ⊗₁ h      ∎
 
+split₁³ : ∀ {W X Y Z A} {f : Y ⇒ Z} {g : X ⇒ Y} {h : W ⇒ X} →
+          (f ∘ g ∘ h) ⊗₁ id {A} ≈ (f ⊗₁ id) ∘ (g ⊗₁ id) ∘ (h ⊗₁ id)
+split₁³ = split₁ˡ ○ (refl⟩∘⟨ split₁ˡ)
+
 -- Split a composite in the second component
 --
 --   |   |        |   |       |   |
@@ -142,6 +146,10 @@ split₂ˡ {f = f} {g} {h} = begin
   f ⊗₁ (g ∘ h)          ≈˘⟨ identityˡ ⟩⊗⟨refl ⟩
   (id ∘ f) ⊗₁ (g ∘ h)   ≈⟨ ⊗-distrib-over-∘ ⟩
   id ⊗₁ g ∘ f ⊗₁ h      ∎
+
+split₂³ : ∀ {W X Y Z A} {f : Y ⇒ Z} {g : X ⇒ Y} {h : W ⇒ X} →
+          id {A} ⊗₁ (f ∘ g ∘ h) ≈ (id ⊗₁ f) ∘ (id ⊗₁ g) ∘ (id ⊗₁ h)
+split₂³ = split₂ˡ ○ (refl⟩∘⟨ split₂ˡ)
 
 -- The opposite, i.e. merge
 merge₁ʳ : ∀ {X₁ Y₁ Z₁ X₂ Y₂} {f : Y₁ ⇒ Z₁} {g : X₁ ⇒ Y₁} {h : X₂ ⇒ Y₂} →
