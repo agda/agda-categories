@@ -131,6 +131,9 @@ triangle-iso = ⌞ triangle ⌟
 triangle-inv : α⇐ ∘ id ⊗₁ λ⇐ ≈ ρ⇐ {X} ⊗₁ id {Y}
 triangle-inv = to-≈ triangle-iso
 
+triangle-inv′ : α⇒ {X} {unit} {Y} ∘ (ρ⇐ ⊗₁ id) ≈ id ⊗₁ λ⇐
+triangle-inv′ = Equiv.sym (switch-tofromˡ associator triangle-inv)
+
 pentagon-iso :
      idᵢ ⊗ᵢ associator ∘ᵢ associator ∘ᵢ associator {X} {Y} {Z} ⊗ᵢ idᵢ {W}
   ≈ᵢ associator ∘ᵢ associator
