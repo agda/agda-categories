@@ -121,6 +121,10 @@ split₁ˡ {f = f} {g} {h} = begin
   (f ∘ g) ⊗₁ (id ∘ h)   ≈⟨ ⊗-distrib-over-∘ ⟩
   f ⊗₁ id ∘ g ⊗₁ h      ∎
 
+split₁³ : ∀ {W X Y Z A} {f : Y ⇒ Z} {g : X ⇒ Y} {h : W ⇒ X} →
+          (f ∘ g ∘ h) ⊗₁ id {A} ≈ (f ⊗₁ id) ∘ (g ⊗₁ id) ∘ (h ⊗₁ id)
+split₁³ = split₁ˡ ○ (refl⟩∘⟨ split₁ˡ)
+
 -- Split a composite in the second component
 --
 --   |   |        |   |       |   |
@@ -143,6 +147,10 @@ split₂ˡ {f = f} {g} {h} = begin
   (id ∘ f) ⊗₁ (g ∘ h)   ≈⟨ ⊗-distrib-over-∘ ⟩
   id ⊗₁ g ∘ f ⊗₁ h      ∎
 
+split₂³ : ∀ {W X Y Z A} {f : Y ⇒ Z} {g : X ⇒ Y} {h : W ⇒ X} →
+          id {A} ⊗₁ (f ∘ g ∘ h) ≈ (id ⊗₁ f) ∘ (id ⊗₁ g) ∘ (id ⊗₁ h)
+split₂³ = split₂ˡ ○ (refl⟩∘⟨ split₂ˡ)
+
 -- The opposite, i.e. merge
 merge₁ʳ : ∀ {X₁ Y₁ Z₁ X₂ Y₂} {f : Y₁ ⇒ Z₁} {g : X₁ ⇒ Y₁} {h : X₂ ⇒ Y₂} →
           f ⊗₁ h ∘ g ⊗₁ id ≈ (f ∘ g) ⊗₁ h
@@ -159,6 +167,14 @@ merge₂ʳ = Equiv.sym split₂ʳ
 merge₂ˡ : ∀ {X₁ Y₁ X₂ Y₂ Z₂} {f : X₁ ⇒ Y₁} {g : Y₂ ⇒ Z₂} {h : X₂ ⇒ Y₂} →
           id ⊗₁ g ∘ f ⊗₁ h ≈ f ⊗₁ (g ∘ h)
 merge₂ˡ = Equiv.sym split₂ˡ
+
+merge₁³ : ∀ {W X Y Z A} {f : Y ⇒ Z} {g : X ⇒ Y} {h : W ⇒ X} →
+          (f ⊗₁ id) ∘ (g ⊗₁ id) ∘ (h ⊗₁ id {A}) ≈ (f ∘ g ∘ h) ⊗₁ id
+merge₁³ = Equiv.sym split₁³
+
+merge₂³ : ∀ {W X Y Z A} {f : Y ⇒ Z} {g : X ⇒ Y} {h : W ⇒ X} →
+          (id ⊗₁ f) ∘ (id ⊗₁ g) ∘ (id {A} ⊗₁ h) ≈ id ⊗₁ (f ∘ g ∘ h)
+merge₂³ = Equiv.sym split₂³
 
 -- Combined splitting and re-association.
 
