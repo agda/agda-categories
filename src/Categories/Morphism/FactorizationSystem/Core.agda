@@ -1,6 +1,7 @@
 {-# OPTIONS --without-K --safe #-}
 
 open import Categories.Category.Core using (Category)
+open import Categories.Category using (module Definitions)
 open import Categories.Morphism.Lifts using (MorphismClass)
 
 

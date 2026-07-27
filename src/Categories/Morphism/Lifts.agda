@@ -51,8 +51,8 @@ Lifts i p = ∀ {f g} → (comm : CommutativeSquare i f g p) → Filler comm
 -- morphism equality. Then, properties like FactorizationSystem.diag-unique₂
 -- would become more complicated. Thus, Diagonal does not use
 -- above Filler record, which is parametric in a morphism equality.
-record Diagonal {A B X Y} (i : A ⇒ B) (f : A ⇒ X)
-                (g : B ⇒ Y) (p : X ⇒ Y) : Set (ℓ ⊔ e) where
+record Diagonal {A B C D} (i : A ⇒ B) (f : A ⇒ C)
+                (g : B ⇒ D) (p : C ⇒ D) : Set (ℓ ⊔ e) where
   field
     --      i
     --   A ────> B
@@ -63,7 +63,7 @@ record Diagonal {A B X Y} (i : A ⇒ B) (f : A ⇒ X)
     --   V V     V
     --    C ───> D
     --      m
-    d : B ⇒ X
+    d : B ⇒ C
     commˡ : d ∘ i ≈ f
     commʳ : p ∘ d ≈ g
 
