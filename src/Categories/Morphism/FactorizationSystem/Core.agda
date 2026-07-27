@@ -14,10 +14,10 @@ module Categories.Morphism.FactorizationSystem.Core
 
 open import Level
 
-open Category 𝒞
-open Definitions 𝒞 using (CommutativeSquare)
 open import Categories.Morphism.Lifts 𝒞 using (MorphismClassMember; ≈-closed; UniqueDiagonal; Diagonal)
 open import Categories.Morphism {o} {ℓ} {eq} 𝒞 using (IsIso)
+open Category 𝒞
+open Definitions 𝒞 using (CommutativeSquare)
 open MorphismClassMember using (mor)
 
 private
