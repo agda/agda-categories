@@ -15,17 +15,17 @@ import Categories.Category.Construction.Core C as Core
 import Categories.Category.Monoidal.Braided.Properties as BraidedProps
 open import Categories.Category.Monoidal.Interchange using (HasInterchange)
 import Categories.Category.Monoidal.Interchange.Braided as BraidedInterchange
-  using (module swapInner; swapInner-braiding)
+  using (module swapInner; swapInner-braiding; swapInner-unitˡ)
 import Categories.Category.Monoidal.Reasoning M as MonoidalReasoning
 import Categories.Category.Monoidal.Utilities M as MonoidalUtilities
 open import Categories.Functor using (_∘F_)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   using (_≃_; niHelper)
-open import Categories.Morphism.IsoEquiv C using (to-unique)
+open import Categories.Morphism.IsoEquiv C using (from-unique; to-unique)
 open import Categories.Morphism.Reasoning C
-  using (elim-center; pushˡ; pullʳ; cancelInner; switch-fromtoˡ)
+  using (elim-center; pushˡ; pullʳ; cancelʳ; cancelInner; switch-fromtoˡ)
 
-open Category C using (Obj; _⇒_; _∘_; id; sym-assoc; ∘-resp-≈ʳ; module Equiv)
+open Category C
 open Commutation C
 open MonoidalReasoning
 open MonoidalUtilities using (_⊗ᵢ_)
@@ -76,6 +76,29 @@ swapInner-selfInverse : [ (X₁ ⊗₀ X₂) ⊗₀ (Y₁ ⊗₀ Y₂) ⇒
 swapInner-selfInverse =
   to-unique (iso swapInner-iso) swapInner.iso Equiv.refl
 
+abstract
+  swapInner-unitˡ⁻¹ : [ X ⊗₀ Y ⇒ unit ⊗₀ (X ⊗₀ Y) ]⟨
+                        λ⇐ ⊗₁ λ⇐  ⇒⟨ (unit ⊗₀ X) ⊗₀ (unit ⊗₀ Y) ⟩
+                        i⇒        ⇒⟨ (unit ⊗₀ unit) ⊗₀ (X ⊗₀ Y) ⟩
+                        λ⇒ ⊗₁ id
+                      ≈ λ⇐
+                      ⟩
+  swapInner-unitˡ⁻¹ {X} {Y} = from-unique (iso unit-insert) (iso (unitorˡ ⁻¹)) unit-remove
+    where
+    split-units : X ⊗₀ Y ≅ (unit ⊗₀ X) ⊗₀ (unit ⊗₀ Y)
+    split-units = (unitorˡ ⁻¹) ⊗ᵢ (unitorˡ ⁻¹)
+
+    join-units : (unit ⊗₀ unit) ⊗₀ (X ⊗₀ Y) ≅ unit ⊗₀ (X ⊗₀ Y)
+    join-units = unitorˡ ⊗ᵢ idᵢ
+
+    unit-insert : X ⊗₀ Y ≅ unit ⊗₀ (X ⊗₀ Y)
+    unit-insert = join-units ∘ᵢ swapInner-iso ∘ᵢ split-units
+
+    module unit-insert = _≅_ unit-insert
+
+    unit-remove : [ unit ⊗₀ (X ⊗₀ Y) ⇒ X ⊗₀ Y ]⟨ unit-insert.to ≈ λ⇒ ⟩
+    unit-remove = assoc ○ swapInner-unitˡ
+
 swapInner-braiding′ : [ (W ⊗₀ X) ⊗₀ (Y ⊗₀ Z) ⇒ (Y ⊗₀ W) ⊗₀ (Z ⊗₀ X) ]⟨
                         i⇒         ⇒⟨ (W ⊗₀ Y) ⊗₀ (X ⊗₀ Z) ⟩
                         σ⇒ ⊗₁ σ⇒
@@ -83,3 +106,27 @@ swapInner-braiding′ : [ (W ⊗₀ X) ⊗₀ (Y ⊗₀ Z) ⇒ (Y ⊗₀ W) ⊗�
                         i⇒
                       ⟩
 swapInner-braiding′ = switch-fromtoˡ swapInner-iso swapInner-braiding
+
+swapInner-braidingˡ : [ (W ⊗₀ X) ⊗₀ (Y ⊗₀ Z) ⇒ (Y ⊗₀ W) ⊗₀ (X ⊗₀ Z) ]⟨
+                        i⇒         ⇒⟨ (W ⊗₀ Y) ⊗₀ (X ⊗₀ Z) ⟩
+                        σ⇒ ⊗₁ id
+                      ≈ σ⇒         ⇒⟨ (Y ⊗₀ Z) ⊗₀ (W ⊗₀ X) ⟩
+                        i⇒         ⇒⟨ (Y ⊗₀ W) ⊗₀ (Z ⊗₀ X) ⟩
+                        id ⊗₁ σ⇒
+                      ⟩
+swapInner-braidingˡ = begin
+  (σ⇒ ⊗₁ id) ∘ i⇒                 ≈˘⟨ refl⟩⊗⟨ commutative ⟩∘⟨refl ⟩
+  (σ⇒ ⊗₁ (σ⇒ ∘ σ⇒)) ∘ i⇒          ≈⟨ split₂ˡ ⟩∘⟨refl ⟩
+  ((id ⊗₁ σ⇒) ∘ (σ⇒ ⊗₁ σ⇒)) ∘ i⇒  ≈⟨ pullʳ swapInner-braiding′ ⟩
+  (id ⊗₁ σ⇒) ∘ i⇒ ∘ σ⇒            ∎
+
+swapInner-braidingʳ : [ (W ⊗₀ X) ⊗₀ (Y ⊗₀ Z) ⇒ (X ⊗₀ Z) ⊗₀ (W ⊗₀ Y) ]⟨
+                        i⇒         ⇒⟨ (W ⊗₀ Y) ⊗₀ (X ⊗₀ Z) ⟩
+                        σ⇒
+                      ≈ σ⇒ ⊗₁ σ⇒  ⇒⟨ (X ⊗₀ W) ⊗₀ (Z ⊗₀ Y) ⟩
+                        i⇒
+                      ⟩
+swapInner-braidingʳ = begin
+  σ⇒ ∘ i⇒                       ≈˘⟨ swapInner-braiding ⟩∘⟨refl ⟩
+  (i⇒ ∘ (σ⇒ ⊗₁ σ⇒ ∘ i⇒)) ∘ i⇒   ≈⟨ pullʳ (cancelʳ swapInner-commutative) ⟩
+  i⇒ ∘ (σ⇒ ⊗₁ σ⇒)               ∎
