@@ -15,7 +15,7 @@ open Commutation C
 
 private
   variable
-    X : Obj
+    X Y : Obj
 
 -- left rigid monoidal category
 record LeftRigid : Set (levelOfTerm M) where
@@ -43,6 +43,11 @@ record LeftRigid : Set (levelOfTerm M) where
              ≈ id
              ⟩
 
+  -- The dual of a morphism: f : X ⇒ Y bent around into its mate Y ⁻¹ ⇒ X ⁻¹.
+  dual₁ : X ⇒ Y → Y ⁻¹ ⇒ X ⁻¹
+  dual₁ f = unitorˡ.from ∘ (ε ⊗₁ id) ∘ associator.to
+              ∘ (id ⊗₁ ((f ⊗₁ id) ∘ η)) ∘ unitorʳ.to
+
 -- right rigid monoidal category
 record RightRigid : Set (levelOfTerm M) where
   open Monoidal M public
@@ -68,3 +73,8 @@ record RightRigid : Set (levelOfTerm M) where
                unitorʳ.from
              ≈ id
              ⟩
+
+  -- The dual of a morphism: f : X ⇒ Y bent around into its mate Y ⁻¹ ⇒ X ⁻¹.
+  dual₁ : X ⇒ Y → Y ⁻¹ ⇒ X ⁻¹
+  dual₁ f = unitorʳ.from ∘ (id ⊗₁ ε) ∘ (id ⊗₁ (f ⊗₁ id))
+              ∘ associator.from ∘ (η ⊗₁ id) ∘ unitorˡ.to
