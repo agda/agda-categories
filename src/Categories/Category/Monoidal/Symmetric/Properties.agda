@@ -12,18 +12,19 @@ import Categories.Category.Construction.Core C as Core
 import Categories.Category.Monoidal.Utilities M as MonUtil
 
 open import Categories.Category.Monoidal.Properties M using (monoidal-Op)
+open import Categories.Category.Monoidal.Reasoning M
 open import Categories.Morphism C using (_≅_)
 open import Categories.Morphism.Reasoning C
 open import Data.Product using (_,_)
 
 open Category C
-open HomReasoning
 open Symmetric SM
 
 -- Shorthands for the braiding
 
 open BraidedProperties braided public using (module Shorthands)
 open BraidedProperties braided using (braiding-coherence-inv)
+  renaming (braiding-coherence′ to bc′)
 open Shorthands
 open Core.Shorthands using (idᵢ)
 open MonUtil using (_⊗ᵢ_)
@@ -76,3 +77,41 @@ symmetric-Op = record
     { braided = braided-Op
     ; commutative = inv-commutative
     }
+
+-- Cyclically rotate three tensor factors.
+module Rotation where
+  private
+    variable
+      X₁ X₂ Y₁ Y₂ Z₁ Z₂ : Obj
+      f : X₁ ⇒ X₂
+      g : Y₁ ⇒ Y₂
+      h : Z₁ ⇒ Z₂
+
+  cycle : (X₁ ⊗₀ Y₁) ⊗₀ Z₁ ⇒ Y₁ ⊗₀ (Z₁ ⊗₀ X₁)
+  cycle = (id ⊗₁ σ⇒) ∘ α⇒ ∘ (σ⇒ ⊗₁ id)
+
+  cycle-natural : cycle ∘ ((f ⊗₁ g) ⊗₁ h) ≈ (g ⊗₁ (h ⊗₁ f)) ∘ cycle
+  cycle-natural {f = f} {g = g} {h = h} = begin
+    cycle ∘ ((f ⊗₁ g) ⊗₁ h)                         ≈⟨ pullʳ (glue assoc-commute-from cycle-head) ⟩
+    (id ⊗₁ σ⇒) ∘ (g ⊗₁ (f ⊗₁ h)) ∘ α⇒ ∘ (σ⇒ ⊗₁ id)  ≈⟨ extendʳ cycle-tail ⟩
+    (g ⊗₁ (h ⊗₁ f)) ∘ cycle                         ∎
+    where
+      cycle-head = parallel σ⇒-comm id-comm-sym
+      cycle-tail = parallel id-comm-sym σ⇒-comm
+
+  cycle-cancel : cycle {Y₁} {X₁} {Z₁} ∘ (σ⇒ ⊗₁ id) ≈ (id ⊗₁ σ⇒) ∘ α⇒
+  cycle-cancel = begin
+    cycle ∘ (σ⇒ ⊗₁ id)  ≈⟨ pullʳ (cancelʳ (⊗-cancel commutative identity²)) ⟩
+    (id ⊗₁ σ⇒) ∘ α⇒     ∎
+
+  cycle-unit : (id ⊗₁ ρ⇒) ∘ cycle ∘ (λ⇐ ⊗₁ id) ≈ id {X₁ ⊗₀ Y₁}
+  cycle-unit = begin
+    (id ⊗₁ ρ⇒) ∘ cycle ∘ (λ⇐ ⊗₁ id)                     ≈⟨ pullˡ (pullˡ merge₂ˡ) ⟩
+    ((id ⊗₁ (ρ⇒ ∘ σ⇒)) ∘ α⇒ ∘ (σ⇒ ⊗₁ id)) ∘ (λ⇐ ⊗₁ id)  ≈⟨ refl⟩⊗⟨ bc′ ⟩∘⟨refl ⟩∘⟨refl ⟩
+    ((id ⊗₁ λ⇒) ∘ α⇒ ∘ (σ⇒ ⊗₁ id)) ∘ (λ⇐ ⊗₁ id)         ≈⟨ pullˡ triangle ⟩∘⟨refl ⟩
+    ((ρ⇒ ⊗₁ id) ∘ (σ⇒ ⊗₁ id)) ∘ (λ⇐ ⊗₁ id)              ≈⟨ merge₁ˡ ⟩∘⟨refl ⟩
+    ((ρ⇒ ∘ σ⇒) ⊗₁ id) ∘ (λ⇐ ⊗₁ id)                      ≈⟨ bc′ ⟩⊗⟨refl ⟩∘⟨refl ⟩
+    (λ⇒ ⊗₁ id) ∘ (λ⇐ ⊗₁ id)                             ≈⟨ ⊗-cancel unitorˡ.isoʳ identity² ⟩
+    id                                                  ∎
+
+open Rotation public
