@@ -64,6 +64,12 @@ _⟩⊗⟨refl = ⊗-resp-≈ˡ
   id ⊗₁ id                       ≈⟨ Monoidal.⊗.identity M ⟩
   id                             ∎
 
+⊗-identityˡ : {f : X ⇒ X} → f ≈ id → f ⊗₁ id {Y} ≈ id
+⊗-identityˡ f≈id = f≈id ⟩⊗⟨refl ○ Monoidal.⊗.identity M
+
+⊗-identityʳ : {f : X ⇒ X} → f ≈ id → id {Y} ⊗₁ f ≈ id
+⊗-identityʳ f≈id = refl⟩⊗⟨ f≈id ○ Monoidal.⊗.identity M
+
 -- Parallel commutation
 
 parallel : ∀ {X₁ X₂ Y₁ Y₂ Z₁ Z₂ W₁ W₂}
