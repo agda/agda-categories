@@ -111,12 +111,14 @@ module _ {𝒞 : Category o ℓ e} (cartesian : Cartesian 𝒞) (ELM : Equationa
 
   Kleisli-CounitalCopy : CounitalCopy (Kleisli-Symmetric (symmetric 𝒞 cartesian) commutativeMonad)
   Kleisli-CounitalCopy = record
-    { isComonoid = Kleisli-IsComonoid
+    { gsMonoidal = record
+      { isComonoid = Kleisli-IsComonoid
+      ; inverse₁ = inverse₁'
+      ; inverse₂ = inverse₂'
+      ; cocommutative = cocommutative'
+      ; preserves = preserves'
+      }
     ; natural = natural'
-    ; inverse₁ = inverse₁'
-    ; inverse₂ = inverse₂'
-    ; cocommutative = cocommutative'
-    ; preserves = preserves'
     }
     where
     natural' : ∀ {A B} (f : A ⇒ M.F.₀ B) → (η ∘ Δ) * ∘ f ≈ (ψ ∘ (f ×₁ f)) * ∘ η ∘ Δ
