@@ -23,12 +23,14 @@ open import Categories.Object.Monoid using (IsMonoid)
 import Categories.Category.Monoidal.Properties
 import Categories.Category.Monoidal.Utilities as MonoidalUtils
 import Categories.Category.Monoidal.Braided.Properties as BraidedProps
+import Categories.Category.Monoidal.Interchange.Braided as BraidedInterchange
 
 record GSMonoidal : Set (suc (o ⊔ ℓ ⊔ e)) where
   open Category 𝒞
   open Symmetric symmetric
   open BraidedProps braided using () renaming (module Shorthands to BraidedShorthands)
   open BraidedShorthands using (σ⇒)
+  open BraidedInterchange braided using (module swapInner; swapInner-expand)
   open MonoidalUtils monoidal using (module Shorthands)
   open Shorthands
   open Categories.Category.Monoidal.Properties monoidal using (monoidal-Op)
@@ -46,6 +48,17 @@ record GSMonoidal : Set (suc (o ⊔ ℓ ⊔ e)) where
     inverse₂ : λ⇒ ∘ Δ {unit} ≈ id
     cocommutative : ∀ {A} → σ⇒ ∘ Δ ≈ Δ {A}
     preserves : ∀ {X Y} → α⇐ ∘ (id ⊗₁ α⇒) ∘ (id ⊗₁ ((σ⇒ ⊗₁ id) ∘ α⇐)) ∘ α⇒ ∘ (Δ ⊗₁ Δ) ≈ Δ {X ⊗₀ Y}
+
+  -- What `preserves` says: copying a tensor is copying each factor and then
+  -- interchanging.  The composite above is the four middle interchange of
+  -- Categories.Category.Monoidal.Interchange.Braided, with its two inner
+  -- factors composed separately rather than tensored at once, which is the
+  -- form a proof of the field wants.
+
+  preserves-interchange : ∀ {X Y} → swapInner.from ∘ (Δ ⊗₁ Δ) ≈ Δ {X ⊗₀ Y}
+  preserves-interchange = ∘-resp-≈ˡ swapInner-expand ○ assoc ○ ∘-resp-≈ʳ assoc
+                        ○ ∘-resp-≈ʳ (∘-resp-≈ʳ assoc) ○ preserves
+    where open HomReasoning
 
   module _ {X : Obj} where
     open IsMonoid (isComonoid X) hiding (μ; η) renaming (assoc to Δ-assoc; identityˡ to δ-identityˡ; identityʳ to δ-identityʳ) public

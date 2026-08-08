@@ -53,6 +53,12 @@ private
   i⇒ = swapInner.from
   i⇐ = swapInner.to
 
+-- Splitting the inner tensor, for meeting a proof written with the two
+-- factors composed separately rather than tensored at once.
+
+swapInner-expand : i⇒ {W} {X} {Y} {Z} ≈ α⇐ ∘ (id ⊗₁ α⇒) ∘ (id ⊗₁ ((σ⇒ ⊗₁ id) ∘ α⇐)) ∘ α⇒
+swapInner-expand = refl⟩∘⟨ (split₂ˡ ⟩∘⟨refl ○ assoc)
+
 -- to shorten things, it is convenient to name some items that recur
 -- swapˡ is the inner part of 'swapInner'
 private
