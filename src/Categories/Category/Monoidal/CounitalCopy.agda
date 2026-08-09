@@ -22,4 +22,4 @@ module Categories.Category.Monoidal.CounitalCopy where
     open GSMonoidal gsMonoidal public
 
     field
-      natural : ∀ {A B} (f : A ⇒ B) → Δ ∘ f ≈ (f ⊗₁ f) ∘ Δ
+      natural : ∀ {A B} (f : A ⇒ B) → Deterministic f

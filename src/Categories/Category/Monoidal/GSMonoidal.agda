@@ -17,6 +17,7 @@ module Categories.Category.Monoidal.GSMonoidal
   {o ℓ e} {𝒞 : Category o ℓ e} {monoidal : Monoidal 𝒞} (symmetric : Symmetric monoidal) where
 
 open import Level using (suc; _⊔_)
+open import Data.Product.Base using (_,_)
 
 open import Categories.Object.Monoid using (IsMonoid)
 
@@ -24,16 +25,25 @@ import Categories.Category.Monoidal.Properties
 import Categories.Category.Monoidal.Utilities as MonoidalUtils
 import Categories.Category.Monoidal.Braided.Properties as BraidedProps
 import Categories.Category.Monoidal.Interchange.Braided as BraidedInterchange
+import Categories.Category.Monoidal.Interchange.Symmetric as SymmetricInterchange
+import Categories.Category.Monoidal.Symmetric.Properties as SymmetricProps
+import Categories.Morphism.Reasoning as MorphismReasoning
 
 record GSMonoidal : Set (suc (o ⊔ ℓ ⊔ e)) where
   open Category 𝒞
   open Symmetric symmetric
-  open BraidedProps braided using () renaming (module Shorthands to BraidedShorthands)
-  open BraidedShorthands using (σ⇒)
-  open BraidedInterchange braided using (module swapInner; swapInner-expand)
+  open BraidedProps braided using (braiding-coherence-inv)
+    renaming (module Shorthands to BraidedShorthands)
+  open BraidedShorthands using (σ⇒; σ⇐; σ⇒-comm)
+  open BraidedInterchange braided
+    using (module swapInner; swapInner-expand; swapInner-natural)
+  open SymmetricInterchange symmetric using (swapInner-unitˡ⁻¹)
+  open SymmetricProps symmetric using (braiding-selfInverse)
   open MonoidalUtils monoidal using (module Shorthands)
   open Shorthands
-  open Categories.Category.Monoidal.Properties monoidal using (monoidal-Op)
+  open Categories.Category.Monoidal.Properties monoidal
+    using (monoidal-Op; coherence-inv₃)
+  open MorphismReasoning 𝒞 using (cancelˡ; pullˡ; extendʳ)
 
   field
     isComonoid : ∀ X → IsMonoid (monoidal-Op) X
@@ -62,3 +72,112 @@ record GSMonoidal : Set (suc (o ⊔ ℓ ⊔ e)) where
 
   module _ {X : Obj} where
     open IsMonoid (isComonoid X) hiding (μ; η) renaming (assoc to Δ-assoc; identityˡ to δ-identityˡ; identityʳ to δ-identityʳ) public
+
+  -- The two naturality conditions the definition withholds, one morphism at a
+  -- time.  A morphism is total when discarding its result is discarding its
+  -- argument, and deterministic when copying its result is running it on both
+  -- copies of its argument.  Asking `Deterministic` of every morphism is the
+  -- one field of CounitalCopy; asking both of every morphism is cartesian.
+
+  Total : ∀ {X Y} → X ⇒ Y → Set e
+  Total f = δ ∘ f ≈ δ
+
+  Deterministic : ∀ {X Y} → X ⇒ Y → Set e
+  Deterministic f = Δ ∘ f ≈ (f ⊗₁ f) ∘ Δ
+
+  -- The two counit coherence laws that most presentations take as axioms.
+  -- They follow from the fields above, which is why this record has five and
+  -- not seven.  A counit is unique for a given comultiplication, dual to
+  -- uniqueness of a monoid unit, and each law is then a matter of exhibiting a
+  -- counit.  Categories.Object.Monoid offers no such uniqueness lemma.
+
+  counit-unique : ∀ {X} (δ′ : X ⇒ unit)
+                → λ⇐ ≈ (δ′ ⊗₁ id) ∘ Δ
+                → ρ⇐ ≈ (id ⊗₁ δ′) ∘ Δ
+                → δ′ ≈ δ
+  counit-unique {X} δ′ identityˡ′ identityʳ′ = begin
+    δ′           ≈˘⟨ cancelˡ unitorˡ.isoʳ ⟩
+    λ⇒ ∘ λ⇐ ∘ δ′ ≈⟨ refl⟩∘⟨ main ⟩
+    λ⇒ ∘ λ⇐ ∘ δ  ≈⟨ cancelˡ unitorˡ.isoʳ ⟩
+    δ            ∎
+    where
+      open HomReasoning
+      open Equiv
+
+      main : λ⇐ ∘ δ′ ≈ λ⇐ ∘ δ
+      main = begin
+        λ⇐ ∘ δ′                    ≈⟨ unitorˡ-commute-to ⟩
+        (id ⊗₁ δ′) ∘ λ⇐            ≈⟨ refl⟩∘⟨ δ-identityˡ ⟩
+        (id ⊗₁ δ′) ∘ (δ ⊗₁ id) ∘ Δ ≈⟨ pullˡ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identityˡ , identityʳ)) ⟩
+        (δ ⊗₁ δ′) ∘ Δ              ≈˘⟨ pullˡ (sym ⊗.homomorphism ○ ⊗.F-resp-≈ (identityʳ , identityˡ)) ⟩
+        (δ ⊗₁ id) ∘ (id ⊗₁ δ′) ∘ Δ ≈˘⟨ refl⟩∘⟨ identityʳ′ ⟩
+        (δ ⊗₁ id) ∘ ρ⇐             ≈˘⟨ unitorʳ-commute-to ⟩
+        ρ⇐ ∘ δ                     ≈˘⟨ coherence-inv₃ ⟩∘⟨refl ⟩
+        λ⇐ ∘ δ                     ∎
+
+  Δ-unit : Δ {unit} ≈ λ⇐
+  Δ-unit = begin
+    Δ           ≈˘⟨ cancelˡ unitorˡ.isoˡ ⟩
+    λ⇐ ∘ λ⇒ ∘ Δ ≈⟨ refl⟩∘⟨ inverse₂ ⟩
+    λ⇐ ∘ id     ≈⟨ identityʳ ⟩
+    λ⇐          ∎
+    where open HomReasoning
+
+  δ-unit : δ {unit} ≈ id
+  δ-unit = sym (counit-unique id lawˡ lawʳ)
+    where
+      open HomReasoning
+      open Equiv
+
+      lawˡ : λ⇐ ≈ (id ⊗₁ id) ∘ Δ {unit}
+      lawˡ = begin
+        λ⇐             ≈˘⟨ Δ-unit ⟩
+        Δ              ≈˘⟨ identityˡ ⟩
+        id ∘ Δ         ≈˘⟨ ⊗.identity ⟩∘⟨refl ⟩
+        (id ⊗₁ id) ∘ Δ ∎
+
+      lawʳ : ρ⇐ ≈ (id ⊗₁ id) ∘ Δ {unit}
+      lawʳ = begin
+        ρ⇐             ≈˘⟨ coherence-inv₃ ⟩
+        λ⇐             ≈⟨ lawˡ ⟩
+        (id ⊗₁ id) ∘ Δ ∎
+
+  δ-⊗ : ∀ {X Y} → δ {X ⊗₀ Y} ≈ λ⇒ ∘ (δ {X} ⊗₁ δ {Y})
+  δ-⊗ {X} {Y} = sym (counit-unique (λ⇒ ∘ (δ ⊗₁ δ)) lawˡ lawʳ)
+    where
+      open HomReasoning
+      open Equiv
+
+      δ′ = λ⇒ ∘ (δ {X} ⊗₁ δ {Y})
+
+      step1 : δ′ ⊗₁ id ≈ (λ⇒ ⊗₁ id) ∘ ((δ ⊗₁ δ) ⊗₁ id)
+      step1 = ⊗.F-resp-≈ (refl , sym identity²) ○ ⊗.homomorphism
+
+      step2 : ((δ ⊗₁ δ) ⊗₁ id) ∘ swapInner.from
+            ≈ swapInner.from ∘ ((δ ⊗₁ id) ⊗₁ (δ ⊗₁ id))
+      step2 = (⊗.F-resp-≈ (refl , sym ⊗.identity) ⟩∘⟨refl) ○ sym swapInner-natural
+
+      step3 : ((δ ⊗₁ id) ⊗₁ (δ ⊗₁ id)) ∘ (Δ ⊗₁ Δ) ≈ λ⇐ ⊗₁ λ⇐
+      step3 = sym ⊗.homomorphism ○ ⊗.F-resp-≈ (sym δ-identityˡ , sym δ-identityˡ)
+
+      lawˡ : λ⇐ ≈ (δ′ ⊗₁ id) ∘ Δ {X ⊗₀ Y}
+      lawˡ = sym (begin
+        (δ′ ⊗₁ id) ∘ Δ                                              ≈˘⟨ refl⟩∘⟨ preserves-interchange ⟩
+        (δ′ ⊗₁ id) ∘ swapInner.from ∘ (Δ ⊗₁ Δ)                      ≈⟨ step1 ⟩∘⟨refl ⟩
+        ((λ⇒ ⊗₁ id) ∘ ((δ ⊗₁ δ) ⊗₁ id)) ∘ swapInner.from ∘ (Δ ⊗₁ Δ) ≈⟨ assoc ⟩
+        (λ⇒ ⊗₁ id) ∘ ((δ ⊗₁ δ) ⊗₁ id) ∘ swapInner.from ∘ (Δ ⊗₁ Δ)   ≈⟨ refl⟩∘⟨ pullˡ step2 ⟩
+        (λ⇒ ⊗₁ id) ∘ (swapInner.from ∘ ((δ ⊗₁ id) ⊗₁ (δ ⊗₁ id))) ∘ (Δ ⊗₁ Δ)
+                                                                    ≈⟨ refl⟩∘⟨ assoc ⟩
+        (λ⇒ ⊗₁ id) ∘ swapInner.from ∘ ((δ ⊗₁ id) ⊗₁ (δ ⊗₁ id)) ∘ (Δ ⊗₁ Δ)
+                                                                    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ step3 ⟩
+        (λ⇒ ⊗₁ id) ∘ swapInner.from ∘ (λ⇐ ⊗₁ λ⇐)                    ≈⟨ swapInner-unitˡ⁻¹ ⟩
+        λ⇐                                                          ∎)
+
+      lawʳ : ρ⇐ ≈ (id ⊗₁ δ′) ∘ Δ {X ⊗₀ Y}
+      lawʳ = sym (begin
+        (id ⊗₁ δ′) ∘ Δ      ≈˘⟨ refl⟩∘⟨ cocommutative ⟩
+        (id ⊗₁ δ′) ∘ σ⇒ ∘ Δ ≈˘⟨ extendʳ σ⇒-comm ⟩
+        σ⇒ ∘ (δ′ ⊗₁ id) ∘ Δ ≈˘⟨ refl⟩∘⟨ lawˡ ⟩
+        σ⇒ ∘ λ⇐             ≈˘⟨ braiding-selfInverse ⟩∘⟨refl ⟩
+        σ⇐ ∘ λ⇐             ≈⟨ braiding-coherence-inv ⟩
+        ρ⇐                  ∎)
