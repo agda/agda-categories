@@ -191,6 +191,16 @@ braiding-coherence-σ = switch-fromtoˡ unitorˡ braiding-coherence
 braiding-coherence-σ′ : σ⇒ {unit} {X} ≈ ρ⇐ ∘ λ⇒
 braiding-coherence-σ′ = switch-fromtoˡ unitorʳ braiding-coherence′
 
+-- Braiding the unit past itself does nothing: the two solved forms above agree
+-- at X = unit, where Kelly's coherence₃ collapses the composite.
+
+braiding-unit : σ⇒ {unit} {unit} ≈ id
+braiding-unit = begin
+  σ⇒      ≈⟨ braiding-coherence-σ ⟩
+  λ⇐ ∘ ρ⇒ ≈˘⟨ refl⟩∘⟨ coherence₃ ⟩
+  λ⇐ ∘ λ⇒ ≈⟨ unitorˡ.isoˡ ⟩
+  id      ∎
+
 -- The inverse of the braiding is also a braiding on M.
 
 inv-Braided : Braided M

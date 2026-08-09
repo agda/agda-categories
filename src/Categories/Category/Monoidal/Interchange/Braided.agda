@@ -15,7 +15,7 @@ open import Data.Product using (_,_)
 import Categories.Category.Construction.Core C as Core
 import Categories.Category.Monoidal.Construction.Product as MonoidalProduct
 open import Categories.Category.Monoidal.Braided.Properties as BraidedProps
-  using (braiding-coherence; inv-Braided; inv-braiding-coherence)
+  using (braiding-coherence; braiding-unit; inv-Braided; inv-braiding-coherence)
 open import Categories.Category.Monoidal.Interchange using (HasInterchange)
 open import Categories.Category.Monoidal.Properties using (module Kelly's)
 import Categories.Category.Monoidal.Reasoning as MonoidalReasoning
@@ -372,6 +372,22 @@ swapInner-unitʳ = begin
     (id ⊗₁ ρ⇒ ∘ α⇒ ∘ id ⊗₁ λ⇒) ∘ id ⊗₁ λ⇐                    ≈⟨ (sym-assoc ○ (Kelly's.coherence₂ M ⟩∘⟨refl )) ⟩∘⟨refl ⟩
     (ρ⇒ ∘ id ⊗₁ λ⇒) ∘ id ⊗₁ λ⇐                                ≈⟨ cancelʳ (_≅_.isoʳ (idᵢ ⊗ᵢ unitorˡ)) ⟩
     ρ⇒                                                         ∎
+
+-- When both middle factors are the unit, there is nothing to interchange.
+
+swapInner-unit : i⇒ {W} {unit} {unit} {Z} ≈ id
+swapInner-unit = begin
+  i⇒                                               ≈⟨ swapInner-expand ⟩
+  α⇐ ∘ (id ⊗₁ α⇒) ∘ (id ⊗₁ ((σ⇒ ⊗₁ id) ∘ α⇐)) ∘ α⇒ ≈⟨ refl⟩∘⟨ refl⟩∘⟨ inner ⟩∘⟨refl ⟩
+  α⇐ ∘ (id ⊗₁ α⇒) ∘ (id ⊗₁ α⇐) ∘ α⇒                ≈⟨ refl⟩∘⟨ collapse ⟩
+  α⇐ ∘ α⇒                                          ≈⟨ α.isoˡ ⟩
+  id                                               ∎
+  where
+    inner : id ⊗₁ ((σ⇒ ⊗₁ id) ∘ α⇐) ≈ id ⊗₁ α⇐
+    inner = refl⟩⊗⟨ elimˡ (braiding-unit B ⟩⊗⟨refl ○ ⊗.identity)
+
+    collapse : (id ⊗₁ α⇒) ∘ (id ⊗₁ α⇐) ∘ α⇒ ≈ α⇒
+    collapse = pullˡ (⊗-cancel identity² α.isoʳ) ○ identityˡ
 
 -- Two different ways of swapping things around are the same
 private
