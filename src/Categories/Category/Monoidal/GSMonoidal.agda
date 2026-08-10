@@ -43,7 +43,7 @@ record GSMonoidal : Set (suc (o ⊔ ℓ ⊔ e)) where
   open Shorthands
   open Categories.Category.Monoidal.Properties monoidal
     using (monoidal-Op; coherence-inv₃)
-  open MorphismReasoning 𝒞 using (cancelˡ; pullˡ; extendʳ)
+  open MorphismReasoning 𝒞 using (cancelˡ; elimˡ; pullˡ; pullʳ; extendʳ)
 
   field
     isComonoid : ∀ X → IsMonoid (monoidal-Op) X
@@ -181,3 +181,54 @@ record GSMonoidal : Set (suc (o ⊔ ℓ ⊔ e)) where
         σ⇒ ∘ λ⇐             ≈˘⟨ braiding-selfInverse ⟩∘⟨refl ⟩
         σ⇐ ∘ λ⇐             ≈⟨ braiding-coherence-inv ⟩
         ρ⇐                  ∎)
+
+  -- Each of the two conditions holds of the identity and is closed under
+  -- composition and under the tensor, so the morphisms satisfying either form
+  -- a wide subcategory closed under `⊗`.  Whether the coherence maps satisfy
+  -- them is a further question, not answered here.
+
+  Total-id : ∀ {X} → Total (id {X})
+  Total-id = identityʳ
+
+  Total-∘ : ∀ {X Y Z} {f : Y ⇒ Z} {g : X ⇒ Y} → Total f → Total g → Total (f ∘ g)
+  Total-∘ total-f total-g = sym-assoc ○ (total-f ⟩∘⟨refl) ○ total-g
+    where open HomReasoning
+
+  Total-⊗ : ∀ {X Y Z W} {f : X ⇒ Y} {g : Z ⇒ W} →
+            Total f → Total g → Total (f ⊗₁ g)
+  Total-⊗ total-f total-g =
+      (δ-⊗ ⟩∘⟨refl)
+    ○ pullʳ (sym ⊗.homomorphism)
+    ○ (refl⟩∘⟨ ⊗.F-resp-≈ (total-f , total-g))
+    ○ sym δ-⊗
+    where open HomReasoning
+          open Equiv
+
+  Deterministic-id : ∀ {X} → Deterministic (id {X})
+  Deterministic-id = identityʳ ○ sym (elimˡ ⊗.identity)
+    where open HomReasoning
+          open Equiv
+
+  Deterministic-∘ : ∀ {X Y Z} {f : Y ⇒ Z} {g : X ⇒ Y} →
+                    Deterministic f → Deterministic g → Deterministic (f ∘ g)
+  Deterministic-∘ det-f det-g =
+      sym-assoc
+    ○ (det-f ⟩∘⟨refl)
+    ○ assoc
+    ○ (refl⟩∘⟨ det-g)
+    ○ sym-assoc
+    ○ (sym ⊗.homomorphism ⟩∘⟨refl)
+    where open HomReasoning
+          open Equiv
+
+  Deterministic-⊗ : ∀ {X Y Z W} {f : X ⇒ Y} {g : Z ⇒ W} →
+                    Deterministic f → Deterministic g → Deterministic (f ⊗₁ g)
+  Deterministic-⊗ det-f det-g =
+      (sym preserves-interchange ⟩∘⟨refl)
+    ○ pullʳ (sym ⊗.homomorphism)
+    ○ (refl⟩∘⟨ ⊗.F-resp-≈ (det-f , det-g))
+    ○ (refl⟩∘⟨ ⊗.homomorphism)
+    ○ extendʳ swapInner-natural
+    ○ (refl⟩∘⟨ preserves-interchange)
+    where open HomReasoning
+          open Equiv

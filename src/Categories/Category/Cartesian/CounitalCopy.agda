@@ -9,9 +9,11 @@ open import Categories.Category.Cartesian using (Cartesian)
 --
 -- Counital copy categories are the gs-monoidal ones whose comultiplication is
 -- natural, so this is Cartesian.GSMonoidal plus that one law, and the law is
--- two rewrites already in Categories.Category.BinaryProducts.  The counit is
--- natural as well, by !-unique₂, and that is the remaining step from counital
--- copy back to cartesian.
+-- two rewrites already in Categories.Category.BinaryProducts.
+--
+-- Every morphism being deterministic is what counital copy adds to gs-monoidal;
+-- every morphism being total is `Cartesian.GSMonoidal.total`.  The two together
+-- are the whole distance from gs-monoidal back to cartesian.
 
 module Categories.Category.Cartesian.CounitalCopy
   {o ℓ e} (𝒞 : Category o ℓ e) (cartesian : Cartesian 𝒞) where
@@ -22,18 +24,20 @@ open HomReasoning
 open import Categories.Category.Cartesian.GSMonoidal using (gsMonoidal)
 open import Categories.Category.Cartesian.SymmetricMonoidal using (symmetric)
 open import Categories.Category.Monoidal.CounitalCopy using (CounitalCopy)
+open import Categories.Category.Monoidal.GSMonoidal using (GSMonoidal)
 
 private
   variable
     A B : Obj
 
 open Cartesian cartesian using (_×₁_; Δ; Δ∘; ×₁∘Δ)
+open GSMonoidal (gsMonoidal 𝒞 cartesian) using (Deterministic)
 
-Δ-natural : (f : A ⇒ B) → Δ ∘ f ≈ (f ×₁ f) ∘ Δ
-Δ-natural _ = Δ∘ ○ ⟺ ×₁∘Δ
+deterministic : (f : A ⇒ B) → Deterministic f
+deterministic _ = Δ∘ ○ ⟺ ×₁∘Δ
 
 counitalCopy : CounitalCopy (symmetric 𝒞 cartesian)
 counitalCopy = record
   { gsMonoidal = gsMonoidal 𝒞 cartesian
-  ; natural    = Δ-natural
+  ; natural    = deterministic
   }

@@ -109,3 +109,12 @@ gsMonoidal = record
   ; cocommutative = cocomm
   ; preserves     = preserves
   }
+
+-- Every morphism is total, the counit being the terminal map.  Half the
+-- distance from gs-monoidal back to cartesian; the other half is that every
+-- morphism is deterministic, which is Cartesian.CounitalCopy.
+
+open GSMonoidal gsMonoidal using (Total)
+
+total : (f : A ⇒ B) → Total f
+total _ = !-unique₂
