@@ -13,8 +13,6 @@ module Categories.Category.Instance.GSMonoidals where
 
 open import Level
 
-open import Relation.Binary using (IsEquivalence)
-
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Helper using (categoryHelper)
 open import Categories.Category.Monoidal.GSMonoidal.Bundle using (GSMonoidalCategory)
@@ -22,6 +20,7 @@ open import Categories.Category.Monoidal.GSMonoidal.Bundle using (GSMonoidalCate
 import Categories.Functor.Monoidal.GSMonoidal as GSMF
 open import Categories.Functor.Monoidal.GSMonoidal.Properties
   using (idF-GSMonoidal; ∘-GSMonoidal; idF-StrongGSMonoidal; ∘-StrongGSMonoidal)
+import Categories.NaturalTransformation.NaturalIsomorphism.Monoidal.GSMonoidal as GSNI
 import Categories.NaturalTransformation.NaturalIsomorphism.Monoidal.Symmetric as SMNI
 
 module _ o ℓ e where
@@ -30,7 +29,7 @@ module _ o ℓ e where
   GSMonoidals = categoryHelper record
     { Obj       = GSMonoidalCategory o ℓ e
     ; _⇒_       = GSMF.Lax.GSMonoidalFunctor
-    ; _≈_       = λ F G → SMF F ≃ SMF G
+    ; _≈_       = GSNI.Lax._≃_
     ; id        = idF-GSMonoidal _
     ; _∘_       = ∘-GSMonoidal
     -- NOTE: as in Categories.Category.Instance.Monoidals, the η-expanded
@@ -38,11 +37,7 @@ module _ o ℓ e where
     ; assoc     = λ {_ _ _ _ F G H} → associator {F = SMF F} {SMF G} {SMF H}
     ; identityˡ = λ {_ _ F} → unitorˡ {F = SMF F}
     ; identityʳ = λ {_ _ F} → unitorʳ {F = SMF F}
-    ; equiv     = record
-      { refl  = IsEquivalence.refl  isEquivalence
-      ; sym   = IsEquivalence.sym   isEquivalence
-      ; trans = IsEquivalence.trans isEquivalence
-      }
+    ; equiv     = GSNI.Lax.isEquivalence
     ; ∘-resp-≈  = _ⓘₕ_
     }
     where
@@ -54,17 +49,13 @@ module _ o ℓ e where
   StrongGSMonoidals = categoryHelper record
     { Obj       = GSMonoidalCategory o ℓ e
     ; _⇒_       = GSMF.Strong.GSMonoidalFunctor
-    ; _≈_       = λ F G → SMF F ≃ SMF G
+    ; _≈_       = GSNI.Strong._≃_
     ; id        = idF-StrongGSMonoidal _
     ; _∘_       = ∘-StrongGSMonoidal
     ; assoc     = λ {_ _ _ _ F G H} → associator {F = SMF F} {SMF G} {SMF H}
     ; identityˡ = λ {_ _ F} → unitorˡ {F = SMF F}
     ; identityʳ = λ {_ _ F} → unitorʳ {F = SMF F}
-    ; equiv     = record
-      { refl  = IsEquivalence.refl  isEquivalence
-      ; sym   = IsEquivalence.sym   isEquivalence
-      ; trans = IsEquivalence.trans isEquivalence
-      }
+    ; equiv     = GSNI.Strong.isEquivalence
     ; ∘-resp-≈  = _ⓘₕ_
     }
     where
