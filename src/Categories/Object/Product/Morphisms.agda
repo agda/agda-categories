@@ -20,8 +20,7 @@ private
     A B C D E F : Obj
     f f′ g g′ h i : A ⇒ B
 
-infix 10 [_]⟨_,_⟩ [_⇒_]_×_
-infix 12 [[_]] [_]π₁ [_]π₂
+infix 10 [_⇒_]_×_
 
 [[_]] : Product A B → Obj
 [[ p ]] = Product.A×B p

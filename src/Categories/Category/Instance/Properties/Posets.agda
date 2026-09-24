@@ -171,8 +171,6 @@ module Products where
     π₂ : (A × B) ⇒ B
     π₂ = mkPosetHomo _ _ Prod.proj₂ Prod.proj₂
 
-    infix 11 ⟨_,_⟩
-
     ⟨_,_⟩ : C ⇒ A → C ⇒ B → C ⇒ (A × B)
     ⟨ f , g ⟩ = mkPosetHomo _ _ < ⟦ f ⟧ , ⟦ g ⟧ > < mono f , mono g >
 

@@ -45,7 +45,7 @@ record BinaryProducts : Set (levelOfTerm 𝒞) where
   ×-assoc : X × Y × Z ≅ (X × Y) × Z
   ×-assoc = Associative product product product product
 
-  open product renaming (⟨_,_⟩ to infix 11 ⟨_,_⟩) public
+  open product public
 
   _×₁_ : A ⇒ B → C ⇒ D → A × C ⇒ B × D
   f ×₁ g = [ product ⇒ product ] f × g

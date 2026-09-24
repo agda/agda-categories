@@ -20,8 +20,6 @@ private
 -- Borrowed from Dan Doel's definition of products
 record Product (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
 
-  infix 10 ⟨_,_⟩
-
   field
     A×B   : Obj
     π₁    : A×B ⇒ A
@@ -50,7 +48,6 @@ record Product (A B : Obj) : Set (o ⊔ ℓ ⊔ e) where
   unique′ eq₁ eq₂ = trans (sym (unique eq₁ eq₂)) g-η
 
 record IsProduct {A B P} (π₁ : P ⇒ A) (π₂ : P ⇒ B) : Set (o ⊔ ℓ ⊔ e) where
-  infix 10 ⟨_,_⟩
 
   field
     ⟨_,_⟩ : C ⇒ A → C ⇒ B → C ⇒ P

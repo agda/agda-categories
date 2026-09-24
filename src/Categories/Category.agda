@@ -38,7 +38,6 @@ module Definitions (𝓒 : Category o ℓ e) where
 module Commutation (𝓒 : Category o ℓ e) where
   open Category 𝓒
 
-  infix 1 [_⇒_]⟨_≈_⟩
   [_⇒_]⟨_≈_⟩ : ∀ (A B : Obj) → A ⇒ B → A ⇒ B → Set _
   [ A ⇒ B ]⟨ f ≈ g ⟩ = f ≈ g
 

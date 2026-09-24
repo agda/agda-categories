@@ -26,7 +26,6 @@ private
   module MR′ {X Y} = MR (hom X Y)
 
 record Product (A B : Obj) : Set (o ⊔ ℓ ⊔ e ⊔ t) where
-  infix 10 ⟨_,_⟩₁ ⟨_,_⟩₂
   field
     A×B : Obj
     πa : A×B ⇒₁ A

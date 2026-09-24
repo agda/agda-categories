@@ -80,7 +80,6 @@ record HasFinCatShape (n : ℕ) (∣_⇒_∣ : Fin n → Fin n → ℕ) : Set wh
   ⇒-UIP = Decidable⇒UIP.≡-irrelevant ⇒-≟
 
 record FinCatShape : Set where
-  infix 9 ∣_⇒_∣
 
   field
     size     : ℕ
