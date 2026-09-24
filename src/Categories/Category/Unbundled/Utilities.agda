@@ -68,7 +68,6 @@ module _ {Obj : Set o} (C : Category Obj ℓ e) where
     _⟩∘⟨refl = _⟩∘⟨ Equiv.refl
 
     -- convenient inline versions
-    infix 2 ⟺
     infixr 3 _○_
     ⟺ : {f g : A ⇒ B} → f ≈ g → g ≈ f
     ⟺ = Equiv.sym

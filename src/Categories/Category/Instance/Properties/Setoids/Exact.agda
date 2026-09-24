@@ -59,7 +59,6 @@ module _ ℓ where
     private
       module X = Setoid X using (refl; sym; trans; _≈_)
     -- convenient inline versions
-    infix 2 ⟺
     infixr 3 _○_
     ⟺ : {x₁ x₂ : ∣ X ∣} → x₁ X.≈ x₂ → x₂ X.≈ x₁
     ⟺ = Setoid.sym X

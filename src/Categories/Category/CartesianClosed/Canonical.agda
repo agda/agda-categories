@@ -43,7 +43,6 @@ private
 record CartesianClosed : Set (levelOfTerm 𝒞) where
   infixr 7 _×_
   infixr 9 _^_
-  infix 10 ⟨_,_⟩
 
   field
 
