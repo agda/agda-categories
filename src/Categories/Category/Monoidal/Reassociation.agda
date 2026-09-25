@@ -37,6 +37,9 @@ private
   α⇒ ∘ (α⇐ ∘ λ⇐)    ≈⟨ cancelˡ associator.isoʳ ⟩
   λ⇐                ∎
 
+λ⇒-α⇐ : id {X} ⊗₁ λ⇒ {Y} ≈ (ρ⇒ ⊗₁ id) ∘ α⇐
+λ⇒-α⇐ = switch-fromtoʳ associator triangle
+
 ρ⇒-assoc : ρ⇒ ∘ α⇐ {X} {Y} {unit} ≈ id ⊗₁ ρ⇒
 ρ⇒-assoc = ⟺ (switch-fromtoʳ associator coherence₂)
 
