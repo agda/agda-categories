@@ -14,14 +14,14 @@ open import Categories.Category.Product
 import Categories.Category.Construction.Core as Core
 open import Categories.Functor renaming (id to idF)
 open import Categories.Functor.Bifunctor using (Bifunctor; appˡ; appʳ)
-open import Categories.Functor.Properties using ([_]-resp-≅)
+open import Categories.Functor.Properties using ([_]-resp-Iso; [_]-resp-≅)
 open import Categories.NaturalTransformation renaming (id to idN)
 open import Categories.NaturalTransformation.NaturalIsomorphism
   hiding (unitorˡ; unitorʳ; associator; _≃_)
 
 open import Categories.Morphism.Isomorphism C using (lift-triangle′; lift-pentagon′)
 open import Categories.Morphism.Reasoning C
-import Categories.Morphism C as Morphism
+open import Categories.Morphism C as Morphism using (Iso)
 
 private
   module C = Category C
@@ -112,6 +112,13 @@ associator-naturalIsomorphism = record
 module unitorˡ-natural = NaturalIsomorphism unitorˡ-naturalIsomorphism
 module unitorʳ-natural = NaturalIsomorphism unitorʳ-naturalIsomorphism
 module associator-natural = NaturalIsomorphism associator-naturalIsomorphism
+
+⊗-resp-Iso : Iso f g → Iso h i → Iso (f ⊗₁ h) (g ⊗₁ i)
+⊗-resp-Iso a b = [ ⊗ ]-resp-Iso record
+  { isoˡ = isoˡ a , isoˡ b
+  ; isoʳ = isoʳ a , isoʳ b
+  }
+  where open Iso
 
 infixr 10 _⊗ᵢ_
 
