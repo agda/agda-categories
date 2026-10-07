@@ -10,6 +10,7 @@ module Categories.Morphism.Normal {o ℓ e} (𝒞 : Category o ℓ e) (𝒞-Zero
 open import Level
 
 open import Categories.Object.Kernel 𝒞-Zero
+open import Categories.Object.Cokernel 𝒞-Zero
 open import Categories.Object.Kernel.Properties 𝒞-Zero
 open import Categories.Morphism 𝒞
 
@@ -32,3 +33,18 @@ record NormalMonomorphism (K A : Obj) : Set (o ⊔ ℓ ⊔ e) where
     isNormalMonomorphism : IsNormalMonomorphism mor
 
   open IsNormalMonomorphism isNormalMonomorphism public
+
+record IsNormalEpimorphism {B K : Obj} (k : B ⇒ K) : Set (o ⊔ ℓ ⊔ e) where
+  field
+    {A} : Obj
+    arr : A ⇒ B
+    isCokernel : IsCokernel arr k
+
+  open IsCokernel isCokernel public
+
+record NormalEpimorphism (B K : Obj) : Set (o ⊔ ℓ ⊔ e) where
+  field
+    mor : B ⇒ K
+    isNormalEpimorphism : IsNormalEpimorphism mor
+
+  open IsNormalEpimorphism isNormalEpimorphism public
