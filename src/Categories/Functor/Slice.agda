@@ -78,19 +78,19 @@ module _ {A : Obj} where
 
       module pb {B} (f : B ⇒ A) = Pullback (pb′ f)
 
-      abstract
-        lemma : ∀ {B B′} {f : B ⇒ A} {g : B′ ⇒ A} {h : B ⇒ B′} → g ∘ h ≈ f → λg (g ∘ eval) ∘ λg (h ∘ eval) ∘ pb.p₁ f ≈ id′ ∘ pb.p₂ f
-        lemma {f = f} {g = g} {h = h} △ = begin
-          λg (g ∘ eval) ∘ λg (h ∘ eval) ∘ pb.p₁ f         ≈⟨ pullˡ (subst ○ λ-cong assoc) ⟩
-          λg (g ∘ eval ∘ first (λg (h ∘ eval))) ∘ pb.p₁ f ≈⟨ λ-cong (∘-resp-≈ʳ β) ⟩∘⟨refl ⟩
-          λg (g ∘ h ∘ eval) ∘ pb.p₁ f                     ≈⟨ λ-cong (pullˡ △) ⟩∘⟨refl ⟩
-          λg (f ∘ eval) ∘ pb.p₁ f                         ≈⟨ pb.commute f ⟩
-          id′ ∘ pb.p₂ f                                   ∎
+    abstract
+      InternalSections-lemma : ∀ {B B′} {f : B ⇒ A} {g : B′ ⇒ A} {h : B ⇒ B′} → g ∘ h ≈ f → λg (g ∘ eval) ∘ λg (h ∘ eval) ∘ pb.p₁ f ≈ id′ ∘ pb.p₂ f
+      InternalSections-lemma {f = f} {g = g} {h = h} △ = begin
+        λg (g ∘ eval) ∘ λg (h ∘ eval) ∘ pb.p₁ f         ≈⟨ pullˡ (subst ○ λ-cong assoc) ⟩
+        λg (g ∘ eval ∘ first (λg (h ∘ eval))) ∘ pb.p₁ f ≈⟨ λ-cong (∘-resp-≈ʳ β) ⟩∘⟨refl ⟩
+        λg (g ∘ h ∘ eval) ∘ pb.p₁ f                     ≈⟨ λ-cong (pullˡ △) ⟩∘⟨refl ⟩
+        λg (f ∘ eval) ∘ pb.p₁ f                         ≈⟨ pb.commute f ⟩
+        id′ ∘ pb.p₂ f                                   ∎
 
     InternalSections : Functor (Slice A) C
     InternalSections = record
       { F₀ = λ (sliceobj f) → pb.P f
-      ; F₁ = λ (slicearr △) → pb.universal _ (lemma △)
+      ; F₁ = λ (slicearr △) → pb.universal _ (InternalSections-lemma △)
       ; identity = sym $ pb.unique _ identity-lemma identityʳ
       ; homomorphism = λ {_} {_} {_} {(slicearr △)} {(slicearr ▲)} → sym $ pb.unique _ (homomorphism-lemma₁ △ ▲) (homomorphism-lemma₂ △ ▲)
       ; F-resp-≈ = λ eq → pb.universal-resp-≈ _ (∘-resp-≈ˡ (λ-cong (∘-resp-≈ˡ eq))) refl
@@ -104,14 +104,17 @@ module _ {A : Obj} where
           λg (id ∘ eval) ∘ pb.p₁ _ ∎
 
         homomorphism-lemma₁ : ∀ {B B′ B″} {f : B ⇒ A} {f′ : B′ ⇒ A} {f″ : B″ ⇒ A} {h : B ⇒ B′} {h′ : B′ ⇒ B″} (△ : f′ ∘ h ≈ f) (▲ : f″ ∘ h′ ≈ f′)
-                            → pb.p₁ f″ ∘ pb.universal f″ (lemma ▲) ∘ pb.universal f′ (lemma △)
+                            → pb.p₁ f″ ∘ pb.universal f″ (InternalSections-lemma ▲) ∘ pb.universal f′ (InternalSections-lemma △)
                             ≈ λg ((h′ ∘ h) ∘ eval) ∘ pb.p₁ f
         homomorphism-lemma₁ △ ▲ = begin
-          pb.p₁ _ ∘ pb.universal _ (lemma ▲) ∘ pb.universal _ (lemma △) ≈⟨ glue′ (pb.p₁∘universal≈h₁ _) (pb.p₁∘universal≈h₁ _) ⟩
-          (λg (_ ∘ eval) ∘ λg (_ ∘ eval)) ∘ pb.p₁ _                     ≈⟨ (subst ○ λ-cong (extendˡ β)) ⟩∘⟨refl ⟩
-          λg (_ ∘ eval) ∘ pb.p₁ _                                       ∎
+          pb.p₁ _ ∘ pb.universal _ (InternalSections-lemma ▲) ∘ pb.universal _ (InternalSections-lemma △)
+            ≈⟨ glue′ (pb.p₁∘universal≈h₁ _) (pb.p₁∘universal≈h₁ _) ⟩
+          (λg (_ ∘ eval) ∘ λg (_ ∘ eval)) ∘ pb.p₁ _
+            ≈⟨ (subst ○ λ-cong (extendˡ β)) ⟩∘⟨refl ⟩
+          λg (_ ∘ eval) ∘ pb.p₁ _
+            ∎
 
         homomorphism-lemma₂ : ∀ {B B′ B″} {f : B ⇒ A} {f′ : B′ ⇒ A} {f″ : B″ ⇒ A} {h : B ⇒ B′} {h′ : B′ ⇒ B″} (△ : f′ ∘ h ≈ f) (▲ : f″ ∘ h′ ≈ f′)
-                            → pb.p₂ f″ ∘ pb.universal f″ (lemma ▲) ∘ pb.universal f′ (lemma △) ≈ pb.p₂ f
+                            → pb.p₂ f″ ∘ pb.universal f″ (InternalSections-lemma ▲) ∘ pb.universal f′ (InternalSections-lemma △) ≈ pb.p₂ f
         homomorphism-lemma₂ △ ▲ = glueTrianglesʳ (pb.p₂∘universal≈h₂ _) (pb.p₂∘universal≈h₂ _)
 
