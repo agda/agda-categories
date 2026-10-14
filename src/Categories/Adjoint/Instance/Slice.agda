@@ -77,17 +77,18 @@ module _ {A : Obj} (cc : CartesianClosed) (pb : ∀ {X Y Z} {f : X ⇒ Z} {g : Y
         λg (π₂ ∘ first !)                ≈⟨ subst ⟨
         λg π₂ ∘ !                        ∎
 
-    unit-commute-lemma : ∀ {X Y} (f : X ⇒ Y)
-                        → pb.p₁ π₂ ∘ pb.universal π₂ (unit-η-lemma Y) ∘ f
-                        ≈ pb.p₁ π₂ ∘ pb.universal π₂ (InternalSections-lemma cc pb (project₂ ○ identityˡ)) ∘ pb.universal π₂ (unit-η-lemma X)
-    unit-commute-lemma f =  begin
-      pb.p₁ π₂ ∘ pb.universal π₂ _ ∘ f                   ≈⟨ pullˡ (pb.p₁∘universal≈h₁ π₂) ⟩
-      λg id ∘ f                                          ≈⟨ subst ○ λ-cong identityˡ ⟩
-      λg (first f)                                       ≈⟨ λ-cong (introʳ β) ⟩
-      λg (first f ∘ eval ∘ first (λg id))                ≈⟨ subst ○ λ-cong assoc ⟨
-      λg (first f ∘ eval) ∘ λg id                        ≈⟨ refl⟩∘⟨ pb.p₁∘universal≈h₁ π₂ ⟨
-      λg (first f ∘ eval) ∘ pb.p₁ π₂ ∘ pb.universal π₂ _ ≈⟨ extendʳ (pb.p₁∘universal≈h₁ π₂) ⟨
-      pb.p₁ π₂ ∘ pb.universal π₂ _ ∘ pb.universal π₂ _   ∎
+    abstract
+      unit-commute-lemma : ∀ {X Y} (f : X ⇒ Y)
+                         → pb.p₁ π₂ ∘ pb.universal π₂ (unit-η-lemma Y) ∘ f
+                         ≈ pb.p₁ π₂ ∘ pb.universal π₂ (InternalSections-lemma cc pb (project₂ {h = f ∘ π₁} ○ identityˡ)) ∘ pb.universal π₂ (unit-η-lemma X)
+      unit-commute-lemma f =  begin
+        pb.p₁ π₂ ∘ pb.universal π₂ _ ∘ f                   ≈⟨ pullˡ (pb.p₁∘universal≈h₁ π₂) ⟩
+        λg id ∘ f                                          ≈⟨ subst ○ λ-cong identityˡ ⟩
+        λg (first f)                                       ≈⟨ λ-cong (introʳ β) ⟩
+        λg (first f ∘ eval ∘ first (λg id))                ≈⟨ subst ○ λ-cong assoc ⟨
+        λg (first f ∘ eval) ∘ λg id                        ≈⟨ refl⟩∘⟨ pb.p₁∘universal≈h₁ π₂ ⟨
+        λg (first f ∘ eval) ∘ pb.p₁ π₂ ∘ pb.universal π₂ _ ≈⟨ extendʳ (pb.p₁∘universal≈h₁ π₂) ⟨
+        pb.p₁ π₂ ∘ pb.universal π₂ _ ∘ pb.universal π₂ _   ∎
 
     abstract
       counit-η-lemma : ∀ {Y} (f : Y ⇒ A) → λg (f ∘ eval ∘ first (pb.p₁ f)) ≈ λg π₂
@@ -98,16 +99,17 @@ module _ {A : Obj} (cc : CartesianClosed) (pb : ∀ {X Y Z} {f : X ⇒ Z} {g : Y
         λg (π₂ ∘ first (pb.p₂ f))       ≈⟨ λ-cong π₂∘first ⟩
         λg π₂                           ∎
 
-    zag-lemma : ∀ {B} {f : B ⇒ A}
-               → pb.p₁ f ∘ pb.universal f (InternalSections-lemma cc pb (λ-inj (counit-η-lemma f))) ∘ pb.universal π₂ (unit-η-lemma (pb.P f))
-               ≈ pb.p₁ f ∘ id
-    zag-lemma {f = f} = begin
-      pb.p₁ f ∘ pb.universal f _ ∘ pb.universal π₂ _                      ≈⟨ extendʳ (pb.p₁∘universal≈h₁ f) ⟩
-      λg ((eval ∘ first (pb.p₁ f)) ∘ eval) ∘ pb.p₁ π₂ ∘ pb.universal π₂ _ ≈⟨ refl⟩∘⟨ pb.p₁∘universal≈h₁ π₂ ⟩
-      λg ((eval ∘ first (pb.p₁ f)) ∘ eval) ∘ λg id                        ≈⟨ subst ○ λ-cong (cancelʳ β) ⟩
-      λg (eval ∘ first (pb.p₁ f))                                         ≈⟨ η-exp ⟩
-      pb.p₁ f                                                             ≈⟨ identityʳ ⟨
-      pb.p₁ f ∘ id                                                        ∎
+    abstract
+      zag-lemma : ∀ {B} {f : B ⇒ A}
+                → pb.p₁ f ∘ pb.universal f (InternalSections-lemma cc pb (λ-inj (counit-η-lemma f))) ∘ pb.universal π₂ (unit-η-lemma (pb.P f))
+                ≈ pb.p₁ f ∘ id
+      zag-lemma {f = f} = begin
+        pb.p₁ f ∘ pb.universal f _ ∘ pb.universal π₂ _                      ≈⟨ extendʳ (pb.p₁∘universal≈h₁ f) ⟩
+        λg ((eval ∘ first (pb.p₁ f)) ∘ eval) ∘ pb.p₁ π₂ ∘ pb.universal π₂ _ ≈⟨ refl⟩∘⟨ pb.p₁∘universal≈h₁ π₂ ⟩
+        λg ((eval ∘ first (pb.p₁ f)) ∘ eval) ∘ λg id                        ≈⟨ subst ○ λ-cong (cancelʳ β) ⟩
+        λg (eval ∘ first (pb.p₁ f))                                         ≈⟨ η-exp ⟩
+        pb.p₁ f                                                             ≈⟨ identityʳ ⟨
+        pb.p₁ f ∘ id                                                        ∎
 
   ConstantFamily⊣InternalSections : ConstantFamily {A} product ⊣ InternalSections cc pb
   ConstantFamily⊣InternalSections = record

@@ -12,6 +12,7 @@ open import Categories.Diagram.Pullback C using (Pullback; unglue; Pullback-resp
 open import Categories.Functor using (Functor)
 open import Categories.Functor.Properties using ([_]-resp-∘)
 open import Categories.Morphism.Reasoning C
+open import Categories.NaturalTransformation.NaturalIsomorphism using (_≃_; niHelper)
 open import Categories.Object.Product C
 open import Categories.Object.Terminal C
 
@@ -64,6 +65,22 @@ module _ {A : Obj} where
       ; F-resp-≈ = λ f≈g → ⟨⟩-cong₂ (∘-resp-≈ˡ f≈g) refl
       }
 
+  -- the choice of product is irrelevant
+  abstract
+    ConstantFamily-prop : (product₁ product₂ : {X : Obj} → Product X A) → ConstantFamily product₁ ≃ ConstantFamily product₂
+    ConstantFamily-prop p₁ p₂ = niHelper record
+      { η = λ X → slicearr (Product.project₂ p₂)
+      ; η⁻¹ = λ X → slicearr (Product.project₂ p₁)
+      ; commute = λ f → begin
+        repack p₁ p₂ ∘ [ p₁ ⇒ p₁ ] f ×id ≈⟨ [ p₁ ⇒ p₁ ⇒ p₂ ]repack∘× ⟩
+        [ p₁ ⇒ p₂ ] f ×id                ≈⟨ [ p₂ ⇒ p₂ ]×∘⟨⟩ ⟨
+        [ p₂ ⇒ p₂ ] f ×id ∘ repack p₁ p₂ ∎
+      ; iso = λ X → record
+        { isoˡ = repack-cancel p₂ p₁
+        ; isoʳ = repack-cancel p₁ p₂
+        }
+      }
+
   module _ (cartesianClosed : CartesianClosed) (pb : ∀ {X Y Z} {f : X ⇒ Z} {g : Y ⇒ Z} → Pullback f g)  where
 
     open CartesianClosed cartesianClosed
@@ -96,23 +113,25 @@ module _ {A : Obj} where
       ; F-resp-≈ = λ eq → pb.universal-resp-≈ _ (∘-resp-≈ˡ (λ-cong (∘-resp-≈ˡ eq))) refl
       }
       where
-        identity-lemma : ∀ {B} {f : B ⇒ A} → pb.p₁ f ∘ id ≈ λg (id ∘ eval) ∘ pb.p₁ f
-        identity-lemma = begin
-          pb.p₁ _ ∘ id             ≈⟨ identityʳ ⟩
-          pb.p₁ _                  ≈⟨ introˡ η-id ⟩
-          λg eval ∘ pb.p₁ _        ≈⟨ λ-cong identityˡ ⟩∘⟨refl ⟨
-          λg (id ∘ eval) ∘ pb.p₁ _ ∎
+        abstract 
+          identity-lemma : ∀ {B} {f : B ⇒ A} → pb.p₁ f ∘ id ≈ λg (id ∘ eval) ∘ pb.p₁ f
+          identity-lemma = begin
+            pb.p₁ _ ∘ id             ≈⟨ identityʳ ⟩
+            pb.p₁ _                  ≈⟨ introˡ η-id ⟩
+            λg eval ∘ pb.p₁ _        ≈⟨ λ-cong identityˡ ⟩∘⟨refl ⟨
+            λg (id ∘ eval) ∘ pb.p₁ _ ∎
 
-        homomorphism-lemma₁ : ∀ {B B′ B″} {f : B ⇒ A} {f′ : B′ ⇒ A} {f″ : B″ ⇒ A} {h : B ⇒ B′} {h′ : B′ ⇒ B″} (△ : f′ ∘ h ≈ f) (▲ : f″ ∘ h′ ≈ f′)
-                            → pb.p₁ f″ ∘ pb.universal f″ (InternalSections-lemma ▲) ∘ pb.universal f′ (InternalSections-lemma △)
-                            ≈ λg ((h′ ∘ h) ∘ eval) ∘ pb.p₁ f
-        homomorphism-lemma₁ △ ▲ = begin
-          pb.p₁ _ ∘ pb.universal _ (InternalSections-lemma ▲) ∘ pb.universal _ (InternalSections-lemma △)
-            ≈⟨ glue′ (pb.p₁∘universal≈h₁ _) (pb.p₁∘universal≈h₁ _) ⟩
-          (λg (_ ∘ eval) ∘ λg (_ ∘ eval)) ∘ pb.p₁ _
-            ≈⟨ (subst ○ λ-cong (extendˡ β)) ⟩∘⟨refl ⟩
-          λg (_ ∘ eval) ∘ pb.p₁ _
-            ∎
+        abstract
+          homomorphism-lemma₁ : ∀ {B B′ B″} {f : B ⇒ A} {f′ : B′ ⇒ A} {f″ : B″ ⇒ A} {h : B ⇒ B′} {h′ : B′ ⇒ B″} (△ : f′ ∘ h ≈ f) (▲ : f″ ∘ h′ ≈ f′)
+                              → pb.p₁ f″ ∘ pb.universal f″ (InternalSections-lemma ▲) ∘ pb.universal f′ (InternalSections-lemma △)
+                              ≈ λg ((h′ ∘ h) ∘ eval) ∘ pb.p₁ f
+          homomorphism-lemma₁ △ ▲ = begin
+            pb.p₁ _ ∘ pb.universal _ (InternalSections-lemma ▲) ∘ pb.universal _ (InternalSections-lemma △)
+              ≈⟨ glue′ (pb.p₁∘universal≈h₁ _) (pb.p₁∘universal≈h₁ _) ⟩
+            (λg (_ ∘ eval) ∘ λg (_ ∘ eval)) ∘ pb.p₁ _
+              ≈⟨ (subst ○ λ-cong (extendˡ β)) ⟩∘⟨refl ⟩
+            λg (_ ∘ eval) ∘ pb.p₁ _
+              ∎
 
         homomorphism-lemma₂ : ∀ {B B′ B″} {f : B ⇒ A} {f′ : B′ ⇒ A} {f″ : B″ ⇒ A} {h : B ⇒ B′} {h′ : B′ ⇒ B″} (△ : f′ ∘ h ≈ f) (▲ : f″ ∘ h′ ≈ f′)
                             → pb.p₂ f″ ∘ pb.universal f″ (InternalSections-lemma ▲) ∘ pb.universal f′ (InternalSections-lemma △) ≈ pb.p₂ f
