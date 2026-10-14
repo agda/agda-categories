@@ -15,7 +15,7 @@ open import Categories.Functor.Slice.BaseChange C using (BaseChange!; BaseChange
 
 open Category C
 
-module _ {A B : Obj} (f : B ⇒ A) (pullback : ∀ {C} {h : C ⇒ A} → Pullback f h) where
+module _ {A B : Obj} (f : B ⇒ A) (pullback : ∀ {C} {h : C ⇒ A} → Pullback h f) where
 
   !⊣* : BaseChange! f ⊣ BaseChange* f pullback
   !⊣* = C≅D.L⊣R (slice-slice≃slice f) ∘⊣ TotalSpace⊣ConstantFamily (Slice A) (pullback⇒product pullback)

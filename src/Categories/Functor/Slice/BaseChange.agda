@@ -20,5 +20,5 @@ module _ {A B : Obj} (f : B ⇒ A) where
 
   -- Any morphism which admits pullbacks induces a functor the other way between slices.
   -- This is adjoint to BaseChange!: see Categories.Adjoint.Instance.BaseChange.
-  BaseChange* : (∀ {C} {h : C ⇒ A} → Pullback f h) → Functor (Slice A) (Slice B)
+  BaseChange* : (∀ {C} {h : C ⇒ A} → Pullback h f) → Functor (Slice A) (Slice B)
   BaseChange* pullback = slice-slice⇒slice f ∘F ConstantFamily (Slice A) (pullback⇒product pullback)

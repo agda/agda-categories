@@ -16,7 +16,7 @@ open HomReasoning
 open SliceObj
 open Slice⇒
 
-module _ {A : Obj} (product : ∀ {X} → Product A X) where
+module _ {A : Obj} (product : ∀ {X} → Product X A) where
 
   private
     module product {X} = Product (product {X})
@@ -25,22 +25,22 @@ module _ {A : Obj} (product : ∀ {X} → Product A X) where
   TotalSpace⊣ConstantFamily : TotalSpace ⊣ ConstantFamily product
   TotalSpace⊣ConstantFamily = record
     { unit = ntHelper record
-      { η = λ _ → slicearr project₁
+      { η = λ _ → slicearr project₂
       ; commute = λ {X} {Y} f → begin
-        ⟨ arr Y , id ⟩ ∘ h f                            ≈⟨ ∘-distribʳ-⟨⟩ ⟩
-        ⟨ arr Y ∘ h f , id ∘ h f ⟩                      ≈⟨ ⟨⟩-cong₂ (△ f) identityˡ ⟩
-        ⟨ arr X , h f ⟩                                 ≈˘⟨ ⟨⟩-cong₂ identityˡ identityʳ ⟩
-        ⟨ id ∘ arr X , h f ∘ id ⟩                       ≈˘⟨ [ product ⇒ product ]×∘⟨⟩ ⟩
-        [ product ⇒ product ] id × h f ∘ ⟨ arr X , id ⟩ ∎
+        ⟨ id , arr Y ⟩ ∘ h f                            ≈⟨ ∘-distribʳ-⟨⟩ ⟩
+        ⟨ id ∘ h f , arr Y ∘ h f ⟩                      ≈⟨ ⟨⟩-cong₂ identityˡ (△ f) ⟩
+        ⟨ h f , arr X ⟩                                 ≈˘⟨ ⟨⟩-cong₂ identityʳ identityˡ ⟩
+        ⟨ h f ∘ id , id ∘ arr X ⟩                       ≈˘⟨ [ product ⇒ product ]×∘⟨⟩ ⟩
+        [ product ⇒ product ] h f × id ∘ ⟨ id , arr X ⟩ ∎
       }
     ; counit = ntHelper record
-      { η = λ _ → π₂
-      ; commute = λ _ → project₂
+      { η = λ _ → π₁
+      ; commute = λ _ → project₁
       }
-    ; zig = project₂
+    ; zig = project₁
     ; zag = begin
-      [ product ⇒ product ]id× π₂ ∘ ⟨ π₁ , id ⟩ ≈⟨ [ product ⇒ product ]×∘⟨⟩ ⟩
-      ⟨ id ∘ π₁ , π₂ ∘ id ⟩                     ≈⟨ ⟨⟩-cong₂ identityˡ identityʳ ⟩
-      ⟨ π₁ , π₂ ⟩                               ≈⟨ η ⟩
-      id                                        ∎
+      [ product ⇒ product ] π₁ ×id ∘ ⟨ id , π₂ ⟩ ≈⟨ [ product ⇒ product ]×∘⟨⟩ ⟩
+      ⟨ π₁ ∘ id , id ∘ π₂ ⟩                      ≈⟨ ⟨⟩-cong₂ identityʳ identityˡ ⟩
+      ⟨ π₁ , π₂ ⟩                                ≈⟨ η ⟩
+      id                                         ∎
     }

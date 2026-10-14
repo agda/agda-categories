@@ -48,7 +48,7 @@ module _ {A : Obj} where
     ; F-resp-≈     = id→
     }
 
-  module _ (product : {X : Obj} → Product A X) where
+  module _ (product : {X : Obj} → Product X A) where
 
     private
       module product {X} = Product (product {X})
@@ -57,11 +57,11 @@ module _ {A : Obj} where
     -- this is adapted from proposition 1.33 of Aspects of Topoi (Freyd, 1972)
     ConstantFamily : Functor C (Slice A)
     ConstantFamily = record
-      { F₀ = λ _ → sliceobj π₁
-      ; F₁ = λ f → slicearr ([ product ⇒ product ]π₁∘× ○ identityˡ)
+      { F₀ = λ X → sliceobj {Y = A×B {X}} π₂
+      ; F₁ = λ f → slicearr ([ product ⇒ product ]π₂∘× ○ identityˡ)
       ; identity = id×id product
-      ; homomorphism = sym [ product ⇒ product ⇒ product ]id×∘id×
-      ; F-resp-≈ = λ f≈g → ⟨⟩-cong₂ refl (∘-resp-≈ˡ f≈g)
+      ; homomorphism = sym [ product ⇒ product ⇒ product ]×id∘×id
+      ; F-resp-≈ = λ f≈g → ⟨⟩-cong₂ (∘-resp-≈ˡ f≈g) refl
       }
 
   module _ (cartesianClosed : CartesianClosed) (pb : ∀ {X Y Z} {f : X ⇒ Z} {g : Y ⇒ Z} → Pullback f g)  where
