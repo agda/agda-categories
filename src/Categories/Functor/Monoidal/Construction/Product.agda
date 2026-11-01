@@ -37,63 +37,63 @@ private
     open ⊗-Util monoidal using (module Shorthands)
     open Shorthands public
 
-module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o₂ ℓ₂ e₂} where
+module MC {D₁ : MonoidalCategory o₁ ℓ₁ e₁}
+          {D₂ : MonoidalCategory o₂ ℓ₂ e₂} where
 
   open MonoidalCategory using (U)
   private D₁×D₂ = Product-MonoidalCategory D₁ D₂
 
   -- Pairing for monoidal categories is a monoidal functor
 
-  module _ {C : MonoidalCategory o ℓ e}
-           {F : Functor (U C) (U D₁)} {G : Functor (U C) (U D₂)} where
+  module ※ {C : MonoidalCategory o ℓ e} where
 
-    ※-IsMonoidalFunctor : IsMonoidalFunctor C D₁ F →
-                          IsMonoidalFunctor C D₂ G →
-                          IsMonoidalFunctor C D₁×D₂ (F ※ G)
-    ※-IsMonoidalFunctor FM GM = record
-      { ε         = FM.ε , GM.ε
-      ; ⊗-homo    = ntHelper record
-        { η       = λ XY → FM.⊗-homo.η XY , GM.⊗-homo.η XY
-        ; commute = λ fg → FM.⊗-homo.commute fg , GM.⊗-homo.commute fg
-        }
-      ; associativity = FM.associativity , GM.associativity
-      ; unitaryˡ      = FM.unitaryˡ , GM.unitaryˡ
-      ; unitaryʳ      = FM.unitaryʳ , GM.unitaryʳ
-      }
-      where
-        module FM = IsMonoidalFunctor FM
-        module GM = IsMonoidalFunctor GM
+    module _ {F : Functor (U C) (U D₁)} {G : Functor (U C) (U D₂)} where
 
-    ※-IsStrongMonoidalFunctor : IsStrongMonoidalFunctor C D₁ F →
-                                IsStrongMonoidalFunctor C D₂ G →
-                                IsStrongMonoidalFunctor C D₁×D₂ (F ※ G)
-    ※-IsStrongMonoidalFunctor FM GM = record
-      { ε         = record
-        { from    = FM.ε.from , GM.ε.from
-        ; to      = FM.ε.to   , GM.ε.to
-        ; iso     = record
-          { isoˡ  = FM.ε.isoˡ , GM.ε.isoˡ
-          ; isoʳ  = FM.ε.isoʳ , GM.ε.isoʳ
+      ※-IsMonoidalFunctor : IsMonoidalFunctor C D₁ F →
+                            IsMonoidalFunctor C D₂ G →
+                            IsMonoidalFunctor C D₁×D₂ (F ※ G)
+      ※-IsMonoidalFunctor FM GM = record
+        { ε         = FM.ε , GM.ε
+        ; ⊗-homo    = ntHelper record
+          { η       = λ XY → FM.⊗-homo.η XY , GM.⊗-homo.η XY
+          ; commute = λ fg → FM.⊗-homo.commute fg , GM.⊗-homo.commute fg
           }
+        ; associativity = FM.associativity , GM.associativity
+        ; unitaryˡ      = FM.unitaryˡ , GM.unitaryˡ
+        ; unitaryʳ      = FM.unitaryʳ , GM.unitaryʳ
         }
-      ; ⊗-homo    = niHelper record
-        { η       = < FM.⊗-homo.⇒.η , GM.⊗-homo.⇒.η >
-        ; η⁻¹     = < FM.⊗-homo.⇐.η , GM.⊗-homo.⇐.η >
-        ; commute = < FM.⊗-homo.⇒.commute , GM.⊗-homo.⇒.commute >
-        ; iso     = λ XY → record
-          { isoˡ  = FM.⊗-homo.iso.isoˡ XY , GM.⊗-homo.iso.isoˡ XY
-          ; isoʳ  = FM.⊗-homo.iso.isoʳ XY , GM.⊗-homo.iso.isoʳ XY
-          }
-        }
-      ; associativity = FM.associativity , GM.associativity
-      ; unitaryˡ      = FM.unitaryˡ , GM.unitaryˡ
-      ; unitaryʳ      = FM.unitaryʳ , GM.unitaryʳ
-      }
-      where
-        module FM = IsStrongMonoidalFunctor FM
-        module GM = IsStrongMonoidalFunctor GM
+        where
+          module FM = IsMonoidalFunctor FM
+          module GM = IsMonoidalFunctor GM
 
-  module _ {C : MonoidalCategory o ℓ e} where
+      ※-IsStrongMonoidalFunctor : IsStrongMonoidalFunctor C D₁ F →
+                                  IsStrongMonoidalFunctor C D₂ G →
+                                  IsStrongMonoidalFunctor C D₁×D₂ (F ※ G)
+      ※-IsStrongMonoidalFunctor FM GM = record
+        { ε         = record
+          { from    = FM.ε.from , GM.ε.from
+          ; to      = FM.ε.to   , GM.ε.to
+          ; iso     = record
+            { isoˡ  = FM.ε.isoˡ , GM.ε.isoˡ
+            ; isoʳ  = FM.ε.isoʳ , GM.ε.isoʳ
+            }
+          }
+        ; ⊗-homo    = niHelper record
+          { η       = < FM.⊗-homo.⇒.η , GM.⊗-homo.⇒.η >
+          ; η⁻¹     = < FM.⊗-homo.⇐.η , GM.⊗-homo.⇐.η >
+          ; commute = < FM.⊗-homo.⇒.commute , GM.⊗-homo.⇒.commute >
+          ; iso     = λ XY → record
+            { isoˡ  = FM.⊗-homo.iso.isoˡ XY , GM.⊗-homo.iso.isoˡ XY
+            ; isoʳ  = FM.⊗-homo.iso.isoʳ XY , GM.⊗-homo.iso.isoʳ XY
+            }
+          }
+        ; associativity = FM.associativity , GM.associativity
+        ; unitaryˡ      = FM.unitaryˡ , GM.unitaryˡ
+        ; unitaryʳ      = FM.unitaryʳ , GM.unitaryʳ
+        }
+        where
+          module FM = IsStrongMonoidalFunctor FM
+          module GM = IsStrongMonoidalFunctor GM
 
     ※-MonoidalFunctor : MonoidalFunctor C D₁ → MonoidalFunctor C D₂ →
                         MonoidalFunctor C D₁×D₂
@@ -231,65 +231,63 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
   -- The cartesian product of two monoidal functors is again a
   -- monoidal functor
 
-  module _ {C₁ : MonoidalCategory o′₁ ℓ′₁ e′₁}
-           {C₂ : MonoidalCategory o′₂ ℓ′₂ e′₂}
-           {F : Functor (U C₁) (U D₁)} {G : Functor (U C₂) (U D₂)} where
-    private C₁×C₂ = Product-MonoidalCategory C₁ C₂
-
-    ⁂-IsMonoidalFunctor : IsMonoidalFunctor C₁ D₁ F →
-                          IsMonoidalFunctor C₂ D₂ G →
-                          IsMonoidalFunctor C₁×C₂ D₁×D₂ (F ⁂ G)
-    ⁂-IsMonoidalFunctor FM GM = record
-      { ε         = FM.ε , GM.ε
-      ; ⊗-homo    = ntHelper record
-        { η       = λ ((X₁ , X₂) , (Y₁ , Y₂)) →
-                    FM.⊗-homo.η (X₁ , Y₁) , GM.⊗-homo.η (X₂ , Y₂)
-        ; commute = λ ((f₁ , f₂) , (g₁ , g₂)) →
-                    FM.⊗-homo.commute (f₁ , g₁) , GM.⊗-homo.commute (f₂ , g₂)
-        }
-      ; associativity = FM.associativity , GM.associativity
-      ; unitaryˡ      = FM.unitaryˡ , GM.unitaryˡ
-      ; unitaryʳ      = FM.unitaryʳ , GM.unitaryʳ
-      }
-      where
-        module FM = IsMonoidalFunctor FM
-        module GM = IsMonoidalFunctor GM
-
-    ⁂-IsStrongMonoidalFunctor : IsStrongMonoidalFunctor C₁ D₁ F →
-                                IsStrongMonoidalFunctor C₂ D₂ G →
-                                IsStrongMonoidalFunctor C₁×C₂ D₁×D₂ (F ⁂ G)
-    ⁂-IsStrongMonoidalFunctor FM GM = record
-      { ε         = record
-        { from    = FM.ε.from , GM.ε.from
-        ; to      = FM.ε.to   , GM.ε.to
-        ; iso     = record
-          { isoˡ  = FM.ε.isoˡ , GM.ε.isoˡ
-          ; isoʳ  = FM.ε.isoʳ , GM.ε.isoʳ
-          }
-        }
-      ; ⊗-homo    = niHelper record
-        { η       = λ ((X₁ , X₂) , (Y₁ , Y₂)) →
-                    FM.⊗-homo.⇒.η (X₁ , Y₁) , GM.⊗-homo.⇒.η (X₂ , Y₂)
-        ; η⁻¹     = λ ((X₁ , X₂) , (Y₁ , Y₂)) →
-                    FM.⊗-homo.⇐.η (X₁ , Y₁) , GM.⊗-homo.⇐.η (X₂ , Y₂)
-        ; commute = λ ((f₁ , f₂) , (g₁ , g₂)) →
-                    FM.⊗-homo.⇒.commute (f₁ , g₁) , GM.⊗-homo.⇒.commute (f₂ , g₂)
-        ; iso     = λ ((X₁ , X₂) , (Y₁ , Y₂)) → record
-          { isoˡ  = FM.⊗-homo.iso.isoˡ (X₁ , Y₁) , GM.⊗-homo.iso.isoˡ (X₂ , Y₂)
-          ; isoʳ  = FM.⊗-homo.iso.isoʳ (X₁ , Y₁) , GM.⊗-homo.iso.isoʳ (X₂ , Y₂)
-          }
-        }
-      ; associativity = FM.associativity , GM.associativity
-      ; unitaryˡ      = FM.unitaryˡ , GM.unitaryˡ
-      ; unitaryʳ      = FM.unitaryʳ , GM.unitaryʳ
-      }
-      where
-        module FM = IsStrongMonoidalFunctor FM
-        module GM = IsStrongMonoidalFunctor GM
-
-  module _ {C₁ : MonoidalCategory o′₁ ℓ′₁ e′₁}
+  module ⁂ {C₁ : MonoidalCategory o′₁ ℓ′₁ e′₁}
            {C₂ : MonoidalCategory o′₂ ℓ′₂ e′₂} where
+
     private C₁×C₂ = Product-MonoidalCategory C₁ C₂
+
+    module _ {F : Functor (U C₁) (U D₁)} {G : Functor (U C₂) (U D₂)} where
+
+      ⁂-IsMonoidalFunctor : IsMonoidalFunctor C₁ D₁ F →
+                            IsMonoidalFunctor C₂ D₂ G →
+                            IsMonoidalFunctor C₁×C₂ D₁×D₂ (F ⁂ G)
+      ⁂-IsMonoidalFunctor FM GM = record
+        { ε         = FM.ε , GM.ε
+        ; ⊗-homo    = ntHelper record
+          { η       = λ ((X₁ , X₂) , (Y₁ , Y₂)) →
+                      FM.⊗-homo.η (X₁ , Y₁) , GM.⊗-homo.η (X₂ , Y₂)
+          ; commute = λ ((f₁ , f₂) , (g₁ , g₂)) →
+                      FM.⊗-homo.commute (f₁ , g₁) , GM.⊗-homo.commute (f₂ , g₂)
+          }
+        ; associativity = FM.associativity , GM.associativity
+        ; unitaryˡ      = FM.unitaryˡ , GM.unitaryˡ
+        ; unitaryʳ      = FM.unitaryʳ , GM.unitaryʳ
+        }
+        where
+          module FM = IsMonoidalFunctor FM
+          module GM = IsMonoidalFunctor GM
+
+      ⁂-IsStrongMonoidalFunctor : IsStrongMonoidalFunctor C₁ D₁ F →
+                                  IsStrongMonoidalFunctor C₂ D₂ G →
+                                  IsStrongMonoidalFunctor C₁×C₂ D₁×D₂ (F ⁂ G)
+      ⁂-IsStrongMonoidalFunctor FM GM = record
+        { ε         = record
+          { from    = FM.ε.from , GM.ε.from
+          ; to      = FM.ε.to   , GM.ε.to
+          ; iso     = record
+            { isoˡ  = FM.ε.isoˡ , GM.ε.isoˡ
+            ; isoʳ  = FM.ε.isoʳ , GM.ε.isoʳ
+            }
+          }
+        ; ⊗-homo    = niHelper record
+          { η       = λ ((X₁ , X₂) , (Y₁ , Y₂)) →
+                      FM.⊗-homo.⇒.η (X₁ , Y₁) , GM.⊗-homo.⇒.η (X₂ , Y₂)
+          ; η⁻¹     = λ ((X₁ , X₂) , (Y₁ , Y₂)) →
+                      FM.⊗-homo.⇐.η (X₁ , Y₁) , GM.⊗-homo.⇐.η (X₂ , Y₂)
+          ; commute = λ ((f₁ , f₂) , (g₁ , g₂)) →
+                      FM.⊗-homo.⇒.commute (f₁ , g₁) , GM.⊗-homo.⇒.commute (f₂ , g₂)
+          ; iso     = λ ((X₁ , X₂) , (Y₁ , Y₂)) → record
+            { isoˡ  = FM.⊗-homo.iso.isoˡ (X₁ , Y₁) , GM.⊗-homo.iso.isoˡ (X₂ , Y₂)
+            ; isoʳ  = FM.⊗-homo.iso.isoʳ (X₁ , Y₁) , GM.⊗-homo.iso.isoʳ (X₂ , Y₂)
+            }
+          }
+        ; associativity = FM.associativity , GM.associativity
+        ; unitaryˡ      = FM.unitaryˡ , GM.unitaryˡ
+        ; unitaryʳ      = FM.unitaryʳ , GM.unitaryʳ
+        }
+        where
+          module FM = IsStrongMonoidalFunctor FM
+          module GM = IsStrongMonoidalFunctor GM
 
     ⁂-MonoidalFunctor : MonoidalFunctor C₁ D₁ → MonoidalFunctor C₂ D₂ →
                         MonoidalFunctor C₁×C₂ D₁×D₂
@@ -306,8 +304,14 @@ module _ {D₁ : MonoidalCategory o₁ ℓ₁ e₁} {D₂ : MonoidalCategory o�
       }
       where open StrongMonoidalFunctor using (isStrongMonoidal)
 
-module _ {D₁ : BraidedMonoidalCategory o₁ ℓ₁ e₁}
-         {D₂ : BraidedMonoidalCategory o₂ ℓ₂ e₂} where
+module BMC {D₁ : BraidedMonoidalCategory o₁ ℓ₁ e₁}
+           {D₂ : BraidedMonoidalCategory o₂ ℓ₂ e₂} where
+
+  private
+    module D₁ = BraidedMonoidalCategory D₁ renaming (monoidalCategory to mc)
+    module D₂ = BraidedMonoidalCategory D₂ renaming (monoidalCategory to mc)
+
+  open MC {D₁ = D₁.mc} {D₂.mc} renaming (module ※ to MC-※; module ⁂ to MC-⁂)
 
   open BMF
   open BraidedMonoidalCategory using (U)
@@ -316,30 +320,34 @@ module _ {D₁ : BraidedMonoidalCategory o₁ ℓ₁ e₁}
   -- Pairing for braided monoidal categories is a braided monoidal
   -- functor
 
-  module _ {C : BraidedMonoidalCategory o ℓ e}
-           {F : Functor (U C) (U D₁)} {G : Functor (U C) (U D₂)} where
+  module ※ {C : BraidedMonoidalCategory o ℓ e} where
 
-    ※-IsBraidedMonoidalFunctor : Lax.IsBraidedMonoidalFunctor C D₁ F →
-                                 Lax.IsBraidedMonoidalFunctor C D₂ G →
-                                 Lax.IsBraidedMonoidalFunctor C D₁×D₂ (F ※ G)
-    ※-IsBraidedMonoidalFunctor FB GB = record
-      { isMonoidal      = ※-IsMonoidalFunctor (isMonoidal FB) (isMonoidal GB)
-      ; braiding-compat = (braiding-compat FB) , (braiding-compat GB)
-      }
-      where open Lax.IsBraidedMonoidalFunctor
+    private
+      module C = BraidedMonoidalCategory C renaming (monoidalCategory to mc)
 
-    ※-IsStrongBraidedMonoidalFunctor :
-      Strong.IsBraidedMonoidalFunctor C D₁ F →
-      Strong.IsBraidedMonoidalFunctor C D₂ G →
-      Strong.IsBraidedMonoidalFunctor C D₁×D₂ (F ※ G)
-    ※-IsStrongBraidedMonoidalFunctor FB GB = record
-      { isStrongMonoidal =
-        ※-IsStrongMonoidalFunctor (isStrongMonoidal FB) (isStrongMonoidal GB)
-      ; braiding-compat  = (braiding-compat FB) , (braiding-compat GB)
-      }
-      where open Strong.IsBraidedMonoidalFunctor
+    open MC-※ {C = C.mc}
 
-  module _ {C : BraidedMonoidalCategory o ℓ e} where
+    module _ {F : Functor (U C) (U D₁)} {G : Functor (U C) (U D₂)} where
+
+      ※-IsBraidedMonoidalFunctor : Lax.IsBraidedMonoidalFunctor C D₁ F →
+                                   Lax.IsBraidedMonoidalFunctor C D₂ G →
+                                   Lax.IsBraidedMonoidalFunctor C D₁×D₂ (F ※ G)
+      ※-IsBraidedMonoidalFunctor FB GB = record
+        { isMonoidal      = ※-IsMonoidalFunctor (isMonoidal FB) (isMonoidal GB)
+        ; braiding-compat = (braiding-compat FB) , (braiding-compat GB)
+        }
+        where open Lax.IsBraidedMonoidalFunctor
+
+      ※-IsStrongBraidedMonoidalFunctor :
+        Strong.IsBraidedMonoidalFunctor C D₁ F →
+        Strong.IsBraidedMonoidalFunctor C D₂ G →
+        Strong.IsBraidedMonoidalFunctor C D₁×D₂ (F ※ G)
+      ※-IsStrongBraidedMonoidalFunctor FB GB = record
+        { isStrongMonoidal =
+          ※-IsStrongMonoidalFunctor (isStrongMonoidal FB) (isStrongMonoidal GB)
+        ; braiding-compat  = (braiding-compat FB) , (braiding-compat GB)
+        }
+        where open Strong.IsBraidedMonoidalFunctor
 
     ※-BraidedMonoidalFunctor : Lax.BraidedMonoidalFunctor C D₁ →
                                Lax.BraidedMonoidalFunctor C D₂ →
@@ -407,34 +415,38 @@ module _ {D₁ : BraidedMonoidalCategory o₁ ℓ₁ e₁}
   -- The cartesian product of two braided monoidal functors is again a
   -- braided monoidal functor
 
-  module _ {C₁ : BraidedMonoidalCategory o′₁ ℓ′₁ e′₁}
-           {C₂ : BraidedMonoidalCategory o′₂ ℓ′₂ e′₂}
-           {F : Functor (U C₁) (U D₁)} {G : Functor (U C₂) (U D₂)} where
-    private C₁×C₂ = Product-BraidedMonoidalCategory C₁ C₂
-
-    ⁂-IsBraidedMonoidalFunctor : Lax.IsBraidedMonoidalFunctor C₁ D₁ F →
-                                 Lax.IsBraidedMonoidalFunctor C₂ D₂ G →
-                                 Lax.IsBraidedMonoidalFunctor C₁×C₂ D₁×D₂ (F ⁂ G)
-    ⁂-IsBraidedMonoidalFunctor FB GB = record
-      { isMonoidal      = ⁂-IsMonoidalFunctor (isMonoidal FB) (isMonoidal GB)
-      ; braiding-compat = braiding-compat FB , braiding-compat GB
-      }
-      where open Lax.IsBraidedMonoidalFunctor
-
-    ⁂-IsStrongBraidedMonoidalFunctor :
-      Strong.IsBraidedMonoidalFunctor C₁ D₁ F →
-      Strong.IsBraidedMonoidalFunctor C₂ D₂ G →
-      Strong.IsBraidedMonoidalFunctor C₁×C₂ D₁×D₂ (F ⁂ G)
-    ⁂-IsStrongBraidedMonoidalFunctor FB GB = record
-      { isStrongMonoidal =
-        ⁂-IsStrongMonoidalFunctor (isStrongMonoidal FB) (isStrongMonoidal GB)
-      ; braiding-compat  = braiding-compat FB , braiding-compat GB
-      }
-      where open Strong.IsBraidedMonoidalFunctor
-
-  module _ {C₁ : BraidedMonoidalCategory o′₁ ℓ′₁ e′₁}
+  module ⁂ {C₁ : BraidedMonoidalCategory o′₁ ℓ′₁ e′₁}
            {C₂ : BraidedMonoidalCategory o′₂ ℓ′₂ e′₂} where
+
+    private
+      module C₁ = BraidedMonoidalCategory C₁ renaming (monoidalCategory to mc)
+      module C₂ = BraidedMonoidalCategory C₂ renaming (monoidalCategory to mc)
+
+    open MC-⁂ {C₁ = C₁.mc} {C₂.mc}
+
     private C₁×C₂ = Product-BraidedMonoidalCategory C₁ C₂
+
+    module _ {F : Functor (U C₁) (U D₁)} {G : Functor (U C₂) (U D₂)} where
+
+      ⁂-IsBraidedMonoidalFunctor : Lax.IsBraidedMonoidalFunctor C₁ D₁ F →
+                                   Lax.IsBraidedMonoidalFunctor C₂ D₂ G →
+                                   Lax.IsBraidedMonoidalFunctor C₁×C₂ D₁×D₂ (F ⁂ G)
+      ⁂-IsBraidedMonoidalFunctor FB GB = record
+        { isMonoidal      = ⁂-IsMonoidalFunctor (isMonoidal FB) (isMonoidal GB)
+        ; braiding-compat = braiding-compat FB , braiding-compat GB
+        }
+        where open Lax.IsBraidedMonoidalFunctor
+
+      ⁂-IsStrongBraidedMonoidalFunctor :
+        Strong.IsBraidedMonoidalFunctor C₁ D₁ F →
+        Strong.IsBraidedMonoidalFunctor C₂ D₂ G →
+        Strong.IsBraidedMonoidalFunctor C₁×C₂ D₁×D₂ (F ⁂ G)
+      ⁂-IsStrongBraidedMonoidalFunctor FB GB = record
+        { isStrongMonoidal =
+          ⁂-IsStrongMonoidalFunctor (isStrongMonoidal FB) (isStrongMonoidal GB)
+        ; braiding-compat  = braiding-compat FB , braiding-compat GB
+        }
+        where open Strong.IsBraidedMonoidalFunctor
 
     ⁂-BraidedMonoidalFunctor : Lax.BraidedMonoidalFunctor C₁ D₁ →
                                Lax.BraidedMonoidalFunctor C₂ D₂ →
@@ -455,18 +467,27 @@ module _ {D₁ : BraidedMonoidalCategory o₁ ℓ₁ e₁}
       }
       where open Strong.BraidedMonoidalFunctor
 
-module _ {D₁ : SymmetricMonoidalCategory o₁ ℓ₁ e₁}
-         {D₂ : SymmetricMonoidalCategory o₂ ℓ₂ e₂} where
+module SMC {D₁ : SymmetricMonoidalCategory o₁ ℓ₁ e₁}
+           {D₂ : SymmetricMonoidalCategory o₂ ℓ₂ e₂} where
+
+  private
+    module D₁ = SymmetricMonoidalCategory D₁ renaming (braidedMonoidalCategory to bmc)
+    module D₂ = SymmetricMonoidalCategory D₂ renaming (braidedMonoidalCategory to bmc)
+
+  open BMC {D₁ = D₁.bmc} {D₂.bmc} renaming (module ※ to BMC-※; module ⁂ to BMC-⁂)
 
   open SMF
-  open SymmetricMonoidalCategory using (U)
-    renaming (braidedMonoidalCategory to B)
   private D₁×D₂ = Product-SymmetricMonoidalCategory D₁ D₂
 
   -- Pairing for symmetric monoidal categories is a symmetric monoidal
   -- functor
 
-  module _ {C : SymmetricMonoidalCategory o ℓ e} where
+  module ※ {C : SymmetricMonoidalCategory o ℓ e} where
+
+    private
+      module C = SymmetricMonoidalCategory C renaming (braidedMonoidalCategory to bmc)
+
+    open BMC-※ {C = C.bmc}
 
     ※-SymmetricMonoidalFunctor : Lax.SymmetricMonoidalFunctor C D₁ →
                                  Lax.SymmetricMonoidalFunctor C D₂ →
@@ -492,7 +513,7 @@ module _ {D₁ : SymmetricMonoidalCategory o₁ ℓ₁ e₁}
 
   πˡ-StrongSymmetricMonoidalFunctor : Strong.SymmetricMonoidalFunctor D₁×D₂ D₁
   πˡ-StrongSymmetricMonoidalFunctor = record
-    { isBraidedMonoidal = πˡ-IsStrongBraidedMonoidalFunctor {D₂ = B D₂} }
+    { isBraidedMonoidal = πˡ-IsStrongBraidedMonoidalFunctor }
 
   πˡ-SymmetricMonoidalFunctor : Lax.SymmetricMonoidalFunctor D₁×D₂ D₁
   πˡ-SymmetricMonoidalFunctor =
@@ -501,7 +522,7 @@ module _ {D₁ : SymmetricMonoidalCategory o₁ ℓ₁ e₁}
 
   πʳ-StrongSymmetricMonoidalFunctor : Strong.SymmetricMonoidalFunctor D₁×D₂ D₂
   πʳ-StrongSymmetricMonoidalFunctor = record
-    { isBraidedMonoidal = πʳ-IsStrongBraidedMonoidalFunctor {D₁ = B D₁} }
+    { isBraidedMonoidal = πʳ-IsStrongBraidedMonoidalFunctor }
 
   πʳ-SymmetricMonoidalFunctor : Lax.SymmetricMonoidalFunctor D₁×D₂ D₂
   πʳ-SymmetricMonoidalFunctor =
@@ -511,8 +532,15 @@ module _ {D₁ : SymmetricMonoidalCategory o₁ ℓ₁ e₁}
   -- The cartesian product of two symmetric monoidal functors is again a
   -- symmetric monoidal functor
 
-  module _ {C₁ : SymmetricMonoidalCategory o′₁ ℓ′₁ e′₁}
+  module ⁂ {C₁ : SymmetricMonoidalCategory o′₁ ℓ′₁ e′₁}
            {C₂ : SymmetricMonoidalCategory o′₂ ℓ′₂ e′₂} where
+
+    private
+      module C₁ = SymmetricMonoidalCategory C₁ renaming (braidedMonoidalCategory to bmc)
+      module C₂ = SymmetricMonoidalCategory C₂ renaming (braidedMonoidalCategory to bmc)
+
+    open BMC-⁂ {C₁ = C₁.bmc} {C₂.bmc}
+
     private C₁×C₂ = Product-SymmetricMonoidalCategory C₁ C₂
 
     ⁂-SymmetricMonoidalFunctor : Lax.SymmetricMonoidalFunctor C₁ D₁ →
@@ -533,3 +561,13 @@ module _ {D₁ : SymmetricMonoidalCategory o₁ ℓ₁ e₁}
                                          (isBraidedMonoidal GB)
       }
       where open Strong.SymmetricMonoidalFunctor
+
+open MC public hiding (module ※; module ⁂)
+open BMC public hiding (module ※; module ⁂)
+open SMC public hiding (module ※; module ⁂)
+open MC.※ public
+open BMC.※ public
+open SMC.※ public
+open MC.⁂ public
+open BMC.⁂ public
+open SMC.⁂ public
