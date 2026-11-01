@@ -134,72 +134,20 @@ module _ {o ℓ e o′ ℓ′ e′ o″ ℓ″ e″} {C : Category o′ ℓ′ e
     ConesGd {d} = X ∘F Cod {A = One} {B = C} {C = D} (const d) F
 
     R-identity : {d : D.Obj} → R₁ {d} D.id E.≈ E.id
-    R-identity {d} = G.terminal.⊤-id ConeArr
-        where
-        open E
-        module G = Limit (Com (G d))
-        ConeArr : Cone⇒ (ConesGd {d}) G.limit G.limit
-        ConeArr = record
-          { arr = R₁ D.id
-          ; commute = λ {Z} → begin
-            G.proj Z ∘ R₁ D.id  ≈⟨ proj-red Z D.id ⟩
-            G.proj (↙⇒ Z D.id) ≈⟨ proj≈ (D.Equiv.trans D.identityˡ D.identityʳ) ⟩
-            G.proj Z            ∎
-          }
+    R-identity {d} = Limit.proj-unique (⊤Gd d) λ K →
+      proj-red K D.id ○ proj≈ (D.Equiv.trans D.identityˡ D.identityʳ) ○ ⟺ E.identityʳ
 
     R-hom : {Y Z W : D.Obj} {f : D [ Y , Z ]} {g : D [ Z , W ]} → E [ R₁ (D [ g ∘ f ]) ≈ E [ R₁ g ∘ R₁ f ] ]
-    R-hom {Y} {Z} {W} {f} {g} = terminal.!-unique₂ (⊤Gd W) {A = cc} {f = f⇒} {g = g⇒}
-      where
-      module ⊤GY = Cone (⊤Gd.limit Y)
-      module H   = Functor (f↙F (g D.∘ f)) using (₀; ₁)
-      open E
-      cc : Cone (X ∘F Cod (const W) F)
-      cc = record { N = ⊤GY.N; apex = record
-        { ψ      =  λ K → ⊤GY.ψ (H.₀ K)
-        ; commute = λ h → ⊤GY.commute (H.₁ h)
-        } }
-      f⇒ : Cone⇒ (ConesGd {W}) cc (⊤Gd.terminal.⊤ W)
-      f⇒ = record
-        { arr = R₁ (g D.∘ f)
-        ; commute = λ {K} → proj-red K (g D.∘ f)
-        }
-      g⇒ : Cone⇒ (ConesGd {W}) cc (⊤Gd.terminal.⊤ W)
-      g⇒ = record
-        { arr = R₁ g ∘ R₁ f
-        ; commute = λ {K} → begin
-          ⊤Gd.proj W K ∘ R₁ g ∘ R₁ f        ≈⟨ pullˡ (proj-red K g) ⟩
-          ⊤Gd.proj Z (↙⇒ K g) ∘ R₁ f       ≈⟨ proj-red (↙⇒ K g) f ⟩
-          ⊤Gd.proj Y (↙⇒ (↙⇒ K g) f)     ≈⟨ proj≈ (D.Equiv.trans D.identityˡ (MR.assoc²βε D)) ⟩
-          ⊤Gd.proj Y (↙⇒ K (g D.∘ f))      ∎
-        }
+    R-hom {Y} {Z} {W} {f} {g} = Limit.proj-unique (⊤Gd W) λ K → begin
+      ⊤Gd.proj W K E.∘ R₁ (g D.∘ f)              ≈⟨ proj-red K (g D.∘ f) ⟩
+      ⊤Gd.proj Y (↙⇒ K (g D.∘ f))               ≈˘⟨ proj≈ (D.Equiv.trans D.identityˡ (MR.assoc²βε D)) ⟩
+      ⊤Gd.proj Y (↙⇒ (↙⇒ K g) f)              ≈˘⟨ proj-red (↙⇒ K g) f ⟩
+      ⊤Gd.proj Z (↙⇒ K g) E.∘ R₁ f              ≈˘⟨ pullˡ (proj-red K g) ⟩
+      ⊤Gd.proj W K E.∘ R₁ g E.∘ R₁ f            ∎
 
     R-resp-≈ : {Y Z : D.Obj} {f g : D [ Y , Z ]} → D [ f ≈ g ] → E [ R₁ f ≈ R₁ g ]
-    R-resp-≈ {Y} {Z} {f} {g} f≈g = terminal.!-unique₂ (⊤Gd Z) {A = cc} {f = fc} {g = gc}
-      where
-      open E
-      module ⊤GY = Cone (⊤Gd.limit Y)
-      module H = Functor (f↙F f)
-      cc : Cone (X ∘F Cod (const Z) F)
-      cc = record { apex = record
-            { ψ       = λ K → ⊤GY.ψ (H.F₀ K)
-            ; commute = λ h → ⊤GY.commute (H.F₁ h)
-            } }
-      F-resp-≈-commute : ∀ {Y Z} {K : Category.Obj (Z ↙ F)} {f g : Y D.⇒ Z} → f D.≈ g →
-                           ⊤Gd.proj Z K ∘ R₁ f ≈ ⊤Gd.proj Y (↙⇒ K g)
-      F-resp-≈-commute {Y} {Z} {K} {f} {g} eq = begin
-        ⊤Gd.proj Z K ∘ R₁ f   ≈⟨ proj-red K f ⟩
-        ⊤Gd.proj Y (↙⇒ K f) ≈⟨ proj≈ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ eq)) ⟩
-        ⊤Gd.proj Y (↙⇒ K g) ∎
-      fc : Cone⇒ (ConesGd {Z}) cc (⊤Gd.terminal.⊤ Z)
-      fc = record
-        { arr     = R₁ f
-        ; commute = λ {X} → F-resp-≈-commute {Y} {Z} {X} {f} {f} D.Equiv.refl
-        }
-      gc : Cone⇒ (ConesGd {Z}) cc (⊤Gd.terminal.⊤ Z)
-      gc = record
-        { arr = R₁ g
-        ; commute = λ {X} → F-resp-≈-commute {Y} {Z} {X} {g} {f} (D.Equiv.sym f≈g)
-        }
+    R-resp-≈ {Y} {Z} {f} {g} f≈g = Limit.proj-unique (⊤Gd Z) λ K →
+      proj-red K f ○ proj≈ (D.∘-resp-≈ʳ (D.∘-resp-≈ʳ f≈g)) ○ ⟺ (proj-red K g)
 
     R : Functor D E
     R = record
