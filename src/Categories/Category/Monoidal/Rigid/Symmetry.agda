@@ -3,7 +3,8 @@
 -- Consequences of a symmetric monoidal structure for rigid monoidal categories:
 -- * A left rigid structure induces a right rigid structure, and vice versa.
 --   (This makes any symmetric rigid monoidal category a compact closed category.)
--- * The induced left and right dual morphisms agree.
+-- * The left and right duals of an object are isomorphic, and the isomorphism is natural.
+-- * The dual of the dual of an object is canonically isomorphic to the original object
 
 open import Categories.Category.Core using (Category)
 open import Categories.Category.Monoidal.Core using (Monoidal)
@@ -22,18 +23,32 @@ open import Categories.Category.Monoidal.Braided.Properties braided
   renaming (module Shorthands to BraidShorthands)
 import Categories.Category.Monoidal.Braided.Properties as BraidedProperties
 import Categories.Category.Monoidal.Construction.Reverse as Reverse
+import Categories.Category.Monoidal.Interchange.Symmetric as SymmetricInterchange
+import Categories.Category.Monoidal.Rigid.Dual as RigidDual
+import Categories.Category.Monoidal.Rigid.Properties as RigidPropertiesModule
 open import Categories.Category.Monoidal.Reasoning M
+open import Categories.Category.Monoidal.Properties M using (coherence-inv₃)
+open import Categories.Category.Monoidal.Reassociation M
+  using (α⇐-id⊗-commute; whisker-comm)
 open import Categories.Category.Monoidal.CupCap M
-  using (cup-bendˡ; cup-bendˡ-resp; cup-bendˡ-⊗; cup-openˡ; cup-openʳ)
+  using (cup-bendˡ; cup-bendˡ-resp; cup-bendˡ-⊗; cup-openˡ; cup-openʳ
+        ; parallel-cups-commute )
 open import Categories.Category.Monoidal.Symmetric.Properties S
-  using (braiding-selfInverse; cup-swap; mirrorˡ)
+  using (braiding-selfInverse; cup-swap; middle-braid; mirrorˡ)
 open import Categories.Morphism.Reasoning C
+open import Categories.Morphism C using (_≅_; module ≅)
 
 open MonUtil.Shorthands
 open BraidShorthands
 
 private
+  module Interchange = SymmetricInterchange S
   module RevProps = BraidedProperties (Reverse.Reverse-Braided braided)
+  open Interchange using (swapInner-braiding′)
+
+  module swapInner {A B X Y} =
+    _≅_ (Interchange.swapInner-iso {A} {B} {X} {Y})
+  open swapInner using () renaming (from to i⇒)
 
   variable
     A B X Y Z : Obj
@@ -202,3 +217,134 @@ abstract
     RightRigid.dual₁ R f                            ≈⟨ dual₁-roundtripʳ R f ⟨
     RightRigid.dual₁ (left⇒right (right⇒left R)) f  ≈⟨ dual₁ˡ≈dual₁ʳ (right⇒left R) f ⟨
     LeftRigid.dual₁ (right⇒left R) f                ∎
+
+-- The Drinfeld double-dual isomorphism `(X ⁻¹) ⁻¹ ≅ X`.  It holds in any braided
+-- rigid category, but the strict-left-dual route below picks up the ribbon twist
+-- `σ⇒ ∘ σ⇒`, which vanishes only under symmetry — so we prove just that case.
+--
+-- `η`/`ε` make `X ⁻¹` a left dual of `X`; braiding them makes `X` a *left* dual of
+-- `X ⁻¹` (the bends are the same, read with the two wires crossed), and uniqueness
+-- of left duals then identifies `X` with `(X ⁻¹) ⁻¹`.
+--
+--   X ⁻¹        X                X          X ⁻¹
+--     │         │                 ╲        ╱
+--     │         │                  ╲      ╱          σ⇒ ∘ η : the same bend,
+--     ╰─────────╯   ← η             ╲────╱           with the wires crossed
+--
+-- The twist is where a merely braided category would differ: undoing the crossing
+-- on the other side costs a second `σ⇒`, and `σ⇒ ∘ σ⇒ ≈ id` is exactly symmetry.
+
+module DoubleDualˡ (L : LeftRigid M) where
+  open LeftRigid L using (_⁻¹; η; ε; snake₁; snake₂; dual₁)
+  open import Categories.Category.Monoidal.Rigid.Dual M L
+    using (cupˡ; cupᵀ-η; cupᵀ-unique; dual-uniqueˡ; dual₁-cup)
+  module RigidProperties = RigidPropertiesModule M
+  open RigidProperties.Left L using (⊗-cup; ⁻¹-flip-⊗⁻¹)
+
+  private abstract
+    ⊗-cup-interchange :
+      i⇒ {X} {X ⁻¹} {Y} {Y ⁻¹} ∘ (η ⊗₁ η) ∘ λ⇐ ≈ (id ⊗₁ σ⇒) ∘ ⊗-cup
+    ⊗-cup-interchange = begin
+      i⇒ ∘ (η ⊗₁ η) ∘ λ⇐
+        ≈⟨ refl⟩∘⟨ pushˡ serialize₁₂ ⟩
+      i⇒ ∘ (η ⊗₁ id) ∘ (id ⊗₁ η) ∘ λ⇐
+        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ ⟺ unitorˡ-commute-to ⟩
+      i⇒ ∘ (η ⊗₁ id) ∘ λ⇐ ∘ η                   ≈⟨ assoc²βε ⟩
+      α⇐ ∘ (id ⊗₁ (α⇒ ∘ (σ⇒ ⊗₁ id) ∘ α⇐)) ∘ α⇒
+        ∘ (η ⊗₁ id) ∘ λ⇐ ∘ η
+        ≈⟨ refl⟩∘⟨ refl⟩∘⟨ parallel-cups-commute ⟨
+      α⇐ ∘ (id ⊗₁ (α⇒ ∘ (σ⇒ ⊗₁ id) ∘ α⇐))
+        ∘ (id ⊗₁ cup-openʳ η) ∘ η
+        ≈⟨ refl⟩∘⟨ pullˡ merge₂ˡ ⟩
+      α⇐ ∘ (id ⊗₁ ((α⇒ ∘ (σ⇒ ⊗₁ id) ∘ α⇐) ∘ cup-openʳ η)) ∘ η
+        ≈⟨ refl⟩∘⟨ refl⟩⊗⟨ (refl⟩∘⟨ cup-swap) ⟩∘⟨refl ⟩
+      α⇐ ∘ (id ⊗₁ ((α⇒ ∘ (σ⇒ ⊗₁ id) ∘ α⇐) ∘ σ⇐
+        ∘ (η ⊗₁ id) ∘ λ⇐)) ∘ η
+        ≈⟨ refl⟩∘⟨ refl⟩⊗⟨ extendʳ middle-braid ⟩∘⟨refl ⟩
+      α⇐ ∘ (id ⊗₁ ((id ⊗₁ σ⇒) ∘ cupˡ)) ∘ η
+        ≈⟨ refl⟩∘⟨ pushˡ split₂ˡ ⟩
+      α⇐ ∘ (id ⊗₁ (id ⊗₁ σ⇒)) ∘ (id ⊗₁ cupˡ) ∘ η
+        ≈⟨ extendʳ α⇐-id⊗-commute ⟨
+      (id ⊗₁ σ⇒) ∘ α⇐ ∘ (id ⊗₁ cupˡ) ∘ η  ∎
+
+    tensor-cup-braiding : (σ⇒ {X} {Y} ⊗₁ id) ∘ ⊗-cup
+                          ≈ (id ⊗₁ σ⇒) ∘ ⊗-cup
+    tensor-cup-braiding = begin
+      (σ⇒ ⊗₁ id) ∘ ⊗-cup                    ≈⟨ intro-center (⊗-cancel identity² commutative) ⟩
+      (σ⇒ ⊗₁ id) ∘ ((id ⊗₁ σ⇒ ∘ id ⊗₁ σ⇒) ∘ ⊗-cup)
+        ≈⟨ pull-first (⟺ serialize₁₂) ⟩
+      (σ⇒ ⊗₁ σ⇒) ∘ (id ⊗₁ σ⇒) ∘ ⊗-cup       ≈⟨ refl⟩∘⟨ ⊗-cup-interchange ⟨
+      (σ⇒ ⊗₁ σ⇒) ∘ i⇒ ∘ (η ⊗₁ η) ∘ λ⇐       ≈⟨ extendʳ swapInner-braiding′ ⟩
+      i⇒ ∘ σ⇒ ∘ (η ⊗₁ η) ∘ λ⇐               ≈⟨ refl⟩∘⟨ extendʳ σ⇒-comm ⟩
+      i⇒ ∘ (η ⊗₁ η) ∘ σ⇒ ∘ λ⇐               ≈⟨ refl⟩∘⟨ refl⟩∘⟨ braiding-selfInverse ⟩∘⟨refl ⟨
+      i⇒ ∘ (η ⊗₁ η) ∘ σ⇐ ∘ λ⇐               ≈⟨ refl⟩∘⟨ refl⟩∘⟨ braiding-coherence-inv ⟩
+      i⇒ ∘ (η ⊗₁ η) ∘ ρ⇐                    ≈⟨ refl⟩∘⟨ refl⟩∘⟨ coherence-inv₃ ⟨
+      i⇒ ∘ (η ⊗₁ η) ∘ λ⇐                    ≈⟨ ⊗-cup-interchange ⟩
+      (id ⊗₁ σ⇒) ∘ ⊗-cup                    ∎
+
+  abstract
+    dual-braiding-compat : ⁻¹-flip-⊗⁻¹ ∘ dual₁ (σ⇒ {X} {Y}) ≈ σ⇒ ∘ ⁻¹-flip-⊗⁻¹
+    dual-braiding-compat = cupᵀ-unique (begin
+      (id ⊗₁ (⁻¹-flip-⊗⁻¹ ∘ dual₁ σ⇒)) ∘ η        ≈⟨ pushˡ split₂ˡ ⟩
+      (id ⊗₁ ⁻¹-flip-⊗⁻¹) ∘ (id ⊗₁ dual₁ σ⇒) ∘ η  ≈⟨ refl⟩∘⟨ dual₁-cup ⟩
+      (id ⊗₁ ⁻¹-flip-⊗⁻¹) ∘ (σ⇒ ⊗₁ id) ∘ η        ≈⟨ extendʳ (⟺ whisker-comm) ⟩
+      (σ⇒ ⊗₁ id) ∘ (id ⊗₁ ⁻¹-flip-⊗⁻¹) ∘ η        ≈⟨ refl⟩∘⟨ cupᵀ-η ⊗-cup ⟩
+      (σ⇒ ⊗₁ id) ∘ ⊗-cup                          ≈⟨ tensor-cup-braiding ⟩
+      (id ⊗₁ σ⇒) ∘ ⊗-cup                          ≈⟨ refl⟩∘⟨ cupᵀ-η ⊗-cup ⟨
+      (id ⊗₁ σ⇒) ∘ (id ⊗₁ ⁻¹-flip-⊗⁻¹) ∘ η        ≈⟨ pullˡ merge₂ˡ ⟩
+      (id ⊗₁ (σ⇒ ∘ ⁻¹-flip-⊗⁻¹)) ∘ η              ∎)
+
+  ⁻¹⁻¹≅ : (X ⁻¹) ⁻¹ ≅ X
+  ⁻¹⁻¹≅ = ≅.sym (dual-uniqueˡ (σ⇒ ∘ η) (ε ∘ σ⇒)
+                              (braid-snakeʳ snake₂) (braid-snakeˡ snake₁))
+
+  j⇒ : (X ⁻¹) ⁻¹ ⇒ X
+  j⇒ = _≅_.from ⁻¹⁻¹≅
+
+  j⇐ : X ⇒ (X ⁻¹) ⁻¹
+  j⇐ = _≅_.to ⁻¹⁻¹≅
+
+  private abstract
+    j-cup : (id ⊗₁ j⇒) ∘ η {X ⁻¹} ≈ σ⇒ ∘ η
+    j-cup = cupᵀ-η (σ⇒ ∘ η)
+
+    double-dual-cup : (f : X ⇒ Y) →
+      (id ⊗₁ (j⇒ ∘ dual₁ (dual₁ f))) ∘ η
+      ≈ (id ⊗₁ (f ∘ j⇒)) ∘ η
+    double-dual-cup f = begin
+      (id ⊗₁ (j⇒ ∘ dual₁ (dual₁ f))) ∘ η            ≈⟨ pushˡ split₂ˡ ⟩
+      (id ⊗₁ j⇒) ∘ (id ⊗₁ dual₁ (dual₁ f)) ∘ η      ≈⟨ refl⟩∘⟨ dual₁-cup ⟩
+      (id ⊗₁ j⇒) ∘ (dual₁ f ⊗₁ id) ∘ η              ≈⟨ extendʳ (⟺ whisker-comm) ⟩
+      (dual₁ f ⊗₁ id) ∘ (id ⊗₁ j⇒) ∘ η              ≈⟨ refl⟩∘⟨ j-cup ⟩
+      (dual₁ f ⊗₁ id) ∘ σ⇒ ∘ η                      ≈⟨ extendʳ (⟺ σ⇒-comm) ⟩
+      σ⇒ ∘ (id ⊗₁ dual₁ f) ∘ η                      ≈⟨ refl⟩∘⟨ dual₁-cup ⟩
+      σ⇒ ∘ (f ⊗₁ id) ∘ η                            ≈⟨ extendʳ σ⇒-comm ⟩
+      (id ⊗₁ f) ∘ σ⇒ ∘ η                            ≈⟨ refl⟩∘⟨ j-cup ⟨
+      (id ⊗₁ f) ∘ (id ⊗₁ j⇒) ∘ η                    ≈⟨ pullˡ merge₂ˡ ⟩
+      (id ⊗₁ (f ∘ j⇒)) ∘ η                          ∎
+
+  abstract
+    double-dual-natural : (f : X ⇒ Y) →
+      j⇒ ∘ dual₁ (dual₁ f) ≈ f ∘ j⇒
+    double-dual-natural f = cupᵀ-unique (double-dual-cup f)
+
+    double-dual-on-morphisms : (f : X ⇒ Y) →
+      dual₁ (dual₁ f) ≈ j⇐ ∘ f ∘ j⇒
+    double-dual-on-morphisms f = switch-fromtoˡ ⁻¹⁻¹≅ (double-dual-natural f)
+
+module DoubleDualʳ (R : RightRigid M) where
+  open RightRigid R using (_⁻¹; dual₁)
+  open DoubleDualˡ (right⇒left R) public using (⁻¹⁻¹≅; j⇒; j⇐)
+
+  private
+    module L = LeftRigid (right⇒left R)
+    module D = RigidDual M (right⇒left R)
+
+  abstract
+    double-dual-on-morphisms : (f : X ⇒ Y) →
+      dual₁ (dual₁ f) ≈ j⇐ ∘ f ∘ j⇒
+    double-dual-on-morphisms f = begin
+      dual₁ (dual₁ f)        ≈⟨ dual₁ʳ≈dual₁ˡ R (dual₁ f) ⟩
+      L.dual₁ (dual₁ f)      ≈⟨ D.dual₁-resp-≈ (dual₁ʳ≈dual₁ˡ R f) ⟩
+      L.dual₁ (L.dual₁ f)    ≈⟨ DoubleDualˡ.double-dual-on-morphisms (right⇒left R) f ⟩
+      j⇐ ∘ f ∘ j⇒                ∎
