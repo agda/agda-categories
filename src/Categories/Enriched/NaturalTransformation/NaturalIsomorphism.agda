@@ -35,6 +35,25 @@ module _ {c d} {C : Category c} {D : Category d} where
   NaturalIsomorphism F G = F ≅ G
     where open Morphism (EnrichedFunctors C D) using (_≅_)
 
+  -- Lift pointwise inverse laws for enriched natural transformations to an
+  -- isomorphism in the enriched functor category.
+
+  record NIHelper (F G : Functor C D) : Set (ℓ ⊔ e ⊔ c) where
+    field
+      F⇒G : NaturalTransformation F G
+      F⇐G : NaturalTransformation G F
+      iso  : ∀ X → Morphism.Iso (Underlying D) (F⇒G [ X ]) (F⇐G [ X ])
+
+  niHelper : {F G : Functor C D} → NIHelper F G → NaturalIsomorphism F G
+  niHelper α = record
+    { from = NIHelper.F⇒G α
+    ; to = NIHelper.F⇐G α
+    ; iso = record
+      { isoˡ = λ {X} → Morphism.Iso.isoˡ (NIHelper.iso α X)
+      ; isoʳ = λ {X} → Morphism.Iso.isoʳ (NIHelper.iso α X)
+      }
+    }
+
   -- A commonly used shorthand for NaturalIsomorphism
 
   infix 4 _≃_

@@ -2,8 +2,8 @@
 
 -- The scalars of a monoidal category are the endomorphisms of the unit object.
 -- They form a monoid under composition, with natural left and right actions on
--- the morphisms of the category. These are in fact natural transformations of
--- the identity functor, but we do not prove that here.
+-- the morphisms of the category. These actions define natural transformations
+-- of the identity functor.
 -- See https://ncatlab.org/nlab/show/scalar for this terminology
 -- in dagger-, compact-, and closed monoidal categories, where scalars are
 -- discussed as the endomorphism ring of the tensor unit. The same page cites
@@ -21,6 +21,10 @@ module Categories.Category.Monoidal.Scalars
 open import Algebra.Bundles using (Monoid; CommutativeMonoid)
 
 open import Categories.Object.Endomorphism 𝒞 using (Endo; Endo-∘-Monoid)
+open import Categories.Functor using () renaming (id to idF)
+open import Categories.NaturalTransformation
+  using (NaturalTransformation; ntHelper; _∘ᵥ_) renaming (id to idNT)
+open import Categories.NaturalTransformation.Equivalence using (_≃_)
 open import Categories.Category.Monoidal.Reasoning M
 open import Categories.Category.Monoidal.Utilities M using (module Shorthands)
 import Categories.Category.Monoidal.Properties M as MonoidalProps
@@ -93,7 +97,7 @@ module Action where
     f ∘ ρ⇒ ∘ (id ⊗₁ g)              ≈⟨ pullˡ (⟺ unitorʳ-commute-from) ⟩
     (ρ⇒ ∘ (f ⊗₁ id)) ∘ (id ⊗₁ g)    ≈⟨ pullʳ merge₂ʳ ⟩
     ρ⇒ ∘ (f ⊗₁ (id ∘ g))            ≈⟨ refl⟩∘⟨ refl⟩⊗⟨ identityˡ ⟩
-    ρ⇒ ∘ (f ⊗₁ g)                   ≈˘⟨ coherence₃ ⟩∘⟨refl ⟩
+    ρ⇒ ∘ (f ⊗₁ g)                   ≈⟨ coherence₃ ⟩∘⟨refl ⟨
     λ⇒ ∘ (f ⊗₁ g)                   ∎
 
 open Action public
@@ -106,43 +110,39 @@ open Action public
 -- Concretely the two actions agree on scalars (the unitors coincide on the unit),
 -- while `s ·ʳ t` is `s ∘ t` and `s ·ˡ t` is `t ∘ s`.
 module Eckmann-Hilton where
+  -- The two actions agree on a scalar: the unitors coincide on the unit.
+  ·ʳ≈·ˡ : s ·ʳ t ≈ s ·ˡ t
+  ·ʳ≈·ˡ = ⟺ coherence₃ ⟩∘⟨ refl⟩∘⟨ ⟺ coherence-inv₃
+
   private
     -- A scalar sandwiched between the unitors in either slot is itself: swap the
     -- unitors by coherence₃ and apply id-·ˡ / id-·ʳ.
     absorbᵣ : ρ⇒ ∘ (id ⊗₁ s) ∘ ρ⇐ ≈ s
     absorbᵣ {s} = begin
-      ρ⇒ ∘ (id ⊗₁ s) ∘ ρ⇐  ≈⟨ ⟺ coherence₃ ⟩∘⟨ refl⟩∘⟨ ⟺ coherence-inv₃ ⟩
+      ρ⇒ ∘ (id ⊗₁ s) ∘ ρ⇐  ≈⟨ ·ʳ≈·ˡ ⟩
       λ⇒ ∘ (id ⊗₁ s) ∘ λ⇐  ≈⟨ id-·ˡ ⟩
       s                    ∎
 
     absorbₗ : λ⇒ ∘ (s ⊗₁ id) ∘ λ⇐ ≈ s
     absorbₗ {s} = begin
-      λ⇒ ∘ (s ⊗₁ id) ∘ λ⇐  ≈⟨ coherence₃ ⟩∘⟨ refl⟩∘⟨ coherence-inv₃ ⟩
+      λ⇒ ∘ (s ⊗₁ id) ∘ λ⇐  ≈⟨ ·ʳ≈·ˡ ⟨
       ρ⇒ ∘ (s ⊗₁ id) ∘ ρ⇐  ≈⟨ id-·ʳ ⟩
       s                    ∎
-
-  -- The two actions agree on a scalar: the unitors coincide on the unit.
-  ·ʳ≈·ˡ : s ·ʳ t ≈ s ·ˡ t
-  ·ʳ≈·ˡ = ⟺ coherence₃ ⟩∘⟨ refl⟩∘⟨ ⟺ coherence-inv₃
 
   -- Acting by a scalar on a scalar is composition: slide the acting scalar out
   -- past its unitor; the other unitor absorbs the scalar acted on.
   ·ʳ-scalar : s ·ʳ t ≈ s ∘ t
   ·ʳ-scalar {s} {t} = begin
-    ρ⇒ ∘ (s ⊗₁ t) ∘ ρ⇐                 ≈⟨ refl⟩∘⟨ serialize₁₂ ⟩∘⟨refl ⟩
-    ρ⇒ ∘ ((s ⊗₁ id) ∘ (id ⊗₁ t)) ∘ ρ⇐  ≈⟨ refl⟩∘⟨ assoc ⟩
+    ρ⇒ ∘ (s ⊗₁ t) ∘ ρ⇐                 ≈⟨ refl⟩∘⟨ pushˡ serialize₁₂ ⟩
     ρ⇒ ∘ (s ⊗₁ id) ∘ (id ⊗₁ t) ∘ ρ⇐    ≈⟨ pullˡ unitorʳ-commute-from ⟩
-    (s ∘ ρ⇒) ∘ (id ⊗₁ t) ∘ ρ⇐          ≈⟨ assoc ⟩
-    s ∘ ρ⇒ ∘ (id ⊗₁ t) ∘ ρ⇐            ≈⟨ refl⟩∘⟨ absorbᵣ ⟩
+    (s ∘ ρ⇒) ∘ (id ⊗₁ t) ∘ ρ⇐          ≈⟨ pullʳ absorbᵣ ⟩
     s ∘ t                              ∎
 
   ·ˡ-scalar : s ·ˡ t ≈ t ∘ s
   ·ˡ-scalar {s} {t} = begin
-    λ⇒ ∘ (s ⊗₁ t) ∘ λ⇐                 ≈⟨ refl⟩∘⟨ serialize₂₁ ⟩∘⟨refl ⟩
-    λ⇒ ∘ ((id ⊗₁ t) ∘ (s ⊗₁ id)) ∘ λ⇐  ≈⟨ refl⟩∘⟨ assoc ⟩
+    λ⇒ ∘ (s ⊗₁ t) ∘ λ⇐                 ≈⟨ refl⟩∘⟨ pushˡ serialize₂₁ ⟩
     λ⇒ ∘ (id ⊗₁ t) ∘ (s ⊗₁ id) ∘ λ⇐    ≈⟨ pullˡ unitorˡ-commute-from ⟩
-    (t ∘ λ⇒) ∘ (s ⊗₁ id) ∘ λ⇐          ≈⟨ assoc ⟩
-    t ∘ λ⇒ ∘ (s ⊗₁ id) ∘ λ⇐            ≈⟨ refl⟩∘⟨ absorbₗ ⟩
+    (t ∘ λ⇒) ∘ (s ⊗₁ id) ∘ λ⇐          ≈⟨ pullʳ absorbₗ ⟩
     t ∘ s                              ∎
 
   -- Eckmann–Hilton: s ∘ t = s ·ʳ t = s ·ˡ t = t ∘ s.
@@ -167,3 +167,37 @@ module Eckmann-Hilton where
     }
 
 open Eckmann-Hilton public
+
+-- Scalars act naturally on every object through the identity functor.
+module NaturalAction where
+  private abstract
+    commute : (f : A ⇒ B) → (s ·ˡ id) ∘ f ≈ f ∘ (s ·ˡ id)
+    commute {s = s} f = begin
+      (s ·ˡ id) ∘ f           ≈⟨ refl⟩∘⟨ id-·ˡ ⟨
+      (s ·ˡ id) ∘ (idₛ ·ˡ f)  ≈⟨ ·ˡ-∘ ⟨
+      (s ·ₛ idₛ) ·ˡ (id ∘ f)  ≈⟨ ·ˡ-resp-≈ (scalar-comm s idₛ) (⟺ id-comm) ⟩
+      (idₛ ·ₛ s) ·ˡ (f ∘ id)  ≈⟨ ·ˡ-∘ ⟩
+      (idₛ ·ˡ f) ∘ (s ·ˡ id)  ≈⟨ id-·ˡ ⟩∘⟨refl ⟩
+      f ∘ (s ·ˡ id)           ∎
+
+  Scale⟦_⟧ : Scalar → NaturalTransformation (idF {C = 𝒞}) idF
+  Scale⟦ s ⟧ = ntHelper record
+    { η = λ _ → s ·ˡ id
+    ; commute = commute
+    }
+
+  -- Scale⟦_⟧ is a monoid homomorphism to the natural transformations of the identity functor
+  Scale-id : Scale⟦ idₛ ⟧ ≃ idNT
+  Scale-id = id-·ˡ
+
+  Scale-·ₛ : Scale⟦ s ·ₛ t ⟧ ≃ Scale⟦ s ⟧ ∘ᵥ Scale⟦ t ⟧
+  Scale-·ₛ = ·ˡ-resp-≈ Equiv.refl (⟺ identityˡ) ○ ·ˡ-∘
+
+  Scale-unit : NaturalTransformation.η Scale⟦ s ⟧ unit ≈ s
+  Scale-unit = ·ˡ-scalar ○ identityˡ
+
+  -- Scale⟦_⟧ is an injective/faithful monoid homomorphism
+  Scale-injective : Scale⟦ s ⟧ ≃ Scale⟦ t ⟧ → s ≈ t
+  Scale-injective Scale-s≈t = ⟺ Scale-unit ○ Scale-s≈t ○ Scale-unit
+
+open NaturalAction public
