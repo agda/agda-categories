@@ -20,6 +20,7 @@ open import Categories.Category.Monoidal using (Monoidal)
 open import Categories.Functor using (Functor) renaming (id to idF)
 open import Categories.NaturalTransformation using (ntHelper)
 open import Categories.NaturalTransformation.NaturalIsomorphism using (NaturalIsomorphism)
+open import Categories.NaturalTransformation.NaturalIsomorphism.Properties using (pointwise-iso)
 
 private
   variable
@@ -64,42 +65,11 @@ module CartesianMonoidal (cartesian : Cartesian 𝒞) where
     }
 
   ⊤×--id : NaturalIsomorphism (⊤ ×-) idF
-  ⊤×--id = record
-    { F⇒G = ntHelper record
-      { η       = λ _ → π₂
-      ; commute = λ _ → project₂
-      }
-    ; F⇐G = ntHelper record
-      { η       = λ _ → ⟨ ! , id ⟩
-      ; commute = λ f → begin
-        ⟨ ! , id ⟩ ∘ f                                     ≈⟨ ⟨⟩∘ ⟩
-        ⟨ ! ∘ f , id  ∘ f ⟩                                ≈⟨ ⟨⟩-cong₂ (⟺ (!-unique _)) identityˡ ⟩
-        ⟨ ! , f ⟩                                          ≈˘⟨ ⟨⟩-cong₂ identityˡ identityʳ ⟩
-        ⟨ id ∘ ! , f ∘ id ⟩                                ≈˘⟨ ⟨⟩-cong₂ (pullʳ project₁) (pullʳ project₂) ⟩
-        ⟨ (id ∘ π₁) ∘ ⟨ ! , id ⟩ , (f ∘ π₂) ∘ ⟨ ! , id ⟩ ⟩ ≈˘⟨ ⟨⟩∘ ⟩
-        ⟨ id ∘ π₁ , f ∘ π₂ ⟩ ∘ ⟨ ! , id ⟩                  ∎
-      }
-    ; iso = λ _ → _≅_.iso ⊤×A≅A
-    }
+  ⊤×--id = pointwise-iso (λ _ → ⊤×A≅A) (λ _ → project₂)
 
   -×⊤-id : NaturalIsomorphism (-× ⊤) idF
-  -×⊤-id = record
-    { F⇒G = ntHelper record
-      { η       = λ _ → π₁
-      ; commute = λ _ → project₁
-      }
-    ; F⇐G = ntHelper record
-      { η       = λ _ → ⟨ id , ! ⟩
-      ; commute = λ f → begin
-        ⟨ id , ! ⟩ ∘ f                                     ≈⟨ ⟨⟩∘ ⟩
-        ⟨ id ∘ f , ! ∘ f ⟩                                 ≈⟨ ⟨⟩-cong₂ identityˡ (⟺ (!-unique _)) ⟩
-        ⟨ f , ! ⟩                                          ≈˘⟨ ⟨⟩-cong₂ identityʳ identityˡ ⟩
-        ⟨ f ∘ id , id ∘ ! ⟩                                ≈˘⟨ ⟨⟩-cong₂ (pullʳ project₁) (pullʳ project₂) ⟩
-        ⟨ (f ∘ π₁) ∘ ⟨ id , ! ⟩ , (id ∘ π₂) ∘ ⟨ id , ! ⟩ ⟩ ≈˘⟨ ⟨⟩∘ ⟩
-        ⟨ f ∘ π₁ , id ∘ π₂ ⟩ ∘ ⟨ id , ! ⟩                  ∎
-      }
-    ; iso = λ _ → _≅_.iso A×⊤≅A
-    }
+  -×⊤-id = pointwise-iso (λ _ → A×⊤≅A) (λ _ → project₁)
+
   private
     infixr 7 _⊗₀_
     infixr 8 _⊗₁_
