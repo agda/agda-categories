@@ -62,6 +62,17 @@ record Limit : Set (o ⊔ ℓ ⊔ e ⊔ o′ ⊔ ℓ′ ⊔ e′) where
     ; commute = C.Equiv.refl
     }
 
+  -- Projection uniqueness for limits: two morphisms into a limit are
+  -- equivalent if their composites with every projection are equivalent.
+  -- See:
+  -- - Lean Mathlib CategoryTheory.Limits.IsLimit.hom_ext
+  -- - Rocq UniMath.CategoryTheory.Limits.Graphs.Limits.html#arr_to_LimCone_eq
+  proj-unique : ∀ {f g : X ⇒ apex} →
+                (∀ A → proj A ∘ f ≈ proj A ∘ g) → f ≈ g
+  proj-unique {f = f} {g = g} eq = terminal.!-unique₂
+    {f = conify f}
+    {g = record { arr = g ; commute = λ {A} → Equiv.sym (eq A) }}
+
   commute : proj A ∘ rep K ≈ Cone.ψ K A
   commute {K = K} = _⇨_.commute (rep-cone K)
 
